@@ -115,6 +115,8 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 					newDst := factory.CreateObject(item.TLTag())
 					_, err = newDst.ReadTL2(writeBuffer, nil)
 					if err != nil {
+						writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
+						_, err = newDst.ReadTL2(writeBuffer, nil)
 						t.Fatalf("can't readTL2 %d-th object", i)
 					}
 					newData, err := newDst.WriteGeneral(nil)

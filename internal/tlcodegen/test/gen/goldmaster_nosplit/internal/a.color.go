@@ -131,10 +131,12 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
@@ -143,15 +145,14 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return r, err
 	}
+	item.index = 0
 	if (block & 1) != 0 {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-	} else {
-		item.index = 0
-	}
-	if item.index < 0 || item.index >= 5 {
-		return r, ErrorInvalidUnionIndex("a.Color", item.index)
+		if item.index < 0 || item.index >= 5 {
+			return r, ErrorInvalidUnionIndex("a.Color", item.index)
+		}
 	}
 	Unused(currentR)
 	return r, nil
@@ -374,41 +375,46 @@ func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 }
 
 func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = item.Value.InternalReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.Value.Reset()
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value.Reset()
 	}
 	return r, nil
 }

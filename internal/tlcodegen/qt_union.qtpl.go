@@ -359,29 +359,30 @@ func (item *`)
 			qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-
     if currentSize == 0 {
         item.Reset()
         return r, nil
     }
+   	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
     currentR := r[:currentSize]
     r = r[currentSize:]
 
     var block byte
     if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    item.index = 0
     if (block & 1) != 0 {
         if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-    } else {
-        item.index = 0
-    }
-    if item.index < 0 || item.index >= `)
+        if item.index < 0 || item.index >= `)
 			qw422016.N().D(len(union.Fields))
 			qw422016.N().S(` {
-        return r, `)
+            return r, `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionIndex(`)
 			qw422016.N().Q(tlName)
 			qw422016.N().S(`, item.index)
+        }
     }
 `)
 			if !union.IsEnum {

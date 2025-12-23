@@ -186,24 +186,28 @@ func (item *Service5EmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	var index int
-	if currentSize != 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		var index int
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
+		if index != 0 {
+			return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 		}
-	}
-	if index != 0 {
-		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 	}
 	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
@@ -335,10 +339,12 @@ func (item *Service5Output) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
@@ -347,15 +353,14 @@ func (item *Service5Output) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return r, err
 	}
+	item.index = 0
 	if (block & 1) != 0 {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-	} else {
-		item.index = 0
-	}
-	if item.index < 0 || item.index >= 2 {
-		return r, internal.ErrorInvalidUnionIndex("service5.Output", item.index)
+		if item.index < 0 || item.index >= 2 {
+			return r, internal.ErrorInvalidUnionIndex("service5.Output", item.index)
+		}
 	}
 	switch item.index {
 	case 1:
@@ -750,24 +755,28 @@ func (item *Service5StringOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext)
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	var index int
-	if currentSize != 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		var index int
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
+		if index != 1 {
+			return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 		}
-	}
-	if index != 1 {
-		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 	}
 	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
