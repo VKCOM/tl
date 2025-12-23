@@ -216,9 +216,9 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 			w = append(w, ',')
 		}
 		first = false
-		w = append(w, "'"...)
+		w = append(w, `"`...)
 		w = append(w, fieldDef.Name...)
-		w = append(w, "':"...)
+		w = append(w, `":`...)
 		w = v.fields[i].WriteJSON(w, ctx)
 	}
 	w = append(w, '}')

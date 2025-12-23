@@ -53,8 +53,8 @@ func (v *KernelValueAlias) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Contex
 	return v.value.WriteTL2(w, optimizeEmpty, ctx)
 }
 
-func (v *KernelValueAlias) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	return v.value.ReadTL2(w, ctx)
+func (v *KernelValueAlias) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	return v.value.ReadTL2(r, ctx)
 }
 
 func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TL2Context) []byte {

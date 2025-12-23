@@ -51,12 +51,12 @@ func (v *KernelValueUint32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Conte
 	return binary.LittleEndian.AppendUint32(w, v.value)
 }
 
-func (v *KernelValueUint32) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 4 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 4 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = binary.LittleEndian.Uint32(w)
-	return w[4:], nil
+	v.value = binary.LittleEndian.Uint32(r)
+	return r[4:], nil
 }
 
 func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
@@ -93,12 +93,12 @@ func (v *KernelValueInt32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Contex
 	return binary.LittleEndian.AppendUint32(w, uint32(v.value))
 }
 
-func (v *KernelValueInt32) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 4 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 4 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = int32(binary.LittleEndian.Uint32(w))
-	return w[4:], nil
+	v.value = int32(binary.LittleEndian.Uint32(r))
+	return r[4:], nil
 }
 
 func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
@@ -135,12 +135,12 @@ func (v *KernelValueUint64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Conte
 	return binary.LittleEndian.AppendUint64(w, v.value)
 }
 
-func (v *KernelValueUint64) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 8 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 8 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = binary.LittleEndian.Uint64(w)
-	return w[8:], nil
+	v.value = binary.LittleEndian.Uint64(r)
+	return r[8:], nil
 }
 
 func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
@@ -177,12 +177,12 @@ func (v *KernelValueInt64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Contex
 	return binary.LittleEndian.AppendUint64(w, uint64(v.value))
 }
 
-func (v *KernelValueInt64) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 8 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 8 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = int64(binary.LittleEndian.Uint64(w))
-	return w[8:], nil
+	v.value = int64(binary.LittleEndian.Uint64(r))
+	return r[8:], nil
 }
 
 func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
@@ -219,17 +219,16 @@ func (v *KernelValueByte) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context
 	return append(w, v.value)
 }
 
-func (v *KernelValueByte) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 1 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 1 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = w[0]
-	return w[1:], nil
+	v.value = r[0]
+	return r[1:], nil
 }
 
 func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
-
 }
 
 func (v *KernelValueByte) Clone() KernelValue {
@@ -265,12 +264,12 @@ func (v *KernelValueBool) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context
 	return append(w, 0)
 }
 
-func (v *KernelValueBool) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	if len(w) < 1 {
-		return w, io.ErrUnexpectedEOF
+func (v *KernelValueBool) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	if len(r) < 1 {
+		return r, io.ErrUnexpectedEOF
 	}
-	v.value = w[0] != 0
-	return w[1:], nil
+	v.value = r[0] != 0
+	return r[1:], nil
 }
 
 func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
@@ -309,8 +308,8 @@ func (v *KernelValueBit) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context)
 	return w
 }
 
-func (v *KernelValueBit) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
-	return w, nil
+func (v *KernelValueBit) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+	return r, nil
 }
 
 func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
