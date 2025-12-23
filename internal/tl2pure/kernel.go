@@ -55,6 +55,7 @@ func NewKernel() *Kernel {
 	k.addPrimitive("byte", &KernelValueByte{}, true)
 	k.addPrimitive("bool", &KernelValueBool{}, true)
 	k.addPrimitive("bit", &KernelValueBit{}, false)
+	k.addString()
 
 	return k
 }
