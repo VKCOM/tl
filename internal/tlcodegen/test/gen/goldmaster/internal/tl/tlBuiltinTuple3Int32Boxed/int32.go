@@ -110,17 +110,12 @@ func BuiltinTuple3Int32BoxedInternalReadTL2(r []byte, vec *[3]tlInt32.Int32) (_ 
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 3 {
-		lastIndex = 3
-	}
+	lastIndex := min(elementCount, 3)
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
 	for i := lastIndex; i < 3; i++ {
 		(*vec)[i].Reset()
 	}

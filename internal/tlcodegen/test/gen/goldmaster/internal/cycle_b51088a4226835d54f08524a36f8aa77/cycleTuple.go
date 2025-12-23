@@ -113,17 +113,12 @@ func BuiltinTuple2CycleTupleInternalReadTL2(r []byte, vec *[2]CycleTuple) (_ []b
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 2 {
-		lastIndex = 2
-	}
+	lastIndex := min(elementCount, 2)
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
 	for i := lastIndex; i < 2; i++ {
 		(*vec)[i].Reset()
 	}

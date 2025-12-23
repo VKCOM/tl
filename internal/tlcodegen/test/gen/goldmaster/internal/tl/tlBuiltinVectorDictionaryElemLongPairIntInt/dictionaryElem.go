@@ -20,9 +20,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryElemLongPairIntIntReset(m map[int64]tlPairIntInt.PairIntInt) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64]tlPairIntInt.PairIntInt) {
@@ -41,19 +39,14 @@ func BuiltinVectorDictionaryElemLongPairIntIntRead(w []byte, m *map[int64]tlPair
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	var data map[int64]tlPairIntInt.PairIntInt
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[int64]tlPairIntInt.PairIntInt, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[int64]tlPairIntInt.PairIntInt, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryElemLongPairIntInt.DictionaryElemLongPairIntInt
 		if w, err = elem.Read(w); err != nil {
@@ -167,14 +160,13 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[i
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[int64]tlPairIntInt.PairIntInt)
+		*m = make(map[int64]tlPairIntInt.PairIntInt, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -188,16 +180,12 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[i
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]tlPairIntInt.PairIntInt) error {
-	var data map[int64]tlPairIntInt.PairIntInt
+	clear(*m)
 	if *m == nil {
 		*m = make(map[int64]tlPairIntInt.PairIntInt, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

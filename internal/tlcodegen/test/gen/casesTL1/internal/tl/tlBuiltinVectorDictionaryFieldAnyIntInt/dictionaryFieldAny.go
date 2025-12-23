@@ -19,9 +19,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryFieldAnyIntIntReset(m map[int32]int32) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryFieldAnyIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]int32) {
@@ -40,19 +38,14 @@ func BuiltinVectorDictionaryFieldAnyIntIntRead(w []byte, m *map[int32]int32) (_ 
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	var data map[int32]int32
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[int32]int32, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[int32]int32, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
 		if w, err = elem.Read(w); err != nil {
@@ -84,16 +77,12 @@ func BuiltinVectorDictionaryFieldAnyIntIntWrite(w []byte, m map[int32]int32) []b
 }
 
 func BuiltinVectorDictionaryFieldAnyIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]int32) error {
-	var data map[int32]int32
+	clear(*m)
 	if *m == nil {
 		*m = make(map[int32]int32, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
