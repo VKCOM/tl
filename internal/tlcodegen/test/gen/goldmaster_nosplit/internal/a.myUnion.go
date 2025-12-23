@@ -117,20 +117,14 @@ func (item *AMyUnion) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, i
 	case 1:
 		return item.valueNionA.CalculateLayout(sizes, optimizeEmpty)
 	}
-	currentSize := 1
-	lastUsedByte := 0
-	if item.index != 0 {
-		currentSize += basictl.TL2CalculateSize(item.index)
-		lastUsedByte = currentSize
+	if item.index == 0 && optimizeEmpty {
+		return sizes, 0
 	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
+	if item.index == 0 {
+		return sizes, 1
 	}
-	sizes = append(sizes, currentSize)
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	return sizes, currentSize
+	bodySize := 1 + basictl.TL2CalculateSize(item.index)
+	return sizes, 1 + bodySize
 }
 
 func (item *AMyUnion) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
@@ -141,22 +135,18 @@ func (item *AMyUnion) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool
 	case 1:
 		return item.valueNionA.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if item.index == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
+	if item.index == 0 {
+		w = append(w, 0)
 		return w, sizes, 1
 	}
-	if item.index != 0 {
-		w = append(w, 1)
-		w = basictl.TL2WriteSize(w, item.index)
-	} else {
-		w = append(w, 0)
-	}
-	return w, sizes, currentSize
+	bodySize := 1 + basictl.TL2CalculateSize(item.index)
+	w = append(w, byte(bodySize))
+	w = append(w, 1)
+	w = basictl.TL2WriteSize(w, item.index)
+	return w, sizes, 1 + bodySize
 }
 
 func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {

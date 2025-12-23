@@ -1102,6 +1102,12 @@ func (item *IntBoxedMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *IntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	if !item.Ok && optimizeEmpty {
+		return sizes, 0
+	}
+	if !item.Ok {
+		return sizes, 1
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1109,51 +1115,45 @@ func (item *IntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]i
 	lastUsedByte := 0
 	var sz int
 
-	if item.Ok {
-		currentSize += basictl.TL2CalculateSize(1)
-		lastUsedByte = currentSize
+	currentSize += basictl.TL2CalculateSize(1)
+	lastUsedByte = currentSize
 
-		if item.Value != 0 {
-			currentSize += 4
-			lastUsedByte = currentSize
-		}
+	if item.Value != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
 	}
+
 	if lastUsedByte < currentSize {
 		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func (item *IntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if !item.Ok && optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
+	if !item.Ok {
+		w = append(w, 0)
 		return w, sizes, 1
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
 	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 
-	if item.Ok {
-		w = basictl.TL2WriteSize(w, 1)
-		currentBlock |= 1
-		if item.Value != 0 {
-			w = basictl.IntWrite(w, item.Value)
-			currentBlock |= 2
-		}
+	w = basictl.TL2WriteSize(w, 1)
+	currentBlock |= 1
+	if item.Value != 0 {
+		w = basictl.IntWrite(w, item.Value)
+		currentBlock |= 2
 	}
 	w[currentBlockPosition] = currentBlock
 	if len(w)-oldLen != currentSize {
@@ -1287,6 +1287,12 @@ func (item *IntMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *IntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	if !item.Ok && optimizeEmpty {
+		return sizes, 0
+	}
+	if !item.Ok {
+		return sizes, 1
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1294,51 +1300,45 @@ func (item *IntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, i
 	lastUsedByte := 0
 	var sz int
 
-	if item.Ok {
-		currentSize += basictl.TL2CalculateSize(1)
-		lastUsedByte = currentSize
+	currentSize += basictl.TL2CalculateSize(1)
+	lastUsedByte = currentSize
 
-		if item.Value != 0 {
-			currentSize += 4
-			lastUsedByte = currentSize
-		}
+	if item.Value != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
 	}
+
 	if lastUsedByte < currentSize {
 		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if !item.Ok && optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
+	if !item.Ok {
+		w = append(w, 0)
 		return w, sizes, 1
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
 	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 
-	if item.Ok {
-		w = basictl.TL2WriteSize(w, 1)
-		currentBlock |= 1
-		if item.Value != 0 {
-			w = basictl.IntWrite(w, item.Value)
-			currentBlock |= 2
-		}
+	w = basictl.TL2WriteSize(w, 1)
+	currentBlock |= 1
+	if item.Value != 0 {
+		w = basictl.IntWrite(w, item.Value)
+		currentBlock |= 2
 	}
 	w[currentBlockPosition] = currentBlock
 	if len(w)-oldLen != currentSize {
