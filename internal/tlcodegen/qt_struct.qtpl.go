@@ -1657,23 +1657,25 @@ func (item *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
     currentSize := 0
-    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
 
     currentR := r[:currentSize]
     r = r[currentSize:]
 
-    // first field mask
-    block := byte(0)
+    var block byte
     if currentSize != 0 {
         if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
     }
 
     // check no of constructor
-    if block & (1 << 0) != 0 {
-        return currentR, basictl.TL2Error("unknown union type")
+    if block & 1 != 0 {
+        return currentR, basictl.TL2Error("function result must not use variant type field")
     }
 
-    if block & (1 << 1) != 0 {
+    if block & 2 != 0 {
         `)
 		qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true))
 		qw422016.N().S(`
@@ -1687,13 +1689,16 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) writeResultTL2(w []byte, sizes []int, ctx *basictl.TL2WriteContext, ret `)
+		qw422016.N().S(`) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret `)
 		qw422016.N().S(retArg)
-		qw422016.N().S(`) ([]byte, []int, int) {
-`)
-		/* calculateLayout */
+		qw422016.N().S(`) ([]int, int) {
+    sizes = append(sizes, `)
+		qw422016.N().V(struct_.wr.tlTag)
+		qw422016.N().S(`)
+    sizePosition := len(sizes)
+    sizes = append(sizes, 0)
 
-		qw422016.N().S(`    currentSize := 1
+    currentSize := 1
     lastUsedByte := 0
     var sz int
     `)
@@ -1704,32 +1709,62 @@ func (item *`)
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
-    currentSize += basictl.TL2CalculateSize(currentSize)
-    sizesReuse := sizes
-`)
-		/* internalWrite */
-
-		qw422016.N().S(`    oldLen := len(w)
-    w = basictl.TL2WriteSize(w, currentSize)
-    if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+    sizes[sizePosition] = currentSize
+    if currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
     }
+    if !optimizeEmpty || currentSize != 0 {
+        currentSize += basictl.TL2CalculateSize(currentSize)
+    }
+    `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`Unused(sz)
+    return sizes, currentSize
+}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) ([]byte, []int, int) {
+    if sizes[0] != `)
+		qw422016.N().V(struct_.wr.tlTag)
+		qw422016.N().S(` {
+        panic("tl2: tag mismatch between calculate and write")
+    }
+    currentSize := sizes[1]
+    sizes = sizes[2:]
+
+    if optimizeEmpty && currentSize == 0 {`)
+		/* CalculateLayout was called with optimizeEmpty and object turned out empty */
+
+		qw422016.N().S(`        return w, sizes, 0
+    }
+    w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, 1
+    }
+    var sz int
     var currentBlock byte
     currentBlockPosition := len(w)
     w = append(w, 0)
+
     `)
 		qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false))
 		qw422016.N().S(`
         currentBlock |= 2
     }
-    w[currentBlockPosition] = currentBlock
+    if currentBlockPosition < len(w) {
+        w[currentBlockPosition] = currentBlock
+    }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`Unused(sz)
-    if len(sizes) != 0 {
-        panic("tl2: internal write did not consume all size data")
-    }
-    return w, sizesReuse, currentSize
+    return w, sizes, currentSize
 }
 
 func (item *`)
@@ -1737,16 +1772,70 @@ func (item *`)
 		qw422016.N().S(`) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret `)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-    w, sizes, _ = item.writeResultTL2(w, sizes, ctx, ret)
+    var sizes, sizes2 []int
+    if ctx != nil {
+        sizes = ctx.SizeBuffer[:0]
+    }
+    sizes, _ = item.calculateLayoutResult(sizes, false, ret)
+    w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
+    if len(sizes2) != 0 {
+        panic("tl2: internal write did not consume all size data")
+    }
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
     return w, nil
 }
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+		if !struct_.wr.wantsTL2 {
+			qw422016.N().S(`  return r, w, `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().S(`)
+`)
+		} else {
+			qw422016.N().S(`  var ret `)
+			qw422016.N().S(retArg)
+			qw422016.N().S(`
+  if r, err = item.ReadResult(r, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.WriteResultTL2(w, tctx, ret)
+  return r, w, err
+`)
+		}
+		qw422016.N().S(`}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+		if !struct_.wr.wantsTL2 {
+			qw422016.N().S(`  return r, w, `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().S(`)
+`)
+		} else {
+			qw422016.N().S(`  var ret `)
+			qw422016.N().S(retArg)
+			qw422016.N().S(`
+  if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.WriteResult(w, ret)
+  return r, w, err
+`)
+		}
+		qw422016.N().S(`}
+
+
 `)
 	}
 	qw422016.N().S(`

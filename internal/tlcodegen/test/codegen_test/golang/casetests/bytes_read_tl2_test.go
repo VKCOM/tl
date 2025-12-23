@@ -2,15 +2,16 @@ package casetests
 
 import (
 	"fmt"
+	"math/rand"
+	"sort"
+	"strings"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
 	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
-	"math/rand"
-	"sort"
-	"strings"
-	"testing"
 )
 
 func TestGeneralCasesTL2(t *testing.T) {
@@ -89,6 +90,7 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 			continue
 		}
 		t.Run(item.TLName(), func(t *testing.T) {
+			dstFun := factory.CreateFunction(item.TLTag())
 			dst := factory.CreateObject(item.TLTag())
 			if dst == nil {
 				t.Fatalf("can't init %s", item.TLName())
@@ -100,6 +102,14 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 				if err != nil {
 					t.Fatalf("can't seriliaze %d-th object", i)
 				}
+				var resultData []byte
+				if dstFun != nil {
+					resultData, err = dstFun.FillRandomResult(rg, resultData[:0])
+					if err != nil {
+						t.Fatalf("can't serialize %d-th function result", i)
+					}
+				}
+
 				t.Run(fmt.Sprintf("TL[%s]", utils.SprintHexDump(data)), func(t *testing.T) {
 					writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
 					newDst := factory.CreateObject(item.TLTag())
@@ -111,7 +121,24 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 					if err != nil {
 						t.Fatalf("can't write %d-th object", i)
 					}
-					assert.Equal(t, utils.SprintHexDump(data), utils.SprintHexDump(newData), fmt.Sprintf("Seed %d", seed))
+					if !assert.Equal(t, utils.SprintHexDump(data), utils.SprintHexDump(newData), fmt.Sprintf("Seed %d", seed)) {
+						fmt.Printf("place for a breakpoint\n")
+					}
+
+					if dstFun == nil {
+						return
+					}
+					_, writeBuffer, err = dstFun.ReadResultWriteResultTL2(nil, resultData, writeBuffer[:0])
+					if err != nil {
+						t.Fatalf("can't readTL2 %d-th result", i)
+					}
+					_, newData, err = dstFun.ReadResultTL2WriteResult(nil, writeBuffer, newData[:0])
+					if err != nil {
+						t.Fatalf("can't write %d-th result", i)
+					}
+					if !assert.Equal(t, utils.SprintHexDump(resultData), utils.SprintHexDump(newData), fmt.Sprintf("Seed %d", seed)) {
+						fmt.Printf("place for a breakpoint\n")
+					}
 				})
 			}
 		})

@@ -100,7 +100,14 @@ type Function interface {
     // pass empty basictl.JSONWriteContext{} if you do not know which options you need
 	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
-}
+
+`)
+	if gen.options.GenerateTL2 {
+		qw422016.N().S(`    ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+    ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+`)
+	}
+	qw422016.N().S(`}
 
 func GetAllTLItems() []TLItem {
 	var allItems []TLItem
