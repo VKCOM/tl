@@ -11,7 +11,6 @@ import (
 
 // common for read/write/json/etc... for simplicity
 type TL2Context struct {
-	scratch []byte
 }
 
 type KernelValue interface {

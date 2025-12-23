@@ -44,46 +44,38 @@ func BuiltinTuple0IntWrite(w []byte, vec *[0]int32) []byte {
 }
 
 func BuiltinTuple0IntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[0]int32) ([]int, int) {
+	if 0 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 0 != 0 {
-		currentSize += basictl.TL2CalculateSize(0)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 0; i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple0IntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[0]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 0 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 0)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 0; i++ {
@@ -208,46 +200,38 @@ func BuiltinTuple0IntBoxedWrite(w []byte, vec *[0]int32) []byte {
 }
 
 func BuiltinTuple0IntBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[0]int32) ([]int, int) {
+	if 0 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 0 != 0 {
-		currentSize += basictl.TL2CalculateSize(0)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 0; i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple0IntBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[0]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 0 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 0)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 0; i++ {
@@ -368,46 +352,38 @@ func BuiltinTuple3IntWrite(w []byte, vec *[3]int32) []byte {
 }
 
 func BuiltinTuple3IntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]int32) ([]int, int) {
+	if 3 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 3 != 0 {
-		currentSize += basictl.TL2CalculateSize(3)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 3; i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple3IntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 3 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 3)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 3; i++ {
@@ -532,46 +508,38 @@ func BuiltinTuple3IntBoxedWrite(w []byte, vec *[3]int32) []byte {
 }
 
 func BuiltinTuple3IntBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]int32) ([]int, int) {
+	if 3 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 3 != 0 {
-		currentSize += basictl.TL2CalculateSize(3)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 3; i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple3IntBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 3 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 3)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 3; i++ {
@@ -698,45 +666,36 @@ func BuiltinTupleIntWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err er
 }
 
 func BuiltinTupleIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]int32) ([]int, int) {
+	if len(*vec) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if len(*vec) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*vec))
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
 	for i := 0; i < len(*vec); i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTupleIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*vec) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
@@ -885,45 +844,36 @@ func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
 }
 
 func BuiltinVectorIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]int32) ([]int, int) {
+	if len(*vec) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if len(*vec) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*vec))
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
 	for i := 0; i < len(*vec); i++ {
 		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinVectorIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]int32) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*vec) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
@@ -1208,10 +1158,10 @@ func (item *IntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -1393,10 +1343,10 @@ func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
