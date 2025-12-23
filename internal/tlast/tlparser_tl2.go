@@ -174,6 +174,10 @@ func (t TL2TypeName) String() string {
 	return prefix + t.Name
 }
 
+func (f TL2Field) IsOmitted() bool {
+	return f.Name != "" && f.Name[0] == '_'
+}
+
 func (t TL2TypeDefinition) IsAlias() bool {
 	return !t.IsUnionType && !t.IsConstructorFields
 }

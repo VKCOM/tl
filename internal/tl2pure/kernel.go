@@ -9,13 +9,19 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
+// common for read/write/json/etc... for simplicity
+type TL2Context struct {
+	scratch []byte
+}
+
 type KernelValue interface {
 	Clone() KernelValue
 
+	Reset()
 	Random(rg *rand.Rand)
-	WriteTL2(w []byte) []byte
-	ReadTL2(w []byte) ([]byte, error)
-	WriteJSON(w []byte) []byte
+	WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte
+	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
+	WriteJSON(w []byte, ctx *TL2Context) []byte
 
 	CompareForMapKey(other KernelValue) int
 }

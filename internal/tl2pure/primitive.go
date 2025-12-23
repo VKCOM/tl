@@ -28,19 +28,30 @@ func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
 	return ins.clone.Clone()
 }
 
+func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
+	return ins.clone.ReadTL2(r, nil)
+}
+
 type KernelValueUint32 struct {
 	value uint32
+}
+
+func (v *KernelValueUint32) Reset() {
+	v.value = 0
 }
 
 func (v *KernelValueUint32) Random(rg *rand.Rand) {
 	v.value = rg.Uint32()
 }
 
-func (v *KernelValueUint32) WriteTL2(w []byte) []byte {
+func (v *KernelValueUint32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && v.value == 0 {
+		return w
+	}
 	return binary.LittleEndian.AppendUint32(w, v.value)
 }
 
-func (v *KernelValueUint32) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueUint32) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 4 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -48,7 +59,7 @@ func (v *KernelValueUint32) ReadTL2(w []byte) ([]byte, error) {
 	return w[4:], nil
 }
 
-func (v *KernelValueUint32) WriteJSON(w []byte) []byte {
+func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
@@ -67,15 +78,22 @@ type KernelValueInt32 struct {
 	value int32
 }
 
+func (v *KernelValueInt32) Reset() {
+	v.value = 0
+}
+
 func (v *KernelValueInt32) Random(rg *rand.Rand) {
 	v.value = int32(rg.Uint32())
 }
 
-func (v *KernelValueInt32) WriteTL2(w []byte) []byte {
+func (v *KernelValueInt32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && v.value == 0 {
+		return w
+	}
 	return binary.LittleEndian.AppendUint32(w, uint32(v.value))
 }
 
-func (v *KernelValueInt32) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueInt32) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 4 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -83,7 +101,7 @@ func (v *KernelValueInt32) ReadTL2(w []byte) ([]byte, error) {
 	return w[4:], nil
 }
 
-func (v *KernelValueInt32) WriteJSON(w []byte) []byte {
+func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, int64(v.value), 10)
 }
 
@@ -102,15 +120,22 @@ type KernelValueUint64 struct {
 	value uint64
 }
 
+func (v *KernelValueUint64) Reset() {
+	v.value = 0
+}
+
 func (v *KernelValueUint64) Random(rg *rand.Rand) {
 	v.value = rg.Uint64()
 }
 
-func (v *KernelValueUint64) WriteTL2(w []byte) []byte {
+func (v *KernelValueUint64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && v.value == 0 {
+		return w
+	}
 	return binary.LittleEndian.AppendUint64(w, v.value)
 }
 
-func (v *KernelValueUint64) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueUint64) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 8 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -118,7 +143,7 @@ func (v *KernelValueUint64) ReadTL2(w []byte) ([]byte, error) {
 	return w[8:], nil
 }
 
-func (v *KernelValueUint64) WriteJSON(w []byte) []byte {
+func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, v.value, 10)
 }
 
@@ -137,15 +162,22 @@ type KernelValueInt64 struct {
 	value int64
 }
 
+func (v *KernelValueInt64) Reset() {
+	v.value = 0
+}
+
 func (v *KernelValueInt64) Random(rg *rand.Rand) {
 	v.value = int64(rg.Uint64())
 }
 
-func (v *KernelValueInt64) WriteTL2(w []byte) []byte {
+func (v *KernelValueInt64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && v.value == 0 {
+		return w
+	}
 	return binary.LittleEndian.AppendUint64(w, uint64(v.value))
 }
 
-func (v *KernelValueInt64) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueInt64) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 8 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -153,7 +185,7 @@ func (v *KernelValueInt64) ReadTL2(w []byte) ([]byte, error) {
 	return w[8:], nil
 }
 
-func (v *KernelValueInt64) WriteJSON(w []byte) []byte {
+func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, v.value, 10)
 }
 
@@ -172,15 +204,22 @@ type KernelValueByte struct {
 	value byte
 }
 
+func (v *KernelValueByte) Reset() {
+	v.value = 0
+}
+
 func (v *KernelValueByte) Random(rg *rand.Rand) {
 	v.value = byte(rg.Uint32())
 }
 
-func (v *KernelValueByte) WriteTL2(w []byte) []byte {
+func (v *KernelValueByte) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && v.value == 0 {
+		return w
+	}
 	return append(w, v.value)
 }
 
-func (v *KernelValueByte) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueByte) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 1 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -188,7 +227,7 @@ func (v *KernelValueByte) ReadTL2(w []byte) ([]byte, error) {
 	return w[1:], nil
 }
 
-func (v *KernelValueByte) WriteJSON(w []byte) []byte {
+func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 
 }
@@ -208,18 +247,25 @@ type KernelValueBool struct {
 	value bool
 }
 
+func (v *KernelValueBool) Reset() {
+	v.value = false
+}
+
 func (v *KernelValueBool) Random(rg *rand.Rand) {
 	v.value = (rg.Uint32() & 1) != 0
 }
 
-func (v *KernelValueBool) WriteTL2(w []byte) []byte {
+func (v *KernelValueBool) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	if optimizeEmpty && !v.value {
+		return w
+	}
 	if v.value {
 		return append(w, 1)
 	}
 	return append(w, 0)
 }
 
-func (v *KernelValueBool) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueBool) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	if len(w) < 1 {
 		return w, io.ErrUnexpectedEOF
 	}
@@ -227,7 +273,7 @@ func (v *KernelValueBool) ReadTL2(w []byte) ([]byte, error) {
 	return w[1:], nil
 }
 
-func (v *KernelValueBool) WriteJSON(w []byte) []byte {
+func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	if v.value {
 		return append(w, "true"...)
 	}
@@ -253,18 +299,21 @@ func (v *KernelValueBool) CompareForMapKey(other KernelValue) int {
 type KernelValueBit struct {
 }
 
+func (v *KernelValueBit) Reset() {
+}
+
 func (v *KernelValueBit) Random(rg *rand.Rand) {
 }
 
-func (v *KernelValueBit) WriteTL2(w []byte) []byte {
+func (v *KernelValueBit) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueBit) ReadTL2(w []byte) ([]byte, error) {
+func (v *KernelValueBit) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
 	return w, nil
 }
 
-func (v *KernelValueBit) WriteJSON(w []byte) []byte {
+func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "true"...)
 }
 

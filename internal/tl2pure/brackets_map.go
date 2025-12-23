@@ -5,6 +5,7 @@ import (
 	"slices"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type TypeInstanceMap struct {
@@ -15,7 +16,7 @@ type TypeInstanceMap struct {
 
 type KernelValueMap struct {
 	instance *TypeInstanceMap
-	elements []KernelValueObject
+	elements []KernelValueObject // cap contains created elements
 }
 
 func (ins *TypeInstanceMap) FindCycle(c *cycleFinder) {
@@ -28,11 +29,16 @@ func (ins *TypeInstanceMap) CreateValue() KernelValue {
 	return value
 }
 
-func (v *KernelValueMap) resize(count uint32) {
-	for uint32(len(v.elements)) < count {
+func (ins *TypeInstanceMap) SkipTL2(r []byte) ([]byte, error) {
+	return basictl.SkipSizedValue(r)
+}
+
+func (v *KernelValueMap) resize(count int) {
+	v.elements = v.elements[:min(count, cap(v.elements))]
+	for len(v.elements) < count {
 		v.elements = append(v.elements, v.instance.fieldType.CreateValueObject())
 	}
-	if uint32(len(v.elements)) > count {
+	if len(v.elements) > count {
 		v.elements = v.elements[:count]
 	}
 }
@@ -46,10 +52,14 @@ func (v *KernelValueMap) sort() {
 	})
 }
 
+func (v *KernelValueMap) Reset() {
+	v.elements = v.elements[:0]
+}
+
 func (v *KernelValueMap) Random(rg *rand.Rand) {
-	var count uint32
+	count := 0
 	if (rg.Uint32() & 3) != 0 { // many vectors empty
-		count = 1 + uint32(rg.Intn(4))
+		count = 1 + rg.Intn(4)
 	}
 	v.resize(count)
 	for _, el := range v.elements {
@@ -58,32 +68,60 @@ func (v *KernelValueMap) Random(rg *rand.Rand) {
 	v.sort()
 }
 
-func (v *KernelValueMap) WriteTL2(w []byte) []byte {
+func (v *KernelValueMap) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
 	v.sort()
-	lenValue := KernelValueUint32{value: uint32(len(v.elements))}
-	w = lenValue.WriteTL2(w)
-	for _, el := range v.elements {
-		w = el.WriteTL2(w)
+
+	if len(v.elements) == 0 && optimizeEmpty {
+		return w
 	}
-	return w
+
+	oldLen := len(w)
+	w = append(w, make([]byte, 16)...) // reserve space for
+
+	firstUsedByte := len(w)
+
+	w = basictl.TL2WriteSize(w, len(v.elements))
+
+	for _, elem := range v.elements {
+		w = elem.WriteTL2(w, false, ctx)
+	}
+
+	lastUsedByte := len(w)
+	offset := basictl.TL2PutSize(w[oldLen:], lastUsedByte-firstUsedByte)
+	offset += copy(w[oldLen+offset:], w[firstUsedByte:lastUsedByte])
+	return w[:oldLen+offset]
 }
 
-func (v *KernelValueMap) ReadTL2(w []byte) (_ []byte, err error) {
-	lenValue := KernelValueUint32{}
-	if w, err = lenValue.ReadTL2(w); err != nil {
-		return w, nil
+func (v *KernelValueMap) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
 	}
-	v.resize(lenValue.value)
-	for _, el := range v.elements {
-		if w, err = el.ReadTL2(w); err != nil {
-			return w, nil
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	v.resize(elementCount)
+	for _, elem := range v.elements {
+		if currentR, err = elem.ReadTL2(currentR, ctx); err != nil {
+			return r, err
 		}
 	}
 	v.sort()
-	return w, nil
+	return r, nil
 }
 
-func (v *KernelValueMap) WriteJSON(w []byte) []byte {
+func (v *KernelValueMap) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	v.sort()
 	w = append(w, '[')
 	first := true
@@ -92,7 +130,7 @@ func (v *KernelValueMap) WriteJSON(w []byte) []byte {
 			w = append(w, ',')
 		}
 		first = false
-		w = el.WriteJSON(w)
+		w = el.WriteJSON(w, ctx)
 	}
 	w = append(w, ']')
 	return w

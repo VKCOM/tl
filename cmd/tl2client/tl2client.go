@@ -164,8 +164,8 @@ func main() {
 		for i := 0; i < 5; i++ {
 			val := t.CreateValue()
 			val.Random(rnd)
-			tl2 := val.WriteTL2(nil)
-			js := val.WriteJSON(nil)
+			tl2 := val.WriteTL2(nil, false, nil)
+			js := val.WriteJSON(nil, nil)
 			log.Printf(".   TL2: %x", tl2)
 			log.Printf(".   JSON: %s", js)
 		}

@@ -10,6 +10,7 @@ type TypeInstance interface {
 	FindCycle(c *cycleFinder)
 
 	CreateValue() KernelValue
+	SkipTL2(r []byte) ([]byte, error)
 }
 
 // during recursive type resolution, we store pointer to this type,
