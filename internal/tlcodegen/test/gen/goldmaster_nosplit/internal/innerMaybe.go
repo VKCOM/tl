@@ -204,14 +204,14 @@ func (item *InnerMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
@@ -445,14 +445,14 @@ func (item *InnerMaybe0) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 

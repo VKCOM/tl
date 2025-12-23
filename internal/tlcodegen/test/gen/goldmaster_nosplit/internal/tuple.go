@@ -568,41 +568,46 @@ func (item *TupleInt0Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 }
 
 func (item *TupleInt0Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple0IntInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			BuiltinTuple0IntReset(&item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTuple0IntInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinTuple0IntReset(&item.Value)
 	}
 	return r, nil
 }
@@ -874,41 +879,46 @@ func (item *TupleInt3BoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimiz
 }
 
 func (item *TupleInt3BoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			BuiltinTuple3IntReset(&item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTuple3IntInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinTuple3IntReset(&item.Value)
 	}
 	return r, nil
 }
@@ -1056,41 +1066,46 @@ func (item *TupleInt3Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 }
 
 func (item *TupleInt3Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			BuiltinTuple3IntReset(&item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTuple3IntInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinTuple3IntReset(&item.Value)
 	}
 	return r, nil
 }
@@ -1362,41 +1377,46 @@ func (item *TupleIntBoxed0BoxedMaybe) InternalWriteTL2(w []byte, sizes []int, op
 }
 
 func (item *TupleIntBoxed0BoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple0IntBoxedInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			BuiltinTuple0IntBoxedReset(&item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTuple0IntBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinTuple0IntBoxedReset(&item.Value)
 	}
 	return r, nil
 }
@@ -1664,41 +1684,46 @@ func (item *TupleIntBoxed3Maybe) InternalWriteTL2(w []byte, sizes []int, optimiz
 }
 
 func (item *TupleIntBoxed3Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntBoxedInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			BuiltinTuple3IntBoxedReset(&item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTuple3IntBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinTuple3IntBoxedReset(&item.Value)
 	}
 	return r, nil
 }
@@ -1846,41 +1871,46 @@ func (item *TupleIntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty
 }
 
 func (item *TupleIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = BuiltinTupleIntInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			item.Value = item.Value[:0]
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value = item.Value[:0]
 	}
 	return r, nil
 }

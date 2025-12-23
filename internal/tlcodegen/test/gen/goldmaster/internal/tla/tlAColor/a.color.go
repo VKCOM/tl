@@ -131,10 +131,12 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
@@ -143,15 +145,14 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return r, err
 	}
+	item.index = 0
 	if (block & 1) != 0 {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-	} else {
-		item.index = 0
-	}
-	if item.index < 0 || item.index >= 5 {
-		return r, internal.ErrorInvalidUnionIndex("a.Color", item.index)
+		if item.index < 0 || item.index >= 5 {
+			return r, internal.ErrorInvalidUnionIndex("a.Color", item.index)
+		}
 	}
 	internal.Unused(currentR)
 	return r, nil

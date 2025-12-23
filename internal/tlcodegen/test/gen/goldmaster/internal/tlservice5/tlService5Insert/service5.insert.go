@@ -102,6 +102,10 @@ func (item *Service5Insert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
+	if currentSize == 0 {
+		ret.Reset()
+		return r, nil
+	}
 	if len(r) < currentSize {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
@@ -110,15 +114,17 @@ func (item *Service5Insert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize != 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if block&1 != 0 {
+		var index int
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-	}
-
-	// check no of constructor
-	if block&1 != 0 {
-		return currentR, basictl.TL2Error("function result must not use variant type field")
+		if index != 0 {
+			return currentR, basictl.TL2Error("function result must not use variant type field")
+		}
 	}
 
 	if block&2 != 0 {
@@ -457,14 +463,14 @@ func (item *Service5Insert) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 

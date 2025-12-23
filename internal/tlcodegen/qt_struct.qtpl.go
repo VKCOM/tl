@@ -1658,6 +1658,12 @@ func (item *`)
 		qw422016.N().S(`) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
+    if currentSize == 0 {
+        `)
+		qw422016.N().S(struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true))
+		qw422016.N().S(`
+        return r, nil
+    }
     if len(r) < currentSize {
         return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
     }
@@ -1666,13 +1672,13 @@ func (item *`)
     r = r[currentSize:]
 
     var block byte
-    if currentSize != 0 {
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
-    }
-
-    // check no of constructor
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
     if block & 1 != 0 {
-        return currentR, basictl.TL2Error("function result must not use variant type field")
+        var index int
+        if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        if index != 0 {
+            return currentR, basictl.TL2Error("function result must not use variant type field")
+        }
     }
 
     if block & 2 != 0 {
@@ -2708,14 +2714,14 @@ func (item *`)
 				qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    if len(r) < currentSize {
-        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-    }
-
     if currentSize == 0 {
         item.Reset()
         return r, nil
     }
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
     currentR := r[:currentSize]
     r = r[currentSize:]
 
@@ -2858,24 +2864,28 @@ func (item *`)
 			if struct_.wr.unionParent != nil {
 				qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-
+    if currentSize == 0 {
+        item.Reset()
+        return r, nil
+    }
+   	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
     currentR := r[:currentSize]
     r = r[currentSize:]
 
     var block byte
-    var index int
-    if currentSize != 0 {
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
-        if (block & 1) != 0 {
-            if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-        }
-    }
-    if index != `)
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if (block & 1) != 0 {
+        var index int
+        if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        if index != `)
 				qw422016.N().D(struct_.wr.unionIndex)
 				qw422016.N().S(` {
-        return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, `)
+            return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, `)
 				qw422016.N().D(struct_.wr.unionIndex)
 				qw422016.N().S(`)
+        }
     }
     _, err = item.InternalReadTL2(currentR, block)
     return r, err

@@ -122,41 +122,46 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Interna
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
 	if currentSize == 0 {
-		item.Ok = false
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
-		}
-		if block&1 == 0 {
-			return r, basictl.TL2Error("must have constructor bytes")
-		}
-		var index int
-		if r, index, err = basictl.TL2ParseSize(r); err != nil {
-			return r, err
-		}
-		if index != 1 {
-			return r, basictl.TL2Error("expected 1")
-		}
-		item.Ok = true
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, internal.ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
 	}
 	return r, nil
 }
