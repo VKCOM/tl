@@ -40,13 +40,13 @@
 //    t: []bool v: [4]bool;
 // ---- errors
 // struct3Error = x: [2]bit y:[]bit z: map[bit]uint32;
-wrongBracketType<n:uint32> = x:[n]uint32 y:[]n z:map[uint32]n; // unfortunately does not check without one below
+wrongBracketType<n:uint32> = x:[n]uint32 y:[]n z:[uint32]n; // unfortunately does not check without one below
 //useWrongBracketType = x:wrongBracketType<5>;
 
 // ---- test template resolution ----
-//pair<x:type, y:type> = x:x y:y;
-//usePair = pa:pair<uint32, uint32>;
-//a.inner<t:uint32> = a:[t]byte;
-//a.middle<w:uint32, p:type, q:type> = m1:a.inner<w> m2:pair<p, q>;
-//a.top1 = t1:a.middle<3, uint32, uint32>;
-//a.top2 = t1:a.middle<3, pair<a.inner<1>,a.inner<2>>, a.inner<3>>;
+pair<x:type, y:type> = x:x y:y;
+usePair = pa:pair<uint32, uint32>;
+a.inner<t:uint32> = a:[t]byte;
+a.middle<w:uint32, p:type, q:type> = m1:a.inner<w> m2:pair<p, q>;
+a.top1 = t1:a.middle<3, uint32, uint32>;
+a.top2 = t1:a.middle<3, pair<a.inner<1>,a.inner<2>>, a.inner<3>>;
