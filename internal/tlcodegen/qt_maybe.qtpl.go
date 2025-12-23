@@ -149,6 +149,12 @@ func (item *`)
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+    if !item.Ok && optimizeEmpty {
+        return sizes, 0
+    }
+    if !item.Ok {
+        return sizes, 1
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -156,25 +162,20 @@ func (item *`)
     lastUsedByte := 0
     var sz int
 
-    if item.Ok {
-        currentSize += basictl.TL2CalculateSize(1)
-        lastUsedByte = currentSize
+    currentSize += basictl.TL2CalculateSize(1)
+    lastUsedByte = currentSize
 
-        `)
+    `)
 			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", true, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
-            lastUsedByte = currentSize
-        }
+        lastUsedByte = currentSize
     }
+
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     `)
 			qw422016.N().S(maybe.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)
@@ -184,31 +185,28 @@ func (item *`)
 func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 {`)
-			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
-
-			qw422016.N().S(`        return w, sizes, 0
+    if !item.Ok && optimizeEmpty {
+        return w, sizes, 0
     }
-    w = basictl.TL2WriteSize(w, currentSize)
-    if currentSize == 0 {
+    if !item.Ok {
+        w = append(w, 0)
         return w, sizes, 1
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+    w = basictl.TL2WriteSize(w, currentSize)
     oldLen := len(w)
     var sz int
     var currentBlock byte
     currentBlockPosition := len(w)
     w = append(w, 0)
 
-    if item.Ok {
-        w = basictl.TL2WriteSize(w, 1)
-        currentBlock |= 1
-        `)
+    w = basictl.TL2WriteSize(w, 1)
+    currentBlock |= 1
+    `)
 			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", true, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
-            currentBlock |= 2
-        }
+        currentBlock |= 2
     }
     w[currentBlockPosition] = currentBlock
     if len(w) - oldLen != currentSize {
