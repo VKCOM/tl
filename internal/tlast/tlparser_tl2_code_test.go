@@ -2,8 +2,9 @@ package tlast
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func setupIterator(str string) (tokenIterator, error) {
@@ -540,7 +541,7 @@ testNs.testName = Green x:int |
 			assert.Equal(t, "", bracket.ArrayType.SomeType.Name.Namespace)
 			assert.Equal(t, "int", bracket.ArrayType.SomeType.Name.Name)
 
-			assert.Nil(t, bracket.IndexType)
+			assert.False(t, bracket.HasIndex)
 		})
 
 		t.Run("fixed array type", func(t *testing.T) {
@@ -599,7 +600,7 @@ testNs.testName = Green x:int |
 
 			assert.False(t, indexType.IsNumber)
 			assert.True(t, indexType.Type.IsBracket)
-			assert.Nil(t, indexType.Type.BracketType.IndexType)
+			assert.False(t, indexType.Type.BracketType.HasIndex)
 			assert.Equal(t, "list", indexType.Type.BracketType.ArrayType.SomeType.Name.String())
 		})
 	})

@@ -60,8 +60,9 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 
 		newBracket.PR = oldBracket.PR
 
-		if oldBracket.IndexType != nil {
-			newBracket.IndexType = new(tlast.TL2TypeArgument)
+		if oldBracket.HasIndex {
+			newBracket.HasIndex = true
+			newBracket.IndexType = tlast.TL2TypeArgument{}
 
 			oldIndex := oldBracket.IndexType
 			newIndex := newBracket.IndexType
@@ -89,10 +90,6 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 		}
 	} else {
 		oldType := ref.SomeType
-		if oldType == nil {
-			err = ref.PR.BeautifulError(fmt.Errorf("expected type to be parsed"))
-			return
-		}
 		tp := ref.SomeType
 		refName := tp.Name
 		if resolvedRef, ok := rtl2c.ResolvedTypes[refName.String()]; ok {
@@ -108,7 +105,7 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 			return
 		}
 
-		newRef.SomeType = new(tlast.TL2TypeApplication)
+		newRef.SomeType = tlast.TL2TypeApplication{}
 		newType := newRef.SomeType
 
 		newType.Name = oldType.Name
@@ -124,10 +121,6 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 				newType.Arguments[i].Number = argument.Number
 			} else {
 				if !argument.Type.IsBracket {
-					if argument.Type.SomeType == nil {
-						err = ref.PR.BeautifulError(fmt.Errorf("expected type to be parsed"))
-						return
-					}
 					if resolvedNumber, ok := rtl2c.ResolvedNats[argument.Type.SomeType.Name.String()]; ok {
 						newType.Arguments[i].IsNumber = true
 						newType.Arguments[i].Number = resolvedNumber
@@ -169,10 +162,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		}
 		return gen.genBracketTypeTL2(&kernelType, *resolvedRef.BracketType)
 	}
-	if resolvedRef.SomeType == nil {
-		return nil, resolvedRef.PR.BeautifulError(fmt.Errorf("expected reference to type but it wasn't parsed"))
-	}
-	typeApplication := *resolvedRef.SomeType
+	typeApplication := resolvedRef.SomeType
 	name := typeApplication.Name
 	comb, ok := gen.tl2Combinators[name.String()]
 	if name.String() == "bool" || name.String() == "legacy_bool" {
@@ -405,8 +395,6 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			}
 
 			currentRef := originalRef
-			currentRef.SomeType = new(tlast.TL2TypeApplication)
-			*currentRef.SomeType = *originalRef.SomeType
 			currentRef.SomeType.Name.Name = originalRef.SomeType.Name.Name + variant.Name
 
 			variantReduction := currentRef.String()
@@ -615,7 +603,7 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 				ResolvedTypes: map[string]tlast.TL2TypeRef{},
 			},
 			tlast.TL2TypeRef{
-				SomeType: &tlast.TL2TypeApplication{
+				SomeType: tlast.TL2TypeApplication{
 					Name: functionType.ResultType.tl2Name,
 				},
 			},
@@ -634,7 +622,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 	kernelType.tl2IsBuiltinBrackets = true
 
 	elementRef := &bracketType.element
-	if br.IndexType != nil {
+	if br.HasIndex {
 		if br.IndexType.IsNumber {
 			bracketType.dynamicSize = false
 			bracketType.size = br.IndexType.Number
@@ -754,7 +742,6 @@ func (gen *Gen2) genMaybeTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinato
 			valueVariant.Fields[0].IsOptional ||
 			valueVariant.Fields[0].IsIgnored ||
 			valueVariant.Fields[0].Type.IsBracket ||
-			valueVariant.Fields[0].Type.SomeType == nil ||
 			valueVariant.Fields[0].Type.SomeType.Name.String() != comb.TypeDecl.TemplateArguments[0].Name {
 			return nil, comb.TypeDecl.PRName.BeautifulError(nonMaybeErr)
 		}
@@ -915,10 +902,7 @@ func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
 	if ref.IsBracket {
 		return false
 	}
-	if ref.SomeType == nil {
-		return false
-	}
-	typeApplication := *ref.SomeType
+	typeApplication := ref.SomeType
 	name := typeApplication.Name
 	comb, ok := gen.tl2Combinators[name.String()]
 	if !ok {

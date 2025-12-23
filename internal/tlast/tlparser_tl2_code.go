@@ -501,7 +501,7 @@ func parseTL2Type(tokens tokenIterator, position Position) (state OptionalState,
 			result.IsBracket = true
 		}
 	} else {
-		result.SomeType = &someType
+		result.SomeType = someType
 	}
 	result.PR.End = restTokens.front().pos
 	return
@@ -565,9 +565,10 @@ func parseTL2BracketType(tokens tokenIterator, position Position) (state Optiona
 		var indexType TL2TypeArgument
 		indexState, restTokens, indexType = parseTL2TypeArgument(restTokens, position)
 		if indexState.IsOmitted() {
-			result.IndexType = nil
+			result.HasIndex = false
 		} else {
-			result.IndexType = &indexType
+			result.HasIndex = true
+			result.IndexType = indexType
 		}
 
 		state.Inherit(indexState)

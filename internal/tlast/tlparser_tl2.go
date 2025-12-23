@@ -44,15 +44,17 @@ type TL2TypeApplication struct {
 
 // TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 type TL2BracketType struct {
-	IndexType *TL2TypeArgument // nil means that it is vector
+	IndexType TL2TypeArgument
 	ArrayType TL2TypeRef
+
+	HasIndex bool
 
 	PR PositionRange
 }
 
 // TL2TypeRef := TL2TypeApplication | TL2BracketType;
 type TL2TypeRef struct {
-	SomeType    *TL2TypeApplication
+	SomeType    TL2TypeApplication
 	BracketType *TL2BracketType
 
 	IsBracket bool

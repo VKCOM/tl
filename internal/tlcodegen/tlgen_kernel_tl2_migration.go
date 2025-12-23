@@ -402,7 +402,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 	var resolveType func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef)
 	resolveType = func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef) {
 		if ref.Type.String() == "#" {
-			newRef.SomeType = &tlast.TL2TypeApplication{
+			newRef.SomeType = tlast.TL2TypeApplication{
 				Name: tlast.TL2TypeName{
 					Name: "uint32",
 				},
@@ -438,12 +438,14 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					arrayIndex = 1
 					indexType := ref.Args[0]
 					if indexType.IsArith {
-						newRef.BracketType.IndexType = new(tlast.TL2TypeArgument)
+						newRef.BracketType.HasIndex = true
+						newRef.BracketType.IndexType = tlast.TL2TypeArgument{}
 						newRef.BracketType.IndexType.IsNumber = true
 						newRef.BracketType.IndexType.Number = indexType.Arith.Res
 					} else if natIsConstant[indexType.String()] {
-						newRef.BracketType.IndexType = new(tlast.TL2TypeArgument)
-						newRef.BracketType.IndexType.Type.SomeType = &tlast.TL2TypeApplication{
+						newRef.BracketType.HasIndex = true
+						newRef.BracketType.IndexType = tlast.TL2TypeArgument{}
+						newRef.BracketType.IndexType.Type.SomeType = tlast.TL2TypeApplication{
 							Name: tlast.TL2TypeName{
 								Name: lowerFirst(indexType.T.Type.Name),
 							},
@@ -452,14 +454,14 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant, natTemples)
 			} else if isBool {
-				newRef.SomeType = &tlast.TL2TypeApplication{
+				newRef.SomeType = tlast.TL2TypeApplication{
 					Name: tlast.TL2TypeName{
 						Namespace: "",
 						Name:      "bool",
 					},
 				}
 			} else {
-				newRef.SomeType = &tlast.TL2TypeApplication{
+				newRef.SomeType = tlast.TL2TypeApplication{
 					Name: tlast.TL2TypeName{
 						Namespace: tname.Namespace,
 						Name:      lowerFirst(tname.Name),
@@ -484,7 +486,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 			}
 		} else {
-			newRef.SomeType = &tlast.TL2TypeApplication{
+			newRef.SomeType = tlast.TL2TypeApplication{
 				Name: tlast.TL2TypeName{
 					Name: lowerFirst(ref.Type.Name),
 				},
@@ -511,7 +513,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				// convert x:n.0?true -> x:bool
 				if isTrue && !field.IsRepeated {
 					newField.IsOptional = false
-					newField.Type.SomeType = &tlast.TL2TypeApplication{
+					newField.Type.SomeType = tlast.TL2TypeApplication{
 						Name: tlast.TL2TypeName{Name: "bool"},
 					}
 					newFields = append(newFields, newField)
@@ -526,7 +528,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						wrapper := associatedWrappers[comb][0]
 						if _, ok := wrapper.trw.(*TypeRWBool); ok {
 							newField.IsOptional = true
-							newField.Type.SomeType = &tlast.TL2TypeApplication{
+							newField.Type.SomeType = tlast.TL2TypeApplication{
 								Name: tlast.TL2TypeName{Name: "legacy_bool"},
 							}
 							newFields = append(newFields, newField)
@@ -547,14 +549,15 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				newField.Type.BracketType = new(tlast.TL2BracketType)
 				calculatingType = &newField.Type.BracketType.ArrayType
 				if !field.ScaleRepeat.ExplicitScale {
-					newField.Type.BracketType.IndexType = nil
+					newField.Type.BracketType.HasIndex = false
 				} else {
-					newField.Type.BracketType.IndexType = new(tlast.TL2TypeArgument)
+					newField.Type.BracketType.HasIndex = true
+					newField.Type.BracketType.IndexType = tlast.TL2TypeArgument{}
 					if field.ScaleRepeat.Scale.IsArith {
 						newField.Type.BracketType.IndexType.IsNumber = true
 						newField.Type.BracketType.IndexType.Number = field.ScaleRepeat.Scale.Arith.Res
 					} else {
-						newField.Type.BracketType.IndexType.Type.SomeType = &tlast.TL2TypeApplication{
+						newField.Type.BracketType.IndexType.Type.SomeType = tlast.TL2TypeApplication{
 							Name: tlast.TL2TypeName{Name: lowerFirst(field.ScaleRepeat.Scale.Scale)},
 						}
 					}
