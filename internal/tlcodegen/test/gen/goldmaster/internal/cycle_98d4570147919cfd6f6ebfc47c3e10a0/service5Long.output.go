@@ -141,10 +141,10 @@ func (item *Service5LongEmptyOutput) InternalWriteTL2(w []byte, sizes []int, opt
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -328,8 +328,7 @@ func (item *Service5LongOutput) InternalWriteTL2(w []byte, sizes []int, optimize
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
 	if item.index != 0 {
@@ -715,10 +714,10 @@ func (item *Service5LongStringOutput) InternalWriteTL2(w []byte, sizes []int, op
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)

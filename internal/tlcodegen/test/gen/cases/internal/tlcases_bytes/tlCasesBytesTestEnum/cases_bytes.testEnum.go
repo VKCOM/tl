@@ -106,8 +106,7 @@ func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int, optimize
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
 	if item.index != 0 {

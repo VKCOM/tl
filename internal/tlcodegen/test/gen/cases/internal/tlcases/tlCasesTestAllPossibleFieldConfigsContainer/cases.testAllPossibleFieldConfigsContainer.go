@@ -218,10 +218,10 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalWriteTL2(w []byte
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)

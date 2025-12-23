@@ -175,10 +175,10 @@ func (item *CasesBytesTestVector) InternalWriteTL2(w []byte, sizes []int, optimi
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -416,10 +416,10 @@ func (item *CasesBytesTestVectorBytes) InternalWriteTL2(w []byte, sizes []int, o
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)

@@ -82,12 +82,16 @@ func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []by
 }
 
 func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]string) ([]int, int) {
+	if len(*m) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
+
+	currentSize += basictl.TL2CalculateSize(len(*m))
 
 	keys := make([]string, 0, len(*m))
 	for k := range *m {
@@ -95,40 +99,28 @@ func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, optimizeEmpt
 	}
 	sort.Strings(keys)
 
-	if len(*m) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*m))
-		lastUsedByte = currentSize
-	}
 	for _, key := range keys {
 		elem := DictionaryFieldString{Key: key, Value: (*m)[key]}
 		sizes, sz = elem.CalculateLayout(sizes, false)
 		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]string) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*m) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*m))
 
 	keys := make([]string, 0, len(*m))
@@ -283,46 +275,37 @@ func BuiltinVectorDictionaryFieldStringBytesWrite(w []byte, vec []DictionaryFiel
 }
 
 func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]int, int) {
+	if len(*vec) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if len(*vec) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*vec))
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
 	for i := 0; i < len(*vec); i++ {
 		sizes, sz = (*vec)[i].CalculateLayout(sizes, false)
 		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*vec) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
@@ -480,12 +463,16 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w 
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]int, int) {
+	if len(*m) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
+
+	currentSize += basictl.TL2CalculateSize(len(*m))
 
 	keys := make([]string, 0, len(*m))
 	for k := range *m {
@@ -493,40 +480,28 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculat
 	}
 	sort.Strings(keys)
 
-	if len(*m) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*m))
-		lastUsedByte = currentSize
-	}
 	for _, key := range keys {
 		elem := DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed{Key: key, Value: (*m)[key]}
 		sizes, sz = elem.CalculateLayout(sizes, false)
 		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*m) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*m))
 
 	keys := make([]string, 0, len(*m))
@@ -830,10 +805,10 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int, optim
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -1113,10 +1088,10 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int, 
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -1380,10 +1355,10 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWrit
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)

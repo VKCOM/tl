@@ -168,10 +168,10 @@ func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -401,10 +401,10 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, optimizeE
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -627,10 +627,10 @@ func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -857,10 +857,10 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, optimizeE
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -1075,8 +1075,7 @@ func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
 	if item.index != 0 {
@@ -1372,8 +1371,7 @@ func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
 	if item.index != 0 {

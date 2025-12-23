@@ -46,46 +46,38 @@ func BuiltinTuple4StringWrite(w []byte, vec *[4]string) []byte {
 }
 
 func BuiltinTuple4StringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[4]string) ([]int, int) {
+	if 4 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 4 != 0 {
-		currentSize += basictl.TL2CalculateSize(4)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 4; i++ {
 		currentSize += basictl.TL2CalculateSize(len((*vec)[i])) + len((*vec)[i])
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	internal.Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple4StringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[4]string) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 4 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 4)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 4; i++ {
@@ -206,46 +198,38 @@ func BuiltinTuple4StringBytesWrite(w []byte, vec *[4][]byte) []byte {
 }
 
 func BuiltinTuple4StringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[4][]byte) ([]int, int) {
+	if 4 == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
 
-	if 4 != 0 {
-		currentSize += basictl.TL2CalculateSize(4)
-		lastUsedByte = currentSize
-	}
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+
 	for i := 0; i < 4; i++ {
 		currentSize += basictl.TL2CalculateSize(len((*vec)[i])) + len((*vec)[i])
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	internal.Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinTuple4StringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[4][]byte) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if 4 == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
-	w = basictl.TL2WriteSize(w, 4)
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
 
 	var sz int
 	for i := 0; i < 4; i++ {

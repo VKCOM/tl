@@ -84,12 +84,16 @@ func BuiltinVectorDictionaryElemStrangeStringWrite(w []byte, m map[uint32]string
 }
 
 func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]int, int) {
+	if len(*m) == 0 && optimizeEmpty {
+		return sizes, 0
+	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
 	currentSize := 0
-	lastUsedByte := 0
 	var sz int
+
+	currentSize += basictl.TL2CalculateSize(len(*m))
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -99,40 +103,28 @@ func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, optimi
 		return keys[i] < keys[j]
 	})
 
-	if len(*m) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(*m))
-		lastUsedByte = currentSize
-	}
 	for _, key := range keys {
 		elem := DictionaryElemStrangeString{Key: key, Value: (*m)[key]}
 		sizes, sz = elem.CalculateLayout(sizes, false)
 		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	if optimizeEmpty && currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	} else {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
+	currentSize += basictl.TL2CalculateSize(currentSize)
 	Unused(sz)
 	return sizes, currentSize
 }
 
 func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]byte, []int, int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	if optimizeEmpty && currentSize == 0 {
+	if len(*m) == 0 && optimizeEmpty {
 		return w, sizes, 0
 	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*m))
 
 	keys := make([]uint32, 0, len(*m))
@@ -484,10 +476,10 @@ func (item *DictionaryElemStrangeString) InternalWriteTL2(w []byte, sizes []int,
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)

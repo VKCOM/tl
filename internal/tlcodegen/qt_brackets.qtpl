@@ -78,46 +78,36 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
+    if len(*vec) == 0 && optimizeEmpty {
+        return sizes, 0
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
-    lastUsedByte := 0
     var sz int
 
-    if len(*vec) != 0 {
-        {%- code /* add # of elements */ -%}
-        currentSize += basictl.TL2CalculateSize(len(*vec))
-        lastUsedByte = currentSize
-    }
+    currentSize += basictl.TL2CalculateSize(len(*vec))
     for i := 0; i < len(*vec); i++ {
         {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
-        lastUsedByte = currentSize
-    }
-    if lastUsedByte < currentSize {
-        currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,vec *{%s= typeString %}) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+    if len(*vec) == 0 && optimizeEmpty {
         return w, sizes, 0
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
     w = basictl.TL2WriteSize(w, currentSize)
-    oldLen := len(w)
-    if len(w) - oldLen == currentSize {
+    if currentSize == 0 {
         return w, sizes, 1
     }
+    oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
     var sz int
@@ -420,12 +410,16 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) ([]int, int) {
+    if len(*m) == 0 && optimizeEmpty {
+        return sizes, 0
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
-    lastUsedByte := 0
     var sz int
+
+    currentSize += basictl.TL2CalculateSize(len(*m))
 
     {%- code /* final size does not depend on order, but contents of sizes does, InternalWriteTL2 must run in exact lockstep */ -%}
     keys := make([]{%s= keyTypeString %}, 0, len(*m))
@@ -440,40 +434,27 @@ func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, m *map[{%s= 
     })
 {%- endif -%}
 
-    if len(*m) != 0 {
-        {%- code /* add # of elements */ -%}
-        currentSize += basictl.TL2CalculateSize(len(*m))
-        lastUsedByte = currentSize
-    }
     for _, key := range keys {
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:(*m)[key]}
         {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "elem", false, tuple.wr.ins, false) %}
-        lastUsedByte = currentSize
-    }
-    if lastUsedByte < currentSize {
-        currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+    if len(*m) == 0 && optimizeEmpty {
         return w, sizes, 0
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
     w = basictl.TL2WriteSize(w, currentSize)
-    oldLen := len(w)
-    if len(w) - oldLen == currentSize {
+    if currentSize == 0 {
         return w, sizes, 1
     }
+    oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*m))
 
     keys := make([]{%s= keyTypeString %}, 0, len(*m))
@@ -744,52 +725,41 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
+    if len(*vec) == 0 && optimizeEmpty {
+        return sizes, 0
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
-    lastUsedByte := 0
     var sz int
 
-    if len(*vec) != 0 {
-        {%- code /* add # of elements, TODO - tl2 bool */ -%}
-        currentSize += basictl.TL2CalculateSize(len(*vec))
-        lastUsedByte = currentSize
-    }
+    currentSize += basictl.TL2CalculateSize(len(*vec))
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += (len(*vec) + 7) / 8
-        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < len(*vec); i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
-            lastUsedByte = currentSize
         }
     {%- endif -%}
-    if lastUsedByte < currentSize {
-        currentSize = lastUsedByte
-    }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+    if len(*vec) == 0 && optimizeEmpty {
         return w, sizes, 0
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
     w = basictl.TL2WriteSize(w, currentSize)
-    oldLen := len(w)
-    if len(w) - oldLen == currentSize {
+    if currentSize == 0 {
         return w, sizes, 1
     }
+    oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
@@ -972,52 +942,41 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
+    if len(*vec) == 0 && optimizeEmpty {
+        return sizes, 0
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
-    lastUsedByte := 0
     var sz int
 
-    if len(*vec) != 0 {
-        {%- code /* add # of elements, TODO - tl2 bool */ -%}
-        currentSize += basictl.TL2CalculateSize(len(*vec))
-        lastUsedByte = currentSize
-    }
+    currentSize += basictl.TL2CalculateSize(len(*vec))
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += (len(*vec) + 7) / 8
-        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < len(*vec); i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
-            lastUsedByte = currentSize
         }
     {%- endif -%}
-    if lastUsedByte < currentSize {
-        currentSize = lastUsedByte
-    }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+    if len(*vec) == 0 && optimizeEmpty {
         return w, sizes, 0
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
     w = basictl.TL2WriteSize(w, currentSize)
-    oldLen := len(w)
-    if len(w) - oldLen == currentSize {
+    if currentSize == 0 {
         return w, sizes, 1
     }
+    oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
@@ -1216,53 +1175,43 @@ func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s=
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
+    if {%v= tuple.size %} == 0 && optimizeEmpty {
+        return sizes, 0
+    }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
-    lastUsedByte := 0
     var sz int
 
-    if {%v= tuple.size %} != 0 {
-        {%- code /* add # of elements, TODO - tl2 bool */ -%}
-        currentSize += basictl.TL2CalculateSize({%v= tuple.size %})
-        lastUsedByte = currentSize
-    }
+    currentSize += basictl.TL2CalculateSize(len(*vec))
+
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += ({%v= tuple.size %} + 7) / 8
-        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < {%v= tuple.size %}; i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
-            lastUsedByte = currentSize
         }
     {%- endif -%}
-    if lastUsedByte < currentSize {
-        currentSize = lastUsedByte
-    }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
-        sizes = sizes[:sizePosition+1]
-    } else {
-        currentSize += basictl.TL2CalculateSize(currentSize)
-    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]byte, []int, int) {
-    currentSize := sizes[0]
-    sizes = sizes[1:]
-    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+    if {%v= tuple.size %} == 0 && optimizeEmpty {
         return w, sizes, 0
     }
+    currentSize := sizes[0]
+    sizes = sizes[1:]
     w = basictl.TL2WriteSize(w, currentSize)
-    oldLen := len(w)
-    if len(w) - oldLen == currentSize {
+    if currentSize == 0 {
         return w, sizes, 1
     }
-    w = basictl.TL2WriteSize(w, {%v= tuple.size %})
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, len(*vec))
 
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])

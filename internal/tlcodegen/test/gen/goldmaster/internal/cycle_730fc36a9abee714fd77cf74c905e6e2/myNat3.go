@@ -151,8 +151,7 @@ func (item *MyNat3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) 
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
 	if item.index != 0 {
@@ -460,10 +459,10 @@ func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
@@ -668,10 +667,10 @@ func (item *MyZero3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 		return w, sizes, 0
 	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	if len(w)-oldLen == currentSize {
+	if currentSize == 0 {
 		return w, sizes, 1
 	}
+	oldLen := len(w)
 	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
