@@ -37,20 +37,28 @@ func (ins *TypeInstanceAlias) CreateValue() KernelValue {
 	return value
 }
 
+func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
+	return ins.fieldType.ins.SkipTL2(r)
+}
+
+func (v *KernelValueAlias) Reset() {
+	v.value.Reset()
+}
+
 func (v *KernelValueAlias) Random(rg *rand.Rand) {
 	v.value.Random(rg)
 }
 
-func (v *KernelValueAlias) WriteTL2(w []byte) []byte {
-	return v.value.WriteTL2(w)
+func (v *KernelValueAlias) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+	return v.value.WriteTL2(w, optimizeEmpty, ctx)
 }
 
-func (v *KernelValueAlias) ReadTL2(w []byte) ([]byte, error) {
-	return v.value.ReadTL2(w)
+func (v *KernelValueAlias) ReadTL2(w []byte, ctx *TL2Context) ([]byte, error) {
+	return v.value.ReadTL2(w, ctx)
 }
 
-func (v *KernelValueAlias) WriteJSON(w []byte) []byte {
-	return v.value.WriteJSON(w)
+func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TL2Context) []byte {
+	return v.value.WriteJSON(w, ctx)
 }
 
 func (v *KernelValueAlias) Clone() KernelValue {

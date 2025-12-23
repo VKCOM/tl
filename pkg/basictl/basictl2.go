@@ -88,6 +88,23 @@ func TL2WriteSize(w []byte, l int) []byte {
 	return w
 }
 
+// w have at least 9 bytes length
+func TL2PutSize(w []byte, l int) int {
+	switch {
+	case l < bigStringMarker:
+		w[0] = byte(l)
+		return 1
+	case l < bigStringMarker+(1<<16):
+		w[0] = bigStringMarker
+		binary.LittleEndian.PutUint16(w[1:], uint16(l-bigStringMarker))
+		return 3
+	default:
+		w[0] = hugeStringMarker
+		binary.LittleEndian.PutUint64(w[1:], uint64(l))
+		return 9
+	}
+}
+
 func TL2CalculateSize(l int) int {
 	switch {
 	case l < bigStringMarker:
