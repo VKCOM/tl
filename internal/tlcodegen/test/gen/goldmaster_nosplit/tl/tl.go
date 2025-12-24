@@ -27,10 +27,8 @@ type (
 	DictionaryElemPairFloatDoubleInt             = internal.DictionaryElemPairFloatDoubleInt
 	DictionaryElemPairIntIntInt                  = internal.DictionaryElemPairIntIntInt
 	DictionaryElemPairIntPairMultiPointStringInt = internal.DictionaryElemPairIntPairMultiPointStringInt
-	DictionaryElemStrangeString                  = internal.DictionaryElemStrangeString
 	DictionaryElemStringPairIntInt               = internal.DictionaryElemStringPairIntInt
 	DictionaryElemTupleStringInt                 = internal.DictionaryElemTupleStringInt
-	DictionaryElemUglyIntString                  = internal.DictionaryElemUglyIntString
 	DictionaryFieldString                        = internal.DictionaryFieldString
 	DictionaryFieldStringBytes                   = internal.DictionaryFieldStringBytes
 	DictionaryString                             = internal.DictionaryString

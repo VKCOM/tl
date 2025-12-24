@@ -29,10 +29,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairFloatDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntPairMultiPointStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemStrangeString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemStringPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemTupleStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemUglyIntString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlHalfStr"
@@ -116,10 +114,8 @@ type (
 	DictionaryElemPairFloatDoubleInt             = tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt
 	DictionaryElemPairIntIntInt                  = tlDictionaryElemPairIntIntInt.DictionaryElemPairIntIntInt
 	DictionaryElemPairIntPairMultiPointStringInt = tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt
-	DictionaryElemStrangeString                  = tlDictionaryElemStrangeString.DictionaryElemStrangeString
 	DictionaryElemStringPairIntInt               = tlDictionaryElemStringPairIntInt.DictionaryElemStringPairIntInt
 	DictionaryElemTupleStringInt                 = tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt
-	DictionaryElemUglyIntString                  = tlDictionaryElemUglyIntString.DictionaryElemUglyIntString
 	DictionaryFieldString                        = tlDictionaryFieldString.DictionaryFieldString
 	DictionaryFieldStringBytes                   = tlDictionaryFieldString.DictionaryFieldStringBytes
 	DictionaryString                             = tlDictionaryString.DictionaryString

@@ -15,8 +15,6 @@ var _ = basictl.NatWrite
 
 type UseDictUgly struct {
 	N uint32
-	A []DictionaryElemUglyIntString
-	B map[uint32]string
 	C []DictionaryElemPairIntIntInt
 	D []DictionaryElemTupleStringInt
 	E []DictionaryElemPairBoolAColorInt
@@ -32,8 +30,6 @@ func (UseDictUgly) TLTag() uint32  { return 0xfb9ce817 }
 
 func (item *UseDictUgly) Reset() {
 	item.N = 0
-	item.A = item.A[:0]
-	BuiltinVectorDictionaryElemStrangeStringReset(item.B)
 	item.C = item.C[:0]
 	item.D = item.D[:0]
 	item.E = item.E[:0]
@@ -45,10 +41,7 @@ func (item *UseDictUgly) Reset() {
 }
 
 func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomFieldMask(rg, 0b11)
-	item.N = rg.LimitValue(item.N)
-	BuiltinVectorDictionaryElemUglyIntStringFillRandom(rg, &item.A, item.N)
-	BuiltinVectorDictionaryElemStrangeStringFillRandom(rg, &item.B)
+	item.N = basictl.RandomSize(rg)
 	BuiltinVectorDictionaryElemPairIntIntIntFillRandom(rg, &item.C)
 	BuiltinVectorDictionaryElemTupleStringIntFillRandom(rg, &item.D, item.N)
 	BuiltinVectorDictionaryElemPairBoolAColorIntFillRandom(rg, &item.E)
@@ -61,12 +54,6 @@ func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
-		return w, err
-	}
-	if w, err = BuiltinVectorDictionaryElemUglyIntStringRead(w, &item.A, item.N); err != nil {
-		return w, err
-	}
-	if w, err = BuiltinVectorDictionaryElemStrangeStringRead(w, &item.B); err != nil {
 		return w, err
 	}
 	if w, err = BuiltinVectorDictionaryElemPairIntIntIntRead(w, &item.C); err != nil {
@@ -99,8 +86,6 @@ func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	w = BuiltinVectorDictionaryElemUglyIntStringWrite(w, item.A, item.N)
-	w = BuiltinVectorDictionaryElemStrangeStringWrite(w, item.B)
 	w = BuiltinVectorDictionaryElemPairIntIntIntWrite(w, item.C)
 	if w, err = BuiltinVectorDictionaryElemTupleStringIntWrite(w, item.D, item.N); err != nil {
 		return w, err
@@ -145,8 +130,6 @@ func (item *UseDictUgly) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
-	var rawA []byte
-	var propBPresented bool
 	var propCPresented bool
 	var rawD []byte
 	var propEPresented bool
@@ -173,22 +156,6 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return err
 				}
 				propNPresented = true
-			case "a":
-				if rawA != nil {
-					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "a")
-				}
-				rawA = in.Raw()
-				if !in.Ok() {
-					return in.Error()
-				}
-			case "b":
-				if propBPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "b")
-				}
-				if err := BuiltinVectorDictionaryElemStrangeStringReadJSONGeneral(tctx, in, &item.B); err != nil {
-					return err
-				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "c")
@@ -266,9 +233,6 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	if !propNPresented {
 		item.N = 0
 	}
-	if !propBPresented {
-		BuiltinVectorDictionaryElemStrangeStringReset(item.B)
-	}
 	if !propCPresented {
 		item.C = item.C[:0]
 	}
@@ -290,15 +254,6 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	if !propZPresented {
 		BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
 	}
-	var inAPointer *basictl.JsonLexer
-	inA := basictl.JsonLexer{Data: rawA}
-	if rawA != nil {
-		inAPointer = &inA
-	}
-	if err := BuiltinVectorDictionaryElemUglyIntStringReadJSONGeneral(tctx, inAPointer, &item.A, item.N); err != nil {
-		return err
-	}
-
 	var inDPointer *basictl.JsonLexer
 	inD := basictl.JsonLexer{Data: rawD}
 	if rawD != nil {
@@ -328,20 +283,6 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	w = basictl.JSONWriteUint32(w, item.N)
 	if (item.N != 0) == false {
 		w = w[:backupIndexN]
-	}
-	backupIndexA := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"a":`...)
-	w = BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(tctx, w, item.A, item.N)
-	if (len(item.A) != 0) == false {
-		w = w[:backupIndexA]
-	}
-	backupIndexB := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"b":`...)
-	w = BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(tctx, w, item.B)
-	if (len(item.B) != 0) == false {
-		w = w[:backupIndexB]
 	}
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -428,14 +369,6 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes, true, &item.A); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if sizes, sz = BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes, true, &item.B); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
 	if sizes, sz = BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes, true, &item.C); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
@@ -452,7 +385,6 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	currentSize++
 	if sizes, sz = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes, true, &item.G); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
@@ -461,6 +393,7 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
+	currentSize++
 	if sizes, sz = BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
@@ -506,22 +439,22 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w, sizes, true, &item.A); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
 		currentBlock |= 4
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
 		currentBlock |= 8
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w, sizes, true, &item.F); sz != 0 {
 		currentBlock |= 32
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w, sizes, true, &item.G); sz != 0 {
 		currentBlock |= 64
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w, sizes, true, &item.F); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
 		currentBlock |= 128
 	}
 	if currentBlockPosition < len(w) {
@@ -533,17 +466,11 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w, sizes, true, &item.G); sz != 0 {
+	if w, sizes, sz = BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
 		currentBlock |= 1
 	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
-		currentBlock |= 2
-	}
-	if w, sizes, sz = BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
-		currentBlock |= 4
-	}
 	if w, sizes, sz = BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
-		currentBlock |= 8
+		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -609,46 +536,46 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.N = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(currentR, &item.A); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.A = item.A[:0]
-	}
-	if block&8 != 0 {
-		if currentR, err = BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(currentR, &item.B); err != nil {
-			return currentR, err
-		}
-	} else {
-		BuiltinVectorDictionaryElemStrangeStringReset(item.B)
-	}
-	if block&16 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.C = item.C[:0]
 	}
-	if block&32 != 0 {
+	if block&8 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.D = item.D[:0]
 	}
-	if block&64 != 0 {
+	if block&16 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.E = item.E[:0]
 	}
-	if block&128 != 0 {
+	if block&32 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(currentR, &item.F); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F = item.F[:0]
+	}
+	if block&64 != 0 {
+		if currentR, err = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(currentR, &item.G); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.G = item.G[:0]
+	}
+	if block&128 != 0 {
+		if currentR, err = BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
 	}
 	// start the next block
 	if len(currentR) > 0 {
@@ -659,27 +586,13 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		block = 0
 	}
 	if block&1 != 0 {
-		if currentR, err = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(currentR, &item.G); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.G = item.G[:0]
-	}
-	if block&2 != 0 {
-		if currentR, err = BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
-			return currentR, err
-		}
-	} else {
-		BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
-	}
-	if block&4 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
 		BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
 	}
-	if block&8 != 0 {
+	if block&2 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}

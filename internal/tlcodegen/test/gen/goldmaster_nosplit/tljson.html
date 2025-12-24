@@ -1210,8 +1210,6 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 
 
 
-
-
 <h2 id="Call1">call1</h2>
 
 <p></p>
@@ -2110,6 +2108,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemIntPairIntInt">dictionaryElem&lt;int,pair&lt;int,int&gt;&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2141,6 +2141,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemLongPairIntInt">dictionaryElem&lt;long,pair&lt;int,int&gt;&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2172,6 +2174,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemPairBoolAColorInt">dictionaryElem&lt;pair&lt;Bool,a.Color&gt;,int&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2203,6 +2207,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemPairFloatDoubleInt">dictionaryElem&lt;pair&lt;float,double&gt;,int&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2234,6 +2240,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemPairIntIntInt">dictionaryElem&lt;pair&lt;int,int&gt;,int&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2265,6 +2273,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemPairIntPairMultiPointStringInt">dictionaryElem&lt;pair&lt;int,pair&lt;multiPoint,string&gt;&gt;,int&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2295,39 +2305,9 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   </dd>
 </dl>
 
-<h2 id="DictionaryElemStrangeString">dictionaryElemStrange&lt;string&gt;</h2>
-
-<p></p>
-<dl>
-  <dt>JSON</dt>
-  <dd><code>
-    {
-      <table>
-        <tr>
-
-          <td>&nbsp;&nbsp;"key"</td><td>: &lt;uint32&gt;,</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
-          <td>// key bit #31
-</td>
-          <td>
-          </td>
-        </tr>
-      </table>
-    }
-</code></dd>
-  <dt>TL</dt>
-  <dd>
-    <code>dictionaryElemStrange#e3b2385c {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code>
-  </dd>
-</dl>
-
 <h2 id="DictionaryElemStringPairIntInt">dictionaryElem&lt;string,pair&lt;int,int&gt;&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 <p></p>
 <dl>
@@ -2359,6 +2339,8 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </dl>
 
 <h2 id="DictionaryElemTupleStringInt">dictionaryElem&lt;tuple&lt;string,#&gt;,int&gt;</h2>
+    <code style="color:DarkCyan">//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code></br>
+    <code style="color:DarkCyan">//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code></br>
 
 External # (nat) arguments: <b>k</b>
 <p></p>
@@ -2387,40 +2369,6 @@ External # (nat) arguments: <b>k</b>
   <dt>TL</dt>
   <dd>
     <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
-  </dd>
-</dl>
-
-<h2 id="DictionaryElemUglyIntString">dictionaryElemUgly&lt;#,int,string&gt;</h2>
-
-External # (nat) arguments: <b>f</b>
-<p></p>
-<dl>
-  <dt>JSON</dt>
-  <dd><code>
-    {
-      <table>
-        <tr>
-
-          <td>&nbsp;&nbsp;"key"</td><td>: &lt;int32&gt;,</td>
-          <td>// f bit #0
-</td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
-          <td>// f bit #1
-</td>
-          <td>
-          </td>
-        </tr>
-      </table>
-    }
-</code></dd>
-  <dt>TL</dt>
-  <dd>
-    <code>dictionaryElemUgly#e6790546 {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code>
   </dd>
 </dl>
 
@@ -4444,20 +4392,6 @@ External # (nat) arguments: <b>Y</b>
         </tr>
         <tr>
 
-          <td>&nbsp;&nbsp;"a"</td><td>: [<a href="#DictionaryElemUglyIntString">dictionaryElemUgly&lt;n,int,string&gt;</a>, ...],</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"b"</td><td>: {&lt;uint32&gt;: &lt;string&gt;},</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
           <td>&nbsp;&nbsp;"c"</td><td>: [<a href="#DictionaryElemPairIntIntInt">dictionaryElem&lt;pair&lt;int,int&gt;,int&gt;</a>, ...],</td>
           <td></td>
           <td>
@@ -4517,7 +4451,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>useDictUgly#fb9ce817 n:# a:%(__vector (dictionaryElemUgly n int string)) b:%(__vector (dictionaryElemStrange string)) c:%(__vector (dictionaryElem (pair int int) int)) d:%(__vector (dictionaryElem (tuple string n) int)) e:%(__vector (dictionaryElem (pair Bool a.Color) int)) f:%(__vector (dictionaryElem (pair float double) int)) g:%(__vector (dictionaryElem (pair int (pair multiPoint string)) int)) x:%(__vector (dictionaryElem int (pair int int))) y:%(__vector (dictionaryElem long (pair int int))) z:%(__vector (dictionaryElem string (pair int int))) = UseDictUgly;</code>
+    <code>useDictUgly#fb9ce817 n:# c:%(__vector (dictionaryElem (pair int int) int)) d:%(__vector (dictionaryElem (tuple string n) int)) e:%(__vector (dictionaryElem (pair Bool a.Color) int)) f:%(__vector (dictionaryElem (pair float double) int)) g:%(__vector (dictionaryElem (pair int (pair multiPoint string)) int)) x:%(__vector (dictionaryElem int (pair int int))) y:%(__vector (dictionaryElem long (pair int int))) z:%(__vector (dictionaryElem string (pair int int))) = UseDictUgly;</code>
   </dd>
 </dl>
 
