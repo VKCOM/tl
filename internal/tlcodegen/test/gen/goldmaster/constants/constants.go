@@ -66,6 +66,9 @@ const (
 	CdTypeC                                 = 0xdb0f93d4 // cd.typeC
 	CdTypeD                                 = 0xb5528285 // cd.typeD
 	CdUseCycle                              = 0x6ed67ca0 // cd.useCycle
+	CurlRequest                             = 0x3f5a4651 // curl.request
+	CurlResponseError                       = 0xaf514651 // curl.responseError
+	CurlResponseOk                          = 0x57d7a33a // curl.responseOk
 	Cyc1MyCycle                             = 0x136ecc9e // cyc1.myCycle
 	Cyc2MyCycle                             = 0xfba5eecb // cyc2.myCycle
 	Cyc3MyCycle                             = 0x47866860 // cyc3.myCycle

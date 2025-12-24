@@ -1366,7 +1366,9 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     {%- endif -%}
     {%- for fieldIndex, field := range struct_.Fields -%}
         {%- if (fieldIndex + 1) % 8 == 0 -%}
-            w[currentBlockPosition] = currentBlock
+            if currentBlockPosition < len(w) {
+                w[currentBlockPosition] = currentBlock
+            }
             currentBlock = 0
             {%- code /* we cannot return here, because fields must pop from sizes, so we will call WriteTL2.
                         this optimization starts only for field 7 and further, so it is actually rare */ -%}
@@ -1450,7 +1452,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     // read No of constructor
     if block & 1 != 0 {
         var index int
-        if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil { return currentR, err }
+        if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return currentR, err }
         if index != 0 {
             return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidUnionIndex({%q= tlName %}, index)
         }

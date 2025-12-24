@@ -117,6 +117,11 @@
         → <code><a href="#TypeB">TypeB</a></code>
       </li>
       <li>
+        <a href="#CurlRequest">
+        <code>curl.request</code></a>
+        → <code><a href="#CurlResponse">curl.Response</a></code>
+      </li>
+      <li>
         <a href="#Service5Insert">
         <code>service5.insert</code></a>
         → <code><a href="#Service5Output">service5.Output</a></code>
@@ -1666,6 +1671,271 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   <dt>TL</dt>
   <dd>
     <code>cd.useCycle#6ed67ca0 a:cyc2.myCycle b:(Maybe a.Color) = cd.UseCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="CurlRequest">curl.request</h2>
+
+<p></p>
+  Returns <code><a href="#CurlResponse">curl.Response</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"field_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"method"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"url"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"headers"</td><td>: {&lt;string&gt;: &lt;string&gt;},</td>
+          <td>// field_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"body"</td><td>: &lt;string&gt;,</td>
+          <td>// field_mask bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"timeout"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #2
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"timeout_connection"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #3
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"max_redirs"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #4
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"ssl_version"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #5
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"resolve_ipv"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #6
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_proxy"</td><td>: &lt;string&gt;,</td>
+          <td>// field_mask bit #7
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"limit"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #8
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"route"</td><td>: &lt;string&gt;,</td>
+          <td>// field_mask bit #9
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"version"</td><td>: &lt;int32&gt;,</td>
+          <td>// field_mask bit #10
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"origin"</td><td>: &lt;string&gt;,</td>
+          <td>// field_mask bit #11
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tls_cert"</td><td>: &lt;string&gt;,</td>
+          <td>// field_mask bit #12
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tls_cert_pk"</td><td>: &lt;string&gt;</td>
+          <td>// field_mask bit #13
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>@kphp curl.request#3f5a4651 field_mask:# method:string url:string headers:field_mask.0?%(Dictionary string) body:field_mask.1?string timeout:field_mask.2?int timeout_connection:field_mask.3?int max_redirs:field_mask.4?int ssl_version:field_mask.5?int resolve_ipv:field_mask.6?int http_proxy:field_mask.7?string limit:field_mask.8?int route:field_mask.9?string version:field_mask.10?int origin:field_mask.11?string tls_cert:field_mask.12?string tls_cert_pk:field_mask.13?string = curl.Response;</code>
+  </dd>
+</dl>
+
+<h2 id="CurlResponse">curl.Response</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "curl.responseOk" or "#57d7a33a"' style="color:MediumVioletRed">"curl.responseOk#57d7a33a"</span>,</td><td>"value":<a href="#CurlResponseOk">curl.responseOk</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "curl.responseError" or "#af514651"' style="color:MediumVioletRed">"curl.responseError#af514651"</span>,</td><td>"value":<a href="#CurlResponseError">curl.responseError</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>curl.responseOk#57d7a33a field_mask:# http_code:int http_headers:%(Dictionary string) http_body:field_mask.0?string = curl.Response;</code>
+    </li>
+    <li>
+    <code>curl.responseError#af514651 field_mask:# error_code:int error_string:string = curl.Response;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="CurlResponseError">curl.responseError</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"field_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"error_code"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"error_string"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>curl.responseError#af514651 field_mask:# error_code:int error_string:string = curl.Response;</code>
+  </dd>
+</dl>
+
+<h2 id="CurlResponseOk">curl.responseOk</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"field_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_code"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_headers"</td><td>: {&lt;string&gt;: &lt;string&gt;},</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_body"</td><td>: &lt;string&gt;</td>
+          <td>// field_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>curl.responseOk#57d7a33a field_mask:# http_code:int http_headers:%(Dictionary string) http_body:field_mask.0?string = curl.Response;</code>
   </dd>
 </dl>
 

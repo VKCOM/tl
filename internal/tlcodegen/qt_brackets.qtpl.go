@@ -223,6 +223,9 @@ func `)
     elementCount := 0
     if currentSize != 0 {
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        if elementCount > len(currentR) {
+            return r, basictl.TL2ElementCountError(elementCount, currentR)
+        }
     }
 
     if cap(*vec) < elementCount {
@@ -870,6 +873,9 @@ func `)
     elementCount := 0
     if currentSize != 0 {
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        if elementCount > len(currentR) {
+            return r, basictl.TL2ElementCountError(elementCount, currentR)
+        }
     }
 
     clear(*m)
@@ -1369,6 +1375,16 @@ func `)
     elementCount := 0
     if currentSize != 0 {
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+				/* this check is slightly relaxed, because we cannot +7 without overflow check */
+
+				qw422016.N().S(`        if elementCount`)
+				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+					qw422016.N().S(`/8`)
+				}
+				qw422016.N().S(`> len(currentR) {
+            return r, basictl.TL2ElementCountError(elementCount, currentR)
+        }
     }
 
     if cap(*vec) < elementCount {
@@ -1716,6 +1732,16 @@ func `)
     elementCount := 0
     if currentSize != 0 {
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+				/* this check is slightly relaxed, because we cannot +7 without overflow check */
+
+				qw422016.N().S(`        if elementCount`)
+				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+					qw422016.N().S(`/8`)
+				}
+				qw422016.N().S(`> len(currentR) {
+            return r, basictl.TL2ElementCountError(elementCount, currentR)
+        }
     }
 
     if cap(*vec) < elementCount {
@@ -2098,7 +2124,10 @@ func `)
     elementCount := 0
     if currentSize != 0 {
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-    }
+`)
+				/* we have no easy defense against amplification attack here (multiply by tuple.size)  */
+
+				qw422016.N().S(`    }
 
     lastIndex := min(elementCount, `)
 				qw422016.N().V(tuple.size)

@@ -105,6 +105,9 @@ func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err error
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if elementCount/8 > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
 
 	if cap(*vec) < elementCount {

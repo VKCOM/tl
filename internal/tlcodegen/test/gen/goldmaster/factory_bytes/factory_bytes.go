@@ -13,6 +13,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_38a9bf76d71419ee85afa2cdeb3445c4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_463e8ce0a74f5ec3e904ecdc85b1b857"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_4a924d2e3c79aa77f775dccf98b0eec6"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_6773d270c7798864aaf892b26109e9a4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_730fc36a9abee714fd77cf74c905e6e2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_98d4570147919cfd6f6ebfc47c3e10a0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b51088a4226835d54f08524a36f8aa77"
@@ -87,6 +88,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeC"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
@@ -171,6 +173,9 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0xdb0f93d4, func() meta.Object { var ret tlCdTypeC.CdTypeC; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xb5528285, func() meta.Object { var ret tlCdTypeD.CdTypeD; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x6ed67ca0, func() meta.Object { var ret tlCdUseCycle.CdUseCycle; return &ret })
+	meta.SetGlobalFactoryCreateForFunctionBytes(0x3f5a4651, func() meta.Object { var ret tlCurlRequest.CurlRequest; return &ret }, func() meta.Function { var ret tlCurlRequest.CurlRequest; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForObjectBytes(0xaf514651, func() meta.Object { var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseError; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0x57d7a33a, func() meta.Object { var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseOk; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x136ecc9e, func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xfba5eecb, func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc2MyCycle; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x47866860, func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc3MyCycle; return &ret })

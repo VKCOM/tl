@@ -157,6 +157,9 @@ func BuiltinVectorDictionaryFieldAnyIntIntInternalReadTL2(r []byte, m *map[int32
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
 
 	clear(*m)
@@ -337,6 +340,9 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesInternalReadTL2(r []byte, vec *[]
 	if currentSize != 0 {
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
 

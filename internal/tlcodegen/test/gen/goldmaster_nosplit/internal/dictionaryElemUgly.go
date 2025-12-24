@@ -113,6 +113,9 @@ func BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(r []byte, vec *[]Di
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
 
 	if cap(*vec) < elementCount {
@@ -473,7 +476,7 @@ func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte) (_ []byte, er
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

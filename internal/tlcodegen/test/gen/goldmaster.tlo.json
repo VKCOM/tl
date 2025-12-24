@@ -1,7 +1,7 @@
 {
   "version": 301822800,
   "date": 301822800,
-  "types_num": 90,
+  "types_num": 91,
   "types": [
     {
       "name": 1885708031,
@@ -457,6 +457,12 @@
       "constructors_num": 1
     },
     {
+      "name": -125377173,
+      "id": "curl.Response",
+      "constructors_num": 2,
+      "flags": 16
+    },
+    {
       "name": 326028446,
       "id": "cyc1.MyCycle",
       "constructors_num": 1
@@ -505,7 +511,7 @@
       "params_type": 1
     }
   ],
-  "constructor_num": 105,
+  "constructor_num": 107,
   "constructors": [
     {
       "type": "tls.combinator_v4",
@@ -7981,9 +7987,147 @@
           }
         }
       }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": 1473749818,
+        "id": "curl.responseOk",
+        "type_name": -125377173,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 4,
+            "args": [
+              {
+                "id": "field_mask",
+                "flags": 2,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "http_code",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "http_headers",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 525099407,
+                    "flags": 1,
+                    "children_num": 1,
+                    "children": [
+                      {
+                        "type": "tls.exprType",
+                        "value": {
+                          "expr": {
+                            "type": "tls.typeExpr",
+                            "value": {
+                              "name": -1255641564,
+                              "flags": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "id": "http_body",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -125377173
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": -1353628079,
+        "id": "curl.responseError",
+        "type_name": -125377173,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 3,
+            "args": [
+              {
+                "id": "field_mask",
+                "flags": 2,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "error_code",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "error_string",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -125377173
+            }
+          }
+        }
+      }
     }
   ],
-  "functions_num": 24,
+  "functions_num": 25,
   "functions": [
     {
       "type": "tls.combinator_v4",
@@ -8668,6 +8812,259 @@
           }
         },
         "flags": 1
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": 1062880849,
+        "id": "curl.request",
+        "type_name": -125377173,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 17,
+            "args": [
+              {
+                "id": "field_mask",
+                "flags": 2,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "method",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "url",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "headers",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 525099407,
+                    "flags": 1,
+                    "children_num": 1,
+                    "children": [
+                      {
+                        "type": "tls.exprType",
+                        "value": {
+                          "expr": {
+                            "type": "tls.typeExpr",
+                            "value": {
+                              "name": -1255641564,
+                              "flags": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "id": "body",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 1,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "timeout",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 2,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "timeout_connection",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 3,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "max_redirs",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 4,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "ssl_version",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 5,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "resolve_ipv",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 6,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "http_proxy",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 7,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "limit",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 8,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "route",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 9,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "version",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 10,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "origin",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 11,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "tls_cert",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 12,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "tls_cert_pk",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 13,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -125377173
+            }
+          }
+        },
+        "flags": 8
       }
     },
     {

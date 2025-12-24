@@ -897,7 +897,7 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if item.index < 0 || item.index >= 4 {
+		if item.index >= 4 {
 			return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 		}
 	}
@@ -1296,7 +1296,7 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if item.index < 0 || item.index >= 4 {
+		if item.index >= 4 {
 			return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 		}
 	}
@@ -1590,6 +1590,9 @@ func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]AbResponse) (_ []byt
 	if currentSize != 0 {
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
 
