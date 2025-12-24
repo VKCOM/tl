@@ -257,7 +257,7 @@ func (item *PairAInnerAInner) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -535,7 +535,7 @@ func (item *PairBoolAColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -818,7 +818,7 @@ func (item *PairFloatDouble) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1101,7 +1101,7 @@ func (item *PairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1379,7 +1379,7 @@ func (item *PairIntPairMultiPointString) InternalReadTL2(r []byte) (_ []byte, er
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1657,7 +1657,7 @@ func (item *PairMultiPointString) InternalReadTL2(r []byte) (_ []byte, err error
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1920,7 +1920,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []byt
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

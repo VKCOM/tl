@@ -151,6 +151,9 @@ func BuiltinVectorDictionaryFieldStringInternalReadTL2(r []byte, m *map[string]s
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
 
 	clear(*m)
@@ -323,6 +326,9 @@ func BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]Dic
 	if currentSize != 0 {
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
 
@@ -519,6 +525,9 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 	if currentSize != 0 {
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
 
@@ -846,7 +855,7 @@ func (item *DictionaryFieldString) InternalReadTL2(r []byte) (_ []byte, err erro
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1129,7 +1138,7 @@ func (item *DictionaryFieldStringBytes) InternalReadTL2(r []byte) (_ []byte, err
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -1395,7 +1404,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalRead
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

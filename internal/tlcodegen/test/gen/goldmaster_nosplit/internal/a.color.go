@@ -150,7 +150,7 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if item.index < 0 || item.index >= 5 {
+		if item.index >= 5 {
 			return r, ErrorInvalidUnionIndex("a.Color", item.index)
 		}
 	}
@@ -566,6 +566,9 @@ func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]AColor) (_ []byte, err 
 	if currentSize != 0 {
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
 

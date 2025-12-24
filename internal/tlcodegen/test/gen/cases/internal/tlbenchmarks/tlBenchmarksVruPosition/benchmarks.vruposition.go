@@ -638,7 +638,9 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int, optim
 		w = basictl.LongWrite(w, item.PayloadOffset)
 		currentBlock |= 128
 	}
-	w[currentBlockPosition] = currentBlock
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
 	currentBlock = 0
 	// start the next block
 	currentBlockPosition = len(w)
@@ -709,7 +711,7 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

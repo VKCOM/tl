@@ -269,7 +269,7 @@ func (item *DictionaryFieldInt) InternalReadTL2(r []byte) (_ []byte, err error) 
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {
@@ -552,7 +552,7 @@ func (item *DictionaryFieldIntBytes) InternalReadTL2(r []byte) (_ []byte, err er
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

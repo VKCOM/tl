@@ -443,7 +443,9 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	if w, sizes, sz = item.D1.InternalWriteTL2(w, sizes, true); sz != 0 {
 		currentBlock |= 128
 	}
-	w[currentBlockPosition] = currentBlock
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
 	currentBlock = 0
 	// start the next block
 	currentBlockPosition = len(w)
@@ -505,7 +507,7 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read No of constructor
 	if block&1 != 0 {
 		var index int
-		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index != 0 {

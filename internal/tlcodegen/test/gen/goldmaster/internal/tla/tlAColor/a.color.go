@@ -150,7 +150,7 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if item.index < 0 || item.index >= 5 {
+		if item.index >= 5 {
 			return r, internal.ErrorInvalidUnionIndex("a.Color", item.index)
 		}
 	}

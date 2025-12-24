@@ -175,7 +175,7 @@ func (item *MyNat2) InternalReadTL2(r []byte) (_ []byte, err error) {
 		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if item.index < 0 || item.index >= 2 {
+		if item.index >= 2 {
 			return r, ErrorInvalidUnionIndex("MyNat2", item.index)
 		}
 	}

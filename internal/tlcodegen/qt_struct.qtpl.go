@@ -2617,7 +2617,9 @@ func (item *`)
 			}
 			for fieldIndex, field := range struct_.Fields {
 				if (fieldIndex+1)%8 == 0 {
-					qw422016.N().S(`            w[currentBlockPosition] = currentBlock
+					qw422016.N().S(`            if currentBlockPosition < len(w) {
+                w[currentBlockPosition] = currentBlock
+            }
             currentBlock = 0
 `)
 					/* we cannot return here, because fields must pop from sizes, so we will call WriteTL2.
@@ -2730,7 +2732,7 @@ func (item *`)
     // read No of constructor
     if block & 1 != 0 {
         var index int
-        if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil { return currentR, err }
+        if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return currentR, err }
         if index != 0 {
             return r, `)
 				qw422016.N().S(struct_.wr.gen.InternalPrefix())

@@ -374,7 +374,7 @@ func (item *`)
     item.index = 0
     if (block & 1) != 0 {
         if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-        if item.index < 0 || item.index >= `)
+        if item.index >= `)
 			qw422016.N().D(len(union.Fields))
 			qw422016.N().S(` {
             return r, `)
