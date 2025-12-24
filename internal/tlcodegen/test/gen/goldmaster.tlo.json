@@ -1,7 +1,7 @@
 {
   "version": 301822800,
   "date": 301822800,
-  "types_num": 91,
+  "types_num": 89,
   "types": [
     {
       "name": 1885708031,
@@ -42,19 +42,6 @@
       "id": "DictionaryElem",
       "constructors_num": 1,
       "arity": 2
-    },
-    {
-      "name": -474859428,
-      "id": "DictionaryElemStrange",
-      "constructors_num": 1,
-      "arity": 1
-    },
-    {
-      "name": -428276410,
-      "id": "DictionaryElemUgly",
-      "constructors_num": 1,
-      "arity": 3,
-      "params_type": 1
     },
     {
       "name": 597433186,
@@ -511,7 +498,7 @@
       "params_type": 1
     }
   ],
-  "constructor_num": 107,
+  "constructor_num": 105,
   "constructors": [
     {
       "type": "tls.combinator_v4",
@@ -6037,189 +6024,6 @@
     {
       "type": "tls.combinator_v4",
       "value": {
-        "name": -474859428,
-        "id": "dictionaryElemStrange",
-        "type_name": -474859428,
-        "left": {
-          "type": "tls.combinatorLeft",
-          "value": {
-            "args_num": 3,
-            "args": [
-              {
-                "id": "v",
-                "flags": 131075,
-                "var_num": 0,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 753727511
-                  }
-                }
-              },
-              {
-                "id": "key",
-                "flags": 2,
-                "var_num": 1,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 1885708031
-                  }
-                }
-              },
-              {
-                "id": "value",
-                "flags": 4,
-                "exist_var_num": 1,
-                "exist_var_bit": 31,
-                "type": {
-                  "type": "tls.typeVar",
-                  "value": {}
-                }
-              }
-            ]
-          }
-        },
-        "right": {
-          "value": {
-            "type": "tls.typeExpr",
-            "value": {
-              "name": -474859428,
-              "children_num": 1,
-              "children": [
-                {
-                  "type": "tls.exprType",
-                  "value": {
-                    "expr": {
-                      "type": "tls.typeVar",
-                      "value": {}
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "tls.combinator_v4",
-      "value": {
-        "name": -428276410,
-        "id": "dictionaryElemUgly",
-        "type_name": -428276410,
-        "left": {
-          "type": "tls.combinatorLeft",
-          "value": {
-            "args_num": 5,
-            "args": [
-              {
-                "id": "f",
-                "flags": 131075,
-                "var_num": 0,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 1885708031
-                  }
-                }
-              },
-              {
-                "id": "k",
-                "flags": 131075,
-                "var_num": 1,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 753727511
-                  }
-                }
-              },
-              {
-                "id": "v",
-                "flags": 131075,
-                "var_num": 2,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 753727511
-                  }
-                }
-              },
-              {
-                "id": "key",
-                "flags": 4,
-                "exist_var_num": 0,
-                "exist_var_bit": 0,
-                "type": {
-                  "type": "tls.typeVar",
-                  "value": {
-                    "var_num": 1
-                  }
-                }
-              },
-              {
-                "id": "value",
-                "flags": 4,
-                "exist_var_num": 0,
-                "exist_var_bit": 1,
-                "type": {
-                  "type": "tls.typeVar",
-                  "value": {
-                    "var_num": 2
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "right": {
-          "value": {
-            "type": "tls.typeExpr",
-            "value": {
-              "name": -428276410,
-              "children_num": 3,
-              "children": [
-                {
-                  "type": "tls.exprNat",
-                  "value": {
-                    "expr": {
-                      "type": "tls.natVar",
-                      "value": {}
-                    }
-                  }
-                },
-                {
-                  "type": "tls.exprType",
-                  "value": {
-                    "expr": {
-                      "type": "tls.typeVar",
-                      "value": {
-                        "var_num": 1
-                      }
-                    }
-                  }
-                },
-                {
-                  "type": "tls.exprType",
-                  "value": {
-                    "expr": {
-                      "type": "tls.typeVar",
-                      "value": {
-                        "var_num": 2
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "tls.combinator_v4",
-      "value": {
         "name": -1499628080,
         "id": "dictionaryElem",
         "type_name": -1499628080,
@@ -6311,7 +6115,7 @@
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
-            "args_num": 21,
+            "args_num": 17,
             "args": [
               {
                 "id": "n",
@@ -6335,129 +6139,6 @@
                 }
               },
               {
-                "id": "a",
-                "type": {
-                  "type": "tls.array",
-                  "value": {
-                    "multiplicity": {
-                      "type": "tls.natVar",
-                      "value": {
-                        "var_num": 1
-                      }
-                    },
-                    "args_num": 1,
-                    "args": [
-                      {
-                        "type": {
-                          "type": "tls.typeExpr",
-                          "value": {
-                            "name": -428276410,
-                            "flags": 1,
-                            "children_num": 3,
-                            "children": [
-                              {
-                                "type": "tls.exprNat",
-                                "value": {
-                                  "expr": {
-                                    "type": "tls.natVar",
-                                    "value": {}
-                                  }
-                                }
-                              },
-                              {
-                                "type": "tls.exprType",
-                                "value": {
-                                  "expr": {
-                                    "type": "tls.typeExpr",
-                                    "value": {
-                                      "name": -1471112230,
-                                      "flags": 1
-                                    }
-                                  }
-                                }
-                              },
-                              {
-                                "type": "tls.exprType",
-                                "value": {
-                                  "expr": {
-                                    "type": "tls.typeExpr",
-                                    "value": {
-                                      "name": -1255641564,
-                                      "flags": 1
-                                    }
-                                  }
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                "flags": 2,
-                "var_num": 2,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 1885708031
-                  }
-                }
-              },
-              {
-                "id": "b",
-                "type": {
-                  "type": "tls.array",
-                  "value": {
-                    "multiplicity": {
-                      "type": "tls.natVar",
-                      "value": {
-                        "var_num": 2
-                      }
-                    },
-                    "args_num": 1,
-                    "args": [
-                      {
-                        "type": {
-                          "type": "tls.typeExpr",
-                          "value": {
-                            "name": -474859428,
-                            "flags": 1,
-                            "children_num": 1,
-                            "children": [
-                              {
-                                "type": "tls.exprType",
-                                "value": {
-                                  "expr": {
-                                    "type": "tls.typeExpr",
-                                    "value": {
-                                      "name": -1255641564,
-                                      "flags": 1
-                                    }
-                                  }
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                "flags": 2,
-                "var_num": 3,
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 1885708031
-                  }
-                }
-              },
-              {
                 "id": "c",
                 "type": {
                   "type": "tls.array",
@@ -6465,7 +6146,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 3
+                        "var_num": 1
                       }
                     },
                     "args_num": 1,
@@ -6539,7 +6220,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 4,
+                "var_num": 2,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -6555,7 +6236,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 4
+                        "var_num": 2
                       }
                     },
                     "args_num": 1,
@@ -6626,7 +6307,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 5,
+                "var_num": 3,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -6642,7 +6323,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 5
+                        "var_num": 3
                       }
                     },
                     "args_num": 1,
@@ -6714,7 +6395,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 6,
+                "var_num": 4,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -6730,7 +6411,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 6
+                        "var_num": 4
                       }
                     },
                     "args_num": 1,
@@ -6804,7 +6485,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 7,
+                "var_num": 5,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -6820,7 +6501,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 7
+                        "var_num": 5
                       }
                     },
                     "args_num": 1,
@@ -6921,7 +6602,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 8,
+                "var_num": 6,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -6937,7 +6618,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 8
+                        "var_num": 6
                       }
                     },
                     "args_num": 1,
@@ -7011,7 +6692,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 9,
+                "var_num": 7,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -7027,7 +6708,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 9
+                        "var_num": 7
                       }
                     },
                     "args_num": 1,
@@ -7101,7 +6782,7 @@
               },
               {
                 "flags": 2,
-                "var_num": 10,
+                "var_num": 8,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -7117,7 +6798,7 @@
                     "multiplicity": {
                       "type": "tls.natVar",
                       "value": {
-                        "var_num": 10
+                        "var_num": 8
                       }
                     },
                     "args_num": 1,

@@ -76,8 +76,6 @@ const (
 	Dictionary                              = 0x1f4c618f // dictionary
 	DictionaryAny                           = 0x1f4c6190 // dictionaryAny
 	DictionaryElem                          = 0xa69d7dd0 // dictionaryElem
-	DictionaryElemStrange                   = 0xe3b2385c // dictionaryElemStrange
-	DictionaryElemUgly                      = 0xe6790546 // dictionaryElemUgly
 	DictionaryField                         = 0x239c1b62 // dictionaryField
 	DictionaryFieldAny                      = 0x2c43a65b // dictionaryFieldAny
 	HalfStr                                 = 0x647ddaf5 // halfStr

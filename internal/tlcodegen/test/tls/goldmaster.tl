@@ -187,13 +187,13 @@ usefulService.getUserEntity#3c857e52
 
 ---types---
 
-dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;
-dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;
+//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;
+//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;
 dictionaryElem {k:Type} {v:Type} key:k value:v = DictionaryElem k v;
 
-useDictUgly n:#
-    # a:[(dictionaryElemUgly n int string)]
-    # b:[(dictionaryElemStrange string)]
+useDictUgly#fb9ce817 n:#
+//    # a:[(dictionaryElemUgly n int string)]
+//    # b:[(dictionaryElemStrange string)]
     # c:[(dictionaryElem (pair int int) int)]
     # d:[(dictionaryElem (tuple string n) int)]
     # e:[(dictionaryElem (pair Bool a.Color) int)]
