@@ -6,6 +6,8 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
+// TODO - []bit
+
 type TypeInstanceTupleVector struct {
 	TypeInstanceCommon
 	isTuple   bool
@@ -114,8 +116,10 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if !v.instance.isTuple && elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
-
 	if !v.instance.isTuple {
 		v.resize(elementCount)
 	}
@@ -124,14 +128,10 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 			return r, err
 		}
 	}
-	for i := min(len(v.elements), elementCount); i < elementCount; i++ {
-		if currentR, err = v.instance.fieldType.ins.SkipTL2(currentR); err != nil {
-			return r, err
-		}
-	}
 	for i := min(len(v.elements), elementCount); i < len(v.elements); i++ {
 		v.elements[i].Reset()
 	}
+	// we skip excess element all at once. not one by one
 	return r, nil
 }
 

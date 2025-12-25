@@ -21,6 +21,10 @@ func (ins *TypeInstanceAlias) GoodForMapKey() bool {
 	return ins.fieldType.ins.GoodForMapKey()
 }
 
+func (ins *TypeInstanceAlias) IsBit() bool {
+	return ins.fieldType.ins.IsBit()
+}
+
 func (ins *TypeInstanceAlias) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return

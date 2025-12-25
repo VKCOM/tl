@@ -21,6 +21,10 @@ func (ins *TypeInstancePrimitive) GoodForMapKey() bool {
 	return ins.goodForMapKey
 }
 
+func (ins *TypeInstancePrimitive) IsBit() bool {
+	return ins.canonicalName == "bit"
+}
+
 func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder) {
 }
 
