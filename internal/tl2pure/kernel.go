@@ -26,15 +26,18 @@ type KernelValue interface {
 }
 
 type KernelType struct {
-	tip tlast.TL2TypeDeclaration
+	comb tlast.TL2Combinator
 	// index by canonical name
-	instances map[string]*TypeInstanceRef
+	instances        map[string]*TypeInstanceRef
+	instancesOrdered []*TypeInstanceRef
 }
 
 type Kernel struct {
 	tips         map[tlast.TL2TypeName]*KernelType
 	tipsOrdered  []*KernelType
 	tipsTopLevel []*KernelType
+
+	brackets *KernelType
 
 	instances        map[string]*TypeInstanceRef
 	instancesOrdered []*TypeInstanceRef
@@ -45,6 +48,7 @@ type Kernel struct {
 // Add builtin types
 func NewKernel() *Kernel {
 	k := &Kernel{
+		brackets:  &KernelType{instances: map[string]*TypeInstanceRef{}},
 		tips:      map[tlast.TL2TypeName]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
@@ -61,13 +65,13 @@ func NewKernel() *Kernel {
 }
 
 func (k *Kernel) addTip(kt *KernelType) error {
-	_, ok := k.tips[kt.tip.Name]
+	_, ok := k.tips[kt.comb.ReferenceName()]
 	if ok {
-		return fmt.Errorf("type %v already exists", kt.tip.Name)
+		return fmt.Errorf("type %v already exists", kt.comb.ReferenceName())
 	}
-	k.tips[kt.tip.Name] = kt
+	k.tips[kt.comb.ReferenceName()] = kt
 	k.tipsOrdered = append(k.tipsOrdered, kt)
-	if len(kt.tip.TemplateArguments) == 0 {
+	if kt.comb.IsFunction || len(kt.comb.TypeDecl.TemplateArguments) == 0 {
 		k.tipsTopLevel = append(k.tipsTopLevel, kt)
 	}
 	return nil
@@ -134,9 +138,9 @@ func (k *Kernel) IsBit(tr tlast.TL2TypeRef) bool {
 
 func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, templateArguments []tlast.TL2TypeTemplate,
 	lrc []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
-	if tr.IsNumber {
-		return k.resolveArgumentImpl(tr, templateArguments, lrc)
-	}
+	// if tr.IsNumber {
+	//	return k.resolveArgumentImpl(tr, templateArguments, lrc)
+	// }
 	before := tr
 	was := k.CanonicalName(before.Type)
 	tr, err := k.resolveArgumentImpl(tr, templateArguments, lrc)
@@ -151,6 +155,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	lrc []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	// numbers resolve to numbers
 	if tr.IsNumber {
+		tr.Category = tlast.TL2TypeCategoryNat
 		return tr, nil
 	}
 	if tr.Type.IsBracket {
@@ -172,17 +177,18 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	}
 	// names found in local arguments have priprity over global type names
 	someType := tr.Type.SomeType
-	if len(someType.Arguments) == 0 {
-		if someType.Name.Namespace == "" {
-			for i, targ := range templateArguments {
-				if targ.Name == someType.Name.Name {
-					return lrc[i], nil
+	if someType.Name.Namespace == "" {
+		for i, targ := range templateArguments {
+			if targ.Name == someType.Name.Name {
+				if len(someType.Arguments) != 0 {
+					return tr, fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name)
 				}
+				return lrc[i], nil
 			}
-			// probably ref to global type or a typo
 		}
-		return tr, nil
+		// probably ref to global type or a typo
 	}
+	//return tr, nil
 	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
 	for i, arg := range someType.Arguments {
 		rt, err := k.resolveArgument(arg, templateArguments, lrc)
@@ -195,6 +201,22 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	return tr, nil
 }
 
+func (k *Kernel) addInstance(canonicalName string, kt *KernelType) *TypeInstanceRef {
+	ref := &TypeInstanceRef{}
+	if _, ok := kt.instances[canonicalName]; ok {
+		panic(fmt.Sprintf("type instance list contains duplicate %q", canonicalName))
+	}
+	if _, ok := k.instances[canonicalName]; ok {
+		panic(fmt.Sprintf("global instance list contains duplicate %q", canonicalName))
+	}
+	kt.instances[canonicalName] = ref
+	kt.instancesOrdered = append(kt.instancesOrdered, ref)
+
+	k.instances[canonicalName] = ref // storing pointer terminates recursion
+	k.instancesOrdered = append(k.instancesOrdered, ref)
+	return ref
+}
+
 func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	canonicalName := k.CanonicalName(tr)
 	if ref, ok := k.instances[canonicalName]; ok {
@@ -202,11 +224,9 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	}
 	if tr.IsBracket {
 		log.Printf("creating a bracket instance of type %s", canonicalName)
-		ref := &TypeInstanceRef{}
-		k.instances[canonicalName] = ref // storing pointer terminates recursion
-		k.instancesOrdered = append(k.instancesOrdered, ref)
-
-		elemBit := k.IsBit(tr.BracketType.ArrayType) // we must not call anything on TypeInstance during recursive resolution
+		// must store pointer before children getInstance() terminates recursion
+		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+		ref := k.addInstance(canonicalName, k.brackets)
 
 		elemInstance, err := k.getInstance(tr.BracketType.ArrayType)
 		if err != nil {
@@ -214,14 +234,11 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		}
 		if tr.BracketType.HasIndex {
 			if tr.BracketType.IndexType.IsNumber {
-				if elemBit {
-					return nil, fmt.Errorf("type bit is not allowed as bracket element")
-				}
-				ref.ins = k.createTupleVector(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
 				// tuple
+				ref.ins = k.createTupleVector(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
 				return ref, nil
 			}
-			// map, bit is allowed as an element
+			// map
 			keyInstance, err := k.getInstance(tr.BracketType.IndexType.Type)
 			if err != nil {
 				return nil, err
@@ -233,77 +250,92 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 			return ref, nil
 		}
 		// vector
-		if elemBit {
-			return nil, fmt.Errorf("type bit is not allowed as bracket element")
-		}
 		ref.ins = k.createTupleVector(canonicalName, false, 0, elemInstance)
 		return ref, nil
 	}
 	log.Printf("creating an instance of type %s", canonicalName)
+	// must store pointer before children getInstance() terminates recursion
+	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	someType := tr.SomeType
 	kt, ok := k.tips[someType.Name]
 	if !ok {
 		return nil, fmt.Errorf("type %s does not exist", someType.Name)
 	}
-	if _, ok := kt.instances[canonicalName]; ok {
-		panic("type instance list contains duplicate")
-	}
-	ref := &TypeInstanceRef{}
-	kt.instances[canonicalName] = ref
+	// must store pointer before children getInstance() terminates recursion
+	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+	ref := k.addInstance(canonicalName, kt)
 
-	k.instances[canonicalName] = ref // storing pointer terminates recursion
-	k.instancesOrdered = append(k.instancesOrdered, ref)
-
-	if len(someType.Arguments) != len(kt.tip.TemplateArguments) {
-		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", someType.Name, len(kt.tip.TemplateArguments), len(someType.Arguments))
-	}
-	for i, arg := range someType.Arguments {
-		targ := kt.tip.TemplateArguments[i]
-		if targ.Category.IsUint32() != arg.IsNumber {
-			return nil, fmt.Errorf("typeref %s argument %s category differ", someType.Name, targ.Name)
-		}
-		if arg.IsNumber {
-			continue
-		}
-		// if some arguments are unused inside body, they will not be instantiated and checked
-		_, err := k.getInstance(arg.Type)
+	var err error
+	if !kt.comb.IsFunction {
+		ref.ins, err = k.createOrdinaryType(canonicalName, kt.comb.TypeDecl.Type, kt.comb.TypeDecl.TemplateArguments, someType.Arguments)
 		if err != nil {
 			return nil, err
 		}
+		return ref, nil
 	}
-
-	// lrc2 := map[string]ResolvedArgument{} // internal context
-	// for i, resolvedArg := range resolvedArgs {
-	// targ := kt.tip.TemplateArguments[i]
-	// if _, ok := lrc2[targ.Name]; ok {
-	// return nil, fmt.Errorf("typeref %s template parameter %s name collision", ktr.Name, targ.Name)
-	// }
-	// lrc2[targ.Name] = resolvedArg
-	// }
-	var err error
-	switch {
-	case kt.tip.Type.IsUnionType:
-		ref.ins, err = k.createUnion(canonicalName, kt.tip.Type.UnionType, kt.tip.TemplateArguments, someType.Arguments)
-	case kt.tip.Type.IsAlias():
-		ref.ins, err = k.createAlias(canonicalName, kt.tip.Type.TypeAlias, kt.tip.TemplateArguments, someType.Arguments)
-	case kt.tip.Type.IsConstructorFields:
-		ref.ins, err = k.createObject(canonicalName, kt.tip,
-			true, kt.tip.Type.TypeAlias, kt.tip.Type.ConstructorFields,
-			kt.tip.TemplateArguments, someType.Arguments,
-			false, 0)
-	default:
-		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
+	funcDecl := kt.comb.FuncDecl
+	resultType, err := k.createOrdinaryType(canonicalName, funcDecl.ReturnType, nil, nil)
+	if err != nil {
+		return nil, err
 	}
+	ref.ins, err = k.createObject(canonicalName, true,
+		tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
+		resultType)
 	if err != nil {
 		return nil, err
 	}
 	return ref, nil
 }
 
-func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition) error {
+// alias || fields || union
+func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2TypeDefinition,
+	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
+
+	if len(lrc) != len(templateArguments) {
+		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(templateArguments), len(lrc))
+	}
+	for i, targ := range templateArguments {
+		arg := lrc[i]
+		if targ.Category.IsUint32() != arg.IsNumber {
+			return nil, fmt.Errorf("typeref %s argument %s category differ", canonicalName, targ.Name)
+		}
+		// if arg.IsNumber {
+		//	continue
+		// }
+		// if some arguments are unused inside body, they will not be instantiated and checked, this is ok
+		// _, err := k.getInstance(arg.Type)
+		// if err != nil {
+		//	return nil, err
+		// }
+	}
+
+	// lrc2 := map[string]ResolvedArgument{} // internal context
+	// for i, resolvedArg := range resolvedArgs {
+	// targ := kt.typeDecl.TemplateArguments[i]
+	// if _, ok := lrc2[targ.Name]; ok {
+	// return nil, fmt.Errorf("typeref %s template parameter %s name collision", ktr.Name, targ.Name)
+	// }
+	// lrc2[targ.Name] = resolvedArg
+	// }
+	switch {
+	case definition.IsUnionType:
+		return k.createUnion(canonicalName, definition.UnionType, templateArguments, lrc)
+	case definition.IsAlias():
+		return k.createAlias(canonicalName, definition.TypeAlias, templateArguments, lrc)
+	case definition.IsConstructorFields:
+		return k.createObject(canonicalName,
+			true, definition.TypeAlias, definition.ConstructorFields,
+			templateArguments, lrc,
+			false, 0, nil)
+	default:
+		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
+	}
+}
+
+func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition, leftArguments []tlast.TL2TypeTemplate) error {
 	if tip.IsUnionType {
 		for _, v := range tip.UnionType.Variants {
-			if err := k.typeCheckAliasFields(v.IsTypeAlias, v.TypeAlias, v.Fields); err != nil {
+			if err := k.typeCheckAliasFields(v.IsTypeAlias, v.TypeAlias, v.Fields, leftArguments); err != nil {
 				return err
 			}
 		}
@@ -311,121 +343,100 @@ func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition) error {
 	}
 	if tip.IsAlias() {
 		// does not work before resolving type, for example identity<t:type> = t;
-		//	aliasBit := k.IsBit(tip.TypeAlias)
+		//	aliasBit := k.IsBit(typeDecl.TypeAlias)
 		//	if aliasBit {
 		//		return fmt.Errorf("type bit is not allowed as a type alias")
 		//	}
-		return k.typeCheckTypeRef(tip.TypeAlias)
+		return k.typeCheckTypeRef(tip.TypeAlias, leftArguments)
 	}
-	return k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.ConstructorFields)
+	return k.typeCheckAliasFields(false, tlast.TL2TypeRef{},
+		tip.ConstructorFields, leftArguments)
 }
 
-func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeRef, fields []tlast.TL2Field) error {
+func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeRef,
+	fields []tlast.TL2Field, leftArguments []tlast.TL2TypeTemplate) error {
 	if isTypeAlias {
-		return k.typeCheckTypeRef(typeAlias)
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: typeAlias}, leftArguments)
+		if err != nil {
+			return err
+		}
+		if !cat.IsType() {
+			return fmt.Errorf("type alias cannot be number")
+		}
+		return nil
 	}
 	for _, f := range fields {
-		if err := k.typeCheckTypeRef(f.Type); err != nil {
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: f.Type}, leftArguments)
+		if err != nil {
 			return err
+		}
+		if !cat.IsType() {
+			return fmt.Errorf("field type %s cannot be number", f.Name)
 		}
 	}
 	return nil
 }
 
-func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef) error {
+func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArguments []tlast.TL2TypeTemplate) (tlast.TL2TypeCategory, error) {
+	if arg.IsNumber {
+		return tlast.TL2TypeCategoryNat, nil
+	}
+	if !arg.Type.IsBracket && arg.Type.SomeType.Name.Namespace == "" {
+		for _, la := range leftArguments {
+			if arg.Type.SomeType.Name.Name == la.Name {
+				if len(arg.Type.SomeType.Arguments) != 0 {
+					return "", fmt.Errorf("reference to template argument %s cannot have arguments", la.Name)
+				}
+				return la.Category, nil
+			}
+		}
+		// reference to global type
+	}
+	if err := k.typeCheckTypeRef(arg.Type, leftArguments); err != nil {
+		return "", err
+	}
+	return tlast.TL2TypeCategoryType, nil
+}
+
+func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArguments []tlast.TL2TypeTemplate) error {
+	if tr.IsBracket {
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: tr.BracketType.ArrayType}, leftArguments)
+		if err != nil {
+			return err
+		}
+		if !cat.IsType() {
+			return fmt.Errorf("bracket element type cannot be number")
+		}
+		if tr.BracketType.HasIndex {
+			_, err = k.typeCheckArgument(tr.BracketType.IndexType, leftArguments)
+			if err != nil {
+				return err
+			}
+			// can be both type (map) and number (tuple)
+		}
+		return nil
+	}
+	someType := tr.SomeType
+	kt, ok := k.tips[someType.Name]
+	if !ok {
+		return fmt.Errorf("type %s does not exist", someType.Name)
+	}
+	if kt.comb.IsFunction {
+		return fmt.Errorf("cannot reference function %s", someType.Name)
+	}
+	if len(someType.Arguments) != len(kt.comb.TypeDecl.TemplateArguments) {
+		return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.comb.TypeDecl.TemplateArguments), len(someType.Arguments))
+	}
+	for i, targ := range kt.comb.TypeDecl.TemplateArguments {
+		cat, err := k.typeCheckArgument(someType.Arguments[i], leftArguments)
+		if err != nil {
+			return err
+		}
+		if targ.Category != cat {
+			return fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category)
+		}
+	}
 	return nil
-	// if tr.IsBracket {
-	// 	// type check tr.BracketType.ArrayType
-	// 	elemInstance, err := k.getInstance(tr.BracketType.ArrayType)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	if tr.BracketType.IndexType != nil {
-	// 		if tr.BracketType.IndexType.IsNumber {
-	// 			if elemBit {
-	// 				return nil, fmt.Errorf("type bit is not allowed as bracket element")
-	// 			}
-	// 			ref.ins = k.createTupleVector(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
-	// 			// tuple
-	// 			return ref, nil
-	// 		}
-	// 		// map, bit is allowed as an element
-	// 		keyInstance, err := k.getInstance(tr.BracketType.IndexType.Type)
-	// 		if err != nil {
-	// 			return nil, err
-	// 		}
-	// 		if !keyInstance.ins.GoodForMapKey() {
-	// 			return nil, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
-	// 		}
-	// 		ref.ins = k.createMap(canonicalName, keyInstance, elemInstance)
-	// 		return ref, nil
-	// 	}
-	// 	// vector
-	// 	if elemBit {
-	// 		return nil, fmt.Errorf("type bit is not allowed as bracket element")
-	// 	}
-	// 	ref.ins = k.createTupleVector(canonicalName, false, 0, elemInstance)
-	// 	return ref, nil
-	// }
-	// log.Printf("creating an instance of type %s", canonicalName)
-	// someType := tr.SomeType
-	// kt, ok := k.tips[someType.Name]
-	// if !ok {
-	// 	return nil, fmt.Errorf("type %s does not exist", someType.Name)
-	// }
-	// if _, ok := kt.instances[canonicalName]; ok {
-	// 	panic("type instance list contains duplicate")
-	// }
-	// ref := &TypeInstanceRef{}
-	// kt.instances[canonicalName] = ref
-
-	// k.instances[canonicalName] = ref // storing pointer terminates recursion
-	// k.instancesOrdered = append(k.instancesOrdered, ref)
-
-	// if len(someType.Arguments) != len(kt.tip.TemplateArguments) {
-	// 	return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", someType.Name, len(kt.tip.TemplateArguments), len(someType.Arguments))
-	// }
-	// for i, arg := range someType.Arguments {
-	// 	targ := kt.tip.TemplateArguments[i]
-	// 	if targ.Category.IsUint32() != arg.IsNumber {
-	// 		return nil, fmt.Errorf("typeref %s argument %s category differ", someType.Name, targ.Name)
-	// 	}
-	// 	if arg.IsNumber {
-	// 		continue
-	// 	}
-	// 	// if some arguments are unused inside body, they will not be instantiated and checked
-	// 	_, err := k.getInstance(arg.Type)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
-
-	// // lrc2 := map[string]ResolvedArgument{} // internal context
-	// // for i, resolvedArg := range resolvedArgs {
-	// // targ := kt.tip.TemplateArguments[i]
-	// // if _, ok := lrc2[targ.Name]; ok {
-	// // return nil, fmt.Errorf("typeref %s template parameter %s name collision", ktr.Name, targ.Name)
-	// // }
-	// // lrc2[targ.Name] = resolvedArg
-	// // }
-	// var err error
-	// switch {
-	// // case kt.tip.Type.IsUnionType:
-	// // ref.ins, err = k.createUnion(canonicalName, kt.tip.Type.UnionType, lrc2)
-	// case kt.tip.Type.IsAlias():
-	// 	ref.ins, err = k.createAlias(canonicalName, kt.tip.Type.TypeAlias, kt.tip.TemplateArguments, someType.Arguments)
-	// case kt.tip.Type.IsConstructorFields:
-	// 	ref.ins, err = k.createObject(canonicalName, kt.tip,
-	// 		true, kt.tip.Type.TypeAlias, kt.tip.Type.ConstructorFields,
-	// 		kt.tip.TemplateArguments, someType.Arguments,
-	// 		false, 0)
-	// default:
-	// 	return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
-	// }
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return ref, nil
 }
 
 func (k *Kernel) TopLeveTypeInstances() []TypeInstance {
@@ -455,11 +466,8 @@ func (k *Kernel) Compile() error {
 	// add all declaration to check for name collisions
 	for _, comb := range k.files {
 		log.Printf("tl2pure: compiling %s", comb)
-		if comb.IsFunction {
-			continue
-		}
 		kt := &KernelType{
-			tip:       comb.TypeDecl,
+			comb:      comb,
 			instances: map[string]*TypeInstanceRef{},
 		}
 		if err := k.addTip(kt); err != nil {
@@ -468,33 +476,53 @@ func (k *Kernel) Compile() error {
 	}
 	// type all declarations by comparing type ref with actual type definition
 	for _, tip := range k.tipsOrdered {
-		if err := k.typeCheck(tip.tip.Type); err != nil {
+		if tip.comb.IsFunction {
+			if err := k.typeCheck(tip.comb.FuncDecl.ReturnType, nil); err != nil {
+				return err
+			}
+			if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.comb.FuncDecl.Arguments, nil); err != nil {
+				return err
+			}
+			continue
+		}
+		if err := k.typeCheck(tip.comb.TypeDecl.Type, tip.comb.TypeDecl.TemplateArguments); err != nil {
 			return err
 		}
 	}
-	// instantiate all top-level declarations
+	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
-		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.tip.Name}}
-		if len(tip.tip.TemplateArguments) == 0 {
+		if tip.comb.IsFunction {
+			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.comb.FuncDecl.Name}}
 			if _, err := k.getInstance(tr); err != nil {
-				return fmt.Errorf("error adding type %s: %w", tip.tip.Name, err)
+				return fmt.Errorf("error adding function %s: %w", tip.comb.FuncDecl.Name, err)
 			}
-		} else {
-			for _, arg := range tip.tip.TemplateArguments {
-				if arg.Category.IsType() {
-					someType := tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "uint32"}}
-					tr.SomeType.Arguments = append(tr.SomeType.Arguments,
-						tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: someType}})
-				} else {
-					tr.SomeType.Arguments = append(tr.SomeType.Arguments,
-						tlast.TL2TypeArgument{IsNumber: true, Number: 1})
-				}
-			}
-			// this does nothing, we actually need to have a function with a subset of getInstance and all check
-			if _, err := k.resolveType(tr, nil, nil); err != nil {
-				return fmt.Errorf("error checking template %s: %w", tip.tip.Name, err)
-			}
+			continue
 		}
+		typeDecl := tip.comb.TypeDecl
+		if len(typeDecl.TemplateArguments) != 0 {
+			continue // instantiate templates on demand only
+		}
+		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
+		if _, err := k.getInstance(tr); err != nil {
+			return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
+		}
+		//if len(tip.typeDecl.TemplateArguments) == 0 {
+		//} else {
+		//	for _, arg := range tip.typeDecl.TemplateArguments {
+		//		if arg.Category.IsType() {
+		//			someType := tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "uint32"}}
+		//			tr.SomeType.Arguments = append(tr.SomeType.Arguments,
+		//				tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: someType}})
+		//		} else {
+		//			tr.SomeType.Arguments = append(tr.SomeType.Arguments,
+		//				tlast.TL2TypeArgument{IsNumber: true, Number: 1})
+		//		}
+		//	}
+		//	// this does nothing, we actually need to have a function with a subset of getInstance and all check
+		//	if _, err := k.resolveType(tr, nil, nil); err != nil {
+		//		return fmt.Errorf("error checking template %s: %w", tip.typeDecl.Name, err)
+		//	}
+		//}
 	}
 	// check recursion cycles
 	// TODO - why it is not possible to check all cycles before instantiation

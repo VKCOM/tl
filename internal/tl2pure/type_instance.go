@@ -4,7 +4,7 @@ import "github.com/vkcom/tl/internal/tlast"
 
 type TypeInstance interface {
 	CanonicalName() string
-	Declaration() tlast.TL2TypeDeclaration
+	Combinator() tlast.TL2Combinator
 
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
@@ -22,15 +22,15 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
-	declaration   tlast.TL2TypeDeclaration
+	comb          tlast.TL2Combinator
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
 }
 
-func (ins *TypeInstanceCommon) Declaration() tlast.TL2TypeDeclaration {
-	return ins.declaration
+func (ins *TypeInstanceCommon) Combinator() tlast.TL2Combinator {
+	return ins.comb
 }
 
 func (ins *TypeInstanceCommon) GoodForMapKey() bool {

@@ -15,6 +15,9 @@ type TypeInstanceObject struct {
 	fieldTypes          []*TypeInstanceRef
 	isUnionElement      bool
 	unionIndex          int
+
+	// if function
+	resultType TypeInstance
 }
 
 type KernelValueObject struct {
@@ -244,20 +247,20 @@ func (v *KernelValueObject) CompareForMapKey(other KernelValue) int {
 	return 0
 }
 
-func (k *Kernel) createObject(canonicalName string, declaration tlast.TL2TypeDeclaration,
+func (k *Kernel) createObject(canonicalName string,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument,
-	isUnionElement bool, unionIndex int) (*TypeInstanceObject, error) {
+	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceObject, error) {
 
 	ins := &TypeInstanceObject{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			declaration:   declaration,
 		},
 		isConstructorFields: isConstructorFields,
 		constructorFields:   constructorFields,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
+		resultType:          resultType,
 	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		ins.constructorFields = append(ins.constructorFields, tlast.TL2Field{Type: alias})
