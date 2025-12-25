@@ -77,21 +77,23 @@ func (v *KernelValueString) CompareForMapKey(other KernelValue) int {
 
 func (k *Kernel) addString() {
 	name := "string"
-	decl := tlast.TL2TypeDeclaration{
-		Name: tlast.TL2TypeName{Name: name},
-		Type: tlast.TL2TypeDefinition{IsConstructorFields: true}, // for the purpose of type check, this is object with no fields
+	comb := tlast.TL2Combinator{
+		TypeDecl: tlast.TL2TypeDeclaration{
+			Name: tlast.TL2TypeName{Name: name},
+			Type: tlast.TL2TypeDefinition{IsConstructorFields: true}, // for the purpose of type check, this is object with no fields
+		},
 	}
 	ins := TypeInstanceString{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
-			declaration:   decl,
+			comb:          comb,
 		},
 	}
 	ref := &TypeInstanceRef{
 		ins: &ins,
 	}
 	kt := &KernelType{
-		tip:       decl,
+		comb:      comb,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
 	if _, ok := k.instances[name]; ok {

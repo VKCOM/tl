@@ -350,7 +350,7 @@ testNs.testName = Green x:int |
 				arg := comb.TypeDecl.TemplateArguments[0]
 
 				assert.Equal(t, "x", arg.Name)
-				assert.Equal(t, TL2TypeCategory("type"), arg.Category)
+				assert.Equal(t, TL2TypeCategoryType, arg.Category)
 			})
 
 			t.Run("union without variant declarations", func(t *testing.T) {
@@ -385,12 +385,12 @@ testNs.testName = Green x:int |
 				arg := comb.TypeDecl.TemplateArguments[0]
 
 				assert.Equal(t, "x", arg.Name)
-				assert.Equal(t, TL2TypeCategory("type"), arg.Category)
+				assert.Equal(t, TL2TypeCategoryType, arg.Category)
 
 				arg = comb.TypeDecl.TemplateArguments[1]
 
 				assert.Equal(t, "y", arg.Name)
-				assert.Equal(t, TL2TypeCategory("uint32"), arg.Category)
+				assert.Equal(t, TL2TypeCategoryNat, arg.Category)
 			})
 		})
 	})

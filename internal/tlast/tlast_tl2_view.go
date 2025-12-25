@@ -307,6 +307,12 @@ func (t *TL2BracketType) Print(sb *strings.Builder) {
 	t.ArrayType.Print(sb)
 }
 
+func (t TL2TypeApplication) String() string {
+	var sb strings.Builder
+	t.Print(&sb)
+	return sb.String()
+}
+
 func (t *TL2TypeApplication) Print(sb *strings.Builder) {
 	sb.WriteString(t.Name.String())
 	if len(t.Arguments) > 0 {
@@ -327,4 +333,10 @@ func (t *TL2TypeArgument) Print(sb *strings.Builder) {
 	} else {
 		t.Type.Print(sb)
 	}
+}
+
+func (t TL2TypeArgument) String() string {
+	var sb strings.Builder
+	t.Print(&sb)
+	return sb.String()
 }

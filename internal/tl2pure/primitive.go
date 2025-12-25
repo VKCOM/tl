@@ -329,14 +329,16 @@ func (v *KernelValueBit) CompareForMapKey(other KernelValue) int {
 }
 
 func (k *Kernel) addPrimitive(name string, clone KernelValue, goodForMapKey bool) {
-	decl := tlast.TL2TypeDeclaration{
-		Name: tlast.TL2TypeName{Name: name},
-		Type: tlast.TL2TypeDefinition{IsConstructorFields: true}, // for the purpose of type check, this is object with no fields
+	// for the purpose of type check, this is object with no fields, like uint32 = ;
+	comb := tlast.TL2Combinator{
+		TypeDecl: tlast.TL2TypeDeclaration{
+			Name: tlast.TL2TypeName{Name: name},
+			Type: tlast.TL2TypeDefinition{IsConstructorFields: true},
+		},
 	}
 	ins := TypeInstancePrimitive{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
-			declaration:   decl,
 		},
 		clone:         clone,
 		goodForMapKey: goodForMapKey,
@@ -345,7 +347,7 @@ func (k *Kernel) addPrimitive(name string, clone KernelValue, goodForMapKey bool
 		ins: &ins,
 	}
 	kt := &KernelType{
-		tip:       decl,
+		comb:      comb,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
 	if _, ok := k.instances[name]; ok {

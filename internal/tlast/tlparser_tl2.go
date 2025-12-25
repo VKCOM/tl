@@ -111,6 +111,9 @@ type TL2UnionType struct {
 
 type TL2TypeCategory string
 
+const TL2TypeCategoryType TL2TypeCategory = "type"
+const TL2TypeCategoryNat TL2TypeCategory = "uint32" // TODO - #
+
 // TL2TypeTemplate := lcName cl lcName;
 type TL2TypeTemplate struct {
 	Name     string
@@ -183,11 +186,11 @@ func (t TL2TypeDefinition) IsAlias() bool {
 }
 
 func (c TL2TypeCategory) IsType() bool {
-	return c == "type"
+	return c == TL2TypeCategoryType
 }
 
 func (c TL2TypeCategory) IsUint32() bool {
-	return c == "uint32"
+	return c == TL2TypeCategoryNat
 }
 
 func (c TL2TypeCategory) IsLegalCategory() bool {

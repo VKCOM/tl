@@ -131,8 +131,8 @@ func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType,
 		variantTypes: make([]*TypeInstanceObject, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
-		element, err := k.createObject(canonicalName+"__"+variantDef.Name, tlast.TL2TypeDeclaration{},
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, templateArguments, lrc, true, i)
+		element, err := k.createObject(canonicalName+"__"+variantDef.Name,
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, templateArguments, lrc, true, i, nil)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
