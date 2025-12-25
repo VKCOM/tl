@@ -6,8 +6,6 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-// TODO - []bit
-
 type TypeInstanceTupleVector struct {
 	TypeInstanceCommon
 	isTuple   bool
@@ -123,12 +121,13 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 	if !v.instance.isTuple {
 		v.resize(elementCount)
 	}
-	for i := 0; i < min(len(v.elements), elementCount); i++ {
+	lastIndex := min(elementCount, elementCount)
+	for i := 0; i < lastIndex; i++ {
 		if currentR, err = v.elements[i].ReadTL2(currentR, ctx); err != nil {
 			return r, err
 		}
 	}
-	for i := min(len(v.elements), elementCount); i < len(v.elements); i++ {
+	for i := lastIndex; i < len(v.elements); i++ {
 		v.elements[i].Reset()
 	}
 	// we skip excess element all at once. not one by one
@@ -162,6 +161,16 @@ func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {
 }
 
 func (k *Kernel) createTupleVector(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
+	if fieldType.ins.IsBit() {
+		ins := &TypeInstanceTupleVectorBit{
+			TypeInstanceCommon: TypeInstanceCommon{
+				canonicalName: canonicalName,
+			},
+			isTuple: isTuple,
+			count:   int(count),
+		}
+		return ins
+	}
 	ins := &TypeInstanceTupleVector{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
