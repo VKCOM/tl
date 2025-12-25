@@ -109,6 +109,9 @@ func (v *KernelValueMap) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
 	}
 
 	v.resize(elementCount)

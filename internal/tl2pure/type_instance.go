@@ -7,6 +7,7 @@ type TypeInstance interface {
 	Declaration() tlast.TL2TypeDeclaration
 
 	GoodForMapKey() bool
+	IsBit() bool // for vector/tuple special case
 	FindCycle(c *cycleFinder)
 
 	CreateValue() KernelValue
@@ -33,5 +34,9 @@ func (ins *TypeInstanceCommon) Declaration() tlast.TL2TypeDeclaration {
 }
 
 func (ins *TypeInstanceCommon) GoodForMapKey() bool {
+	return false
+}
+
+func (ins *TypeInstanceCommon) IsBit() bool {
 	return false
 }
