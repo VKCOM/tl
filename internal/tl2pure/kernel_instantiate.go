@@ -8,7 +8,7 @@ import (
 )
 
 func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
-	canonicalName := k.CanonicalName(tr)
+	canonicalName := tr.String()
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
@@ -79,13 +79,13 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 
 // alias || fields || union
 func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2TypeDefinition,
-	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
+	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
-	if len(lrc) != len(templateArguments) {
-		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(templateArguments), len(lrc))
+	if len(actualArgs) != len(leftArgs) {
+		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(leftArgs), len(actualArgs))
 	}
-	for i, targ := range templateArguments {
-		arg := lrc[i]
+	for i, targ := range leftArgs {
+		arg := actualArgs[i]
 		if targ.Category.IsUint32() != arg.IsNumber {
 			return nil, fmt.Errorf("typeref %s argument %s category differ", canonicalName, targ.Name)
 		}
@@ -109,13 +109,13 @@ func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2Ty
 	// }
 	switch {
 	case definition.IsUnionType:
-		return k.createUnion(canonicalName, definition.UnionType, templateArguments, lrc)
+		return k.createUnion(canonicalName, definition.UnionType, leftArgs, actualArgs)
 	case definition.IsAlias():
-		return k.createAlias(canonicalName, definition.TypeAlias, templateArguments, lrc)
+		return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.IsConstructorFields:
 		return k.createObject(canonicalName,
 			true, definition.TypeAlias, definition.ConstructorFields,
-			templateArguments, lrc,
+			leftArgs, actualArgs,
 			false, 0, nil)
 	default:
 		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)

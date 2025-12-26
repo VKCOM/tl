@@ -78,9 +78,9 @@ func (k *Kernel) addTip(kt *KernelType) error {
 }
 
 // lrc is local resolve context, or actual values of template arguments, for pair<x,y> = ...; it could be <uint32, uint32>
-func (k *Kernel) resolveType(tr tlast.TL2TypeRef, templateArguments []tlast.TL2TypeTemplate,
-	lrc []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
-	ac, err := k.resolveArgument(tlast.TL2TypeArgument{Type: tr}, templateArguments, lrc)
+func (k *Kernel) resolveType(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
+	ac, err := k.resolveArgument(tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
 	if err != nil {
 		return tr, err
 	}
@@ -92,64 +92,28 @@ func (k *Kernel) resolveType(tr tlast.TL2TypeRef, templateArguments []tlast.TL2T
 
 func (k *Kernel) CanonicalName(t tlast.TL2TypeRef) string {
 	sb := strings.Builder{}
-	k.canonicalName(t, &sb)
+	t.Print(&sb)
 	return sb.String()
-}
-
-func (k *Kernel) canonicalName(t tlast.TL2TypeRef, sb *strings.Builder) {
-	if t.IsBracket {
-		sb.WriteString("[")
-		if t.BracketType.HasIndex {
-			if t.BracketType.IndexType.IsNumber {
-				sb.WriteString(fmt.Sprintf("%d", t.BracketType.IndexType.Number))
-			} else {
-				k.canonicalName(t.BracketType.IndexType.Type, sb)
-			}
-		}
-		sb.WriteString("]")
-		k.canonicalName(t.BracketType.ArrayType, sb)
-		return
-	}
-	if t.SomeType.Name.Namespace != "" { // t.Name.String() unwrapped for efficiency
-		sb.WriteString(t.SomeType.Name.Namespace)
-		sb.WriteString(".")
-	}
-	sb.WriteString(t.SomeType.Name.Name)
-	for i, arg := range t.SomeType.Arguments {
-		if i == 0 {
-			sb.WriteString("<")
-		} else {
-			sb.WriteString(",")
-		}
-		if arg.IsNumber {
-			sb.WriteString(fmt.Sprintf("%d", arg.Number))
-		} else {
-			k.canonicalName(arg.Type, sb)
-		}
-	}
-	if len(t.SomeType.Arguments) != 0 {
-		sb.WriteString(">")
-	}
 }
 
 func (k *Kernel) IsBit(tr tlast.TL2TypeRef) bool {
 	return !tr.IsBracket && tr.SomeType.Name.Namespace == "" && tr.SomeType.Name.Name == "bit"
 }
 
-func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, templateArguments []tlast.TL2TypeTemplate,
-	lrc []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
+func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	before := tr
-	was := k.CanonicalName(before.Type)
-	tr, err := k.resolveArgumentImpl(tr, templateArguments, lrc)
-	now := k.CanonicalName(before.Type)
-	if was != now {
-		panic(fmt.Sprintf("tl2pure: internal error, resolveArgument destroyed %s original value %s due to golang aliasing", now, was))
+	was := before.Type.String()
+	tr, err := k.resolveArgumentImpl(tr, leftArgs, actualArgs)
+	after := before.Type.String()
+	if was != after {
+		panic(fmt.Sprintf("tl2pure: internal error, resolveArgument destroyed %s original value %s due to golang aliasing", after, was))
 	}
 	return tr, err
 }
 
-func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments []tlast.TL2TypeTemplate,
-	lrc []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
+func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	// numbers resolve to numbers
 	if tr.IsNumber {
 		tr.Category = tlast.TL2TypeCategoryNat
@@ -158,13 +122,13 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	if tr.Type.IsBracket {
 		bracketType := *tr.Type.BracketType
 		if bracketType.HasIndex {
-			ic, err := k.resolveArgument(bracketType.IndexType, templateArguments, lrc)
+			ic, err := k.resolveArgument(bracketType.IndexType, leftArgs, actualArgs)
 			if err != nil {
 				return tr, err
 			}
 			bracketType.IndexType = ic
 		}
-		ac, err := k.resolveType(bracketType.ArrayType, templateArguments, lrc)
+		ac, err := k.resolveType(bracketType.ArrayType, leftArgs, actualArgs)
 		if err != nil {
 			return tr, err
 		}
@@ -175,12 +139,12 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	// names found in local arguments have priprity over global type names
 	someType := tr.Type.SomeType
 	if someType.Name.Namespace == "" {
-		for i, targ := range templateArguments {
+		for i, targ := range leftArgs {
 			if targ.Name == someType.Name.Name {
 				if len(someType.Arguments) != 0 {
 					return tr, fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name)
 				}
-				return lrc[i], nil
+				return actualArgs[i], nil
 			}
 		}
 		// probably ref to global type or a typo
@@ -188,7 +152,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	//return tr, nil
 	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
 	for i, arg := range someType.Arguments {
-		rt, err := k.resolveArgument(arg, templateArguments, lrc)
+		rt, err := k.resolveArgument(arg, leftArgs, actualArgs)
 		if err != nil {
 			return tr, err
 		}

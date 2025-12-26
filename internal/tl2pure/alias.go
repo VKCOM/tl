@@ -77,8 +77,8 @@ func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {
 }
 
 func (k *Kernel) createAlias(canonicalName string, alias tlast.TL2TypeRef,
-	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
-	rt, err := k.resolveType(alias, templateArguments, lrc)
+	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
+	rt, err := k.resolveType(alias, leftArgs, actualArgs)
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}

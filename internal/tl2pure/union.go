@@ -122,7 +122,7 @@ func (v *KernelValueUnion) CompareForMapKey(other KernelValue) int {
 }
 
 func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType,
-	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
+	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -132,7 +132,7 @@ func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType,
 	}
 	for i, variantDef := range def.Variants {
 		element, err := k.createObject(canonicalName+"__"+variantDef.Name,
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, templateArguments, lrc, true, i, nil)
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}

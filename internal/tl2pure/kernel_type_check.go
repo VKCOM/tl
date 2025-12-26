@@ -6,26 +6,26 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition, leftArguments []tlast.TL2TypeTemplate) error {
+func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition, leftArgs []tlast.TL2TypeTemplate) error {
 	if tip.IsUnionType {
 		for _, v := range tip.UnionType.Variants {
-			if err := k.typeCheckAliasFields(v.IsTypeAlias, v.TypeAlias, v.Fields, leftArguments); err != nil {
+			if err := k.typeCheckAliasFields(v.IsTypeAlias, v.TypeAlias, v.Fields, leftArgs); err != nil {
 				return err
 			}
 		}
 		return nil
 	}
 	if tip.IsAlias() {
-		return k.typeCheckTypeRef(tip.TypeAlias, leftArguments)
+		return k.typeCheckTypeRef(tip.TypeAlias, leftArgs)
 	}
 	return k.typeCheckAliasFields(false, tlast.TL2TypeRef{},
-		tip.ConstructorFields, leftArguments)
+		tip.ConstructorFields, leftArgs)
 }
 
 func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeRef,
-	fields []tlast.TL2Field, leftArguments []tlast.TL2TypeTemplate) error {
+	fields []tlast.TL2Field, leftArgs []tlast.TL2TypeTemplate) error {
 	if isTypeAlias {
-		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: typeAlias}, leftArguments)
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: typeAlias}, leftArgs)
 		if err != nil {
 			return err
 		}
@@ -35,7 +35,7 @@ func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeR
 		return nil
 	}
 	for _, f := range fields {
-		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: f.Type}, leftArguments)
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: f.Type}, leftArgs)
 		if err != nil {
 			return err
 		}
@@ -46,9 +46,9 @@ func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeR
 	return nil
 }
 
-func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArguments []tlast.TL2TypeTemplate) error {
+func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate) error {
 	if tr.IsBracket {
-		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: tr.BracketType.ArrayType}, leftArguments)
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: tr.BracketType.ArrayType}, leftArgs)
 		if err != nil {
 			return err
 		}
@@ -56,7 +56,7 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArguments []tlast.TL2
 			return fmt.Errorf("bracket element type cannot be number")
 		}
 		if tr.BracketType.HasIndex {
-			_, err = k.typeCheckArgument(tr.BracketType.IndexType, leftArguments)
+			_, err = k.typeCheckArgument(tr.BracketType.IndexType, leftArgs)
 			if err != nil {
 				return err
 			}
@@ -76,7 +76,7 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArguments []tlast.TL2
 		return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.comb.TypeDecl.TemplateArguments), len(someType.Arguments))
 	}
 	for i, targ := range kt.comb.TypeDecl.TemplateArguments {
-		cat, err := k.typeCheckArgument(someType.Arguments[i], leftArguments)
+		cat, err := k.typeCheckArgument(someType.Arguments[i], leftArgs)
 		if err != nil {
 			return err
 		}
@@ -87,12 +87,12 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArguments []tlast.TL2
 	return nil
 }
 
-func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArguments []tlast.TL2TypeTemplate) (tlast.TL2TypeCategory, error) {
+func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate) (tlast.TL2TypeCategory, error) {
 	if arg.IsNumber {
 		return tlast.TL2TypeCategoryNat, nil
 	}
 	if !arg.Type.IsBracket && arg.Type.SomeType.Name.Namespace == "" {
-		for _, la := range leftArguments {
+		for _, la := range leftArgs {
 			if arg.Type.SomeType.Name.Name == la.Name {
 				if len(arg.Type.SomeType.Arguments) != 0 {
 					return "", fmt.Errorf("reference to template argument %s cannot have arguments", la.Name)
@@ -102,7 +102,7 @@ func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArguments []tl
 		}
 		// reference to global type
 	}
-	if err := k.typeCheckTypeRef(arg.Type, leftArguments); err != nil {
+	if err := k.typeCheckTypeRef(arg.Type, leftArgs); err != nil {
 		return "", err
 	}
 	return tlast.TL2TypeCategoryType, nil
