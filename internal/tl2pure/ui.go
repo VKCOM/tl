@@ -28,7 +28,9 @@ type UIModel struct {
 
 	LastError error
 
-	EditorUnion UIEditorUnion
+	EditorUnion     UIEditorUnion
+	EditorString    UIEditorString
+	EditorPrimitive UIEditorPrimitive
 }
 
 func (m *UIModel) colorButton(str string) string {

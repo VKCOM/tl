@@ -47,16 +47,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnEnter(m.impl)
 				return m, nil
+			} else {
+				if m.impl.CurrentEditor == nil {
+					m.impl.StartEdit()
+				}
+				return m, nil
 			}
 		}
-		if msg.Type == tea.KeyEscape {
+		if msg.Type == tea.KeyEscape || msg.Type == tea.KeyF9 { // KeyF9 for testing in IDE
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnEscape(m.impl)
 				return m, nil
 			}
 		}
 		if msg.Type == tea.KeyRunes {
-			// m.impl.LastError = fmt.Errorf("%s", msg.String())
 			if m.impl.CurrentEditor == nil {
 				m.impl.StartEdit()
 			}
