@@ -22,7 +22,7 @@ type KernelValue interface {
 	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
 	WriteJSON(w []byte, ctx *TL2Context) []byte
 
-	WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
+	UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
 
 	CompareForMapKey(other KernelValue) int
 }

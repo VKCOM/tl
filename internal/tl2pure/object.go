@@ -229,7 +229,7 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueObject) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
 	sb.WriteString("{")
 	first := true
@@ -249,10 +249,10 @@ func (v *KernelValueObject) WriteUI(sb *strings.Builder, onPath bool, level int,
 		sb.WriteString(fieldDef.Name)
 		sb.WriteString(`":`)
 		if fieldOnPath {
-			v.fields[i].WriteUI(sb, true, level+1, path, model)
+			v.fields[i].UIWrite(sb, true, level+1, path, model)
 			continue
 		}
-		v.fields[i].WriteUI(sb, false, 0, nil, model)
+		v.fields[i].UIWrite(sb, false, 0, nil, model)
 	}
 	sb.WriteString("}")
 }

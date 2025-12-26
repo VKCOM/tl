@@ -70,8 +70,8 @@ func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return v.value.WriteJSON(w, ctx)
 }
 
-func (v *KernelValueAlias) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	v.value.WriteUI(sb, onPath, level, path, model)
+func (v *KernelValueAlias) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	v.value.UIWrite(sb, onPath, level, path, model)
 }
 
 func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {

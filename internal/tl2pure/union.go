@@ -110,7 +110,7 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueUnion) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	defVariant := v.instance.def.Variants[v.index]
 	sb.WriteString(`{"type":"`)
 	if onPath && len(path) > level && path[level] == -1 { // constructor
@@ -122,7 +122,7 @@ func (v *KernelValueUnion) WriteUI(sb *strings.Builder, onPath bool, level int, 
 		return
 	}
 	sb.WriteString(`","value":`)
-	v.variants[v.index].WriteUI(sb, onPath, level, path, model)
+	v.variants[v.index].UIWrite(sb, onPath, level, path, model)
 	sb.WriteString("}")
 }
 

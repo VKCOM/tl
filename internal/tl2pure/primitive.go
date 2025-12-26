@@ -68,7 +68,7 @@ func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
-func (v *KernelValueUint32) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendUint(nil, uint64(v.value), 10)
 	sb.Write(w)
 }
@@ -115,7 +115,7 @@ func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, int64(v.value), 10)
 }
 
-func (v *KernelValueInt32) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendInt(nil, int64(v.value), 10)
 	sb.Write(w)
 }
@@ -162,7 +162,7 @@ func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, v.value, 10)
 }
 
-func (v *KernelValueUint64) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendUint(nil, v.value, 10)
 	sb.Write(w)
 }
@@ -209,7 +209,7 @@ func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, v.value, 10)
 }
 
-func (v *KernelValueInt64) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendInt(nil, v.value, 10)
 	sb.Write(w)
 }
@@ -256,7 +256,7 @@ func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
-func (v *KernelValueByte) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendUint(nil, uint64(v.value), 10)
 	sb.Write(w)
 }
@@ -309,7 +309,7 @@ func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "false"...)
 }
 
-func (v *KernelValueBool) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	if v.value {
 		sb.WriteString("true")
 	} else {
@@ -354,7 +354,7 @@ func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "true"...)
 }
 
-func (v *KernelValueBit) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	sb.WriteString("bit")
 }
 

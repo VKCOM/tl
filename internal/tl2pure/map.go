@@ -140,7 +140,7 @@ func (v *KernelValueMap) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueMap) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueMap) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	sb.WriteString("<KernelValueMap>")
 }
 

@@ -65,7 +65,7 @@ func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return basictl.JSONWriteString(w, v.value)
 }
 
-func (v *KernelValueString) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := basictl.JSONWriteString(nil, v.value)
 	sb.Write(w)
 }
