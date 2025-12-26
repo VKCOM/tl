@@ -7,6 +7,78 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
+func (k *Kernel) resolveType(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
+	ac, err := k.resolveArgument(tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
+	if err != nil {
+		return tr, err
+	}
+	if ac.IsNumber {
+		return tr, fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Number)
+	}
+	return ac.Type, nil
+}
+
+func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
+	before := tr
+	was := before.Type.String()
+	tr, err := k.resolveArgumentImpl(tr, leftArgs, actualArgs)
+	after := before.Type.String()
+	if was != after {
+		panic(fmt.Sprintf("tl2pure: internal error, resolveArgument destroyed %s original value %s due to golang aliasing", after, was))
+	}
+	return tr, err
+}
+
+func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
+	if tr.IsNumber {
+		tr.Category = tlast.TL2TypeCategoryNat
+		return tr, nil
+	}
+	if tr.Type.IsBracket {
+		bracketType := *tr.Type.BracketType
+		if bracketType.HasIndex {
+			ic, err := k.resolveArgument(bracketType.IndexType, leftArgs, actualArgs)
+			if err != nil {
+				return tr, err
+			}
+			bracketType.IndexType = ic
+		}
+		ac, err := k.resolveType(bracketType.ArrayType, leftArgs, actualArgs)
+		if err != nil {
+			return tr, err
+		}
+		bracketType.ArrayType = ac
+		tr.Type.BracketType = &bracketType
+		return tr, nil
+	}
+	// names found in local arguments have priprity over global type names
+	someType := tr.Type.SomeType
+	if someType.Name.Namespace == "" {
+		for i, targ := range leftArgs {
+			if targ.Name == someType.Name.Name {
+				if len(someType.Arguments) != 0 {
+					return tr, fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name)
+				}
+				return actualArgs[i], nil
+			}
+		}
+		// probably ref to global type or a typo
+	}
+	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
+	for i, arg := range someType.Arguments {
+		rt, err := k.resolveArgument(arg, leftArgs, actualArgs)
+		if err != nil {
+			return tr, err
+		}
+		someType.Arguments[i] = rt
+	}
+	tr.Type.SomeType = someType
+	return tr, nil
+}
+
 func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	canonicalName := tr.String()
 	if ref, ok := k.instances[canonicalName]; ok {
@@ -57,6 +129,10 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 
 	var err error
 	if !kt.comb.IsFunction {
+		if len(kt.comb.TypeDecl.TemplateArguments) != len(someType.Arguments) {
+			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.comb.TypeDecl.TemplateArguments), len(someType.Arguments))
+		}
+
 		ref.ins, err = k.createOrdinaryType(canonicalName, kt.comb.TypeDecl.Type, kt.comb.TypeDecl.TemplateArguments, someType.Arguments)
 		if err != nil {
 			return nil, err
@@ -81,32 +157,6 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2TypeDefinition,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
-	if len(actualArgs) != len(leftArgs) {
-		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(leftArgs), len(actualArgs))
-	}
-	for i, targ := range leftArgs {
-		arg := actualArgs[i]
-		if targ.Category.IsUint32() != arg.IsNumber {
-			return nil, fmt.Errorf("typeref %s argument %s category differ", canonicalName, targ.Name)
-		}
-		// if arg.IsNumber {
-		//	continue
-		// }
-		// if some arguments are unused inside body, they will not be instantiated and checked, this is ok
-		// _, err := k.getInstance(arg.Type)
-		// if err != nil {
-		//	return nil, err
-		// }
-	}
-
-	// lrc2 := map[string]ResolvedArgument{} // internal context
-	// for i, resolvedArg := range resolvedArgs {
-	// targ := kt.typeDecl.TemplateArguments[i]
-	// if _, ok := lrc2[targ.Name]; ok {
-	// return nil, fmt.Errorf("typeref %s template parameter %s name collision", ktr.Name, targ.Name)
-	// }
-	// lrc2[targ.Name] = resolvedArg
-	// }
 	switch {
 	case definition.IsUnionType:
 		return k.createUnion(canonicalName, definition.UnionType, leftArgs, actualArgs)

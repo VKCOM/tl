@@ -77,19 +77,6 @@ func (k *Kernel) addTip(kt *KernelType) error {
 	return nil
 }
 
-// lrc is local resolve context, or actual values of template arguments, for pair<x,y> = ...; it could be <uint32, uint32>
-func (k *Kernel) resolveType(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
-	ac, err := k.resolveArgument(tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
-	if err != nil {
-		return tr, err
-	}
-	if ac.IsNumber {
-		return tr, fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Number)
-	}
-	return ac.Type, nil
-}
-
 func (k *Kernel) CanonicalName(t tlast.TL2TypeRef) string {
 	sb := strings.Builder{}
 	t.Print(&sb)
@@ -98,68 +85,6 @@ func (k *Kernel) CanonicalName(t tlast.TL2TypeRef) string {
 
 func (k *Kernel) IsBit(tr tlast.TL2TypeRef) bool {
 	return !tr.IsBracket && tr.SomeType.Name.Namespace == "" && tr.SomeType.Name.Name == "bit"
-}
-
-func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
-	before := tr
-	was := before.Type.String()
-	tr, err := k.resolveArgumentImpl(tr, leftArgs, actualArgs)
-	after := before.Type.String()
-	if was != after {
-		panic(fmt.Sprintf("tl2pure: internal error, resolveArgument destroyed %s original value %s due to golang aliasing", after, was))
-	}
-	return tr, err
-}
-
-func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
-	// numbers resolve to numbers
-	if tr.IsNumber {
-		tr.Category = tlast.TL2TypeCategoryNat
-		return tr, nil
-	}
-	if tr.Type.IsBracket {
-		bracketType := *tr.Type.BracketType
-		if bracketType.HasIndex {
-			ic, err := k.resolveArgument(bracketType.IndexType, leftArgs, actualArgs)
-			if err != nil {
-				return tr, err
-			}
-			bracketType.IndexType = ic
-		}
-		ac, err := k.resolveType(bracketType.ArrayType, leftArgs, actualArgs)
-		if err != nil {
-			return tr, err
-		}
-		bracketType.ArrayType = ac
-		tr.Type.BracketType = &bracketType
-		return tr, nil
-	}
-	// names found in local arguments have priprity over global type names
-	someType := tr.Type.SomeType
-	if someType.Name.Namespace == "" {
-		for i, targ := range leftArgs {
-			if targ.Name == someType.Name.Name {
-				if len(someType.Arguments) != 0 {
-					return tr, fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name)
-				}
-				return actualArgs[i], nil
-			}
-		}
-		// probably ref to global type or a typo
-	}
-	//return tr, nil
-	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
-	for i, arg := range someType.Arguments {
-		rt, err := k.resolveArgument(arg, leftArgs, actualArgs)
-		if err != nil {
-			return tr, err
-		}
-		someType.Arguments[i] = rt
-	}
-	tr.Type.SomeType = someType
-	return tr, nil
 }
 
 func (k *Kernel) addInstance(canonicalName string, kt *KernelType) *TypeInstanceRef {
@@ -209,8 +134,17 @@ func (k *Kernel) Compile() error {
 			comb:      comb,
 			instances: map[string]*TypeInstanceRef{},
 		}
+		if !comb.IsFunction {
+			names := map[string]int{}
+			for i, targ := range comb.TypeDecl.TemplateArguments {
+				if _, ok := names[targ.Name]; ok {
+					return fmt.Errorf("error adding type %s: template argument %s name collision", comb.TypeDecl.Name, targ.Name)
+				}
+				names[targ.Name] = i
+			}
+		}
 		if err := k.addTip(kt); err != nil {
-			return fmt.Errorf("error adding type %s: %w", comb.TypeDecl.Name, err)
+			return fmt.Errorf("error adding type %s: %w", comb.ReferenceName(), err)
 		}
 	}
 	// type all declarations by comparing type ref with actual type definition
