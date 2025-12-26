@@ -41,8 +41,8 @@ func (m UIModel) View() string {
 		sb.WriteString("#")
 		sb.WriteString(fmt.Sprintf("%08x", *m.Fun.instance.comb.FuncDecl.ID))
 	}
-	sb.WriteString(" => ")
-	sb.WriteString(m.Fun.instance.resultType.CanonicalName())
+	//sb.WriteString(" => ")
+	//sb.WriteString(m.Fun.instance.resultType.Combinator().TypeDecl.Type.St.CanonicalName())
 	sb.WriteString("    ")
 	if m.LastError != nil {
 		sb.WriteString(color.InRed(m.LastError.Error()))
