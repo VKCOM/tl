@@ -8,22 +8,33 @@ import (
 )
 
 type UIEditorUnion struct {
-	prefixRunes []string
-	prefix      string // lowercase
-	index       int
 	value       *KernelValueUnion
+	index       int
+	prefix      string   // lowercase
+	prefixRunes []string // lowercase
 	names       []string
 	lowerNames  []string
 }
 
-func (e *UIEditorUnion) UIWrite(sb *strings.Builder) {
-	name := e.names[e.index]
-	if e.prefix == "" {
-		sb.WriteString(color.InBlackOverBlue(name))
-	} else {
-		sb.WriteString(color.InBlackOverBlue(name[:len(e.prefix)]))
-		sb.WriteString(name[len(e.prefix):])
+func (e *UIEditorUnion) SetValue(v *KernelValueUnion) {
+	e.value = v
+	e.index = v.index
+	e.prefix = ""
+	e.prefixRunes = e.prefixRunes[:0]
+	e.names = e.names[:0]
+	e.lowerNames = e.lowerNames[:0]
+	for _, va := range v.instance.def.Variants {
+		e.names = append(e.names, va.Name)
+		e.lowerNames = append(e.lowerNames, strings.ToLower(va.Name))
 	}
+}
+
+func (e *UIEditorUnion) UIWrite(sb *strings.Builder) {
+	sb.WriteString(color.InBlackOverBlue(`"`))
+	name := e.names[e.index]
+	sb.WriteString(color.InBlackOverBlue(name[:len(e.prefix)]))
+	sb.WriteString(name[len(e.prefix):])
+	sb.WriteString(`"`)
 }
 
 func (e *UIEditorUnion) OnRune(msg string, model *UIModel) {

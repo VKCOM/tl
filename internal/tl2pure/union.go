@@ -119,14 +119,16 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	} else {
 		sb.WriteString("type")
 	}
-	sb.WriteString(`":"`)
+	sb.WriteString(`":`)
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
+		sb.WriteString(`"`)
 		sb.WriteString(defVariant.Name)
+		sb.WriteString(`"`)
 	}
 	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
-		sb.WriteString(`"}`)
+		sb.WriteString(`}`)
 		return
 	}
 	sb.WriteString(`","value":`)
@@ -148,15 +150,7 @@ func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel) {
 	selectedIndex := model.Path[level]
 
 	if selectedIndex == -1 {
-		model.EditorUnion = UIEditorUnion{
-			prefix: "",
-			value:  v,
-			index:  v.index,
-		}
-		for _, va := range v.instance.def.Variants {
-			model.EditorUnion.names = append(model.EditorUnion.names, va.Name)
-			model.EditorUnion.lowerNames = append(model.EditorUnion.lowerNames, strings.ToLower(va.Name))
-		}
+		model.EditorUnion.SetValue(v)
 		model.SetCurrentEditor(&model.EditorUnion)
 		return
 	}

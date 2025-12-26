@@ -66,8 +66,12 @@ func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	w := basictl.JSONWriteString(nil, v.value)
-	sb.Write(w)
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := basictl.JSONWriteString(nil, v.value)
+		sb.Write(w)
+	}
 }
 
 func (v *KernelValueString) UIFixPath(side int, level int, model *UIModel) int {
@@ -76,6 +80,11 @@ func (v *KernelValueString) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueString) UIStartEdit(level int, model *UIModel) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorString.SetValue(v)
+	model.SetCurrentEditor(&model.EditorString)
 }
 
 func (v *KernelValueString) Clone() KernelValue {
