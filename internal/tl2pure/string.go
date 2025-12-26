@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"fmt"
 	"math/rand"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -62,6 +63,11 @@ func (v *KernelValueString) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return basictl.JSONWriteString(w, v.value)
+}
+
+func (v *KernelValueString) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	w := basictl.JSONWriteString(nil, v.value)
+	sb.Write(w)
 }
 
 func (v *KernelValueString) Clone() KernelValue {
