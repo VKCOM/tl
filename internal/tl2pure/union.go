@@ -117,10 +117,14 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	if onPath && len(path) > level && path[level] == -1 { // constructor
 		sb.WriteString(color.InBlue("type"))
 	} else {
-		sb.WriteString(`"type"`)
+		sb.WriteString("type")
 	}
 	sb.WriteString(`":"`)
-	sb.WriteString(defVariant.Name)
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		sb.WriteString(defVariant.Name)
+	}
 	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
 		sb.WriteString(`"}`)
 		return
@@ -135,6 +139,28 @@ func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel) {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		model.Path = append(model.Path[:level], 0)
+	}
+	selectedIndex := model.Path[level]
+
+	if selectedIndex == -1 {
+		model.EditorUnion = UIEditorUnion{
+			prefix: "",
+			value:  v,
+			index:  v.index,
+		}
+		for _, va := range v.instance.def.Variants {
+			model.EditorUnion.names = append(model.EditorUnion.names, va.Name)
+			model.EditorUnion.lowerNames = append(model.EditorUnion.lowerNames, strings.ToLower(va.Name))
+		}
+		model.SetCurrentEditor(&model.EditorUnion)
+		return
+	}
+	v.variants[v.index].UIStartEdit(level, model)
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {

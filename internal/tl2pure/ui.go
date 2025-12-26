@@ -8,8 +8,15 @@ import (
 )
 
 type UIEditor interface {
+	Value() KernelValue
+
 	UIWrite(sb *strings.Builder)
+
 	OnRune(msg string, model *UIModel)
+	OnBackspace(model *UIModel)
+	OnEnter(model *UIModel)
+	OnTab(model *UIModel)
+	OnEscape(model *UIModel)
 }
 
 type UIModel struct {
@@ -20,6 +27,8 @@ type UIModel struct {
 	CurrentEditor UIEditor
 
 	LastError error
+
+	EditorUnion UIEditorUnion
 }
 
 func (m *UIModel) colorButton(str string) string {
@@ -102,6 +111,13 @@ func (m *UIModel) Left() {
 
 func (m *UIModel) StartEdit() {
 	m.Fun.UIStartEdit(0, m)
+}
+
+func (m *UIModel) SetCurrentEditor(e UIEditor) {
+	if m.CurrentEditor != nil {
+		panic("edit already started")
+	}
+	m.CurrentEditor = e
 }
 
 // [F1]Help [Tab]Next [^Enter]Send [Enter]Edit [Esc]Cancel  // [F5]Extra

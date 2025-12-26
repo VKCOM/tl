@@ -315,6 +315,14 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueObject) UIStartEdit(level int, model *UIModel) {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		model.Path = append(model.Path[:level], 0)
+	}
+	selectedIndex := model.Path[level]
+	v.fields[selectedIndex].UIStartEdit(level+1, model)
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

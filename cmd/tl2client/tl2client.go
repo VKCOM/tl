@@ -31,8 +31,32 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		if msg.Type == tea.KeyBackspace {
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnBackspace(m.impl)
+				return m, nil
+			}
+		}
+		if msg.Type == tea.KeyTab {
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnTab(m.impl)
+				return m, nil
+			}
+		}
+		if msg.Type == tea.KeyEnter {
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnEnter(m.impl)
+				return m, nil
+			}
+		}
+		if msg.Type == tea.KeyEscape {
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnEscape(m.impl)
+				return m, nil
+			}
+		}
 		if msg.Type == tea.KeyRunes {
-			m.impl.LastError = fmt.Errorf("%s", msg.String())
+			// m.impl.LastError = fmt.Errorf("%s", msg.String())
 			if m.impl.CurrentEditor == nil {
 				m.impl.StartEdit()
 			}
