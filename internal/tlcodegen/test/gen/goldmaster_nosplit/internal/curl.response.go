@@ -117,10 +117,10 @@ func (item *CurlResponse) CalculateLayout(sizes []int, optimizeEmpty bool) ([]in
 	case 1:
 		return item.valueError.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -135,10 +135,10 @@ func (item *CurlResponse) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty 
 	case 1:
 		return item.valueError.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

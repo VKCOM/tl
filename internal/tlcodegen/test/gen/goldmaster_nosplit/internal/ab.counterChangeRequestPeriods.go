@@ -121,10 +121,10 @@ func (item *AbCounterChangeRequestPeriods) CalculateLayout(sizes []int, optimize
 	case 1:
 		return item.valueOne.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -139,10 +139,10 @@ func (item *AbCounterChangeRequestPeriods) InternalWriteTL2(w []byte, sizes []in
 	case 1:
 		return item.valueOne.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

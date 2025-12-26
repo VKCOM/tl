@@ -47,8 +47,11 @@ func BuiltinTuple11BoolWrite(w []byte, vec *[11]bool) []byte {
 }
 
 func BuiltinTuple11BoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[11]bool) ([]int, int) {
-	if 11 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 11 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -67,8 +70,12 @@ func BuiltinTuple11BoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[11
 }
 
 func BuiltinTuple11BoolInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[11]bool) ([]byte, []int, int) {
-	if 11 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 11 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

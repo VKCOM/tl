@@ -75,8 +75,11 @@ func BuiltinVectorDictionaryFieldIntWrite(w []byte, m map[string]int32) []byte {
 }
 
 func BuiltinVectorDictionaryFieldIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]int32) ([]int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -104,8 +107,12 @@ func BuiltinVectorDictionaryFieldIntCalculateLayout(sizes []int, optimizeEmpty b
 }
 
 func BuiltinVectorDictionaryFieldIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]int32) ([]byte, []int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -263,8 +270,11 @@ func BuiltinVectorDictionaryFieldIntBytesWrite(w []byte, vec []tlDictionaryField
 }
 
 func BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]tlDictionaryFieldInt.DictionaryFieldIntBytes) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -284,8 +294,12 @@ func BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes []int, optimizeEm
 }
 
 func BuiltinVectorDictionaryFieldIntBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]tlDictionaryFieldInt.DictionaryFieldIntBytes) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

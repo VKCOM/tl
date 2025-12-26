@@ -46,8 +46,11 @@ func BuiltinTuple4StringWrite(w []byte, vec *[4]string) []byte {
 }
 
 func BuiltinTuple4StringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[4]string) ([]int, int) {
-	if 4 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 4 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -67,8 +70,12 @@ func BuiltinTuple4StringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[4
 }
 
 func BuiltinTuple4StringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[4]string) ([]byte, []int, int) {
-	if 4 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 4 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -193,8 +200,11 @@ func BuiltinTuple4StringBytesWrite(w []byte, vec *[4][]byte) []byte {
 }
 
 func BuiltinTuple4StringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[4][]byte) ([]int, int) {
-	if 4 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 4 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -214,8 +224,12 @@ func BuiltinTuple4StringBytesCalculateLayout(sizes []int, optimizeEmpty bool, ve
 }
 
 func BuiltinTuple4StringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[4][]byte) ([]byte, []int, int) {
-	if 4 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 4 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

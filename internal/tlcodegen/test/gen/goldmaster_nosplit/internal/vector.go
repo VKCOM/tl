@@ -759,10 +759,10 @@ func (item *VectorIntBoxedMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -790,10 +790,10 @@ func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool
 }
 
 func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -948,10 +948,10 @@ func (item *VectorIntMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *VectorIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -979,10 +979,10 @@ func (item *VectorIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 }
 
 func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

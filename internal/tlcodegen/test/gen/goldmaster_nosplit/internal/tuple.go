@@ -507,10 +507,10 @@ func (item *TupleInt0Maybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TupleInt0Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -538,10 +538,10 @@ func (item *TupleInt0Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 }
 
 func (item *TupleInt0Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -818,10 +818,10 @@ func (item *TupleInt3BoxedMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TupleInt3BoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -849,10 +849,10 @@ func (item *TupleInt3BoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool
 }
 
 func (item *TupleInt3BoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1005,10 +1005,10 @@ func (item *TupleInt3Maybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TupleInt3Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -1036,10 +1036,10 @@ func (item *TupleInt3Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 }
 
 func (item *TupleInt3Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1316,10 +1316,10 @@ func (item *TupleIntBoxed0BoxedMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TupleIntBoxed0BoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -1347,10 +1347,10 @@ func (item *TupleIntBoxed0BoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty
 }
 
 func (item *TupleIntBoxed0BoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1623,10 +1623,10 @@ func (item *TupleIntBoxed3Maybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TupleIntBoxed3Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -1654,10 +1654,10 @@ func (item *TupleIntBoxed3Maybe) CalculateLayout(sizes []int, optimizeEmpty bool
 }
 
 func (item *TupleIntBoxed3Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1810,10 +1810,10 @@ func (item *TupleIntMaybe) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err err
 }
 
 func (item *TupleIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -1841,10 +1841,10 @@ func (item *TupleIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]i
 }
 
 func (item *TupleIntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

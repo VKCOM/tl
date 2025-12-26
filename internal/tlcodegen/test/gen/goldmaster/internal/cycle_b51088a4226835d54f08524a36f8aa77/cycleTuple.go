@@ -49,8 +49,11 @@ func BuiltinTuple2CycleTupleWrite(w []byte, vec *[2]CycleTuple) (_ []byte, err e
 }
 
 func BuiltinTuple2CycleTupleCalculateLayout(sizes []int, optimizeEmpty bool, vec *[2]CycleTuple) ([]int, int) {
-	if 2 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 2 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -71,8 +74,12 @@ func BuiltinTuple2CycleTupleCalculateLayout(sizes []int, optimizeEmpty bool, vec
 }
 
 func BuiltinTuple2CycleTupleInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[2]CycleTuple) ([]byte, []int, int) {
-	if 2 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 2 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -204,8 +211,11 @@ func BuiltinTupleCycleTupleWrite(w []byte, vec []CycleTuple, nat_n uint32) (_ []
 }
 
 func BuiltinTupleCycleTupleCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]CycleTuple) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -225,8 +235,12 @@ func BuiltinTupleCycleTupleCalculateLayout(sizes []int, optimizeEmpty bool, vec 
 }
 
 func BuiltinTupleCycleTupleInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]CycleTuple) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

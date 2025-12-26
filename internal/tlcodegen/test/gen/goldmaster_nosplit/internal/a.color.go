@@ -101,10 +101,10 @@ func (item *AColor) WriteBoxed(w []byte) []byte {
 }
 
 func (item *AColor) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -112,10 +112,10 @@ func (item *AColor) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int
 }
 
 func (item *AColor) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -314,10 +314,10 @@ func (item *AColorBoxedMaybe) WriteBoxed(w []byte) []byte {
 }
 
 func (item *AColorBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -345,10 +345,10 @@ func (item *AColorBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) (
 }
 
 func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -506,8 +506,11 @@ func BuiltinVectorAColorWrite(w []byte, vec []AColor) []byte {
 }
 
 func BuiltinVectorAColorCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]AColor) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -527,8 +530,12 @@ func BuiltinVectorAColorCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]
 }
 
 func BuiltinVectorAColorInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]AColor) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

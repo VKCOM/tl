@@ -140,8 +140,11 @@ func `)
 					qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
 					qw422016.N().S(typeString)
 					qw422016.N().S(`) ([]int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
     }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -168,8 +171,12 @@ func `)
 					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,vec *`)
 					qw422016.N().S(typeString)
 					qw422016.N().S(`) ([]byte, []int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return w, sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = append(w, 0)
+        return w, sizes, 1
     }
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -734,8 +741,11 @@ func `)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
 					qw422016.N().S(`) ([]int, int) {
-    if len(*m) == 0 && optimizeEmpty {
-        return sizes, 0
+    if len(*m) == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
     }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -792,8 +802,12 @@ func `)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
 					qw422016.N().S(`) ([]byte, []int, int) {
-    if len(*m) == 0 && optimizeEmpty {
-        return w, sizes, 0
+    if len(*m) == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = append(w, 0)
+        return w, sizes, 1
     }
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -1277,8 +1291,11 @@ func `)
 				qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
 				qw422016.N().S(`) ([]int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
     }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1313,8 +1330,12 @@ func `)
 				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
 				qw422016.N().S(`) ([]byte, []int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return w, sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = append(w, 0)
+        return w, sizes, 1
     }
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -1634,8 +1655,11 @@ func `)
 				qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
 				qw422016.N().S(`) ([]int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
     }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1670,8 +1694,12 @@ func `)
 				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
 				qw422016.N().S(`) ([]byte, []int, int) {
-    if len(*vec) == 0 && optimizeEmpty {
-        return w, sizes, 0
+    if len(*vec) == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = append(w, 0)
+        return w, sizes, 1
     }
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -2017,8 +2045,11 @@ func `)
 				qw422016.N().S(`) ([]int, int) {
     if `)
 				qw422016.N().V(tuple.size)
-				qw422016.N().S(` == 0 && optimizeEmpty {
-        return sizes, 0
+				qw422016.N().S(` == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
     }
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -2060,8 +2091,12 @@ func `)
 				qw422016.N().S(`) ([]byte, []int, int) {
     if `)
 				qw422016.N().V(tuple.size)
-				qw422016.N().S(` == 0 && optimizeEmpty {
-        return w, sizes, 0
+				qw422016.N().S(` == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = append(w, 0)
+        return w, sizes, 1
     }
     currentSize := sizes[0]
     sizes = sizes[1:]

@@ -49,8 +49,11 @@ func BuiltinTupleStringWrite(w []byte, vec []string, nat_n uint32) (_ []byte, er
 }
 
 func BuiltinTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]string) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -69,8 +72,12 @@ func BuiltinTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]s
 }
 
 func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]string) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -225,8 +232,11 @@ func BuiltinTupleStringBytesWrite(w []byte, vec [][]byte, nat_n uint32) (_ []byt
 }
 
 func BuiltinTupleStringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[][]byte) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -245,8 +255,12 @@ func BuiltinTupleStringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec
 }
 
 func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[][]byte) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

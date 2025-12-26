@@ -117,7 +117,7 @@ func (item *Service5LongEmptyOutput) InternalWriteTL2(w []byte, sizes []int, opt
 	if optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, 0)
+	w = append(w, 0)
 	return w, sizes, 1
 }
 
@@ -266,10 +266,10 @@ func (item *Service5LongOutput) CalculateLayout(sizes []int, optimizeEmpty bool)
 	case 1:
 		return item.valueString.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -282,10 +282,10 @@ func (item *Service5LongOutput) InternalWriteTL2(w []byte, sizes []int, optimize
 	case 1:
 		return item.valueString.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

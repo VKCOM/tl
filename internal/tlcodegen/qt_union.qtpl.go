@@ -306,10 +306,10 @@ func (item *`)
 				qw422016.N().S(`    }
 `)
 			}
-			qw422016.N().S(`    if item.index == 0 && optimizeEmpty {
-        return sizes, 0
-    }
-    if item.index == 0 {
+			qw422016.N().S(`    if item.index == 0 {
+        if optimizeEmpty {
+            return sizes, 0
+        }
         return sizes, 1
     }
     bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -340,10 +340,10 @@ func (item *`)
 				qw422016.N().S(`    }
 `)
 			}
-			qw422016.N().S(`    if item.index == 0 && optimizeEmpty {
-        return w, sizes, 0
-    }
-    if item.index == 0 {
+			qw422016.N().S(`    if item.index == 0 {
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
         w = append(w, 0)
         return w, sizes, 1
     }

@@ -52,8 +52,11 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(w []byte, vec []cycle_4a156
 }
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -73,8 +76,12 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes []int, opti
 }
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

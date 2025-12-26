@@ -111,7 +111,7 @@ func (item *True) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([
 	if optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, 0)
+	w = append(w, 0)
 	return w, sizes, 1
 }
 

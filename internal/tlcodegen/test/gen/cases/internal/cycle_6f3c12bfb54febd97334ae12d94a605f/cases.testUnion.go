@@ -179,10 +179,10 @@ func (item *CasesTestUnion) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 	case 3:
 		return item.value4.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -201,10 +201,10 @@ func (item *CasesTestUnion) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 	case 3:
 		return item.value4.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
