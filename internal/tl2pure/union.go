@@ -140,7 +140,7 @@ func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
 	return v.variants[v.index].UIFixPath(side, level, model)
 }
 
-func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -154,7 +154,7 @@ func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel) {
 		model.SetCurrentEditor(&model.EditorUnion)
 		return
 	}
-	v.variants[v.index].UIStartEdit(level, model)
+	v.variants[v.index].UIStartEdit(level, model, fromTab)
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {

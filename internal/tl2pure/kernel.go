@@ -24,7 +24,7 @@ type KernelValue interface {
 
 	UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
 	UIFixPath(side int, level int, model *UIModel) int // always called onPath
-	UIStartEdit(level int, model *UIModel)
+	UIStartEdit(level int, model *UIModel, fromTab bool)
 
 	CompareForMapKey(other KernelValue) int
 }

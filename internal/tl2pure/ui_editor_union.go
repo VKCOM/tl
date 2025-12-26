@@ -73,7 +73,7 @@ func (e *UIEditorUnion) OnTab(model *UIModel) {
 	e.FinishOK()
 	model.CurrentEditor = nil
 	model.Right()
-	model.StartEdit()
+	model.StartEdit(true)
 }
 
 func (e *UIEditorUnion) OnEscape(model *UIModel) {

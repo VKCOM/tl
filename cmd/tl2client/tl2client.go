@@ -30,6 +30,9 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.impl.Width = msg.Width
+		m.impl.Height = msg.Height
 	case tea.KeyMsg:
 		if msg.Type == tea.KeyBackspace {
 			if m.impl.CurrentEditor != nil {
@@ -42,6 +45,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.impl.CurrentEditor.OnTab(m.impl)
 				return m, nil
 			}
+			m.impl.Right()
+			m.impl.StartEdit(true)
+			return m, nil
 		}
 		if msg.Type == tea.KeyEnter {
 			if m.impl.CurrentEditor != nil {
@@ -49,7 +55,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			} else {
 				if m.impl.CurrentEditor == nil {
-					m.impl.StartEdit()
+					m.impl.StartEdit(false)
 				}
 				return m, nil
 			}
@@ -62,7 +68,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if msg.Type == tea.KeyRunes {
 			if m.impl.CurrentEditor == nil {
-				m.impl.StartEdit()
+				m.impl.StartEdit(false)
 			}
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnRune(msg.String(), m.impl)
@@ -73,37 +79,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return m, tea.Quit
 		case "right":
-			m.impl.Right()
+			if m.impl.CurrentEditor == nil {
+				m.impl.Right()
+			}
 			return m, nil
 		case "left":
-			m.impl.Left()
+			if m.impl.CurrentEditor == nil {
+				m.impl.Left()
+			}
 			return m, nil
 		case "enter", " ":
-			//_, ok := m.selected[m.cursor]
-			//if ok {
-			//	delete(m.selected, m.cursor)
-			//} else {
-			//	m.selected[m.cursor] = struct{}{}
-			//}
-		// The "up" and "k" keys move the cursor up
 		case "up", "k":
-			//if m.cursor > 0 {
-			//	m.cursor--
-			//}
-
-		// The "down" and "j" keys move the cursor down
 		case "down", "j":
-			//if m.cursor < len(m.choices)-1 {
-			//	m.cursor++
-			//}
-
-			// The "enter" key and the spacebar (a literal space) toggle
-			// the selected state for the item that the cursor is pointing at.
 		}
 	}
-
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
 	return m, nil
 }
 

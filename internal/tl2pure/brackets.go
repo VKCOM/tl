@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -157,11 +158,19 @@ func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
-	sb.WriteString("[")
+	if onPath && len(path) > level && path[level] == 0 {
+		sb.WriteString(color.InBlue("["))
+	} else {
+		sb.WriteString("[")
+	}
 	for i, el := range v.elements {
 		fieldOnPath := onPath && len(path) > level && path[level] == i
 		if i != 0 {
-			sb.WriteString(",")
+			if fieldOnPath {
+				sb.WriteString(color.InBlue(","))
+			} else {
+				sb.WriteString(",")
+			}
 		}
 		if fieldOnPath {
 			el.UIWrite(sb, true, level+1, path, model)
@@ -179,10 +188,75 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 }
 
 func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	maximumIndex := len(v.elements) - 1
+	if !v.instance.isTuple {
+		maximumIndex++
+	}
+	if len(model.Path) == level {
+		if side >= 0 {
+			model.Path = append(model.Path[:level], maximumIndex)
+		} else {
+			model.Path = append(model.Path[:level], 0)
+		}
+	} else {
+		selectedIndex := model.Path[level]
+		if selectedIndex > maximumIndex {
+			return 1
+		} else if selectedIndex < 0 {
+			return -1
+		}
+		if selectedIndex == maximumIndex {
+			model.Path = model.Path[:level+1]
+			return 0
+		}
+		childWantsSide := v.elements[selectedIndex].UIFixPath(side, level+1, model)
+		if childWantsSide == 0 {
+			return 0
+		}
+		if childWantsSide < 0 {
+			if selectedIndex <= 0 {
+				return -1
+			}
+			model.Path = append(model.Path[:level], selectedIndex-1)
+		} else {
+			if selectedIndex >= maximumIndex {
+				return 1
+			}
+			model.Path = append(model.Path[:level], selectedIndex+1)
+		}
+	}
+	if model.Path[level] == maximumIndex {
+		model.Path = model.Path[:level+1]
+		return 0
+	}
+	childWantsSide := v.elements[model.Path[level]].UIFixPath(side, level+1, model)
+	if childWantsSide != 0 {
+		panic("unexpected path invariant")
+	}
 	return 0
 }
 
-func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		model.Path = append(model.Path[:level], 0)
+	}
+	selectedIndex := model.Path[level]
+	if selectedIndex == len(v.elements) {
+		if v.instance.isTuple {
+			panic("unexpected path invariant for tuple")
+		}
+		if fromTab { // require Enter to insert element
+			return
+		}
+		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
+	}
+	v.elements[selectedIndex].UIStartEdit(level+1, model, fromTab)
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {

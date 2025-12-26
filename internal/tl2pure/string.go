@@ -79,7 +79,7 @@ func (v *KernelValueString) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueString) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueString) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}

@@ -148,7 +148,7 @@ func (v *KernelValueMap) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueMap) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueMap) UIStartEdit(level int, model *UIModel, fromTab bool) {
 }
 
 func (v *KernelValueMap) Clone() KernelValue {
