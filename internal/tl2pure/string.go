@@ -70,6 +70,9 @@ func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.Write(w)
 }
 
+func (v *KernelValueString) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueString) Clone() KernelValue {
 	return &KernelValueString{v.value}
 }

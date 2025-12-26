@@ -23,6 +23,7 @@ type KernelValue interface {
 	WriteJSON(w []byte, ctx *TL2Context) []byte
 
 	UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
+	UIFixPath(level int, path []int) // always called onPath
 
 	CompareForMapKey(other KernelValue) int
 }
