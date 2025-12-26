@@ -135,6 +135,9 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
+			if headerFile == header {
+				panic(fmt.Sprintf("CPP HEADER ERROR: header file %q depends on itself", headerFile))
+			}
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
