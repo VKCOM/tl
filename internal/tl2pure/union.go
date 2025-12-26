@@ -127,7 +127,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 }
 
 func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
-	return 0
+	return v.variants[v.index].UIFixPath(side, level, model)
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {

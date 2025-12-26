@@ -261,34 +261,46 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
+	minimalIndex := 0
+	if v.instance.isUnionElement {
+		minimalIndex = -1
+	}
 	if len(model.Path) == level {
 		if side >= 0 {
 			model.Path = append(model.Path[:level], len(v.fields)-1)
 		} else {
-			model.Path = append(model.Path[:level], 0)
+			model.Path = append(model.Path[:level], minimalIndex)
 		}
 	} else {
 		selectedIndex := model.Path[level]
 		if selectedIndex >= len(v.fields) {
 			return 1
-		} else if selectedIndex < 0 {
+		} else if selectedIndex < minimalIndex {
 			return -1
+		}
+		if selectedIndex == -1 {
+			model.Path = model.Path[:level+1]
+			return 0
 		}
 		childWantsSide := v.fields[selectedIndex].UIFixPath(side, level+1, model)
 		if childWantsSide == 0 {
 			return 0
 		}
 		if childWantsSide < 0 {
-			if selectedIndex <= 0 {
+			if selectedIndex <= minimalIndex {
 				return -1
 			}
 			model.Path = append(model.Path[:level], selectedIndex-1)
 		} else {
 			if selectedIndex >= len(v.fields)-1 {
-				return -1
+				return 1
 			}
 			model.Path = append(model.Path[:level], selectedIndex+1)
 		}
+	}
+	if model.Path[level] == -1 {
+		model.Path = model.Path[:level+1]
+		return 0
 	}
 	childWantsSide := v.fields[model.Path[level]].UIFixPath(side, level+1, model)
 	if childWantsSide != 0 {
