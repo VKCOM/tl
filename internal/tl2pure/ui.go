@@ -8,7 +8,7 @@ import (
 )
 
 type UIEditor interface {
-	WriteUI(sb *strings.Builder)
+	UIWrite(sb *strings.Builder)
 }
 
 type UIModel struct {
@@ -48,7 +48,7 @@ func (m UIModel) View() string {
 		sb.WriteString(color.InRed(m.LastError.Error()))
 	}
 	sb.WriteString("\n")
-	m.Fun.WriteUI(&sb, true, 0, m.Path, &m)
+	m.Fun.UIWrite(&sb, true, 0, m.Path, &m)
 	return sb.String()
 }
 

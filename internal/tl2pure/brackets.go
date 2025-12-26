@@ -155,7 +155,7 @@ func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTuple) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
 	sb.WriteString("[")
 	for i, el := range v.elements {
@@ -164,10 +164,10 @@ func (v *KernelValueTuple) WriteUI(sb *strings.Builder, onPath bool, level int, 
 			sb.WriteString(",")
 		}
 		if fieldOnPath {
-			el.WriteUI(sb, true, level+1, path, model)
+			el.UIWrite(sb, true, level+1, path, model)
 			continue
 		}
-		el.WriteUI(sb, false, 0, nil, model)
+		el.UIWrite(sb, false, 0, nil, model)
 	}
 	if onPath && len(path) > level && path[level] == len(v.elements) { // insert placeholder
 		if len(v.elements) != 0 {

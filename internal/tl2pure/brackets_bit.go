@@ -134,7 +134,7 @@ func (v *KernelValueTupleBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTupleBit) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	sb.WriteString("<KernelValueTupleBit>")
 }
 
