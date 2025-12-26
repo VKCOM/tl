@@ -48,15 +48,15 @@ func TL2ParseSize(r []byte) ([]byte, int, error) {
 	b0 := r[0]
 
 	switch {
-	case b0 < bigStringMarker:
+	case b0 < mediumStringMarker:
 		l := int(b0)
 		r = r[1:]
 		return r, l, nil
-	case b0 == bigStringMarker:
+	case b0 == mediumStringMarker:
 		if len(r) < 3 {
 			return r, 0, io.ErrUnexpectedEOF
 		}
-		l := bigStringMarker + int(binary.LittleEndian.Uint16(r[1:]))
+		l := mediumStringMarker + int(binary.LittleEndian.Uint16(r[1:]))
 		r = r[3:]
 		return r, l, nil
 	default: // hugeStringMarker
@@ -65,7 +65,7 @@ func TL2ParseSize(r []byte) ([]byte, int, error) {
 		}
 		l64 := binary.LittleEndian.Uint64(r[1:])
 		if l64 > math.MaxInt {
-			return r, 0, fmt.Errorf("string length cannot be represented on 32-bit platform: %d", l64)
+			return r, 0, fmt.Errorf("string length cannot be represented as an int: %d", l64)
 		}
 		// we allow non-canonical length to speed up some rare implementations
 		r = r[9:]
@@ -75,11 +75,11 @@ func TL2ParseSize(r []byte) ([]byte, int, error) {
 
 func TL2WriteSize(w []byte, l int) []byte {
 	switch {
-	case l < bigStringMarker:
+	case l < mediumStringMarker:
 		w = append(w, byte(l))
-	case l < bigStringMarker+(1<<16):
-		w = append(w, bigStringMarker)
-		w = binary.LittleEndian.AppendUint16(w, uint16(l-bigStringMarker))
+	case l < mediumStringMarker+(1<<16):
+		w = append(w, mediumStringMarker)
+		w = binary.LittleEndian.AppendUint16(w, uint16(l-mediumStringMarker))
 	default:
 		w = append(w, hugeStringMarker)
 		w = binary.LittleEndian.AppendUint64(w, uint64(l))
@@ -90,12 +90,12 @@ func TL2WriteSize(w []byte, l int) []byte {
 // w have at least 9 bytes length
 func TL2PutSize(w []byte, l int) int {
 	switch {
-	case l < bigStringMarker:
+	case l < mediumStringMarker:
 		w[0] = byte(l)
 		return 1
-	case l < bigStringMarker+(1<<16):
-		w[0] = bigStringMarker
-		binary.LittleEndian.PutUint16(w[1:], uint16(l-bigStringMarker))
+	case l < mediumStringMarker+(1<<16):
+		w[0] = mediumStringMarker
+		binary.LittleEndian.PutUint16(w[1:], uint16(l-mediumStringMarker))
 		return 3
 	default:
 		w[0] = hugeStringMarker
@@ -106,9 +106,9 @@ func TL2PutSize(w []byte, l int) int {
 
 func TL2CalculateSize(l int) int {
 	switch {
-	case l < bigStringMarker:
+	case l < mediumStringMarker:
 		return 1
-	case l < bigStringMarker+(1<<16):
+	case l < mediumStringMarker+(1<<16):
 		return 3
 	default:
 		return 9
