@@ -249,7 +249,7 @@ func (v *KernelValueObject) CompareForMapKey(other KernelValue) int {
 
 func (k *Kernel) createObject(canonicalName string,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
-	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument,
+	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceObject, error) {
 
 	ins := &TypeInstanceObject{
@@ -267,7 +267,7 @@ func (k *Kernel) createObject(canonicalName string,
 	}
 
 	for _, fieldDef := range ins.constructorFields {
-		rt, err := k.resolveType(fieldDef.Type, templateArguments, lrc)
+		rt, err := k.resolveType(fieldDef.Type, leftArgs, actualArgs)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
