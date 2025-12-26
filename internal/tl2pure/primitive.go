@@ -78,6 +78,9 @@ func (v *KernelValueUint32) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueUint32) Clone() KernelValue {
 	return &KernelValueUint32{value: v.value}
 }
@@ -128,6 +131,9 @@ func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, 
 func (v *KernelValueInt32) UIFixPath(side int, level int, model *UIModel) int {
 	model.Path = model.Path[:level]
 	return 0
+}
+
+func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel) {
 }
 
 func (v *KernelValueInt32) Clone() KernelValue {
@@ -182,6 +188,9 @@ func (v *KernelValueUint64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueUint64) Clone() KernelValue {
 	return &KernelValueUint64{value: v.value}
 }
@@ -234,6 +243,9 @@ func (v *KernelValueInt64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueInt64) Clone() KernelValue {
 	return &KernelValueInt64{value: v.value}
 }
@@ -284,6 +296,9 @@ func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, p
 func (v *KernelValueByte) UIFixPath(side int, level int, model *UIModel) int {
 	model.Path = model.Path[:level]
 	return 0
+}
+
+func (v *KernelValueByte) UIStartEdit(level int, model *UIModel) {
 }
 
 func (v *KernelValueByte) Clone() KernelValue {
@@ -347,6 +362,9 @@ func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueBool) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueBool) Clone() KernelValue {
 	return &KernelValueBool{value: v.value}
 }
@@ -391,6 +409,9 @@ func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, pa
 func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
 	model.Path = model.Path[:level]
 	return 0
+}
+
+func (v *KernelValueBit) UIStartEdit(level int, model *UIModel) {
 }
 
 func (v *KernelValueBit) Clone() KernelValue {

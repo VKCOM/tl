@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -239,15 +240,19 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 			sb.WriteString(",")
 		}
 		first = false
+		sb.WriteString(`"`)
+		if fieldOnPath {
+			sb.WriteString(color.InBlue(fieldDef.Name))
+		} else {
+			sb.WriteString(fieldDef.Name)
+		}
+		sb.WriteString(`":`)
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
 				sb.WriteString("_")
 				continue
 			}
 		}
-		sb.WriteString(`"`)
-		sb.WriteString(fieldDef.Name)
-		sb.WriteString(`":`)
 		if fieldOnPath {
 			v.fields[i].UIWrite(sb, true, level+1, path, model)
 			continue
@@ -307,6 +312,9 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 		panic("unexpected path invariant")
 	}
 	return 0
+}
+
+func (v *KernelValueObject) UIStartEdit(level int, model *UIModel) {
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

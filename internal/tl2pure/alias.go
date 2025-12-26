@@ -78,6 +78,10 @@ func (v *KernelValueAlias) UIFixPath(side int, level int, model *UIModel) int {
 	return v.value.UIFixPath(side, level, model)
 }
 
+func (v *KernelValueAlias) UIStartEdit(level int, model *UIModel) {
+	v.value.UIStartEdit(level, model)
+}
+
 func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {
 	if v2, ok := other.(*KernelValueAlias); ok {
 		return v.value.CompareForMapKey(v2.value)

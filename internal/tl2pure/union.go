@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -112,10 +113,13 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	defVariant := v.instance.def.Variants[v.index]
-	sb.WriteString(`{"type":"`)
+	sb.WriteString(`{"`)
 	if onPath && len(path) > level && path[level] == -1 { // constructor
-		sb.WriteString("*")
+		sb.WriteString(color.InBlue("type"))
+	} else {
+		sb.WriteString(`"type"`)
 	}
+	sb.WriteString(`":"`)
 	sb.WriteString(defVariant.Name)
 	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
 		sb.WriteString(`"}`)
@@ -128,6 +132,9 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 
 func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
 	return v.variants[v.index].UIFixPath(side, level, model)
+}
+
+func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel) {
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {

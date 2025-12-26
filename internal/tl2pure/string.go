@@ -75,6 +75,9 @@ func (v *KernelValueString) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueString) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueString) Clone() KernelValue {
 	return &KernelValueString{v.value}
 }
