@@ -50,13 +50,13 @@ func (e *UIEditorPrimitive) OnEnter(model *UIModel) {
 	model.CurrentEditor = nil
 }
 
-func (e *UIEditorPrimitive) OnTab(model *UIModel) {
+func (e *UIEditorPrimitive) OnTab(model *UIModel, side int) {
 	if err := e.value.SetFromEditor(e.str); err != nil {
 		model.LastError = err
 		return
 	}
 	model.CurrentEditor = nil
-	model.Right()
+	model.Move(side)
 	model.StartEdit(true)
 }
 

@@ -42,10 +42,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if msg.Type == tea.KeyTab {
 			if m.impl.CurrentEditor != nil {
-				m.impl.CurrentEditor.OnTab(m.impl)
+				m.impl.CurrentEditor.OnTab(m.impl, 1)
 				return m, nil
 			}
-			m.impl.Right()
+			m.impl.Move(1)
+			m.impl.StartEdit(true)
+			return m, nil
+		}
+		if msg.Type == tea.KeyShiftTab {
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnTab(m.impl, -1)
+				return m, nil
+			}
+			m.impl.Move(-1)
 			m.impl.StartEdit(true)
 			return m, nil
 		}
@@ -80,17 +89,35 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case "right":
 			if m.impl.CurrentEditor == nil {
-				m.impl.Right()
+				wasLen := len(m.impl.Path)
+				m.impl.Move(1)
+				if len(m.impl.Path) > wasLen { // do not enter deep into objects
+					m.impl.Path = m.impl.Path[:wasLen]
+				}
 			}
 			return m, nil
 		case "left":
 			if m.impl.CurrentEditor == nil {
-				m.impl.Left()
+				wasLen := len(m.impl.Path)
+				m.impl.Move(-1)
+				if len(m.impl.Path) > wasLen { // do not enter deep into objects
+					m.impl.Path = m.impl.Path[:wasLen]
+				}
 			}
 			return m, nil
-		case "enter", " ":
-		case "up", "k":
-		case "down", "j":
+		case "up":
+			if m.impl.CurrentEditor == nil && len(m.impl.Path) != 0 {
+				m.impl.Path = m.impl.Path[:len(m.impl.Path)-1]
+			}
+			return m, nil
+		case "down":
+			if m.impl.CurrentEditor == nil {
+				wasLen := len(m.impl.Path)
+				m.impl.Fun.UIFixPath(-1, 0, m.impl)
+				if len(m.impl.Path) > wasLen+1 { // level +1 only
+					m.impl.Path = m.impl.Path[:wasLen+1]
+				}
+			}
 		}
 	}
 	return m, nil

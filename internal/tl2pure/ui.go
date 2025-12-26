@@ -15,7 +15,7 @@ type UIEditor interface {
 	OnRune(msg string, model *UIModel)
 	OnBackspace(model *UIModel)
 	OnEnter(model *UIModel)
-	OnTab(model *UIModel)
+	OnTab(model *UIModel, side int) // -1 Shift-Tab
 	OnEscape(model *UIModel)
 }
 
@@ -50,20 +50,24 @@ func (m *UIModel) colorError(str string) string {
 
 func (m *UIModel) View() string {
 	var sb strings.Builder
-	sb.WriteString(m.colorButton("[F1]"))
-	sb.WriteString(m.colorButtonComment("Help  "))
+	//sb.WriteString(m.colorButton("[F1]"))
+	//sb.WriteString(m.colorButtonComment("Help  "))
 	sb.WriteString(m.colorButton("[Tab]"))
-	sb.WriteString(m.colorButtonComment("Next  "))
-	sb.WriteString(m.colorButton("[^Enter]"))
+	sb.WriteString(m.colorButtonComment("Next"))
+	sb.WriteString(m.colorButton("[Shift-Tab]"))
+	sb.WriteString(m.colorButtonComment("Prev"))
+	sb.WriteString(m.colorButton("[<-/->]"))
+	sb.WriteString(m.colorButtonComment("Move"))
+	sb.WriteString(m.colorButton("[Enter]"))
+	sb.WriteString(m.colorButtonComment("Edit"))
+	sb.WriteString(m.colorButton("[Esc]"))
+	sb.WriteString(m.colorButtonComment("Cancel"))
+	sb.WriteString(m.colorButton("[F5]"))
 	sb.WriteString(m.colorButtonComment("Send  "))
 	//sb.WriteString("F8")
 	//sb.WriteString(m.colorButtonComment("Extra"))
-	sb.WriteString(m.colorButton("[Enter]"))
-	sb.WriteString(m.colorButtonComment("Edit  "))
-	sb.WriteString(m.colorButton("[Esc]"))
-	sb.WriteString(m.colorButtonComment("Cancel"))
-	sb.WriteString(m.colorButton("[F2]"))
-	sb.WriteString(m.colorButtonComment("Show empty "))
+	//sb.WriteString(m.colorButton("[F2]"))
+	//sb.WriteString(m.colorButtonComment("Show empty "))
 	sb.WriteString("\n")
 	sb.WriteString(m.Fun.instance.canonicalName)
 	if m.Fun.instance.comb.FuncDecl.ID != nil {
@@ -77,15 +81,17 @@ func (m *UIModel) View() string {
 		sb.WriteString(m.colorError(m.LastError.Error()))
 	}
 	sb.WriteString("\n")
-	var sb2 strings.Builder
-	m.Fun.UIWrite(&sb2, true, 0, m.Path, m)
-	str := sb2.String()
-	for m.Width > 0 && len(str) > m.Width {
-		sb.WriteString(str[:m.Width])
-		sb.WriteString("\n")
-		str = str[m.Width:]
-	}
-	sb.WriteString(str)
+	m.Fun.UIWrite(&sb, true, 0, m.Path, m)
+	//TODO - do not take into account color characters
+	//var sb2 strings.Builder
+	//m.Fun.UIWrite(&sb2, true, 0, m.Path, m)
+	//str := sb2.String()
+	//for m.Width > 0 && len(str) > m.Width {
+	//	sb.WriteString(str[:m.Width])
+	//	sb.WriteString("\n")
+	//	str = str[m.Width:]
+	//}
+	//sb.WriteString(str)
 	sb.WriteString("\nPath: ")
 	for i, pa := range m.Path {
 		if i != 0 {
@@ -96,12 +102,12 @@ func (m *UIModel) View() string {
 	return sb.String()
 }
 
-func (m *UIModel) Right() {
+func (m *UIModel) Move(side int) {
 	if len(m.Path) == 0 {
 		panic("unexpected model state")
 	}
-	m.Path[len(m.Path)-1]++
-	childWantsSide := m.Fun.UIFixPath(-1, 0, m)
+	m.Path[len(m.Path)-1] += side
+	childWantsSide := m.Fun.UIFixPath(-side, 0, m)
 	if childWantsSide == 0 {
 		return
 	}
@@ -109,17 +115,8 @@ func (m *UIModel) Right() {
 	m.Fun.UIFixPath(childWantsSide, 0, m)
 }
 
-func (m *UIModel) Left() {
-	if len(m.Path) == 0 {
-		panic("unexpected model state")
-	}
-	m.Path[len(m.Path)-1]--
-	childWantsSide := m.Fun.UIFixPath(1, 0, m)
-	if childWantsSide == 0 {
-		return
-	}
-	m.Path = m.Path[:0]
-	m.Fun.UIFixPath(childWantsSide, 0, m)
+func (m *UIModel) Right() {
+	m.Move(1)
 }
 
 func (m *UIModel) StartEdit(fromTab bool) {

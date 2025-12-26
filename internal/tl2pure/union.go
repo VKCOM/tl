@@ -131,7 +131,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		sb.WriteString(`}`)
 		return
 	}
-	sb.WriteString(`","value":`)
+	sb.WriteString(`,"value":`)
 	v.variants[v.index].UIWrite(sb, onPath, level, path, model)
 	sb.WriteString("}")
 }
@@ -145,7 +145,7 @@ func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		panic("unexpected path invariant")
 	}
 	if len(model.Path) == level {
-		model.Path = append(model.Path[:level], 0)
+		model.Path = append(model.Path[:level], -1)
 	}
 	selectedIndex := model.Path[level]
 
