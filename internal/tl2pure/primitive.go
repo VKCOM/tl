@@ -88,7 +88,7 @@ func (v *KernelValueUint32) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -161,7 +161,7 @@ func (v *KernelValueInt32) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -234,7 +234,7 @@ func (v *KernelValueUint64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -307,7 +307,7 @@ func (v *KernelValueInt64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -380,7 +380,7 @@ func (v *KernelValueByte) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueByte) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueByte) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -462,7 +462,7 @@ func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueBool) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueBool) UIStartEdit(level int, model *UIModel, fromTab bool) {
 }
 
 func (v *KernelValueBool) Clone() KernelValue {
@@ -511,7 +511,7 @@ func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueBit) UIStartEdit(level int, model *UIModel) {
+func (v *KernelValueBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
 }
 
 func (v *KernelValueBit) Clone() KernelValue {

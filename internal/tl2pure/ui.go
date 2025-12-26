@@ -31,6 +31,9 @@ type UIModel struct {
 	EditorUnion     UIEditorUnion
 	EditorString    UIEditorString
 	EditorPrimitive UIEditorPrimitive
+
+	Width  int
+	Height int
 }
 
 func (m *UIModel) colorButton(str string) string {
@@ -74,7 +77,15 @@ func (m *UIModel) View() string {
 		sb.WriteString(m.colorError(m.LastError.Error()))
 	}
 	sb.WriteString("\n")
-	m.Fun.UIWrite(&sb, true, 0, m.Path, m)
+	var sb2 strings.Builder
+	m.Fun.UIWrite(&sb2, true, 0, m.Path, m)
+	str := sb2.String()
+	for m.Width > 0 && len(str) > m.Width {
+		sb.WriteString(str[:m.Width])
+		sb.WriteString("\n")
+		str = str[m.Width:]
+	}
+	sb.WriteString(str)
 	sb.WriteString("\nPath: ")
 	for i, pa := range m.Path {
 		if i != 0 {
@@ -111,8 +122,8 @@ func (m *UIModel) Left() {
 	m.Fun.UIFixPath(childWantsSide, 0, m)
 }
 
-func (m *UIModel) StartEdit() {
-	m.Fun.UIStartEdit(0, m)
+func (m *UIModel) StartEdit(fromTab bool) {
+	m.Fun.UIStartEdit(0, m, fromTab)
 }
 
 func (m *UIModel) SetCurrentEditor(e UIEditor) {

@@ -15,9 +15,6 @@ type UIEditorPrimitive struct {
 func (e *UIEditorPrimitive) SetValue(v KernelValuePrimitive) {
 	e.value = v
 	e.str = string(v.WriteJSON(nil, nil))
-	if e.str == "0" {
-		e.str = ""
-	}
 	e.strRunes = e.strRunes[:0]
 	for _, r := range e.str {
 		e.strRunes = append(e.strRunes, string(r))
@@ -29,6 +26,10 @@ func (e *UIEditorPrimitive) UIWrite(sb *strings.Builder) {
 }
 
 func (e *UIEditorPrimitive) OnRune(msg string, model *UIModel) {
+	if e.str == "0" {
+		e.strRunes = e.strRunes[:0]
+		e.str = ""
+	}
 	e.strRunes = append(e.strRunes, msg)
 	e.str = strings.Join(e.strRunes, "")
 }
@@ -56,7 +57,7 @@ func (e *UIEditorPrimitive) OnTab(model *UIModel) {
 	}
 	model.CurrentEditor = nil
 	model.Right()
-	model.StartEdit()
+	model.StartEdit(true)
 }
 
 func (e *UIEditorPrimitive) OnEscape(model *UIModel) {

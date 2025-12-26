@@ -57,4 +57,4 @@ pair<x:type, y:type> = x:x y:y;
 memcache.value = Not_found | Strvalue value:string flags:uint32;
 
 @read memcache.get#11111111 key:string => memcache.value;
-@write memcache.set#22222222 key:string pa:pair<byte, byte> value:memcache.value => bool;
+@write memcache.set#22222222 key:string tpl:[3]byte arr:[]byte pa:pair<byte, byte> value:memcache.value => bool;
