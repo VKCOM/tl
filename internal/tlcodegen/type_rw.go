@@ -998,6 +998,9 @@ func (w *TypeRWWrapper) cppNamespaceQualifier() string {
 	if w.tlName.Namespace != "" {
 		s.WriteString(w.tlName.Namespace)
 		s.WriteString("::")
+	} else {
+		s.WriteString("common")
+		s.WriteString("::")
 	}
 	return s.String()
 }
@@ -1517,4 +1520,15 @@ func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImport
 	}`, f.goName, resetCode)
 	}
 	return resetCode
+}
+
+func (wr *TypeRWWrapper) CPPNamespaceParts() []string {
+	ns := make([]string, len(wr.gen.RootCPPNamespaceElements))
+	copy(ns, wr.gen.RootCPPNamespaceElements)
+	if wr.tlName.Namespace != "" {
+		ns = append(ns, wr.tlName.Namespace)
+	} else {
+		ns = append(ns, CommonGroup)
+	}
+	return ns
 }
