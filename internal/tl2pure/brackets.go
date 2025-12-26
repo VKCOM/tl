@@ -254,6 +254,7 @@ func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		if fromTab { // require Enter to insert element
 			return
 		}
+		fromTab = true // do not recursively create first field
 		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
 	}
 	v.elements[selectedIndex].UIStartEdit(level+1, model, fromTab)

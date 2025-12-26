@@ -236,6 +236,21 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 	first := true
 	for i, fieldDef := range v.instance.constructorFields {
 		fieldOnPath := onPath && len(path) > level && path[level] == i
+		if fieldDef.IsOptional {
+			if v.fields[i] == nil {
+				if onPath {
+					if !first {
+						sb.WriteString(",")
+					}
+					sb.WriteString(color.InGray(fieldDef.Name))
+					if fieldOnPath {
+						sb.WriteString(color.InBlue("?"))
+					}
+					first = false
+				}
+				continue
+			}
+		}
 		if !first {
 			sb.WriteString(",")
 		}
@@ -283,7 +298,7 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 		} else if selectedIndex < minimalIndex {
 			return -1
 		}
-		if selectedIndex == -1 {
+		if selectedIndex == -1 || v.fields[selectedIndex] == nil {
 			model.Path = model.Path[:level+1]
 			return 0
 		}
@@ -303,11 +318,12 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 			model.Path = append(model.Path[:level], selectedIndex+1)
 		}
 	}
-	if model.Path[level] == -1 {
+	selectedIndex := model.Path[level]
+	if selectedIndex == -1 || v.fields[selectedIndex] == nil {
 		model.Path = model.Path[:level+1]
 		return 0
 	}
-	childWantsSide := v.fields[model.Path[level]].UIFixPath(side, level+1, model)
+	childWantsSide := v.fields[selectedIndex].UIFixPath(side, level+1, model)
 	if childWantsSide != 0 {
 		panic("unexpected path invariant")
 	}
@@ -322,6 +338,13 @@ func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, fromTab bool)
 		model.Path = append(model.Path[:level], 0)
 	}
 	selectedIndex := model.Path[level]
+	if v.fields[selectedIndex] == nil {
+		if fromTab { // require Enter to insert element
+			return
+		}
+		fromTab = true // do not recursively create first field
+		v.fields[selectedIndex] = v.instance.fieldTypes[selectedIndex].ins.CreateValue()
+	}
 	v.fields[selectedIndex].UIStartEdit(level+1, model, fromTab)
 }
 

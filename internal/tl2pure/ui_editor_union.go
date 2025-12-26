@@ -69,10 +69,10 @@ func (e *UIEditorUnion) OnEnter(model *UIModel) {
 	model.CurrentEditor = nil
 }
 
-func (e *UIEditorUnion) OnTab(model *UIModel) {
+func (e *UIEditorUnion) OnTab(model *UIModel, side int) {
 	e.FinishOK()
 	model.CurrentEditor = nil
-	model.Right()
+	model.Move(side)
 	model.StartEdit(true)
 }
 

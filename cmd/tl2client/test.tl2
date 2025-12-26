@@ -54,7 +54,8 @@ pair<x:type, y:type> = x:x y:y;
 //a.top2 = t1:a.middle<3, pair<a.inner<1>,a.inner<2>>, a.inner<3>>;
 
 // ---- test functions ----
+optStruct = first?:byte second?:byte;
 memcache.value = Not_found | Strvalue value:string flags:uint32;
 
-@read memcache.get#11111111 key:string => memcache.value;
-@write memcache.set#22222222 key:string tpl:[3]byte arr:[]byte pa:pair<byte, byte> value:memcache.value => bool;
+@read memcache.get#11111111 key:string  => memcache.value;
+@write memcache.set#22222222 key?:string tpl?:[3]byte arr:[]optStruct pa?:pair<byte, byte> value:memcache.value => bool;
