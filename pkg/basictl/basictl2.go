@@ -81,6 +81,9 @@ func TL2WriteSize(w []byte, l int) []byte {
 		w = append(w, mediumStringMarker)
 		w = binary.LittleEndian.AppendUint16(w, uint16(l-mediumStringMarker))
 	default:
+		if int(uint64(l)) != l { // >64-bit platform
+			panic("TL2 string len does not fit huge format")
+		}
 		w = append(w, hugeStringMarker)
 		w = binary.LittleEndian.AppendUint64(w, uint64(l))
 	}
@@ -98,6 +101,9 @@ func TL2PutSize(w []byte, l int) int {
 		binary.LittleEndian.PutUint16(w[1:], uint16(l-mediumStringMarker))
 		return 3
 	default:
+		if int(uint64(l)) != l { // >64-bit platform
+			panic("TL2 string len does not fit huge format")
+		}
 		w[0] = hugeStringMarker
 		binary.LittleEndian.PutUint64(w[1:], uint64(l))
 		return 9
@@ -111,6 +117,9 @@ func TL2CalculateSize(l int) int {
 	case l < mediumStringMarker+(1<<16):
 		return 3
 	default:
+		if int(uint64(l)) != l { // >64-bit platform
+			panic("TL2 string len does not fit huge format")
+		}
 		return 9
 	}
 }
