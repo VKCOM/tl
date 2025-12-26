@@ -9,6 +9,7 @@ import (
 
 type UIEditor interface {
 	UIWrite(sb *strings.Builder)
+	OnRune(msg string, model *UIModel)
 }
 
 type UIModel struct {
@@ -47,6 +48,8 @@ func (m *UIModel) View() string {
 	sb.WriteString(m.colorButtonComment("Edit  "))
 	sb.WriteString(m.colorButton("[Esc]"))
 	sb.WriteString(m.colorButtonComment("Cancel"))
+	sb.WriteString(m.colorButton("[F2]"))
+	sb.WriteString(m.colorButtonComment("Show empty "))
 	sb.WriteString("\n")
 	sb.WriteString(m.Fun.instance.canonicalName)
 	if m.Fun.instance.comb.FuncDecl.ID != nil {
@@ -95,6 +98,10 @@ func (m *UIModel) Left() {
 	}
 	m.Path = m.Path[:0]
 	m.Fun.UIFixPath(childWantsSide, 0, m)
+}
+
+func (m *UIModel) StartEdit() {
+	m.Fun.UIStartEdit(0, m)
 }
 
 // [F1]Help [Tab]Next [^Enter]Send [Enter]Edit [Esc]Cancel  // [F5]Extra

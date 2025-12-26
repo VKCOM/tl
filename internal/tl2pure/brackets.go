@@ -182,6 +182,9 @@ func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
+func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel) {
+}
+
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {
 	return 0
 }

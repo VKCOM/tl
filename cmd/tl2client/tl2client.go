@@ -30,15 +30,18 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-
-	// Is it a key press?
 	case tea.KeyMsg:
-
-		// _, _ = fmt.Fprintf(os.Stderr, "keyMsg: %q\n", msg.String())
-		// Cool, what was the actual key pressed?
+		if msg.Type == tea.KeyRunes {
+			m.impl.LastError = fmt.Errorf("%s", msg.String())
+			if m.impl.CurrentEditor == nil {
+				m.impl.StartEdit()
+			}
+			if m.impl.CurrentEditor != nil {
+				m.impl.CurrentEditor.OnRune(msg.String(), m.impl)
+			}
+			return m, nil
+		}
 		switch msg.String() {
-
-		// These keys should exit the program.
 		case "ctrl+c":
 			return m, tea.Quit
 		case "right":
@@ -47,7 +50,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "left":
 			m.impl.Left()
 			return m, nil
-
+		case "enter", " ":
+			//_, ok := m.selected[m.cursor]
+			//if ok {
+			//	delete(m.selected, m.cursor)
+			//} else {
+			//	m.selected[m.cursor] = struct{}{}
+			//}
 		// The "up" and "k" keys move the cursor up
 		case "up", "k":
 			//if m.cursor > 0 {
@@ -60,15 +69,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			//	m.cursor++
 			//}
 
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			//_, ok := m.selected[m.cursor]
-			//if ok {
-			//	delete(m.selected, m.cursor)
-			//} else {
-			//	m.selected[m.cursor] = struct{}{}
-			//}
+			// The "enter" key and the spacebar (a literal space) toggle
+			// the selected state for the item that the cursor is pointing at.
 		}
 	}
 
