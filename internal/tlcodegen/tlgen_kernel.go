@@ -322,7 +322,9 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		return gen.generateTypeStruct(lrc, myWrapper, tlType[0])
 	}
 	myWrapper.tlName = tlType[0].TypeDecl.Name
-	{
+	if gen.options.Language == "cpp" {
+		myWrapper.fileName = tlType[0].TypeDecl.Name.String()
+	} else {
 		// during migration to TL2 unions (UpperCase) become normal types (lowerCase)
 		// and we want to make sure diff is trivial
 		fileName := tlType[0].TypeDecl.Name
