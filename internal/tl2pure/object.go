@@ -211,13 +211,13 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '{')
 	first := true
 	for i, fieldDef := range v.instance.constructorFields {
+		if !first {
+			w = append(w, ',')
+		}
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
 				continue
 			}
-		}
-		if !first {
-			w = append(w, ',')
 		}
 		first = false
 		w = append(w, `"`...)
@@ -230,7 +230,31 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueObject) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	sb.WriteString("<KernelValueObject>")
+	// selectedWhole := onPath && len(path) == level
+	sb.WriteString("{")
+	first := true
+	for i, fieldDef := range v.instance.constructorFields {
+		fieldOnPath := onPath && len(path) > level && path[level] == i
+		if !first {
+			sb.WriteString(",")
+		}
+		first = false
+		if fieldDef.IsOptional {
+			if v.fields[i] == nil {
+				sb.WriteString("_")
+				continue
+			}
+		}
+		sb.WriteString(`"`)
+		sb.WriteString(fieldDef.Name)
+		sb.WriteString(`":`)
+		if fieldOnPath {
+			v.fields[i].WriteUI(sb, true, level+1, path, model)
+			continue
+		}
+		v.fields[i].WriteUI(sb, false, 0, nil, model)
+	}
+	sb.WriteString("}")
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

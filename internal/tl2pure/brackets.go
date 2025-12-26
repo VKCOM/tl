@@ -159,10 +159,11 @@ func (v *KernelValueTuple) WriteUI(sb *strings.Builder, onPath bool, level int, 
 	// selectedWhole := onPath && len(path) == level
 	sb.WriteString("[")
 	for i, el := range v.elements {
+		fieldOnPath := onPath && len(path) > level && path[level] == i
 		if i != 0 {
 			sb.WriteString(",")
 		}
-		if onPath && len(path) > level && path[level] == i {
+		if fieldOnPath {
 			el.WriteUI(sb, true, level+1, path, model)
 			continue
 		}
@@ -174,6 +175,7 @@ func (v *KernelValueTuple) WriteUI(sb *strings.Builder, onPath bool, level int, 
 		}
 		sb.WriteString("_")
 	}
+	sb.WriteString("]")
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {

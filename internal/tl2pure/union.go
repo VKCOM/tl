@@ -111,13 +111,25 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueUnion) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	sb.WriteString("<KernelValueUnion>")
+	defVariant := v.instance.def.Variants[v.index]
+	sb.WriteString(`{"type":"`)
+	if onPath && len(path) > level && path[level] == -1 { // constructor
+		sb.WriteString("*")
+	}
+	sb.WriteString(defVariant.Name)
+	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
+		sb.WriteString(`"}`)
+		return
+	}
+	sb.WriteString(`","value":`)
+	v.variants[v.index].WriteUI(sb, onPath, level, path, model)
+	sb.WriteString("}")
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {
 	clone := *v
-	for i, v := range clone.variants {
-		clone.variants[i] = v.CloneObject()
+	for i, va := range clone.variants {
+		clone.variants[i] = va.CloneObject()
 	}
 	return &clone
 }
