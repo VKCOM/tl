@@ -158,7 +158,7 @@ func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
-	if onPath && len(path) > level && path[level] == 0 {
+	if onPath {
 		sb.WriteString(color.InBlue("["))
 	} else {
 		sb.WriteString("[")
@@ -166,11 +166,7 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	for i, el := range v.elements {
 		fieldOnPath := onPath && len(path) > level && path[level] == i
 		if i != 0 {
-			if fieldOnPath {
-				sb.WriteString(color.InBlue(","))
-			} else {
-				sb.WriteString(",")
-			}
+			sb.WriteString(",")
 		}
 		if fieldOnPath {
 			el.UIWrite(sb, true, level+1, path, model)
@@ -182,9 +178,13 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		if len(v.elements) != 0 {
 			sb.WriteString(",")
 		}
-		sb.WriteString("_")
+		sb.WriteString(color.InBlue("+"))
 	}
-	sb.WriteString("]")
+	if onPath {
+		sb.WriteString(color.InBlue("]"))
+	} else {
+		sb.WriteString("]")
+	}
 }
 
 func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
@@ -258,6 +258,21 @@ func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
 	}
 	v.elements[selectedIndex].UIStartEdit(level+1, model, fromTab)
+}
+
+func (v *KernelValueTuple) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	if len(model.Path) < level+1 {
+		return
+	}
+	selectedIndex := model.Path[level]
+	if v.instance.isTuple || selectedIndex == len(v.elements) {
+		return
+	}
+	if len(model.Path) == level+1 {
+		v.elements = append(v.elements[:selectedIndex], v.elements[selectedIndex+1:]...)
+		return
+	}
+	v.elements[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -69,8 +70,11 @@ func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int,
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := basictl.JSONWriteString(nil, v.value)
-		sb.Write(w)
+		w := string(basictl.JSONWriteString(nil, v.value))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -85,6 +89,9 @@ func (v *KernelValueString) UIStartEdit(level int, model *UIModel, fromTab bool)
 	}
 	model.EditorString.SetValue(v)
 	model.SetCurrentEditor(&model.EditorString)
+}
+
+func (v *KernelValueString) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueString) Clone() KernelValue {

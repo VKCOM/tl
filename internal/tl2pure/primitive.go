@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -78,8 +79,11 @@ func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int,
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := strconv.AppendUint(nil, uint64(v.value), 10)
-		sb.Write(w)
+		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -94,6 +98,9 @@ func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel, fromTab bool)
 	}
 	model.EditorPrimitive.SetValue(v)
 	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueUint32) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueUint32) SetFromEditor(str string) error {
@@ -151,8 +158,11 @@ func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := strconv.AppendInt(nil, int64(v.value), 10)
-		sb.Write(w)
+		w := string(strconv.AppendInt(nil, int64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -167,6 +177,9 @@ func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel, fromTab bool) 
 	}
 	model.EditorPrimitive.SetValue(v)
 	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueInt32) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueInt32) SetFromEditor(str string) error {
@@ -224,8 +237,11 @@ func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int,
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := strconv.AppendUint(nil, v.value, 10)
-		sb.Write(w)
+		w := string(strconv.AppendUint(nil, v.value, 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -240,6 +256,9 @@ func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel, fromTab bool)
 	}
 	model.EditorPrimitive.SetValue(v)
 	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueUint64) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueUint64) SetFromEditor(str string) error {
@@ -297,8 +316,11 @@ func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := strconv.AppendInt(nil, v.value, 10)
-		sb.Write(w)
+		w := string(strconv.AppendInt(nil, v.value, 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -313,6 +335,9 @@ func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel, fromTab bool) 
 	}
 	model.EditorPrimitive.SetValue(v)
 	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueInt64) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueInt64) SetFromEditor(str string) error {
@@ -370,8 +395,11 @@ func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, p
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
-		w := strconv.AppendUint(nil, uint64(v.value), 10)
-		sb.Write(w)
+		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -386,6 +414,9 @@ func (v *KernelValueByte) UIStartEdit(level int, model *UIModel, fromTab bool) {
 	}
 	model.EditorPrimitive.SetValue(v)
 	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueByte) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueByte) SetFromEditor(str string) error {
@@ -449,11 +480,14 @@ func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, p
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
+		w := "false"
 		if v.value {
-			sb.WriteString("true")
-		} else {
-			sb.WriteString("false")
+			w = "true"
 		}
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
 	}
 }
 
@@ -463,6 +497,9 @@ func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueBool) UIStartEdit(level int, model *UIModel, fromTab bool) {
+}
+
+func (v *KernelValueBool) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueBool) Clone() KernelValue {
@@ -503,7 +540,11 @@ func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	sb.WriteString("bit")
+	w := "bit"
+	if onPath {
+		w = color.InBlue(w)
+	}
+	sb.WriteString(w)
 }
 
 func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
@@ -512,6 +553,9 @@ func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
+}
+
+func (v *KernelValueBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueBit) Clone() KernelValue {
