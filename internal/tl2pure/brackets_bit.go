@@ -2,6 +2,7 @@ package tl2pure
 
 import (
 	"math/rand"
+	"strings"
 
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -131,6 +132,21 @@ func (v *KernelValueTupleBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	}
 	w = append(w, ']')
 	return w
+}
+
+func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	sb.WriteString("<KernelValueTupleBit>")
+}
+
+func (v *KernelValueTupleBit) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueTupleBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
+}
+
+func (v *KernelValueTupleBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueTupleBit) Clone() KernelValue {

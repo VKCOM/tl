@@ -7,7 +7,9 @@ import (
 	"io"
 	"math/rand"
 	"strconv"
+	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -34,6 +36,12 @@ func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
 
 func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 	return ins.clone.ReadTL2(r, nil)
+}
+
+type KernelValuePrimitive interface {
+	KernelValue
+
+	SetFromEditor(str string) error
 }
 
 type KernelValueUint32 struct {
@@ -65,6 +73,43 @@ func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
+}
+
+func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueUint32) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorPrimitive.SetValue(v)
+	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueUint32) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
+func (v *KernelValueUint32) SetFromEditor(str string) error {
+	value, err := strconv.ParseUint(str, 10, 32)
+	if err != nil {
+		return err
+	}
+	v.value = uint32(value)
+	return nil
 }
 
 func (v *KernelValueUint32) Clone() KernelValue {
@@ -109,6 +154,43 @@ func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, int64(v.value), 10)
 }
 
+func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(strconv.AppendInt(nil, int64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueInt32) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorPrimitive.SetValue(v)
+	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueInt32) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
+func (v *KernelValueInt32) SetFromEditor(str string) error {
+	value, err := strconv.ParseInt(str, 10, 32)
+	if err != nil {
+		return err
+	}
+	v.value = int32(value)
+	return nil
+}
+
 func (v *KernelValueInt32) Clone() KernelValue {
 	return &KernelValueInt32{value: v.value}
 }
@@ -149,6 +231,43 @@ func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, v.value, 10)
+}
+
+func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(strconv.AppendUint(nil, v.value, 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueUint64) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorPrimitive.SetValue(v)
+	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueUint64) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
+func (v *KernelValueUint64) SetFromEditor(str string) error {
+	value, err := strconv.ParseUint(str, 10, 64)
+	if err != nil {
+		return err
+	}
+	v.value = value
+	return nil
 }
 
 func (v *KernelValueUint64) Clone() KernelValue {
@@ -193,6 +312,43 @@ func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, v.value, 10)
 }
 
+func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(strconv.AppendInt(nil, v.value, 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueInt64) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorPrimitive.SetValue(v)
+	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueInt64) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
+func (v *KernelValueInt64) SetFromEditor(str string) error {
+	value, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return err
+	}
+	v.value = value
+	return nil
+}
+
 func (v *KernelValueInt64) Clone() KernelValue {
 	return &KernelValueInt64{value: v.value}
 }
@@ -233,6 +389,43 @@ func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
+}
+
+func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueByte) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueByte) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorPrimitive.SetValue(v)
+	model.SetCurrentEditor(&model.EditorPrimitive)
+}
+
+func (v *KernelValueByte) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
+func (v *KernelValueByte) SetFromEditor(str string) error {
+	value, err := strconv.ParseUint(str, 10, 8)
+	if err != nil {
+		return err
+	}
+	v.value = byte(value)
+	return nil
 }
 
 func (v *KernelValueByte) Clone() KernelValue {
@@ -283,6 +476,32 @@ func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "false"...)
 }
 
+func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := "false"
+		if v.value {
+			w = "true"
+		}
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueBool) UIStartEdit(level int, model *UIModel, fromTab bool) {
+}
+
+func (v *KernelValueBool) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
 func (v *KernelValueBool) Clone() KernelValue {
 	return &KernelValueBool{value: v.value}
 }
@@ -318,6 +537,25 @@ func (v *KernelValueBit) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "true"...)
+}
+
+func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	w := "bit"
+	if onPath {
+		w = color.InBlue(w)
+	}
+	sb.WriteString(w)
+}
+
+func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
+}
+
+func (v *KernelValueBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueBit) Clone() KernelValue {

@@ -4,7 +4,9 @@ import (
 	"cmp"
 	"fmt"
 	"math/rand"
+	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -62,6 +64,34 @@ func (v *KernelValueString) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 
 func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return basictl.JSONWriteString(w, v.value)
+}
+
+func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
+		model.CurrentEditor.UIWrite(sb)
+	} else {
+		w := string(basictl.JSONWriteString(nil, v.value))
+		if onPath {
+			w = color.InBlue(w)
+		}
+		sb.WriteString(w)
+	}
+}
+
+func (v *KernelValueString) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
+}
+
+func (v *KernelValueString) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) != level {
+		panic("unexpected path invariant")
+	}
+	model.EditorString.SetValue(v)
+	model.SetCurrentEditor(&model.EditorString)
+}
+
+func (v *KernelValueString) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueString) Clone() KernelValue {

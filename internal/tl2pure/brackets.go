@@ -2,7 +2,9 @@ package tl2pure
 
 import (
 	"math/rand"
+	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -50,6 +52,14 @@ func (v *KernelValueTuple) resize(count int) {
 	if len(v.elements) > count {
 		v.elements = v.elements[:count]
 	}
+}
+
+func (v *KernelValueTuple) Clone() KernelValue {
+	clone := *v // TODO - copy slice
+	for i, el := range clone.elements {
+		clone.elements[i] = el.Clone()
+	}
+	return &clone
 }
 
 func (v *KernelValueTuple) Reset() {
@@ -136,24 +146,133 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 
 func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '[')
-	first := true
-	for _, el := range v.elements {
-		if !first {
+	for i, el := range v.elements {
+		if i != 0 {
 			w = append(w, ',')
 		}
-		first = false
 		w = el.WriteJSON(w, ctx)
 	}
 	w = append(w, ']')
 	return w
 }
 
-func (v *KernelValueTuple) Clone() KernelValue {
-	clone := *v // TODO - copy slice
-	for i, el := range clone.elements {
-		clone.elements[i] = el.Clone()
+func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	// selectedWhole := onPath && len(path) == level
+	if onPath {
+		sb.WriteString(color.InBlue("["))
+	} else {
+		sb.WriteString("[")
 	}
-	return &clone
+	for i, el := range v.elements {
+		fieldOnPath := onPath && len(path) > level && path[level] == i
+		if i != 0 {
+			sb.WriteString(",")
+		}
+		if fieldOnPath {
+			el.UIWrite(sb, true, level+1, path, model)
+			continue
+		}
+		el.UIWrite(sb, false, 0, nil, model)
+	}
+	if onPath && len(path) > level && path[level] == len(v.elements) { // insert placeholder
+		if len(v.elements) != 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(color.InBlue("+"))
+	}
+	if onPath {
+		sb.WriteString(color.InBlue("]"))
+	} else {
+		sb.WriteString("]")
+	}
+}
+
+func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	maximumIndex := len(v.elements) - 1
+	if !v.instance.isTuple {
+		maximumIndex++
+	}
+	if len(model.Path) == level {
+		if side >= 0 {
+			model.Path = append(model.Path[:level], maximumIndex)
+		} else {
+			model.Path = append(model.Path[:level], 0)
+		}
+	} else {
+		selectedIndex := model.Path[level]
+		if selectedIndex > maximumIndex {
+			return 1
+		} else if selectedIndex < 0 {
+			return -1
+		}
+		if selectedIndex == maximumIndex {
+			model.Path = model.Path[:level+1]
+			return 0
+		}
+		childWantsSide := v.elements[selectedIndex].UIFixPath(side, level+1, model)
+		if childWantsSide == 0 {
+			return 0
+		}
+		if childWantsSide < 0 {
+			if selectedIndex <= 0 {
+				return -1
+			}
+			model.Path = append(model.Path[:level], selectedIndex-1)
+		} else {
+			if selectedIndex >= maximumIndex {
+				return 1
+			}
+			model.Path = append(model.Path[:level], selectedIndex+1)
+		}
+	}
+	if model.Path[level] == maximumIndex {
+		model.Path = model.Path[:level+1]
+		return 0
+	}
+	childWantsSide := v.elements[model.Path[level]].UIFixPath(side, level+1, model)
+	if childWantsSide != 0 {
+		panic("unexpected path invariant")
+	}
+	return 0
+}
+
+func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		model.Path = append(model.Path[:level], 0)
+	}
+	selectedIndex := model.Path[level]
+	if selectedIndex == len(v.elements) {
+		if v.instance.isTuple {
+			panic("unexpected path invariant for tuple")
+		}
+		if fromTab { // require Enter to insert element
+			return
+		}
+		fromTab = true // do not recursively create first field
+		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
+	}
+	v.elements[selectedIndex].UIStartEdit(level+1, model, fromTab)
+}
+
+func (v *KernelValueTuple) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	if len(model.Path) < level+1 {
+		return
+	}
+	selectedIndex := model.Path[level]
+	if v.instance.isTuple || selectedIndex == len(v.elements) {
+		return
+	}
+	if len(model.Path) == level+1 {
+		v.elements = append(v.elements[:selectedIndex], v.elements[selectedIndex+1:]...)
+		return
+	}
+	v.elements[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {

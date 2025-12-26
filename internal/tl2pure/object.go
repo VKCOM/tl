@@ -3,7 +3,9 @@ package tl2pure
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -210,13 +212,13 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '{')
 	first := true
 	for i, fieldDef := range v.instance.constructorFields {
+		if !first {
+			w = append(w, ',')
+		}
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
 				continue
 			}
-		}
-		if !first {
-			w = append(w, ',')
 		}
 		first = false
 		w = append(w, `"`...)
@@ -226,6 +228,146 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	}
 	w = append(w, '}')
 	return w
+}
+
+func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	if onPath {
+		sb.WriteString(color.InBlue("{"))
+	} else {
+		sb.WriteString("{")
+	}
+	first := true
+	for i, fieldDef := range v.instance.constructorFields {
+		fieldOnPath := onPath && len(path) > level && path[level] == i
+		if fieldDef.IsOptional {
+			if v.fields[i] == nil {
+				if onPath && len(path) > level {
+					if !first {
+						sb.WriteString(",")
+					}
+					sb.WriteString(color.InGray(fieldDef.Name))
+					if fieldOnPath {
+						sb.WriteString(color.InBlue("?"))
+					}
+					first = false
+				}
+				continue
+			}
+		}
+		if !first {
+			sb.WriteString(",")
+		}
+		first = false
+		sb.WriteString(`"`)
+		//if fieldOnPath {
+		//	sb.WriteString(color.InBlue(fieldDef.Name))
+		//} else {
+		sb.WriteString(fieldDef.Name)
+		//}
+		sb.WriteString(`":`)
+		if fieldDef.IsOptional {
+			if v.fields[i] == nil {
+				sb.WriteString("_")
+				continue
+			}
+		}
+		if fieldOnPath {
+			v.fields[i].UIWrite(sb, true, level+1, path, model)
+			continue
+		}
+		v.fields[i].UIWrite(sb, false, 0, nil, model)
+	}
+	if onPath {
+		sb.WriteString(color.InBlue("}"))
+	} else {
+		sb.WriteString("}")
+	}
+}
+
+func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	minimalIndex := 0
+	if v.instance.isUnionElement {
+		minimalIndex = -1
+	}
+	if len(model.Path) == level {
+		if side >= 0 {
+			model.Path = append(model.Path[:level], len(v.fields)-1)
+		} else {
+			model.Path = append(model.Path[:level], minimalIndex)
+		}
+	} else {
+		selectedIndex := model.Path[level]
+		if selectedIndex >= len(v.fields) {
+			return 1
+		} else if selectedIndex < minimalIndex {
+			return -1
+		}
+		if selectedIndex == -1 || v.fields[selectedIndex] == nil {
+			model.Path = model.Path[:level+1]
+			return 0
+		}
+		childWantsSide := v.fields[selectedIndex].UIFixPath(side, level+1, model)
+		if childWantsSide == 0 {
+			return 0
+		}
+		if childWantsSide < 0 {
+			if selectedIndex <= minimalIndex {
+				return -1
+			}
+			model.Path = append(model.Path[:level], selectedIndex-1)
+		} else {
+			if selectedIndex >= len(v.fields)-1 {
+				return 1
+			}
+			model.Path = append(model.Path[:level], selectedIndex+1)
+		}
+	}
+	selectedIndex := model.Path[level]
+	if selectedIndex == -1 || v.fields[selectedIndex] == nil {
+		model.Path = model.Path[:level+1]
+		return 0
+	}
+	childWantsSide := v.fields[selectedIndex].UIFixPath(side, level+1, model)
+	if childWantsSide != 0 {
+		panic("unexpected path invariant")
+	}
+	return 0
+}
+
+func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, fromTab bool) {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		model.Path = append(model.Path[:level], 0)
+	}
+	selectedIndex := model.Path[level]
+	if v.fields[selectedIndex] == nil {
+		if fromTab { // require Enter to insert element
+			return
+		}
+		fromTab = true // do not recursively create first field
+		v.fields[selectedIndex] = v.instance.fieldTypes[selectedIndex].ins.CreateValue()
+	}
+	v.fields[selectedIndex].UIStartEdit(level+1, model, fromTab)
+}
+
+func (v *KernelValueObject) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	if len(model.Path) < level+1 {
+		return
+	}
+	selectedIndex := model.Path[level]
+	if len(model.Path) == level+1 {
+		fieldDef := v.instance.constructorFields[selectedIndex]
+		if fieldDef.IsOptional && v.fields[selectedIndex] != nil {
+			v.fields[selectedIndex] = nil
+		}
+		return
+	}
+	v.fields[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
 func (v *KernelValueObject) Clone() KernelValue {
