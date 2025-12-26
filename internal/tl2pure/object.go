@@ -257,7 +257,44 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.WriteString("}")
 }
 
-func (v *KernelValueObject) UIFixPath(level int, path []int) {
+func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
+	if len(model.Path) < level {
+		panic("unexpected path invariant")
+	}
+	if len(model.Path) == level {
+		if side >= 0 {
+			model.Path = append(model.Path[:level], len(v.fields)-1)
+		} else {
+			model.Path = append(model.Path[:level], 0)
+		}
+	} else {
+		selectedIndex := model.Path[level]
+		if selectedIndex >= len(v.fields) {
+			return 1
+		} else if selectedIndex < 0 {
+			return -1
+		}
+		childWantsSide := v.fields[selectedIndex].UIFixPath(side, level+1, model)
+		if childWantsSide == 0 {
+			return 0
+		}
+		if childWantsSide < 0 {
+			if selectedIndex <= 0 {
+				return -1
+			}
+			model.Path = append(model.Path[:level], selectedIndex-1)
+		} else {
+			if selectedIndex >= len(v.fields)-1 {
+				return -1
+			}
+			model.Path = append(model.Path[:level], selectedIndex+1)
+		}
+	}
+	childWantsSide := v.fields[model.Path[level]].UIFixPath(side, level+1, model)
+	if childWantsSide != 0 {
+		panic("unexpected path invariant")
+	}
+	return 0
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

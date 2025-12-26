@@ -74,7 +74,8 @@ func (v *KernelValueAlias) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	v.value.UIWrite(sb, onPath, level, path, model)
 }
 
-func (v *KernelValueAlias) UIFixPath(level int, path []int) {
+func (v *KernelValueAlias) UIFixPath(side int, level int, model *UIModel) int {
+	return v.value.UIFixPath(side, level, model)
 }
 
 func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {

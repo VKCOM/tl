@@ -144,7 +144,8 @@ func (v *KernelValueMap) UIWrite(sb *strings.Builder, onPath bool, level int, pa
 	sb.WriteString("<KernelValueMap>")
 }
 
-func (v *KernelValueMap) UIFixPath(level int, path []int) {
+func (v *KernelValueMap) UIFixPath(side int, level int, model *UIModel) int {
+	return 0
 }
 
 func (v *KernelValueMap) Clone() KernelValue {

@@ -39,8 +39,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		// These keys should exit the program.
-		case "ctrl+c", "q":
+		case "ctrl+c":
 			return m, tea.Quit
+		case "right":
+			m.impl.Right()
+			return m, nil
+		case "left":
+			m.impl.Left()
+			return m, nil
 
 		// The "up" and "k" keys move the cursor up
 		case "up", "k":
@@ -144,6 +150,8 @@ func main() {
 		CurrentEditor: nil,
 		LastError:     nil,
 	}
+
+	uiModel.Fun.UIFixPath(-1, 0, uiModel)
 
 	p := tea.NewProgram(model{impl: uiModel})
 	if _, err := p.Run(); err != nil {

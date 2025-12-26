@@ -73,7 +73,9 @@ func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.Write(w)
 }
 
-func (v *KernelValueUint32) UIFixPath(level int, path []int) {
+func (v *KernelValueUint32) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueUint32) Clone() KernelValue {
@@ -123,7 +125,9 @@ func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	sb.Write(w)
 }
 
-func (v *KernelValueInt32) UIFixPath(level int, path []int) {
+func (v *KernelValueInt32) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueInt32) Clone() KernelValue {
@@ -173,7 +177,9 @@ func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.Write(w)
 }
 
-func (v *KernelValueUint64) UIFixPath(level int, path []int) {
+func (v *KernelValueUint64) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueUint64) Clone() KernelValue {
@@ -223,7 +229,9 @@ func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	sb.Write(w)
 }
 
-func (v *KernelValueInt64) UIFixPath(level int, path []int) {
+func (v *KernelValueInt64) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueInt64) Clone() KernelValue {
@@ -273,7 +281,9 @@ func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, p
 	sb.Write(w)
 }
 
-func (v *KernelValueByte) UIFixPath(level int, path []int) {
+func (v *KernelValueByte) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueByte) Clone() KernelValue {
@@ -332,7 +342,9 @@ func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, p
 	}
 }
 
-func (v *KernelValueBool) UIFixPath(level int, path []int) {
+func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueBool) Clone() KernelValue {
@@ -376,7 +388,9 @@ func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, pa
 	sb.WriteString("bit")
 }
 
-func (v *KernelValueBit) UIFixPath(level int, path []int) {
+func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueBit) Clone() KernelValue {
