@@ -126,6 +126,9 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	sb.WriteString("}")
 }
 
+func (v *KernelValueUnion) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueUnion) Clone() KernelValue {
 	clone := *v
 	for i, va := range clone.variants {

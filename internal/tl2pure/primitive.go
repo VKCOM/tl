@@ -73,6 +73,9 @@ func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.Write(w)
 }
 
+func (v *KernelValueUint32) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueUint32) Clone() KernelValue {
 	return &KernelValueUint32{value: v.value}
 }
@@ -118,6 +121,9 @@ func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendInt(nil, int64(v.value), 10)
 	sb.Write(w)
+}
+
+func (v *KernelValueInt32) UIFixPath(level int, path []int) {
 }
 
 func (v *KernelValueInt32) Clone() KernelValue {
@@ -167,6 +173,9 @@ func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.Write(w)
 }
 
+func (v *KernelValueUint64) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueUint64) Clone() KernelValue {
 	return &KernelValueUint64{value: v.value}
 }
@@ -214,6 +223,9 @@ func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	sb.Write(w)
 }
 
+func (v *KernelValueInt64) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueInt64) Clone() KernelValue {
 	return &KernelValueInt64{value: v.value}
 }
@@ -259,6 +271,9 @@ func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	w := strconv.AppendUint(nil, uint64(v.value), 10)
 	sb.Write(w)
+}
+
+func (v *KernelValueByte) UIFixPath(level int, path []int) {
 }
 
 func (v *KernelValueByte) Clone() KernelValue {
@@ -317,6 +332,9 @@ func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, p
 	}
 }
 
+func (v *KernelValueBool) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueBool) Clone() KernelValue {
 	return &KernelValueBool{value: v.value}
 }
@@ -356,6 +374,9 @@ func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	sb.WriteString("bit")
+}
+
+func (v *KernelValueBit) UIFixPath(level int, path []int) {
 }
 
 func (v *KernelValueBit) Clone() KernelValue {

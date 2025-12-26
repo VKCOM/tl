@@ -257,6 +257,9 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 	sb.WriteString("}")
 }
 
+func (v *KernelValueObject) UIFixPath(level int, path []int) {
+}
+
 func (v *KernelValueObject) Clone() KernelValue {
 	clone := v.CloneObject()
 	return &clone
