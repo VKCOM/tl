@@ -1279,6 +1279,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 
 {%- if struct_.wr.wantsTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+    {%- if len(struct_.Fields) == 0 && (struct_.wr.unionParent == nil || struct_.wr.unionIndex == 0) -%}
+        if optimizeEmpty {
+            return sizes, 0
+        }
+        return sizes, 1
+    {%- else -%}
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1336,9 +1342,17 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     }
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
+    {%- endif-%}
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+    {%- if len(struct_.Fields) == 0 && (struct_.wr.unionParent == nil || struct_.wr.unionIndex == 0) -%}
+        if optimizeEmpty {
+            return w, sizes, 0
+        }
+        w = basictl.TL2WriteSize(w, 0)
+        return w, sizes, 1
+    {%- else -%}
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1408,6 +1422,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     }
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, 1
+    {%- endif-%}
 }
 {%- endif -%}
 

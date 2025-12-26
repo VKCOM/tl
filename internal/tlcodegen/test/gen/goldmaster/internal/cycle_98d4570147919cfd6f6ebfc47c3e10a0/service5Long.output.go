@@ -109,53 +109,17 @@ func (item *Service5LongEmptyOutput) UnmarshalJSON(b []byte) error {
 }
 
 func (item *Service5LongEmptyOutput) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 4287593913)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
+	if optimizeEmpty {
+		return sizes, 0
 	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	internal.Unused(sz)
-	return sizes, currentSize
+	return sizes, 1
 }
 
 func (item *Service5LongEmptyOutput) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 4287593913 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-	if optimizeEmpty && currentSize == 0 {
+	if optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	internal.Unused(sz)
+	w = basictl.TL2WriteSize(w, 0)
 	return w, sizes, 1
 }
 
