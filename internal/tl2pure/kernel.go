@@ -22,6 +22,8 @@ type KernelValue interface {
 	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
 	WriteJSON(w []byte, ctx *TL2Context) []byte
 
+	WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
+
 	CompareForMapKey(other KernelValue) int
 }
 
@@ -77,12 +79,6 @@ func (k *Kernel) addTip(kt *KernelType) error {
 	return nil
 }
 
-func (k *Kernel) CanonicalName(t tlast.TL2TypeRef) string {
-	sb := strings.Builder{}
-	t.Print(&sb)
-	return sb.String()
-}
-
 func (k *Kernel) IsBit(tr tlast.TL2TypeRef) bool {
 	return !tr.IsBracket && tr.SomeType.Name.Namespace == "" && tr.SomeType.Name.Name == "bit"
 }
@@ -119,6 +115,19 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 		result = append(result, ref.ins)
 	}
 	return result
+}
+
+func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceObject {
+	tip, ok := k.tips[name]
+	if !ok {
+		return nil
+	}
+	ref, ok := tip.instances[name.String()]
+	if !ok {
+		return nil
+	}
+	ins2, _ := ref.ins.(*TypeInstanceObject)
+	return ins2
 }
 
 func (k *Kernel) AddFile(f tlast.TL2File) {

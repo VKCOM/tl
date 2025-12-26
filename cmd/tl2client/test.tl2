@@ -57,4 +57,4 @@
 memcache.value = Not_found | Strvalue value:string flags:uint32;
 
 @read memcache.get#11111111 key:string => memcache.value;
-@write memcache.set#22222222 key:string value:string => bool;
+@write memcache.set#22222222 key:string value:memcache.value => bool;

@@ -3,6 +3,7 @@ package tl2pure
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -226,6 +227,10 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	}
 	w = append(w, '}')
 	return w
+}
+
+func (v *KernelValueObject) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	sb.WriteString("<KernelValueObject>")
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

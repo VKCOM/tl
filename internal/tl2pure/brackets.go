@@ -2,6 +2,7 @@ package tl2pure
 
 import (
 	"math/rand"
+	"strings"
 
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -50,6 +51,14 @@ func (v *KernelValueTuple) resize(count int) {
 	if len(v.elements) > count {
 		v.elements = v.elements[:count]
 	}
+}
+
+func (v *KernelValueTuple) Clone() KernelValue {
+	clone := *v // TODO - copy slice
+	for i, el := range clone.elements {
+		clone.elements[i] = el.Clone()
+	}
+	return &clone
 }
 
 func (v *KernelValueTuple) Reset() {
@@ -136,24 +145,35 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 
 func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '[')
-	first := true
-	for _, el := range v.elements {
-		if !first {
+	for i, el := range v.elements {
+		if i != 0 {
 			w = append(w, ',')
 		}
-		first = false
 		w = el.WriteJSON(w, ctx)
 	}
 	w = append(w, ']')
 	return w
 }
 
-func (v *KernelValueTuple) Clone() KernelValue {
-	clone := *v // TODO - copy slice
-	for i, el := range clone.elements {
-		clone.elements[i] = el.Clone()
+func (v *KernelValueTuple) WriteUI(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+	// selectedWhole := onPath && len(path) == level
+	sb.WriteString("[")
+	for i, el := range v.elements {
+		if i != 0 {
+			sb.WriteString(",")
+		}
+		if onPath && len(path) > level && path[level] == i {
+			el.WriteUI(sb, true, level+1, path, model)
+			continue
+		}
+		el.WriteUI(sb, false, 0, nil, model)
 	}
-	return &clone
+	if onPath && len(path) > level && path[level] == len(v.elements) { // insert placeholder
+		if len(v.elements) != 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString("_")
+	}
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {
