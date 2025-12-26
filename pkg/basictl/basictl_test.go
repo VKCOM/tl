@@ -255,7 +255,7 @@ func TestRevStringRead2Bytes(t *testing.T) {
 func TestBuf_ByteSliceHuge(t *testing.T) {
 	t.Parallel()
 
-	prefixLen := bigStringLen - 10
+	prefixLen := maxMediumStringLen - 10
 	in := []byte(strings.Repeat("-", prefixLen))
 	var out []byte
 	var rw []byte
