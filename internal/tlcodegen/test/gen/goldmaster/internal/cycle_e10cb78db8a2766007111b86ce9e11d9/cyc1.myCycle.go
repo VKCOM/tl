@@ -51,8 +51,11 @@ func BuiltinVectorCyc1MyCycleWrite(w []byte, vec []Cyc1MyCycle) []byte {
 }
 
 func BuiltinVectorCyc1MyCycleCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]Cyc1MyCycle) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -72,8 +75,12 @@ func BuiltinVectorCyc1MyCycleCalculateLayout(sizes []int, optimizeEmpty bool, ve
 }
 
 func BuiltinVectorCyc1MyCycleInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]Cyc1MyCycle) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

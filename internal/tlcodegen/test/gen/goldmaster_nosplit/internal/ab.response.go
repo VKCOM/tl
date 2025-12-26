@@ -594,7 +594,7 @@ func (item *AbEmpty) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	if optimizeEmpty {
 		return w, sizes, 0
 	}
-	w = basictl.TL2WriteSize(w, 0)
+	w = append(w, 0)
 	return w, sizes, 1
 }
 
@@ -803,10 +803,10 @@ func (item *AbResponse) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 	case 3:
 		return item.valueResponse.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -823,10 +823,10 @@ func (item *AbResponse) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 	case 3:
 		return item.valueResponse.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1202,10 +1202,10 @@ func (item *AbResponseBytes) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 	case 3:
 		return item.valueResponse.CalculateLayout(sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	bodySize := 1 + basictl.TL2CalculateSize(item.index)
@@ -1222,10 +1222,10 @@ func (item *AbResponseBytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 	case 3:
 		return item.valueResponse.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	if item.index == 0 && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}
@@ -1494,8 +1494,11 @@ func BuiltinTupleAbResponseWrite(w []byte, vec []AbResponse, nat_n uint32) (_ []
 }
 
 func BuiltinTupleAbResponseCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]AbResponse) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -1515,8 +1518,12 @@ func BuiltinTupleAbResponseCalculateLayout(sizes []int, optimizeEmpty bool, vec 
 }
 
 func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]AbResponse) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

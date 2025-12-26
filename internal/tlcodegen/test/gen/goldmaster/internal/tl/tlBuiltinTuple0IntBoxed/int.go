@@ -50,8 +50,11 @@ func BuiltinTuple0IntBoxedWrite(w []byte, vec *[0]int32) []byte {
 }
 
 func BuiltinTuple0IntBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[0]int32) ([]int, int) {
-	if 0 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 0 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -71,8 +74,12 @@ func BuiltinTuple0IntBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *
 }
 
 func BuiltinTuple0IntBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[0]int32) ([]byte, []int, int) {
-	if 0 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 0 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

@@ -50,8 +50,11 @@ func BuiltinTupleAbResponseWrite(w []byte, vec []cycle_b62dd5050d0a18c7485fd980c
 }
 
 func BuiltinTupleAbResponseCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -71,8 +74,12 @@ func BuiltinTupleAbResponseCalculateLayout(sizes []int, optimizeEmpty bool, vec 
 }
 
 func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

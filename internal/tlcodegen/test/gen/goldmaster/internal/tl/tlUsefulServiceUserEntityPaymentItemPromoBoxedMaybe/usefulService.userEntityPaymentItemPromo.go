@@ -56,10 +56,10 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []by
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok && optimizeEmpty {
-		return sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
 		return sizes, 1
 	}
 	sizePosition := len(sizes)
@@ -87,10 +87,10 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) CalculateLayout(s
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok && optimizeEmpty {
-		return w, sizes, 0
-	}
 	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
 		w = append(w, 0)
 		return w, sizes, 1
 	}

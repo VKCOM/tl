@@ -77,8 +77,11 @@ func BuiltinVectorDictionaryElemIntPairIntIntWrite(w []byte, m map[int32]PairInt
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -108,8 +111,12 @@ func BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes []int, optimi
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]byte, []int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -305,8 +312,11 @@ func BuiltinVectorDictionaryElemLongPairIntIntWrite(w []byte, m map[int64]PairIn
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -336,8 +346,12 @@ func BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes []int, optim
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]byte, []int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -510,8 +524,11 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntWrite(w []byte, vec []Dictionar
 }
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairBoolAColorInt) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -531,8 +548,12 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes []int, op
 }
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairBoolAColorInt) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -668,8 +689,11 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(w []byte, vec []Dictiona
 }
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairFloatDoubleInt) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -689,8 +713,12 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes []int, o
 }
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairFloatDoubleInt) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -826,8 +854,11 @@ func BuiltinVectorDictionaryElemPairIntIntIntWrite(w []byte, vec []DictionaryEle
 }
 
 func BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairIntIntInt) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -847,8 +878,12 @@ func BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes []int, optimi
 }
 
 func BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairIntIntInt) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -984,8 +1019,11 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(w []byte, ve
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairIntPairMultiPointStringInt) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -1005,8 +1043,12 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(si
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryElemPairIntPairMultiPointStringInt) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -1163,8 +1205,11 @@ func BuiltinVectorDictionaryElemStringPairIntIntWrite(w []byte, m map[string]Pai
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -1192,8 +1237,12 @@ func BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes []int, opt
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]byte, []int, int) {
-	if len(*m) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
@@ -1355,8 +1404,11 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []DictionaryEl
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryElemTupleStringInt) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -1376,8 +1428,12 @@ func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, optim
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryElemTupleStringInt) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

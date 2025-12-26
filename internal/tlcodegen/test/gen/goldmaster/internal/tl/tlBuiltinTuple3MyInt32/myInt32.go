@@ -48,8 +48,11 @@ func BuiltinTuple3MyInt32Write(w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
 }
 
 func BuiltinTuple3MyInt32CalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]tlMyInt32.MyInt32) ([]int, int) {
-	if 3 == 0 && optimizeEmpty {
-		return sizes, 0
+	if 3 == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -69,8 +72,12 @@ func BuiltinTuple3MyInt32CalculateLayout(sizes []int, optimizeEmpty bool, vec *[
 }
 
 func BuiltinTuple3MyInt32InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]tlMyInt32.MyInt32) ([]byte, []int, int) {
-	if 3 == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if 3 == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]

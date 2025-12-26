@@ -52,8 +52,11 @@ func BuiltinVectorTrueBoxedWrite(w []byte, vec []tlTrue.True) []byte {
 }
 
 func BuiltinVectorTrueBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]tlTrue.True) ([]int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
 	}
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -72,8 +75,12 @@ func BuiltinVectorTrueBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec 
 }
 
 func BuiltinVectorTrueBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]tlTrue.True) ([]byte, []int, int) {
-	if len(*vec) == 0 && optimizeEmpty {
-		return w, sizes, 0
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
 	}
 	currentSize := sizes[0]
 	sizes = sizes[1:]
