@@ -113,12 +113,16 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
 	defVariant := v.instance.def.Variants[v.index]
-	sb.WriteString(`{"`)
-	if onPath && len(path) > level && path[level] == -1 { // constructor
-		sb.WriteString(color.InBlue("type"))
+	if onPath {
+		sb.WriteString(color.InBlue("{"))
 	} else {
-		sb.WriteString("type")
+		sb.WriteString("{")
 	}
+	//if onPath && len(path) > level && path[level] == -1 { // constructor
+	//	sb.WriteString(color.InBlue("type"))
+	//} else {
+	sb.WriteString("type")
+	//}
 	sb.WriteString(`":`)
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
@@ -133,7 +137,11 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	}
 	sb.WriteString(`,"value":`)
 	v.variants[v.index].UIWrite(sb, onPath, level, path, model)
-	sb.WriteString("}")
+	if onPath {
+		sb.WriteString(color.InBlue("}"))
+	} else {
+		sb.WriteString("}")
+	}
 }
 
 func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
@@ -155,6 +163,9 @@ func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		return
 	}
 	v.variants[v.index].UIStartEdit(level, model, fromTab)
+}
+
+func (v *KernelValueUnion) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
 func (v *KernelValueUnion) Clone() KernelValue {

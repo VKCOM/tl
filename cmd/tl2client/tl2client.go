@@ -40,6 +40,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 		}
+		if msg.Type == tea.KeyF8 {
+			if m.impl.CurrentEditor == nil {
+				m.impl.Fun.UIKey(0, m.impl, false, true, false, false)
+				return m, nil
+			}
+		}
 		if msg.Type == tea.KeyTab {
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnTab(m.impl, 1)
@@ -106,7 +112,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "up":
-			if m.impl.CurrentEditor == nil && len(m.impl.Path) != 0 {
+			if m.impl.CurrentEditor == nil && len(m.impl.Path) > 1 {
 				m.impl.Path = m.impl.Path[:len(m.impl.Path)-1]
 			}
 			return m, nil

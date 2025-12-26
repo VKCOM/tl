@@ -231,14 +231,17 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	// selectedWhole := onPath && len(path) == level
-	sb.WriteString("{")
+	if onPath {
+		sb.WriteString(color.InBlue("{"))
+	} else {
+		sb.WriteString("{")
+	}
 	first := true
 	for i, fieldDef := range v.instance.constructorFields {
 		fieldOnPath := onPath && len(path) > level && path[level] == i
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
-				if onPath {
+				if onPath && len(path) > level {
 					if !first {
 						sb.WriteString(",")
 					}
@@ -256,11 +259,11 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		first = false
 		sb.WriteString(`"`)
-		if fieldOnPath {
-			sb.WriteString(color.InBlue(fieldDef.Name))
-		} else {
-			sb.WriteString(fieldDef.Name)
-		}
+		//if fieldOnPath {
+		//	sb.WriteString(color.InBlue(fieldDef.Name))
+		//} else {
+		sb.WriteString(fieldDef.Name)
+		//}
 		sb.WriteString(`":`)
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
@@ -274,7 +277,11 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		v.fields[i].UIWrite(sb, false, 0, nil, model)
 	}
-	sb.WriteString("}")
+	if onPath {
+		sb.WriteString(color.InBlue("}"))
+	} else {
+		sb.WriteString("}")
+	}
 }
 
 func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
@@ -346,6 +353,21 @@ func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, fromTab bool)
 		v.fields[selectedIndex] = v.instance.fieldTypes[selectedIndex].ins.CreateValue()
 	}
 	v.fields[selectedIndex].UIStartEdit(level+1, model, fromTab)
+}
+
+func (v *KernelValueObject) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	if len(model.Path) < level+1 {
+		return
+	}
+	selectedIndex := model.Path[level]
+	if len(model.Path) == level+1 {
+		fieldDef := v.instance.constructorFields[selectedIndex]
+		if fieldDef.IsOptional && v.fields[selectedIndex] != nil {
+			v.fields[selectedIndex] = nil
+		}
+		return
+	}
+	v.fields[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
 func (v *KernelValueObject) Clone() KernelValue {

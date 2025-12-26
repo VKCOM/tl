@@ -82,6 +82,10 @@ func (v *KernelValueAlias) UIStartEdit(level int, model *UIModel, fromTab bool) 
 	v.value.UIStartEdit(level, model, fromTab)
 }
 
+func (v *KernelValueAlias) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	v.value.UIKey(level, model, insert, delete, up, down)
+}
+
 func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {
 	if v2, ok := other.(*KernelValueAlias); ok {
 		return v.value.CompareForMapKey(v2.value)

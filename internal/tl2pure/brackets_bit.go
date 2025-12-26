@@ -146,6 +146,9 @@ func (v *KernelValueTupleBit) UIFixPath(side int, level int, model *UIModel) int
 func (v *KernelValueTupleBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
 }
 
+func (v *KernelValueTupleBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
 func (v *KernelValueTupleBit) Clone() KernelValue {
 	return &KernelValueTupleBit{
 		instance: v.instance,

@@ -151,6 +151,9 @@ func (v *KernelValueMap) UIFixPath(side int, level int, model *UIModel) int {
 func (v *KernelValueMap) UIStartEdit(level int, model *UIModel, fromTab bool) {
 }
 
+func (v *KernelValueMap) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+}
+
 func (v *KernelValueMap) Clone() KernelValue {
 	clone := *v
 	for i, el := range clone.elements {
