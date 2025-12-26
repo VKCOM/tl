@@ -138,7 +138,9 @@ func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level in
 	sb.WriteString("<KernelValueTupleBit>")
 }
 
-func (v *KernelValueTupleBit) UIFixPath(level int, path []int) {
+func (v *KernelValueTupleBit) UIFixPath(side int, level int, model *UIModel) int {
+	model.Path = model.Path[:level]
+	return 0
 }
 
 func (v *KernelValueTupleBit) Clone() KernelValue {

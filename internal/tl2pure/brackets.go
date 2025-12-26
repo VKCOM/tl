@@ -178,7 +178,8 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	sb.WriteString("]")
 }
 
-func (v *KernelValueTuple) UIFixPath(level int, path []int) {
+func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
+	return 0
 }
 
 func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {

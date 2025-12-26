@@ -21,20 +21,32 @@ type UIModel struct {
 	LastError error
 }
 
-func (m UIModel) View() string {
+func (m *UIModel) colorButton(str string) string {
+	return str
+}
+
+func (m *UIModel) colorButtonComment(str string) string {
+	return color.InBlackOverBlue(str)
+}
+
+func (m *UIModel) colorError(str string) string {
+	return color.InRed(str)
+}
+
+func (m *UIModel) View() string {
 	var sb strings.Builder
-	sb.WriteString("[F1]")
-	sb.WriteString(color.InBlackOverCyan("Help  "))
-	sb.WriteString("[Tab]")
-	sb.WriteString(color.InBlackOverCyan("Next  "))
-	sb.WriteString("[^Enter]")
-	sb.WriteString(color.InBlackOverCyan("Send  "))
+	sb.WriteString(m.colorButton("[F1]"))
+	sb.WriteString(m.colorButtonComment("Help  "))
+	sb.WriteString(m.colorButton("[Tab]"))
+	sb.WriteString(m.colorButtonComment("Next  "))
+	sb.WriteString(m.colorButton("[^Enter]"))
+	sb.WriteString(m.colorButtonComment("Send  "))
 	//sb.WriteString("F8")
-	//sb.WriteString(color.InBlackOverCyan("Extra"))
-	sb.WriteString("[Enter]")
-	sb.WriteString(color.InBlackOverCyan("Edit  "))
-	sb.WriteString("[Esc]")
-	sb.WriteString(color.InBlackOverCyan("Cancel"))
+	//sb.WriteString(m.colorButtonComment("Extra"))
+	sb.WriteString(m.colorButton("[Enter]"))
+	sb.WriteString(m.colorButtonComment("Edit  "))
+	sb.WriteString(m.colorButton("[Esc]"))
+	sb.WriteString(m.colorButtonComment("Cancel"))
 	sb.WriteString("\n")
 	sb.WriteString(m.Fun.instance.canonicalName)
 	if m.Fun.instance.comb.FuncDecl.ID != nil {
@@ -45,11 +57,44 @@ func (m UIModel) View() string {
 	//sb.WriteString(m.Fun.instance.resultType.Combinator().TypeDecl.Type.St.CanonicalName())
 	sb.WriteString("    ")
 	if m.LastError != nil {
-		sb.WriteString(color.InRed(m.LastError.Error()))
+		sb.WriteString(m.colorError(m.LastError.Error()))
 	}
 	sb.WriteString("\n")
-	m.Fun.UIWrite(&sb, true, 0, m.Path, &m)
+	m.Fun.UIWrite(&sb, true, 0, m.Path, m)
+	sb.WriteString("\nPath: ")
+	for i, pa := range m.Path {
+		if i != 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(fmt.Sprintf("%d", pa))
+	}
 	return sb.String()
+}
+
+func (m *UIModel) Right() {
+	if len(m.Path) == 0 {
+		panic("unexpected model state")
+	}
+	m.Path[len(m.Path)-1]++
+	childWantsSide := m.Fun.UIFixPath(-1, 0, m)
+	if childWantsSide == 0 {
+		return
+	}
+	m.Path = m.Path[:0]
+	m.Fun.UIFixPath(childWantsSide, 0, m)
+}
+
+func (m *UIModel) Left() {
+	if len(m.Path) == 0 {
+		panic("unexpected model state")
+	}
+	m.Path[len(m.Path)-1]--
+	childWantsSide := m.Fun.UIFixPath(1, 0, m)
+	if childWantsSide == 0 {
+		return
+	}
+	m.Path = m.Path[:0]
+	m.Fun.UIFixPath(childWantsSide, 0, m)
 }
 
 // [F1]Help [Tab]Next [^Enter]Send [Enter]Edit [Esc]Cancel  // [F5]Extra
