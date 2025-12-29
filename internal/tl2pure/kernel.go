@@ -18,7 +18,7 @@ type KernelValue interface {
 
 	Reset()
 	Random(rg *rand.Rand)
-	WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte
+	WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel)
 	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
 	WriteJSON(w []byte, ctx *TL2Context) []byte
 

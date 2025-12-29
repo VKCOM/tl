@@ -18,6 +18,8 @@ type KernelValueTupleBit struct {
 	elements []bool
 }
 
+var _ KernelValue = &KernelValueTupleBit{}
+
 func (ins *TypeInstanceTupleVectorBit) FindCycle(c *cycleFinder) {
 }
 
@@ -66,24 +68,19 @@ func (v *KernelValueTupleBit) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueTupleBit) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueTupleBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
-		return w
+		return
 	}
 
-	oldLen := len(w)
-	w = append(w, make([]byte, 16)...) // reserve space for
+	firstUsedByte := w.ReserveSpaceForSize()
 
-	firstUsedByte := len(w)
+	w.WriteElementCount(len(v.elements))
 
-	w = basictl.TL2WriteSize(w, len(v.elements))
+	w.buf = basictl.VectorBoolContentWriteTL2(w.buf, v.elements)
 
-	w = basictl.VectorBoolContentWriteTL2(w, v.elements)
-
-	lastUsedByte := len(w)
-	offset := basictl.TL2PutSize(w[oldLen:], lastUsedByte-firstUsedByte)
-	offset += copy(w[oldLen+offset:], w[firstUsedByte:lastUsedByte])
-	return w[:oldLen+offset]
+	lastUsedByte := w.Len()
+	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
 func (v *KernelValueTupleBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {

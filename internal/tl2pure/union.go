@@ -22,6 +22,8 @@ type KernelValueUnion struct {
 	variants []KernelValueObject // we remember state of all variants to improve editing experience
 }
 
+var _ KernelValue = &KernelValueUnion{}
+
 func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return
@@ -59,8 +61,8 @@ func (v *KernelValueUnion) Random(rg *rand.Rand) {
 	v.variants[v.index].Random(rg)
 }
 
-func (v *KernelValueUnion) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
-	return v.variants[v.index].WriteTL2(w, optimizeEmpty, ctx)
+func (v *KernelValueUnion) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+	v.variants[v.index].WriteTL2(w, optimizeEmpty, onPath, level, model)
 }
 
 func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {

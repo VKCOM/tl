@@ -175,9 +175,10 @@ func main() {
 		for i := 0; i < 5; i++ {
 			val := t.CreateValue()
 			val.Random(rnd)
-			tl2 := val.WriteTL2(nil, false, nil)
+			var bb tl2pure.ByteBuilder
+			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
-			log.Printf(".   TL2: %x", tl2)
+			log.Printf(".   TL2: %x", bb.Buf())
 			log.Printf(".   JSON: %s", js)
 		}
 	}

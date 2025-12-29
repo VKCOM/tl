@@ -18,6 +18,8 @@ type KernelValueAlias struct {
 	value    KernelValue
 }
 
+var _ KernelValue = &KernelValueAlias{}
+
 func (ins *TypeInstanceAlias) GoodForMapKey() bool {
 	return ins.fieldType.ins.GoodForMapKey()
 }
@@ -58,8 +60,8 @@ func (v *KernelValueAlias) Random(rg *rand.Rand) {
 	v.value.Random(rg)
 }
 
-func (v *KernelValueAlias) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
-	return v.value.WriteTL2(w, optimizeEmpty, ctx)
+func (v *KernelValueAlias) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+	v.value.WriteTL2(w, optimizeEmpty, onPath, level, model)
 }
 
 func (v *KernelValueAlias) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {

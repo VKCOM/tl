@@ -27,6 +27,8 @@ type KernelValueObject struct {
 	fields   []KernelValue // nil if optional field not set, to break recursion
 }
 
+var _ KernelValue = &KernelValueObject{}
+
 func (ins *TypeInstanceObject) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return
@@ -90,57 +92,50 @@ func (v *KernelValueObject) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueObject) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
-	oldLen := len(w)
-	w = append(w, make([]byte, 16)...) // reserve space for
+func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+	firstUsedByte := w.ReserveSpaceForSize()
 
-	firstUsedByte := len(w)
 	lastUsedByte := firstUsedByte
 	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
+	currentBlockPosition := w.Len()
+	w.Append(0)
 
 	if v.instance.isUnionElement {
-		w = basictl.TL2WriteSize(w, v.instance.unionIndex)
-		lastUsedByte = len(w)
+		w.WriteVariantIndex(v.instance.unionIndex)
+		lastUsedByte = w.Len()
 		currentBlock |= 1
 	}
 
 	for i, field := range v.fields {
 		fieldDef := v.instance.constructorFields[i]
 		if (i+1)%8 == 0 {
-			w[currentBlockPosition] = currentBlock
+			w.buf[currentBlockPosition] = currentBlock
 			currentBlock = 0
 			// start the next block
-			currentBlockPosition = len(w)
-			w = append(w, 0)
+			currentBlockPosition = w.Len()
+			w.Append(0)
 		}
 		if fieldDef.IsOmitted() {
 			continue
 		}
 		if fieldDef.IsOptional {
 			if field != nil {
-				w = append(w, 1)
-				w = field.WriteTL2(w, false, ctx)
-				lastUsedByte = len(w)
+				// w = append(w, 1)
+				field.WriteTL2(w, false, false, 0, model)
+				lastUsedByte = w.Len()
 				currentBlock |= 1 << ((i + 1) % 8)
 			}
 			continue
 		}
-		wasLen := len(w)
-		w = field.WriteTL2(w, true, ctx)
-		if len(w) != wasLen {
-			lastUsedByte = len(w)
+		wasLen := w.Len()
+		field.WriteTL2(w, true, false, 0, model)
+		if w.Len() != wasLen {
+			lastUsedByte = w.Len()
 			currentBlock |= 1 << ((i + 1) % 8)
 		}
 	}
-	w[currentBlockPosition] = currentBlock
-	if optimizeEmpty && firstUsedByte == lastUsedByte {
-		return w[:oldLen]
-	}
-	offset := basictl.TL2PutSize(w[oldLen:], lastUsedByte-firstUsedByte)
-	offset += copy(w[oldLen+offset:], w[firstUsedByte:lastUsedByte])
-	return w[:oldLen+offset]
+	w.buf[currentBlockPosition] = currentBlock
+	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
 func (v *KernelValueObject) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
