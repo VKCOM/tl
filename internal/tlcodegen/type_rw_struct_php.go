@@ -1398,7 +1398,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 		indexInBlock := (i + 1) % 8
 		if indexInBlock == 0 {
 			cc.AddLines(
-				fmt.Sprintf("// add new block"),
+				"// add new block",
 				fmt.Sprintf("$context_blocks->set_value(%[1]s, %[2]s);", currentBlockIndex, currentBlock),
 				fmt.Sprintf("%[1]s = 0;", currentBlock),
 				fmt.Sprintf("%[1]s = $context_blocks->push_back(0);", currentBlockIndex),
@@ -1408,7 +1408,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			continue
 		}
 
-		fieldUsed := fmt.Sprintf("%s != 0", fieldSize)
+		var fieldUsed string
 
 		fieldTarget := fmt.Sprintf("%s->%s", targetName, field.originalName)
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)

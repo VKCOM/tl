@@ -239,7 +239,7 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	innerPart := make([]string, 0)
 	innerPart = append(innerPart,
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
-		fmt.Sprintf(`  throw new \Exception("inner element is null but object size != 0");`),
+		`  throw new \Exception("inner element is null but object size != 0");`,
 		"}",
 		fmt.Sprintf("%[1]s = $context_blocks->pop_front();", localBlock),
 		fmt.Sprintf("store_byte(%[1]s);", localBlock),
