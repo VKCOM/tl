@@ -459,3 +459,90 @@ interface Writeable {
 
 interface TL_Object extends Readable, Writeable {}
 `
+
+const TL2SupportPHP = `class tl2_support {
+  const TinyStringLen = 253;
+  const BigStringMarker = 254;
+  const HugeStringMarker = 255;
+  const BigStringLen = self::BigStringMarker + (1 << 16) - 1;
+  const HugeStringLen = (1 << 64) - 1;
+  
+  /**
+   * @return int
+   */
+  public static function fetch_size() {
+    $b0 = fetch_byte();
+    if ($b0 <= self::TinyStringLen) {
+      return $b0;
+    } else if ($b0 == self::BigStringMarker) {
+      return self::BigStringMarker + fetch_short();
+    } else {
+      return fetch_long();
+    }
+    return 0;
+  }
+
+  /**
+   * @param int $size
+   */
+  public static function store_size($size) {
+    if ($size <= self::TinyStringLen) {
+      store_byte($size & 0xFF);
+    } else if ($size <= self::BigStringLen) {
+      store_byte(self::BigStringMarker);
+      $size -= self::BigStringMarker;
+      store_short($size);
+    } else {
+      store_byte(self::HugeStringMarker);
+      store_long($size);
+    }
+  }
+
+  /**
+   * @param int $size
+   * @return int
+   */
+  public static function count_used_bytes($size) {
+    if ($size <= self::TinyStringLen) {
+      return 1;
+    } else if ($size <= self::BigStringLen) {
+      return 3;
+    } else {
+      return 9;
+    }
+  }
+
+  /**
+   * @param int $count
+   * @return int
+   */
+  public static function skip_bytes($count) {
+    if ($count < 0) {
+      throw new \Exception("can't skip negative number of bytes");
+    }
+    for ($i = 0; $i < $count; $i++) {
+      fetch_byte();
+    }
+    return $count;
+  }
+
+  /**
+   * @return boolean
+   */
+  public static function fetch_legacy_bool_tl2() {
+    $b = fetch_byte();
+    return $b != 0;
+  }
+
+  /**
+   * @param boolean $value
+   */
+  public static function store_legacy_bool_tl2($value) {
+    if ($value == 0) {
+      store_byte(0);
+    } else {
+      store_byte(1);
+    }
+  }
+}
+`
