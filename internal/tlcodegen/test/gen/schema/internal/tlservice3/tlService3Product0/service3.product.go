@@ -29,8 +29,6 @@ type Service3Product0 struct {
 func (Service3Product0) TLName() string { return "service3.product" }
 func (Service3Product0) TLTag() uint32  { return 0x461f4ce2 }
 
-func (item *Service3Product0) IsSetRemoved() bool { return 0&(1<<0) != 0 }
-
 func (item *Service3Product0) Reset() {
 	item.Type = 0
 	item.Id = item.Id[:0]

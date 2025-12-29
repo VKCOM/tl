@@ -15,11 +15,9 @@ import (
 )
 
 func SchemaGenerator() string { return "(devel)" }
-func SchemaURL() string {
-	return "https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/cases.tl"
-}
-func SchemaCommit() string    { return "abcdefgh" }
-func SchemaTimestamp() uint32 { return 301822800 }
+func SchemaURL() string       { return "" }
+func SchemaCommit() string    { return "" }
+func SchemaTimestamp() uint32 { return 0 }
 
 // We can create only types which have zero type arguments and zero nat arguments
 type Object interface {
