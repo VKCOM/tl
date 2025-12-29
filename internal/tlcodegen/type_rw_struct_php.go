@@ -2133,7 +2133,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		currentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 		currentBlock := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 
-		additionalArguments = append(additionalArguments, currentSize, currentBlock)
+		additionalArguments = append(additionalArguments, currentBlock, currentSize)
 
 		cc := CodeCreator{Shift: "  "}
 		cc.AddLines(
@@ -2146,6 +2146,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentSize))
 		cc.AddBlock(func(cc *CodeCreator) {
 			cc.AddLines(fmt.Sprintf("%[1]s = fetch_byte();", currentBlock))
+			cc.AddLines(fmt.Sprintf("%[1]s += 1;", usedBytesPointer))
 		})
 		cc.AddLines("}")
 		result = append(result, cc.Print()...)
