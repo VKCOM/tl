@@ -93,7 +93,7 @@ func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args *Ty
 
 func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if trw.wr.gen.options.UseBuiltinDataProviders {
-		if !trw.isTL2Legacy && canDependOnLocalBit {
+		if trw.isBit {
 			return []string{
 				fmt.Sprintf("%[1]s = true;", targetName),
 			}
@@ -110,13 +110,24 @@ func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIf
 	return nil
 }
 
-func (trw *TypeRWBool) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+func (trw *TypeRWBool) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		if trw.isBit {
+			// nothing
+		} else {
+			return []string{
+				fmt.Sprintf("%[1]s += 1;", usedBytesPointer),
+			}
+		}
+	} else {
+		panic("unsupported generation for bool in php")
+	}
+
 	return nil
 }
 
-
 func (trw *TypeRWBool) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
+	if trw.isBit {
 		return []string{""}
 	}
 	return []string{

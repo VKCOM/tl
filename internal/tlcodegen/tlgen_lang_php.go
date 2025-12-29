@@ -37,7 +37,7 @@ type TypeRWPHPData interface {
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 	PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
-	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string
+	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string
 }
 
 type PhpClassMeta struct {
@@ -580,6 +580,9 @@ class tl2_context {
   /** @var int */
   private $current_index = 0;
 
+  /** @var int */
+  private $current_size = 0;
+
   /**
    * @kphp-inline
    */
@@ -592,8 +595,13 @@ class tl2_context {
    * @return int
    */
   public function push_back($value) {
-    $index = count($this->values);
-    $this->values[] = $value;
+    $index = $this->current_size;
+    if ($index == count($this->values)) {
+      $this->values[] = $value;
+    } else {
+      $this->values[$index] = $value;
+    }
+    $this->current_size += 1;
     return $index;
   }
 
@@ -601,7 +609,7 @@ class tl2_context {
    * @return int
    */
   public function pop_front() {
-    if ($this->current_index >= count($this->values)) {
+    if ($this->current_index >= $this->current_size) {
       throw new \Exception("context can't pop front value");
     }
     $value = $this->values[$this->current_index];
@@ -610,11 +618,18 @@ class tl2_context {
   }
 
   /**
+   * @return int
+   */
+  public function get_current_size() {
+    return $this->current_size;
+  }
+
+  /**
    * @param int $index
    * @param int $value
    */
   public function set_value($index, $value) {
-    if ($index >= count($this->values) || $index < 0) {
+    if ($index >= $this->current_size || $index < 0) {
       throw new \Exception("invalid index to set for context");
     }
     $this->values[$index] = $value;
@@ -626,10 +641,20 @@ class tl2_context {
    * @return int
    */
   public function get_value($index) {
-    if ($index >= count($this->sizes) || $index < 0) {
+    if ($index >= $this->current_size || $index < 0) {
       throw new \Exception("invalid index to get for context");
     }
-    return $this->sizes[$index];
+    return $this->values[$index];
+  }
+
+  /**
+   * @param int $size
+   */
+  public function cut_tail($size) {
+    if ($size > $this->current_size || $size < 0) {
+      throw new \Exception("invalid index to cut tail");
+    }
+    $this->current_size = $size;
   }
 }`, gen.copyrightText))
 
@@ -918,4 +943,38 @@ func phpFunctionArgumentsFormat(argNames []string) string {
 		s += name
 	}
 	return s
+}
+
+type CodeCreator struct {
+	Shift string
+
+	lines      []string
+	linesShift []int
+
+	currentShift int
+}
+
+func (cc *CodeCreator) AddLines(lines ...string) {
+	cc.lines = append(cc.lines, lines...)
+	for _ = range lines {
+		cc.linesShift = append(cc.linesShift, cc.currentShift)
+	}
+}
+
+func (cc *CodeCreator) AddShift(shift int) {
+	cc.currentShift += shift
+}
+
+func (cc *CodeCreator) Print() []string {
+	s := make([]string, len(cc.lines))
+	for i, line := range cc.lines {
+		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
+	}
+	return s
+}
+
+func (cc *CodeCreator) AddBlock(block func(cc *CodeCreator)) {
+	cc.AddShift(1)
+	block(cc)
+	cc.AddShift(-1)
 }

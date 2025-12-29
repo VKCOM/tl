@@ -333,18 +333,18 @@ func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("%[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "context_sizes", "context_blocks"), false)),
+		fmt.Sprintf("%[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true)),
 	)
 	return result
 }
 
-func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
 	result := make([]string, 0)
 	result = append(result,
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("%[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "context_sizes", "context_blocks"), false)),
+		fmt.Sprintf("%[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true)),
 	)
 	return result
 }
