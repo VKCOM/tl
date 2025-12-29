@@ -19,6 +19,8 @@ type KernelValueString struct {
 	value string
 }
 
+var _ KernelValue = &KernelValueString{}
+
 func (ins *TypeInstanceString) GoodForMapKey() bool {
 	return true
 }
@@ -51,11 +53,11 @@ func (v *KernelValueString) Random(rg *rand.Rand) {
 	v.value = string(res)
 }
 
-func (v *KernelValueString) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueString) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && len(v.value) == 0 {
-		return w
+		return
 	}
-	return basictl.StringWriteTL2(w, v.value)
+	w.WriteString(v.value)
 }
 
 func (v *KernelValueString) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {

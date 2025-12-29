@@ -20,6 +20,8 @@ type KernelValueMap struct {
 	elements []KernelValueObject // cap contains created elements
 }
 
+var _ KernelValue = &KernelValueMap{}
+
 func (ins *TypeInstanceMap) FindCycle(c *cycleFinder) {
 }
 
@@ -69,28 +71,21 @@ func (v *KernelValueMap) Random(rg *rand.Rand) {
 	v.sort()
 }
 
-func (v *KernelValueMap) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueMap) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+	if len(v.elements) == 0 && optimizeEmpty {
+		return
+	}
 	v.sort()
 
-	if len(v.elements) == 0 && optimizeEmpty {
-		return w
-	}
-
-	oldLen := len(w)
-	w = append(w, make([]byte, 16)...) // reserve space for
-
-	firstUsedByte := len(w)
-
-	w = basictl.TL2WriteSize(w, len(v.elements))
+	firstUsedByte := w.ReserveSpaceForSize()
+	w.WriteElementCount(len(v.elements))
 
 	for _, elem := range v.elements {
-		w = elem.WriteTL2(w, false, ctx)
+		elem.WriteTL2(w, false, false, 0, model)
 	}
 
-	lastUsedByte := len(w)
-	offset := basictl.TL2PutSize(w[oldLen:], lastUsedByte-firstUsedByte)
-	offset += copy(w[oldLen+offset:], w[firstUsedByte:lastUsedByte])
-	return w[:oldLen+offset]
+	lastUsedByte := w.Len()
+	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
 func (v *KernelValueMap) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {

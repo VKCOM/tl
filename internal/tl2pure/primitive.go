@@ -48,6 +48,8 @@ type KernelValueUint32 struct {
 	value uint32
 }
 
+var _ KernelValuePrimitive = &KernelValueUint32{}
+
 func (v *KernelValueUint32) Reset() {
 	v.value = 0
 }
@@ -56,11 +58,11 @@ func (v *KernelValueUint32) Random(rg *rand.Rand) {
 	v.value = rg.Uint32()
 }
 
-func (v *KernelValueUint32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
-		return w
+		return
 	}
-	return binary.LittleEndian.AppendUint32(w, v.value)
+	w.buf = binary.LittleEndian.AppendUint32(w.buf, v.value)
 }
 
 func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -127,6 +129,8 @@ type KernelValueInt32 struct {
 	value int32
 }
 
+var _ KernelValuePrimitive = &KernelValueInt32{}
+
 func (v *KernelValueInt32) Reset() {
 	v.value = 0
 }
@@ -135,11 +139,11 @@ func (v *KernelValueInt32) Random(rg *rand.Rand) {
 	v.value = int32(rg.Uint32())
 }
 
-func (v *KernelValueInt32) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
-		return w
+		return
 	}
-	return binary.LittleEndian.AppendUint32(w, uint32(v.value))
+	w.buf = binary.LittleEndian.AppendUint32(w.buf, uint32(v.value))
 }
 
 func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -206,6 +210,8 @@ type KernelValueUint64 struct {
 	value uint64
 }
 
+var _ KernelValuePrimitive = &KernelValueUint64{}
+
 func (v *KernelValueUint64) Reset() {
 	v.value = 0
 }
@@ -214,11 +220,11 @@ func (v *KernelValueUint64) Random(rg *rand.Rand) {
 	v.value = rg.Uint64()
 }
 
-func (v *KernelValueUint64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueUint64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
-		return w
+		return
 	}
-	return binary.LittleEndian.AppendUint64(w, v.value)
+	w.buf = binary.LittleEndian.AppendUint64(w.buf, v.value)
 }
 
 func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -285,6 +291,8 @@ type KernelValueInt64 struct {
 	value int64
 }
 
+var _ KernelValuePrimitive = &KernelValueInt64{}
+
 func (v *KernelValueInt64) Reset() {
 	v.value = 0
 }
@@ -293,11 +301,11 @@ func (v *KernelValueInt64) Random(rg *rand.Rand) {
 	v.value = int64(rg.Uint64())
 }
 
-func (v *KernelValueInt64) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
-		return w
+		return
 	}
-	return binary.LittleEndian.AppendUint64(w, uint64(v.value))
+	w.buf = binary.LittleEndian.AppendUint64(w.buf, uint64(v.value))
 }
 
 func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -364,6 +372,8 @@ type KernelValueByte struct {
 	value byte
 }
 
+var _ KernelValuePrimitive = &KernelValueByte{}
+
 func (v *KernelValueByte) Reset() {
 	v.value = 0
 }
@@ -372,11 +382,11 @@ func (v *KernelValueByte) Random(rg *rand.Rand) {
 	v.value = byte(rg.Uint32())
 }
 
-func (v *KernelValueByte) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueByte) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
-		return w
+		return
 	}
-	return append(w, v.value)
+	w.buf = append(w.buf, v.value)
 }
 
 func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -443,6 +453,8 @@ type KernelValueBool struct {
 	value bool
 }
 
+var _ KernelValue = &KernelValueBool{}
+
 func (v *KernelValueBool) Reset() {
 	v.value = false
 }
@@ -451,14 +463,15 @@ func (v *KernelValueBool) Random(rg *rand.Rand) {
 	v.value = (rg.Uint32() & 1) != 0
 }
 
-func (v *KernelValueBool) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
+func (v *KernelValueBool) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && !v.value {
-		return w
+		return
 	}
 	if v.value {
-		return append(w, 1)
+		w.buf = append(w.buf, 1)
+	} else {
+		w.buf = append(w.buf, 0)
 	}
-	return append(w, 0)
 }
 
 func (v *KernelValueBool) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -521,14 +534,15 @@ func (v *KernelValueBool) CompareForMapKey(other KernelValue) int {
 type KernelValueBit struct {
 }
 
+var _ KernelValue = &KernelValueBit{}
+
 func (v *KernelValueBit) Reset() {
 }
 
 func (v *KernelValueBit) Random(rg *rand.Rand) {
 }
 
-func (v *KernelValueBit) WriteTL2(w []byte, optimizeEmpty bool, ctx *TL2Context) []byte {
-	return w
+func (v *KernelValueBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 }
 
 func (v *KernelValueBit) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {

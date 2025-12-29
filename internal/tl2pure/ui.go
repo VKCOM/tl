@@ -37,11 +37,11 @@ type UIModel struct {
 }
 
 func (m *UIModel) colorButton(str string) string {
-	return str
+	return color.InCyan(str)
 }
 
 func (m *UIModel) colorButtonComment(str string) string {
-	return color.InBlackOverBlue(str)
+	return str
 }
 
 func (m *UIModel) colorError(str string) string {
