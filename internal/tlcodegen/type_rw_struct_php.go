@@ -970,7 +970,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 
 		if trw.wr.wantsTL2 {
 			// TODO: add block calculated currentSize and block if union
-			if trw.wr.unionParent != nil {
+			if trw.wr.PHPUnionParent() != nil {
 				argNames = append(argNames, "block", "current_size")
 				argTypes = append(argTypes, "int", "int")
 			}
@@ -1042,7 +1042,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 	result := make([]string, 0)
 	currentSize := "$current_size"
 	block := "$block"
-	if trw.wr.unionParent == nil {
+	if trw.wr.PHPUnionParent() == nil {
 		result = append(result, fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize))
 		result = append(result, fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize))
 		result = append(result,

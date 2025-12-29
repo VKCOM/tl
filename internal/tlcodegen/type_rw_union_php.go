@@ -156,14 +156,14 @@ func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper
 			phpFunctionCommentFormat(
 				utils.Append(writeArgNames, "context_sizes", "context_blocks"),
 				utils.Append(writeArgTypes, "TL\\tl2_context", "TL\\tl2_context"),
-				"",
+				"int",
 				"  ",
 			),
 			phpFunctionArgumentsFormat(utils.Append(writeArgNames, "context_sizes", "context_blocks")),
 			phpFunctionCommentFormat(
 				utils.Append(writeArgNames, "block", "current_size"),
 				utils.Append(writeArgTypes, "int", "int"),
-				"",
+				"int",
 				"  ",
 			),
 			phpFunctionArgumentsFormat(utils.Append(writeArgNames, "block", "current_size")),
