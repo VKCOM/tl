@@ -310,9 +310,14 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
 			argsAsArray := args.EnumerateWithPrefixes()
 
+			argAsArrayCopy := argsAsArray
+			if trw.wr.wantsTL2 {
+				argAsArrayCopy = append(argAsArrayCopy, "$use_tl2")
+			}
+
 			argsAsFields := strings.Join(
 				utils.MapSlice(
-					argsAsArray,
+					argAsArrayCopy,
 					func(arg string) string {
 						return fmt.Sprintf(
 							`  /** @var int */
@@ -568,8 +573,9 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			len(trw.wr.origTL[0].MostOriginalVersion().TemplateArguments) == 0 &&
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies {
-			code.WriteString(
-				fmt.Sprintf(`
+			if !trw.wr.wantsTL2 {
+				code.WriteString(
+					fmt.Sprintf(`
 %[6]s
   public function typedStore(%[8]s) {
 %[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
@@ -584,36 +590,107 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     return new %[1]s_fetcher(%[4]s);
   }
 `,
-					trw.PhpClassName(false, true),
-					trw.wr.tlName.String(),
-					fmt.Sprintf("0x%08x", trw.wr.tlTag),
-					argsArray,
-					phpFunctionCommentFormat(
-						fetchArgNames,
-						fetchArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionCommentFormat(
-						storeArgNames,
-						storeArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionArgumentsFormat(fetchArgNames),
-					phpFunctionArgumentsFormat(storeArgNames),
-					ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
-					ifString(trw.wr.gen.options.AddSwitcher,
-						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") != 1) {
+						trw.PhpClassName(false, true),
+						trw.wr.tlName.String(),
+						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						argsArray,
+						phpFunctionCommentFormat(
+							fetchArgNames,
+							fetchArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionCommentFormat(
+							storeArgNames,
+							storeArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionArgumentsFormat(fetchArgNames),
+						phpFunctionArgumentsFormat(storeArgNames),
+						ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
+						ifString(trw.wr.gen.options.AddSwitcher,
+							fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
       return null;
     }
 `,
-							trw.wr.tlName.Namespace,
+								trw.wr.tlName.Namespace,
+							),
+							"",
 						),
-						"",
 					),
-				),
-			)
+				)
+			} else {
+				if !trw.wr.gen.options.AddSwitcher {
+					// TODO
+					panic("can't create tl2 call without switcher")
+				}
+				if !trw.wr.gen.options.UseBuiltinDataProviders {
+					// TODO
+					panic("can't create tl2 without builtin providers")
+				}
+
+				code.WriteString(
+					fmt.Sprintf(`
+%[6]s
+  public function typedStore(%[8]s) {
+    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
+      %[9]sprint('%[1]s::typedStore()<br/>');
+      $this->write_boxed(%[8]s);
+      return new %[1]s_fetcher(%[4]s);
+    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
+      %[9]sprint('%[1]s::typedStore() in tl2<br/>');
+      store_int(0x%08[11]x); 
+      $this->write_tl2(%[8]s);
+      $f = new %[1]s_fetcher(%[4]s);
+      $f->use_tl2 = 1;
+      return $f; 
+    } else {
+      return null;
+    }
+  }
+
+%[5]s
+  public function typedFetch(%[7]s) {
+    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
+      %[9]sprint('%[1]s::typedFetch()<br/>');
+      $this->read(%[7]s);
+      return new %[1]s_fetcher(%[4]s);
+    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
+      %[9]sprint('%[1]s::typedFetch() in tl2<br/>');
+      $this->read_tl2(%[7]s);
+      $f = new %[1]s_fetcher(%[4]s);
+      $f->use_tl2 = 1;
+      return $f;
+    } else {
+      return null;
+    }
+  }
+`,
+						trw.PhpClassName(false, true),
+						trw.wr.tlName.String(),
+						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						argsArray,
+						phpFunctionCommentFormat(
+							fetchArgNames,
+							fetchArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionCommentFormat(
+							storeArgNames,
+							storeArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionArgumentsFormat(fetchArgNames),
+						phpFunctionArgumentsFormat(storeArgNames),
+						ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
+						trw.wr.tlName.Namespace,
+						trw.wr.tlTag,
+					),
+				)
+			}
 			// only for rpcDest*
 		} else if trw.wr.gen.options.AddFetchers &&
 			// don't have write / read
@@ -622,8 +699,9 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			len(trw.wr.origTL[0].MostOriginalVersion().TemplateArguments) != 0 &&
 			// from _common
 			trw.wr.origTL[0].MostOriginalVersion().Construct.Name.Namespace == "" {
-			code.WriteString(
-				fmt.Sprintf(`
+			if !trw.wr.wantsTL2 {
+				code.WriteString(
+					fmt.Sprintf(`
 %[6]s
   public function typedStore(%[8]s) {
 %[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
@@ -641,36 +719,102 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     return null;
   }
 `,
-					trw.PhpClassName(false, true),
-					trw.wr.tlName.String(),
-					fmt.Sprintf("0x%08x", trw.wr.tlTag),
-					argsArray,
-					phpFunctionCommentFormat(
-						fetchArgNames,
-						fetchArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionCommentFormat(
-						storeArgNames,
-						storeArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionArgumentsFormat(fetchArgNames),
-					phpFunctionArgumentsFormat(storeArgNames),
-					ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
-					ifString(trw.wr.gen.options.AddSwitcher,
-						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") != 1) {
+						trw.PhpClassName(false, true),
+						trw.wr.tlName.String(),
+						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						argsArray,
+						phpFunctionCommentFormat(
+							fetchArgNames,
+							fetchArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionCommentFormat(
+							storeArgNames,
+							storeArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionArgumentsFormat(fetchArgNames),
+						phpFunctionArgumentsFormat(storeArgNames),
+						ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
+						ifString(trw.wr.gen.options.AddSwitcher,
+							fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
       return null;
     }
 `,
-							"_common",
+								"_common",
+							),
+							"",
 						),
-						"",
 					),
-				),
-			)
+				)
+			} else {
+				if !trw.wr.gen.options.AddSwitcher {
+					// TODO
+					panic("can't create tl2 call without switcher")
+				}
+				if !trw.wr.gen.options.UseBuiltinDataProviders {
+					// TODO
+					panic("can't create tl2 without builtin providers")
+				}
+				code.WriteString(
+					fmt.Sprintf(`
+%[6]s
+  public function typedStore(%[8]s) {
+    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
+      %[9]sprint('%[1]s::typedStore()<br/>');
+      $this->write_boxed(%[8]s);
+      $fetcher = $this->query->typedStore(%[8]s);
+      if ($fetcher === null) {
+        %[9]sprint('%[1]s rpc_clean()<br/>');
+        rpc_clean();
+      }
+      return $fetcher;
+    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
+      %[9]sprint('%[1]s::typedStore() in tl2<br/>');
+      store_int(0x%08[11]x); 
+      $this->write_tl2(%[8]s);
+      $fetcher = $this->query->typedStore(%[8]s);
+      if ($fetcher === null) {
+        %[9]sprint('%[1]s rpc_clean()<br/>');
+        rpc_clean();
+      }
+      return $fetcher;
+	} else {
+      return null;
+    }
+  }
+
+%[5]s
+  public function typedFetch(%[7]s) {
+    return null;
+  }
+`,
+						trw.PhpClassName(false, true),
+						trw.wr.tlName.String(),
+						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						argsArray,
+						phpFunctionCommentFormat(
+							fetchArgNames,
+							fetchArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionCommentFormat(
+							storeArgNames,
+							storeArgTypes,
+							`TL\RpcFunctionFetcher`,
+							"  ",
+						),
+						phpFunctionArgumentsFormat(fetchArgNames),
+						phpFunctionArgumentsFormat(storeArgNames),
+						ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
+						"_common",
+						trw.wr.tlTag,
+					),
+				)
+			}
 		} else {
 			code.WriteString(
 				fmt.Sprintf(`
