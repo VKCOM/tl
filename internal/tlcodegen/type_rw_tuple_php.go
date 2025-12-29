@@ -503,13 +503,180 @@ func (trw *TypeRWBrackets) readTL2Array(targetName string, supportSuffix string,
 }
 
 func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
-	//panic("TODO TUPLES")
-	return []string{"// TODO"}
+	uniqueSuffix := fmt.Sprintf("_%[1]s_%[2]d", supportSuffix, callLevel)
+	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
+	currentLen := fmt.Sprintf("$current_len%s", uniqueSuffix)
+	currentIndex := fmt.Sprintf("$current_index%s", uniqueSuffix)
+	localUsedBytesPointer := fmt.Sprintf("$used_bytes%s", uniqueSuffix)
+
+	elementObj := fmt.Sprintf("$obj%s", uniqueSuffix)
+
+	cc := CodeCreator{Shift: "  "}
+	// add size
+	cc.AddLines(
+		fmt.Sprintf("%s = $context_sizes->pop_front();", currentSize),
+		fmt.Sprintf("TL\\tl2_support::store_size(%s);", currentSize),
+		fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
+		fmt.Sprintf("%s = 0;", localUsedBytesPointer),
+	)
+
+	cc.AddLines(fmt.Sprintf("if (%s != 0) {", currentSize))
+	cc.AddBlock(func(cc *CodeCreator) {
+		// add element count
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = count(%[2]s);", currentLen, targetName),
+			fmt.Sprintf("TL\\tl2_support::store_size(%s);", currentLen),
+		)
+		switch {
+		// actual vector
+		case trw.vectorLike && !trw.dictLike:
+			if trw.element.IsBit() {
+				// TODO
+				panic("do not implement bit vector at the moment")
+			}
+			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
+			cc.AddBlock(func(cc *CodeCreator) {
+				cc.AddLines(
+					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
+				)
+				cc.AddLines(
+					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
+				)
+			})
+			cc.AddLines("}")
+		// tuple with size as last argument
+		case !trw.vectorLike && !trw.dictLike:
+			if trw.element.IsBit() {
+				// TODO
+				panic("do not implement bit array at the moment")
+			}
+			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
+			cc.AddBlock(func(cc *CodeCreator) {
+				cc.AddLines(
+					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
+				)
+				cc.AddLines(
+					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
+				)
+			})
+			cc.AddLines("}")
+		// actual map / dictionary
+		case trw.dictLike:
+			keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
+			valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+			flags := ""
+			if trw.dictKeyString {
+				flags = ", SORT_STRING"
+			}
+			cc.AddLines(
+				fmt.Sprintf("ksort(%[1]s%[2]s);", targetName, flags),
+				fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
+			)
+			cc.AddBlock(func(cc *CodeCreator) {
+				pairSize := fmt.Sprintf("$pair_size%s", uniqueSuffix)
+				pairBlock := fmt.Sprintf("$pair_block%s", uniqueSuffix)
+
+				cc.AddLines(
+					fmt.Sprintf("%s = $context_sizes->pop_front();", pairSize),
+					fmt.Sprintf("TL\\tl2_support::store_size(%s);", pairSize),
+				)
+
+				cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", pairSize))
+				cc.AddBlock(func(cc *CodeCreator) {
+					cc.AddLines(
+						fmt.Sprintf("%s = $context_blocks->pop_front();", pairBlock),
+						fmt.Sprintf("store_byte(%s & 0xFF);", pairBlock),
+					)
+					// write key
+					cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << 1)) != 0) {", pairSize))
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines(trw.dictKeyField.t.trw.PhpWriteTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)...)
+					})
+					cc.AddLines("}")
+					// write value
+					cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << 2)) != 0) {", pairSize))
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines(trw.dictValueField.t.trw.PhpWriteTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)...)
+					})
+					cc.AddLines("}")
+				})
+				cc.AddLines("}")
+			})
+			cc.AddLines("}")
+		}
+	})
+	cc.AddLines("}")
+	return cc.Print()
 }
 
 func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
-	//panic("TODO TUPLES")
-	return []string{"// TODO"}
+	uniqueSuffix := fmt.Sprintf("_%[1]s_%[2]d", supportSuffix, callLevel)
+	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
+	currentSizeIndex := fmt.Sprintf("$current_size_index%s", uniqueSuffix)
+
+	currentLen := fmt.Sprintf("$current_len%s", uniqueSuffix)
+	currentIndex := fmt.Sprintf("$current_index%s", uniqueSuffix)
+
+	elementObj := fmt.Sprintf("$obj%s", uniqueSuffix)
+
+	cc := CodeCreator{Shift: "  "}
+
+	cc.AddLines(
+		fmt.Sprintf("%[1]s = 0;", currentSize),
+		fmt.Sprintf("%[1]s = $context_sizes->push_back(0);", currentSizeIndex),
+		fmt.Sprintf("%[1]s = count(%[2]s);", currentLen, targetName),
+	)
+
+	cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentLen))
+	cc.AddBlock(func(cc *CodeCreator) {
+		switch {
+		// actual vector
+		case trw.vectorLike && !trw.dictLike:
+			if trw.element.IsBit() {
+				// TODO
+				panic("do not implement bit vector at the moment")
+			}
+			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
+			cc.AddBlock(func(cc *CodeCreator) {
+				cc.AddLines(
+					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
+				)
+				cc.AddLines(
+					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args.children[0], supportSuffix, callLevel+1, currentSize)...,
+				)
+			})
+			cc.AddLines("}")
+		// tuple with size as last argument
+		case !trw.vectorLike && !trw.dictLike:
+			if trw.element.IsBit() {
+				// TODO
+				panic("do not implement bit array at the moment")
+			}
+			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
+			cc.AddBlock(func(cc *CodeCreator) {
+				cc.AddLines(
+					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
+				)
+				cc.AddLines(
+					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args.children[1], supportSuffix, callLevel+1, currentSize)...,
+				)
+			})
+		// actual map / dictionary
+		case trw.dictLike:
+			cc.AddLines("// TODO")
+		}
+		cc.AddLines(
+			fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
+			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
+		)
+	})
+	cc.AddLines("} else {")
+	cc.AddBlock(func(cc *CodeCreator) {
+		cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s);", currentSizeIndex))
+	})
+	cc.AddLines("}")
+
+	return cc.Print()
 }
 
 func (trw *TypeRWBrackets) PhpDefaultInit() string {

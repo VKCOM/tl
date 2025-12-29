@@ -1261,7 +1261,10 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	})
 	cc.AddLines("} else {")
 	cc.AddBlock(func(cc *CodeCreator) {
-		cc.AddLines(fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize))
+		cc.AddLines(
+			fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
+			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
+		)
 	})
 	cc.AddLines("}")
 	// remove unused blocks
