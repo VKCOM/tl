@@ -397,6 +397,7 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 		pairUsedBytes := fmt.Sprintf("$pair_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
 		pairBlock := fmt.Sprintf("$pair_block_%[1]s_%[2]d", supportSuffix, callLevel)
 
+		result = append(result, fmt.Sprintf("  %[1]s = 0;", pairUsedBytes))
 		result = append(result, fmt.Sprintf("  %[1]s = TL\\tl2_support::fetch_size();", pairCurrentSize))
 		result = append(result, fmt.Sprintf("  %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", pairUsedBytes, pairCurrentSize))
 		result = append(result,
