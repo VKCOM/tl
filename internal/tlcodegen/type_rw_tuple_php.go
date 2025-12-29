@@ -663,7 +663,93 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 			})
 		// actual map / dictionary
 		case trw.dictLike:
-			cc.AddLines("// TODO")
+			keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
+			valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+			flags := ""
+			if trw.dictKeyString {
+				flags = ", SORT_STRING"
+			}
+			cc.AddLines(
+				fmt.Sprintf("ksort(%[1]s%[2]s);", targetName, flags),
+				fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
+			)
+			cc.AddBlock(func(cc *CodeCreator) {
+				pairSize := fmt.Sprintf("$pair_size%s", uniqueSuffix)
+				pairSizeIndex := fmt.Sprintf("$pair_size_index%s", uniqueSuffix)
+
+				pairBlock := fmt.Sprintf("$pair_block%s", uniqueSuffix)
+				pairBlockIndex := fmt.Sprintf("$pair_block_index%s", uniqueSuffix)
+
+				pairLastBlockUsed := fmt.Sprintf("$pair_last_block_used%s", uniqueSuffix)
+
+				cc.AddLines(
+					fmt.Sprintf("%[1]s = 0;", pairSize),
+					fmt.Sprintf("%[1]s = $context_sizes->push_back(0);", pairSizeIndex),
+					fmt.Sprintf("%[1]s = 0;", pairBlock),
+					fmt.Sprintf("%[1]s = $context_blocks->push_back(0);", pairBlockIndex),
+					fmt.Sprintf("%[1]s = 0;", pairLastBlockUsed),
+				)
+
+				pairPartSize := fmt.Sprintf("$pair_part_size%s", uniqueSuffix)
+
+				// calculate layout for key
+				cc.AddLines("// calculate key part")
+				cc.AddLines(fmt.Sprintf("%[1]s = 0;", pairPartSize))
+				pairPartUsed := fmt.Sprintf("%s != 0", pairPartSize)
+				if trw.dictKeyField.IsBit() {
+					pairPartUsed = fmt.Sprintf("%[1]s", keyElement)
+				} else {
+					cc.AddLines(trw.dictKeyField.t.trw.PhpCalculateSizesTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, pairPartSize)...)
+				}
+				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
+				cc.AddBlock(func(cc *CodeCreator) {
+					cc.AddLines(
+						fmt.Sprintf("%[1]s |= (1 << %[2]d);", pairBlock, 1),
+						fmt.Sprintf("%[1]s += %[2]s;", pairSize, pairPartSize),
+						fmt.Sprintf("%[1]s = 1;", pairLastBlockUsed),
+					)
+				})
+				cc.AddLines("}")
+				// calculate layout for value
+				cc.AddLines("// calculate value part")
+				cc.AddLines(fmt.Sprintf("%[1]s = 0;", pairPartSize))
+				pairPartUsed = fmt.Sprintf("%s != 0", pairPartSize)
+				if trw.dictValueField.IsBit() {
+					pairPartUsed = fmt.Sprintf("%[1]s", keyElement)
+				} else {
+					cc.AddLines(trw.dictValueField.t.trw.PhpCalculateSizesTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, pairPartSize)...)
+				}
+				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
+				cc.AddBlock(func(cc *CodeCreator) {
+					cc.AddLines(
+						fmt.Sprintf("%[1]s |= (1 << %[2]d);", pairBlock, 2),
+						fmt.Sprintf("%[1]s += %[2]s;", pairSize, pairPartSize),
+						fmt.Sprintf("%[1]s = 1;", pairLastBlockUsed),
+					)
+				})
+				cc.AddLines("}")
+				// place block
+				cc.AddLines(
+					fmt.Sprintf("$context_blocks->set_value(%[1]s, %[2]s);", pairBlockIndex, pairBlock),
+				)
+				// add block to size
+				cc.AddLines(fmt.Sprintf("%[1]s += %[2]s;", pairSize, pairLastBlockUsed))
+
+				// remove tail of blocks if is zero
+				cc.AddLines(fmt.Sprintf("if (%[1]s == 0) {", pairSize))
+				cc.AddBlock(func(cc *CodeCreator) {
+					// remove block
+					cc.AddLines(fmt.Sprintf("$context_blocks->cut_tail(%[1]s);", pairBlockIndex))
+				})
+				cc.AddLines("} else {")
+				cc.AddBlock(func(cc *CodeCreator) {
+					// update size
+					cc.AddLines(fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", pairSizeIndex, pairSize))
+				})
+				cc.AddLines("}")
+				cc.AddLines(fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", currentSize, pairSize))
+			})
+			cc.AddLines("}")
 		}
 		cc.AddLines(
 			fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
