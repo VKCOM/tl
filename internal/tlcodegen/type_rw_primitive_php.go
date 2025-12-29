@@ -209,7 +209,7 @@ func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, 
 			}
 		case "string":
 			return []string{
-				fmt.Sprintf("store_string(%s);", targetName),
+				fmt.Sprintf("store_string2(%s);", targetName),
 				fmt.Sprintf("%[1]s += strlen(%[2]s) + TL\\tl2_support::count_used_bytes(strlen(%[2]s));", usedBytesPointer, targetName),
 			}
 		}
