@@ -98,7 +98,7 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	lastUsedByte := firstUsedByte
 	var currentBlock byte
 	currentBlockPosition := w.Len()
-	w.Append(0)
+	w.WriteFieldmask()
 
 	if v.instance.isUnionElement {
 		w.WriteVariantIndex(v.instance.unionIndex)
@@ -113,14 +113,13 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 			currentBlock = 0
 			// start the next block
 			currentBlockPosition = w.Len()
-			w.Append(0)
+			w.WriteFieldmask()
 		}
 		if fieldDef.IsOmitted() {
 			continue
 		}
 		if fieldDef.IsOptional {
 			if field != nil {
-				// w = append(w, 1)
 				field.WriteTL2(w, false, false, 0, model)
 				lastUsedByte = w.Len()
 				currentBlock |= 1 << ((i + 1) % 8)
