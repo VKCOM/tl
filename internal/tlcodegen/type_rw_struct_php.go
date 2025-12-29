@@ -1190,7 +1190,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	if index != 0 {
 		cc.AddLines(
 			fmt.Sprintf("%[1]s |= (1 << 0);", currentBlock),
-			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]d)", currentSize, index),
+			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]d);", currentSize, index),
 			fmt.Sprintf("%[1]s = $context_blocks->get_current_size();", nextBlockIndex),
 			fmt.Sprintf("%[1]s = 1;", blocksUsed),
 		)
