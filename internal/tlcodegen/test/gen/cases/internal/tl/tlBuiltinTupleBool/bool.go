@@ -26,9 +26,6 @@ func BuiltinTupleBoolFillRandom(rg *basictl.RandGenerator, vec *[]bool, nat_n ui
 }
 
 func BuiltinTupleBoolRead(w []byte, vec *[]bool, nat_n uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]bool, nat_n)
 	} else {

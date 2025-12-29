@@ -20,9 +20,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryFieldService1ValueReset(m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryFieldService1ValueRead(w []byte, m *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
@@ -33,19 +31,14 @@ func BuiltinVectorDictionaryFieldService1ValueRead(w []byte, m *map[string]cycle
 	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
-	var data map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldService1Value.DictionaryFieldService1Value
 		if w, err = elem.Read(w); err != nil {
@@ -75,16 +68,12 @@ func BuiltinVectorDictionaryFieldService1ValueWrite(w []byte, m map[string]cycle
 }
 
 func BuiltinVectorDictionaryFieldService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
-	var data map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	clear(*m)
 	if *m == nil {
 		*m = make(map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
