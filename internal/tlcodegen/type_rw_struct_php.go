@@ -373,6 +373,20 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				writeCall.WriteString(`    /** TODO FOR DIAGONAL */`)
 			} else {
 				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args, "")
+				if trw.wr.wantsTL2 {
+					cc := CodeCreator{Shift: "  "}
+					cc.AddLines("if ($this->use_tl2 == 0) {")
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines(readCallLines...)
+					})
+					cc.AddLines("} else {")
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines("$used_bytes = 0;")
+						cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, &args, "", 0, "$used_bytes", false)...)
+					})
+					cc.AddLines("}")
+					readCallLines = cc.Print()
+				}
 				for _, line := range readCallLines {
 					targetLines := []string{line}
 					if strings.Contains(line, "return false;") {
@@ -388,6 +402,25 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				}
 
 				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args, "")
+				if trw.wr.wantsTL2 {
+					cc := CodeCreator{Shift: "  "}
+					cc.AddLines("if ($this->use_tl2 == 0) {")
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines(writeCallLines...)
+					})
+					cc.AddLines("} else {")
+					cc.AddBlock(func(cc *CodeCreator) {
+						cc.AddLines(
+							"$used_bytes = 0;",
+							`$context_sizes = new TL\tl2_context();`,
+							`$context_blocks = new TL\tl2_context();`,
+						)
+						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes")...)
+						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
+					})
+					cc.AddLines("}")
+					writeCallLines = cc.Print()
+				}
 				for _, line := range writeCallLines {
 					targetLines := []string{line}
 					if strings.Contains(line, "return false;") {
