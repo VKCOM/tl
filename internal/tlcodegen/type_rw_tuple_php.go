@@ -503,11 +503,13 @@ func (trw *TypeRWBrackets) readTL2Array(targetName string, supportSuffix string,
 }
 
 func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
-	panic("TODO TUPLES")
+	//panic("TODO TUPLES")
+	return []string{"// TODO"}
 }
 
-func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
-	panic("TODO TUPLES")
+func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+	//panic("TODO TUPLES")
+	return []string{"// TODO"}
 }
 
 func (trw *TypeRWBrackets) PhpDefaultInit() string {

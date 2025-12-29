@@ -217,8 +217,40 @@ func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, 
 	panic("unsupported generation for primitive in php")
 }
 
-func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
-	return nil
+func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+	if trw.gen.options.UseBuiltinDataProviders {
+		switch trw.goType {
+		case "int32":
+			return []string{
+				fmt.Sprintf("%s += 4;", usedBytesPointer),
+			}
+		case "int64":
+			return []string{
+				fmt.Sprintf("%s += 8;", usedBytesPointer),
+			}
+		case "uint32":
+			return []string{
+				fmt.Sprintf("%s += 4;", usedBytesPointer),
+			}
+		case "uint64":
+			return []string{
+				fmt.Sprintf("%s += 8;", usedBytesPointer),
+			}
+		case "float32":
+			return []string{
+				fmt.Sprintf("%s += 4;", usedBytesPointer),
+			}
+		case "float64":
+			return []string{
+				fmt.Sprintf("%s += 8;", usedBytesPointer),
+			}
+		case "string":
+			return []string{
+				fmt.Sprintf("%[1]s += strlen(%[2]s) + TL\\tl2_support::count_used_bytes(strlen(%[2]s));", usedBytesPointer, targetName),
+			}
+		}
+	}
+	panic("unsupported generation for primitive in php")
 }
 
 func (trw *TypeRWPrimitive) PhpDefaultInit() string {
@@ -231,4 +263,4 @@ func (trw *TypeRWWrapper) PhpTL2TrivialSize(targetObject string, canDependOnLoca
 		size = fmt.Sprintf("strlen(%[1]s)", targetObject)
 	}
 	return
-} 
+}
