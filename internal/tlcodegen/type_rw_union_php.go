@@ -294,6 +294,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			// add to global pointer
 			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
 			// decide should we read body
+			fmt.Sprintf("%[1]s = 0;", localBlock),
 			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
