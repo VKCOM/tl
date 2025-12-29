@@ -382,7 +382,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					cc.AddLines("} else {")
 					cc.AddBlock(func(cc *CodeCreator) {
 						cc.AddLines("$used_bytes = 0;")
-						cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, &args, "", 0, "$used_bytes", false)...)
+						cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
+						cc.AddLines("if ($obj_size != 0) {")
+						cc.AddBlock(func(cc *CodeCreator) {
+							cc.AddLines("$obj_block = fetch_byte();")
+							cc.AddLines("if ($obj_block == (1 << 1)) {")
+							cc.AddBlock(func(cc *CodeCreator) {
+								cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, &args, "", 0, "$used_bytes", false)...)
+							})
+							cc.AddLines("}")
+						})
+						cc.AddLines("}")
 					})
 					cc.AddLines("}")
 					readCallLines = cc.Print()
@@ -416,7 +426,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 							`$context_blocks = new TL\tl2_context();`,
 						)
 						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes")...)
-						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
+						cc.AddLines("if ($used_bytes != 0) {")
+						cc.AddBlock(func(cc *CodeCreator) {
+							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
+							cc.AddLines("store_byte(2);")
+							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
+						})
+						cc.AddLines("} else {")
+						cc.AddBlock(func(cc *CodeCreator) {
+							cc.AddLines("TL\\tl2_support::store_size(0);")
+						})
+						cc.AddLines("}")
 					})
 					cc.AddLines("}")
 					writeCallLines = cc.Print()
