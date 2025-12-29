@@ -156,6 +156,14 @@ func (item *Service2AddOrIncrMany) ReadResultJSONWriteResult(r []byte, w []byte)
 	return r, w, err
 }
 
+func (item *Service2AddOrIncrMany) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service2.addOrIncrMany")
+}
+
+func (item *Service2AddOrIncrMany) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service2.addOrIncrMany")
+}
+
 func (item Service2AddOrIncrMany) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {

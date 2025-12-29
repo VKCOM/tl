@@ -45,12 +45,17 @@ import (
 type (
 	DictionaryAnyDoubleInt                                             = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
 	DictionaryAnyIntInt                                                = tlDictionaryAnyIntInt.DictionaryAnyIntInt
+	DictionaryAnyIntIntBytes                                           = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
 	DictionaryFieldAnyDoubleInt                                        = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
 	DictionaryFieldAnyIntInt                                           = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
 	DictionaryFieldInt                                                 = tlDictionaryFieldInt.DictionaryFieldInt
+	DictionaryFieldIntBytes                                            = tlDictionaryFieldInt.DictionaryFieldIntBytes
 	DictionaryFieldString                                              = tlDictionaryFieldString.DictionaryFieldString
+	DictionaryFieldStringBytes                                         = tlDictionaryFieldString.DictionaryFieldStringBytes
 	DictionaryInt                                                      = tlDictionaryInt.DictionaryInt
+	DictionaryIntBytes                                                 = tlDictionaryInt.DictionaryIntBytes
 	DictionaryString                                                   = tlDictionaryString.DictionaryString
+	DictionaryStringBytes                                              = tlDictionaryString.DictionaryStringBytes
 	Int                                                                = tlInt.Int
 	Int32                                                              = tlInt32.Int32
 	Int64                                                              = tlInt64.Int64
@@ -66,13 +71,17 @@ type (
 	TupleInt4                                                          = tlTupleInt4.TupleInt4
 	TuplePairTupleIntTupleInt2                                         = tlTuplePairTupleIntTupleInt2.TuplePairTupleIntTupleInt2
 	TupleString4                                                       = tlTupleString4.TupleString4
+	TupleString4Bytes                                                  = tlTupleString4.TupleString4Bytes
 	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
 	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
 	VectorBool                                                         = tlVectorBool.VectorBool
 	VectorDictionaryFieldInt                                           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
+	VectorDictionaryFieldIntBytes                                      = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
 	VectorDictionaryFieldString                                        = tlVectorDictionaryFieldString.VectorDictionaryFieldString
+	VectorDictionaryFieldStringBytes                                   = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
 	VectorInt                                                          = tlVectorInt.VectorInt
 	VectorString                                                       = tlVectorString.VectorString
+	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
 	VectorTrueBoxed                                                    = tlVectorTrueBoxed.VectorTrueBoxed
 )
 

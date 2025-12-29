@@ -23,15 +23,21 @@ import (
 )
 
 type (
-	TestArray            = tlCasesBytesTestArray.CasesBytesTestArray
-	TestDictAny          = tlCasesBytesTestDictAny.CasesBytesTestDictAny
-	TestDictInt          = tlCasesBytesTestDictInt.CasesBytesTestDictInt
-	TestDictString       = tlCasesBytesTestDictString.CasesBytesTestDictString
-	TestDictStringString = tlCasesBytesTestDictStringString.CasesBytesTestDictStringString
-	TestEnum             = tlCasesBytesTestEnum.CasesBytesTestEnum
-	TestEnumContainer    = tlCasesBytesTestEnumContainer.CasesBytesTestEnumContainer
-	TestTuple            = tlCasesBytesTestTuple.CasesBytesTestTuple
-	TestVector           = tlCasesBytesTestVector.CasesBytesTestVector
+	TestArray                 = tlCasesBytesTestArray.CasesBytesTestArray
+	TestArrayBytes            = tlCasesBytesTestArray.CasesBytesTestArrayBytes
+	TestDictAny               = tlCasesBytesTestDictAny.CasesBytesTestDictAny
+	TestDictInt               = tlCasesBytesTestDictInt.CasesBytesTestDictInt
+	TestDictIntBytes          = tlCasesBytesTestDictInt.CasesBytesTestDictIntBytes
+	TestDictString            = tlCasesBytesTestDictString.CasesBytesTestDictString
+	TestDictStringBytes       = tlCasesBytesTestDictString.CasesBytesTestDictStringBytes
+	TestDictStringString      = tlCasesBytesTestDictStringString.CasesBytesTestDictStringString
+	TestDictStringStringBytes = tlCasesBytesTestDictStringString.CasesBytesTestDictStringStringBytes
+	TestEnum                  = tlCasesBytesTestEnum.CasesBytesTestEnum
+	TestEnumContainer         = tlCasesBytesTestEnumContainer.CasesBytesTestEnumContainer
+	TestTuple                 = tlCasesBytesTestTuple.CasesBytesTestTuple
+	TestTupleBytes            = tlCasesBytesTestTuple.CasesBytesTestTupleBytes
+	TestVector                = tlCasesBytesTestVector.CasesBytesTestVector
+	TestVectorBytes           = tlCasesBytesTestVector.CasesBytesTestVectorBytes
 )
 
 func TestEnum1() TestEnum { return tlCasesBytesTestEnum1.CasesBytesTestEnum1() }
