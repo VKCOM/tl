@@ -464,7 +464,7 @@ const TL2SupportPHP = `class tl2_support {
   const TinyStringLen = 253;
   const BigStringMarker = 254;
   const HugeStringMarker = 255;
-  const BigStringLen = self::BigStringMarker + (1 << 16) - 1;
+  const BigStringLen = 254 + (1 << 16) - 1;
   const HugeStringLen = (1 << 64) - 1;
   
   /**
@@ -475,7 +475,9 @@ const TL2SupportPHP = `class tl2_support {
     if ($b0 <= self::TinyStringLen) {
       return $b0;
     } else if ($b0 == self::BigStringMarker) {
-      return self::BigStringMarker + fetch_short();
+      $b1 = fetch_byte() & 0xFF;
+      $b2 = fetch_byte() & 0xFF;
+      return self::BigStringMarker + ($b2 << 8) + $b1;
     } else {
       return fetch_long();
     }
@@ -491,7 +493,8 @@ const TL2SupportPHP = `class tl2_support {
     } else if ($size <= self::BigStringLen) {
       store_byte(self::BigStringMarker);
       $size -= self::BigStringMarker;
-      store_short($size);
+      store_byte($size & 0xFF);
+      store_byte(($size >> 8) & 0xFF);
     } else {
       store_byte(self::HugeStringMarker);
       store_long($size);
