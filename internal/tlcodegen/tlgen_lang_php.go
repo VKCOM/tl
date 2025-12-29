@@ -956,7 +956,7 @@ type CodeCreator struct {
 
 func (cc *CodeCreator) AddLines(lines ...string) {
 	cc.lines = append(cc.lines, lines...)
-	for _ = range lines {
+	for range lines {
 		cc.linesShift = append(cc.linesShift, cc.currentShift)
 	}
 }
