@@ -2128,6 +2128,28 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		}
 	}
 	result := make([]string, 0)
+	additionalArguments := make([]string, 0)
+	if unionParent != nil {
+		currentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+		currentBlock := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+
+		additionalArguments = append(additionalArguments, currentSize, currentBlock)
+
+		cc := CodeCreator{Shift: "  "}
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
+			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
+		)
+
+		cc.AddLines(fmt.Sprintf("%[1]s = 0;", currentBlock))
+
+		cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentSize))
+		cc.AddBlock(func(cc *CodeCreator) {
+			cc.AddLines(fmt.Sprintf("%[1]s = fetch_byte();", currentBlock))
+		})
+		cc.AddLines("}")
+		result = append(result, cc.Print()...)
+	}
 	if initIfDefault {
 		result = append(result,
 			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
@@ -2141,7 +2163,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->read_tl2(%[2]s);",
 				targetName,
-				phpFormatArgs(args.ListAllValues(), true),
+				phpFormatArgs(utils.Append(args.ListAllValues(), additionalArguments...), true),
 				usedBytesPointer,
 			),
 		)
