@@ -84,7 +84,7 @@ func (m *UIModel) View() string {
 	}
 	sb.WriteString("\n")
 
-	m.Fun.UIWrite(&sb, true, 0, m.Path, m)
+	m.Fun.UIWrite(&sb, true, 0, m)
 	sb.WriteString("\n")
 	//TODO - do not take into account color characters
 	//var sb2 strings.Builder
@@ -131,8 +131,8 @@ func (m *UIModel) Right() {
 	m.Move(1)
 }
 
-func (m *UIModel) StartEdit(fromTab bool) {
-	m.Fun.UIStartEdit(0, m, fromTab)
+func (m *UIModel) StartEdit(createMode int) {
+	m.Fun.UIStartEdit(0, m, createMode)
 }
 
 func (m *UIModel) SetCurrentEditor(e UIEditor) {

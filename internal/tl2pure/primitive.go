@@ -77,7 +77,7 @@ func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
-func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -94,7 +94,7 @@ func (v *KernelValueUint32) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueUint32) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -158,7 +158,7 @@ func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, int64(v.value), 10)
 }
 
-func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -175,7 +175,7 @@ func (v *KernelValueInt32) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueInt32) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -239,7 +239,7 @@ func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, v.value, 10)
 }
 
-func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -256,7 +256,7 @@ func (v *KernelValueUint64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueUint64) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -320,7 +320,7 @@ func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendInt(w, v.value, 10)
 }
 
-func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -337,7 +337,7 @@ func (v *KernelValueInt64) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueInt64) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -401,7 +401,7 @@ func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
-func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -418,7 +418,7 @@ func (v *KernelValueByte) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueByte) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueByte) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) != level {
 		panic("unexpected path invariant")
 	}
@@ -489,7 +489,7 @@ func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "false"...)
 }
 
-func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
@@ -509,7 +509,7 @@ func (v *KernelValueBool) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueBool) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueBool) UIStartEdit(level int, model *UIModel, createMode int) {
 }
 
 func (v *KernelValueBool) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
@@ -553,7 +553,7 @@ func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return append(w, "true"...)
 }
 
-func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueBit) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	w := "bit"
 	if onPath {
 		w = color.InBlue(w)
@@ -566,7 +566,7 @@ func (v *KernelValueBit) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueBit) UIStartEdit(level int, model *UIModel, createMode int) {
 }
 
 func (v *KernelValueBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {

@@ -224,7 +224,7 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if onPath {
 		sb.WriteString(color.InBlue("{"))
 	} else {
@@ -232,10 +232,10 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 	}
 	first := true
 	for i, fieldDef := range v.instance.constructorFields {
-		fieldOnPath := onPath && len(path) > level && path[level] == i
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
-				if onPath && len(path) > level {
+				if onPath && len(model.Path) > level {
 					if !first {
 						sb.WriteString(",")
 					}
@@ -253,11 +253,7 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		first = false
 		sb.WriteString(`"`)
-		//if fieldOnPath {
-		//	sb.WriteString(color.InBlue(fieldDef.Name))
-		//} else {
 		sb.WriteString(fieldDef.Name)
-		//}
 		sb.WriteString(`":`)
 		if fieldDef.IsOptional {
 			if v.fields[i] == nil {
@@ -266,10 +262,10 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 			}
 		}
 		if fieldOnPath {
-			v.fields[i].UIWrite(sb, true, level+1, path, model)
+			v.fields[i].UIWrite(sb, true, level+1, model)
 			continue
 		}
-		v.fields[i].UIWrite(sb, false, 0, nil, model)
+		v.fields[i].UIWrite(sb, false, 0, model)
 	}
 	if onPath {
 		sb.WriteString(color.InBlue("}"))
@@ -331,7 +327,7 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -340,13 +336,15 @@ func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, fromTab bool)
 	}
 	selectedIndex := model.Path[level]
 	if v.fields[selectedIndex] == nil {
-		if fromTab { // require Enter to insert element
+		if createMode == 0 { // require Enter to insert element
 			return
 		}
-		fromTab = true // do not recursively create first field
 		v.fields[selectedIndex] = v.instance.fieldTypes[selectedIndex].ins.CreateValue()
+		if createMode == 1 {
+			createMode = 0
+		}
 	}
-	v.fields[selectedIndex].UIStartEdit(level+1, model, fromTab)
+	v.fields[selectedIndex].UIStartEdit(level+1, model, createMode)
 }
 
 func (v *KernelValueObject) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {

@@ -57,7 +57,7 @@ func (e *UIEditorPrimitive) OnTab(model *UIModel, side int) {
 	}
 	model.CurrentEditor = nil
 	model.Move(side)
-	model.StartEdit(true)
+	model.StartEdit(0)
 }
 
 func (e *UIEditorPrimitive) OnEscape(model *UIModel) {

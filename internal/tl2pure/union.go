@@ -113,7 +113,7 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	defVariant := v.instance.def.Variants[v.index]
 	if onPath {
 		sb.WriteString(color.InBlue("{"))
@@ -133,7 +133,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		return
 	}
 	sb.WriteString(`,"value":`)
-	v.variants[v.index].UIWrite(sb, onPath, level, path, model)
+	v.variants[v.index].UIWrite(sb, onPath, level, model)
 	if onPath {
 		sb.WriteString(color.InBlue("}"))
 	} else {
@@ -145,7 +145,7 @@ func (v *KernelValueUnion) UIFixPath(side int, level int, model *UIModel) int {
 	return v.variants[v.index].UIFixPath(side, level, model)
 }
 
-func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -159,7 +159,7 @@ func (v *KernelValueUnion) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		model.SetCurrentEditor(&model.EditorUnion)
 		return
 	}
-	v.variants[v.index].UIStartEdit(level, model, fromTab)
+	v.variants[v.index].UIStartEdit(level, model, createMode)
 }
 
 func (v *KernelValueUnion) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
