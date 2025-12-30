@@ -100,7 +100,7 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	currentBlockPosition := w.Len()
 	w.WriteFieldmask()
 
-	if v.instance.isUnionElement {
+	if v.instance.isUnionElement && v.instance.unionIndex != 0 {
 		w.WriteVariantIndex(v.instance.unionIndex)
 		lastUsedByte = w.Len()
 		currentBlock |= 1
