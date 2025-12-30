@@ -40,6 +40,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 		}
+		if msg.Type == tea.KeyF1 {
+			m.impl.ShowLegend = !m.impl.ShowLegend
+			return m, nil
+		}
 		if msg.Type == tea.KeyF8 {
 			if m.impl.CurrentEditor == nil {
 				m.impl.Fun.UIKey(0, m.impl, false, true, false, false)
