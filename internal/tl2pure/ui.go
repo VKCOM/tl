@@ -53,7 +53,7 @@ func (m *UIModel) colorError(str string) string {
 func (m *UIModel) View() string {
 	var sb strings.Builder
 	sb.WriteString(m.colorButton("[F1]"))
-	sb.WriteString(m.colorButtonComment("Legend  "))
+	sb.WriteString(m.colorButtonComment("Legend"))
 	sb.WriteString(m.colorButton("[Tab]"))
 	sb.WriteString(m.colorButtonComment("Next"))
 	sb.WriteString(m.colorButton("[Shift-Tab]"))
@@ -65,7 +65,7 @@ func (m *UIModel) View() string {
 	sb.WriteString(m.colorButton("[Esc]"))
 	sb.WriteString(m.colorButtonComment("Cancel"))
 	sb.WriteString(m.colorButton("[F5]"))
-	sb.WriteString(m.colorButtonComment("Send  "))
+	sb.WriteString(m.colorButtonComment("Send"))
 	//sb.WriteString("F8")
 	//sb.WriteString(m.colorButtonComment("Extra"))
 	//sb.WriteString(m.colorButton("[F2]"))

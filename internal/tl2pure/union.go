@@ -120,12 +120,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	} else {
 		sb.WriteString("{")
 	}
-	//if onPath && len(path) > level && path[level] == -1 { // constructor
-	//	sb.WriteString(color.InBlue("type"))
-	//} else {
-	sb.WriteString("type")
-	//}
-	sb.WriteString(`":`)
+	sb.WriteString(`"type":`)
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
 		model.CurrentEditor.UIWrite(sb)
 	} else {
