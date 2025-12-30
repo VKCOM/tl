@@ -1,18 +1,26 @@
 package tl2pure
 
-import "github.com/vkcom/tl/pkg/basictl"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/pkg/basictl"
+)
 
 type ByteColor byte
 
-const ByteColorNormal = 0
-const ByteColorObjectSize = 1
-const ByteColorElementCount = 2
-const ByteColorVariantIndex = 3
-const ByteColorFieldMask = 4
+const ByteColorNormal ByteColor = 0
+const ByteColorObjectSize ByteColor = 1
+const ByteColorElementCount ByteColor = 2
+const ByteColorVariantIndex ByteColor = 3
+const ByteColorFieldMask ByteColor = 4
 
 type ByteBuilder struct {
-	buf    []byte
-	colors []ByteColor
+	buf          []byte
+	colors       []ByteColor
+	cursorStart  int
+	cursorFinish int
 }
 
 func (b *ByteBuilder) Buf() []byte {
@@ -21,6 +29,34 @@ func (b *ByteBuilder) Buf() []byte {
 
 func (b *ByteBuilder) Len() int {
 	return len(b.buf)
+}
+
+func (b *ByteBuilder) Print() string {
+	var sb strings.Builder
+	currentColor := ByteColorNormal
+	for i, bt := range b.buf {
+		cl := b.colors[i]
+		if cl != currentColor {
+			switch cl {
+			case ByteColorObjectSize:
+				sb.WriteString(color.Green)
+			case ByteColorElementCount:
+				sb.WriteString(color.Blue)
+			case ByteColorVariantIndex:
+				sb.WriteString(color.Red)
+			case ByteColorFieldMask:
+				sb.WriteString(color.Purple)
+			default:
+				sb.WriteString(color.Reset)
+			}
+			currentColor = cl
+		}
+		fmt.Fprintf(&sb, "%02x ", bt)
+	}
+	if currentColor != ByteColorNormal {
+		sb.WriteString(color.Reset)
+	}
+	return sb.String()
 }
 
 // primitives write directly into buf, so we call it at the start of each our fun
@@ -74,21 +110,22 @@ func (b *ByteBuilder) FinishSize(firstUsedByte int, lastUsedByte int, optimizeEm
 		return
 	}
 	offset := basictl.TL2PutSize(b.buf[firstUsedByte-16:], lastUsedByte-firstUsedByte)
-	offset += copy(b.buf[firstUsedByte-16+offset:], b.buf[firstUsedByte:lastUsedByte])
+	if b.cursorStart > firstUsedByte {
+		b.cursorStart -= 16 - offset
+	}
+	if b.cursorFinish > firstUsedByte {
+		b.cursorFinish -= 16 - offset
+	}
 	copy(b.colors[firstUsedByte-16+offset:], b.colors[firstUsedByte:lastUsedByte])
+	offset += copy(b.buf[firstUsedByte-16+offset:], b.buf[firstUsedByte:lastUsedByte])
 	b.buf = b.buf[:firstUsedByte-16+offset]
 	b.colors = b.colors[:firstUsedByte-16+offset]
 }
 
-// at current offset
-func (b *ByteBuilder) SetCursor() {
-
+func (b *ByteBuilder) SetCursorStart() {
+	b.cursorStart = len(b.buf)
 }
 
-func (b *ByteBuilder) PushStyle(s UIStyle) {
-
-}
-
-func (b *ByteBuilder) PopStyle() {
-
+func (b *ByteBuilder) SetCursorFinish() {
+	b.cursorFinish = len(b.buf)
 }
