@@ -72,16 +72,16 @@ func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return v.value.WriteJSON(w, ctx)
 }
 
-func (v *KernelValueAlias) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
-	v.value.UIWrite(sb, onPath, level, path, model)
+func (v *KernelValueAlias) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
+	v.value.UIWrite(sb, onPath, level, model)
 }
 
 func (v *KernelValueAlias) UIFixPath(side int, level int, model *UIModel) int {
 	return v.value.UIFixPath(side, level, model)
 }
 
-func (v *KernelValueAlias) UIStartEdit(level int, model *UIModel, fromTab bool) {
-	v.value.UIStartEdit(level, model, fromTab)
+func (v *KernelValueAlias) UIStartEdit(level int, model *UIModel, createMode int) {
+	v.value.UIStartEdit(level, model, createMode)
 }
 
 func (v *KernelValueAlias) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {

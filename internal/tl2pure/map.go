@@ -135,7 +135,7 @@ func (v *KernelValueMap) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueMap) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueMap) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	sb.WriteString("<KernelValueMap>")
 }
 
@@ -143,7 +143,7 @@ func (v *KernelValueMap) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueMap) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueMap) UIStartEdit(level int, model *UIModel, createMode int) {
 }
 
 func (v *KernelValueMap) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {

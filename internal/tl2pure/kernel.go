@@ -22,9 +22,9 @@ type KernelValue interface {
 	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
 	WriteJSON(w []byte, ctx *TL2Context) []byte
 
-	UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel)
+	UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel)
 	UIFixPath(side int, level int, model *UIModel) int // always called onPath
-	UIStartEdit(level int, model *UIModel, fromTab bool)
+	UIStartEdit(level int, model *UIModel, createMode int)
 	UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool)
 
 	CompareForMapKey(other KernelValue) int

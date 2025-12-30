@@ -56,7 +56,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 			m.impl.Move(1)
-			m.impl.StartEdit(true)
+			m.impl.StartEdit(0)
 			return m, nil
 		}
 		if msg.Type == tea.KeyShiftTab {
@@ -65,7 +65,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 			m.impl.Move(-1)
-			m.impl.StartEdit(true)
+			m.impl.StartEdit(0)
 			return m, nil
 		}
 		if msg.Type == tea.KeyEnter {
@@ -74,7 +74,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			} else {
 				if m.impl.CurrentEditor == nil {
-					m.impl.StartEdit(false)
+					m.impl.StartEdit(1)
 				}
 				return m, nil
 			}
@@ -87,7 +87,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if msg.Type == tea.KeyRunes {
 			if m.impl.CurrentEditor == nil {
-				m.impl.StartEdit(false)
+				m.impl.StartEdit(2)
 			}
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnRune(msg.String(), m.impl)

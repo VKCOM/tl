@@ -152,7 +152,7 @@ func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
 	if onPath {
 		sb.WriteString(color.InBlue("["))
@@ -160,17 +160,17 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		sb.WriteString("[")
 	}
 	for i, el := range v.elements {
-		fieldOnPath := onPath && len(path) > level && path[level] == i
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
 		if i != 0 {
 			sb.WriteString(",")
 		}
 		if fieldOnPath {
-			el.UIWrite(sb, true, level+1, path, model)
+			el.UIWrite(sb, true, level+1, model)
 			continue
 		}
-		el.UIWrite(sb, false, 0, nil, model)
+		el.UIWrite(sb, false, 0, model)
 	}
-	if onPath && len(path) > level && path[level] == len(v.elements) { // insert placeholder
+	if onPath && len(model.Path) > level && model.Path[level] == len(v.elements) { // insert placeholder
 		if len(v.elements) != 0 {
 			sb.WriteString(",")
 		}
@@ -235,7 +235,7 @@ func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -247,13 +247,15 @@ func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, fromTab bool) 
 		if v.instance.isTuple {
 			panic("unexpected path invariant for tuple")
 		}
-		if fromTab { // require Enter to insert element
+		if createMode == 0 { // require Enter or Rune to insert element
 			return
 		}
-		fromTab = true // do not recursively create first field
 		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
+		if createMode == 1 {
+			createMode = 0
+		}
 	}
-	v.elements[selectedIndex].UIStartEdit(level+1, model, fromTab)
+	v.elements[selectedIndex].UIStartEdit(level+1, model, createMode)
 }
 
 func (v *KernelValueTuple) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {

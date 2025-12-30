@@ -131,7 +131,7 @@ func (v *KernelValueTupleBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level int, path []int, model *UIModel) {
+func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	sb.WriteString("<KernelValueTupleBit>")
 }
 
@@ -140,7 +140,7 @@ func (v *KernelValueTupleBit) UIFixPath(side int, level int, model *UIModel) int
 	return 0
 }
 
-func (v *KernelValueTupleBit) UIStartEdit(level int, model *UIModel, fromTab bool) {
+func (v *KernelValueTupleBit) UIStartEdit(level int, model *UIModel, createMode int) {
 }
 
 func (v *KernelValueTupleBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
