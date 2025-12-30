@@ -81,7 +81,9 @@ func (m *UIModel) View() string {
 		sb.WriteString(m.colorError(m.LastError.Error()))
 	}
 	sb.WriteString("\n")
+
 	m.Fun.UIWrite(&sb, true, 0, m.Path, m)
+	sb.WriteString("\n")
 	//TODO - do not take into account color characters
 	//var sb2 strings.Builder
 	//m.Fun.UIWrite(&sb2, true, 0, m.Path, m)
@@ -92,7 +94,14 @@ func (m *UIModel) View() string {
 	//	str = str[m.Width:]
 	//}
 	//sb.WriteString(str)
-	sb.WriteString("\nPath: ")
+	var bb ByteBuilder
+	sb.WriteString(bb.PrintLegend())
+	sb.WriteString("\n")
+	m.Fun.WriteTL2(&bb, false, false, 0, m)
+	sb.WriteString(bb.Print())
+	sb.WriteString("\n")
+
+	sb.WriteString("Path: ")
 	for i, pa := range m.Path {
 		if i != 0 {
 			sb.WriteString(",")
