@@ -756,7 +756,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 	})
 	cc.AddLines("} else {")
 	cc.AddBlock(func(cc *CodeCreator) {
-		cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s);", currentSizeIndex))
+		cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
 	})
 	cc.AddLines("}")
 
