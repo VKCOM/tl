@@ -178,7 +178,7 @@ func main() {
 			var bb tl2pure.ByteBuilder
 			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
-			log.Printf(".   TL2: %x", bb.Buf())
+			log.Printf(".   TL2: %s", bb.Print())
 			log.Printf(".   JSON: %s", js)
 		}
 	}
