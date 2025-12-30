@@ -35,6 +35,7 @@ func (b *ByteBuilder) Len() int {
 
 func (b *ByteBuilder) PrintLegend() string {
 	var sb strings.Builder
+	sb.WriteString("Legend: ")
 	sb.WriteString(color.Green)
 	sb.WriteString("object size ")
 	sb.WriteString(color.Blue)
@@ -46,7 +47,7 @@ func (b *ByteBuilder) PrintLegend() string {
 	sb.WriteString(color.Yellow)
 	sb.WriteString("string len ")
 	sb.WriteString(color.Gray)
-	sb.WriteString("string")
+	sb.WriteString("string data")
 	sb.WriteString(color.Reset)
 	return sb.String()
 }

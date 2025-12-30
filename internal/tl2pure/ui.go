@@ -28,6 +28,8 @@ type UIModel struct {
 
 	LastError error
 
+	ShowLegend bool
+
 	EditorUnion     UIEditorUnion
 	EditorString    UIEditorString
 	EditorPrimitive UIEditorPrimitive
@@ -50,8 +52,8 @@ func (m *UIModel) colorError(str string) string {
 
 func (m *UIModel) View() string {
 	var sb strings.Builder
-	//sb.WriteString(m.colorButton("[F1]"))
-	//sb.WriteString(m.colorButtonComment("Help  "))
+	sb.WriteString(m.colorButton("[F1]"))
+	sb.WriteString(m.colorButtonComment("Legend  "))
 	sb.WriteString(m.colorButton("[Tab]"))
 	sb.WriteString(m.colorButtonComment("Next"))
 	sb.WriteString(m.colorButton("[Shift-Tab]"))
@@ -95,12 +97,13 @@ func (m *UIModel) View() string {
 	//}
 	//sb.WriteString(str)
 	var bb ByteBuilder
-	sb.WriteString(bb.PrintLegend())
-	sb.WriteString("\n")
+	if m.ShowLegend {
+		sb.WriteString(bb.PrintLegend())
+		sb.WriteString("\n")
+	}
 	m.Fun.WriteTL2(&bb, false, false, 0, m)
 	sb.WriteString(bb.Print())
 	sb.WriteString("\n")
-
 	sb.WriteString("Path: ")
 	for i, pa := range m.Path {
 		if i != 0 {
