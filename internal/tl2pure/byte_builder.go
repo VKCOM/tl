@@ -15,6 +15,8 @@ const ByteColorObjectSize ByteColor = 1
 const ByteColorElementCount ByteColor = 2
 const ByteColorVariantIndex ByteColor = 3
 const ByteColorFieldMask ByteColor = 4
+const ByteColorStringSize ByteColor = 6
+const ByteColorStringData ByteColor = 7
 
 type ByteBuilder struct {
 	buf          []byte
@@ -29,6 +31,24 @@ func (b *ByteBuilder) Buf() []byte {
 
 func (b *ByteBuilder) Len() int {
 	return len(b.buf)
+}
+
+func (b *ByteBuilder) PrintLegend() string {
+	var sb strings.Builder
+	sb.WriteString(color.Green)
+	sb.WriteString("object size ")
+	sb.WriteString(color.Blue)
+	sb.WriteString("array len ")
+	sb.WriteString(color.Red)
+	sb.WriteString("union variant ")
+	sb.WriteString(color.Purple)
+	sb.WriteString("fieldmask ")
+	sb.WriteString(color.Yellow)
+	sb.WriteString("string len ")
+	sb.WriteString(color.Gray)
+	sb.WriteString("string")
+	sb.WriteString(color.Reset)
+	return sb.String()
 }
 
 func (b *ByteBuilder) Print() string {
@@ -46,12 +66,16 @@ func (b *ByteBuilder) Print() string {
 				sb.WriteString(color.Red)
 			case ByteColorFieldMask:
 				sb.WriteString(color.Purple)
+			case ByteColorStringSize:
+				sb.WriteString(color.Yellow)
+			case ByteColorStringData:
+				sb.WriteString(color.Gray)
 			default:
 				sb.WriteString(color.Reset)
 			}
 			currentColor = cl
 		}
-		fmt.Fprintf(&sb, "%02x ", bt)
+		_, _ = fmt.Fprintf(&sb, "%02x ", bt)
 	}
 	if currentColor != ByteColorNormal {
 		sb.WriteString(color.Reset)
@@ -78,9 +102,9 @@ func (b *ByteBuilder) WriteFieldmask() {
 func (b *ByteBuilder) WriteString(v string) {
 	b.fixColors(ByteColorNormal)
 	b.buf = basictl.TL2WriteSize(b.buf, len(v))
-	b.fixColors(ByteColorObjectSize)
+	b.fixColors(ByteColorStringSize)
 	b.buf = append(b.buf, v...)
-	b.fixColors(ByteColorNormal)
+	b.fixColors(ByteColorStringData)
 }
 
 func (b *ByteBuilder) WriteVariantIndex(v int) {
