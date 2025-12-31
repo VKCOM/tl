@@ -57,7 +57,13 @@ func (v *KernelValueString) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if optimizeEmpty && len(v.value) == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.WriteString(v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueString) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {

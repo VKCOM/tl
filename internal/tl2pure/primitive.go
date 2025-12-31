@@ -62,7 +62,13 @@ func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if optimizeEmpty && v.value == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.buf = binary.LittleEndian.AppendUint32(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -143,7 +149,13 @@ func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	if optimizeEmpty && v.value == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.buf = binary.LittleEndian.AppendUint32(w.buf, uint32(v.value))
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -224,7 +236,13 @@ func (v *KernelValueUint64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if optimizeEmpty && v.value == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.buf = binary.LittleEndian.AppendUint64(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -305,7 +323,13 @@ func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	if optimizeEmpty && v.value == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.buf = binary.LittleEndian.AppendUint64(w.buf, uint64(v.value))
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -386,7 +410,13 @@ func (v *KernelValueByte) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bo
 	if optimizeEmpty && v.value == 0 {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	w.buf = append(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
 }
 
 func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
@@ -467,10 +497,16 @@ func (v *KernelValueBool) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bo
 	if optimizeEmpty && !v.value {
 		return
 	}
+	if onPath {
+		w.SetCursorStart()
+	}
 	if v.value {
 		w.buf = append(w.buf, 1)
 	} else {
 		w.buf = append(w.buf, 0)
+	}
+	if onPath {
+		w.SetCursorFinish()
 	}
 }
 

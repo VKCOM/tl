@@ -55,8 +55,18 @@ func (b *ByteBuilder) PrintLegend() string {
 func (b *ByteBuilder) Print() string {
 	var sb strings.Builder
 	currentColor := ByteColorNormal
+	currentCursor := false
 	for i, bt := range b.buf {
 		cl := b.colors[i]
+		if i == b.cursorStart {
+			sb.WriteString(color.Underline)
+			currentCursor = true
+		}
+		if i == b.cursorFinish {
+			sb.WriteString(color.Reset)
+			currentColor = ByteColorNormal
+			currentCursor = false
+		}
 		if cl != currentColor {
 			switch cl {
 			case ByteColorObjectSize:
@@ -78,7 +88,7 @@ func (b *ByteBuilder) Print() string {
 		}
 		_, _ = fmt.Fprintf(&sb, "%02x ", bt)
 	}
-	if currentColor != ByteColorNormal {
+	if currentColor != ByteColorNormal || currentCursor {
 		sb.WriteString(color.Reset)
 	}
 	return sb.String()
