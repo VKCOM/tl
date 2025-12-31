@@ -95,8 +95,13 @@ func (v *KernelValueTuple) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	firstUsedByte := w.ReserveSpaceForSize()
 	w.WriteElementCount(len(v.elements))
 
-	for _, elem := range v.elements {
-		elem.WriteTL2(w, false, false, 0, model)
+	for i, elem := range v.elements {
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
+		if fieldOnPath {
+			elem.WriteTL2(w, false, true, level+1, model)
+		} else {
+			elem.WriteTL2(w, false, false, 0, model)
+		}
 	}
 
 	lastUsedByte := w.Len()
@@ -166,9 +171,9 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		}
 		if fieldOnPath {
 			el.UIWrite(sb, true, level+1, model)
-			continue
+		} else {
+			el.UIWrite(sb, false, 0, model)
 		}
-		el.UIWrite(sb, false, 0, model)
 	}
 	if onPath && len(model.Path) > level && model.Path[level] == len(v.elements) { // insert placeholder
 		if len(v.elements) != 0 {

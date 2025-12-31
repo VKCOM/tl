@@ -101,7 +101,7 @@ func (m *UIModel) View() string {
 		sb.WriteString(bb.PrintLegend())
 		sb.WriteString("\n")
 	}
-	m.Fun.WriteTL2(&bb, false, false, 0, m)
+	m.Fun.WriteTL2(&bb, false, true, 0, m)
 	sb.WriteString(bb.Print())
 	sb.WriteString("\n")
 	sb.WriteString("Path: ")
@@ -111,6 +111,7 @@ func (m *UIModel) View() string {
 		}
 		sb.WriteString(fmt.Sprintf("%d", pa))
 	}
+	sb.WriteString(fmt.Sprintf(" cursor: %d %d", bb.cursorStart, bb.cursorFinish))
 	return sb.String()
 }
 

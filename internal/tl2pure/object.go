@@ -107,6 +107,7 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	}
 
 	for i, field := range v.fields {
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
 		fieldDef := v.instance.constructorFields[i]
 		if (i+1)%8 == 0 {
 			w.buf[currentBlockPosition] = currentBlock
@@ -120,14 +121,22 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 		}
 		if fieldDef.IsOptional {
 			if field != nil {
-				field.WriteTL2(w, false, false, 0, model)
+				if fieldOnPath {
+					field.WriteTL2(w, false, true, level+1, model)
+				} else {
+					field.WriteTL2(w, false, false, 0, model)
+				}
 				lastUsedByte = w.Len()
 				currentBlock |= 1 << ((i + 1) % 8)
 			}
 			continue
 		}
 		wasLen := w.Len()
-		field.WriteTL2(w, true, false, 0, model)
+		if fieldOnPath {
+			field.WriteTL2(w, true, true, level+1, model)
+		} else {
+			field.WriteTL2(w, true, false, 0, model)
+		}
 		if w.Len() != wasLen {
 			lastUsedByte = w.Len()
 			currentBlock |= 1 << ((i + 1) % 8)
@@ -263,9 +272,9 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		if fieldOnPath {
 			v.fields[i].UIWrite(sb, true, level+1, model)
-			continue
+		} else {
+			v.fields[i].UIWrite(sb, false, 0, model)
 		}
-		v.fields[i].UIWrite(sb, false, 0, model)
 	}
 	if onPath {
 		sb.WriteString(color.InBlue("}"))
