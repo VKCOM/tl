@@ -210,8 +210,11 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 			state.FailWithError(err)
 			return
 		}
-		result.ID = new(uint32)
-		*result.ID = uint32(value)
+		if value == 0 {
+			state.FailWithError(fmt.Errorf("magic should not be 0"))
+			return
+		}
+		result.Magic = uint32(value)
 		result.PRID.End = restTokens.front().pos
 	} else {
 		state.Fail("function must have magic")
@@ -283,8 +286,11 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 			state.FailWithError(err)
 			return
 		}
-		result.ID = new(uint32)
-		*result.ID = uint32(value)
+		if value == 0 {
+			state.FailWithError(fmt.Errorf("magic should not be 0"))
+			return
+		}
+		result.Magic = uint32(value)
 		result.PRID.End = restTokens.front().pos
 	}
 

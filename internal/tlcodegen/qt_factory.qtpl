@@ -116,7 +116,7 @@ package {%s= pkgName %}
 
     sortedTL2Combinators := make([]*tlast.TL2Combinator, 0)
     for _, combinator := range gen.tl2Combinators {
-        if combinator.IsFunction || combinator.TypeDecl.ID != nil {
+        if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
             sortedTL2Combinators = append(sortedTL2Combinators, combinator)
         }
     }
@@ -132,13 +132,13 @@ const (
     {%- for _, c := range sortedTL2Combinators -%}
         {%- code
             refName := c.ReferenceName()
-            refMagic := c.FuncDecl.ID
+            magic := c.FuncDecl.Magic
             if !c.IsFunction {
-                refMagic = c.TypeDecl.ID
+                magic = c.TypeDecl.Magic
             }
             name := snakeToCamelCase(refName.Namespace + "_" + refName.Name)
         -%}
-        {%s name %} = {%s= fmt.Sprintf("%#08x", *refMagic) %} // {%s= refName.String() %}
+        {%s name %} = {%s= fmt.Sprintf("%#08x", magic) %} // {%s= refName.String() %}
     {%- endfor -%}
 )
 {%- endfunc  -%}

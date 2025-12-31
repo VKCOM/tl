@@ -34,7 +34,6 @@ func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2T
 func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	if tr.IsNumber {
-		tr.Category = tlast.TL2TypeCategoryNat
 		return tr, nil
 	}
 	if tr.Type.IsBracket {

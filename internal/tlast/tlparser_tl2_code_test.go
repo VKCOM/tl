@@ -121,8 +121,7 @@ func TestParseTL2(t *testing.T) {
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
 				assert.Equal(t, "testName", comb.TypeDecl.Name.Name)
-				assert.NotNil(t, comb.TypeDecl.ID)
-				assert.Equal(t, uint32(0x90abcdef), *comb.TypeDecl.ID)
+				assert.Equal(t, uint32(0x90abcdef), comb.TypeDecl.Magic)
 			})
 
 			t.Run("basic definition with optional field", func(t *testing.T) {
@@ -433,8 +432,7 @@ testNs.testName = Green x:int |
 			assert.True(t, comb.IsFunction)
 			assert.Equal(t, "testNs", comb.FuncDecl.Name.Namespace)
 			assert.Equal(t, "testName", comb.FuncDecl.Name.Name)
-			assert.NotNil(t, comb.FuncDecl.ID)
-			assert.Equal(t, uint32(0x90abcdef), *comb.FuncDecl.ID)
+			assert.Equal(t, uint32(0x90abcdef), comb.FuncDecl.Magic)
 		})
 
 		t.Run("simple function no arguments", func(t *testing.T) {

@@ -105,8 +105,8 @@ func (t *TL2FuncDeclaration) printArguments(sb *strings.Builder, sep string) {
 func (t *TL2FuncDeclaration) printFunction(sb *strings.Builder, options formatOptions, sep string, prefixSize int) (hasNewLines bool) {
 	startSize := sb.Len()
 	sb.WriteString(t.Name.String())
-	if t.ID != nil {
-		sb.WriteString(fmt.Sprintf("#%08x", *t.ID))
+	if t.Magic != 0 {
+		sb.WriteString(fmt.Sprintf("#%08x", t.Magic))
 	}
 	t.printArguments(sb, sep)
 	sb.WriteString(sep)
@@ -133,8 +133,8 @@ func (t *TL2TypeDeclaration) print(sb *strings.Builder, options formatOptions, p
 		}
 		sb.WriteString(">")
 	}
-	if t.ID != nil {
-		sb.WriteString(fmt.Sprintf("#%08x", *t.ID))
+	if t.Magic != 0 {
+		sb.WriteString(fmt.Sprintf("#%08x", t.Magic))
 	}
 	sb.WriteString(" = ")
 	t.Type.print(sb, options, prefixSize+sb.Len()-startSize)
