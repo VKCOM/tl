@@ -57,18 +57,24 @@ func (b *ByteBuilder) Print() string {
 	currentColor := ByteColorNormal
 	currentCursor := false
 	for i, bt := range b.buf {
-		cl := b.colors[i]
-		if i == b.cursorStart {
-			sb.WriteString(color.Underline)
-			currentCursor = true
-		}
-		if i == b.cursorFinish {
+		wantColor := b.colors[i]
+		wantCursor := i >= b.cursorStart && i < b.cursorFinish
+		if !wantCursor && currentCursor {
 			sb.WriteString(color.Reset)
 			currentColor = ByteColorNormal
 			currentCursor = false
 		}
-		if cl != currentColor {
-			switch cl {
+		if wantColor == ByteColorNormal && currentColor != ByteColorNormal {
+			sb.WriteString(color.Reset)
+			currentColor = ByteColorNormal
+			currentCursor = false
+		}
+		if wantCursor && !currentCursor {
+			sb.WriteString(color.Underline)
+			currentCursor = true
+		}
+		if wantColor != currentColor {
+			switch wantColor {
 			case ByteColorObjectSize:
 				sb.WriteString(color.Green)
 			case ByteColorElementCount:
@@ -81,10 +87,8 @@ func (b *ByteBuilder) Print() string {
 				sb.WriteString(color.Yellow)
 			case ByteColorStringData:
 				sb.WriteString(color.Gray)
-			default:
-				sb.WriteString(color.Reset)
 			}
-			currentColor = cl
+			currentColor = wantColor
 		}
 		_, _ = fmt.Fprintf(&sb, "%02x ", bt)
 	}
