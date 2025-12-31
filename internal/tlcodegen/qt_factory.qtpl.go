@@ -214,7 +214,7 @@ package `)
 
 	sortedTL2Combinators := make([]*tlast.TL2Combinator, 0)
 	for _, combinator := range gen.tl2Combinators {
-		if combinator.IsFunction || combinator.TypeDecl.ID != nil {
+		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
 			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
 		}
 	}
@@ -239,16 +239,16 @@ package `)
 	}
 	for _, c := range sortedTL2Combinators {
 		refName := c.ReferenceName()
-		refMagic := c.FuncDecl.ID
+		magic := c.FuncDecl.Magic
 		if !c.IsFunction {
-			refMagic = c.TypeDecl.ID
+			magic = c.TypeDecl.Magic
 		}
 		name := snakeToCamelCase(refName.Namespace + "_" + refName.Name)
 
 		qw422016.N().S(`        `)
 		qw422016.E().S(name)
 		qw422016.N().S(` = `)
-		qw422016.N().S(fmt.Sprintf("%#08x", *refMagic))
+		qw422016.N().S(fmt.Sprintf("%#08x", magic))
 		qw422016.N().S(` // `)
 		qw422016.N().S(refName.String())
 		qw422016.N().S(`

@@ -21,14 +21,6 @@ type TL2TypeArgument struct {
 
 	IsNumber bool
 
-	// this field is not set by AST, but it is included here,
-	// otherwise we'd have to set up the same type family for kernel
-	// during type checking, every argument is checked and category set,
-	// for example: useN<n:#, t:type> = pair<n, t>, when we typecheck, we set
-	// category of pair's arguments to pair<n(#), t(type)>, so then we can
-	// look up pair definition and see if it is compatible
-	Category TL2TypeCategory
-
 	PR PositionRange
 }
 
@@ -127,7 +119,7 @@ type TL2TypeTemplate struct {
 // TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? CRC32? eq TL2TypeDefinition?;
 type TL2TypeDeclaration struct {
 	Name              TL2TypeName
-	ID                *uint32
+	Magic             uint32
 	TemplateArguments []TL2TypeTemplate
 	Type              TL2TypeDefinition
 
@@ -139,7 +131,7 @@ type TL2TypeDeclaration struct {
 // TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
 type TL2FuncDeclaration struct {
 	Name       TL2TypeName
-	ID         *uint32
+	Magic      uint32
 	Arguments  []TL2Field
 	ReturnType TL2TypeDefinition
 

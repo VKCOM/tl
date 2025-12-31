@@ -72,9 +72,9 @@ func (m *UIModel) View() string {
 	//sb.WriteString(m.colorButtonComment("Show empty "))
 	sb.WriteString("\n")
 	sb.WriteString(m.Fun.instance.canonicalName)
-	if m.Fun.instance.comb.FuncDecl.ID != nil {
+	if m.Fun.instance.comb.FuncDecl.Magic != 0 {
 		sb.WriteString("#")
-		sb.WriteString(fmt.Sprintf("%08x", *m.Fun.instance.comb.FuncDecl.ID))
+		sb.WriteString(fmt.Sprintf("%08x", m.Fun.instance.comb.FuncDecl.Magic))
 	}
 	//sb.WriteString(" => ")
 	//sb.WriteString(m.Fun.instance.resultType.Combinator().TypeDecl.Type.St.CanonicalName())

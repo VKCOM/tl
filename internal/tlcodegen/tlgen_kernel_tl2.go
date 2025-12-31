@@ -308,9 +308,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		Namespace: kernelType.tl2Name.Namespace,
 		Name:      kernelType.tl2Name.Name,
 	}
-	if comb.TypeDecl.ID != nil {
-		kernelType.tlTag = *comb.TypeDecl.ID
-	}
+	kernelType.tlTag = comb.TypeDecl.Magic
 
 	kernelType.ns = replaceNamespace(comb.TypeDecl.Name.Namespace)
 	kernelType.ns.types = append(kernelType.ns.types, &kernelType)
@@ -532,7 +530,7 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 	// set up wrapper
 	kernelType.tl2Name = comb.FuncDecl.Name
 	kernelType.tl2Origin = comb
-	kernelType.tlTag = *comb.FuncDecl.ID
+	kernelType.tlTag = comb.FuncDecl.Magic
 
 	// TODO: for tl1 meta
 	kernelType.tlName = tlast.Name{
