@@ -76,7 +76,7 @@ func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueString) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(basictl.JSONWriteString(nil, v.value))
 		if onPath {

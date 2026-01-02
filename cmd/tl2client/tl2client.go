@@ -12,6 +12,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/vkcom/tl/internal/tl2pure"
@@ -30,6 +31,8 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tl2pure.UIBlinkMsg:
+		m.impl.Blink = msg
 	case tea.WindowSizeMsg:
 		m.impl.Width = msg.Width
 		m.impl.Height = msg.Height
@@ -212,6 +215,14 @@ func main() {
 	uiModel.Fun.UIFixPath(-1, 0, uiModel)
 
 	p := tea.NewProgram(model{impl: uiModel})
+	go func() {
+		for {
+			p.Send(tl2pure.UIBlinkMsg{On: true})
+			time.Sleep(500 * time.Millisecond)
+			p.Send(tl2pure.UIBlinkMsg{On: false})
+			time.Sleep(500 * time.Millisecond)
+		}
+	}()
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
