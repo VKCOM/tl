@@ -34,6 +34,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.impl.Width = msg.Width
 		m.impl.Height = msg.Height
 	case tea.KeyMsg:
+		m.impl.LastError = nil
 		if msg.Type == tea.KeyBackspace {
 			if m.impl.CurrentEditor != nil {
 				m.impl.CurrentEditor.OnBackspace(m.impl)
