@@ -85,7 +85,7 @@ func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueUint32) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
 		if onPath {
@@ -172,7 +172,7 @@ func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueInt32) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(strconv.AppendInt(nil, int64(v.value), 10))
 		if onPath {
@@ -259,7 +259,7 @@ func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueUint64) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(strconv.AppendUint(nil, v.value, 10))
 		if onPath {
@@ -346,7 +346,7 @@ func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueInt64) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(strconv.AppendInt(nil, v.value, 10))
 		if onPath {
@@ -433,7 +433,7 @@ func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueByte) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := string(strconv.AppendUint(nil, uint64(v.value), 10))
 		if onPath {
@@ -527,7 +527,7 @@ func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
 
 func (v *KernelValueBool) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		w := "false"
 		if v.value {

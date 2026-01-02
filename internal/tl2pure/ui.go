@@ -11,7 +11,7 @@ import (
 type UIEditor interface {
 	Value() KernelValue
 
-	UIWrite(sb *strings.Builder)
+	UIWrite(sb *strings.Builder, model *UIModel)
 
 	OnRune(msg string, model *UIModel)
 	OnBackspace(model *UIModel)
@@ -20,10 +20,16 @@ type UIEditor interface {
 	OnEscape(model *UIModel)
 }
 
+type UIBlinkMsg struct {
+	On bool
+}
+
 type UIModel struct {
 	Fun KernelValueObject
 
 	Path []int // selected field on every hierarchy level, 0 means union constructor
+
+	Blink UIBlinkMsg
 
 	CurrentEditor UIEditor
 
@@ -146,6 +152,14 @@ func (m *UIModel) SetCurrentEditor(e UIEditor) {
 		panic("edit already started")
 	}
 	m.CurrentEditor = e
+}
+
+func (m *UIModel) WriteCursor(sb *strings.Builder, text string) {
+	if m.Blink.On {
+		sb.WriteString(color.InBlackOverBlue(text))
+	} else {
+		sb.WriteString(text)
+	}
 }
 
 // [F1]Help [Tab]Next [^Enter]Send [Enter]Edit [Esc]Cancel  // [F5]Extra

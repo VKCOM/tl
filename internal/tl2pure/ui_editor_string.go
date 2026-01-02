@@ -2,8 +2,6 @@ package tl2pure
 
 import (
 	"strings"
-
-	"github.com/TwiN/go-color"
 )
 
 type UIEditorString struct {
@@ -21,9 +19,10 @@ func (e *UIEditorString) SetValue(v *KernelValueString) {
 	}
 }
 
-func (e *UIEditorString) UIWrite(sb *strings.Builder) {
-	sb.WriteString(color.InBlackOverBlue(`"`))
-	sb.WriteString(color.InBlackOverBlue(e.str))
+func (e *UIEditorString) UIWrite(sb *strings.Builder, model *UIModel) {
+	sb.WriteString(`"`)
+	sb.WriteString(e.str)
+	model.WriteCursor(sb, " ")
 	sb.WriteString(`"`)
 }
 

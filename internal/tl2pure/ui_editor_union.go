@@ -29,7 +29,7 @@ func (e *UIEditorUnion) SetValue(v *KernelValueUnion) {
 	}
 }
 
-func (e *UIEditorUnion) UIWrite(sb *strings.Builder) {
+func (e *UIEditorUnion) UIWrite(sb *strings.Builder, model *UIModel) {
 	sb.WriteString(color.InBlackOverBlue(`"`))
 	name := e.names[e.index]
 	sb.WriteString(color.InBlackOverBlue(name[:len(e.prefix)]))

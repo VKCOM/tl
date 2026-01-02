@@ -2,8 +2,6 @@ package tl2pure
 
 import (
 	"strings"
-
-	"github.com/TwiN/go-color"
 )
 
 type UIEditorPrimitive struct {
@@ -21,14 +19,18 @@ func (e *UIEditorPrimitive) SetValue(v KernelValuePrimitive) {
 	}
 }
 
-func (e *UIEditorPrimitive) UIWrite(sb *strings.Builder) {
-	sb.WriteString(color.InBlackOverBlue(e.str))
+func (e *UIEditorPrimitive) UIWrite(sb *strings.Builder, model *UIModel) {
+	if e.str == "0" {
+		model.WriteCursor(sb, "0")
+	} else {
+		sb.WriteString(e.str)
+		model.WriteCursor(sb, " ")
+	}
 }
 
 func (e *UIEditorPrimitive) OnRune(msg string, model *UIModel) {
 	if e.str == "0" {
 		e.strRunes = e.strRunes[:0]
-		e.str = ""
 	}
 	e.strRunes = append(e.strRunes, msg)
 	e.str = strings.Join(e.strRunes, "")
@@ -39,6 +41,9 @@ func (e *UIEditorPrimitive) OnBackspace(model *UIModel) {
 		return
 	}
 	e.strRunes = e.strRunes[:len(e.strRunes)-1]
+	if len(e.strRunes) == 0 {
+		e.strRunes = append(e.strRunes, "0")
+	}
 	e.str = strings.Join(e.strRunes, "")
 }
 

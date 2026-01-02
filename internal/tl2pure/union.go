@@ -122,7 +122,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	}
 	sb.WriteString(`"type":`)
 	if model.CurrentEditor != nil && model.CurrentEditor.Value() == v {
-		model.CurrentEditor.UIWrite(sb)
+		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		sb.WriteString(`"`)
 		sb.WriteString(defVariant.Name)
