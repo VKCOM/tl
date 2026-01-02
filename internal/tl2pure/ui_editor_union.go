@@ -3,8 +3,6 @@ package tl2pure
 import (
 	"fmt"
 	"strings"
-
-	"github.com/TwiN/go-color"
 )
 
 type UIEditorUnion struct {
@@ -30,11 +28,17 @@ func (e *UIEditorUnion) SetValue(v *KernelValueUnion) {
 }
 
 func (e *UIEditorUnion) UIWrite(sb *strings.Builder, model *UIModel) {
-	sb.WriteString(color.InBlackOverBlue(`"`))
-	name := e.names[e.index]
-	sb.WriteString(color.InBlackOverBlue(name[:len(e.prefix)]))
-	sb.WriteString(name[len(e.prefix):])
 	sb.WriteString(`"`)
+	name := e.names[e.index]
+	sb.WriteString(name[:len(e.prefix)])
+	remains := name[len(e.prefix):]
+	if len(remains) != 0 { // TODO - fix for unicode
+		model.WriteCursor(sb, remains[:1])
+		sb.WriteString(remains[1:])
+		sb.WriteString(`"`)
+	} else {
+		model.WriteCursor(sb, `"`)
+	}
 }
 
 func (e *UIEditorUnion) OnRune(msg string, model *UIModel) {
