@@ -22,8 +22,7 @@ func (e *UIEditorString) SetValue(v *KernelValueString) {
 func (e *UIEditorString) UIWrite(sb *strings.Builder, model *UIModel) {
 	sb.WriteString(`"`)
 	sb.WriteString(e.str)
-	model.WriteCursor(sb, " ")
-	sb.WriteString(`"`)
+	model.WriteCursor(sb, `"`)
 }
 
 func (e *UIEditorString) OnRune(msg string, model *UIModel) {
