@@ -119,6 +119,14 @@ func (item *Service1Replace) ReadResultJSONWriteResult(r []byte, w []byte) ([]by
 	return r, w, err
 }
 
+func (item *Service1Replace) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.replace")
+}
+
+func (item *Service1Replace) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.replace")
+}
+
 func (item Service1Replace) String() string {
 	return string(item.WriteJSON(nil))
 }

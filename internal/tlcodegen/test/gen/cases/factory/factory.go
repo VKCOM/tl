@@ -21,6 +21,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVruPosition"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVrutoyTopLevelContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVrutoyTopLevelContainerWithDependency"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestAllDicts"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestAllPossibleFieldConfigsContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestArray"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestBeforeReadBitValidation"
@@ -46,6 +47,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep5"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep6"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestObject"
@@ -126,11 +129,14 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunction(0xf020849b, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0x5a933a50, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep4.CasesTL2TestFunctionNoDep4; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep4.CasesTL2TestFunctionNoDep4; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0x2b47b925, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep5.CasesTL2TestFunctionNoDep5; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep5.CasesTL2TestFunctionNoDep5; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForFunction(0x9a316c2e, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep6.CasesTL2TestFunctionNoDep6; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep6.CasesTL2TestFunctionNoDep6; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForFunction(0x08824518, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep7.CasesTL2TestFunctionNoDep7; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep7.CasesTL2TestFunctionNoDep7; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0xb6c63b07, func() meta.Object { var ret tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0x9d44a2fd, func() meta.Object { var ret tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObject(0x4f96dd95, func() meta.Object { var ret tlCasesTL2TestObject.CasesTL2TestObject; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xaac2f033, func() meta.Object { var ret tlCasesTL2TestParamsGeneration.CasesTL2TestParamsGeneration; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x644bb447, func() meta.Object { var ret tlCasesTL2TestVectorBool.CasesTL2TestVectorBool; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xec4b79a6, func() meta.Object { var ret tlCasesTestAllDicts.CasesTestAllDicts; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xe3fae936, func() meta.Object {
 		var ret tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer
 		return &ret

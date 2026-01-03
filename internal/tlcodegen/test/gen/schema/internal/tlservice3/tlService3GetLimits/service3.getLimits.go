@@ -96,6 +96,14 @@ func (item *Service3GetLimits) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
+func (item *Service3GetLimits) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getLimits")
+}
+
+func (item *Service3GetLimits) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getLimits")
+}
+
 func (item Service3GetLimits) String() string {
 	return string(item.WriteJSON(nil))
 }

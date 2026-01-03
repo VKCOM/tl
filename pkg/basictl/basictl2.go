@@ -90,6 +90,11 @@ func TL2WriteSize(w []byte, l int) []byte {
 	return w
 }
 
+func TL2ReadSize(r []byte, l *int) (_ []byte, err error) {
+	r, *l, err = TL2ParseSize(r)
+	return r, err
+}
+
 // w have at least 9 bytes length
 func TL2PutSize(w []byte, l int) int {
 	switch {

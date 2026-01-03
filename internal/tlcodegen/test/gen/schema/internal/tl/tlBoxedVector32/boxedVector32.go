@@ -110,6 +110,14 @@ func (item *BoxedVector32) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte
 	return r, w, err
 }
 
+func (item *BoxedVector32) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("boxedVector32")
+}
+
+func (item *BoxedVector32) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("boxedVector32")
+}
+
 func (item BoxedVector32) String() string {
 	return string(item.WriteJSON(nil))
 }

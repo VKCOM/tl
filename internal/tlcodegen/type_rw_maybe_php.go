@@ -9,6 +9,8 @@ package tlcodegen
 import (
 	"fmt"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
@@ -148,6 +150,180 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 		return result
 	}
 	return nil
+}
+
+func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	maybeContainsValueName := fmt.Sprintf("$maybe_contains_value_%[1]s_%[2]d", supportSuffix, callLevel)
+	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	var result []string
+	// investigate read necessity
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		result = append(result,
+			"/** @var bool */",
+			fmt.Sprintf("%[1]s = false;", maybeContainsValueName),
+			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize),
+			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
+			// add to global pointer
+			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+			// decide should we read body
+			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
+			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
+			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+			fmt.Sprintf("    %[1]s = (fetch_byte() == 1);", maybeContainsValueName),
+			fmt.Sprintf("    %[1]s += 1;", localUsedBytesPointer),
+			"  }",
+			fmt.Sprintf("  if (%[1]s) {", maybeContainsValueName),
+			fmt.Sprintf("    %[1]s = (%[2]s & (1 << 1) != 0);", maybeContainsValueName, localBlock),
+			"  }",
+			"}",
+		)
+	} else {
+		panic("unsupported generation for maybe in php")
+	}
+	// read inner
+	result = append(result, fmt.Sprintf("if (%[1]s) {", maybeContainsValueName))
+	if trw.element.t == trw.getInnerTarget().t && initIfDefault {
+		result = append(result,
+			fmt.Sprintf("  if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("    %[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()),
+			"  }",
+		)
+		initIfDefault = false
+	}
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
+	for i := range bodyReader {
+		bodyReader[i] = "  " + bodyReader[i]
+	}
+	result = append(result, bodyReader...)
+	result = append(result,
+		"} else {",
+		fmt.Sprintf("  %[1]s = null;", targetName),
+		"}",
+	)
+	// skip rest
+	result = append(result,
+		fmt.Sprintf("%[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize),
+	)
+	return result
+
+	return nil
+}
+
+func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	result := make([]string, 0)
+	result = append(result,
+		fmt.Sprintf("%[1]s = $context_sizes->pop_front();", localCurrentSize),
+	)
+	if usedBytesPointer != "" {
+		result = append(result,
+			fmt.Sprintf("%[1]s += %[2]s;", usedBytesPointer, localCurrentSize),
+		)
+	}
+	result = append(result,
+		fmt.Sprintf("TL\\tl2_support::store_size(%[1]s);", localCurrentSize),
+		fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+	)
+
+	// write inner part
+	innerPart := make([]string, 0)
+	innerPart = append(innerPart,
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+		`  throw new \Exception("inner element is null but object size != 0");`,
+		"}",
+		fmt.Sprintf("%[1]s = $context_blocks->pop_front();", localBlock),
+		fmt.Sprintf("store_byte(%[1]s);", localBlock),
+		fmt.Sprintf("if ((%[1]s & (1 << 0)) != 0) {", localBlock),
+		"  store_byte(1);",
+		"}",
+		fmt.Sprintf("if ((%[1]s & (1 << 1)) != 0) {", localBlock),
+	)
+
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	innerPart = append(innerPart, utils.ShiftAll(trw.element.t.trw.PhpWriteTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, "", false), "  ")...)
+	innerPart = append(innerPart, "}")
+
+	// add it with shift
+	result = append(result, utils.ShiftAll(innerPart, "  ")...)
+	result = append(result, "}")
+	return result
+}
+
+func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	result := make([]string, 0)
+	result = append(result,
+		fmt.Sprintf("%s = 0;", localCurrentSize),
+		fmt.Sprintf("%s_index = $context_sizes->push_front(0);", localCurrentSize),
+		fmt.Sprintf("if (!is_null(%[1]s) {", targetName),
+	)
+
+	// write inner part
+	innerPart := make([]string, 0)
+	innerPart = append(innerPart,
+		fmt.Sprintf("%[1]s = (1 << 0) + (1 << 1);", localBlock),
+		fmt.Sprintf("%[1]s_index = $context_blocks->push_back(%[1]s);", localBlock),
+		fmt.Sprintf("%[1]s += 1 + 1", localCurrentSize),
+	)
+
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	innerPart = append(innerPart, trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, usedBytesPointer)...)
+	isSizeConstant, trivialSize := trw.element.t.PhpTL2TrivialSize(targetName, false, trw.element.recursive)
+	sizeValue := fmt.Sprintf("$context_sizes->get_value(%[1]s_index)", localCurrentSize)
+	if len(trivialSize) != 0 {
+		sizeValue = trivialSize
+	}
+
+	innerTab := ""
+	if !isSizeConstant {
+		innerPart = append(innerPart,
+			fmt.Sprintf("if (%[1]s != 0) {", sizeValue),
+		)
+		innerTab = "  "
+	}
+	innerPart = append(innerPart,
+		utils.ShiftAll([]string{
+			fmt.Sprintf("%[1]s += %[2]s;", localCurrentSize, sizeValue),
+		}, innerTab)...,
+	)
+	if trw.element.t.trw.isSizeWrittenInData() {
+		innerPart = append(innerPart,
+			utils.ShiftAll([]string{
+				fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localCurrentSize, sizeValue),
+			}, innerTab)...,
+		)
+	}
+	if !isSizeConstant {
+		innerPart = append(innerPart,
+			"}",
+		)
+	}
+	// add it with shift
+	result = append(result, utils.ShiftAll(innerPart, "  ")...)
+
+	result = append(result, "}")
+	// add actual size
+	result = append(result, fmt.Sprintf("$context_sizes->set_value(%[1]s_index, %[1]s);", localCurrentSize))
+
+	return result
 }
 
 func (trw *TypeRWMaybe) PhpDefaultInit() string {

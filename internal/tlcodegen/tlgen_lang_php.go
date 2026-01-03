@@ -35,6 +35,9 @@ type TypeRWPHPData interface {
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
 	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
+	PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
+	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string
 }
 
 type PhpClassMeta struct {
@@ -314,6 +317,18 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 				return err
 			}
 		}
+		if gen.options.GenerateTL2 {
+			if gen.options.UseBuiltinDataProviders {
+				if err := gen.phpCreateTL2Support(); err != nil {
+					return err
+				}
+				if err := gen.phpCreateTL2Context(); err != nil {
+					return err
+				}
+			} else {
+				panic("can't generate tl2 for php without kphp support")
+			}
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -422,6 +437,115 @@ class tl_switcher {
 		return err
 	}
 	return nil
+}
+
+func (gen *Gen2) phpCreateTL2Support() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+%[2]s`, gen.copyrightText, TL2SupportPHP))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_support.php"), code.String())
+}
+
+func (gen *Gen2) phpCreateTL2Context() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+class tl2_context {
+  /** @var int[] */
+  private $values = [];
+
+  /** @var int */
+  private $current_index = 0;
+
+  /** @var int */
+  private $current_size = 0;
+
+  /**
+   * @kphp-inline
+   */
+  public function __construct() {
+  }
+
+  /**
+   * @param int $value
+   * 
+   * @return int
+   */
+  public function push_back($value) {
+    $index = $this->current_size;
+    if ($index == count($this->values)) {
+      $this->values[] = $value;
+    } else {
+      $this->values[$index] = $value;
+    }
+    $this->current_size += 1;
+    return $index;
+  }
+
+  /**
+   * @return int
+   */
+  public function pop_front() {
+    if ($this->current_index >= $this->current_size) {
+      throw new \Exception("context can't pop front value");
+    }
+    $value = $this->values[$this->current_index];
+    $this->current_index += 1;
+    return $value;
+  }
+
+  /**
+   * @return int
+   */
+  public function get_current_size() {
+    return $this->current_size;
+  }
+
+  /**
+   * @param int $index
+   * @param int $value
+   */
+  public function set_value($index, $value) {
+    if ($index >= $this->current_size || $index < 0) {
+      throw new \Exception("invalid index to set for context");
+    }
+    $this->values[$index] = $value;
+  }
+
+  /**
+   * @param int $index
+   * 
+   * @return int
+   */
+  public function get_value($index) {
+    if ($index >= $this->current_size || $index < 0) {
+      throw new \Exception("invalid index to get for context");
+    }
+    return $this->values[$index];
+  }
+
+  /**
+   * @param int $size
+   */
+  public function cut_tail($size) {
+    if ($size > $this->current_size || $size < 0) {
+      throw new \Exception("invalid index to cut tail");
+    }
+    $this->current_size = $size;
+  }
+}`, gen.copyrightText))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_context.php"), code.String())
 }
 
 func (gen *Gen2) phpCreateMeta() error {
@@ -706,4 +830,38 @@ func phpFunctionArgumentsFormat(argNames []string) string {
 		s += name
 	}
 	return s
+}
+
+type CodeCreator struct {
+	Shift string
+
+	lines      []string
+	linesShift []int
+
+	currentShift int
+}
+
+func (cc *CodeCreator) AddLines(lines ...string) {
+	cc.lines = append(cc.lines, lines...)
+	for range lines {
+		cc.linesShift = append(cc.linesShift, cc.currentShift)
+	}
+}
+
+func (cc *CodeCreator) AddShift(shift int) {
+	cc.currentShift += shift
+}
+
+func (cc *CodeCreator) Print() []string {
+	s := make([]string, len(cc.lines))
+	for i, line := range cc.lines {
+		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
+	}
+	return s
+}
+
+func (cc *CodeCreator) AddBlock(block func(cc *CodeCreator)) {
+	cc.AddShift(1)
+	block(cc)
+	cc.AddShift(-1)
 }

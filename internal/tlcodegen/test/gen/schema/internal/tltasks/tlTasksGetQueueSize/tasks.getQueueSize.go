@@ -140,6 +140,14 @@ func (item *TasksGetQueueSize) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
+func (item *TasksGetQueueSize) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getQueueSize")
+}
+
+func (item *TasksGetQueueSize) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getQueueSize")
+}
+
 // Set field "waiting_size" in "tasks.queueStats" by changing fieldMask "fields_mask"
 func (item *TasksGetQueueSize) SetTasksQueueStatsWaitingSize(value bool) {
 	if value {
