@@ -53,7 +53,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.
 		tr.Type.BracketType = &bracketType
 		return tr, nil
 	}
-	// names found in local arguments have priprity over global type names
+	// names found in local arguments have priority over global type names
 	someType := tr.Type.SomeType
 	if someType.Name.Namespace == "" {
 		for i, targ := range leftArgs {
