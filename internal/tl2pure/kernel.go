@@ -191,23 +191,6 @@ func (k *Kernel) Compile() error {
 		if _, err := k.getInstance(tr); err != nil {
 			return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
 		}
-		//if len(tip.typeDecl.TemplateArguments) == 0 {
-		//} else {
-		//	for _, arg := range tip.typeDecl.TemplateArguments {
-		//		if arg.Category.IsType() {
-		//			someType := tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "uint32"}}
-		//			tr.SomeType.Arguments = append(tr.SomeType.Arguments,
-		//				tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: someType}})
-		//		} else {
-		//			tr.SomeType.Arguments = append(tr.SomeType.Arguments,
-		//				tlast.TL2TypeArgument{IsNumber: true, Number: 1})
-		//		}
-		//	}
-		//	// this does nothing, we actually need to have a function with a subset of getInstance and all check
-		//	if _, err := k.resolveType(tr, nil, nil); err != nil {
-		//		return fmt.Errorf("error checking template %s: %w", tip.typeDecl.Name, err)
-		//	}
-		//}
 	}
 	// check recursion cycles
 	// TODO - why it is not possible to check all cycles before instantiation
