@@ -12,6 +12,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -144,14 +145,23 @@ func (m model) View() string {
 func parseTL2File(file string) (tlast.TL2File, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
-		return tlast.TL2File{}, fmt.Errorf("error reading schema file %q - %w", file, err)
+		return tlast.TL2File{}, fmt.Errorf("error reading tl2 schema file %q - %w", file, err)
 	}
 	dataStr := string(data)
 	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, os.Stdout)
 }
 
+func parseTL1File(file string) (tlast.TL, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return tlast.TL{}, fmt.Errorf("error reading tl1 schema file %q - %w", file, err)
+	}
+	dataStr := string(data)
+	return tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{}, os.Stdout)
+}
+
 func main() {
-	log.Printf("tlclient WIP version: %s", tlcodegen.TLGenVersion())
+	log.Printf("tl2client WIP version: %s", tlcodegen.TLGenVersion())
 
 	var runUI bool
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
@@ -159,16 +169,29 @@ func main() {
 
 	kernel := pure.NewKernel()
 	if len(flag.Args()) == 0 {
-		log.Printf("tlclient requires 1 or more tl2 files")
+		log.Printf("tl2client requires 1 or more .tl and/or tl2 files")
 		os.Exit(2)
 	}
 	for _, arg := range flag.Args() {
-		f, err := parseTL2File(arg)
-		if err != nil {
-			log.Printf("%v", err)
-			os.Exit(3)
+		switch {
+		case strings.HasSuffix(arg, "tl2"):
+			f, err := parseTL2File(arg)
+			if err != nil {
+				log.Printf("%v", err)
+				os.Exit(3)
+			}
+			kernel.AddFileTL2(f)
+		case strings.HasSuffix(arg, "tl"):
+			f, err := parseTL1File(arg)
+			if err != nil {
+				log.Printf("%v", err)
+				os.Exit(4)
+			}
+			kernel.AddFileTL1(f)
+		default:
+			log.Printf("tl2client unsupported filename %q, must have .tl or tl2 suffix", arg)
+			os.Exit(5)
 		}
-		kernel.AddFile(f)
 	}
 	err := kernel.Compile()
 	if err != nil {
