@@ -1,10 +1,8 @@
 package pure
 
-import "github.com/vkcom/tl/internal/tlast"
-
 type TypeInstance interface {
 	CanonicalName() string
-	Combinator() tlast.TL2Combinator
+	// Combinator() tlast.TL2Combinator
 
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
@@ -22,16 +20,16 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
-	comb          tlast.TL2Combinator
+	// tip           *KernelType
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
 }
 
-func (ins *TypeInstanceCommon) Combinator() tlast.TL2Combinator {
-	return ins.comb
-}
+//func (ins *TypeInstanceCommon) Combinator() tlast.TL2Combinator {
+//	return ins.comb
+//}
 
 func (ins *TypeInstanceCommon) GoodForMapKey() bool {
 	return false
