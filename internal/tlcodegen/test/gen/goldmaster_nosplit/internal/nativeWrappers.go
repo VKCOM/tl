@@ -16,8 +16,8 @@ var _ = basictl.NatWrite
 type NativeWrappers struct {
 	A int32
 	B int32
-	C Int32
-	D Int32
+	C Int32s
+	D Int32s
 	E MyInt32
 	F MyInt32
 }
@@ -293,11 +293,11 @@ func (item *NativeWrappers) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if *(*int32)((*Int32)(&item.E)) != 0 {
+	if *(*int32)((*Int32s)(&item.E)) != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if *(*int32)((*Int32)(&item.F)) != 0 {
+	if *(*int32)((*Int32s)(&item.F)) != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -350,12 +350,12 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 		w = basictl.IntWrite(w, *(*int32)(&item.D))
 		currentBlock |= 16
 	}
-	if *(*int32)((*Int32)(&item.E)) != 0 {
-		w = basictl.IntWrite(w, *(*int32)((*Int32)(&item.E)))
+	if *(*int32)((*Int32s)(&item.E)) != 0 {
+		w = basictl.IntWrite(w, *(*int32)((*Int32s)(&item.E)))
 		currentBlock |= 32
 	}
-	if *(*int32)((*Int32)(&item.F)) != 0 {
-		w = basictl.IntWrite(w, *(*int32)((*Int32)(&item.F)))
+	if *(*int32)((*Int32s)(&item.F)) != 0 {
+		w = basictl.IntWrite(w, *(*int32)((*Int32s)(&item.F)))
 		currentBlock |= 64
 	}
 	if currentBlockPosition < len(w) {

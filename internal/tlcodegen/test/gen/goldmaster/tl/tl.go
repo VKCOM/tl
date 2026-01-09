@@ -37,8 +37,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLong"
@@ -126,8 +126,8 @@ type (
 	InnerMaybe                                   = tlInnerMaybe.InnerMaybe
 	InnerMaybe0                                  = tlInnerMaybe0.InnerMaybe0
 	Int                                          = tlInt.Int
-	Int32                                        = tlInt32.Int32
-	Int64                                        = tlInt64.Int64
+	Int32s                                       = tlInt32s.Int32s
+	Int64s                                       = tlInt64s.Int64s
 	IntBoxedMaybe                                = tlIntBoxedMaybe.IntBoxedMaybe
 	IntMaybe                                     = tlIntMaybe.IntMaybe
 	Long                                         = tlLong.Long

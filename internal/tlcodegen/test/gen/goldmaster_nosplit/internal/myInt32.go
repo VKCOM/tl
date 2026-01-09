@@ -86,7 +86,7 @@ func BuiltinTuple3MyInt32InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 
 	var sz int
 	for i := 0; i < 3; i++ {
-		w = basictl.IntWrite(w, *(*int32)((*Int32)(&(*vec)[i])))
+		w = basictl.IntWrite(w, *(*int32)((*Int32s)(&(*vec)[i])))
 	}
 	Unused(sz)
 	if len(w)-oldLen != currentSize {
@@ -240,7 +240,7 @@ func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEm
 
 	var sz int
 	for i := 0; i < 3; i++ {
-		w = basictl.IntWrite(w, *(*int32)((*Int32)(&(*vec)[i])))
+		w = basictl.IntWrite(w, *(*int32)((*Int32s)(&(*vec)[i])))
 	}
 	Unused(sz)
 	if len(w)-oldLen != currentSize {
@@ -321,23 +321,23 @@ func BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	return append(w, ']')
 }
 
-type MyInt32 Int32
+type MyInt32 Int32s
 
 func (MyInt32) TLName() string { return "myInt32" }
 func (MyInt32) TLTag() uint32  { return 0xba59e151 }
 
 func (item *MyInt32) Reset() {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	ptr.Reset()
 }
 
 func (item *MyInt32) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	ptr.FillRandom(rg)
 }
 
 func (item *MyInt32) Read(w []byte) (_ []byte, err error) {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	return ptr.Read(w)
 }
 
@@ -346,7 +346,7 @@ func (item *MyInt32) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyInt32) Write(w []byte) []byte {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	return ptr.Write(w)
 }
 
@@ -375,7 +375,7 @@ func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *MyInt32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
@@ -393,7 +393,7 @@ func (item *MyInt32) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyInt32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	w = ptr.WriteJSONOpt(tctx, w)
 	return w
 }
@@ -413,7 +413,7 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	var sz int
 	var currentSize int
 	currentSize += 4
@@ -429,7 +429,7 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *MyInt32) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*Int32)(item)
+	ptr := (*Int32s)(item)
 	if r, err = ptr.InternalReadTL2(r); err != nil {
 		return r, err
 	}

@@ -9,30 +9,30 @@ package tlMyInt32
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type MyInt32 tlInt32.Int32
+type MyInt32 tlInt32s.Int32s
 
 func (MyInt32) TLName() string { return "myInt32" }
 func (MyInt32) TLTag() uint32  { return 0xba59e151 }
 
 func (item *MyInt32) Reset() {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	ptr.Reset()
 }
 
 func (item *MyInt32) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	ptr.FillRandom(rg)
 }
 
 func (item *MyInt32) Read(w []byte) (_ []byte, err error) {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	return ptr.Read(w)
 }
 
@@ -41,7 +41,7 @@ func (item *MyInt32) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyInt32) Write(w []byte) []byte {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	return ptr.Write(w)
 }
 
@@ -70,7 +70,7 @@ func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *MyInt32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (item *MyInt32) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyInt32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	w = ptr.WriteJSONOpt(tctx, w)
 	return w
 }
@@ -108,7 +108,7 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	var sz int
 	var currentSize int
 	currentSize += 4
@@ -124,7 +124,7 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *MyInt32) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*tlInt32.Int32)(item)
+	ptr := (*tlInt32s.Int32s)(item)
 	if r, err = ptr.InternalReadTL2(r); err != nil {
 		return r, err
 	}

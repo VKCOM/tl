@@ -87,12 +87,12 @@
     },
     {
       "name": 2033510175,
-      "id": "Int32",
+      "id": "Int32s",
       "constructors_num": 1
     },
     {
       "name": -178217504,
-      "id": "Int64",
+      "id": "Int64s",
       "constructors_num": 1
     },
     {
@@ -542,7 +542,7 @@
       "type": "tls.combinator_v4",
       "value": {
         "name": 2033510175,
-        "id": "int32",
+        "id": "int32s",
         "type_name": 2033510175,
         "left": {
           "type": "tls.combinatorLeft",
@@ -575,7 +575,7 @@
       "type": "tls.combinator_v4",
       "value": {
         "name": -178217504,
-        "id": "int64",
+        "id": "int64s",
         "type_name": -178217504,
         "left": {
           "type": "tls.combinatorLeft",

@@ -30,8 +30,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlHalfStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeTest1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMultiPoint"
@@ -183,8 +183,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0x647ddaf5, func() meta.Object { var ret tlHalfStr.HalfStr; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x12ab5219, func() meta.Object { var ret cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xa8509bda, func() meta.Object { var ret tlInt.Int; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x7934e71f, func() meta.Object { var ret tlInt32.Int32; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xf5609de0, func() meta.Object { var ret tlInt64.Int64; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x7934e71f, func() meta.Object { var ret tlInt32s.Int32s; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xf5609de0, func() meta.Object { var ret tlInt64s.Int64s; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x22076cba, func() meta.Object { var ret tlLong.Long; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xc457763c, func() meta.Object { var ret tlMaybeTest1.MaybeTest1; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x0e1ae81e, func() meta.Object { var ret tlMultiPoint.MultiPoint; return &ret })

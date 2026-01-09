@@ -83,8 +83,8 @@ const (
 	Inner                                   = 0x3b53db83 // inner
 	InnerMaybe                              = 0x0a7d3b9e // innerMaybe
 	Int                                     = 0xa8509bda // int
-	Int32                                   = 0x7934e71f // int32
-	Int64                                   = 0xf5609de0 // int64
+	Int32s                                  = 0x7934e71f // int32s
+	Int64s                                  = 0xf5609de0 // int64s
 	List                                    = 0x02d80cdd // list
 	Long                                    = 0x22076cba // long
 	MaybeTest1                              = 0xc457763c // maybeTest1
