@@ -45,10 +45,6 @@ func (k *Kernel) createAlias(canonicalName string, alias tlast.TL2TypeRef,
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}
-	aliasBit := k.IsBit(alias) // we must not call anything on TypeInstance during recursive resolution
-	if aliasBit {
-		return nil, fmt.Errorf("type bit is not allowed as a type alias")
-	}
 	fieldType, err := k.getInstance(rt)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate alias %s to %s: %w", canonicalName, alias, err)
