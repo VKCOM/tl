@@ -1,4 +1,4 @@
-package tl2pure
+package pure
 
 import "strings"
 
