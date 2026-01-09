@@ -15,13 +15,13 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/vkcom/tl/internal/tl2pure"
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
 type model struct {
-	impl *tl2pure.UIModel
+	impl *pure.UIModel
 }
 
 func (m model) Init() tea.Cmd {
@@ -31,7 +31,7 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tl2pure.UIBlinkMsg:
+	case pure.UIBlinkMsg:
 		m.impl.Blink = msg
 	case tea.WindowSizeMsg:
 		m.impl.Width = msg.Width
@@ -157,7 +157,7 @@ func main() {
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
 	flag.Parse()
 
-	kernel := tl2pure.NewKernel()
+	kernel := pure.NewKernel()
 	if len(flag.Args()) == 0 {
 		log.Printf("tlclient requires 1 or more tl2 files")
 		os.Exit(2)
@@ -183,7 +183,7 @@ func main() {
 		for i := 0; i < 5; i++ {
 			val := t.CreateValue()
 			val.Random(rnd)
-			var bb tl2pure.ByteBuilder
+			var bb pure.ByteBuilder
 			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
 			log.Printf(".   TL2: %s", bb.Print())
@@ -205,7 +205,7 @@ func main() {
 		return
 	}
 
-	uiModel := &tl2pure.UIModel{
+	uiModel := &pure.UIModel{
 		Fun:           fun.CreateValueObject(),
 		Path:          nil,
 		CurrentEditor: nil,
@@ -217,9 +217,9 @@ func main() {
 	p := tea.NewProgram(model{impl: uiModel})
 	go func() {
 		for {
-			p.Send(tl2pure.UIBlinkMsg{On: true})
+			p.Send(pure.UIBlinkMsg{On: true})
 			time.Sleep(500 * time.Millisecond)
-			p.Send(tl2pure.UIBlinkMsg{On: false})
+			p.Send(pure.UIBlinkMsg{On: false})
 			time.Sleep(500 * time.Millisecond)
 		}
 	}()

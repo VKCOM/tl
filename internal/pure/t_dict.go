@@ -1,4 +1,4 @@
-package tl2pure
+package pure
 
 import (
 	"github.com/vkcom/tl/internal/tlast"
