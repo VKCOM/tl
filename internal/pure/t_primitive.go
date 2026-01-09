@@ -31,9 +31,14 @@ func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 	return ins.clone.ReadTL2(r, nil)
 }
 
-func (k *Kernel) addPrimitive(name string, clone KernelValue, goodForMapKey bool) {
+func (k *Kernel) addPrimitive(name string, originTL2 bool, clone KernelValue, goodForMapKey bool) {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
-	comb := tlast.TL2Combinator{
+	combTL1 := &tlast.Combinator{
+		Construct: tlast.Constructor{
+			Name: tlast.Name{Name: name},
+		},
+	}
+	combTL2 := tlast.TL2Combinator{
 		TypeDecl: tlast.TL2TypeDeclaration{
 			Name: tlast.TL2TypeName{Name: name},
 			Type: tlast.TL2TypeDefinition{IsConstructorFields: true},
@@ -50,8 +55,9 @@ func (k *Kernel) addPrimitive(name string, clone KernelValue, goodForMapKey bool
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2: true,
-		combTL2:   comb,
+		originTL2: originTL2,
+		combTL1:   []*tlast.Combinator{combTL1},
+		combTL2:   combTL2,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
 	if _, ok := k.instances[name]; ok {

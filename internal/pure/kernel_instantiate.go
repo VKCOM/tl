@@ -96,10 +96,10 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		if tr.BracketType.HasIndex {
 			if tr.BracketType.IndexType.IsNumber {
 				// tuple
-				ref.ins = k.createTupleVector(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
+				ref.ins = k.createArray(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
 				return ref, nil
 			}
-			// map
+			// dict
 			keyInstance, err := k.getInstance(tr.BracketType.IndexType.Type)
 			if err != nil {
 				return nil, err
@@ -107,11 +107,11 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 			if !keyInstance.ins.GoodForMapKey() {
 				return nil, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
 			}
-			ref.ins = k.createMap(canonicalName, keyInstance, elemInstance)
+			ref.ins = k.createDict(canonicalName, keyInstance, elemInstance)
 			return ref, nil
 		}
 		// vector
-		ref.ins = k.createTupleVector(canonicalName, false, 0, elemInstance)
+		ref.ins = k.createArray(canonicalName, false, 0, elemInstance)
 		return ref, nil
 	}
 	log.Printf("creating an instance of type %s", canonicalName)

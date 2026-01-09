@@ -28,7 +28,12 @@ func (ins *TypeInstanceString) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) addString() {
 	name := "string"
-	comb := tlast.TL2Combinator{
+	combTL1 := &tlast.Combinator{
+		Construct: tlast.Constructor{
+			Name: tlast.Name{Name: name},
+		},
+	}
+	combTL2 := tlast.TL2Combinator{
 		TypeDecl: tlast.TL2TypeDeclaration{
 			Name: tlast.TL2TypeName{Name: name},
 			Type: tlast.TL2TypeDefinition{IsConstructorFields: true}, // for the purpose of type check, this is object with no fields
@@ -37,15 +42,16 @@ func (k *Kernel) addString() {
 	ins := TypeInstanceString{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
-			comb:          comb,
+			comb:          combTL2,
 		},
 	}
 	ref := &TypeInstanceRef{
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2: true,
-		combTL2:   comb,
+		originTL2: false,
+		combTL1:   []*tlast.Combinator{combTL1},
+		combTL2:   combTL2,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
 	if _, ok := k.instances[name]; ok {
