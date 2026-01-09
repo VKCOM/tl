@@ -35,6 +35,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x623360f3)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0xf35d7a69)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x6127e7b8)
+	meta.SetGlobalFactoryCreateForEnumElementBytes(0x00000002)
+	meta.SetGlobalFactoryCreateForEnumElementBytes(0x00000001)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0xb83a723d)
 	meta.SetGlobalFactoryCreateForObjectBytes(0x7082d18f, func() meta.Object { var ret internal.ATop2; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xa7662843, func() meta.Object { var ret internal.AUNionA; return &ret })

@@ -23,6 +23,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAInner3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMiddlePairAInnerAInnerAInnerBoxed3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyBool"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyFalse"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlARed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
 )
@@ -34,6 +36,7 @@ type (
 	Inner                            = tlAInner.AInner
 	Inner3                           = tlAInner3.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = tlAMiddlePairAInnerAInnerAInnerBoxed3.AMiddlePairAInnerAInnerAInnerBoxed3
+	MyBool                           = tlAMyBool.AMyBool
 	MyUnion                          = cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AMyUnion
 	PairAInnerAInner                 = tlPairAInnerAInner.PairAInnerAInner
 	PairBoolAColor                   = tlPairBoolAColor.PairBoolAColor
@@ -43,14 +46,9 @@ type (
 	VectorAColor                     = tlVectorAColor.VectorAColor
 )
 
-func Blue() Color   { return tlABlue.ABlue() }
-func Color0() Color { return tlAColor0.AColor0() }
-func Green() Color  { return tlAGreen.AGreen() }
-func Red() Color    { return tlARed.ARed() }
-
-func MyBoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return tlAMyBool.AMyBoolReadBoxed(w, v)
-}
-func MyBoolWriteBoxed(w []byte, v bool) []byte {
-	return tlAMyBool.AMyBoolWriteBoxed(w, v)
-}
+func Blue() Color     { return tlABlue.ABlue() }
+func Color0() Color   { return tlAColor0.AColor0() }
+func Green() Color    { return tlAGreen.AGreen() }
+func MyFalse() MyBool { return tlAMyFalse.AMyFalse() }
+func MyTrue() MyBool  { return tlAMyTrue.AMyTrue() }
+func Red() Color      { return tlARed.ARed() }
