@@ -35,7 +35,7 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createTupleVector(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
+func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
 	if fieldType.ins.IsBit() {
 		ins := &TypeInstanceArrayBit{
 			TypeInstanceCommon: TypeInstanceCommon{

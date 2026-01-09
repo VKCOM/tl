@@ -25,7 +25,7 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createMap(canonicalName string, keyType *TypeInstanceRef, fieldType *TypeInstanceRef) TypeInstance {
+func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fieldType *TypeInstanceRef) TypeInstance {
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,

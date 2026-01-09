@@ -41,13 +41,13 @@ func NewKernel() *Kernel {
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
-	k.addPrimitive("uint32", &KernelValueUint32{}, true)
-	k.addPrimitive("int32", &KernelValueInt32{}, true)
-	k.addPrimitive("uint64", &KernelValueUint64{}, true)
-	k.addPrimitive("int64", &KernelValueInt64{}, true)
-	k.addPrimitive("byte", &KernelValueByte{}, true)
-	k.addPrimitive("bool", &KernelValueBool{}, true)
-	k.addPrimitive("bit", &KernelValueBit{}, false)
+	k.addPrimitive("uint32", false, &KernelValueUint32{}, true)
+	k.addPrimitive("int32", false, &KernelValueInt32{}, true)
+	k.addPrimitive("uint64", true, &KernelValueUint64{}, true)
+	k.addPrimitive("int64", false, &KernelValueInt64{}, true)
+	k.addPrimitive("byte", true, &KernelValueByte{}, true)
+	k.addPrimitive("bool", true, &KernelValueBool{}, true)
+	k.addPrimitive("bit", true, &KernelValueBit{}, false)
 	k.addString()
 
 	return k
@@ -58,10 +58,23 @@ func (k *Kernel) addTip(kt *KernelType, name1 string, name2 string) error {
 	if ok {
 		return fmt.Errorf("type %v already exists", name1)
 	}
+	if name2 != "" {
+		_, ok := k.tips[name2]
+		if ok {
+			return fmt.Errorf("type %v already exists", name2)
+		}
+		k.tips[name2] = kt
+	}
 	k.tips[name1] = kt
 	k.tipsOrdered = append(k.tipsOrdered, kt)
-	if kt.combTL2.IsFunction || len(kt.combTL2.TypeDecl.TemplateArguments) == 0 {
-		k.tipsTopLevel = append(k.tipsTopLevel, kt)
+	if kt.originTL2 {
+		if kt.combTL2.IsFunction || len(kt.combTL2.TypeDecl.TemplateArguments) == 0 {
+			k.tipsTopLevel = append(k.tipsTopLevel, kt)
+		}
+	} else {
+		if kt.combTL1[0].IsFunction || len(kt.combTL1[0].TemplateArguments) == 0 {
+			k.tipsTopLevel = append(k.tipsTopLevel, kt)
+		}
 	}
 	return nil
 }
@@ -173,7 +186,38 @@ func (k *Kernel) Compile() error {
 				return err
 			}
 		} else {
-
+			if tip.combTL1[0].IsFunction {
+				comb := tip.combTL1[0]
+				if err := k.typeCheckAliasFieldsTL1(comb.Fields, nil); err != nil {
+					return err
+				}
+				var leftArgs []tlast.TemplateArgument
+				for _, f := range comb.Fields {
+					if f.FieldName != "" && f.FieldType.String() == "#" {
+						// TODO - add other fields with wrong category to catch references to them
+						leftArgs = append(leftArgs, tlast.TemplateArgument{
+							FieldName: f.FieldName,
+							IsNat:     true,
+							PR:        f.PR,
+						})
+					}
+				}
+				if err := k.typeCheckTypeRefTL1(comb.FuncDecl, leftArgs); err != nil {
+					return err
+				}
+				//if err := k.typeCheck(comb..FuncDecl.ReturnType, nil); err != nil {
+				//	return err
+				//}
+				//if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.combTL2.FuncDecl.Arguments, nil); err != nil {
+				//	return err
+				//}
+				continue
+			}
+			for _, comb := range tip.combTL1 {
+				if err := k.typeCheckAliasFieldsTL1(comb.Fields, comb.TemplateArguments); err != nil {
+					return err
+				}
+			}
 		}
 	}
 	//instantiate all top-level declarations
@@ -198,7 +242,7 @@ func (k *Kernel) Compile() error {
 
 		}
 	}
-	// It is not easy to check all cycles before instantiation, so we do it afterwards.
+	// It is not easy to check all cycles before instantiation, so we do it afterward.
 	var cf cycleFinder
 	for _, ref := range k.instancesOrdered {
 		cf.reset()

@@ -69,19 +69,36 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 	if !ok {
 		return fmt.Errorf("type %s does not exist", someType.Name)
 	}
-	if kt.combTL2.IsFunction {
+	if kt.originTL2 {
+		if kt.combTL2.IsFunction {
+			return fmt.Errorf("cannot reference function %s", someType.Name)
+		}
+		if len(someType.Arguments) != len(kt.combTL2.TypeDecl.TemplateArguments) {
+			return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+		}
+		for i, targ := range kt.combTL2.TypeDecl.TemplateArguments {
+			cat, err := k.typeCheckArgument(someType.Arguments[i], leftArgs)
+			if err != nil {
+				return err
+			}
+			if targ.Category != cat {
+				return fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category)
+			}
+		}
+	}
+	if kt.combTL1[0].IsFunction {
 		return fmt.Errorf("cannot reference function %s", someType.Name)
 	}
-	if len(someType.Arguments) != len(kt.combTL2.TypeDecl.TemplateArguments) {
-		return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+	if len(someType.Arguments) != len(kt.combTL1[0].TemplateArguments) {
+		return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL1[0].TemplateArguments), len(someType.Arguments))
 	}
-	for i, targ := range kt.combTL2.TypeDecl.TemplateArguments {
+	for i, targ := range kt.combTL1[0].TemplateArguments {
 		cat, err := k.typeCheckArgument(someType.Arguments[i], leftArgs)
 		if err != nil {
 			return err
 		}
-		if targ.Category != cat {
-			return fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category)
+		if targ.IsNat != (cat == tlast.TL2TypeCategoryNat) {
+			return fmt.Errorf("typeref %s argument %s wrong isNat, must be %v", someType.String(), targ.FieldName, targ.IsNat)
 		}
 	}
 	return nil
