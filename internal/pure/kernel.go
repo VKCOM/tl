@@ -168,8 +168,7 @@ func (k *Kernel) Compile() error {
 			return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
 		}
 	}
-	// check recursion cycles
-	// TODO - why it is not possible to check all cycles before instantiation
+	// It is not easy to check all cycles before instantiation, so we do it afterwards.
 	var cf cycleFinder
 	for _, ref := range k.instancesOrdered {
 		cf.reset()

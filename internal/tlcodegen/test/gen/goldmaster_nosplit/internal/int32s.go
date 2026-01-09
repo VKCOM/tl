@@ -13,13 +13,13 @@ import (
 
 var _ = basictl.NatWrite
 
-func BuiltinTuple3Int32Reset(vec *[3]Int32) {
+func BuiltinTuple3Int32sReset(vec *[3]Int32s) {
 	for i := range *vec {
 		(*vec)[i].Reset()
 	}
 }
 
-func BuiltinTuple3Int32FillRandom(rg *basictl.RandGenerator, vec *[3]Int32) {
+func BuiltinTuple3Int32sFillRandom(rg *basictl.RandGenerator, vec *[3]Int32s) {
 	rg.IncreaseDepth()
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -27,7 +27,7 @@ func BuiltinTuple3Int32FillRandom(rg *basictl.RandGenerator, vec *[3]Int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3Int32Read(w []byte, vec *[3]Int32) (_ []byte, err error) {
+func BuiltinTuple3Int32sRead(w []byte, vec *[3]Int32s) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = (*vec)[i].Read(w); err != nil {
 			return w, err
@@ -36,14 +36,14 @@ func BuiltinTuple3Int32Read(w []byte, vec *[3]Int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple3Int32Write(w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sWrite(w []byte, vec *[3]Int32s) []byte {
 	for _, elem := range *vec {
 		w = elem.Write(w)
 	}
 	return w
 }
 
-func BuiltinTuple3Int32CalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]int, int) {
+func BuiltinTuple3Int32sCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32s) ([]int, int) {
 	if 3 == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -67,7 +67,7 @@ func BuiltinTuple3Int32CalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]
 	return sizes, currentSize
 }
 
-func BuiltinTuple3Int32InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]byte, []int, int) {
+func BuiltinTuple3Int32sInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32s) ([]byte, []int, int) {
 	if 3 == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -95,7 +95,7 @@ func BuiltinTuple3Int32InternalWriteTL2(w []byte, sizes []int, optimizeEmpty boo
 	return w, sizes, currentSize
 }
 
-func BuiltinTuple3Int32InternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err error) {
+func BuiltinTuple3Int32sInternalReadTL2(r []byte, vec *[3]Int32s) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -127,16 +127,16 @@ func BuiltinTuple3Int32InternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err e
 	return r, nil
 }
 
-func BuiltinTuple3Int32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32) error {
+func BuiltinTuple3Int32sReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32s) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[3]Int32", "expected json array")
+			return ErrorInvalidJSON("[3]Int32s", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if index == 3 {
-				return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
+				return ErrorWrongSequenceLength("[3]Int32s", index+1, 3)
 			}
 			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
@@ -145,20 +145,20 @@ func BuiltinTuple3Int32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[3]Int32", "expected json array's end")
+			return ErrorInvalidJSON("[3]Int32s", "expected json array's end")
 		}
 	}
 	if index != 3 {
-		return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
+		return ErrorWrongSequenceLength("[3]Int32s", index+1, 3)
 	}
 	return nil
 }
 
-func BuiltinTuple3Int32WriteJSON(w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sWriteJSON(w []byte, vec *[3]Int32s) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3Int32WriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3Int32sWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3Int32WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32s) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -167,13 +167,13 @@ func BuiltinTuple3Int32WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, ve
 	return append(w, ']')
 }
 
-func BuiltinTuple3Int32BoxedReset(vec *[3]Int32) {
+func BuiltinTuple3Int32sBoxedReset(vec *[3]Int32s) {
 	for i := range *vec {
 		(*vec)[i].Reset()
 	}
 }
 
-func BuiltinTuple3Int32BoxedFillRandom(rg *basictl.RandGenerator, vec *[3]Int32) {
+func BuiltinTuple3Int32sBoxedFillRandom(rg *basictl.RandGenerator, vec *[3]Int32s) {
 	rg.IncreaseDepth()
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -181,7 +181,7 @@ func BuiltinTuple3Int32BoxedFillRandom(rg *basictl.RandGenerator, vec *[3]Int32)
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3Int32BoxedRead(w []byte, vec *[3]Int32) (_ []byte, err error) {
+func BuiltinTuple3Int32sBoxedRead(w []byte, vec *[3]Int32s) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
 			return w, err
@@ -190,14 +190,14 @@ func BuiltinTuple3Int32BoxedRead(w []byte, vec *[3]Int32) (_ []byte, err error) 
 	return w, nil
 }
 
-func BuiltinTuple3Int32BoxedWrite(w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sBoxedWrite(w []byte, vec *[3]Int32s) []byte {
 	for _, elem := range *vec {
 		w = elem.WriteBoxed(w)
 	}
 	return w
 }
 
-func BuiltinTuple3Int32BoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]int, int) {
+func BuiltinTuple3Int32sBoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32s) ([]int, int) {
 	if 3 == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -221,7 +221,7 @@ func BuiltinTuple3Int32BoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec
 	return sizes, currentSize
 }
 
-func BuiltinTuple3Int32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]byte, []int, int) {
+func BuiltinTuple3Int32sBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32s) ([]byte, []int, int) {
 	if 3 == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -249,7 +249,7 @@ func BuiltinTuple3Int32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 	return w, sizes, currentSize
 }
 
-func BuiltinTuple3Int32BoxedInternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err error) {
+func BuiltinTuple3Int32sBoxedInternalReadTL2(r []byte, vec *[3]Int32s) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -281,16 +281,16 @@ func BuiltinTuple3Int32BoxedInternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, 
 	return r, nil
 }
 
-func BuiltinTuple3Int32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32) error {
+func BuiltinTuple3Int32sBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32s) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[3]Int32", "expected json array")
+			return ErrorInvalidJSON("[3]Int32s", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if index == 3 {
-				return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
+				return ErrorWrongSequenceLength("[3]Int32s", index+1, 3)
 			}
 			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
@@ -299,20 +299,20 @@ func BuiltinTuple3Int32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[3]Int32", "expected json array's end")
+			return ErrorInvalidJSON("[3]Int32s", "expected json array's end")
 		}
 	}
 	if index != 3 {
-		return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
+		return ErrorWrongSequenceLength("[3]Int32s", index+1, 3)
 	}
 	return nil
 }
 
-func BuiltinTuple3Int32BoxedWriteJSON(w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sBoxedWriteJSON(w []byte, vec *[3]Int32s) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3Int32BoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3Int32sBoxedWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3Int32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32sBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32s) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -321,60 +321,60 @@ func BuiltinTuple3Int32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	return append(w, ']')
 }
 
-type Int32 int32
+type Int32s int32
 
-func (Int32) TLName() string { return "int32" }
-func (Int32) TLTag() uint32  { return 0x7934e71f }
+func (Int32s) TLName() string { return "int32s" }
+func (Int32s) TLTag() uint32  { return 0x7934e71f }
 
-func (item *Int32) Reset() {
+func (item *Int32s) Reset() {
 	ptr := (*int32)(item)
 	*ptr = 0
 }
 
-func (item *Int32) FillRandom(rg *basictl.RandGenerator) {
+func (item *Int32s) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*int32)(item)
 	*ptr = basictl.RandomInt(rg)
 }
 
-func (item *Int32) Read(w []byte) (_ []byte, err error) {
+func (item *Int32s) Read(w []byte) (_ []byte, err error) {
 	ptr := (*int32)(item)
 	return basictl.IntRead(w, ptr)
 }
 
-func (item *Int32) WriteGeneral(w []byte) (_ []byte, err error) {
+func (item *Int32s) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
 
-func (item *Int32) Write(w []byte) []byte {
+func (item *Int32s) Write(w []byte) []byte {
 	ptr := (*int32)(item)
 	return basictl.IntWrite(w, *ptr)
 }
 
-func (item *Int32) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *Int32s) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7934e71f); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *Int32) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *Int32s) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *Int32) WriteBoxed(w []byte) []byte {
+func (item *Int32s) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7934e71f)
 	return item.Write(w)
 }
 
-func (item Int32) String() string {
+func (item Int32s) String() string {
 	return string(item.WriteJSON(nil))
 }
-func (item *Int32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *Int32s) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
-func (item *Int32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Int32s) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*int32)(item)
 	if err := Json2ReadInt32(in, ptr); err != nil {
 		return err
@@ -383,32 +383,32 @@ func (item *Int32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Int32) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *Int32s) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *Int32) WriteJSON(w []byte) []byte {
+func (item *Int32s) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *Int32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Int32s) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*int32)(item)
 	w = basictl.JSONWriteInt32(w, *ptr)
 	return w
 }
-func (item *Int32) MarshalJSON() ([]byte, error) {
+func (item *Int32s) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil), nil
 }
 
-func (item *Int32) UnmarshalJSON(b []byte) error {
+func (item *Int32s) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return ErrorInvalidJSON("int32", err.Error())
+		return ErrorInvalidJSON("int32s", err.Error())
 	}
 	return nil
 }
 
-func (item *Int32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *Int32s) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -428,7 +428,7 @@ func (item *Int32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	return w
 }
 
-func (item *Int32) InternalReadTL2(r []byte) (_ []byte, err error) {
+func (item *Int32s) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*int32)(item)
 	if r, err = basictl.IntRead(r, ptr); err != nil {
 		return r, err
@@ -436,6 +436,6 @@ func (item *Int32) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *Int32) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *Int32s) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

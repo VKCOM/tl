@@ -3315,8 +3315,8 @@
 				}
 			]
 		},
-		"Test[int32]": {
-			"TestingType": "int32",
+		"Test[int32s]": {
+			"TestingType": "int32s",
 			"Successes": [
 				{
 					"Bytes": "7934e71f 78b84d4d",
@@ -3380,8 +3380,8 @@
 				}
 			]
 		},
-		"Test[int64]": {
-			"TestingType": "int64",
+		"Test[int64s]": {
+			"TestingType": "int64s",
 			"Successes": [
 				{
 					"Bytes": "f5609de0 6a42e1e0 1b06fbdd",

@@ -10,12 +10,12 @@ package tlMultiPoint
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32Boxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32s"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32sBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3IntBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32Boxed"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -26,8 +26,8 @@ var _ = internal.ErrorInvalidEnumTag
 type MultiPoint struct {
 	A [3]int32
 	B [3]int32
-	C [3]tlInt32.Int32
-	D [3]tlInt32.Int32
+	C [3]tlInt32s.Int32s
+	D [3]tlInt32s.Int32s
 	E [3]tlMyInt32.MyInt32
 	F [3]tlMyInt32.MyInt32
 }
@@ -38,8 +38,8 @@ func (MultiPoint) TLTag() uint32  { return 0x0e1ae81e }
 func (item *MultiPoint) Reset() {
 	tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.A)
 	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(&item.B)
-	tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.C)
-	tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedReset(&item.D)
+	tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReset(&item.C)
+	tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReset(&item.D)
 	tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Reset(&item.E)
 	tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedReset(&item.F)
 }
@@ -47,8 +47,8 @@ func (item *MultiPoint) Reset() {
 func (item *MultiPoint) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinTuple3Int.BuiltinTuple3IntFillRandom(rg, &item.A)
 	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedFillRandom(rg, &item.B)
-	tlBuiltinTuple3Int32.BuiltinTuple3Int32FillRandom(rg, &item.C)
-	tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedFillRandom(rg, &item.D)
+	tlBuiltinTuple3Int32s.BuiltinTuple3Int32sFillRandom(rg, &item.C)
+	tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedFillRandom(rg, &item.D)
 	tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32FillRandom(rg, &item.E)
 	tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedFillRandom(rg, &item.F)
 }
@@ -60,10 +60,10 @@ func (item *MultiPoint) Read(w []byte) (_ []byte, err error) {
 	if w, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedRead(w, &item.B); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3Int32.BuiltinTuple3Int32Read(w, &item.C); err != nil {
+	if w, err = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sRead(w, &item.C); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedRead(w, &item.D); err != nil {
+	if w, err = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedRead(w, &item.D); err != nil {
 		return w, err
 	}
 	if w, err = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Read(w, &item.E); err != nil {
@@ -79,8 +79,8 @@ func (item *MultiPoint) WriteGeneral(w []byte) (_ []byte, err error) {
 func (item *MultiPoint) Write(w []byte) []byte {
 	w = tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, &item.A)
 	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWrite(w, &item.B)
-	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32Write(w, &item.C)
-	w = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedWrite(w, &item.D)
+	w = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sWrite(w, &item.C)
+	w = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedWrite(w, &item.D)
 	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Write(w, &item.E)
 	w = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedWrite(w, &item.F)
 	return w
@@ -148,7 +148,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "c")
 				}
-				if err := tlBuiltinTuple3Int32.BuiltinTuple3Int32ReadJSONGeneral(tctx, in, &item.C); err != nil {
+				if err := tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReadJSONGeneral(tctx, in, &item.C); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -156,7 +156,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "d")
 				}
-				if err := tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedReadJSONGeneral(tctx, in, &item.D); err != nil {
+				if err := tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReadJSONGeneral(tctx, in, &item.D); err != nil {
 					return err
 				}
 				propDPresented = true
@@ -193,10 +193,10 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(&item.B)
 	}
 	if !propCPresented {
-		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.C)
+		tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReset(&item.C)
 	}
 	if !propDPresented {
-		tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedReset(&item.D)
+		tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReset(&item.D)
 	}
 	if !propEPresented {
 		tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Reset(&item.E)
@@ -226,10 +226,10 @@ func (item *MultiPoint) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) [
 	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.B)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32WriteJSONOpt(tctx, w, &item.C)
+	w = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sWriteJSONOpt(tctx, w, &item.C)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedWriteJSONOpt(tctx, w, &item.D)
+	w = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedWriteJSONOpt(tctx, w, &item.D)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
 	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32WriteJSONOpt(tctx, w, &item.E)
@@ -267,11 +267,11 @@ func (item *MultiPoint) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinTuple3Int32.BuiltinTuple3Int32CalculateLayout(sizes, true, &item.C); sz != 0 {
+	if sizes, sz = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sCalculateLayout(sizes, true, &item.C); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedCalculateLayout(sizes, true, &item.D); sz != 0 {
+	if sizes, sz = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedCalculateLayout(sizes, true, &item.D); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -322,10 +322,10 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 	if w, sizes, sz = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
 		currentBlock |= 4
 	}
-	if w, sizes, sz = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
+	if w, sizes, sz = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sInternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
 		currentBlock |= 8
 	}
-	if w, sizes, sz = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+	if w, sizes, sz = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
 		currentBlock |= 16
 	}
 	if w, sizes, sz = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32InternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
@@ -405,18 +405,18 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 		tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(&item.B)
 	}
 	if block&8 != 0 {
-		if currentR, err = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalReadTL2(currentR, &item.C); err != nil {
+		if currentR, err = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sInternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.C)
+		tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReset(&item.C)
 	}
 	if block&16 != 0 {
-		if currentR, err = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedInternalReadTL2(currentR, &item.D); err != nil {
+		if currentR, err = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedReset(&item.D)
+		tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReset(&item.D)
 	}
 	if block&32 != 0 {
 		if currentR, err = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32InternalReadTL2(currentR, &item.E); err != nil {

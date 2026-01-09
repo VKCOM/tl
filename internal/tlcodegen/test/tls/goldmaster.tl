@@ -4,12 +4,12 @@
 int#a8509bda ? = Int;
 long#22076cba ? = Long;
 
-int32 int = Int32;
-int64 long = Int64;
+int32s#7934e71f int = Int32s;
+int64s#f5609de0 long = Int64s;
 string#b5286e24 ? = String;
 
-myInt32 int32 = MyInt32;
-myInt64 int64 = MyInt64;
+myInt32#ba59e151 int32s = MyInt32;
+myInt64#1d95db9d int64s = MyInt64;
 
 // innerType {t:Type} a:t = InnerType t;
 
@@ -19,9 +19,9 @@ myInt64 int64 = MyInt64;
 // Multiline comment before combinator
 //----- Test Multiple native wrappers
 //
-multiPoint a:3*[int] b:3*[Int] c:3*[int32] d:3*[Int32] e:3*[myInt32] f:3*[MyInt32]= MultiPoint;
+multiPoint#0e1ae81e a:3*[int] b:3*[Int] c:3*[int32s] d:3*[Int32s] e:3*[myInt32] f:3*[MyInt32]= MultiPoint;
 
-nativeWrappers a:int b:Int c:int32 d:Int32 e:myInt32 f:MyInt32 = NativeWrappers; // combinator comment
+nativeWrappers#344ddf50 a:int b:Int c:int32s d:Int32s e:myInt32 f:MyInt32 = NativeWrappers; // combinator comment
 //----- Test Multiple bools
 boolFalse#bc799737 = Bool;
 boolTrue#997275b5 = Bool;

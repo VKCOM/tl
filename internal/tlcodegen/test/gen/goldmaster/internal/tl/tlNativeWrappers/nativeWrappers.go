@@ -9,7 +9,7 @@ package tlNativeWrappers
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -20,8 +20,8 @@ var _ = internal.ErrorInvalidEnumTag
 type NativeWrappers struct {
 	A int32
 	B int32
-	C tlInt32.Int32
-	D tlInt32.Int32
+	C tlInt32s.Int32s
+	D tlInt32s.Int32s
 	E tlMyInt32.MyInt32
 	F tlMyInt32.MyInt32
 }
@@ -297,11 +297,11 @@ func (item *NativeWrappers) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if *(*int32)((*tlInt32.Int32)(&item.E)) != 0 {
+	if *(*int32)((*tlInt32s.Int32s)(&item.E)) != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if *(*int32)((*tlInt32.Int32)(&item.F)) != 0 {
+	if *(*int32)((*tlInt32s.Int32s)(&item.F)) != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -354,12 +354,12 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 		w = basictl.IntWrite(w, *(*int32)(&item.D))
 		currentBlock |= 16
 	}
-	if *(*int32)((*tlInt32.Int32)(&item.E)) != 0 {
-		w = basictl.IntWrite(w, *(*int32)((*tlInt32.Int32)(&item.E)))
+	if *(*int32)((*tlInt32s.Int32s)(&item.E)) != 0 {
+		w = basictl.IntWrite(w, *(*int32)((*tlInt32s.Int32s)(&item.E)))
 		currentBlock |= 32
 	}
-	if *(*int32)((*tlInt32.Int32)(&item.F)) != 0 {
-		w = basictl.IntWrite(w, *(*int32)((*tlInt32.Int32)(&item.F)))
+	if *(*int32)((*tlInt32s.Int32s)(&item.F)) != 0 {
+		w = basictl.IntWrite(w, *(*int32)((*tlInt32s.Int32s)(&item.F)))
 		currentBlock |= 64
 	}
 	if currentBlockPosition < len(w) {

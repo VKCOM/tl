@@ -9,7 +9,7 @@ package tlBuiltinTuple3MyInt32Boxed
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -90,7 +90,7 @@ func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEm
 
 	var sz int
 	for i := 0; i < 3; i++ {
-		w = basictl.IntWrite(w, *(*int32)((*tlInt32.Int32)(&(*vec)[i])))
+		w = basictl.IntWrite(w, *(*int32)((*tlInt32s.Int32s)(&(*vec)[i])))
 	}
 	internal.Unused(sz)
 	if len(w)-oldLen != currentSize {

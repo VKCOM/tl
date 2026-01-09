@@ -39,8 +39,8 @@ type (
 	InnerMaybe                                   = internal.InnerMaybe
 	InnerMaybe0                                  = internal.InnerMaybe0
 	Int                                          = internal.Int
-	Int32                                        = internal.Int32
-	Int64                                        = internal.Int64
+	Int32s                                       = internal.Int32s
+	Int64s                                       = internal.Int64s
 	IntBoxedMaybe                                = internal.IntBoxedMaybe
 	IntMaybe                                     = internal.IntMaybe
 	Long                                         = internal.Long
