@@ -27,7 +27,8 @@ type Kernel struct {
 	instances        map[string]*TypeInstanceRef
 	instancesOrdered []*TypeInstanceRef
 
-	files []tlast.TL2Combinator
+	filesTL1 tlast.TL
+	filesTL2 []tlast.TL2Combinator
 }
 
 // Add builtin types
@@ -109,14 +110,20 @@ func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct
 	return ins2
 }
 
-func (k *Kernel) AddFile(f tlast.TL2File) {
-	k.files = append(k.files, f.Combinators...)
+func (k *Kernel) AddFileTL2(f tlast.TL2File) {
+	k.filesTL2 = append(k.filesTL2, f.Combinators...)
+}
+
+func (k *Kernel) AddFileTL1(f tlast.TL) {
+	k.filesTL1 = append(k.filesTL1, f...)
 }
 
 func (k *Kernel) Compile() error {
-	log.Printf("tl2pure: compiling %d combinators", len(k.files))
+	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
+
+	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
 	// add all declaration to check for name collisions
-	for _, comb := range k.files {
+	for _, comb := range k.filesTL2 {
 		log.Printf("tl2pure: compiling %s", comb)
 		kt := &KernelType{
 			comb:      comb,
