@@ -44,13 +44,14 @@ func (k *Kernel) addString() {
 		ins: &ins,
 	}
 	kt := &KernelType{
-		comb:      comb,
+		originTL2: true,
+		combTL2:   comb,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
 	if _, ok := k.instances[name]; ok {
 		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
 	}
-	if err := k.addTip(kt); err != nil {
+	if err := k.addTip(kt, name, ""); err != nil {
 		panic(fmt.Sprintf("error adding primitive type %s: %v", name, err))
 	}
 	k.instances[name] = ref
