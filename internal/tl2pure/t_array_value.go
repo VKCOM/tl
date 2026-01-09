@@ -8,45 +8,14 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-type TypeInstanceTupleVector struct {
-	TypeInstanceCommon
-	isTuple   bool
-	count     int
-	fieldType *TypeInstanceRef // TODO rename to elemType
-}
-
-type KernelValueTuple struct {
-	instance *TypeInstanceTupleVector
+type KernelValueArray struct {
+	instance *TypeInstanceArray
 	elements []KernelValue
 }
 
-var _ KernelValue = &KernelValueTuple{}
+var _ KernelValue = &KernelValueArray{}
 
-func (ins *TypeInstanceTupleVector) FindCycle(c *cycleFinder) {
-	if !c.push(ins) {
-		return
-	}
-	defer c.pop(ins)
-	if ins.isTuple {
-		ins.fieldType.ins.FindCycle(c)
-	}
-}
-
-func (ins *TypeInstanceTupleVector) CreateValue() KernelValue {
-	value := &KernelValueTuple{
-		instance: ins,
-	}
-	if ins.isTuple {
-		value.resize(ins.count)
-	}
-	return value
-}
-
-func (ins *TypeInstanceTupleVector) SkipTL2(r []byte) ([]byte, error) {
-	return basictl.SkipSizedValue(r)
-}
-
-func (v *KernelValueTuple) resize(count int) {
+func (v *KernelValueArray) resize(count int) {
 	v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
 		v.elements = append(v.elements, v.instance.fieldType.ins.CreateValue())
@@ -56,7 +25,7 @@ func (v *KernelValueTuple) resize(count int) {
 	}
 }
 
-func (v *KernelValueTuple) Clone() KernelValue {
+func (v *KernelValueArray) Clone() KernelValue {
 	clone := *v // TODO - copy slice
 	for i, el := range clone.elements {
 		clone.elements[i] = el.Clone()
@@ -64,7 +33,7 @@ func (v *KernelValueTuple) Clone() KernelValue {
 	return &clone
 }
 
-func (v *KernelValueTuple) Reset() {
+func (v *KernelValueArray) Reset() {
 	if !v.instance.isTuple {
 		v.elements = v.elements[:0]
 		return
@@ -74,7 +43,7 @@ func (v *KernelValueTuple) Reset() {
 	}
 }
 
-func (v *KernelValueTuple) Random(rg *rand.Rand) {
+func (v *KernelValueArray) Random(rg *rand.Rand) {
 	if !v.instance.isTuple {
 		count := 0
 		if (rg.Uint32() & 3) != 0 { // many vectors empty
@@ -87,7 +56,7 @@ func (v *KernelValueTuple) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueTuple) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+func (v *KernelValueArray) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
 		return
 	}
@@ -108,7 +77,7 @@ func (v *KernelValueTuple) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueArray) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -145,7 +114,7 @@ func (v *KernelValueTuple) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 	return r, nil
 }
 
-func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueArray) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '[')
 	for i, el := range v.elements {
 		if i != 0 {
@@ -157,7 +126,7 @@ func (v *KernelValueTuple) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
+func (v *KernelValueArray) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	// selectedWhole := onPath && len(path) == level
 	if onPath {
 		sb.WriteString(color.InBlue("["))
@@ -188,7 +157,7 @@ func (v *KernelValueTuple) UIWrite(sb *strings.Builder, onPath bool, level int, 
 	}
 }
 
-func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
+func (v *KernelValueArray) UIFixPath(side int, level int, model *UIModel) int {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -240,7 +209,7 @@ func (v *KernelValueTuple) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, createMode int) {
+func (v *KernelValueArray) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -263,7 +232,7 @@ func (v *KernelValueTuple) UIStartEdit(level int, model *UIModel, createMode int
 	v.elements[selectedIndex].UIStartEdit(level+1, model, createMode)
 }
 
-func (v *KernelValueTuple) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+func (v *KernelValueArray) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 	if len(model.Path) < level+1 {
 		return
 	}
@@ -278,28 +247,6 @@ func (v *KernelValueTuple) UIKey(level int, model *UIModel, insert bool, delete 
 	v.elements[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
-func (v *KernelValueTuple) CompareForMapKey(other KernelValue) int {
+func (v *KernelValueArray) CompareForMapKey(other KernelValue) int {
 	return 0
-}
-
-func (k *Kernel) createTupleVector(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
-	if fieldType.ins.IsBit() {
-		ins := &TypeInstanceTupleVectorBit{
-			TypeInstanceCommon: TypeInstanceCommon{
-				canonicalName: canonicalName,
-			},
-			isTuple: isTuple,
-			count:   int(count),
-		}
-		return ins
-	}
-	ins := &TypeInstanceTupleVector{
-		TypeInstanceCommon: TypeInstanceCommon{
-			canonicalName: canonicalName,
-		},
-		isTuple:   isTuple,
-		count:     int(count),
-		fieldType: fieldType,
-	}
-	return ins
 }

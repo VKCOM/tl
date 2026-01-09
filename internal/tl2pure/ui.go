@@ -25,7 +25,7 @@ type UIBlinkMsg struct {
 }
 
 type UIModel struct {
-	Fun KernelValueObject
+	Fun KernelValueStruct
 
 	Path []int // selected field on every hierarchy level, 0 means union constructor
 

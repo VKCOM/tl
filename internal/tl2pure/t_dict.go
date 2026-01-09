@@ -8,7 +8,7 @@ import (
 type TypeInstanceDict struct {
 	TypeInstanceCommon
 
-	fieldType TypeInstanceObject
+	fieldType TypeInstanceStruct
 }
 
 func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
@@ -30,7 +30,7 @@ func (k *Kernel) createMap(canonicalName string, keyType *TypeInstanceRef, field
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 		},
-		fieldType: TypeInstanceObject{
+		fieldType: TypeInstanceStruct{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName + "__elem",
 			},
