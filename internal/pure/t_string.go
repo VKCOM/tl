@@ -42,7 +42,6 @@ func (k *Kernel) addString() {
 	ins := TypeInstanceString{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
-			comb:          combTL2,
 		},
 	}
 	ref := &TypeInstanceRef{
@@ -54,6 +53,7 @@ func (k *Kernel) addString() {
 		combTL2:   combTL2,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
+	// ins.tip = kt
 	if _, ok := k.instances[name]; ok {
 		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
 	}

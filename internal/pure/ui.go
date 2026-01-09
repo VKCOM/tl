@@ -97,10 +97,10 @@ func (m *UIModel) View() string {
 	}
 	//sb.WriteString(m.colorButtonComment("Extra"))
 	sb.WriteString(m.Fun.instance.canonicalName)
-	if m.Fun.instance.comb.FuncDecl.Magic != 0 {
-		sb.WriteString("#")
-		sb.WriteString(fmt.Sprintf("%08x", m.Fun.instance.comb.FuncDecl.Magic))
-	}
+	//if m.Fun.instance.comb.FuncDecl.Magic != 0 {
+	//	sb.WriteString("#")
+	//	sb.WriteString(fmt.Sprintf("%08x", m.Fun.instance.comb.FuncDecl.Magic))
+	//}
 	sb.WriteString("    ")
 	if m.LastError != nil {
 		sb.WriteString(m.colorError(m.LastError.Error()))
