@@ -8,14 +8,14 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-type KernelValueObject struct {
-	instance *TypeInstanceObject
+type KernelValueStruct struct {
+	instance *TypeInstanceStruct
 	fields   []KernelValue // nil if optional field not set, to break recursion
 }
 
-var _ KernelValue = &KernelValueObject{}
+var _ KernelValue = &KernelValueStruct{}
 
-func (v *KernelValueObject) Reset() {
+func (v *KernelValueStruct) Reset() {
 	for i, fieldDef := range v.instance.constructorFields {
 		if fieldDef.IsOptional {
 			v.fields[i] = nil
@@ -25,7 +25,7 @@ func (v *KernelValueObject) Reset() {
 	}
 }
 
-func (v *KernelValueObject) Random(rg *rand.Rand) {
+func (v *KernelValueStruct) Random(rg *rand.Rand) {
 	for i, fieldDef := range v.instance.constructorFields {
 		ft := v.instance.fieldTypes[i]
 		if fieldDef.IsOptional {
@@ -42,7 +42,7 @@ func (v *KernelValueObject) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	firstUsedByte := w.ReserveSpaceForSize()
 
 	lastUsedByte := firstUsedByte
@@ -96,7 +96,7 @@ func (v *KernelValueObject) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueObject) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
+func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
 	for i, field := range v.fields {
 		if (i+1)%8 == 0 {
 			// start the next block
@@ -126,7 +126,7 @@ func (v *KernelValueObject) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2C
 	return nil
 }
 
-func (v *KernelValueObject) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -158,7 +158,7 @@ func (v *KernelValueObject) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err er
 	return r, v.ReadFieldsTL2(block, currentR, ctx)
 }
 
-func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	if !v.instance.isConstructorFields {
 		return v.fields[0].WriteJSON(w, ctx)
 	}
@@ -183,7 +183,7 @@ func (v *KernelValueObject) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
+func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
 	if onPath {
 		sb.WriteString(color.InBlue("{"))
 	} else {
@@ -233,7 +233,7 @@ func (v *KernelValueObject) UIWrite(sb *strings.Builder, onPath bool, level int,
 	}
 }
 
-func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
+func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -286,7 +286,7 @@ func (v *KernelValueObject) UIFixPath(side int, level int, model *UIModel) int {
 	return 0
 }
 
-func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, createMode int) {
+func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode int) {
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -306,7 +306,7 @@ func (v *KernelValueObject) UIStartEdit(level int, model *UIModel, createMode in
 	v.fields[selectedIndex].UIStartEdit(level+1, model, createMode)
 }
 
-func (v *KernelValueObject) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+func (v *KernelValueStruct) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 	if len(model.Path) < level+1 {
 		return
 	}
@@ -321,12 +321,12 @@ func (v *KernelValueObject) UIKey(level int, model *UIModel, insert bool, delete
 	v.fields[selectedIndex].UIKey(level+1, model, insert, delete, up, down)
 }
 
-func (v *KernelValueObject) Clone() KernelValue {
+func (v *KernelValueStruct) Clone() KernelValue {
 	clone := v.CloneObject()
 	return &clone
 }
 
-func (v *KernelValueObject) CloneObject() KernelValueObject {
+func (v *KernelValueStruct) CloneObject() KernelValueStruct {
 	clone := *v
 	for i, v := range clone.fields {
 		if v != nil { // skip not set optional fields
@@ -336,6 +336,6 @@ func (v *KernelValueObject) CloneObject() KernelValueObject {
 	return clone
 }
 
-func (v *KernelValueObject) CompareForMapKey(other KernelValue) int {
+func (v *KernelValueStruct) CompareForMapKey(other KernelValue) int {
 	return 0
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-type TypeInstanceObject struct {
+type TypeInstanceStruct struct {
 	TypeInstanceCommon
 	isConstructorFields bool
 	constructorFields   []tlast.TL2Field
@@ -19,7 +19,7 @@ type TypeInstanceObject struct {
 	resultType TypeInstance
 }
 
-func (ins *TypeInstanceObject) FindCycle(c *cycleFinder) {
+func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return
 	}
@@ -32,17 +32,17 @@ func (ins *TypeInstanceObject) FindCycle(c *cycleFinder) {
 	}
 }
 
-func (ins *TypeInstanceObject) CreateValue() KernelValue {
+func (ins *TypeInstanceStruct) CreateValue() KernelValue {
 	v := ins.CreateValueObject()
 	return &v
 }
 
-func (ins *TypeInstanceObject) SkipTL2(r []byte) ([]byte, error) {
+func (ins *TypeInstanceStruct) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (ins *TypeInstanceObject) CreateValueObject() KernelValueObject {
-	value := KernelValueObject{
+func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
+	value := KernelValueStruct{
 		instance: ins,
 		fields:   make([]KernelValue, len(ins.fieldTypes)),
 	}
@@ -58,9 +58,9 @@ func (ins *TypeInstanceObject) CreateValueObject() KernelValueObject {
 func (k *Kernel) createObject(canonicalName string,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
-	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceObject, error) {
+	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
 
-	ins := &TypeInstanceObject{
+	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 		},

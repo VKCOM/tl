@@ -10,7 +10,7 @@ import (
 
 type KernelValueDict struct {
 	instance *TypeInstanceDict
-	elements []KernelValueObject // cap contains created elements
+	elements []KernelValueStruct // cap contains created elements
 }
 
 var _ KernelValue = &KernelValueDict{}
@@ -26,10 +26,10 @@ func (v *KernelValueDict) resize(count int) {
 }
 
 func (v *KernelValueDict) sort() {
-	slices.SortFunc(v.elements, func(a KernelValueObject, b KernelValueObject) int {
+	slices.SortFunc(v.elements, func(a KernelValueStruct, b KernelValueStruct) int {
 		return a.fields[0].CompareForMapKey(b.fields[0])
 	})
-	v.elements = slices.CompactFunc(v.elements, func(a KernelValueObject, b KernelValueObject) bool {
+	v.elements = slices.CompactFunc(v.elements, func(a KernelValueStruct, b KernelValueStruct) bool {
 		return a.fields[0].CompareForMapKey(b.fields[0]) == 0
 	})
 }

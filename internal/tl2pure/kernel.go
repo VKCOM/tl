@@ -120,7 +120,7 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 	return result
 }
 
-func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceObject {
+func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct {
 	tip, ok := k.tips[name]
 	if !ok {
 		return nil
@@ -129,7 +129,7 @@ func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceObject
 	if !ok {
 		return nil
 	}
-	ins2, _ := ref.ins.(*TypeInstanceObject)
+	ins2, _ := ref.ins.(*TypeInstanceStruct)
 	return ins2
 }
 

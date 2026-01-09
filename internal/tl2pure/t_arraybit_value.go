@@ -7,37 +7,14 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-type TypeInstanceTupleVectorBit struct {
-	TypeInstanceCommon
-	isTuple bool
-	count   int
-}
-
-type KernelValueTupleBit struct {
-	instance *TypeInstanceTupleVectorBit
+type KernelValueArrayBit struct {
+	instance *TypeInstanceArrayBit
 	elements []bool
 }
 
-var _ KernelValue = &KernelValueTupleBit{}
+var _ KernelValue = &KernelValueArrayBit{}
 
-func (ins *TypeInstanceTupleVectorBit) FindCycle(c *cycleFinder) {
-}
-
-func (ins *TypeInstanceTupleVectorBit) CreateValue() KernelValue {
-	value := &KernelValueTupleBit{
-		instance: ins,
-	}
-	if ins.isTuple {
-		value.resize(ins.count)
-	}
-	return value
-}
-
-func (ins *TypeInstanceTupleVectorBit) SkipTL2(r []byte) ([]byte, error) {
-	return basictl.SkipSizedValue(r)
-}
-
-func (v *KernelValueTupleBit) resize(count int) {
+func (v *KernelValueArrayBit) resize(count int) {
 	v.elements = v.elements[:min(count, cap(v.elements))]
 	if len(v.elements) < count {
 		v.elements = append(v.elements, make([]bool, count-len(v.elements))...)
@@ -47,7 +24,7 @@ func (v *KernelValueTupleBit) resize(count int) {
 	}
 }
 
-func (v *KernelValueTupleBit) Reset() {
+func (v *KernelValueArrayBit) Reset() {
 	if !v.instance.isTuple {
 		v.elements = v.elements[:0]
 		return
@@ -55,7 +32,7 @@ func (v *KernelValueTupleBit) Reset() {
 	clear(v.elements)
 }
 
-func (v *KernelValueTupleBit) Random(rg *rand.Rand) {
+func (v *KernelValueArrayBit) Random(rg *rand.Rand) {
 	if !v.instance.isTuple {
 		count := 0
 		if (rg.Uint32() & 3) != 0 { // many vectors empty
@@ -68,7 +45,7 @@ func (v *KernelValueTupleBit) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueTupleBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+func (v *KernelValueArrayBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
 		return
 	}
@@ -83,7 +60,7 @@ func (v *KernelValueTupleBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPat
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueTupleBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -116,7 +93,7 @@ func (v *KernelValueTupleBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err 
 	return r, nil
 }
 
-func (v *KernelValueTupleBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueArrayBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, '[')
 	first := true
 	for _, el := range v.elements {
@@ -131,28 +108,28 @@ func (v *KernelValueTupleBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	return w
 }
 
-func (v *KernelValueTupleBit) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
-	sb.WriteString("<KernelValueTupleBit>")
+func (v *KernelValueArrayBit) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
+	sb.WriteString("<KernelValueArrayBit>")
 }
 
-func (v *KernelValueTupleBit) UIFixPath(side int, level int, model *UIModel) int {
+func (v *KernelValueArrayBit) UIFixPath(side int, level int, model *UIModel) int {
 	model.Path = model.Path[:level]
 	return 0
 }
 
-func (v *KernelValueTupleBit) UIStartEdit(level int, model *UIModel, createMode int) {
+func (v *KernelValueArrayBit) UIStartEdit(level int, model *UIModel, createMode int) {
 }
 
-func (v *KernelValueTupleBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+func (v *KernelValueArrayBit) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
 }
 
-func (v *KernelValueTupleBit) Clone() KernelValue {
-	return &KernelValueTupleBit{
+func (v *KernelValueArrayBit) Clone() KernelValue {
+	return &KernelValueArrayBit{
 		instance: v.instance,
 		elements: append([]bool{}, v.elements...),
 	}
 }
 
-func (v *KernelValueTupleBit) CompareForMapKey(other KernelValue) int {
+func (v *KernelValueArrayBit) CompareForMapKey(other KernelValue) int {
 	return 0
 }
