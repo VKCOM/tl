@@ -3,6 +3,7 @@ package pure
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
@@ -10,7 +11,9 @@ import (
 // TODO - name collision checks
 
 type KernelType struct {
-	comb tlast.TL2Combinator
+	originTL2 bool
+	combTL1   []*tlast.Combinator
+	combTL2   tlast.TL2Combinator
 	// index by canonical name
 	instances map[string]*TypeInstanceRef
 	// order of instantiation
@@ -18,7 +21,7 @@ type KernelType struct {
 }
 
 type Kernel struct {
-	tips         map[tlast.TL2TypeName]*KernelType
+	tips         map[string]*KernelType // TL1 single constructor names are also here
 	tipsOrdered  []*KernelType
 	tipsTopLevel []*KernelType
 
@@ -34,8 +37,8 @@ type Kernel struct {
 // Add builtin types
 func NewKernel() *Kernel {
 	k := &Kernel{
-		brackets:  &KernelType{instances: map[string]*TypeInstanceRef{}},
-		tips:      map[tlast.TL2TypeName]*KernelType{},
+		brackets:  &KernelType{originTL2: true, instances: map[string]*TypeInstanceRef{}},
+		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
 	k.addPrimitive("uint32", &KernelValueUint32{}, true)
@@ -50,14 +53,14 @@ func NewKernel() *Kernel {
 	return k
 }
 
-func (k *Kernel) addTip(kt *KernelType) error {
-	_, ok := k.tips[kt.comb.ReferenceName()]
+func (k *Kernel) addTip(kt *KernelType, name1 string, name2 string) error {
+	_, ok := k.tips[name1]
 	if ok {
-		return fmt.Errorf("type %v already exists", kt.comb.ReferenceName())
+		return fmt.Errorf("type %v already exists", name1)
 	}
-	k.tips[kt.comb.ReferenceName()] = kt
+	k.tips[name1] = kt
 	k.tipsOrdered = append(k.tipsOrdered, kt)
-	if kt.comb.IsFunction || len(kt.comb.TypeDecl.TemplateArguments) == 0 {
+	if kt.combTL2.IsFunction || len(kt.combTL2.TypeDecl.TemplateArguments) == 0 {
 		k.tipsTopLevel = append(k.tipsTopLevel, kt)
 	}
 	return nil
@@ -98,7 +101,7 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 }
 
 func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct {
-	tip, ok := k.tips[name]
+	tip, ok := k.tips[name.String()]
 	if !ok {
 		return nil
 	}
@@ -118,61 +121,81 @@ func (k *Kernel) AddFileTL1(f tlast.TL) {
 	k.filesTL1 = append(k.filesTL1, f...)
 }
 
-func (k *Kernel) Compile() error {
-	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
+func (k *Kernel) normalizeName(s string) string {
+	s = strings.ReplaceAll(s, "_", "")
+	return strings.ToLower(s)
+}
 
+func (k *Kernel) Compile() error {
+	if err := k.CompileTL1(); err != nil {
+		return err
+	}
 	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
-	// add all declaration to check for name collisions
+	// then add all TL2 declarations
 	for _, comb := range k.filesTL2 {
 		log.Printf("tl2pure: compiling %s", comb)
 		kt := &KernelType{
-			comb:      comb,
+			originTL2: true,
+			combTL2:   comb,
 			instances: map[string]*TypeInstanceRef{},
 		}
 		if !comb.IsFunction {
+			namesNormalized := map[string]int{}
 			names := map[string]int{}
 			for i, targ := range comb.TypeDecl.TemplateArguments {
 				if _, ok := names[targ.Name]; ok {
 					return fmt.Errorf("error adding type %s: template argument %s name collision", comb.TypeDecl.Name, targ.Name)
 				}
-				names[targ.Name] = i
+				nn := k.normalizeName(targ.Name)
+				if _, ok := names[nn]; ok {
+					return fmt.Errorf("error adding type %s: template argument %s normalized name collision", comb.TypeDecl.Name, nn)
+				}
+				namesNormalized[nn] = i
 			}
 		}
-		if err := k.addTip(kt); err != nil {
+		if err := k.addTip(kt, comb.ReferenceName().String(), ""); err != nil {
 			return fmt.Errorf("error adding type %s: %w", comb.ReferenceName(), err)
 		}
 	}
 	// type all declarations by comparing type ref with actual type definition
 	for _, tip := range k.tipsOrdered {
-		if tip.comb.IsFunction {
-			if err := k.typeCheck(tip.comb.FuncDecl.ReturnType, nil); err != nil {
+		if tip.originTL2 {
+			if tip.combTL2.IsFunction {
+				if err := k.typeCheck(tip.combTL2.FuncDecl.ReturnType, nil); err != nil {
+					return err
+				}
+				if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.combTL2.FuncDecl.Arguments, nil); err != nil {
+					return err
+				}
+				continue
+			}
+			if err := k.typeCheck(tip.combTL2.TypeDecl.Type, tip.combTL2.TypeDecl.TemplateArguments); err != nil {
 				return err
 			}
-			if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.comb.FuncDecl.Arguments, nil); err != nil {
-				return err
-			}
-			continue
-		}
-		if err := k.typeCheck(tip.comb.TypeDecl.Type, tip.comb.TypeDecl.TemplateArguments); err != nil {
-			return err
+		} else {
+
 		}
 	}
 	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
-		if tip.comb.IsFunction {
-			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.comb.FuncDecl.Name}}
-			if _, err := k.getInstance(tr); err != nil {
-				return fmt.Errorf("error adding function %s: %w", tip.comb.FuncDecl.Name, err)
+		if tip.originTL2 {
+			if tip.combTL2.IsFunction {
+				tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.combTL2.FuncDecl.Name}}
+				if _, err := k.getInstance(tr); err != nil {
+					return fmt.Errorf("error adding function %s: %w", tip.combTL2.FuncDecl.Name, err)
+				}
+				continue
 			}
-			continue
-		}
-		typeDecl := tip.comb.TypeDecl
-		if len(typeDecl.TemplateArguments) != 0 {
-			continue // instantiate templates on demand only
-		}
-		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
-		if _, err := k.getInstance(tr); err != nil {
-			return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
+			typeDecl := tip.combTL2.TypeDecl
+			if len(typeDecl.TemplateArguments) != 0 {
+				continue // instantiate templates on demand only
+			}
+			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
+			if _, err := k.getInstance(tr); err != nil {
+				return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
+			}
+		} else {
+
 		}
 	}
 	// It is not easy to check all cycles before instantiation, so we do it afterwards.

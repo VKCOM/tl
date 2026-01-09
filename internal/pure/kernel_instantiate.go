@@ -118,7 +118,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	// must store pointer before children getInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	someType := tr.SomeType
-	kt, ok := k.tips[someType.Name]
+	kt, ok := k.tips[someType.Name.String()]
 	if !ok {
 		return nil, fmt.Errorf("type %s does not exist", someType.Name)
 	}
@@ -127,18 +127,18 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	ref := k.addInstance(canonicalName, kt)
 
 	var err error
-	if !kt.comb.IsFunction {
-		if len(kt.comb.TypeDecl.TemplateArguments) != len(someType.Arguments) {
-			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.comb.TypeDecl.TemplateArguments), len(someType.Arguments))
+	if !kt.combTL2.IsFunction {
+		if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
+			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 		}
 
-		ref.ins, err = k.createOrdinaryType(canonicalName, kt.comb.TypeDecl.Type, kt.comb.TypeDecl.TemplateArguments, someType.Arguments)
+		ref.ins, err = k.createOrdinaryType(canonicalName, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
 		if err != nil {
 			return nil, err
 		}
 		return ref, nil
 	}
-	funcDecl := kt.comb.FuncDecl
+	funcDecl := kt.combTL2.FuncDecl
 	resultType, err := k.createOrdinaryType(canonicalName, funcDecl.ReturnType, nil, nil)
 	if err != nil {
 		return nil, err
