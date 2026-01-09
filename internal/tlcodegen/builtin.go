@@ -18,21 +18,19 @@ import (
 func IsUnionBool(tlType []*tlast.Combinator) (isBool bool, falseDesc *tlast.Combinator, trueDesc *tlast.Combinator) {
 	// if type is
 	// 1. enum with 2 elements, 0 template arguments
-	// 2. has "bool" in its name (Bool, Boolean, a.Bool, b.Boolean)
-	// 3. fields contain "false" and "true"
-	// then it is bool
-	// reverse = false if first element is false
-	if len(tlType) != 2 || !strings.Contains(strings.ToLower(tlType[0].TypeDecl.Name.Name), "bool") ||
+	// 2. has name "Bool"
+	// 3. fields have names "boolFalse" and "boolTrue"
+	if len(tlType) != 2 || tlType[0].TypeDecl.Name.String() != "Bool" ||
 		len(tlType[0].Fields) != 0 || len(tlType[1].Fields) != 0 || len(tlType[0].TemplateArguments) != 0 {
 		return false, nil, nil
 	}
 	falseDesc = tlType[0]
 	trueDesc = tlType[1]
-	if !strings.Contains(strings.ToLower(falseDesc.Construct.Name.String()), "false") {
+	if falseDesc.Construct.Name.String() != "boolFalse" { // fix constructors order
 		falseDesc, trueDesc = trueDesc, falseDesc
 	}
-	if !strings.Contains(strings.ToLower(falseDesc.Construct.Name.String()), "false") ||
-		!strings.Contains(strings.ToLower(trueDesc.Construct.Name.String()), "true") {
+	if falseDesc.Construct.Name.String() != "boolFalse" ||
+		trueDesc.Construct.Name.String() != "boolTrue" {
 		return false, nil, nil
 	}
 	return true, falseDesc, trueDesc

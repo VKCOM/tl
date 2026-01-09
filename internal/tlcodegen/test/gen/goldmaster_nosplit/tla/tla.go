@@ -18,6 +18,7 @@ type (
 	Inner                            = internal.AInner
 	Inner3                           = internal.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = internal.AMiddlePairAInnerAInnerAInnerBoxed3
+	MyBool                           = internal.AMyBool
 	MyUnion                          = internal.AMyUnion
 	PairAInnerAInner                 = internal.PairAInnerAInner
 	PairBoolAColor                   = internal.PairBoolAColor
@@ -27,14 +28,9 @@ type (
 	VectorAColor                     = internal.VectorAColor
 )
 
-func Blue() Color   { return internal.ABlue() }
-func Color0() Color { return internal.AColor0() }
-func Green() Color  { return internal.AGreen() }
-func Red() Color    { return internal.ARed() }
-
-func MyBoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return internal.AMyBoolReadBoxed(w, v)
-}
-func MyBoolWriteBoxed(w []byte, v bool) []byte {
-	return internal.AMyBoolWriteBoxed(w, v)
-}
+func Blue() Color     { return internal.ABlue() }
+func Color0() Color   { return internal.AColor0() }
+func Green() Color    { return internal.AGreen() }
+func MyFalse() MyBool { return internal.AMyFalse() }
+func MyTrue() MyBool  { return internal.AMyTrue() }
+func Red() Color      { return internal.ARed() }

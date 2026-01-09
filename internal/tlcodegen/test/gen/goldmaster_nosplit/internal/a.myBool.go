@@ -13,18 +13,209 @@ import (
 
 var _ = basictl.NatWrite
 
-const (
-	AMyFalse uint32 = 0x2
-	AMyTrue  uint32 = 0x1
-)
-
-func AMyBoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return basictl.ReadBool(w, v, AMyFalse, AMyTrue)
+var _AMyBool = [2]UnionElement{
+	{TLTag: 0x00000001, TLName: "a.myTrue", TLString: "a.myTrue#00000001"},
+	{TLTag: 0x00000002, TLName: "a.myFalse", TLString: "a.myFalse#00000002"},
 }
 
-func AMyBoolWriteBoxed(w []byte, v bool) []byte {
-	if v {
-		return basictl.NatWrite(w, 0x1)
+func AMyBool__MakeEnum(i int) AMyBool { return AMyBool{index: i} }
+
+type AMyBool struct {
+	index int
+}
+
+func (item AMyBool) TLName() string { return _AMyBool[item.index].TLName }
+func (item AMyBool) TLTag() uint32  { return _AMyBool[item.index].TLTag }
+
+func (item *AMyBool) Reset() { item.index = 0 }
+func (item *AMyBool) FillRandom(rg *basictl.RandGenerator) {
+	index := basictl.RandomUint(rg) % 2
+	switch index {
+	case 0:
+		item.index = 0
+	case 1:
+		item.index = 1
+	default:
 	}
-	return basictl.NatWrite(w, 0x2)
 }
+
+func (item AMyBool) IsMyTrue() bool { return item.index == 0 }
+func (item *AMyBool) SetMyTrue()    { item.index = 0 }
+
+func (item AMyBool) IsMyFalse() bool { return item.index == 1 }
+func (item *AMyBool) SetMyFalse()    { item.index = 1 }
+
+func (item *AMyBool) ReadBoxed(w []byte) (_ []byte, err error) {
+	var tag uint32
+	if w, err = basictl.NatRead(w, &tag); err != nil {
+		return w, err
+	}
+	switch tag {
+	case 0x00000001:
+		item.index = 0
+		return w, nil
+	case 0x00000002:
+		item.index = 1
+		return w, nil
+	default:
+		return w, ErrorInvalidUnionTag("a.MyBool", tag)
+	}
+}
+
+func (item *AMyBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *AMyBool) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, _AMyBool[item.index].TLTag)
+	return w
+}
+
+func (item *AMyBool) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	if item.index == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
+	}
+	bodySize := 1 + basictl.TL2CalculateSize(item.index)
+	return sizes, 1 + bodySize
+}
+
+func (item *AMyBool) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if item.index == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
+	}
+	bodySize := 1 + basictl.TL2CalculateSize(item.index)
+	w = append(w, byte(bodySize))
+	w = append(w, 1)
+	w = basictl.TL2WriteSize(w, item.index)
+	return w, sizes, 1 + bodySize
+}
+
+func (item *AMyBool) InternalReadTL2(r []byte) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	item.index = 0
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+		if item.index >= 2 {
+			return r, ErrorInvalidUnionIndex("a.MyBool", item.index)
+		}
+	}
+	Unused(currentR)
+	return r, nil
+}
+func (item *AMyBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes, sizes2 []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *AMyBool) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
+}
+
+func (item *AMyBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	_jtype := in.UnsafeString()
+	if !in.Ok() {
+		return ErrorInvalidJSON("a.MyBool", "expected string")
+	}
+	switch _jtype {
+	case "a.myTrue#00000001", "a.myTrue", "#00000001":
+		if tctx.IsTL2 && _jtype != "a.myTrue" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.myTrue#00000001" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myTrue#00000001")
+		}
+		item.index = 0
+		return nil
+	case "a.myFalse#00000002", "a.myFalse", "#00000002":
+		if tctx.IsTL2 && _jtype != "a.myFalse" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.myFalse#00000002" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myFalse#00000002")
+		}
+		item.index = 1
+		return nil
+	default:
+		return ErrorInvalidEnumTagJSON("a.MyBool", _jtype)
+	}
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item AMyBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
+}
+
+func (item AMyBool) WriteJSON(w []byte) []byte {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
+}
+func (item AMyBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = append(w, '"')
+	if tctx.LegacyTypeNames {
+		w = append(w, _AMyBool[item.index].TLString...)
+	} else {
+		w = append(w, _AMyBool[item.index].TLName...)
+	}
+	return append(w, '"')
+}
+
+func (item AMyBool) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *AMyBool) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *AMyBool) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return ErrorInvalidJSON("a.MyBool", err.Error())
+	}
+	return nil
+}
+
+func AMyFalse() AMyBool { return AMyBool__MakeEnum(1) }
+
+func AMyTrue() AMyBool { return AMyBool__MakeEnum(0) }

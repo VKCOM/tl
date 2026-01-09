@@ -357,6 +357,8 @@ func init() {
 	fillObject("a.blue#623360f3", "#623360f3", &TLItem{tag: 0x623360f3, annotations: 0x0, tlName: "a.blue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.color#f35d7a69", "#f35d7a69", &TLItem{tag: 0xf35d7a69, annotations: 0x0, tlName: "a.color", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.green#6127e7b8", "#6127e7b8", &TLItem{tag: 0x6127e7b8, annotations: 0x0, tlName: "a.green", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("a.myFalse#00000002", "#00000002", &TLItem{tag: 0x00000002, annotations: 0x0, tlName: "a.myFalse", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("a.myTrue#00000001", "#00000001", &TLItem{tag: 0x00000001, annotations: 0x0, tlName: "a.myTrue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.red#b83a723d", "#b83a723d", &TLItem{tag: 0xb83a723d, annotations: 0x0, tlName: "a.red", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.top2#7082d18f", "#7082d18f", &TLItem{tag: 0x7082d18f, annotations: 0x0, tlName: "a.top2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.uNionA#a7662843", "#a7662843", &TLItem{tag: 0xa7662843, annotations: 0x0, tlName: "a.uNionA", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
