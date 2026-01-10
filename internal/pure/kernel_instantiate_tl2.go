@@ -127,29 +127,42 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	ref := k.addInstance(canonicalName, kt)
 
 	var err error
-	if !kt.combTL2.IsFunction {
-		if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
-			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+	if kt.originTL2 {
+		if !kt.combTL2.IsFunction {
+			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
+				return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+			}
+			ref.ins, err = k.createOrdinaryType(canonicalName, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
+			if err != nil {
+				return nil, err
+			}
+			return ref, nil
 		}
-
-		ref.ins, err = k.createOrdinaryType(canonicalName, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
+		funcDecl := kt.combTL2.FuncDecl
+		resultType, err := k.createOrdinaryType(canonicalName, funcDecl.ReturnType, nil, nil)
+		if err != nil {
+			return nil, err
+		}
+		ref.ins, err = k.createStruct(canonicalName, true,
+			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
+			resultType)
 		if err != nil {
 			return nil, err
 		}
 		return ref, nil
 	}
-	funcDecl := kt.combTL2.FuncDecl
-	resultType, err := k.createOrdinaryType(canonicalName, funcDecl.ReturnType, nil, nil)
-	if err != nil {
-		return nil, err
+	comb := kt.combTL1[0]
+	if !comb.IsFunction {
+		if len(comb.TemplateArguments) != len(someType.Arguments) {
+			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(someType.Arguments))
+		}
+		ref.ins, err = k.createOrdinaryTypeTL1FromTL2(canonicalName, kt.combTL1, comb.TemplateArguments, someType.Arguments)
+		if err != nil {
+			return nil, err
+		}
+		return ref, nil
 	}
-	ref.ins, err = k.createObject(canonicalName, true,
-		tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
-		resultType)
-	if err != nil {
-		return nil, err
-	}
-	return ref, nil
+	return nil, fmt.Errorf("TODO - function from TL1 not yet supported")
 }
 
 // alias || fields || union
@@ -162,7 +175,7 @@ func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2Ty
 	case definition.IsAlias():
 		return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.IsConstructorFields:
-		return k.createObject(canonicalName,
+		return k.createStruct(canonicalName,
 			true, definition.TypeAlias, definition.ConstructorFields,
 			leftArgs, actualArgs,
 			false, 0, nil)

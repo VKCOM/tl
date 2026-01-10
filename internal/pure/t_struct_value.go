@@ -16,8 +16,8 @@ type KernelValueStruct struct {
 var _ KernelValue = &KernelValueStruct{}
 
 func (v *KernelValueStruct) Reset() {
-	for i, fieldDef := range v.instance.constructorFields {
-		if fieldDef.IsOptional {
+	for i, ft := range v.instance.fields {
+		if ft.fieldMask != nil {
 			v.fields[i] = nil
 			continue
 		}
@@ -26,16 +26,15 @@ func (v *KernelValueStruct) Reset() {
 }
 
 func (v *KernelValueStruct) Random(rg *rand.Rand) {
-	for i, fieldDef := range v.instance.constructorFields {
-		ft := v.instance.fieldTypes[i]
-		if fieldDef.IsOptional {
+	for i, ft := range v.instance.fields {
+		if ft.fieldMask != nil {
 			set := rg.Uint32()&1 != 0
 			if !set {
 				v.fields[i] = nil
 				continue
 			}
 			if v.fields[i] == nil {
-				v.fields[i] = ft.ins.CreateValue()
+				v.fields[i] = ft.ins.ins.CreateValue()
 			}
 		}
 		v.fields[i].Random(rg)
@@ -58,7 +57,7 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 
 	for i, field := range v.fields {
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		fieldDef := v.instance.constructorFields[i]
+		fieldDef := v.instance.fields[i]
 		if (i+1)%8 == 0 {
 			w.buf[currentBlockPosition] = currentBlock
 			currentBlock = 0
@@ -66,10 +65,10 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 			currentBlockPosition = w.Len()
 			w.WriteFieldmask()
 		}
-		if fieldDef.IsOmitted() {
+		if strings.HasPrefix(fieldDef.name, "_") { // IsOmitted
 			continue
 		}
-		if fieldDef.IsOptional {
+		if fieldDef.fieldMask != nil {
 			if field != nil {
 				if fieldOnPath {
 					field.WriteTL2(w, false, true, level+1, model)
@@ -97,12 +96,13 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 }
 
 func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
-	for i, field := range v.fields {
+	for i, ft := range v.fields {
+		fieldDef := v.instance.fields[i]
 		if (i+1)%8 == 0 {
 			// start the next block
 			if len(currentR) == 0 {
-				for ; i < len(v.instance.fieldTypes); i++ {
-					v.fields[i].Reset()
+				for ; i < len(v.instance.fields); i++ {
+					ft.Reset()
 				}
 				return nil
 			}
@@ -112,14 +112,14 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2C
 		}
 		if block&(1<<((i+1)%8)) != 0 {
 			// we also read omitted fields for simplicity
-			if currentR, err = field.ReadTL2(currentR, ctx); err != nil {
+			if currentR, err = ft.ReadTL2(currentR, ctx); err != nil {
 				return err
 			}
 		} else {
-			if v.instance.constructorFields[i].IsOptional {
+			if fieldDef.fieldMask != nil {
 				v.fields[i] = nil
 			} else {
-				field.Reset()
+				ft.Reset()
 			}
 		}
 	}
@@ -164,20 +164,21 @@ func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	}
 	w = append(w, '{')
 	first := true
-	for i, fieldDef := range v.instance.constructorFields {
+	for i, ft := range v.fields {
+		fieldDef := v.instance.fields[i]
 		if !first {
 			w = append(w, ',')
 		}
-		if fieldDef.IsOptional {
+		if fieldDef.fieldMask != nil {
 			if v.fields[i] == nil {
 				continue
 			}
 		}
 		first = false
 		w = append(w, `"`...)
-		w = append(w, fieldDef.Name...)
+		w = append(w, fieldDef.name...)
 		w = append(w, `":`...)
-		w = v.fields[i].WriteJSON(w, ctx)
+		w = ft.WriteJSON(w, ctx)
 	}
 	w = append(w, '}')
 	return w
@@ -190,15 +191,16 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 		sb.WriteString("{")
 	}
 	first := true
-	for i, fieldDef := range v.instance.constructorFields {
+	for i, ft := range v.fields {
+		fieldDef := v.instance.fields[i]
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		if fieldDef.IsOptional {
-			if v.fields[i] == nil {
+		if fieldDef.fieldMask != nil {
+			if ft == nil {
 				if onPath && len(model.Path) > level {
 					if !first {
 						sb.WriteString(",")
 					}
-					sb.WriteString(color.InGray(fieldDef.Name))
+					sb.WriteString(color.InGray(fieldDef.name))
 					if fieldOnPath {
 						sb.WriteString(color.InBlue("?"))
 					}
@@ -212,18 +214,18 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		first = false
 		sb.WriteString(`"`)
-		sb.WriteString(fieldDef.Name)
+		sb.WriteString(fieldDef.name)
 		sb.WriteString(`":`)
-		if fieldDef.IsOptional {
-			if v.fields[i] == nil {
+		if fieldDef.fieldMask != nil {
+			if ft == nil {
 				sb.WriteString("_")
 				continue
 			}
 		}
 		if fieldOnPath {
-			v.fields[i].UIWrite(sb, true, level+1, model)
+			ft.UIWrite(sb, true, level+1, model)
 		} else {
-			v.fields[i].UIWrite(sb, false, 0, model)
+			ft.UIWrite(sb, false, 0, model)
 		}
 	}
 	if onPath {
@@ -298,7 +300,7 @@ func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode in
 		if createMode == 0 { // require Enter to insert element
 			return
 		}
-		v.fields[selectedIndex] = v.instance.fieldTypes[selectedIndex].ins.CreateValue()
+		v.fields[selectedIndex] = v.instance.fields[selectedIndex].ins.ins.CreateValue()
 		if createMode == 1 {
 			createMode = 0
 		}
@@ -312,8 +314,8 @@ func (v *KernelValueStruct) UIKey(level int, model *UIModel, insert bool, delete
 	}
 	selectedIndex := model.Path[level]
 	if len(model.Path) == level+1 {
-		fieldDef := v.instance.constructorFields[selectedIndex]
-		if fieldDef.IsOptional && v.fields[selectedIndex] != nil {
+		fieldDef := v.instance.fields[selectedIndex]
+		if fieldDef.fieldMask != nil && v.fields[selectedIndex] != nil {
 			v.fields[selectedIndex] = nil
 		}
 		return
