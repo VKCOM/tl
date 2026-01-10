@@ -69,7 +69,7 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	defVariant := v.instance.def.Variants[v.index]
 	w = append(w, `{"type":"`...)
 	w = append(w, defVariant.Name...)
-	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
+	if len(v.instance.variantTypes[v.index].fields) == 0 {
 		return append(w, `"}`...)
 	}
 	w = append(w, `","value":`...)
@@ -93,7 +93,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		sb.WriteString(defVariant.Name)
 		sb.WriteString(`"`)
 	}
-	if len(v.instance.variantTypes[v.index].constructorFields) == 0 {
+	if len(v.instance.variantTypes[v.index].fields) == 0 {
 		sb.WriteString(`}`)
 		return
 	}

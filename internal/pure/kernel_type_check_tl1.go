@@ -18,6 +18,8 @@ func (k *Kernel) typeCheckAliasFieldsTL1(fields []tlast.Field, leftArgs []tlast.
 				return fmt.Errorf("scale repeat %s cannot be type", f.ScaleRepeat.Scale.Scale)
 			}
 		}
+		// TODO - if !f.ScaleRepeat.ExplicitScale - must be only in vector and tuple definitions, which we should skip and use internal representations
+		// TODO - the same is with various Dictionaries
 		arg := tlast.ArithmeticOrType{T: f.FieldType}
 		isNat, err := k.typeCheckArgumentTL1(arg, leftArgs)
 		if err != nil {

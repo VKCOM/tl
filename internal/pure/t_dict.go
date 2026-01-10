@@ -1,7 +1,6 @@
 package pure
 
 import (
-	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -35,12 +34,13 @@ func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fiel
 				canonicalName: canonicalName + "__elem",
 			},
 			isConstructorFields: true,
-			constructorFields: []tlast.TL2Field{{
-				Name: "k",
+			fields: []Field{{
+				name: "k",
+				ins:  keyType,
 			}, {
-				Name: "v",
+				name: "v",
+				ins:  fieldType,
 			}},
-			fieldTypes: []*TypeInstanceRef{keyType, fieldType},
 		},
 	}
 	return ins

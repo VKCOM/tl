@@ -20,6 +20,7 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
+	NatParams     []string // external nat params (empty for TL2 types)
 	// tip           *KernelType
 }
 

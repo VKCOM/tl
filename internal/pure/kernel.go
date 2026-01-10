@@ -226,7 +226,7 @@ func (k *Kernel) Compile() error {
 			if tip.combTL2.IsFunction {
 				tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.combTL2.FuncDecl.Name}}
 				if _, err := k.getInstance(tr); err != nil {
-					return fmt.Errorf("error adding function %s: %w", tip.combTL2.FuncDecl.Name, err)
+					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
 				}
 				continue
 			}
@@ -236,10 +236,27 @@ func (k *Kernel) Compile() error {
 			}
 			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
 			if _, err := k.getInstance(tr); err != nil {
-				return fmt.Errorf("error adding type %s: %w", typeDecl.Name, err)
+				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		} else {
-
+			comb := tip.combTL1[0]
+			if comb.IsFunction {
+				tr := tlast.TypeRef{Type: comb.Construct.Name}
+				if _, err := k.getInstanceTL1(tr); err != nil {
+					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
+				}
+				continue
+			}
+			if len(comb.TemplateArguments) != 0 {
+				continue // instantiate templates on demand only
+			}
+			tr := tlast.TypeRef{Type: comb.Construct.Name}
+			if len(tip.combTL1) != 1 {
+				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
+			}
+			if _, err := k.getInstanceTL1(tr); err != nil {
+				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
+			}
 		}
 	}
 	// It is not easy to check all cycles before instantiation, so we do it afterward.
