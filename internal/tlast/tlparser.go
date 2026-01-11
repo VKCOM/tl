@@ -85,6 +85,10 @@ type TypeRef struct { // due to complexity, parsing of TypeRef defined in separa
 
 	PR     PositionRange
 	PRArgs PositionRange
+
+	// this is set during type resolution, so the information
+	// about argument references not erased from the type
+	OriginalArgumentName string
 }
 
 type Field struct {
