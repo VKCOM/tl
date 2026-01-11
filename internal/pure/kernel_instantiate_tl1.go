@@ -74,40 +74,6 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	return tr, natArgs, nil
 }
 
-/*
-	func (k *Kernel) getTL1CanonicalString(tr tlast.TypeRef) string {
-		var sb strings.Builder
-		k.getTL1CanonicalStringImpl(&sb, tr)
-		return sb.String()
-	}
-
-	func (k *Kernel) getTL1CanonicalStringImpl(sb *strings.Builder, tr tlast.TypeRef) {
-		if tr.Type.Namespace != "" {
-			sb.WriteString(tr.Type.Namespace)
-			sb.WriteString(".")
-		}
-		sb.WriteString(tr.Type.Name)
-		if len(tr.Args) == 0 {
-			return
-		}
-		sb.WriteString("<")
-		for i, arg := range tr.Args {
-			if i != 0 {
-				sb.WriteString(",")
-			}
-			if arg.IsArith {
-				sb.Write(strconv.AppendUint(nil, uint64(arg.Arith.Res), 10))
-				continue
-			}
-			if arg.IsTNatRef {
-				sb.WriteString("*")
-				continue
-			}
-			k.getTL1CanonicalStringImpl(sb, arg.T)
-		}
-		sb.WriteString(">")
-	}
-*/
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 	canonicalName := tr.String()
 	// we remap TL1 type names into TL2 type names here.

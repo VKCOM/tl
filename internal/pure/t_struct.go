@@ -2,6 +2,8 @@ package pure
 
 import (
 	"fmt"
+	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -149,34 +151,60 @@ func (k *Kernel) createStructTL1FromTL2(canonicalName string,
 	//return ins, nil
 }
 
+func (k *Kernel) fillExternalArg(rt tlast.ArithmeticOrType, externalArgs *[]string, natArgs *[]ActualNatArg) {
+	if rt.IsArith {
+		return
+	}
+	if rt.T.String() == "*" {
+		id := fmt.Sprintf("a%d", len(*externalArgs))
+		*externalArgs = append(*externalArgs, id)
+		*natArgs = append(*natArgs, ActualNatArg{
+			isField:    false,
+			FieldIndex: 0,
+			name:       id,
+		})
+		return
+	}
+	for _, arg := range rt.T.Args {
+		k.fillExternalArg(arg, externalArgs, natArgs)
+	}
+}
+
 func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 	constructorFields []tlast.Field,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
 
+	var localArgs []LocalArg
+	var externalArgs []string
+	for _, arg := range actualArgs {
+		var natArgs []ActualNatArg
+		k.fillExternalArg(arg, &externalArgs, &natArgs)
+		localArg := LocalArg{
+			wrongTypeErr: nil,
+			arg:          arg,
+			natArgs:      natArgs,
+		}
+		localArgs = append(localArgs, localArg)
+	}
+	log.Printf("externalArgs for %s: %s", canonicalName, strings.Join(externalArgs, ","))
+
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			NatParams:     externalArgs,
 		},
 		isConstructorFields: false,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
 	}
-	var localArgs []LocalArg
-	for _, arg := range actualArgs {
-		localArgs = append(localArgs, LocalArg{
-			wrongTypeErr: nil,
-			arg:          arg,
-			natArgs:      nil,
-		})
-	}
-
-	for _, fieldDef := range constructorFields {
+	for i, fieldDef := range constructorFields {
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
+		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
 		fieldIns, err := k.getInstanceTL1(rt)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
@@ -204,7 +232,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
 					arg:          tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: "*"}}},
-					natArgs:      nil,
+					natArgs: []ActualNatArg{{
+						isField:    true,
+						FieldIndex: i,
+					}},
 				})
 			}
 		}
