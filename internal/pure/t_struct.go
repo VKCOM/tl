@@ -10,7 +10,7 @@ import (
 )
 
 type ActualNatArg struct {
-	isNumber   bool
+	//isNumber   bool
 	Number     uint32
 	isField    bool // otherwise it is # param with name
 	FieldIndex int
@@ -21,8 +21,8 @@ type Field struct {
 	name string
 	ins  *TypeInstanceRef
 
-	bare      bool // for TL1 only, false for TL2
-	recursive bool
+	//bare      bool // for TL1 only, false for TL2
+	//recursive bool
 
 	fieldMask *ActualNatArg
 	BitNumber uint32 // only used when fieldMask != nil
@@ -151,35 +151,30 @@ func (k *Kernel) createStructTL1FromTL2(canonicalName string,
 	//return ins, nil
 }
 
-func (k *Kernel) fillExternalArg(rt tlast.ArithmeticOrType, externalArgs *[]string, natArgs *[]ActualNatArg) {
+func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, natArgs *[]ActualNatArg) {
 	if rt.IsArith {
 		return
 	}
 	if rt.T.String() == "*" {
-		id := fmt.Sprintf("a%d", len(*externalArgs))
-		*externalArgs = append(*externalArgs, id)
+		index := len(*natParams)
+		id := fmt.Sprintf("a%d", index)
+		*natParams = append(*natParams, id)
 		*natArgs = append(*natArgs, ActualNatArg{
 			isField:    false,
-			FieldIndex: 0,
+			FieldIndex: index,
 			name:       id,
 		})
 		return
 	}
 	for _, arg := range rt.T.Args {
-		k.fillExternalArg(arg, externalArgs, natArgs)
+		k.fillNatParam(arg, natParams, natArgs)
 	}
 }
 
-func (k *Kernel) createStructTL1FromTL1(canonicalName string,
-	constructorFields []tlast.Field,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
-	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
-
-	var localArgs []LocalArg
-	var externalArgs []string
+func (k *Kernel) getTL1Args(actualArgs []tlast.ArithmeticOrType) (localArgs []LocalArg, natParams []string) {
 	for _, arg := range actualArgs {
 		var natArgs []ActualNatArg
-		k.fillExternalArg(arg, &externalArgs, &natArgs)
+		k.fillNatParam(arg, &natParams, &natArgs)
 		localArg := LocalArg{
 			wrongTypeErr: nil,
 			arg:          arg,
@@ -187,12 +182,21 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 		}
 		localArgs = append(localArgs, localArg)
 	}
-	log.Printf("externalArgs for %s: %s", canonicalName, strings.Join(externalArgs, ","))
+	return
+}
+
+func (k *Kernel) createStructTL1FromTL1(canonicalName string,
+	constructorFields []tlast.Field,
+	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
+	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
+
+	localArgs, natParams := k.getTL1Args(actualArgs)
+	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			NatParams:     externalArgs,
+			NatParams:     natParams,
 		},
 		isConstructorFields: false,
 		isUnionElement:      isUnionElement,
