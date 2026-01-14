@@ -1,19 +1,21 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq ((alias? TL2TypeRef) | TL2TypeDefinition);
-TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eq TL2TypeDefinition;
-TL2TypeDefDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? alias TL2TypeRef;
+TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq ((alias? TL2TypeRef) | TL2TypeDefinitionStruct);
+TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? TL2TypeDefinition;
 
-TL2TypeDefinition := TL2Field* | TL2UnionType;
+TL2TypeDefinition = (eq TL2StructTypeDefinition) | (alias TL2TypeRef);
 
-TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)*;
-TL2UnionTypeFromFirst := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
-TL2UnionTypeFromSecond := TL2UnionConstructor (vb TL2UnionConstructor)+;
+TL2StructTypeDefinition := TL2Field* | TL2UnionType;
+
+TL2UnionType := tl2UnionTypeMono | tl2UnionTypeMulti;
+tl2UnionTypeMono := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
+tl2UnionTypeMulti := TL2UnionConstructor (vb TL2UnionConstructor)+;
 
 TL2UnionConstructor := name (TL2TypeRef | TL2Field*);
 
-TL2Field := (((name | deprecatedName) qm?) | usc) cl TL2TypeRef;
+TL2Field := ((tl2fieldName qm?) | usc) cl TL2TypeRef;
+tl2fieldName := name | depName
 
 TL2TypeRef := TL2TypeApplication | TL2BracketType;
 
@@ -21,16 +23,22 @@ TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts
 TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 
 TL2TypeArgument := TL2TypeRef | number;
-TL2TypeTemplate := name cl name;
+TL2TypeTemplate := name cl TL2Category;
 
 TL2TypeName := (name dot)? name;
-TL2Annotation := at name;
+TL2Annotation := at lcName;
+
+TL2Category = cNat | cType;
 
 // tokens
 CRC32 := #[a-f0-9]{8};
 number := [0-9]+;
-name := [a-zA-Z][a-zA-Z0-9_]*;
-deprecatedName := _name;
+
+lcName  := [a-z][a-zA-Z0-9_]*;
+ucName  := [A-Z][a-zA-Z0-9_]*;
+name    := [a-zA-Z][a-zA-Z0-9_]*;
+depName := _name;
+
 alias := <=>;
 funEq := =>;
 dot := \.;
@@ -46,3 +54,6 @@ lts := <;
 gts := >;
 at := @;
 usc := _;
+
+cNat := #;
+cType := Type;

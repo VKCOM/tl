@@ -2,13 +2,13 @@
 
 package tlast
 
-// TL2TypeName := (lcName dot)? lcName;
+// TL2TypeName := (name dot)? name;
 type TL2TypeName struct {
 	Namespace string
 	Name      string
 }
 
-// TL2Annotation := at lcName;
+// TL2Annotation := at name;
 type TL2Annotation struct {
 	Name string
 	PR   PositionRange
@@ -54,7 +54,7 @@ type TL2TypeRef struct {
 	PR PositionRange
 }
 
-// TL2Field := ((lcName qm?) | ucs) cl TL2TypeRef;
+// TL2Field := ((name qm?) | ucs) cl TL2TypeRef;
 type TL2Field struct {
 	Name       string
 	IsOptional bool
@@ -79,7 +79,8 @@ type TL2TypeDefinition struct {
 	PR PositionRange
 }
 
-// TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
+// TL2UnionConstructor := name (TL2TypeRef | TL2Field*);
+// case of TL2TypeRef will be converted to TL2Field with empty name
 type TL2UnionConstructor struct {
 	Name string
 
@@ -94,7 +95,10 @@ type TL2UnionConstructor struct {
 	CommentBefore string
 }
 
-// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
+// TL2UnionType := tl2UnionTypeMono | tl2UnionTypeMulti;
+//
+// tl2UnionTypeMono := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
+// tl2UnionTypeMulti := TL2UnionConstructor (vb TL2UnionConstructor)+;
 type TL2UnionType struct {
 	Variants []TL2UnionConstructor // at least 1
 
@@ -106,7 +110,7 @@ type TL2TypeCategory string
 const TL2TypeCategoryType TL2TypeCategory = "type"
 const TL2TypeCategoryNat TL2TypeCategory = "uint32" // TODO - #
 
-// TL2TypeTemplate := lcName cl lcName;
+// TL2TypeTemplate := name cl name;
 type TL2TypeTemplate struct {
 	Name     string
 	Category TL2TypeCategory
