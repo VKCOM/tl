@@ -28,6 +28,9 @@ const (
 	eof              = -13 // so we always have next token in array
 	functionSign     = -14 // greedy => symbol
 	newLine          = -15
+	tl2alias         = -16 // greedy <=> symbol for alias
+	tl2depName       = -17 // for name of deprecated fields in tl2
+	tl2typeSign      = -18 // for category of types
 )
 
 const (
@@ -89,6 +92,14 @@ type token struct {
 	tokenType int
 	val       string
 	pos       Position
+}
+
+func (t token) IsName() bool {
+	return t.tokenType == lcIdent || t.tokenType == ucIdent
+}
+
+func (t token) IsNameNs() bool {
+	return t.tokenType == lcIdentNS || t.tokenType == ucIdentNS
 }
 
 func lowerCase(c byte) bool { return 'a' <= c && c <= 'z' }
@@ -226,7 +237,7 @@ func (l *lexer) checkPrimitive() bool {
 	case lRoundBracket, rRoundBracket,
 		lSquareBracket, rSquareBracket,
 		lCurlyBracket, rCurlyBracket,
-		lAngleBracket, rAngleBracket,
+		rAngleBracket, // lAngleBracket can be part of <=>
 		dotSign, plus, asterisk, exclamation,
 		colon, semiColon, whiteSpace,
 		tab, questionMark, percentSign,
@@ -262,7 +273,18 @@ func (l *lexer) nextToken() error {
 		if strings.HasPrefix(l.str, "=>") {
 			l.advance(2, functionSign)
 		} else {
-			l.advance(1, '=')
+			l.advance(1, equalSign)
+		}
+		return nil
+	case l.str[0] == '<':
+		if l.opts.LexerLanguage == TL2 {
+			if strings.HasPrefix(l.str, "<=>") {
+				l.advance(3, tl2alias)
+			} else {
+				l.advance(1, lAngleBracket)
+			}
+		} else {
+			l.advance(1, lAngleBracket)
 		}
 		return nil
 	case l.str[0] == '@':
@@ -304,7 +326,12 @@ func (l *lexer) nextToken() error {
 		return l.lexNumberSign()
 	case l.str[0] == '_':
 		if l.opts.LexerLanguage == TL2 {
-			l.advance(1, int(underscore))
+			nameAfter := nameIdent(l.str[1:])
+			if len(nameAfter) == 0 {
+				l.advance(1, int(underscore))
+			} else {
+				l.advance(1+len(nameAfter), tl2depName)
+			}
 			return nil
 		}
 		if l.opts.AllowBuiltin {
@@ -325,6 +352,13 @@ func (l *lexer) nextToken() error {
 	case digit(l.str[0]):
 		return l.lexNumber()
 	case letter(l.str[0]):
+		if l.opts.LexerLanguage == TL2 {
+			w := nameIdent(l.str)
+			if w == "Type" {
+				l.advance(4, tl2typeSign)
+				return nil
+			}
+		}
 		return l.lexLexeme()
 	default:
 		tok := l.advance(1, undefined)
