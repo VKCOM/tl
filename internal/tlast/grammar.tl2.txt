@@ -1,16 +1,19 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition;
-TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? CRC32? eq TL2TypeDefinition;
-TL2TypeDefDelaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eqq TL2TypeRef;
+TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq ((alias? TL2TypeRef) | TL2TypeDefinition);
+TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eq TL2TypeDefinition;
+TL2TypeDefDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? alias TL2TypeRef;
 
-TL2TypeDefinition := /* single anonymous field */ TL2TypeRef | TL2Field* | TL2UnionType;
+TL2TypeDefinition := TL2Field* | TL2UnionType;
 
 TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)*;
-TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
+TL2UnionTypeFromFirst := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
+TL2UnionTypeFromSecond := TL2UnionConstructor (vb TL2UnionConstructor)+;
 
-TL2Field := ((lcName qm?) | usc) cl TL2TypeRef;
+TL2UnionConstructor := name (TL2TypeRef | TL2Field*);
+
+TL2Field := (((name | deprecatedName) qm?) | usc) cl TL2TypeRef;
 
 TL2TypeRef := TL2TypeApplication | TL2BracketType;
 
@@ -18,16 +21,17 @@ TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts
 TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 
 TL2TypeArgument := TL2TypeRef | number;
-TL2TypeTemplate := lcName cl lcName;
+TL2TypeTemplate := name cl name;
 
-TL2TypeName := (lcName dot)? lcName;
-TL2Annotation := at lcName;
+TL2TypeName := (name dot)? name;
+TL2Annotation := at name;
 
 // tokens
 CRC32 := #[a-f0-9]{8};
 number := [0-9]+;
-ucName := [A-Z][a-zA-Z0-9_]*;
-lcName := [a-z][a-zA-Z0-9_]*;
+name := [a-zA-Z][a-zA-Z0-9_]*;
+deprecatedName := _name;
+alias := <=>;
 funEq := =>;
 dot := \.;
 cm := ,;
