@@ -111,7 +111,7 @@ func (t *TL2FuncDeclaration) printFunction(sb *strings.Builder, options formatOp
 	t.printArguments(sb, sep)
 	sb.WriteString(sep)
 	sb.WriteString("=> ")
-	hasNewLines = t.ReturnType.print(sb, options, sb.Len()-startSize+prefixSize)
+	hasNewLines = t.ReturnType.print(sb, options, sb.Len()-startSize+prefixSize, true)
 	if hasNewLines || sb.Len()-startSize+prefixSize > options.oneLineConstructorSize {
 		hasNewLines = true
 	}
@@ -121,6 +121,9 @@ func (t *TL2FuncDeclaration) printFunction(sb *strings.Builder, options formatOp
 func (t *TL2TypeDeclaration) print(sb *strings.Builder, options formatOptions, prefixSize int) {
 	startSize := sb.Len()
 	sb.WriteString(t.Name.String())
+	if t.Magic != 0 {
+		sb.WriteString(fmt.Sprintf("#%08x", t.Magic))
+	}
 	if len(t.TemplateArguments) > 0 {
 		sb.WriteString("<")
 		for i, argument := range t.TemplateArguments {
@@ -129,97 +132,107 @@ func (t *TL2TypeDeclaration) print(sb *strings.Builder, options formatOptions, p
 			}
 			sb.WriteString(argument.Name)
 			sb.WriteString(":")
-			sb.WriteString(string(argument.Category))
+			sb.WriteString(argument.Category.String())
 		}
 		sb.WriteString(">")
 	}
-	if t.Magic != 0 {
-		sb.WriteString(fmt.Sprintf("#%08x", t.Magic))
-	}
-	sb.WriteString(" = ")
-	t.Type.print(sb, options, prefixSize+sb.Len()-startSize)
+	t.Type.print(sb, options, prefixSize+sb.Len()-startSize, false)
 }
 
-func (t TL2TypeDefinition) print(sb *strings.Builder, options formatOptions, definitionPrefix int) (hasNewLines bool) {
+func (t TL2TypeDefinition) print(sb *strings.Builder, options formatOptions, definitionPrefix int, isReturnType bool) (hasNewLines bool) {
 	tmpSb := strings.Builder{}
-	hasNewLines = t.printWithNewLineOption(&tmpSb, options, false)
+	hasNewLines = t.printWithNewLineOption(&tmpSb, options, false, isReturnType)
 	if hasNewLines || tmpSb.Len()+definitionPrefix > options.oneLineConstructorSize {
 		hasNewLines = true
 	}
-	t.printWithNewLineOption(sb, options, hasNewLines)
+	t.printWithNewLineOption(sb, options, hasNewLines, isReturnType)
 	return hasNewLines
 }
 
-func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options formatOptions, forceNewline bool) (hasNewLines bool) {
+func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options formatOptions, forceNewline bool, isReturnType bool) (hasNewLines bool) {
 	const defaultSep = " "
 	const newLineSep = "\n\t"
 
-	if t.IsUnionType {
-		hasComments := false
-		if !options.ignoreComments {
-			for _, variant := range t.UnionType.Variants {
-				hasComments = hasComments || variant.HasBeforeCommentIn()
-				if hasComments {
-					break
-				}
-			}
-		}
-		forceNewline = forceNewline || hasComments
-		sep := defaultSep + "| "
-		if forceNewline {
-			sep = newLineSep + "| "
-		}
-		for i, variant := range t.UnionType.Variants {
-			if !options.ignoreComments && len(variant.CommentBefore) != 0 {
-				sb.WriteString(newLineSep)
-				lines := strings.Split(variant.CommentBefore, "\n")
-				for l, line := range lines {
-					sb.WriteString(strings.TrimSpace(line))
-					if l != len(lines)-1 {
-						sb.WriteString(newLineSep)
-					}
-				}
-				forceNewline = true
-			}
-			if i != 0 || forceNewline {
-				sb.WriteString(sep)
-			}
-			variantForceNewLine := variant.print(sb, options, len(sep))
-			forceNewline = forceNewline || variantForceNewLine
-		}
-	} else if t.IsConstructorFields {
-		hasComments := false
-		if !options.ignoreComments {
-			for _, field := range t.ConstructorFields {
-				hasComments = hasComments || field.CommentBefore != ""
-				if hasComments {
-					break
-				}
-			}
-		}
-		forceNewline = forceNewline || hasComments
-		sep := defaultSep
-		if forceNewline {
-			sep = newLineSep
-		}
-		for i, field := range t.ConstructorFields {
-			if i != 0 || forceNewline {
-				sb.WriteString(sep)
-			}
-			if !options.ignoreComments {
-				if field.CommentBefore != "" {
-					lines := strings.Split(field.CommentBefore, "\n")
-					for _, line := range lines {
-						sb.WriteString(strings.TrimSpace(line))
-						sb.WriteString(sep)
-					}
-				}
-			}
-			field.Print(sb)
+	if !isReturnType {
+		if t.IsAlias() {
+			sb.WriteString(" <=> ")
+		} else {
+			sb.WriteString(" = ")
 		}
 	} else {
-		t.TypeAlias.Print(sb)
+		if t.IsAlias() {
+			sb.WriteString("<=>")
+		}
 	}
+	if t.IsAlias() {
+		t.TypeAlias.Print(sb)
+	} else {
+		if t.StructType.IsUnionType {
+			hasComments := false
+			if !options.ignoreComments {
+				for _, variant := range t.StructType.UnionType.Variants {
+					hasComments = hasComments || variant.HasBeforeCommentIn()
+					if hasComments {
+						break
+					}
+				}
+			}
+			forceNewline = forceNewline || hasComments
+			sep := defaultSep + "| "
+			if forceNewline {
+				sep = newLineSep + "| "
+			}
+			for i, variant := range t.StructType.UnionType.Variants {
+				if !options.ignoreComments && len(variant.CommentBefore) != 0 {
+					sb.WriteString(newLineSep)
+					lines := strings.Split(variant.CommentBefore, "\n")
+					for l, line := range lines {
+						sb.WriteString(strings.TrimSpace(line))
+						if l != len(lines)-1 {
+							sb.WriteString(newLineSep)
+						}
+					}
+					forceNewline = true
+				}
+				if i != 0 || forceNewline {
+					sb.WriteString(sep)
+				}
+				variantForceNewLine := variant.print(sb, options, len(sep))
+				forceNewline = forceNewline || variantForceNewLine
+			}
+		} else {
+			hasComments := false
+			if !options.ignoreComments {
+				for _, field := range t.StructType.ConstructorFields {
+					hasComments = hasComments || field.CommentBefore != ""
+					if hasComments {
+						break
+					}
+				}
+			}
+			forceNewline = forceNewline || hasComments
+			sep := defaultSep
+			if forceNewline {
+				sep = newLineSep
+			}
+			for i, field := range t.StructType.ConstructorFields {
+				if i != 0 || forceNewline {
+					sb.WriteString(sep)
+				}
+				if !options.ignoreComments {
+					if field.CommentBefore != "" {
+						lines := strings.Split(field.CommentBefore, "\n")
+						for _, line := range lines {
+							sb.WriteString(strings.TrimSpace(line))
+							sb.WriteString(sep)
+						}
+					}
+				}
+				field.Print(sb)
+			}
+		}
+	}
+
 	return forceNewline
 }
 
@@ -276,15 +289,17 @@ func (t *TL2UnionConstructor) printVariantFields(sb *strings.Builder, options fo
 }
 
 func (t *TL2Field) Print(sb *strings.Builder) {
-	if t.IsIgnored {
-		sb.WriteString("_")
-	} else {
-		sb.WriteString(t.Name)
+	if t.Name != "" {
+		if t.IsIgnored {
+			sb.WriteString("_")
+		} else {
+			sb.WriteString(t.Name)
+		}
+		if t.IsOptional {
+			sb.WriteString("?")
+		}
+		sb.WriteString(":")
 	}
-	if t.IsOptional {
-		sb.WriteString("?")
-	}
-	sb.WriteString(":")
 	t.Type.Print(sb)
 }
 

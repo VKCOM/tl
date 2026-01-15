@@ -67,14 +67,22 @@ type TL2Field struct {
 	CommentBefore string
 }
 
-// TL2TypeDefinition = TL2TypeRef | TL2Field* | TL2UnionType;
+// TL2TypeDefinition = (eq TL2StructTypeDefinition) | (alias TL2TypeRef);
 type TL2TypeDefinition struct {
-	TypeAlias         TL2TypeRef
+	StructType TL2StructTypeDefinition
+	TypeAlias  TL2TypeRef
+
+	IsTypeAlias bool
+
+	PR PositionRange
+}
+
+// TL2StructTypeDefinition := TL2Field* | TL2UnionType;
+type TL2StructTypeDefinition struct {
 	ConstructorFields []TL2Field
 	UnionType         TL2UnionType
 
-	IsConstructorFields bool
-	IsUnionType         bool
+	IsUnionType bool
 
 	PR PositionRange
 }
@@ -105,10 +113,9 @@ type TL2UnionType struct {
 	PR PositionRange
 }
 
-type TL2TypeCategory string
-
-const TL2TypeCategoryType TL2TypeCategory = "type"
-const TL2TypeCategoryNat TL2TypeCategory = "uint32" // TODO - #
+type TL2TypeCategory struct {
+	IsNatValue bool
+}
 
 // TL2TypeTemplate := name cl name;
 type TL2TypeTemplate struct {
@@ -132,7 +139,7 @@ type TL2TypeDeclaration struct {
 	PRID   PositionRange
 }
 
-// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
+// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* TL2FuncReturnTypeDefinition;
 type TL2FuncDeclaration struct {
 	Name       TL2TypeName
 	Magic      uint32
@@ -178,19 +185,23 @@ func (f TL2Field) IsOmitted() bool {
 }
 
 func (t TL2TypeDefinition) IsAlias() bool {
-	return !t.IsUnionType && !t.IsConstructorFields
+	return t.IsTypeAlias
 }
 
 func (c TL2TypeCategory) IsType() bool {
-	return c == TL2TypeCategoryType
+	return !c.IsNat()
 }
 
-func (c TL2TypeCategory) IsUint32() bool {
-	return c == TL2TypeCategoryNat
+func (c TL2TypeCategory) IsNat() bool {
+	return c.IsNatValue
 }
 
-func (c TL2TypeCategory) IsLegalCategory() bool {
-	return c.IsUint32() || c.IsType()
+func (c TL2TypeCategory) String() string {
+	if c.IsNatValue {
+		return "#"
+	} else {
+		return "Type"
+	}
 }
 
 func (t TL2UnionConstructor) HasBeforeCommentIn() bool {

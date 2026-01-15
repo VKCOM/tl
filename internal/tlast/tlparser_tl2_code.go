@@ -173,28 +173,28 @@ func parseTL2Annotation(tokens tokenIterator, position Position) (state Optional
 	return
 }
 
-// TL2TypeName := (lcName dot)? lcName;
+// TL2TypeName := (name dot)? name;
 func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeName) {
 	restTokens = tokens
 	state.StartProcessing = true
 	switch {
-	case restTokens.checkToken(lcIdent):
+	case restTokens.checkToken(lcIdent) || restTokens.checkToken(ucIdent):
 		result.Name = restTokens.popFront().val
-	case restTokens.checkToken(lcIdentNS):
+	case restTokens.checkToken(lcIdentNS) || restTokens.checkToken(ucIdentNS):
 		value := restTokens.popFront().val
 		dotIndex := strings.Index(value, ".")
 
 		result.Namespace = value[:dotIndex]
 		result.Name = value[dotIndex+1:]
-	case restTokens.checkToken(ucIdentNS):
-		state.Fail("TL2 type names can't start from uppercase")
 	default:
 		state.StartProcessing = false
 	}
 	return
 }
 
-// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
+// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* tl2FuncReturnTypeDefinition;
+//
+// tl2FuncReturnTypeDefinition := funEq ((alias? TL2TypeRef) | TL2StructTypeDefinition);
 func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2FuncDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -227,21 +227,56 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 	if restTokens.expect(functionSign) {
 		state.StartProcessing = true
 
-		var localState OptionalState
-		localState, restTokens, result.ReturnType = parseTL2TypeDefinition(restTokens, position)
-		state.Inherit(localState)
-		if localState.IsOmitted() {
-			result.ReturnType.IsUnionType = false
-			result.ReturnType.IsConstructorFields = true
-			return
+		if restTokens.checkToken(tl2alias) {
+			restTokens.popFront()
+			result.ReturnType.IsTypeAlias = true
+
+			var localState OptionalState
+			localState, restTokens, result.ReturnType.TypeAlias = parseTL2Type(restTokens, position)
+			state.Inherit(localState)
+			if !localState.HasProgress() {
+				return
+			}
+		} else {
+			result.ReturnType.IsTypeAlias = false
+
+			var localState OptionalState
+			localState, restTokens, result.ReturnType.StructType = parseTL2StructTypeDefinition(restTokens, position)
+			// maybe it is typeref
+			if !localState.StartProcessing {
+				var tryRefState OptionalState
+				var ref TL2TypeRef
+				tryRefState, restTokens, ref = parseTL2Type(restTokens, position)
+				if tryRefState.IsFailed() {
+					state.Inherit(tryRefState)
+					return
+				}
+
+				// found ref
+				if tryRefState.StartProcessing {
+					// make it anonymous type
+					result.ReturnType.StructType.ConstructorFields = make([]TL2Field, 1)
+					result.ReturnType.StructType.ConstructorFields[0].Type = ref
+				}
+				state.StartProcessing = true
+			}
 		}
+
+		//var localState OptionalState
+		//localState, restTokens, result.ReturnType = parseTL2TypeDefinition(restTokens, position)
+		//state.Inherit(localState)
+		//if localState.IsOmitted() {
+		//	result.ReturnType.IsUnionType = false
+		//	result.ReturnType.IsConstructorFields = true
+		//	return
+		//}
 	}
 
 	result.PR.End = restTokens.front().pos
 	return
 }
 
-// TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? eq TL2TypeDefinition?;
+// TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? TL2TypeDefinition;
 func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2TypeDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -295,45 +330,62 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 
 	if restTokens.expect(equalSign) {
 		state.StartProcessing = true
+	} else if restTokens.expect(tl2alias) {
+		result.Type.IsTypeAlias = true
+		state.StartProcessing = true
 	} else {
 		restTokens = tokens
 		return
 	}
 
-	var localState OptionalState
-	localState, restTokens, result.Type = parseTL2TypeDefinition(restTokens, position)
-	state.Inherit(localState)
-	if localState.IsOmitted() {
-		result.Type.IsUnionType = false
-		result.Type.IsConstructorFields = true
-		return
+	if result.Type.IsTypeAlias {
+		var localState OptionalState
+		localState, restTokens, result.Type.TypeAlias = parseTL2Type(restTokens, position)
+		state.Inherit(localState)
+		if !state.ExpectProgress("expected type argument declaration") {
+			return
+		}
+	} else {
+		var localState OptionalState
+		localState, restTokens, result.Type.StructType = parseTL2StructTypeDefinition(restTokens, position)
+		state.Inherit(localState)
 	}
 	result.PR.End = restTokens.front().pos
 	return
 }
 
-// TL2TypeDefinition = TL2TypeRef | TL2Field* | TL2UnionType;
-func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeDefinition) {
+// TL2StructTypeDefinition := TL2Field* | TL2UnionType;
+func parseTL2StructTypeDefinition(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2StructTypeDefinition) {
 	restTokens = tokens
 	result.PR = restTokens.currentPositionRange(position)
 
-	state, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
-	if state.StartProcessing {
-		result.IsConstructorFields = true
+	state, restTokens, result.UnionType = parseTL2UnionType(restTokens, position)
+	if state.HasProgress() {
+		result.IsUnionType = true
 	} else {
-		state, restTokens, result.UnionType = parseTL2UnionType(restTokens, position)
-		if state.StartProcessing {
-			result.IsUnionType = true
+		restTokens = tokens
+		var fieldsState OptionalState
+		fieldsState, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
+		if fieldsState.IsFailed() {
+			state.Fail("expected type field declaration")
 		} else {
-			state, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
+			state = fieldsState
 		}
 	}
+	//if state.StartProcessing {
+	//	result.IsUnionType = true
+	//} else {
+	//	state, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
+	//}
 
 	result.PR.End = restTokens.front().pos
 	return
 }
 
-// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)*;
+// TL2UnionType := tl2UnionTypeMono | tl2UnionTypeMulti;
+//
+// tl2UnionTypeMono  := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
+// tl2UnionTypeMulti := TL2UnionConstructor (vb TL2UnionConstructor)+;
 func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionType) {
 	defer func() {
 		if !state.StartProcessing {
@@ -346,7 +398,9 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 
 	commentBefore := parseCommentBefore(tokens, restTokens)
 
+	isMonoUnion := false
 	if restTokens.expect(verticalBar) {
+		isMonoUnion = true
 		state.StartProcessing = true
 	}
 
@@ -370,13 +424,13 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 
 	for {
 		beforeVB := restTokens
-		rightBeforeBV := restTokens
-		rightBeforeBV.skipWS(Position{})
+		rightBeforeVB := restTokens
+		rightBeforeVB.skipWS(Position{})
 
 		if !restTokens.expect(verticalBar) {
 			break
 		}
-		commentBefore := parseCommentBefore(beforeVB, rightBeforeBV)
+		commentBefore := parseCommentBefore(beforeVB, rightBeforeVB)
 
 		state.StartProcessing = true
 		var localState OptionalState
@@ -398,18 +452,20 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 
 	if len(result.Variants) < 1 {
 		state.Fail("expected at least 1 variants of union type")
+	} else if len(result.Variants) == 1 && !isMonoUnion {
+		state.Fail("union with one constructor can't be without vertical bar before declaration")
 	}
 
 	result.PR.End = restTokens.front().pos
 	return
 }
 
-// TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
+// TL2UnionConstructor := name (TL2TypeRef | TL2Field*);
 func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionConstructor) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
-	if restTokens.checkToken(ucIdent) {
+	if restTokens.checkToken(ucIdent) || restTokens.checkToken(lcIdent) {
 		state.StartProcessing = true
 
 		result.PRName = restTokens.skipWS(position)
@@ -436,7 +492,9 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 	return
 }
 
-// TL2Field := ((lcName qm?) | ucs) cl TL2TypeRef;
+// TL2Field := ((tl2fieldName qm?) | ucs) cl TL2TypeRef;
+//
+// tl2fieldName := name | depName
 func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2Field) {
 	defer func() {
 		if !state.StartProcessing {
@@ -450,12 +508,12 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 	result.CommentBefore = parseCommentBefore(tokens, restTokens)
 
 	switch {
-	case restTokens.checkToken(lcIdent) || restTokens.checkToken(underscore):
+	case restTokens.checkToken(lcIdent) || restTokens.checkToken(underscore) || restTokens.checkToken(ucIdent) || restTokens.checkToken(tl2depName):
 		result.PRName = restTokens.skipWS(position)
 
 		nameToken := restTokens.popFront()
 		result.Name = nameToken.val
-		if nameToken.tokenType == underscore {
+		if nameToken.tokenType == underscore || nameToken.tokenType == tl2depName {
 			result.IsIgnored = true
 		}
 		result.PRName.End = restTokens.front().pos
@@ -618,13 +676,13 @@ func parseTL2TypeArgument(tokens tokenIterator, position Position) (state Option
 	return
 }
 
-// TL2TypeTemplate := lcName cl lcName;
+// TL2TypeTemplate := name cl TL2TypeCategory;
 func parseTL2TypeArgumentDeclaration(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeTemplate) {
 	restTokens = tokens
 	state.StartProcessing = true
 	result.PR = restTokens.skipWS(position)
 	switch {
-	case restTokens.checkToken(lcIdent):
+	case restTokens.checkToken(lcIdent) || restTokens.checkToken(ucIdent):
 		result.Name = restTokens.front().val
 		result.PRName = restTokens.skipWS(position)
 
@@ -636,18 +694,16 @@ func parseTL2TypeArgumentDeclaration(tokens tokenIterator, position Position) (s
 			break
 		}
 
-		if !restTokens.checkToken(lcIdent) {
-			state.Fail("can't parse category of type argument (it can't either \"uint32\" or \"type\")")
-			break
+		front := restTokens.front()
+		if !(front.tokenType == numberSign || front.val == "Type") {
+			state.Fail(fmt.Sprintf("unexpected type category %q (must be # or Type)", front.val))
+			return
 		}
 
-		result.Category = TL2TypeCategory(restTokens.front().val)
+		result.Category = TL2TypeCategory{IsNatValue: front.tokenType == numberSign}
 		result.PRCategory = restTokens.skipWS(position)
 		result.PRCategory.End = restTokens.front().pos
 		restTokens.popFront()
-		if !result.Category.IsLegalCategory() {
-			state.FailWithError(fmt.Errorf("unknown category of template: %s (allowed options: \"type\", \"uint32\")", result.Category))
-		}
 	default:
 		state.StartProcessing = false
 	}
