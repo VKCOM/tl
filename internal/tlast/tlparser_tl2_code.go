@@ -241,11 +241,28 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 	return
 }
 
-// TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? CRC32? eq TL2TypeDefinition?;
+// TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? eq TL2TypeDefinition?;
 func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2TypeDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 	result.Name = name
+
+	if restTokens.checkToken(crc32hash) {
+		result.PRID = restTokens.skipWS(position)
+		crcToken := restTokens.popFront()
+		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
+		if err != nil {
+			state.FailWithError(err)
+			return
+		}
+		if value == 0 {
+			state.FailWithError(fmt.Errorf("magic should not be 0"))
+			return
+		}
+		result.Magic = uint32(value)
+		result.PRID.End = restTokens.front().pos
+	}
+
 	switch {
 	case restTokens.expect(lAngleBracket):
 		state.StartProcessing = true
@@ -274,22 +291,6 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 			state.Fail("can't stop parse template arguments without closing brackets")
 			return
 		}
-	}
-
-	if restTokens.checkToken(crc32hash) {
-		result.PRID = restTokens.skipWS(position)
-		crcToken := restTokens.popFront()
-		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
-		if err != nil {
-			state.FailWithError(err)
-			return
-		}
-		if value == 0 {
-			state.FailWithError(fmt.Errorf("magic should not be 0"))
-			return
-		}
-		result.Magic = uint32(value)
-		result.PRID.End = restTokens.front().pos
 	}
 
 	if restTokens.expect(equalSign) {
