@@ -92,8 +92,8 @@ func runMain(opt *puregen.Options) error {
 		return gengo.Generate(kernel, opt)
 	case "tlo":
 		return fmt.Errorf("TODO generate TLO here")
-	case "htmldoc":
-		return fmt.Errorf("TODO generate HTML doc here")
+	case "tljson.html":
+		return fmt.Errorf("TODO generate tljson.html")
 	default:
 		return fmt.Errorf("unsupported language, must be 'go', 'tlo', 'htmldoc' or empty for linter: %q", opt.Language)
 	}
