@@ -8,10 +8,8 @@ package tlast
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -629,11 +627,11 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 }
 
 func ParseTL(str string) (TL, error) {
-	return ParseTLFile(str, "", LexerOptions{LexerLanguage: TL1}, os.Stdout)
+	return ParseTLFile(str, "", LexerOptions{LexerLanguage: TL1})
 }
 
 // ParseTLFile TL := TypesSection [ type ... ] FunctionSection [ function ... ]
-func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL, error) {
+func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 	lex := newLexer(str, file, opts)
 	allTokens, err := lex.generateTokens()
 	if err != nil {

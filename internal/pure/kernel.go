@@ -9,6 +9,7 @@ package pure
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -132,12 +133,40 @@ func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct
 	return ins2
 }
 
-func (k *Kernel) AddFileTL2(f tlast.TL2File) {
+func (k *Kernel) AddParsedFileTL1(f tlast.TL) {
+	k.filesTL1 = append(k.filesTL1, f...)
+}
+
+func (k *Kernel) AddParsedFileTL2(f tlast.TL2File) {
 	k.filesTL2 = append(k.filesTL2, f.Combinators...)
 }
 
-func (k *Kernel) AddFileTL1(f tlast.TL) {
-	k.filesTL1 = append(k.filesTL1, f...)
+func (k *Kernel) AddFileTL1(file string) error {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return fmt.Errorf("error reading schema file %q: %w", file, err)
+	}
+	dataStr := string(data)
+	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{AllowDirty: true})
+	if err != nil {
+		return err // Do not add excess info to already long parse error
+	}
+	k.AddParsedFileTL1(tl)
+	return nil
+}
+
+func (k *Kernel) AddFileTL2(file string) error {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return fmt.Errorf("error reading tl2 schema file %q: %w", file, err)
+	}
+	dataStr := string(data)
+	tl, err := tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2})
+	if err != nil {
+		return err // Do not add excess info to already long parse error
+	}
+	k.AddParsedFileTL2(tl)
+	return nil
 }
 
 func (k *Kernel) normalizeName(s string) string {
@@ -145,7 +174,7 @@ func (k *Kernel) normalizeName(s string) string {
 	return strings.ToLower(s)
 }
 
-func (k *Kernel) Compile() error {
+func (k *Kernel) Compile(opt *OptionsKernel) error {
 	if err := k.CompileTL1(); err != nil {
 		return err
 	}

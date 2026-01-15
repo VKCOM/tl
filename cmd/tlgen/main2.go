@@ -12,7 +12,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -202,14 +201,14 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	// parse tl1
 	paths, err := utils.WalkDeterministic(tlExt, args...)
 	if err != nil {
-		return fmt.Errorf("error while walkking through paths: %w", err)
+		return fmt.Errorf("error while walking through paths: %w", err)
 	}
 	for _, path := range paths {
-		tl, err := parseTlFile(path, true, opt)
+		tl, err := parseTlFile(path, true)
 		if err != nil {
 			return err
 		}
-		fullTl, err := parseTlFile(path, false, opt)
+		fullTl, err := parseTlFile(path, false)
 		if err != nil {
 			return err
 		}
@@ -233,10 +232,10 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	// parse tl2
 	pathsTL2, err := utils.WalkDeterministic(tl2Ext, args...)
 	if err != nil {
-		return fmt.Errorf("error while walkking through tl2 paths: %w", err)
+		return fmt.Errorf("error while walking through tl2 paths: %w", err)
 	}
 	for _, path := range pathsTL2 {
-		tl2, err := parseTL2File(path, opt)
+		tl2, err := parseTL2File(path)
 		if err != nil {
 			return fmt.Errorf("error while parsing %q: %s", path, err)
 		}
@@ -405,17 +404,14 @@ func runTL2Migration(opt *tlcodegen.Gen2Options, gen *tlcodegen.Gen2) error {
 }
 
 func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
-	clonedOpt := *opt
-	clonedOpt.ErrorWriter = io.Discard
-
 	log.Print("STEP: Load old tl schema to compare...")
 
-	parsedPaths, err := utils.WalkDeterministic(tlExt, clonedOpt.Schema2Compare)
+	parsedPaths, err := utils.WalkDeterministic(tlExt, opt.Schema2Compare)
 	if err != nil {
 		return err
 	}
 	oldTLPath := parsedPaths[0]
-	oldTL, err := parseTlFile(oldTLPath, true, &clonedOpt)
+	oldTL, err := parseTlFile(oldTLPath, true)
 	if err != nil {
 		return err
 	}
@@ -429,7 +425,7 @@ func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
 	return nil
 }
 
-func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (tlast.TL, error) {
+func parseTlFile(file string, replaceStrange bool) (tlast.TL, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("error reading schema file %q - %w", file, err)
@@ -451,20 +447,20 @@ func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (
 	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{
 		AllowBuiltin: false,
 		AllowDirty:   !replaceStrange,
-	}, opt.ErrorWriter)
+	})
 	if err != nil {
 		return tl, err // Do not add excess info to already long parse error
 	}
 	return tl, nil
 }
 
-func parseTL2File(file string, opt *tlcodegen.Gen2Options) (tlast.TL2File, error) {
+func parseTL2File(file string) (tlast.TL2File, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return tlast.TL2File{}, fmt.Errorf("error reading schema file %q - %w", file, err)
 	}
 	dataStr := string(data)
-	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, opt.ErrorWriter)
+	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2})
 }
 
 func runCreateModifiedTLFile(path string, tl tlast.TL) error {

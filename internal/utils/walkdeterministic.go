@@ -20,8 +20,6 @@ type pair struct {
 
 // WalkDeterministic recursively walks through roots directories
 // and returns all regular files with extension fileExt
-//
-// also copied to projects/vktl/cmd/sha256sum/sha256sum.go
 func WalkDeterministic(fileExt string, root ...string) ([]string, error) {
 	var pairs []pair
 	for _, r := range root {
