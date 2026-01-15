@@ -10,10 +10,11 @@ import (
 	"log"
 
 	"github.com/vkcom/tl/internal/tlcodegen"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func main() {
-	log.Printf("tlgen version: %s", tlcodegen.TLGenVersion())
+	log.Printf("tlgen version: %s", utils.AppVersion())
 
 	log.SetFlags(0)
 

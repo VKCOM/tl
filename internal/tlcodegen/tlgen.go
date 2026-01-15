@@ -12,7 +12,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"runtime/debug"
 	"sort"
 	"strconv"
 	"strings"
@@ -77,13 +76,6 @@ type LocalResolveContext struct {
 
 	allowAnyConstructor bool   // we can reference all constructors (functions, union elements) directly internally
 	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
-}
-
-func TLGenVersion() string {
-	if info, ok := debug.ReadBuildInfo(); ok {
-		return info.Main.Version
-	}
-	return ""
 }
 
 // checkArgsCollision checks if passed name is already used in local context.
@@ -1940,7 +1932,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", outdir, markerFile)
 	}
 	markerContent := fmt.Sprintf(buildVersionFormat,
-		strings.TrimSpace(TLGenVersion()),
+		strings.TrimSpace(utils.AppVersion()),
 		strings.TrimSpace(gen.options.SchemaURL),
 		strings.TrimSpace(gen.options.SchemaCommit),
 		gen.options.SchemaTimestamp, time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC())
@@ -2854,7 +2846,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	}
 
 	if options.SchemaDocumentation {
-		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, TLGenVersion())); err != nil {
+		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, utils.AppVersion())); err != nil {
 			return nil, err
 		}
 	}

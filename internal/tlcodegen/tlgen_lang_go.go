@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 	"golang.org/x/exp/slices"
 )
@@ -245,7 +246,7 @@ var _ = basictl.NatWrite
 		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageNameBytes, FactoryGoPackageNameBytes+goExt), gen.copyrightText+gen.generateFactoryBytes(sortedNames, directImports)); err != nil {
 			return err
 		}
-		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta(TLGenVersion())); err != nil {
+		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta(utils.AppVersion())); err != nil {
 			return err
 		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
