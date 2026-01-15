@@ -28,3 +28,6 @@ go.work
 
 # for local things
 /out
+
+/cmd/tl2gen/genold
+/cmd/tl2gen/gennew
