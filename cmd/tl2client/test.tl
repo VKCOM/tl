@@ -29,8 +29,8 @@ int#a8509bda ? = Int;
 
 //pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
-vector#1cb5c415 {t:Type} = Vector t; //  # [t]
-tuple#9770768a {t:Type} {n:#} = Tuple t n; // [t]
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 
 //pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 

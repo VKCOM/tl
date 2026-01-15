@@ -213,6 +213,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 	for i, fieldDef := range constructorFields {
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
+			rt, natArgs, err = k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())

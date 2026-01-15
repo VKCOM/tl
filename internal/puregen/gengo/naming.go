@@ -19,8 +19,5 @@ func canonicalGoName(name tlast.Name, insideNamespace string) string {
 }
 
 func canonicalGoName2(name tlast.TL2TypeName, insideNamespace string) string {
-	if name.Namespace == insideNamespace {
-		return utils.CNameToCamelName(name.Name)
-	}
-	return utils.CNameToCamelName(name.Namespace) + utils.CNameToCamelName(name.Name)
+	return canonicalGoName(tlast.Name(name), insideNamespace)
 }

@@ -20,6 +20,10 @@ var (
 	// errTypeParamNameCollision = fmt.Errorf("type-parametr name collision ")
 )
 
+func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
+	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
+}
+
 func (k *Kernel) CompileTL1() error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
@@ -29,9 +33,13 @@ func (k *Kernel) CompileTL1() error {
 		k.filesTL1[i].OriginalOrderIndex = i
 	}
 	for _, typ := range k.filesTL1 {
-		for _, f := range typ.Fields {
-			if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
-				return f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+		// vector and tuple are magical, do not look inside
+		// TODO - require exact definitions
+		if !k.shouldSkipDefinition(typ) {
+			for _, f := range typ.Fields {
+				if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
+					return f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+				}
 			}
 		}
 		conName := typ.Construct.Name.String()
