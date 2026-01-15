@@ -140,7 +140,14 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 		if len(comb.TemplateArguments) != len(tr.Args) {
 			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
 		}
-		ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt.combTL1, comb.TemplateArguments, tr.Args)
+		switch {
+		case tr.Type.String() == "vector":
+			ref.ins, err = k.createArrayTL1(canonicalName, false, comb.TemplateArguments, tr.Args)
+		case tr.Type.String() == "tuple":
+			ref.ins, err = k.createArrayTL1(canonicalName, true, comb.TemplateArguments, tr.Args)
+		default:
+			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt.combTL1, comb.TemplateArguments, tr.Args)
+		}
 		if err != nil {
 			return nil, err
 		}
