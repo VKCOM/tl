@@ -785,18 +785,9 @@ func (gen *Gen2) genMaybeTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinato
 	return kernelType, nil
 }
 
+// TODO - remove
 func snakeToCamelCase(s string) string {
-	parts := strings.Split(s, "_")
-	newS := ""
-	for _, part := range parts {
-		if len(part) > 0 {
-			newS += strings.ToUpper(part[:1]) + part[1:]
-		}
-	}
-	if newS == "" {
-		return newS
-	}
-	return strings.ToUpper(newS[:1]) + newS[1:]
+	return utils.CNameToCamelName(s)
 }
 
 func getCombinatorNames(combinator tlast.TL2Combinator, argTail string) (localName string, globalName string) {
@@ -890,7 +881,7 @@ func (w *TypeRWWrapper) wrapperNameTail() (tail string) {
 		if a.isNat {
 			b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
 		} else {
-			b.WriteString(utils.UpperFirst(a.tip.goGlobalName))
+			b.WriteString(utils.ToUpperFirst(a.tip.goGlobalName))
 		}
 	}
 	return b.String()

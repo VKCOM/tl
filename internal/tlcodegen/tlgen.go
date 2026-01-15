@@ -449,9 +449,9 @@ func (gen *Gen2) InternalPrefix() string {
 
 func canonicalGoName(name tlast.Name, insideNamespace string) string {
 	if name.Namespace == insideNamespace {
-		return CNameToCamelName(name.Name)
+		return utils.CNameToCamelName(name.Name)
 	}
-	return CNameToCamelName(name.Namespace) + CNameToCamelName(name.Name)
+	return utils.CNameToCamelName(name.Namespace) + utils.CNameToCamelName(name.Name)
 }
 
 func (gen *Gen2) getNamespace(n string) *Namespace {

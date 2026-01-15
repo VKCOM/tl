@@ -204,7 +204,7 @@ testpure: build
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/genold/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -217,7 +217,7 @@ testpure: build
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/gennew/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \

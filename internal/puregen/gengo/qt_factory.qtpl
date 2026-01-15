@@ -1,0 +1,48 @@
+{%- import "fmt" -%}
+{%- import "cmp" -%}
+{%- import "golang.org/x/exp/slices" -%}
+{%- import "github.com/vkcom/tl/internal/tlast" -%}
+
+{%- func (gen *genGo)generateConstants(commentString, pkgName string) -%}
+{%s= commentString %}
+package {%s= pkgName %}
+{%- code
+	var sortedConstructors []*tlast.Combinator
+	for _, c := range gen.kernel.TL1() {
+		if c.Crc32() == 0 {
+			continue
+		}
+		sortedConstructors = append(sortedConstructors, c)
+	}
+	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
+		return cmp.Compare(a.Construct.Name.String(), b.Construct.Name.String())
+	})
+
+	var sortedTL2Combinators []tlast.TL2Combinator
+	for _, combinator := range gen.kernel.TL2()  {
+		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
+			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+		}
+	}
+	slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
+		return cmp.Compare(a.ReferenceName().String(), b.ReferenceName().String())
+	})
+-%}
+const (
+    {%- for _, c := range sortedConstructors -%}
+        {%- if c.Crc32() == 0 -%} {%- continue -%} {%- endif -%}
+        {%s= canonicalGoName(c.Construct.Name, "") %} = {%s= fmt.Sprintf("%#08x", c.Crc32()) %} // {%s= c.Construct.Name.String() %}
+    {%- endfor -%}
+    {%- for _, c := range sortedTL2Combinators -%}
+        {%- code
+            refName := c.ReferenceName()
+            magic := c.FuncDecl.Magic
+            if !c.IsFunction {
+                magic = c.TypeDecl.Magic
+            }
+            name := canonicalGoName2(refName, "")
+        -%}
+        {%s name %} = {%s= fmt.Sprintf("%#08x", magic) %} // {%s= refName.String() %}
+    {%- endfor -%}
+)
+{%- endfunc  -%}

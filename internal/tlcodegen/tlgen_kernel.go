@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 // Instantiation kernel of tlgen.
@@ -339,8 +340,8 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		myWrapper.trw = &TypeRWBool{
 			isBit:       false,
 			wr:          myWrapper,
-			falseGoName: gen.globalDec.deconflictName(CNameToCamelName(falseDesc.Construct.Name.String())),
-			trueGoName:  gen.globalDec.deconflictName(CNameToCamelName(trueDesc.Construct.Name.String())),
+			falseGoName: gen.globalDec.deconflictName(utils.CNameToCamelName(falseDesc.Construct.Name.String())),
+			trueGoName:  gen.globalDec.deconflictName(utils.CNameToCamelName(trueDesc.Construct.Name.String())),
 			falseTag:    falseDesc.Crc32(),
 			trueTag:     trueDesc.Crc32(),
 		}
@@ -520,7 +521,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 			originalName: field.FieldName,
 			t:            fieldType,
 			bare:         fieldTypeBare,
-			goName:       res.fieldsDec.deconflictName(CNameToCamelName(fieldName)),
+			goName:       res.fieldsDec.deconflictName(utils.CNameToCamelName(fieldName)),
 			cppName:      res.fieldsDecCPP.deconflictName(fieldName),
 			natArgs:      fieldNatArgs,
 			origTL:       field,
