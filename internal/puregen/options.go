@@ -1,0 +1,51 @@
+// Copyright 2025 V Kontakte LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+package puregen
+
+import (
+	"flag"
+	"io"
+
+	"github.com/vkcom/tl/internal/pure"
+)
+
+type Options struct {
+	Language          string
+	Outdir            string
+	CopyrightFilePath string
+
+	Verbose     bool
+	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+
+	SchemaURL       string
+	SchemaTimestamp uint // for TLO version/date
+	SchemaCommit    string
+
+	Kernel pure.OptionsKernel
+	Go     OptionsGo
+}
+
+func (opt *Options) Bind(f *flag.FlagSet) {
+	f.StringVar(&opt.Language, "language", "",
+		`generation target language (go, cpp, php). Empty for linter.`)
+	f.StringVar(&opt.Outdir, "outdir", "",
+		`where to write generated files`)
+	f.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
+		"path to file with copyright text")
+	f.BoolVar(&opt.Verbose, "v", false,
+		"verbose mode that prints debug info")
+
+	f.StringVar(&opt.SchemaURL, "schemaURL", "",
+		"url of schema (for documentation)")
+	f.UintVar(&opt.SchemaTimestamp, "schemaTimestamp", 0,
+		"timestamp of schema (for documentation, TLO version)")
+	f.StringVar(&opt.SchemaCommit, "schemaCommit", "",
+		"commit of schema (for documentation)")
+
+	opt.Kernel.Bind(f)
+	opt.Go.Bind(f)
+}

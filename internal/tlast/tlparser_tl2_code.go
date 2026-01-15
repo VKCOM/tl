@@ -2,9 +2,7 @@ package tlast
 
 import (
 	"fmt"
-	"io"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -78,11 +76,11 @@ func zeroOrMore[T any](parser OptionalParse[T]) OptionalParse[[]T] {
 }
 
 func ParseTL2(str string) (TL2File, error) {
-	return ParseTL2File(str, "", LexerOptions{LexerLanguage: TL2}, os.Stdout)
+	return ParseTL2File(str, "", LexerOptions{LexerLanguage: TL2})
 }
 
 // TL2File := TL2Combinator* EOF;
-func ParseTL2File(str, file string, opts LexerOptions, errorWriter io.Writer) (tl2File TL2File, err error) {
+func ParseTL2File(str, file string, opts LexerOptions) (tl2File TL2File, err error) {
 	if opts.LexerLanguage != TL2 {
 		return TL2File{}, fmt.Errorf("ParseTL2File can't parse nothing rather than TL2")
 	}

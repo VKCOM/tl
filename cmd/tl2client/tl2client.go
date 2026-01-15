@@ -142,24 +142,6 @@ func (m model) View() string {
 	return m.impl.View()
 }
 
-func parseTL2File(file string) (tlast.TL2File, error) {
-	data, err := os.ReadFile(file)
-	if err != nil {
-		return tlast.TL2File{}, fmt.Errorf("error reading tl2 schema file %q - %w", file, err)
-	}
-	dataStr := string(data)
-	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, os.Stdout)
-}
-
-func parseTL1File(file string) (tlast.TL, error) {
-	data, err := os.ReadFile(file)
-	if err != nil {
-		return tlast.TL{}, fmt.Errorf("error reading tl1 schema file %q - %w", file, err)
-	}
-	dataStr := string(data)
-	return tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{}, os.Stdout)
-}
-
 func main() {
 	log.Printf("tl2client WIP version: %s", utils.AppVersion())
 
@@ -175,25 +157,23 @@ func main() {
 	for _, arg := range flag.Args() {
 		switch {
 		case strings.HasSuffix(arg, "tl2"):
-			f, err := parseTL2File(arg)
+			err := kernel.AddFileTL2(arg)
 			if err != nil {
 				log.Printf("%v", err)
 				os.Exit(3)
 			}
-			kernel.AddFileTL2(f)
 		case strings.HasSuffix(arg, "tl"):
-			f, err := parseTL1File(arg)
+			err := kernel.AddFileTL1(arg)
 			if err != nil {
 				log.Printf("%v", err)
 				os.Exit(4)
 			}
-			kernel.AddFileTL1(f)
 		default:
 			log.Printf("tl2client unsupported filename %q, must have .tl or tl2 suffix", arg)
 			os.Exit(5)
 		}
 	}
-	err := kernel.Compile()
+	err := kernel.Compile(&pure.OptionsKernel{})
 	if err != nil {
 		log.Printf("%v", err)
 		os.Exit(4)

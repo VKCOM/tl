@@ -25,6 +25,9 @@ func (k *Kernel) CompileTL1() error {
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}
 	typeDescriptors := map[string][]*tlast.Combinator{}
+	for i := range k.filesTL1 {
+		k.filesTL1[i].OriginalOrderIndex = i
+	}
 	for _, typ := range k.filesTL1 {
 		for _, f := range typ.Fields {
 			if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
