@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/internal/puregen/gengo"
 	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 	"golang.org/x/exp/slices"
@@ -250,7 +251,7 @@ var _ = basictl.NatWrite
 			return err
 		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
-		code = fmt.Sprintf(internalTLCodeHeader, HeaderComment, "internal") + internalTLCodeBody
+		code = fmt.Sprintf(gengo.InternalTLCodeHeader, HeaderComment, "internal") + gengo.InternalTLCodeBody
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
 			return err
 		}

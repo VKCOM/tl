@@ -203,12 +203,12 @@ testpure: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/genold/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+		./cmd/tl2client/test.tl
 	@./target/bin/tl2gen --language=go -v \
 		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
@@ -216,12 +216,12 @@ testpure: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/gennew/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+		./cmd/tl2client/test.tl
 	@echo "Checking that generated code actually compiles..."
 	$(GO) build ./cmd/tl2gen/genold/...
 	$(GO) build ./cmd/tl2gen/gennew/...

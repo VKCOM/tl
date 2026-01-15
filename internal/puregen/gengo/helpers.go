@@ -4,11 +4,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package tlcodegen
+package gengo
 
 const binaryStringObjectKey = "base64"
 
-const internalTLCodeHeader = `%s
+const InternalTLCodeHeader = `%s
 package %s
 
 import (
@@ -22,7 +22,7 @@ import (
 )
 `
 
-const internalTLCodeBody = `
+const InternalTLCodeBody = `
 
 type UnionElement struct {
 	TLTag    uint32

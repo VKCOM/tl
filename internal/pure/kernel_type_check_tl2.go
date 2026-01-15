@@ -91,6 +91,7 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 				return fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category)
 			}
 		}
+		return nil
 	}
 	if kt.combTL1[0].IsFunction {
 		return fmt.Errorf("cannot reference function %s", someType.Name)
