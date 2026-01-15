@@ -387,9 +387,6 @@ type Gen2 struct {
 	options             *Gen2Options // pointer so code modifying options in GenerateCode refers to the same structure
 	rawHandlerWhileList []string
 
-	// artifacts
-	RootPackageName string
-
 	// golang specific
 	BasicPackageNameFull     string // basic types are in separate namespace to minimize conflicts
 	BasicPackageRelativePath string // if cannot determine relative path, will not be written
@@ -2066,7 +2063,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		options.TLPackageNameFull = strings.Join(elements[:len(elements)-1], "/")
 		outdirElements := slices.Clone(elements[:len(elements)-1])
 		gen.GlobalPackageName = elements[len(elements)-1]
-		gen.RootPackageName = elements[len(elements)-2]
+		// gen.RootPackageName = elements[len(elements)-2]
 		gen.FactoryPackageName = strings.Join(append(outdirElements, FactoryGoPackageName), "/")
 		gen.MetaPackageName = strings.Join(append(outdirElements, MetaGoPackageName), "/")
 		if gen.GlobalPackageName == "" || elements[len(elements)-2] == "" {
@@ -2117,7 +2114,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	typesWhiteList := prepareNameFilter(options.TypesWhiteList)
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
-	gen.supportedAnnotations = map[string]struct{}{"read": struct{}{}, "any": struct{}{}, "internal": struct{}{}, "write": struct{}{}, "readwrite": struct{}{}, "kphp": struct{}{}}
+	gen.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
 	gen.rawHandlerWhileList = prepareNameFilter(options.RawHandlerWhileList)
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{

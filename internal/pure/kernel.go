@@ -174,7 +174,7 @@ func (k *Kernel) normalizeName(s string) string {
 	return strings.ToLower(s)
 }
 
-func (k *Kernel) Compile(opt *OptionsKernel) error {
+func (k *Kernel) Compile(opts *OptionsKernel) error {
 	if err := k.CompileTL1(); err != nil {
 		return err
 	}
@@ -255,6 +255,12 @@ func (k *Kernel) Compile(opt *OptionsKernel) error {
 			}
 		}
 	}
+	if err := k.CheckTagCollisions(opts); err != nil {
+		return err
+	}
+	if err := k.CheckNamespaceCollisions(opts); err != nil {
+		return err
+	}
 	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
 		if tip.originTL2 {
@@ -304,5 +310,15 @@ func (k *Kernel) Compile(opt *OptionsKernel) error {
 			return fmt.Errorf("found recursive cycle %s", res)
 		}
 	}
+	return nil
+}
+
+func (k *Kernel) CheckTagCollisions(opts *OptionsKernel) error {
+	// TODO
+	return nil
+}
+
+func (k *Kernel) CheckNamespaceCollisions(opts *OptionsKernel) error {
+	// TODO
 	return nil
 }
