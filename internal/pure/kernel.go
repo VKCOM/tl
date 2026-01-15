@@ -133,6 +133,14 @@ func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct
 	return ins2
 }
 
+func (k *Kernel) TL1() []*tlast.Combinator {
+	return k.filesTL1
+}
+
+func (k *Kernel) TL2() []tlast.TL2Combinator {
+	return k.filesTL2
+}
+
 func (k *Kernel) AddParsedFileTL1(f tlast.TL) {
 	k.filesTL1 = append(k.filesTL1, f...)
 }
