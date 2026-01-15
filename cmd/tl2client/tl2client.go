@@ -18,7 +18,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 type model struct {
@@ -161,7 +161,7 @@ func parseTL1File(file string) (tlast.TL, error) {
 }
 
 func main() {
-	log.Printf("tl2client WIP version: %s", tlcodegen.TLGenVersion())
+	log.Printf("tl2client WIP version: %s", utils.AppVersion())
 
 	var runUI bool
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")

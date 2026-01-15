@@ -9,6 +9,7 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"runtime/debug"
 )
 
 func JsonPrettyPrint(in []byte) []byte {
@@ -18,4 +19,11 @@ func JsonPrettyPrint(in []byte) []byte {
 		return in
 	}
 	return out.Bytes()
+}
+
+func AppVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		return info.Main.Version
+	}
+	return ""
 }
