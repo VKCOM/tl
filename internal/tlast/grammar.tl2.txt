@@ -1,15 +1,17 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq ((alias? TL2TypeRef) | TL2TypeDefinitionStruct);
+TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* tl2FuncReturnTypeDefinition;
 TL2TypeDeclaration := TL2TypeName CRC32? (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? TL2TypeDefinition;
 
-TL2TypeDefinition = (eq TL2StructTypeDefinition) | (alias TL2TypeRef);
+// parse to TL2TypeDefinition with case "=> TL2TypeRef" as anonymous type with anonymous field
+tl2FuncReturnTypeDefinition := funEq ((alias? TL2TypeRef) | TL2TypeDefinitionStruct);
+TL2TypeDefinition := (alias TL2TypeRef) | (eq TL2StructTypeDefinition);
 
 TL2StructTypeDefinition := TL2Field* | TL2UnionType;
 
 TL2UnionType := tl2UnionTypeMono | tl2UnionTypeMulti;
-tl2UnionTypeMono := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
+tl2UnionTypeMono  := vb TL2UnionConstructor (vb TL2UnionConstructor)*;
 tl2UnionTypeMulti := TL2UnionConstructor (vb TL2UnionConstructor)+;
 
 TL2UnionConstructor := name (TL2TypeRef | TL2Field*);
@@ -23,12 +25,12 @@ TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts
 TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 
 TL2TypeArgument := TL2TypeRef | number;
-TL2TypeTemplate := name cl TL2Category;
+TL2TypeTemplate := name cl TL2TypeCategory;
 
 TL2TypeName := (name dot)? name;
 TL2Annotation := at lcName;
 
-TL2Category = cNat | cType;
+TL2TypeCategory = cNat | cType;
 
 // tokens
 CRC32 := #[a-f0-9]{8};
