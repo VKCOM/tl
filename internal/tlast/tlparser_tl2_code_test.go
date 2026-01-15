@@ -505,6 +505,35 @@ testNs.testName = Green x:int |
 			assert.Equal(t, "_", variants[2].Fields[1].Name)
 
 		})
+
+		t.Run("func with alias return type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => <=>int; `)
+			comb, newIt, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.True(t, newIt.expect(eof))
+
+			assert.True(t, comb.IsFunction)
+			assert.True(t, comb.FuncDecl.ReturnType.IsTypeAlias)
+			assert.Equal(t, "int", comb.FuncDecl.ReturnType.TypeAlias.String())
+		})
+
+		t.Run("func with anonymous return type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => int; `)
+			comb, newIt, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.True(t, newIt.expect(eof))
+
+			assert.True(t, comb.IsFunction)
+			assert.False(t, comb.FuncDecl.ReturnType.IsTypeAlias)
+
+			typ := comb.FuncDecl.ReturnType.StructType
+
+			assert.False(t, typ.IsUnionType)
+			assert.Equal(t, 1, len(typ.ConstructorFields))
+			assert.Equal(t, "", typ.ConstructorFields[0].Name)
+			assert.Equal(t, "int", typ.ConstructorFields[0].Type.String())
+
+		})
 	})
 
 	t.Run("type reference", func(t *testing.T) {
@@ -838,7 +867,6 @@ x:int;`)
 			})
 
 			t.Run("union", func(t *testing.T) {
-
 				t.Run("before first constructor", func(t *testing.T) {
 					it, _ := setupIterator(`
 testNs.testName<x:Type, y:#> = 
@@ -878,5 +906,9 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 				})
 			})
 		})
+	})
+
+	t.Run("beautiful errors", func(t *testing.T) {
+
 	})
 }
