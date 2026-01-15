@@ -25,6 +25,10 @@ type Options struct {
 	SchemaTimestamp uint // for TLO version/date
 	SchemaCommit    string
 
+	// common options for many languages
+	GenerateRPCCode    bool
+	GenerateRandomCode bool
+
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
 }
@@ -45,6 +49,11 @@ func (opt *Options) Bind(f *flag.FlagSet) {
 		"timestamp of schema (for documentation, TLO version)")
 	f.StringVar(&opt.SchemaCommit, "schemaCommit", "",
 		"commit of schema (for documentation)")
+
+	f.BoolVar(&opt.GenerateRPCCode, "generateRPCCode", false,
+		"whether to generate *_server.go files")
+	f.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
+		"whether to generate methods for random filling structs")
 
 	opt.Kernel.Bind(f)
 	opt.Go.Bind(f)

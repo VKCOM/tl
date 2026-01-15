@@ -1,23 +1,5 @@
 GO = go
 
-BUILD_VERSION    := $(if $(BUILD_VERSION),$(BUILD_VERSION),$(shell git describe --tags --always --dirty))
-BUILD_COMMIT     := $(if $(BUILD_COMMIT),$(BUILD_COMMIT),$(shell git log --format="%H" -n 1))
-BUILD_COMMIT_TS  := $(if $(BUILD_COMMIT_TS),$(BUILD_COMMIT_TS),$(shell git log --format="%ct" -n 1))
-BUILD_BRANCH     := $(if $(BUILD_BRANCH),$(BUILD_BRANCH),$(shell git rev-parse --abbrev-ref HEAD))
-BUILD_TIME       := $(if $(BUILD_TIME),$(BUILD_TIME),$(shell date +%FT%T%z))
-BUILD_MACHINE    := $(if $(BUILD_MACHINE),$(BUILD_MACHINE),$(shell uname -n -m -r -s))
-BUILD_GO_VERSION := $(if $(BUILD_GO_VERSION),$(BUILD_GO_VERSION),$(shell $(GO) version | cut -d' ' -f3))
-
-COMMON_BUILD_VARS := \
-  -X 'github.com/vkcom/tl/pkg/build.buildTimestamp=$(BUILD_TIME)' \
-  -X 'github.com/vkcom/tl/pkg/build.machine=$(BUILD_MACHINE)' \
-  -X 'github.com/vkcom/tl/pkg/build.commit=$(BUILD_COMMIT)' \
-  -X 'github.com/vkcom/tl/pkg/build.version=$(BUILD_VERSION)' \
-  -X 'github.com/vkcom/tl/pkg/build.commitTimestamp=$(BUILD_COMMIT_TS)' \
-  -X 'github.com/vkcom/tl/pkg/build.branchName=$(BUILD_BRANCH)' \
-
-COMMON_LDFLAGS = $(COMMON_BUILD_VARS) -extldflags '-O2'
-
 TEST_PATH := internal/tlcodegen/test
 TLS_PATH := $(TEST_PATH)/tls
 GEN_PATH := $(TEST_PATH)/gen
@@ -30,8 +12,9 @@ all: build
 
 .PHONY: build
 build: # build static binary to run on many linux variants
-	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
-	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tl2client ./cmd/tl2client
+	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tl2gen ./cmd/tl2gen
+	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tl2client ./cmd/tl2client
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \
@@ -210,3 +193,35 @@ check: build test lint
 .PHONY: lint
 lint:
 	@$(GO) run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.6 run internal/tlcodegen/test/gen/...
+
+.PHONY: testpure
+testpure: build
+	@./target/bin/tlgen --language=go -v \
+		--tl2-generate=true \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./cmd/tl2gen/genold \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
+		--schemaCommit=abcdefgh \
+		--schemaTimestamp=301822800 \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+	@./target/bin/tl2gen --language=go -v \
+		--tl2-generate=true \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./cmd/tl2gen/gennew \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
+		--schemaCommit=abcdefgh \
+		--schemaTimestamp=301822800 \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+	@echo "Checking that generated code actually compiles..."
+	$(GO) build ./cmd/tl2gen/genold/...
+	$(GO) build ./cmd/tl2gen/gennew/...
