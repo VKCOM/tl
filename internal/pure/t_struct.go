@@ -107,6 +107,7 @@ func (k *Kernel) createStruct(canonicalName string,
 			fieldMask = &ActualNatArg{} // TODO - mark as TL2
 		}
 		ins.fields = append(ins.fields, Field{
+			name:      fieldDef.Name,
 			ins:       fieldIns,
 			fieldMask: fieldMask,
 		})
@@ -198,7 +199,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 			canonicalName: canonicalName,
 			NatParams:     natParams,
 		},
-		isConstructorFields: false,
+		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
@@ -218,6 +219,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 		//	fieldMask = &ActualNatArg{} // TODO - mark as TL2
 		//}
 		ins.fields = append(ins.fields, Field{
+			name:      fieldDef.FieldName,
 			ins:       fieldIns,
 			fieldMask: fieldMask,
 			natArgs:   natArgs,
