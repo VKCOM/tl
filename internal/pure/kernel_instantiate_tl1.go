@@ -11,12 +11,27 @@ import (
 	"log"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 type LocalArg struct {
 	wrongTypeErr error // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
 	arg          tlast.ArithmeticOrType
 	natArgs      []ActualNatArg
+}
+
+// we remap TL1 type names into TL2 type names here.
+// hopefully, this does not cause too many irregularities downstream
+func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
+	switch canonicalName {
+	case "int":
+		canonicalName = "int32"
+	case "long":
+		canonicalName = "int64"
+	case "#":
+		canonicalName = "uint32"
+	}
+	return canonicalName
 }
 
 func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgument,
@@ -51,6 +66,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if tr.IsArith {
 		return tr, nil, nil
 	}
+	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
 	// names found in local arguments have priority over global type names
 	if tr.T.Type.Namespace == "" {
 		for i, targ := range leftArgs {
@@ -62,11 +78,77 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 				if actualArg.wrongTypeErr != nil {
 					return tr, nil, fmt.Errorf("reference to field %s impossible, must have # type", targ.FieldName)
 				}
+				if actualArg.arg.T.Type.String() == "*" {
+					if tr.T.Bare {
+						e1 := tr.T.PR.BeautifulError(fmt.Errorf("#-param reference %q cannot be bare", tr.T))
+						//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+						//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+						return tr, nil, e1
+					}
+					return actualArg.arg, actualArg.natArgs, nil
+				}
+				kt, ok := k.tips[tName]
+				if !ok {
+					return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
+				}
+				if kt.originTL2 {
+					return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
+				}
+				if tr.T.Bare { // overwrite bare
+					// TODO - look up type, check if it is union
+					if len(kt.combTL1) > 1 {
+						// TODO - better error. Does not reference call site
+						//----- bare wrapping
+						// bareWrapper {X:Type} a:%X = BareWrapper X;
+						// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
+						e1 := tr.T.PR.BeautifulError(fmt.Errorf("field type %q is bare, so union %q cannot be passed", tr.T, actualArg.arg.T.Type))
+						//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+						//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+						return tr, nil, e1
+					}
+					// myUnionA = MyUnion;
+					// myUnionB b:int = MyUnion;
+					// wrapper {T:Type} a:%T = Wrapper T;
+					// useWarpper xx:(wrapper MyUnion) = UseWrapper;
+					actualArg.arg.T.Bare = true
+					actualArg.arg.T.Type = kt.combTL1[0].Construct.Name // normalize
+					// TODO - we must perform canonical conversion of %Int to int here
+				}
 				return actualArg.arg, actualArg.natArgs, nil
 			}
 		}
 		// probably ref to global type or a typo
 	}
+	kt, ok := k.tips[tName]
+	if !ok {
+		return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
+	}
+	if kt.originTL2 {
+		return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
+	}
+	if kt.combTL1[0].IsFunction {
+		return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
+	}
+	if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
+		// TODO - look up type, check if it is union
+		if len(kt.combTL1) > 1 {
+			// TODO - better error. Does not reference call site
+			//----- bare wrapping
+			// bareWrapper {X:Type} a:%X = BareWrapper X;
+			// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
+			e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
+			//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+			//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+			return tr, nil, e1
+		}
+		tr.T.Bare = true
+		tr.T.Type = kt.combTL1[0].Construct.Name // normalize
+	} else {
+		if len(kt.combTL1) == 1 {
+			tr.T.Type = kt.combTL1[0].Construct.Name // normalize
+		}
+	}
+	// TODO - we must perform canonical conversion of %Int to int here
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
@@ -81,17 +163,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 }
 
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
-	canonicalName := tr.String()
-	// we remap TL1 type names into TL2 type names here.
-	// hopefully, this does not cause too many irregularities downstream
-	switch canonicalName {
-	case "int":
-		canonicalName = "int32"
-	case "long":
-		canonicalName = "int64"
-	case "#":
-		canonicalName = "uint32"
-	}
+	canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}

@@ -257,8 +257,10 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 				continue
 			}
 			for _, comb := range tip.combTL1 {
-				if err := k.typeCheckAliasFieldsTL1(comb.Fields, comb.TemplateArguments); err != nil {
-					return err
+				if !k.shouldSkipDefinition(comb) {
+					if err := k.typeCheckAliasFieldsTL1(comb.Fields, comb.TemplateArguments); err != nil {
+						return err
+					}
 				}
 			}
 		}
