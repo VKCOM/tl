@@ -163,7 +163,7 @@ type {%s= goName %} struct {
     {%- for i, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.fieldMask == nil && field.MaskTL2Bit == nil -%} {%- continue -%} {%- endif -%}
-        {%- if field.fieldMask != nil && field.fieldMask.isArith -%} {%- continue -%} {%- endif -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsNumber() -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
@@ -175,11 +175,11 @@ type {%s= goName %} struct {
             maskFunArg := false
             natArgUse := ""
             if field.fieldMask != nil {
-                maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+                maskFunArg = !field.fieldMask.IsField() && !field.fieldMask.IsNumber()
                 natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
             }
         -%}
-        {%- if !field.fieldMask.isArith -%}
+        {%- if !field.fieldMask.IsNumber() -%}
             {%- code
                 // Example
                 //     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
@@ -428,7 +428,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
             jsonField := fmt.Sprintf("_j%s", field.goName)
         -%}
         {%- if field.t.IsTrueType() -%}
-            {%- if !field.fieldMask.isField -%}
+            {%- if !field.fieldMask.IsField() -%}
     if {%s= jsonField %} != nil {
         return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "implicit true field '{%s= field.originalName %}' cannot be defined, set fieldmask instead")
     }
@@ -446,7 +446,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
     }
             {%- endif -%}
         {%- else -%}
-            {%- if !field.fieldMask.isField -%}
+            {%- if !field.fieldMask.IsField() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) == 0 && {%s= jsonField %} != nil {
         return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "field '{%s= field.originalName %}' is defined, while corresponding implicit fieldmask bit is 0")
     }
@@ -482,7 +482,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
             // TODO - for recursive field, add initialization
         -%}
         {%- if field.fieldMask != nil -%}
-            {%- if !field.fieldMask.isField -%}
+            {%- if !field.fieldMask.IsField() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
         {%s= readingCode %}
@@ -525,7 +525,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() -%}
-        {%- if field.fieldMask.isField -%}
+        {%- if field.fieldMask.IsField() -%}
     var trueType{%s= field.goName %}Presented bool
     var trueType{%s= field.goName %}Value     bool
         {%- endif -%}
@@ -561,7 +561,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 itemField := fmt.Sprintf("item.%s", field.goName)
             -%}
             {%- if field.IsBit() -%}
-                {%- if !field.fieldMask.isField -%}
+                {%- if !field.fieldMask.IsField() -%}
                     return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "implicit true field '{%s= field.originalName %}' cannot be defined, set fieldmask instead")
                 {%- else -%}
                     if trueType{%s= field.goName %}Presented {
@@ -672,7 +672,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: trueType with false values validation */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
-        {%- if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
+        {%- if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.IsField() -%} {%- continue -%} {%- endif -%}
         {%- code
             bit := int(field.BitNumber)
         -%}
@@ -736,7 +736,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
         -%}
         {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.t.IsTrueType() -%}
-            {%- if field.fieldMask != nil && (field.fieldMask.isField || field.fieldMask.isArith) -%}
+            {%- if field.fieldMask != nil && (field.fieldMask.IsField() || field.fieldMask.IsNumber()) -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
         w = basictl.JSONAddCommaIfNeeded(w)
         w = append(w, `{%q= field.originalName %}:true`...)

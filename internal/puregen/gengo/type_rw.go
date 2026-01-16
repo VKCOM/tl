@@ -76,16 +76,16 @@ func (f *Field) Bare() bool {
 }
 
 func (f *Field) IsAffectingLocalFieldMasks() bool {
-	return f.fieldMask != nil && f.fieldMask.IsField
+	return f.fieldMask != nil && f.fieldMask.IsField()
 }
 
 func (f *Field) IsAffectedByExternalFieldMask() bool {
-	return f.fieldMask != nil && !f.fieldMask.IsField
+	return f.fieldMask != nil && !f.fieldMask.IsField()
 }
 
 func (f *Field) IsTypeDependsFromLocalFields() bool {
 	for _, natArg := range f.natArgs {
-		if natArg.IsField {
+		if natArg.IsField() {
 			return true
 		}
 	}
@@ -130,26 +130,26 @@ func wrapWithError(wrap bool, wrappedType string) string {
 }
 
 func formatNatArg(fields []Field, arg pure.ActualNatArg) string {
-	if arg.IsNumber {
-		return strconv.FormatUint(uint64(arg.Number), 10)
+	if arg.IsNumber() {
+		return strconv.FormatUint(uint64(arg.Number()), 10)
 	}
-	if arg.IsField {
+	if arg.IsField() {
 		// tl2 case
-		if arg.FieldIndex < 0 {
-			return fmt.Sprintf("item.mask%d", -arg.FieldIndex)
+		if arg.FieldIndex() < 0 {
+			return fmt.Sprintf("item.mask%d", -arg.FieldIndex())
 		}
-		return "item." + fields[arg.FieldIndex].goName
+		return "item." + fields[arg.FieldIndex()].goName
 	}
-	if strings.HasPrefix(arg.Name, "nat_") {
+	if strings.HasPrefix(arg.Name(), "nat_") {
 		panic("aha!") // TODO - remove
 	}
-	return "nat_" + arg.Name
+	return "nat_" + arg.Name()
 }
 
 func formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		if !arg.IsNumber {
+		if !arg.IsNumber() {
 			result = append(result, formatNatArg(fields, arg))
 		}
 	}

@@ -163,7 +163,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedByTrueTypeFieldMasks() []Field {
 
 	for _, field := range trw.Fields {
 		if field.IsAffectingLocalFieldMasks() && field.t.IsTrueType() {
-			index := field.fieldMask.FieldIndex
+			index := field.fieldMask.FieldIndex()
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
 				containingNats[index] = true
@@ -180,7 +180,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 
 	for _, field := range trw.Fields {
 		if field.IsAffectingLocalFieldMasks() {
-			index := field.fieldMask.FieldIndex
+			index := field.fieldMask.FieldIndex()
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
 				containingNats[index] = true
@@ -195,10 +195,10 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
 	curField := f
 	for curField.IsAffectingLocalFieldMasks() {
-		if curField.fieldMask.FieldIndex < 0 {
+		if curField.fieldMask.FieldIndex() < 0 {
 			return
 		}
-		ancestor := trw.Fields[curField.fieldMask.FieldIndex]
+		ancestor := trw.Fields[curField.fieldMask.FieldIndex()]
 		nats = append(nats, ancestor)
 		bits = append(bits, curField.BitNumber)
 		curField = ancestor
@@ -251,11 +251,11 @@ func (trw *TypeRWStruct) replaceUnwrapArgs(natArgs []string) []string {
 	var result []string
 outer:
 	for _, arg := range trw.Fields[0].natArgs {
-		if arg.IsNumber || arg.IsField {
+		if arg.IsNumber() || arg.IsField() {
 			panic("cannot replace to child arith or field nat param")
 		}
 		for i, p := range trw.wr.NatParams {
-			if p == arg.Name {
+			if p == arg.Name() {
 				result = append(result, natArgs[i])
 				continue outer
 			}

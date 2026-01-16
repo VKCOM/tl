@@ -238,9 +238,9 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
   {%- if fm == nil -%}{%- return -%}{%- endif -%}
   {%- if fm.isField -%}
 // {%s fields[fm.FieldIndex].originalName %} bit #{%v num %}
-  {%- elseif fm.isArith && (fm.Arith.Res & (1 << num)) != 0 -%}
+  {%- elseif fm.IsNumber() && (fm.Number() & (1 << num)) != 0 -%}
 // {%v fm.Arith.Res %} bit #{%v num %} = true
-  {%- elseif fm.isArith -%}
+  {%- elseif fm.IsNumber() -%}
 // {%v fm.Arith.Res %} bit #{%v num %} = false
   {%- else -%}
 // {%s fm.name %} bit #{%v num %}

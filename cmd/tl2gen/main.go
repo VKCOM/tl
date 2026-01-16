@@ -55,6 +55,10 @@ func main() {
 }
 
 func runMain(opt *puregen.Options) error {
+	if err := opt.Validate(); err != nil {
+		return err
+	}
+
 	args := flag.Args()
 	if len(args) == 0 {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
