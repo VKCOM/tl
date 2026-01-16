@@ -77,7 +77,7 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 func (k *Kernel) createArrayTL1(canonicalName string, isTuple bool,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1Args(actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	elementT := actualArgs[0].T

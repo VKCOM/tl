@@ -171,34 +171,44 @@ func (k *Kernel) createStructTL1FromTL2(canonicalName string,
 	//return ins, nil
 }
 
-func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, natArgs *[]ActualNatArg) {
+// we want the same naming convention for nat params, as in old kernel,
+// though it has no difference to semantic and can be simplified to p0, p1, p2, etc.
+func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, prefix string) {
 	if rt.IsArith {
 		return
 	}
 	if rt.T.String() == "*" {
-		index := len(*natParams)
-		id := fmt.Sprintf("a%d", index)
-		*natParams = append(*natParams, id)
-		*natArgs = append(*natArgs, ActualNatArg{
-			IsField:    false,
-			FieldIndex: index,
-			Name:       id,
-		})
+		*natParams = append(*natParams, prefix)
 		return
 	}
-	for _, arg := range rt.T.Args {
-		k.fillNatParam(arg, natParams, natArgs)
+	tip, ok := k.tips[rt.T.Type.String()]
+	if !ok {
+		panic("resolved type not found in global type map")
+	}
+	for i, arg := range rt.T.Args {
+		leftArg := tip.combTL1[0].TemplateArguments[i]
+		k.fillNatParam(arg, natParams, prefix+leftArg.FieldName)
 	}
 }
 
-func (k *Kernel) getTL1Args(actualArgs []tlast.ArithmeticOrType) (localArgs []LocalArg, natParams []string) {
-	for _, arg := range actualArgs {
-		var natArgs []ActualNatArg
-		k.fillNatParam(arg, &natParams, &natArgs)
+func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (localArgs []LocalArg, natParams []string) {
+	for i, arg := range actualArgs {
+		leftArg := leftArgs[i]
+		var localNatParams []string
+		k.fillNatParam(arg, &localNatParams, leftArg.FieldName)
+		if len(localNatParams) == 1 {
+			natParams = append(natParams, leftArg.FieldName)
+		} else {
+			natParams = append(natParams, localNatParams...)
+		}
 		localArg := LocalArg{
 			wrongTypeErr: nil,
 			arg:          arg,
-			natArgs:      natArgs,
+		}
+		for _, param := range localNatParams {
+			localArg.natArgs = append(localArg.natArgs, ActualNatArg{
+				Name: param,
+			})
 		}
 		localArgs = append(localArgs, localArg)
 	}
@@ -210,7 +220,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
 
-	localArgs, natParams := k.getTL1Args(actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
