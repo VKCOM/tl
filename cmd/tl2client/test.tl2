@@ -46,7 +46,7 @@
 //useWrongPair<n:uint32, t:type> = a:t x:pair<uint32, uint32> y:pair<uint32, t>;
 
 // ---- test template resolution ----
-pair<x:type, y:type> = x:x y:y;
+//pair<x:type, y:type> = x:x y:y;
 //usePair = pa:pair<uint32, uint32>;
 //a.inner<t:uint32> = a:[t]byte;
 //a.middle<w:uint32, p:type, q:type> = m1:a.inner<w> m2:pair<p, q>;
@@ -54,8 +54,8 @@ pair<x:type, y:type> = x:x y:y;
 //a.top2 = t1:a.middle<3, pair<a.inner<1>,a.inner<2>>, a.inner<3>>;
 
 // ---- test functions ----
-optStruct = first?:byte second?:byte;
-memcache.value = Not_found | Strvalue value:string flags:uint32;
+//optStruct = first?:byte second?:byte;
+//memcache.value = Not_found | Strvalue value:string flags:uint32;
 
-@read memcache.get#11111111 key:string  => memcache.value;
-@write memcache.set#22222222 key?:string tpl?:[3]byte arr:[]optStruct pa?:pair<byte, byte> value:memcache.value => bool;
+//@read memcache.get#11111111 key:string  => memcache.value;
+//@write memcache.set#22222222 key?:string tpl?:[3]byte arr:[]optStruct pa?:pair<byte, byte> value:memcache.value => bool;
