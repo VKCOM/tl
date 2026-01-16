@@ -84,18 +84,18 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.
 	return tr, nil
 }
 
-func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
+func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	canonicalName := tr.String()
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
 	if tr.IsBracket {
 		log.Printf("creating a bracket instance of type %s", canonicalName)
-		// must store pointer before children getInstance() terminates recursion
+		// must store pointer before children GetInstance() terminates recursion
 		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 		ref := k.addInstance(canonicalName, k.brackets)
 
-		elemInstance, err := k.getInstance(tr.BracketType.ArrayType)
+		elemInstance, err := k.GetInstance(tr.BracketType.ArrayType)
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +106,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 				return ref, nil
 			}
 			// dict
-			keyInstance, err := k.getInstance(tr.BracketType.IndexType.Type)
+			keyInstance, err := k.GetInstance(tr.BracketType.IndexType.Type)
 			if err != nil {
 				return nil, err
 			}
@@ -121,14 +121,14 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		return ref, nil
 	}
 	log.Printf("creating an instance of type %s", canonicalName)
-	// must store pointer before children getInstance() terminates recursion
+	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	someType := tr.SomeType
 	kt, ok := k.tips[someType.Name.String()]
 	if !ok {
 		return nil, fmt.Errorf("type %s does not exist", someType.Name)
 	}
-	// must store pointer before children getInstance() terminates recursion
+	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 

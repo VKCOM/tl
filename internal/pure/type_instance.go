@@ -6,6 +6,8 @@
 
 package pure
 
+import "github.com/vkcom/tl/internal/tlast"
+
 type TypeInstance interface {
 	CanonicalName() string
 	KernelType() *KernelType
@@ -29,6 +31,7 @@ type TypeInstanceCommon struct {
 	canonicalName string
 	NatParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
+	rt            tlast.TypeRef
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
@@ -37,6 +40,10 @@ func (ins *TypeInstanceCommon) CanonicalName() string {
 
 func (ins *TypeInstanceCommon) KernelType() *KernelType {
 	return ins.tip
+}
+
+func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
+	return ins.rt
 }
 
 func (ins *TypeInstanceCommon) Common() *TypeInstanceCommon {

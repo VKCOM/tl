@@ -272,7 +272,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 		if tip.originTL2 {
 			if tip.combTL2.IsFunction {
 				tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.combTL2.FuncDecl.Name}}
-				if _, err := k.getInstance(tr); err != nil {
+				if _, err := k.GetInstance(tr); err != nil {
 					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
 				}
 				continue
@@ -282,14 +282,14 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 				continue // instantiate templates on demand only
 			}
 			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
-			if _, err := k.getInstance(tr); err != nil {
+			if _, err := k.GetInstance(tr); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		} else {
 			comb := tip.combTL1[0]
 			if comb.IsFunction {
 				tr := tlast.TypeRef{Type: comb.Construct.Name}
-				if _, err := k.getInstanceTL1(tr); err != nil {
+				if _, err := k.getInstanceTL1(tr, true); err != nil {
 					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
 				}
 				continue
@@ -301,7 +301,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			if len(tip.combTL1) != 1 {
 				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
 			}
-			if _, err := k.getInstanceTL1(tr); err != nil {
+			if _, err := k.getInstanceTL1(tr, true); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		}

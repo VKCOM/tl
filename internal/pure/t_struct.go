@@ -27,14 +27,22 @@ type Field struct {
 	name string
 	ins  *TypeInstanceRef
 
-	//bare      bool // for TL1 only, false for TL2
+	bare bool // for TL1 only, false for TL2
 	//recursive bool
 
 	fieldMask *ActualNatArg
-	BitNumber uint32 // only used when fieldMask != nil
+	bitNumber uint32 // only used when fieldMask != nil
 
 	natArgs []ActualNatArg // for TL1 only, empty for TL2
+	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
 }
+
+func (f *Field) Bare() bool                 { return f.bare }
+func (f *Field) Name() string               { return f.name }
+func (f *Field) TypeInstance() TypeInstance { return f.ins.ins }
+func (f *Field) FieldMask() *ActualNatArg   { return f.fieldMask }
+func (f *Field) BitNumber() uint32          { return f.bitNumber }
+func (f *Field) NatArgs() []ActualNatArg    { return f.natArgs }
 
 type TypeInstanceStruct struct {
 	TypeInstanceCommon
@@ -45,6 +53,10 @@ type TypeInstanceStruct struct {
 
 	// if function
 	resultType TypeInstance
+}
+
+func (ins *TypeInstanceStruct) Fields() []Field {
+	return ins.fields
 }
 
 func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {
@@ -105,7 +117,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
-		fieldIns, err := k.getInstance(rt)
+		fieldIns, err := k.GetInstance(rt)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
@@ -143,7 +155,7 @@ func (k *Kernel) createStructTL1FromTL2(canonicalName string,
 	//	if err != nil {
 	//		return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 	//	}
-	//	fieldIns, err := k.getInstance(rt)
+	//	fieldIns, err := k.GetInstance(rt)
 	//	if err != nil {
 	//		return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 	//	}
@@ -194,7 +206,7 @@ func (k *Kernel) getTL1Args(actualArgs []tlast.ArithmeticOrType) (localArgs []Lo
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	constructorFields []tlast.Field,
+	resolvedType tlast.TypeRef, constructorFields []tlast.Field,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
 
@@ -206,6 +218,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			canonicalName: canonicalName,
 			NatParams:     natParams,
 			tip:           tip,
+			rt:            resolvedType,
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
@@ -218,7 +231,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, err := k.getInstanceTL1(rt)
+		fieldIns, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
@@ -231,6 +244,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			ins:       fieldIns,
 			fieldMask: fieldMask,
 			natArgs:   natArgs,
+			bare:      rt.Bare,
 		})
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{

@@ -60,19 +60,25 @@ func (k *Kernel) addPrimitive(name string, originTL2 bool, clone KernelValue, go
 	ref := &TypeInstanceRef{
 		ins: &ins,
 	}
+	bareName := "%" + name // TL1 kernel resolves primitive types so
 	kt := &KernelType{
 		originTL2: originTL2,
 		combTL1:   []*tlast.Combinator{combTL1},
 		combTL2:   combTL2,
-		instances: map[string]*TypeInstanceRef{name: ref},
+		instances: map[string]*TypeInstanceRef{name: ref, bareName: ref},
 	}
 	ins.tip = kt
 	if _, ok := k.instances[name]; ok {
 		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
 	}
+	if _, ok := k.instances[bareName]; ok {
+		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
+	}
+	// we add "bare" references, because TL1 kernel resolves them so
 	if err := k.addTip(kt, name, ""); err != nil {
 		panic(fmt.Sprintf("error adding primitive type %s: %v", name, err))
 	}
 	k.instances[name] = ref
-	// k.instancesOrdered = append(k.instancesOrdered, ref) - we do not yet know if we need them here
+	k.instances[bareName] = ref
+	k.instancesOrdered = append(k.instancesOrdered, ref)
 }

@@ -441,3 +441,11 @@ func (gen *genGo) getNamespace(n string) *Namespace {
 	}
 	return na
 }
+
+func (gen *genGo) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
+	result, ok := gen.generatedTypes[t.CanonicalName()]
+	if !ok {
+		return nil, fmt.Errorf("internal error: type %q not found", t.CanonicalName())
+	}
+	return result, nil
+}
