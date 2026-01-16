@@ -87,7 +87,7 @@ func (k *Kernel) createArrayTL1(canonicalName string, isTuple bool,
 		return nil, fmt.Errorf("fail to resolve type of vector %s element: %w", canonicalName, err)
 	}
 	log.Printf("resolveType of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	fieldIns, err := k.getInstanceTL1(rt)
+	fieldIns, err := k.getInstanceTL1(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s element: %w", canonicalName, err)
 	}

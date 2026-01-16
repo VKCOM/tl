@@ -21,22 +21,56 @@ func (gen *genGo) compile() error {
 		return err
 	}
 	for _, myWrapper := range gen.generatedTypesList {
-		switch in := myWrapper.pureType.(type) {
-		case *pure.TypeInstanceStruct:
-			trw := &TypeRWStruct{
-				wr:     myWrapper,
-				Fields: nil,
-				//ResultType:    nil, - TODO
-				//ResultNatArgs: nil, - TODO
-				setNames:   nil,
-				clearNames: nil,
-				isSetNames: nil,
+		for _, arg := range myWrapper.pureType.Common().ResolvedType().Args {
+			if arg.IsArith {
+				myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+					isNat:   true,
+					isArith: true,
+					Arith:   arg.Arith,
+				})
+				continue
 			}
-			myWrapper.trw = trw
+			if arg.T.String() == "*" {
+				myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+					isNat:   true,
+					isArith: false,
+				})
+				continue
+			}
+			ref, err := gen.kernel.GetInstanceTL1(arg.T)
+			if err != nil {
+				return fmt.Errorf("internal error: cannot get type of argument %s", arg.T)
+			}
+			fieldType, err := gen.getType(ref)
+			if err != nil {
+				return err
+			}
+			myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+				isNat: false,
+				tip:   fieldType,
+				bare:  arg.T.Bare,
+			})
+		}
+	}
+	for _, myWrapper := range gen.generatedTypesList {
+		switch pureType := myWrapper.pureType.(type) {
+		case *pure.TypeInstancePrimitive:
+			if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {
+				return err
+			}
+		case *pure.TypeInstanceString:
+		case *pure.TypeInstanceStruct:
+			head, tail := myWrapper.resolvedT2GoName("")
+			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+			if err := gen.generateTypeStruct(myWrapper, pureType); err != nil {
+				return err
+			}
 		case *pure.TypeInstanceArray:
 			// return fmt.Errorf("Array type for %s not implemented in go generator", in.CanonicalName())
 		default:
-			return fmt.Errorf("Kernel type for %s not implemented in go generator", in.CanonicalName())
+			return fmt.Errorf("Kernel type for %s not implemented in go generator", pureType.CanonicalName())
 		}
 	}
 	if err := gen.prepareGeneration(); err != nil {

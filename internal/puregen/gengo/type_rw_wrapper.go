@@ -279,8 +279,8 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
 			b.WriteString(head)
-			canBare, _ := a.tip.trw.CanBeBareBoxed()
-			if !a.bare && canBare { // If it cannot be bare, save on redundant suffix
+			//canBare, _ := a.tip.trw.CanBeBareBoxed()
+			if !a.bare { // If it cannot be bare, save on redundant suffix
 				b.WriteString("Boxed")
 			}
 			b.WriteString(tail)
