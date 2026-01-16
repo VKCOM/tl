@@ -51,6 +51,8 @@ type TypeRW interface {
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingRequiresContext() bool
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
+
+	TypeRWTL2
 }
 
 type Field struct {

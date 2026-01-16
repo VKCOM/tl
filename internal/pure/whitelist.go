@@ -28,6 +28,10 @@ func NewWhiteList(filter string) Whitelist {
 	return result
 }
 
+func (w *Whitelist) Empty() bool {
+	return len(w.filters) == 0
+}
+
 func (w *Whitelist) InNameFilter(name tlast.Name) bool {
 	inNameFilterElement := func(name tlast.Name, filter string) bool {
 		if filter == "*" {
