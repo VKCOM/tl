@@ -260,7 +260,7 @@ outer:
 				continue outer
 			}
 		}
-		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg.Name, trw.wr.goGlobalName)
+		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg.Name(), trw.wr.goGlobalName)
 	}
 	return result
 }
@@ -344,15 +344,4 @@ func (trw *TypeRWStruct) typeJSON2ReadingRequiresContext() bool {
 		return trw.Fields[0].t.TypeJSON2ReadingRequiresContext()
 	}
 	return true
-}
-
-// TODO - replace
-func (trw *TypeRWStruct) AllNewTL2Masks() []string {
-	var result []string
-	for _, field := range trw.Fields {
-		if field.MaskTL2Bit != nil && *field.MaskTL2Bit%8 == 0 {
-			result = append(result, fmt.Sprintf("tl2mask%d", *field.MaskTL2Bit/8))
-		}
-	}
-	return result
 }

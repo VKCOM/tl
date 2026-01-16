@@ -70,6 +70,9 @@ func (opt *Options) Bind(f *flag.FlagSet) {
 
 func (opt *Options) Validate() error {
 	opt.GenerateTL2 = opt.Kernel.GenerateTL2
+	if !opt.GenerateTL2 {
+		opt.Kernel.TL2WhiteList = "" // so if we do not generate TL2, all wantsTL flags are false
+	}
 
 	// historically, there were some defaults for different languages, we keep them for now
 	switch opt.Language {
