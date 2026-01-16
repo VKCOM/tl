@@ -163,18 +163,26 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	return tr, natArgs, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
+func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, error) {
+	ref, err := k.getInstanceTL1(tr, false)
+	if err != nil {
+		return nil, err
+	}
+	return ref.ins, nil
+}
+
+func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef, error) {
 	canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
 	//if tr.Type.String() == "" {
 	//	log.Printf("creating a bracket instance of type %s", canonicalName)
-	//	// must store pointer before children getInstance() terminates recursion
+	//	// must store pointer before children GetInstance() terminates recursion
 	//	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	//	ref := k.addInstance(canonicalName, k.brackets)
 	//
-	//	elemInstance, err := k.getInstance(tr.BracketType.ArrayType)
+	//	elemInstance, err := k.GetInstance(tr.BracketType.ArrayType)
 	//	if err != nil {
 	//		return nil, err
 	//	}
@@ -185,7 +193,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 	//			return ref, nil
 	//		}
 	//		// dict
-	//		keyInstance, err := k.getInstance(tr.BracketType.IndexType.Type)
+	//		keyInstance, err := k.GetInstance(tr.BracketType.IndexType.Type)
 	//		if err != nil {
 	//			return nil, err
 	//		}
@@ -200,13 +208,13 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 	//	return ref, nil
 	//}
 	log.Printf("creating an instance of type %s", canonicalName)
-	// must store pointer before children getInstance() terminates recursion
+	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	kt, ok := k.tips[tr.Type.String()]
 	if !ok {
 		return nil, fmt.Errorf("type %s does not exist", tr.Type)
 	}
-	// must store pointer before children getInstance() terminates recursion
+	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 
@@ -225,7 +233,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 		case tr.Type.String() == "tuple":
 			ref.ins, err = k.createArrayTL1(canonicalName, true, comb.TemplateArguments, tr.Args)
 		default:
-			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, kt.combTL1, comb.TemplateArguments, tr.Args)
+			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
 		}
 		if err != nil {
 			return nil, err
@@ -253,7 +261,8 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition [
 	}
 }
 
-func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelType, definition []*tlast.Combinator,
+func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelType,
+	resolvedType tlast.TypeRef, definition []*tlast.Combinator,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	switch {
@@ -262,7 +271,7 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelT
 	//case definition[0].IsAlias():
 	//	return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
 	case len(definition) == 1:
-		return k.createStructTL1FromTL1(canonicalName, tip,
+		return k.createStructTL1FromTL1(canonicalName, tip, resolvedType,
 			definition[0].Fields,
 			leftArgs, actualArgs,
 			false, 0, nil)

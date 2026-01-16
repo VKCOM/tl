@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
 
@@ -53,6 +54,7 @@ type TypeRW interface {
 }
 
 type Field struct {
+	// TODO - stare pure.Field for properties
 	originalName string
 	t            *TypeRWWrapper
 	bare         bool
@@ -66,7 +68,7 @@ type Field struct {
 
 	natArgs []pure.ActualNatArg
 
-	// origTL tlast.Field
+	origTL tlast.Field
 }
 
 func (f *Field) Bare() bool {
