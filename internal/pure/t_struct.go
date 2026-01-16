@@ -16,11 +16,11 @@ import (
 )
 
 type ActualNatArg struct {
-	//isNumber   bool
+	IsNumber   bool
 	Number     uint32
-	isField    bool // otherwise it is # param with name
+	IsField    bool // otherwise it is # param with name
 	FieldIndex int
-	name       string // param name
+	Name       string // param name
 }
 
 type Field struct {
@@ -81,7 +81,7 @@ func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
 	return value
 }
 
-func (k *Kernel) createStruct(canonicalName string,
+func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
@@ -89,6 +89,7 @@ func (k *Kernel) createStruct(canonicalName string,
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tip:           tip,
 		},
 		isConstructorFields: isConstructorFields,
 		isUnionElement:      isUnionElement,
@@ -167,9 +168,9 @@ func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, na
 		id := fmt.Sprintf("a%d", index)
 		*natParams = append(*natParams, id)
 		*natArgs = append(*natArgs, ActualNatArg{
-			isField:    false,
+			IsField:    false,
 			FieldIndex: index,
-			name:       id,
+			Name:       id,
 		})
 		return
 	}
@@ -192,7 +193,7 @@ func (k *Kernel) getTL1Args(actualArgs []tlast.ArithmeticOrType) (localArgs []Lo
 	return
 }
 
-func (k *Kernel) createStructTL1FromTL1(canonicalName string,
+func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	constructorFields []tlast.Field,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
@@ -204,6 +205,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			NatParams:     natParams,
+			tip:           tip,
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
@@ -213,7 +215,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 	for i, fieldDef := range constructorFields {
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
-			rt, natArgs, err = k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
@@ -246,7 +247,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string,
 					wrongTypeErr: nil,
 					arg:          tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: "*"}}},
 					natArgs: []ActualNatArg{{
-						isField:    true,
+						IsField:    true,
 						FieldIndex: i,
 					}},
 				})

@@ -34,10 +34,12 @@ func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fiel
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tip:           nil, // TODO - dicts have no corresponding type
 		},
 		fieldType: TypeInstanceStruct{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName + "__elem",
+				tip:           nil, //  TODO - TL2 dict elements have no corresponding type
 			},
 			isConstructorFields: true,
 			fields: []Field{{

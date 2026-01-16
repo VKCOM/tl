@@ -55,6 +55,7 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 		ins := &TypeInstanceArrayBit{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName,
+				tip:           nil, // TODO - arrays have no corresponding type
 			},
 			isTuple: isTuple,
 			count:   int(count),
@@ -64,6 +65,7 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tip:           nil, // TODO - arrays have no corresponding type
 		},
 		isTuple:  isTuple,
 		count:    int(count),

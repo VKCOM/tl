@@ -66,7 +66,6 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if tr.IsArith {
 		return tr, nil, nil
 	}
-	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
 	// names found in local arguments have priority over global type names
 	if tr.T.Type.Namespace == "" {
 		for i, targ := range leftArgs {
@@ -87,12 +86,13 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 					}
 					return actualArg.arg, actualArg.natArgs, nil
 				}
+				tName := k.replaceTL1BuiltinName(actualArg.arg.T.Type.String())
 				kt, ok := k.tips[tName]
 				if !ok {
-					return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
+					return tr, nil, fmt.Errorf("type %s does not exist", actualArg.arg.T.Type)
 				}
 				if kt.originTL2 {
-					return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
+					return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", actualArg.arg.T.Type)
 				}
 				if tr.T.Bare { // overwrite bare
 					// TODO - look up type, check if it is union
@@ -119,6 +119,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		// probably ref to global type or a typo
 	}
+	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
 	kt, ok := k.tips[tName]
 	if !ok {
 		return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
@@ -224,7 +225,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef) (*TypeInstanceRef, error) {
 		case tr.Type.String() == "tuple":
 			ref.ins, err = k.createArrayTL1(canonicalName, true, comb.TemplateArguments, tr.Args)
 		default:
-			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt.combTL1, comb.TemplateArguments, tr.Args)
+			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, kt.combTL1, comb.TemplateArguments, tr.Args)
 		}
 		if err != nil {
 			return nil, err
@@ -252,7 +253,7 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition [
 	}
 }
 
-func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, definition []*tlast.Combinator,
+func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelType, definition []*tlast.Combinator,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	switch {
@@ -261,7 +262,7 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, definition [
 	//case definition[0].IsAlias():
 	//	return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
 	case len(definition) == 1:
-		return k.createStructTL1FromTL1(canonicalName,
+		return k.createStructTL1FromTL1(canonicalName, tip,
 			definition[0].Fields,
 			leftArgs, actualArgs,
 			false, 0, nil)

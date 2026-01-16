@@ -17,16 +17,6 @@ import (
 
 // TODO - name collision checks
 
-type KernelType struct {
-	originTL2 bool
-	combTL1   []*tlast.Combinator
-	combTL2   tlast.TL2Combinator
-	// index by canonical name
-	instances map[string]*TypeInstanceRef
-	// order of instantiation
-	instancesOrdered []*TypeInstanceRef
-}
-
 type Kernel struct {
 	tips         map[string]*KernelType // TL1 single constructor names are also here
 	tipsOrdered  []*KernelType
@@ -39,6 +29,8 @@ type Kernel struct {
 
 	filesTL1 tlast.TL
 	filesTL2 []tlast.TL2Combinator
+
+	allAnnotations []string // position is bit
 }
 
 // Add builtin types
@@ -100,6 +92,10 @@ func (k *Kernel) addInstance(canonicalName string, kt *KernelType) *TypeInstance
 	k.instances[canonicalName] = ref // storing pointer terminates recursion
 	k.instancesOrdered = append(k.instancesOrdered, ref)
 	return ref
+}
+
+func (k *Kernel) AllAnnotations() []string {
+	return k.allAnnotations
 }
 
 func (k *Kernel) TopLeveTypeInstances() []TypeInstance {

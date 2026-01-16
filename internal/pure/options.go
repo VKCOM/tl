@@ -14,8 +14,6 @@ type OptionsKernel struct {
 	TypesWhiteList string
 	GenerateTL2    bool
 	TL2WhiteList   string
-
-	BytesWhiteList string // common for all languages, so we keep it in kernel
 }
 
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
@@ -27,6 +25,4 @@ func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 		"generate code for tl2 methods (currently work only for golang)")
 	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
-	f.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
 }

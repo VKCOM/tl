@@ -30,6 +30,7 @@ type Options struct {
 	// common options for many languages
 	GenerateRPCCode    bool
 	GenerateRandomCode bool
+	BytesWhiteList     string
 
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
@@ -56,6 +57,8 @@ func (opt *Options) Bind(f *flag.FlagSet) {
 		"whether to generate *_server.go files")
 	f.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
+	f.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
 
 	opt.Kernel.Bind(f)
 	opt.Go.Bind(f)
