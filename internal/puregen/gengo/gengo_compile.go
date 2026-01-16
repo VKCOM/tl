@@ -124,6 +124,7 @@ func (gen *genGo) prepareGeneration() error {
 	options := gen.options
 
 	bytesWhiteList := pure.NewWhiteList(options.BytesWhiteList)
+	tl2WhiteList := pure.NewWhiteList(options.Kernel.TL2WhiteList)
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
@@ -133,15 +134,14 @@ func (gen *genGo) prepareGeneration() error {
 			typesCounterMarkBytes++
 		}
 	}
-	//TODO
-	//typesCounterMarkTL2 := 0
-	//tl2Children := map[*TypeRWWrapper]bool{}
-	//for _, v := range gen.generatedTypesList {
-	//	if inNameFilter(v.tlName, tl2WhiteList) {
-	//		v.MarkWantsTL2(tl2Children)
-	//		typesCounterMarkTL2++
-	//	}
-	//}
+	typesCounterMarkTL2 := 0
+	tl2Children := map[*TypeRWWrapper]bool{}
+	for _, v := range gen.generatedTypesList {
+		if tl2WhiteList.InNameFilter(v.tlName) {
+			v.MarkWantsTL2(tl2Children)
+			typesCounterMarkTL2++
+		}
+	}
 	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
 		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
 			for i := range str.Fields {
@@ -213,12 +213,12 @@ func (gen *genGo) prepareGeneration() error {
 		//if skippedDueToWhitelist != 0 {
 		//	log.Printf("skipped %d object roots by the whitelist filter: %s", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
 		//}
-		if options.BytesWhiteList != "" {
+		if !bytesWhiteList.Empty() {
 			log.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s", typesCounterMarkBytes, options.BytesWhiteList)
 		}
-		//if filter := strings.Join(tl2WhiteList, ", "); filter != "" {
-		//	log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, filter)
-		//}
+		if !tl2WhiteList.Empty() {
+			log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, options.Kernel.TL2WhiteList)
+		}
 	}
 	return nil
 }

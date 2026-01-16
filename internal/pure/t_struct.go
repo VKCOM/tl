@@ -217,10 +217,9 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 		var localNatParams []string
 		k.fillNatParam(arg, &localNatParams, leftArg.FieldName)
 		if len(localNatParams) == 1 {
-			natParams = append(natParams, leftArg.FieldName)
-		} else {
-			natParams = append(natParams, localNatParams...)
+			localNatParams[0] = leftArg.FieldName
 		}
+		natParams = append(natParams, localNatParams...)
 		localArg := LocalArg{
 			wrongTypeErr: nil,
 			arg:          arg,
@@ -242,6 +241,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+	localArgs, natParams = k.getTL1Args(leftArgs, actualArgs)
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
