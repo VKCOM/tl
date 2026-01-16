@@ -126,6 +126,18 @@ type ActualNatArg struct {
 	name       string // param name
 }
 
+func (arg *ActualNatArg) IsNumber() bool {
+	return arg.isArith
+}
+
+func (arg *ActualNatArg) Number() uint32 {
+	return arg.Arith.Res
+}
+
+func (arg *ActualNatArg) IsField() bool {
+	return arg.isField
+}
+
 func (arg *ActualNatArg) IsTL2() bool {
 	return arg.isField && arg.FieldIndex < 0
 }

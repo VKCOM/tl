@@ -16,11 +16,31 @@ import (
 )
 
 type ActualNatArg struct {
-	IsNumber   bool
-	Number     uint32
-	IsField    bool // otherwise it is # param with name
-	FieldIndex int
-	Name       string // param name
+	isNumber   bool
+	number     uint32
+	isField    bool // otherwise it is # param with name
+	fieldIndex int
+	name       string // param name
+}
+
+func (arg *ActualNatArg) IsNumber() bool {
+	return arg.isNumber
+}
+
+func (arg *ActualNatArg) Number() uint32 {
+	return arg.number
+}
+
+func (arg *ActualNatArg) IsField() bool {
+	return arg.isField
+}
+
+func (arg *ActualNatArg) FieldIndex() int {
+	return arg.fieldIndex
+}
+
+func (arg *ActualNatArg) Name() string {
+	return arg.name
 }
 
 type Field struct {
@@ -207,7 +227,7 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 		}
 		for _, param := range localNatParams {
 			localArg.natArgs = append(localArg.natArgs, ActualNatArg{
-				Name: param,
+				name: param,
 			})
 		}
 		localArgs = append(localArgs, localArg)
@@ -271,8 +291,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 					wrongTypeErr: nil,
 					arg:          tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: "*"}}},
 					natArgs: []ActualNatArg{{
-						IsField:    true,
-						FieldIndex: i,
+						isField:    true,
+						fieldIndex: i,
 					}},
 				})
 			}

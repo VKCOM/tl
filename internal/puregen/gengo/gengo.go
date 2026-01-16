@@ -35,8 +35,6 @@ type genGo struct {
 	kernel  *pure.Kernel
 	options *puregen.Options
 
-	copyrightText string
-
 	// TODO - remove, use opts.BasicPackageNameFull
 	BasicPackageNameFull string // basic types are in separate namespace to minimize conflicts
 
@@ -125,9 +123,6 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 
 func (gen *genGo) prepareOptions() (err error) {
 	opts := gen.options
-	if gen.copyrightText, err = opts.CopyrightText(); err != nil {
-		return err
-	}
 
 	if opts.GenerateRPCCode && opts.Go.BasicRPCPath == "" {
 		return fmt.Errorf("--basicRPCPath must be specified if --generateRPCCode is set")
@@ -319,7 +314,7 @@ var _ = basictl.NatWrite
 			}
 		}
 		filepathName := filepath.Join(ff.ins.SubPath, ff.fileName+".go")
-		if err := outdir.AddCodeFile(filepathName, gen.copyrightText+s.String()); err != nil {
+		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+s.String()); err != nil {
 			return err
 		}
 		s.Reset()
@@ -373,19 +368,19 @@ var _ = basictl.NatWrite
 	{
 		filepathName := filepath.Join(ConstantsPackageName, ConstantsPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
 		code := gen.generateConstants(HeaderComment, ConstantsPackageName)
-		if err := outdir.AddCodeFile(filepathName, gen.copyrightText+code); err != nil {
+		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 			return err
 		}
 		if gen.BasicPackageRelativePath != "" {
 			// TODO if contains GlobalPackgeName as prefix, there could be name collisions
 			filepathName := filepath.Join(gen.BasicPackageRelativePath, "basictl"+".go")
 			code = basictl.BasicTLContent(HeaderComment, BasicTLGoPackageName)
-			if err := outdir.AddCodeFile(filepathName, gen.copyrightText+code); err != nil {
+			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 				return err
 			}
 			filepathName = filepath.Join(gen.BasicPackageRelativePath, "basictl2"+".go")
 			code = basictl.BasicTL2Content(HeaderComment, BasicTLGoPackageName)
-			if err := outdir.AddCodeFile(filepathName, gen.copyrightText+code); err != nil {
+			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 				return err
 			}
 		} else if gen.options.Verbose {
@@ -409,7 +404,7 @@ var _ = basictl.NatWrite
 		//}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
 		code = fmt.Sprintf(InternalTLCodeHeader, HeaderComment, "internal") + InternalTLCodeBody
-		if err := outdir.AddCodeFile(filepathName, gen.copyrightText+code); err != nil {
+		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 			return err
 		}
 	}
