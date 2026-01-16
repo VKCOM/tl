@@ -8,7 +8,8 @@ package pure
 
 type TypeInstance interface {
 	CanonicalName() string
-	// Combinator() tlast.TL2Combinator
+	KernelType() *KernelType
+	Common() *TypeInstanceCommon
 
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
@@ -27,16 +28,20 @@ type TypeInstanceRef struct {
 type TypeInstanceCommon struct {
 	canonicalName string
 	NatParams     []string // external nat params (empty for TL2 types)
-	// tip           *KernelType
+	tip           *KernelType
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
 }
 
-//func (ins *TypeInstanceCommon) Combinator() tlast.TL2Combinator {
-//	return ins.comb
-//}
+func (ins *TypeInstanceCommon) KernelType() *KernelType {
+	return ins.tip
+}
+
+func (ins *TypeInstanceCommon) Common() *TypeInstanceCommon {
+	return ins
+}
 
 func (ins *TypeInstanceCommon) GoodForMapKey() bool {
 	return false

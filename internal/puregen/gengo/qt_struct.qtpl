@@ -1,0 +1,256 @@
+{% package gengo %}
+
+{% import "fmt" %}
+
+{%- func (struct_ *TypeRWStruct)GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
+    {%- code
+        goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
+        tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
+        tlName := struct_.wr.tlName.String()
+        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+        writeNeedsError := struct_.wr.hasErrorInWriteMethods
+    -%}
+    {%- if struct_.wr.unionParent != nil -%}
+    {%- code
+        ep := struct_.wr.unionParent.wr.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+    -%}
+    {%- if struct_.wr.unionParent.IsEnum -%}
+func {%s= goName %}() {%s= ep %} { return {%s= ep %}__MakeEnum({%d struct_.wr.unionIndex %}) }
+    {%- return -%}
+    {%- else -%}
+func (item {%s= goName %}) AsUnion() {%s= ep %} {
+    var ret {%s= ep %}
+    ret.Set{%s= struct_.wr.unionParent.Fields[struct_.wr.unionIndex].goName %}({%s= ifString(struct_.wr.IsTrueType(), "", "item") %})
+    return ret
+}
+
+    {%- endif -%}
+    {%- endif -%}
+{%= struct_.typeDefinition(bytesVersion, directImports) %}
+    {%- if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 -%}
+        {%- code // anonymous square brackets citizens or other exotic type -%}
+func ({%s= goName %}) TLName() string { return {%q= tlName %} }
+func ({%s= goName %}) TLTag() uint32  { return {%s= tlTag %} }
+
+    {%- endif -%}
+    {%= struct_.fieldMaskGettersAndSetters(bytesVersion, directImports) %}
+func (item *{%s= goName %}) Reset() { {%= struct_.resetFields(bytesVersion, directImports) %} }
+
+        {%- if struct_.wr.gen.options.GenerateRandomCode -%}
+func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl %}) { {%= struct_.randomFields(bytesVersion, directImports) %} }
+        {%- endif -%}
+
+func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
+
+func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
+    {%- if writeNeedsError -%}
+    return item.Write(w{%s= natArgsCall %})
+    {%- else -%}
+    return item.Write(w{%s= natArgsCall %}), nil
+    {%- endif -%}
+    {%- endif -%}
+}
+
+func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} { {%= struct_.writeFields(bytesVersion, directImports) %} }
+
+    {%- if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 -%}
+func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
+    if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
+        return w, err
+    }
+    return item.Read(w{%s= natArgsCall %})
+    {%- endif -%}
+}
+
+func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
+    {%- if writeNeedsError -%}
+    return item.WriteBoxed(w{%s= natArgsCall %})
+    {%- else -%}
+    return item.WriteBoxed(w{%s= natArgsCall %}), nil
+    {%- endif -%}
+    {%- endif -%}
+}
+
+func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- if writeNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
+    w = basictl.NatWrite(w, {%s= tlTag %})
+    return item.Write(w{%s= natArgsCall %})
+    {%- endif -%}
+}
+
+    {%- endif -%}
+{%= struct_.functionCode(bytesVersion, directImports) %}
+    {%- if len(struct_.wr.NatParams) == 0 -%}
+
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatParams) %}) string {
+    {%- if writeNeedsError -%}
+    w, err := item.WriteJSON(nil{%s= natArgsCall %})
+    if err != nil {
+        return err.Error()
+    }
+    return string(w)
+    {%- else -%}
+    return string(item.WriteJSON(nil{%s= natArgsCall %}))
+    {%- endif -%}
+}
+    {%- endif -%}
+{%= struct_.generateJSONCode(bytesVersion, directImports) %}
+{%- if struct_.wr.gen.options.Kernel.GenerateTL2 -%}
+{%= struct_.generateTL2Code(bytesVersion, directImports) %}
+{%- endif -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)typeDefinition(bytesVersion bool, directImports *DirectImports) -%}
+    {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
+    {%- if struct_.isTypeDef() -%}
+        {%- code
+            asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
+            fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+        -%}
+type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
+        {%- return -%}
+    {%- endif -%}
+type {%s= goName %} struct {
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- code
+            asterisk := ifString(field.recursive, "*", "")
+            fieldTypeString := ""
+            fieldsMaskComment := ""
+            if field.fieldMask != nil {
+                fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.fieldMask), field.BitNumber)
+            }
+            prefixComment := ""
+            if field.IsBit() {
+                prefixComment = "// "
+                fieldTypeString = "(TrueType)"
+            } else {
+                fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+            }
+        -%}
+    {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
+    {%- endfor -%}
+    {%- if struct_.wr.wantsTL2 -%}
+        {%- code /* fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) */ -%}
+        {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+             {%s= tl2mask %} byte
+        {%- endfor -%}
+    {%- endif -%}
+}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)fieldMaskGettersAndSetters(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)generateJSONCode(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)readJSONCode(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)readJsonWithResetForRaw(field Field, bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)writeJSONCode(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)functionCode(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)resetFields(bytesVersion bool, directImports *DirectImports) -%}
+    {%- if struct_.isTypeDef() -%}
+        {%- code field := struct_.Fields[0] -%}
+ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
+{%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", true) %}
+        {%- return -%}
+    {%- endif -%}
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- code
+            if field.t.IsTrueType() {
+                continue
+            }
+        -%}
+        {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
+    {%- endfor -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)randomFields(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)writeFields(bytesVersion bool, directImports *DirectImports) -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- if struct_.wr.hasErrorInWriteMethods -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+        {%- return -%}
+    {%- endif -%}
+    {%- if struct_.isTypeDef() -%}
+        {%- code field := struct_.Fields[0] -%}
+ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
+{%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), true, true, struct_.wr.hasErrorInWriteMethods) %}
+        {%- return -%}
+    {%- endif -%}
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsBit() -%}
+            {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                    {%s= fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag) %}
+                }
+            {%- endif -%}
+            {%- continue -%}
+        {%- endif -%}
+        {%- code
+            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
+        -%}
+        {%- if field.fieldMask != nil -%}
+        if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+        {%- endif -%}
+        {%- if field.recursive -%}
+        {%- code /* non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
+        if {%s= fmt.Sprintf("item.%s", field.goName) %} == nil {
+            var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), false, false, field.t.hasErrorInWriteMethods) %}
+        } else {
+            {%s= writingCode %}
+        }
+        {%- else -%}
+        {%s= writingCode %}
+        {%- endif -%}
+        {%- if field.fieldMask != nil -%}
+        }
+        {%- endif -%}
+    {%- endfor -%}
+    {%- if struct_.wr.hasErrorInWriteMethods -%}
+return w, nil
+    {%- else -%}
+return w
+    {%- endif -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)readFields(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}
+
+{%- func (struct_ *TypeRWStruct)generateTL2Code(bytesVersion bool, directImports *DirectImports) -%}
+{%- endfunc -%}

@@ -66,6 +66,7 @@ func (k *Kernel) addPrimitive(name string, originTL2 bool, clone KernelValue, go
 		combTL2:   combTL2,
 		instances: map[string]*TypeInstanceRef{name: ref},
 	}
+	ins.tip = kt
 	if _, ok := k.instances[name]; ok {
 		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
 	}

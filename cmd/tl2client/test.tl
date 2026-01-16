@@ -1,4 +1,4 @@
-int#a8509bda ? = Int;
+//int#a8509bda ? = Int;
 //long#22076cba ? = Long;
 //string#b5286e24 ? = String;
 
@@ -29,19 +29,19 @@ int#a8509bda ? = Int;
 
 //pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
-vector#1cb5c415 {t:Type} # [t] = Vector t;
-tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+//vector#1cb5c415 {t:Type} # [t] = Vector t;
+//tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 
-//pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
+pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
-testVectorTuple n:#
-    a:vector<int> b:Vector<int>
-    c:vector<Int> d:Vector<Int>
-    e:tuple<int, n> f:Tuple<int, n>
-    g:tuple<Int, n> h:Tuple<Int, n>
-    i:tuple<int, 3> j:Tuple<int, 3>
-    k:tuple<Int, 3> l:Tuple<Int, 3>
-    = TestVectorTuple;
+//testVectorTuple n:#
+//    a:vector<int> b:Vector<int>
+//    c:vector<Int> d:Vector<Int>
+//    e:tuple<int, n> f:Tuple<int, n>
+//    g:tuple<Int, n> h:Tuple<Int, n>
+//    i:tuple<int, 3> j:Tuple<int, 3>
+//    k:tuple<Int, 3> l:Tuple<Int, 3>
+//    = TestVectorTuple;
 
 //---- test bytes version propagation
 //noStr x:int = NoStr;
@@ -58,9 +58,9 @@ testVectorTuple n:#
 //----- Test Dependent types
 //usePair pa:pair<uint32, uint32> = UsePair;
 
-//a.inner {I:#} a:int = a.Inner I;
-//a.middle {W:#} {P:Type} {Q:Type} a:a.inner<W> b:Pair<P, Q> = a.Middle W P Q;
-//a.top2 n:# m:# c:a.middle<m, pair<a.inner<n>, a.inner<n>>, a.Inner<3>> = a.Top2;
+a.inner {I:#} a:int = a.Inner I;
+a.middle {W:#} {P:Type} {Q:Type} a:a.inner<W> b:Pair<P, Q> = a.Middle W P Q;
+a.top2 n:# m:# c:a.middle<m, pair<a.inner<n>, a.inner<n>>, a.Inner<3>> = a.Top2;
 
 // a.middle<P1, pair<a.inner<P2>, a.inner<P3>>, a.Inner<3>>(w, pxi, pyi)
 // W:P1 P:pair<a.inner<P2>, a.inner<P3>> Q:a.Inner<3>

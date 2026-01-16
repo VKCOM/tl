@@ -138,18 +138,18 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
 				return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 			}
-			ref.ins, err = k.createOrdinaryType(canonicalName, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
+			ref.ins, err = k.createOrdinaryType(canonicalName, kt, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
 			if err != nil {
 				return nil, err
 			}
 			return ref, nil
 		}
 		funcDecl := kt.combTL2.FuncDecl
-		resultType, err := k.createOrdinaryType(canonicalName, funcDecl.ReturnType, nil, nil)
+		resultType, err := k.createOrdinaryType(canonicalName, kt, funcDecl.ReturnType, nil, nil)
 		if err != nil {
 			return nil, err
 		}
-		ref.ins, err = k.createStruct(canonicalName, true,
+		ref.ins, err = k.createStruct(canonicalName, kt, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
 			resultType)
 		if err != nil {
@@ -172,16 +172,16 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 }
 
 // alias || fields || union
-func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2TypeDefinition,
+func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, definition tlast.TL2TypeDefinition,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
 	switch {
 	case definition.IsAlias():
-		return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
+		return k.createAlias(canonicalName, tip, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.StructType.IsUnionType:
-		return k.createUnion(canonicalName, definition.StructType.UnionType, leftArgs, actualArgs)
+		return k.createUnion(canonicalName, tip, definition.StructType.UnionType, leftArgs, actualArgs)
 	default:
-		return k.createStruct(canonicalName,
+		return k.createStruct(canonicalName, tip,
 			true, definition.TypeAlias, definition.StructType.ConstructorFields,
 			leftArgs, actualArgs,
 			false, 0, nil)

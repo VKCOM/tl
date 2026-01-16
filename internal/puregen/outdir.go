@@ -46,8 +46,9 @@ func (gen *OutDir) formatLint(opts *Options, code string, filename string) strin
 		if err != nil {
 			// We generate code still, because it will be easy to debug when the wrong file is written out
 			_, _ = fmt.Fprintf(opts.ErrorWriter, "generator %s: source file %q will not compile due to error: %v", color.InRed("internal error"), filename, err)
+		} else {
+			code = string(formattedCode)
 		}
-		code = string(formattedCode)
 	case strings.HasSuffix(filename, ".h") ||
 		strings.HasSuffix(filename, ".cpp"):
 		code = strings.ReplaceAll(code, "\t", "  ")
