@@ -12,7 +12,6 @@ import (
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 // During recursive generation, we store wrappers to type when they are needed, so that
@@ -250,25 +249,6 @@ func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 	}
 }
 
-// Assign structural names to external arguments
-func (w *TypeRWWrapper) NatArgs(result []pure.ActualNatArg, prefix string) []pure.ActualNatArg {
-	for i, a := range w.arguments {
-		fieldName := w.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
-		if a.isNat {
-			if !a.isArith {
-				result = append(result, pure.ActualNatArg{
-					IsNumber: a.isArith,
-					Number:   a.Arith.Res,
-					Name:     prefix + fieldName,
-				})
-			}
-		} else {
-			result = a.tip.NatArgs(result, prefix+fieldName)
-		}
-	}
-	return result
-}
-
 func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
 	b := strings.Builder{}
 	for _, a := range w.arguments {
@@ -449,59 +429,6 @@ func (w *TypeRWWrapper) IsFunction() bool {
 	return structElement.ResultType != nil
 }
 
-type TypeArgumentsTree struct {
-	name     string
-	leaf     bool
-	value    *string // value != nil => leaf == True
-	children []*TypeArgumentsTree
-}
-
-func (t *TypeArgumentsTree) IsEmpty() bool {
-	if t.leaf {
-		return false
-	}
-	for _, child := range t.children {
-		if child != nil && !child.IsEmpty() {
-			return false
-		}
-	}
-	return true
-}
-
-func (t *TypeArgumentsTree) EnumerateWithPrefixes() []string {
-	const natPrefix = ""
-	values := make([]string, 0)
-	t.enumerateWithPrefixes(&values, "$")
-	values = utils.MapSlice(values, func(s string) string { return natPrefix + s })
-	return values
-}
-
-func (t *TypeArgumentsTree) EnumerateSubTreeWithPrefixes(childIndex int) []string {
-	if !(0 <= childIndex && childIndex < len(t.children)) {
-		panic("no such subtree")
-	}
-	ct := *t
-	ct.children = []*TypeArgumentsTree{t.children[childIndex]}
-	return ct.EnumerateWithPrefixes()
-}
-
-func (t *TypeArgumentsTree) enumerateWithPrefixes(values *[]string, curPrefix string) {
-	const delimiter = "_"
-	if t.leaf {
-		*values = append(*values, curPrefix)
-	} else {
-		for _, child := range t.children {
-			if child != nil {
-				prefix := curPrefix + child.name
-				if !child.leaf {
-					prefix += delimiter
-				}
-				child.enumerateWithPrefixes(values, prefix)
-			}
-		}
-	}
-}
-
 func (w *TypeRWWrapper) JSONHelpString() string {
 	return w.CanonicalStringTop()
 }
@@ -511,11 +438,11 @@ func (w *TypeRWWrapper) transformNatArgsToChild(natArgs []pure.ActualNatArg, chi
 	var result []pure.ActualNatArg
 outer:
 	for _, arg := range childNatArgs {
-		if arg.IsNumber || arg.IsField {
+		if arg.IsNumber() || arg.IsField() {
 			panic("cannot transform to child arith or field nat param")
 		}
 		for i, p := range w.NatParams {
-			if p == arg.Name {
+			if p == arg.Name() {
 				result = append(result, natArgs[i])
 				continue outer
 			}

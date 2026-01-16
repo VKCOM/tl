@@ -441,14 +441,14 @@ func streamjsonCommentFieldMask(qw422016 *qt422016.Writer, fm *ActualNatArg, num
 		qw422016.E().V(num)
 		qw422016.N().S(`
 `)
-	} else if fm.isArith && (fm.Arith.Res&(1<<num)) != 0 {
+	} else if fm.IsNumber() && (fm.Number()&(1<<num)) != 0 {
 		qw422016.N().S(`// `)
 		qw422016.E().V(fm.Arith.Res)
 		qw422016.N().S(` bit #`)
 		qw422016.E().V(num)
 		qw422016.N().S(` = true
 `)
-	} else if fm.isArith {
+	} else if fm.IsNumber() {
 		qw422016.N().S(`// `)
 		qw422016.E().V(fm.Arith.Res)
 		qw422016.N().S(` bit #`)

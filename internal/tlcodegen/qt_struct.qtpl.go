@@ -363,7 +363,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		if field.fieldMask == nil && field.MaskTL2Bit == nil {
 			continue
 		}
-		if field.fieldMask != nil && field.fieldMask.isArith {
+		if field.fieldMask != nil && field.fieldMask.IsNumber() {
 			continue
 		}
 		fieldTypeString := ""
@@ -376,11 +376,11 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		maskFunArg := false
 		natArgUse := ""
 		if field.fieldMask != nil {
-			maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+			maskFunArg = !field.fieldMask.IsField() && !field.fieldMask.IsNumber()
 			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
 		}
 
-		if !field.fieldMask.isArith {
+		if !field.fieldMask.IsNumber() {
 			// Example
 			//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
 			//     @any notify.getScheduledNotifications#f53ad7bd  = notify.Notification 0;
@@ -870,7 +870,7 @@ func (item *`)
 			jsonField := fmt.Sprintf("_j%s", field.goName)
 
 			if field.t.IsTrueType() {
-				if !field.fieldMask.isField {
+				if !field.fieldMask.IsField() {
 					qw422016.N().S(`    if `)
 					qw422016.N().S(jsonField)
 					qw422016.N().S(` != nil {
@@ -912,7 +912,7 @@ func (item *`)
 `)
 				}
 			} else {
-				if !field.fieldMask.isField {
+				if !field.fieldMask.IsField() {
 					qw422016.N().S(`    if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 					qw422016.N().S(` & (1 << `)
@@ -975,7 +975,7 @@ func (item *`)
 			// TODO - for recursive field, add initialization
 
 			if field.fieldMask != nil {
-				if !field.fieldMask.isField {
+				if !field.fieldMask.IsField() {
 					qw422016.N().S(`    if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 					qw422016.N().S(` & (1 << `)
@@ -1051,7 +1051,7 @@ func (item *`)
 			continue
 		}
 		if field.IsBit() {
-			if field.fieldMask.isField {
+			if field.fieldMask.IsField() {
 				qw422016.N().S(`    var trueType`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`Presented bool
@@ -1113,7 +1113,7 @@ func (item *`)
 			itemField := fmt.Sprintf("item.%s", field.goName)
 
 			if field.IsBit() {
-				if !field.fieldMask.isField {
+				if !field.fieldMask.IsField() {
 					qw422016.N().S(`                    return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
@@ -1351,7 +1351,7 @@ func (item *`)
 		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.isField {
+		if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.IsField() {
 			continue
 		}
 		bit := int(field.BitNumber)
@@ -1523,7 +1523,7 @@ func (item *`)
 			continue
 		}
 		if field.t.IsTrueType() {
-			if field.fieldMask != nil && (field.fieldMask.isField || field.fieldMask.isArith) {
+			if field.fieldMask != nil && (field.fieldMask.IsField() || field.fieldMask.IsNumber()) {
 				qw422016.N().S(`    if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 				qw422016.N().S(` & (1<<`)
