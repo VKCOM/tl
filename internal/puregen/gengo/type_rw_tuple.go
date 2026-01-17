@@ -85,22 +85,6 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
 }
 
-func phpIsDictionary(wr *TypeRWWrapper) bool {
-	isDict, _, _, _ := isDictionaryElement(wr)
-	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
-		return true
-	}
-	return false
-}
-
-//func cppIsDictionaryElement(wr *TypeRWWrapper) bool {
-//	isDict, _, _, _ := isDictionaryElement(wr)
-//	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
-//		return true
-//	}
-//	return false
-//}
-
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
