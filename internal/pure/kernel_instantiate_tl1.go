@@ -77,7 +77,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 				if actualArg.wrongTypeErr != nil {
 					return tr, nil, fmt.Errorf("reference to field %s impossible, must have # type", targ.FieldName)
 				}
-				if actualArg.arg.T.Type.String() == "*" {
+				if actualArg.arg.IsArith || actualArg.arg.T.Type.String() == "*" {
 					if tr.T.Bare {
 						e1 := tr.T.PR.BeautifulError(fmt.Errorf("#-param reference %q cannot be bare", tr.T))
 						//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
@@ -120,33 +120,35 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		// probably ref to global type or a typo
 	}
 	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
-	kt, ok := k.tips[tName]
-	if !ok {
-		return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
-	}
-	if kt.originTL2 {
-		return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
-	}
-	if kt.combTL1[0].IsFunction {
-		return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
-	}
-	if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
-		// TODO - look up type, check if it is union
-		if len(kt.combTL1) > 1 {
-			// TODO - better error. Does not reference call site
-			//----- bare wrapping
-			// bareWrapper {X:Type} a:%X = BareWrapper X;
-			// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
-			e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
-			//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-			//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
-			return tr, nil, e1
+	if tName != "__vector" && tName != "__tuple" {
+		kt, ok := k.tips[tName]
+		if !ok {
+			return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
 		}
-		tr.T.Bare = true
-		tr.T.Type = kt.combTL1[0].Construct.Name // normalize
-	} else {
-		if len(kt.combTL1) == 1 {
+		if kt.originTL2 {
+			return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
+		}
+		if kt.combTL1[0].IsFunction {
+			return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
+		}
+		if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
+			// TODO - look up type, check if it is union
+			if len(kt.combTL1) > 1 {
+				// TODO - better error. Does not reference call site
+				//----- bare wrapping
+				// bareWrapper {X:Type} a:%X = BareWrapper X;
+				// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
+				e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
+				//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+				//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+				return tr, nil, e1
+			}
+			tr.T.Bare = true
 			tr.T.Type = kt.combTL1[0].Construct.Name // normalize
+		} else {
+			if len(kt.combTL1) == 1 {
+				tr.T.Type = kt.combTL1[0].Construct.Name // normalize
+			}
 		}
 	}
 	// TODO - we must perform canonical conversion of %Int to int here
@@ -210,7 +212,27 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 	log.Printf("creating an instance of type %s", canonicalName)
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
-	kt, ok := k.tips[tr.Type.String()]
+	var err error
+	tName := tr.Type.String()
+	switch tName {
+	case "__vector":
+		ref := k.addInstance(canonicalName, k.brackets)
+		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
+		ref.ins, err = k.createArrayTL1(canonicalName, false, leftArgs, tr.Args)
+		if err != nil {
+			return nil, err
+		}
+		return ref, nil
+	case "__tuple":
+		ref := k.addInstance(canonicalName, k.brackets)
+		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}, {FieldName: "n", IsNat: true}}
+		ref.ins, err = k.createArrayTL1(canonicalName, true, leftArgs, tr.Args)
+		if err != nil {
+			return nil, err
+		}
+		return ref, nil
+	}
+	kt, ok := k.tips[tName]
 	if !ok {
 		return nil, fmt.Errorf("type %s does not exist", tr.Type)
 	}
@@ -218,7 +240,6 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 
-	var err error
 	if kt.originTL2 {
 		return nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
@@ -227,14 +248,11 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 		if len(comb.TemplateArguments) != len(tr.Args) {
 			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
 		}
-		switch {
-		case tr.Type.String() == "vector":
-			ref.ins, err = k.createArrayTL1(canonicalName, false, comb.TemplateArguments, tr.Args)
-		case tr.Type.String() == "tuple":
-			ref.ins, err = k.createArrayTL1(canonicalName, true, comb.TemplateArguments, tr.Args)
-		default:
-			ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
-		}
+		//switch {
+		// TODO - union, etc.
+		//default:
+		ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
+		//}
 		if err != nil {
 			return nil, err
 		}
