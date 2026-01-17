@@ -70,7 +70,7 @@ func (gen *genGo) compile() error {
 		case *pure.TypeInstanceArray:
 			// return fmt.Errorf("Array type for %s not implemented in go generator", in.CanonicalName())
 		default:
-			return fmt.Errorf("Kernel type for %s not implemented in go generator", pureType.CanonicalName())
+			return fmt.Errorf("kernel type for %s not implemented in go generator", pureType.CanonicalName())
 		}
 	}
 	if err := gen.prepareGeneration(); err != nil {
@@ -82,20 +82,11 @@ func (gen *genGo) compile() error {
 func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		myWrapper := &TypeRWWrapper{
-			gen:           gen,
-			pureType:      pureType,
-			ns:            nil,
-			ins:           nil,
-			trw:           nil,
-			NatParams:     pureType.Common().NatParams,
-			arguments:     nil,
-			goGlobalName:  "",
-			goLocalName:   "",
-			fileName:      "",
-			unionParent:   nil, // TODO
-			unionIndex:    0,   // TODO
-			WrLong:        nil, // TODO
-			WrWithoutLong: nil, // TODO
+			gen:         gen,
+			pureType:    pureType,
+			NatParams:   pureType.Common().NatParams,
+			unionParent: nil, // TODO
+			unionIndex:  0,   // TODO
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
