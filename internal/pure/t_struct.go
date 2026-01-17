@@ -241,7 +241,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
-	localArgs, natParams = k.getTL1Args(leftArgs, actualArgs)
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
