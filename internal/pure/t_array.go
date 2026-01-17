@@ -103,7 +103,7 @@ func (k *Kernel) createArrayTL1(canonicalName string, isTuple bool,
 		natArgs:  natArgs,
 	}
 	if isTuple {
-		ins.dynamicSize = actualArgs[1].IsArith
+		ins.dynamicSize = !actualArgs[1].IsArith
 		ins.count = int(actualArgs[1].Arith.Res)
 	}
 	return ins, nil

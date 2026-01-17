@@ -234,6 +234,17 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 	return
 }
 
+func (k *Kernel) canonicalBrackets(fieldDef tlast.Field) bool {
+	if !fieldDef.IsRepeated {
+		return true // always canonical
+	}
+	if len(fieldDef.ScaleRepeat.Rep) != 1 {
+		return false
+	}
+	f := fieldDef.ScaleRepeat.Rep[0]
+	return !f.IsRepeated && f.FieldName == "" && f.Mask == nil && !f.Excl
+}
+
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, constructorFields []tlast.Field,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
@@ -254,7 +265,53 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
 	}
-	for i, fieldDef := range constructorFields {
+	for i := 0; i < len(constructorFields); i++ {
+		fieldDef := constructorFields[i]
+		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(constructorFields) {
+			nextFieldDef := constructorFields[i+1]
+			if nextFieldDef.Mask != nil || !nextFieldDef.IsRepeated || nextFieldDef.ScaleRepeat.ExplicitScale {
+				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
+			}
+			if !k.canonicalBrackets(fieldDef) {
+				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			}
+			// we replace 2 fields with vector
+			// hren # a:[int] = Hren;
+			i++
+			fieldDef = nextFieldDef
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
+			fieldDef.FieldType.Type = tlast.Name{Name: "__vector"}
+			fieldDef.FieldType.Bare = true
+		} else if fieldDef.IsRepeated && i == 0 && !fieldDef.ScaleRepeat.ExplicitScale &&
+			len(tip.combTL1[0].TemplateArguments) != 0 {
+			a := tip.combTL1[0].TemplateArguments[len(tip.combTL1[0].TemplateArguments)-1]
+			if !a.IsNat {
+				e1 := fieldDef.PR.BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
+				e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
+				return nil, tlast.BeautifulError2(e1, e2)
+			}
+			if !k.canonicalBrackets(fieldDef) {
+				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}, {T: tlast.TypeRef{Type: tlast.Name{Name: a.FieldName}}}}
+			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
+			fieldDef.FieldType.Bare = true
+		} else if fieldDef.IsRepeated {
+			if !fieldDef.ScaleRepeat.ExplicitScale {
+				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain explicit scale (with few exceptions used for vector and tuple definition)"))
+			}
+			if !k.canonicalBrackets(fieldDef) {
+				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}, {}}
+			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
+			fieldDef.FieldType.Bare = true
+			if fieldDef.ScaleRepeat.Scale.IsArith {
+				fieldDef.FieldType.Args[1] = tlast.ArithmeticOrType{IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
+			} else {
+				fieldDef.FieldType.Args[1] = tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
+			}
+		}
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
@@ -268,6 +325,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		//if fieldDef.IsOptional {
 		//	fieldMask = &ActualNatArg{} // TODO - mark as TL2
 		//}
+
 		ins.fields = append(ins.fields, Field{
 			name:      fieldDef.FieldName,
 			ins:       fieldIns,
