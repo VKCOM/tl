@@ -249,7 +249,7 @@ func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 	}
 }
 
-func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
+func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 	b := strings.Builder{}
 	for _, a := range w.arguments {
 		if a.isNat {
@@ -266,10 +266,15 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 			b.WriteString(tail)
 		}
 	}
+	return b.String()
+}
+
+func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
+	tail = w.resolvedT2GoNameTail(insideNamespace)
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
-	if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "_" || w.origTL[0].IsFunction || w.unionParent != nil) {
-		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), b.String()
+	if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "" || w.origTL[0].IsFunction || w.unionParent != nil) {
+		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), tail
 	}
 	var typeName tlast.Name
 	if w.originateFromTL2 {
@@ -278,7 +283,7 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	} else {
 		typeName = w.origTL[0].TypeDecl.Name
 	}
-	return canonicalGoName(typeName, insideNamespace), b.String()
+	return canonicalGoName(typeName, insideNamespace), tail
 }
 
 func stringCompare(a string, b string) int {

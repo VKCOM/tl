@@ -40,13 +40,13 @@ func NewKernel() *Kernel {
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
-	k.addPrimitive("uint32", false, &KernelValueUint32{}, true)
-	k.addPrimitive("int32", false, &KernelValueInt32{}, true)
-	k.addPrimitive("uint64", true, &KernelValueUint64{}, true)
-	k.addPrimitive("int64", false, &KernelValueInt64{}, true)
-	k.addPrimitive("byte", true, &KernelValueByte{}, true)
-	k.addPrimitive("bool", true, &KernelValueBool{}, true)
-	k.addPrimitive("bit", true, &KernelValueBit{}, false)
+	k.addPrimitive("uint32", "#", false, &KernelValueUint32{}, true)
+	k.addPrimitive("int32", "int", false, &KernelValueInt32{}, true)
+	k.addPrimitive("uint64", "", true, &KernelValueUint64{}, true)
+	k.addPrimitive("int64", "long", false, &KernelValueInt64{}, true)
+	k.addPrimitive("byte", "", true, &KernelValueByte{}, true)
+	k.addPrimitive("bool", "", true, &KernelValueBool{}, true)
+	k.addPrimitive("bit", "", true, &KernelValueBit{}, false)
 	k.addString()
 
 	return k
