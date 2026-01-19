@@ -11,7 +11,7 @@ type OptionalParse[T any] func(tokens tokenIterator, position Position) (state O
 
 type OptionalState struct {
 	StartProcessing bool
-	Error           error
+	Error           *ParseError
 }
 
 func (state *OptionalState) Inherit(otherState OptionalState) {
@@ -21,24 +21,24 @@ func (state *OptionalState) Inherit(otherState OptionalState) {
 	}
 }
 
-func (state *OptionalState) ExpectProgress(orError string) bool {
+func (state *OptionalState) ExpectProgress(orError *ParseError) bool {
 	if state.HasProgress() {
 		return true
 	}
 	if state.IsOmitted() {
-		state.Fail(orError)
+		state.FailWithError(orError)
 	}
 	return false
 }
 
-func (state *OptionalState) Fail(error string) {
-	state.StartProcessing = true
-	if state.Error == nil {
-		state.Error = fmt.Errorf("%s", error)
-	}
-}
+//func (state *OptionalState) Fail(error string) {
+//	state.StartProcessing = true
+//	if state.Error == nil {
+//		state.Error = fmt.Errorf("%s", error)
+//	}
+//}
 
-func (state *OptionalState) FailWithError(error error) {
+func (state *OptionalState) FailWithError(error *ParseError) {
 	state.StartProcessing = true
 	if state.Error == nil {
 		state.Error = error
@@ -99,8 +99,10 @@ func ParseTL2File(str, file string, opts LexerOptions) (tl2File TL2File, err err
 	it := tokenIterator{tokens: allTokens}
 	for !it.expectLazy(eof) {
 		var combinator TL2Combinator
-		combinator, it, err = parseTL2Combinator(it)
-		if err != nil {
+		var parseErr *ParseError
+		combinator, it, parseErr = parseTL2Combinator(it)
+		if parseErr != nil {
+			err = parseErr
 			return TL2File{}, err
 		}
 		tl2File.Combinators = append(tl2File.Combinators, combinator)
@@ -110,7 +112,7 @@ func ParseTL2File(str, file string, opts LexerOptions) (tl2File TL2File, err err
 }
 
 // TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
-func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) {
+func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, *ParseError) {
 	var state OptionalState
 
 	rest := it
@@ -128,7 +130,7 @@ func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) 
 	prName := rest.skipWS(outer)
 	state, rest, name = parseTL2TypeName(rest, outer)
 	prName.End = rest.front().pos
-	if !state.ExpectProgress("expected type name") {
+	if !state.ExpectProgress(parseErrToken(fmt.Errorf("expected type name"), rest.front(), outer)) {
 		return TL2Combinator{}, tokenIterator{}, state.Error
 	}
 
@@ -143,14 +145,14 @@ func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) 
 			combinator.IsFunction = true
 			combinator.FuncDecl.PRName = prName
 		} else {
-			state.Fail("expected either function or type declaration")
+			state.FailWithError(parseErrToken(fmt.Errorf("expected either function or type declaration"), rest.front(), outer))
 		}
 	} else {
 		combinator.TypeDecl.PRName = prName
 	}
 
 	if !rest.expect(semiColon) {
-		state.Fail("expected semicolon in the end of combinator definition")
+		state.FailWithError(parseErrToken(fmt.Errorf("expected semicolon in the end of combinator definition"), rest.front(), outer))
 	}
 
 	combinator.PR.End = rest.front().pos
@@ -188,6 +190,7 @@ func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalSt
 		result.Name = value[dotIndex+1:]
 	default:
 		state.StartProcessing = false
+		//state.FailWithError(parseErrToken(fmt.Errorf("wrong type identifier"), restTokens.front(), position))
 	}
 	return
 }
@@ -205,17 +208,17 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 		crcToken := restTokens.popFront()
 		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
 		if err != nil {
-			state.FailWithError(err)
+			state.FailWithError(parseErrToken(err, crcToken, position))
 			return
 		}
 		if value == 0 {
-			state.FailWithError(fmt.Errorf("magic should not be 0"))
+			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0"), crcToken, position))
 			return
 		}
 		result.Magic = uint32(value)
 		result.PRID.End = restTokens.front().pos
 	} else {
-		state.Fail("function must have magic")
+		state.FailWithError(parseErrToken(fmt.Errorf("function must have magic"), restTokens.front(), position))
 		return
 	}
 
@@ -287,11 +290,11 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 		crcToken := restTokens.popFront()
 		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
 		if err != nil {
-			state.FailWithError(err)
+			state.FailWithError(parseErrToken(err, crcToken, position))
 			return
 		}
 		if value == 0 {
-			state.FailWithError(fmt.Errorf("magic should not be 0"))
+			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0"), crcToken, position))
 			return
 		}
 		result.Magic = uint32(value)
@@ -305,7 +308,8 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 		var localState OptionalState
 		localState, restTokens, result.TemplateArguments[0] = parseTL2TypeArgumentDeclaration(restTokens, position)
 		state.Inherit(localState)
-		if !state.ExpectProgress("expected type argument declaration") {
+		if !localState.ExpectProgress(parseErrToken(fmt.Errorf("expected type argument declaration"), restTokens.front(), position)) {
+			state.Inherit(localState)
 			return
 		}
 		for {
@@ -313,8 +317,8 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 				var template TL2TypeTemplate
 				var localState OptionalState
 				localState, restTokens, template = parseTL2TypeArgumentDeclaration(restTokens, position)
-				state.Inherit(localState)
-				if !state.ExpectProgress("expected type argument declaration") {
+				if !localState.ExpectProgress(parseErrToken(fmt.Errorf("expected type argument declaration"), restTokens.front(), position)) {
+					state.Inherit(localState)
 					return
 				}
 				result.TemplateArguments = append(result.TemplateArguments, template)
@@ -323,9 +327,12 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 			}
 		}
 		if !restTokens.expect(rAngleBracket) {
-			state.Fail("can't stop parse template arguments without closing brackets")
+			state.FailWithError(parseErrToken(fmt.Errorf("can't stop parse template arguments without closing brackets"), restTokens.front(), position))
 			return
 		}
+	case restTokens.checkToken(lCurlyBracket), restTokens.checkToken(lRoundBracket), restTokens.checkToken(lSquareBracket):
+		state.FailWithError(parseErrToken(fmt.Errorf("wrong type of opening brackets for generics"), restTokens.front(), position))
+		return
 	}
 
 	if restTokens.expect(equalSign) {
@@ -341,8 +348,8 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 	if result.Type.IsTypeAlias {
 		var localState OptionalState
 		localState, restTokens, result.Type.TypeAlias = parseTL2Type(restTokens, position)
-		state.Inherit(localState)
-		if !state.ExpectProgress("expected type argument declaration") {
+		if !localState.ExpectProgress(parseErrToken(fmt.Errorf("expected reference to type for aliasing"), restTokens.front(), position)) {
+			state.Inherit(localState)
 			return
 		}
 	} else {
@@ -363,11 +370,16 @@ func parseTL2StructTypeDefinition(tokens tokenIterator, position Position) (stat
 	if state.HasProgress() {
 		result.IsUnionType = true
 	} else {
+		//if state.IsFailed() {
+		//	return
+		//}
 		restTokens = tokens
 		var fieldsState OptionalState
 		fieldsState, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
 		if fieldsState.IsFailed() {
-			state.Fail("expected type field declaration")
+			//state.Inherit(fieldsState)
+			state.Error = fieldsState.Error
+			//state.FailWithError(parseErrToken(fmt.Errorf("expected type field declaration"), restTokens.front(), position))
 		} else {
 			state = fieldsState
 		}
@@ -404,16 +416,20 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		state.StartProcessing = true
 	}
 
-	result.Variants = make([]TL2UnionConstructor, 1)
+	result.Variants = make([]TL2UnionConstructor, 0)
 	var localState OptionalState
-	localState, restTokens, result.Variants[0] = parseTL2UnionConstructor(restTokens, position)
+	var constr TL2UnionConstructor
+	localState, restTokens, constr = parseTL2UnionConstructor(restTokens, position)
 	if localState.IsFailed() {
-		state.Fail("can't parse first variant")
+		state.FailWithError(parseErrToken(fmt.Errorf("can't parse first variant"), restTokens.front(), position))
 		return
 	} else if state.StartProcessing && localState.IsOmitted() {
-		state.Fail("expected first variant of union")
+		state.FailWithError(parseErrToken(fmt.Errorf("expected first variant of union"), restTokens.front(), position))
 		return
 	}
+
+	// first constructor enabled
+	result.Variants = append(result.Variants, constr)
 
 	result.Variants[0].CommentBefore = commentBefore
 	state.Inherit(localState)
@@ -440,7 +456,7 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 
 		result.Variants = append(result.Variants, variant)
 		state.Inherit(localState)
-		if !localState.ExpectProgress("expected union variant definition after vertical var") {
+		if !localState.ExpectProgress(parseErrToken(fmt.Errorf("expected union variant definition after vertical var"), restTokens.front(), position)) {
 			state.FailWithError(localState.Error)
 			return
 		}
@@ -451,9 +467,9 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	}
 
 	if len(result.Variants) < 1 {
-		state.Fail("expected at least 1 variants of union type")
+		state.FailWithError(parseErrToken(fmt.Errorf("expected at least 1 variants of union type"), restTokens.front(), position))
 	} else if len(result.Variants) == 1 && !isMonoUnion {
-		state.Fail("union with one constructor can't be without vertical bar before declaration")
+		state.FailWithError(parseErrToken(fmt.Errorf("union with one constructor can't be without vertical bar before declaration"), restTokens.front(), position))
 	}
 
 	result.PR.End = restTokens.front().pos
@@ -472,18 +488,25 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 		result.Name = restTokens.popFront().val
 		result.PRName.End = restTokens.front().pos
 
-		var savedRestTokens = restTokens
-		var fieldsState OptionalState
-		fieldsState, restTokens, result.Fields = zeroOrMore(parseTL2Field)(restTokens, position)
-		state.Inherit(fieldsState)
-		if !fieldsState.StartProcessing {
-			result.IsTypeAlias = true
-			var aliasState OptionalState
-			aliasState, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
-			state.Inherit(aliasState)
-			if aliasState.IsOmitted() {
-				restTokens = savedRestTokens
-				result.IsTypeAlias = false
+		// upper element out
+		copyRestTokens := restTokens
+		if copyRestTokens.checkToken(semiColon) || copyRestTokens.checkToken(verticalBar) {
+			restTokens = copyRestTokens
+			result.IsTypeAlias = false
+		} else {
+			var savedRestTokens = restTokens
+			var fieldsState OptionalState
+			fieldsState, restTokens, result.Fields = zeroOrMore(parseTL2Field)(restTokens, position)
+			state.Inherit(fieldsState)
+			if !fieldsState.StartProcessing {
+				result.IsTypeAlias = true
+				var aliasState OptionalState
+				aliasState, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
+				state.Inherit(aliasState)
+				if aliasState.IsOmitted() {
+					restTokens = savedRestTokens
+					result.IsTypeAlias = false
+				}
 			}
 		}
 	}
@@ -520,7 +543,7 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 
 		if restTokens.expect(questionMark) {
 			if result.IsIgnored {
-				state.Fail("ignored field can't be optional")
+				state.FailWithError(parseErrToken(fmt.Errorf("ignored field can't be optional"), restTokens.front(), position))
 				break
 			} else {
 				result.IsOptional = true
@@ -529,7 +552,7 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 		}
 		if !restTokens.expect(colon) {
 			if state.StartProcessing {
-				state.Fail("can't parse field since there is no colon after field name declaration")
+				state.FailWithError(parseErrToken(fmt.Errorf("can't parse field since there is no colon after field name declaration"), restTokens.front(), position))
 			} else {
 				state.StartProcessing = false
 			}
@@ -540,8 +563,8 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 
 		var localState OptionalState
 		localState, restTokens, result.Type = parseTL2Type(restTokens, position)
-		state.Inherit(localState)
-		if !state.ExpectProgress("expected type of field") {
+		if !localState.ExpectProgress(parseErrToken(fmt.Errorf("expected type of field"), restTokens.front(), position)) {
+			state.Inherit(localState)
 			return
 		}
 	}
@@ -587,8 +610,8 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 
 		var argState OptionalState
 		argState, restTokens, result.Arguments[0] = parseTL2TypeArgument(restTokens, position)
-		state.Inherit(argState)
-		if !state.ExpectProgress("expected type argument") {
+		if !argState.ExpectProgress(parseErrToken(fmt.Errorf("expected type argument"), restTokens.front(), position)) {
+			state.Inherit(argState)
 			return
 		}
 
@@ -597,8 +620,8 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 				var arg TL2TypeArgument
 				result.Arguments = append(result.Arguments, arg)
 				argState, restTokens, result.Arguments[len(result.Arguments)-1] = parseTL2TypeArgument(restTokens, position)
-				state.Inherit(argState)
-				if !state.ExpectProgress("expected type argument") {
+				if !argState.ExpectProgress(parseErrToken(fmt.Errorf("expected type argument"), restTokens.front(), position)) {
+					state.Inherit(argState)
 					return
 				}
 			} else {
@@ -607,7 +630,7 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 		}
 
 		if !restTokens.expect(rAngleBracket) {
-			state.Fail("can't parse type arguments without closing bracket in the end")
+			state.FailWithError(parseErrToken(fmt.Errorf("can't parse type arguments without closing bracket in the end"), restTokens.front(), position))
 			return
 		}
 	}
@@ -640,14 +663,14 @@ func parseTL2BracketType(tokens tokenIterator, position Position) (state Optiona
 		}
 
 		if !restTokens.expect(rSquareBracket) {
-			state.Fail("expected closing square bracket")
+			state.FailWithError(parseErrToken(fmt.Errorf("expected closing square bracket"), restTokens.front(), position))
 			return
 		}
 
 		var argState OptionalState
 		argState, restTokens, result.ArrayType = parseTL2Type(restTokens, position)
-		state.Inherit(argState)
-		if !state.ExpectProgress("expected array type argument") {
+		if !argState.ExpectProgress(parseErrToken(fmt.Errorf("expected array type argument"), restTokens.front(), position)) {
+			state.Inherit(argState)
 			return
 		}
 	}
@@ -665,8 +688,11 @@ func parseTL2TypeArgument(tokens tokenIterator, position Position) (state Option
 		state.StartProcessing = true
 		result.IsNumber = true
 
-		value, parseErr := strconv.ParseUint(restTokens.popFront().val, 10, 32)
-		state.Error = parseErr
+		t := restTokens.popFront()
+		value, parseErr := strconv.ParseUint(t.val, 10, 32)
+		if parseErr != nil {
+			state.Error = parseErrToken(parseErr, t, position)
+		}
 		result.Number = uint32(value)
 	} else {
 		state, restTokens, result.Type = parseTL2Type(restTokens, position)
@@ -690,13 +716,13 @@ func parseTL2TypeArgumentDeclaration(tokens tokenIterator, position Position) (s
 		result.PRName.End = restTokens.front().pos
 
 		if !restTokens.expect(colon) {
-			state.Fail("unexpected token during type argument declaration")
+			state.FailWithError(parseErrToken(fmt.Errorf("unexpected token during type argument declaration"), restTokens.front(), position))
 			break
 		}
 
 		front := restTokens.front()
 		if !(front.tokenType == numberSign || front.val == "Type") {
-			state.Fail(fmt.Sprintf("unexpected type category %q (must be # or Type)", front.val))
+			state.FailWithError(parseErrToken(fmt.Errorf("unexpected type category %q (must be # or Type)", front.val), restTokens.front(), position))
 			return
 		}
 
