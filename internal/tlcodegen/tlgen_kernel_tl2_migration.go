@@ -692,7 +692,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			for _, combinator := range prevTypeTL2Info[baseName] {
 				inheritedSubSet := make(map[int]bool)
 				for i, argument := range combinator.TypeDecl.TemplateArguments {
-					if argument.Category.IsUint32() {
+					if argument.Category.IsNat() {
 						inheritedSubSet[i] = true
 					}
 				}
@@ -748,9 +748,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				generic := make(map[string]bool)
 
 				for i, argument := range combinator0.TemplateArguments {
-					category := "type"
 					if argument.IsNat {
-						category = "uint32"
 						natTemplates[argument.FieldName] = true
 						if !setOfConstantNatArgs[i] {
 							continue
@@ -763,7 +761,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
 						tlast.TL2TypeTemplate{
 							Name:     lowerFirst(argument.FieldName),
-							Category: tlast.TL2TypeCategory(category),
+							Category: tlast.TL2TypeCategory{IsNatValue: argument.IsNat},
 						},
 					)
 				}
@@ -776,13 +774,13 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				if !isRef {
 					if len(combinators) == 1 {
 						if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
+							tl2Combinator.TypeDecl.Type.IsTypeAlias = true
 							tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant, natTemplates)
 						} else {
-							tl2Combinator.TypeDecl.Type.IsConstructorFields = true
-							tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
+							tl2Combinator.TypeDecl.Type.StructType.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
 						}
 					} else {
-						tl2Combinator.TypeDecl.Type.IsUnionType = true
+						tl2Combinator.TypeDecl.Type.StructType.IsUnionType = true
 						for i, combinator := range combinators {
 							newVariant := tlast.TL2UnionConstructor{}
 							// add original comment
@@ -839,11 +837,13 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
 							}
 
-							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
+							tl2Combinator.TypeDecl.Type.StructType.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.StructType.UnionType.Variants, newVariant)
 						}
 					}
 				} else {
-					tl2Combinator.TypeDecl.Type.IsConstructorFields = true
+					// do nothing it is struct
+					tl2Combinator.TypeDecl.Type.IsTypeAlias = false
+					tl2Combinator.TypeDecl.Type.StructType.IsUnionType = false
 				}
 
 				if isRef {
@@ -1098,7 +1098,7 @@ func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast
 			if combinator.HasAnnotation(tl2Ext) {
 				suffix := ""
 				for _, argument := range combinator.TypeDecl.TemplateArguments {
-					if argument.Category.IsUint32() {
+					if argument.Category.IsNat() {
 						suffix += "_" + strings.ToUpper(argument.Name[:1]) + argument.Name[1:]
 					}
 				}

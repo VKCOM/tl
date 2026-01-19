@@ -42,7 +42,7 @@ func (k *Kernel) addString() {
 	combTL2 := tlast.TL2Combinator{
 		TypeDecl: tlast.TL2TypeDeclaration{
 			Name: tlast.TL2TypeName{Name: name},
-			Type: tlast.TL2TypeDefinition{IsConstructorFields: true}, // for the purpose of type check, this is object with no fields
+			Type: tlast.TL2TypeDefinition{}, // for the purpose of type check, this is object with no fields
 		},
 	}
 	ins := TypeInstanceString{
