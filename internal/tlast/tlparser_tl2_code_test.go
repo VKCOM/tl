@@ -992,6 +992,20 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 			)
 		})
 
+		t.Run("wrong generic arguments usage (redundant comma after)", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = x:vector<int, >;`,
+				"expected type argument",
+			)
+		})
+
+		t.Run("wrong generic arguments usage (redundant comma before)", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = x:vector<, int>;`,
+				"expected type argument",
+			)
+		})
+
 		t.Run("wrong inner type declaration", func(t *testing.T) {
 			BeautifulErrorTL2Test(t,
 				`testNs.testName<x:Type> = x:vector<[]_int>;`,
@@ -1002,7 +1016,35 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 		t.Run("wrong mono union declaration", func(t *testing.T) {
 			BeautifulErrorTL2Test(t,
 				`testNs.testName<x:Type> = green;`,
-				"expected array type argument",
+				"union with one constructor can't be without vertical bar before declaration",
+			)
+		})
+
+		t.Run("wrong multi union declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = | green |;`,
+				"expected union variant definition after vertical var",
+			)
+		})
+
+		t.Run("wrong multi union declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = green |;`,
+				"expected union variant definition after vertical var",
+			)
+		})
+
+		t.Run("wrong multi union declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = green ||;`,
+				"expected union variant definition after vertical var",
+			)
+		})
+
+		t.Run("wring union constructor fields declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = | green x x;`,
+				"expected semicolon in the end of combinator definition",
 			)
 		})
 	})
