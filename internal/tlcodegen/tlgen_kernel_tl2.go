@@ -195,7 +195,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 
 	for i, argument := range typeDeclaration.TemplateArguments {
 		actualArg := typeApplication.Arguments[i]
-		if argument.Category.IsUint32() {
+		if argument.Category.IsNat() {
 			if !actualArg.IsNumber {
 				return nil, actualArg.PR.BeautifulError(fmt.Errorf("by definition of this type here can be either number or generic if uint32"))
 			}
@@ -332,7 +332,31 @@ func (gen *Gen2) genTypeDeclarationTL2(
 	argTail := kernelType.wrapperNameTail()
 
 	switch {
-	case typeDecl.IsUnionType:
+	case typeDecl.IsTypeAlias:
+		kernelInterface := TypeRWStruct{
+			wr: kernelType,
+			Fields: []Field{
+				{
+					originalName: "",
+				},
+			},
+		}
+		kernelInterface.fieldsDecCPP.fillCPPIdentifiers()
+		kernelInterface.fieldsDec.fillGolangIdentifies()
+
+		kernelType.trw = &kernelInterface
+		resolvedTypedef, err := resolveMapping.resolveRef(typeDecl.TypeAlias)
+		if err != nil {
+			return err
+		}
+		typeDefWr, err := gen.genTypeTL2(resolvedTypedef)
+		if err != nil {
+			return err
+		}
+		_, isUnion := typeDefWr.trw.(*TypeRWUnion)
+		kernelInterface.Fields[0].t = typeDefWr
+		kernelInterface.Fields[0].bare = !isUnion
+	case typeDecl.StructType.IsUnionType:
 		union := TypeRWUnion{
 			wr:     kernelType,
 			Fields: []Field{},
@@ -342,7 +366,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 		hasNonEnum := false
 		yetCreatedNames := make(map[string]bool)
 		yetParsedNames := make(map[string]int)
-		for i, variant := range typeDecl.UnionType.Variants {
+		for i, variant := range typeDecl.StructType.UnionType.Variants {
 			if !variant.IsTypeAlias {
 				hasNonEnum = hasNonEnum || len(variant.Fields) > 0
 			}
@@ -371,7 +395,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			}
 			var err error
 			var targetNamespace, goLocalName, goGlobalName string
-			targetNamespace, goLocalName, goGlobalName, variantWrapper.tlName, field.goName, err = getVariantNames(kernelType.tl2Name, typeDecl.UnionType.Variants, i, yetCreatedNames, argTail)
+			targetNamespace, goLocalName, goGlobalName, variantWrapper.tlName, field.goName, err = getVariantNames(kernelType.tl2Name, typeDecl.StructType.UnionType.Variants, i, yetCreatedNames, argTail)
 
 			variantWrapper.ns = gen.getNamespace(targetNamespace)
 			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
@@ -386,7 +410,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			if index, ok := yetParsedNames[variantWrapper.tlName.String()]; ok {
 				return tlast.BeautifulError2(
 					variant.PRName.BeautifulError(fmt.Errorf("can't have such name (or it's tl1 legacy variant) due to duplication")),
-					typeDecl.UnionType.Variants[index].PRName.BeautifulError(fmt.Errorf("first apperance of such name (or it's tl1 legacy variant)")),
+					typeDecl.StructType.UnionType.Variants[index].PRName.BeautifulError(fmt.Errorf("first apperance of such name (or it's tl1 legacy variant)")),
 				)
 			} else {
 				yetParsedNames[variantWrapper.tlName.String()] = i
@@ -427,7 +451,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			union.Fields = append(union.Fields, field)
 		}
 		union.IsEnum = !hasNonEnum
-	case typeDecl.IsConstructorFields:
+	default:
 		strct := TypeRWStruct{
 			wr:     kernelType,
 			Fields: []Field{},
@@ -436,34 +460,10 @@ func (gen *Gen2) genTypeDeclarationTL2(
 		strct.fieldsDec.fillGolangIdentifies()
 
 		kernelType.trw = &strct
-		err := gen.genFieldsTL2(resolveMapping, &strct, typeDecl.ConstructorFields)
+		err := gen.genFieldsTL2(resolveMapping, &strct, typeDecl.StructType.ConstructorFields)
 		if err != nil {
 			return err
 		}
-	default:
-		kernelInterface := TypeRWStruct{
-			wr: kernelType,
-			Fields: []Field{
-				{
-					originalName: "",
-				},
-			},
-		}
-		kernelInterface.fieldsDecCPP.fillCPPIdentifiers()
-		kernelInterface.fieldsDec.fillGolangIdentifies()
-
-		kernelType.trw = &kernelInterface
-		resolvedTypedef, err := resolveMapping.resolveRef(typeDecl.TypeAlias)
-		if err != nil {
-			return err
-		}
-		typeDefWr, err := gen.genTypeTL2(resolvedTypedef)
-		if err != nil {
-			return err
-		}
-		_, isUnion := typeDefWr.trw.(*TypeRWUnion)
-		kernelInterface.Fields[0].t = typeDefWr
-		kernelInterface.Fields[0].bare = !isUnion
 	}
 
 	return nil
@@ -713,11 +713,12 @@ func (gen *Gen2) genMaybeTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinato
 	// {0?}<t:type> = {1?} | {2?};
 	if len(comb.TypeDecl.TemplateArguments) != 1 ||
 		!comb.TypeDecl.TemplateArguments[0].Category.IsType() ||
-		!comb.TypeDecl.Type.IsUnionType ||
-		len(comb.TypeDecl.Type.UnionType.Variants) != 2 {
+		comb.TypeDecl.Type.IsTypeAlias ||
+		!comb.TypeDecl.Type.StructType.IsUnionType ||
+		len(comb.TypeDecl.Type.StructType.UnionType.Variants) != 2 {
 		return nil, comb.TypeDecl.PRName.BeautifulError(nonMaybeErr)
 	}
-	variants := comb.TypeDecl.Type.UnionType.Variants
+	variants := comb.TypeDecl.Type.StructType.UnionType.Variants
 	emptyVariant, valueVariant := variants[0], variants[1]
 	if emptyVariant.IsTypeAlias ||
 		len(emptyVariant.Fields) != 0 {
@@ -795,7 +796,7 @@ func getCombinatorNames(combinator tlast.TL2Combinator, argTail string) (localNa
 	if combinator.HasAnnotation(tl2Ext) {
 		suffix := ""
 		for _, argument := range combinator.TypeDecl.TemplateArguments {
-			if argument.Category.IsUint32() {
+			if argument.Category.IsNat() {
 				suffix += "_" + strings.ToUpper(argument.Name[:1]) + argument.Name[1:]
 			}
 		}

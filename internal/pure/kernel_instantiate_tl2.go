@@ -176,16 +176,14 @@ func (k *Kernel) createOrdinaryType(canonicalName string, definition tlast.TL2Ty
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
 	switch {
-	case definition.IsUnionType:
-		return k.createUnion(canonicalName, definition.UnionType, leftArgs, actualArgs)
 	case definition.IsAlias():
 		return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
-	case definition.IsConstructorFields:
+	case definition.StructType.IsUnionType:
+		return k.createUnion(canonicalName, definition.StructType.UnionType, leftArgs, actualArgs)
+	default:
 		return k.createStruct(canonicalName,
-			true, definition.TypeAlias, definition.ConstructorFields,
+			true, definition.TypeAlias, definition.StructType.ConstructorFields,
 			leftArgs, actualArgs,
 			false, 0, nil)
-	default:
-		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
 	}
 }

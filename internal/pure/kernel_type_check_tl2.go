@@ -13,19 +13,19 @@ import (
 )
 
 func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition, leftArgs []tlast.TL2TypeTemplate) error {
-	if tip.IsUnionType {
-		for _, v := range tip.UnionType.Variants {
+	if tip.IsAlias() {
+		return k.typeCheckTypeRef(tip.TypeAlias, leftArgs)
+	}
+	if tip.StructType.IsUnionType {
+		for _, v := range tip.StructType.UnionType.Variants {
 			if err := k.typeCheckAliasFields(v.IsTypeAlias, v.TypeAlias, v.Fields, leftArgs); err != nil {
 				return err
 			}
 		}
 		return nil
 	}
-	if tip.IsAlias() {
-		return k.typeCheckTypeRef(tip.TypeAlias, leftArgs)
-	}
 	return k.typeCheckAliasFields(false, tlast.TL2TypeRef{},
-		tip.ConstructorFields, leftArgs)
+		tip.StructType.ConstructorFields, leftArgs)
 }
 
 func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeRef,
@@ -113,13 +113,13 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 
 func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate) (tlast.TL2TypeCategory, error) {
 	if arg.IsNumber {
-		return tlast.TL2TypeCategoryNat, nil
+		return tlast.TL2TypeCategory{IsNatValue: true}, nil
 	}
 	if !arg.Type.IsBracket && arg.Type.SomeType.Name.Namespace == "" {
 		for _, la := range leftArgs {
 			if arg.Type.SomeType.Name.Name == la.Name {
 				if len(arg.Type.SomeType.Arguments) != 0 {
-					return "", fmt.Errorf("reference to template argument %s cannot have arguments", la.Name)
+					return tlast.TL2TypeCategory{}, fmt.Errorf("reference to template argument %s cannot have arguments", la.Name)
 				}
 				return la.Category, nil
 			}
@@ -127,7 +127,7 @@ func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArgs []tlast.T
 		// reference to global type
 	}
 	if err := k.typeCheckTypeRef(arg.Type, leftArgs); err != nil {
-		return "", err
+		return tlast.TL2TypeCategory{}, err
 	}
-	return tlast.TL2TypeCategoryType, nil
+	return tlast.TL2TypeCategory{IsNatValue: false}, nil
 }

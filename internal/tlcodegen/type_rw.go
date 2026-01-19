@@ -189,9 +189,9 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 		} else {
 			originType := w.unionParent.wr.tl2Origin
 			if w.unionParent.wr.tl2IsResult {
-				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.UnionType.Variants[w.unionIndex].Name)
+				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.StructType.UnionType.Variants[w.unionIndex].Name)
 			} else {
-				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.UnionType.Variants[w.unionIndex].Name)
+				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.StructType.UnionType.Variants[w.unionIndex].Name)
 			}
 		}
 	} else {

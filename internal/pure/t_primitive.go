@@ -47,7 +47,7 @@ func (k *Kernel) addPrimitive(name string, originTL2 bool, clone KernelValue, go
 	combTL2 := tlast.TL2Combinator{
 		TypeDecl: tlast.TL2TypeDeclaration{
 			Name: tlast.TL2TypeName{Name: name},
-			Type: tlast.TL2TypeDefinition{IsConstructorFields: true},
+			Type: tlast.TL2TypeDefinition{},
 		},
 	}
 	ins := TypeInstancePrimitive{

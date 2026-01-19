@@ -65,9 +65,9 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 `,
 		"b.",
 		map[string]string{
-			"": `@tl1 vector<t:type> = ;
-@tl1 tuple<t:type> = ;
-@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+			"": `@tl1 vector<t:Type> = ;
+@tl1 tuple<t:Type> = ;
+@tl1 @tl2ext tuple_N<t:Type,n:#> = ;
 `,
 			"a": `@tl1 a.t1 = ;
 @tl1 a.t2 = ;
@@ -132,8 +132,8 @@ b.t1 x:tuple<int, 2> = b.T1;
 `,
 		"b.",
 		map[string]string{
-			"": `@tl1 tuple<t:type> = ;
-@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+			"": `@tl1 tuple<t:Type> = ;
+@tl1 @tl2ext tuple_N<t:Type,n:#> = ;
 `,
 			"b": `b.t1 = x:tuple_N<int,2>;
 `,
@@ -154,9 +154,9 @@ a.t2 n:# f1:tuple<a.t1, n> = a.T2;
 `,
 		"b.,a.,.",
 		map[string]string{
-			"": `tuple<t:type> = []t;
-@tl2ext tuple_N<t:type,n:uint32> = [n]t;
-vector<t:type> = []t;
+			"": `tuple<t:Type> <=> []t;
+@tl2ext tuple_N<t:Type,n:#> <=> [n]t;
+vector<t:Type> <=> []t;
 `,
 			"a": `a.t1 = f1:int f2:vector<int>;
 a.t2 = n:uint32 f1:tuple<a.t1>;
@@ -191,9 +191,9 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 `,
 		"b.",
 		map[string]string{
-			"": `@tl1 vector<t:type> = ;
-@tl1 tuple<t:type> = ;
-@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+			"": `@tl1 vector<t:Type> = ;
+@tl1 tuple<t:Type> = ;
+@tl1 @tl2ext tuple_N<t:Type,n:#> = ;
 `,
 			"a": `@tl1 a.t1 = ;
 @tl1 a.t2 = ;
@@ -222,9 +222,9 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 `,
 		"b.,a.",
 		map[string]string{
-			"": `@tl1 vector<t:type> = ;
-@tl1 tuple<t:type> = ;
-@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+			"": `@tl1 vector<t:Type> = ;
+@tl1 tuple<t:Type> = ;
+@tl1 @tl2ext tuple_N<t:Type,n:#> = ;
 `,
 			"a": `a.t1 = f1:int f2:vector<int>;
 a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
@@ -250,10 +250,10 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 `,
 		"b.,a.,c.",
 		map[string]string{
-			"": `@tl1 vector<t:type> = ;
-@tl1 tuple<t:type> = ;
-@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
-@tl1 pair<x:type,y:type> = ;
+			"": `@tl1 vector<t:Type> = ;
+@tl1 tuple<t:Type> = ;
+@tl1 @tl2ext tuple_N<t:Type,n:#> = ;
+@tl1 pair<x:Type,y:Type> = ;
 `,
 			"a": `a.t1 = f1:int f2:vector<int>;
 a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
@@ -279,10 +279,10 @@ pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
 `,
 		"b.,a.,c.,.",
 		map[string]string{
-			"": `vector<t:type> = []t;
-tuple<t:type> = []t;
-@tl2ext tuple_N<t:type,n:uint32> = [n]t;
-pair<x:type,y:type> = x:x y:y;
+			"": `vector<t:Type> <=> []t;
+tuple<t:Type> <=> []t;
+@tl2ext tuple_N<t:Type,n:#> <=> [n]t;
+pair<x:Type,y:Type> = x:x y:y;
 `,
 			"a": `a.t1 = f1:int f2:vector<int>;
 a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
