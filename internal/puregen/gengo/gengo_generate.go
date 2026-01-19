@@ -485,31 +485,27 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	return nil
 }
 
-//func (gen *genGo) GenerateTuple(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext) error {
-//	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[1].FieldName}} // TODO - PR
-//	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
-//	if err != nil {
-//		return err
-//	}
-//	res := &TypeRWBrackets{
-//		wr:         myWrapper,
-//		vectorLike: false,
-//		element: Field{
-//			t:            elementResolvedType,
-//			bare:         elementResolvedTypeBare,
-//			natArgs:      elementNatArgs,
-//			halfResolved: elementHalfResolved,
-//		},
-//	}
-//	myWrapper.trw = res
-//	myWrapper.fileName = elementResolvedType.fileName
-//	res.dynamicSize = !myWrapper.arguments[0].isArith
-//	if myWrapper.arguments[0].isArith {
-//		res.size = myWrapper.arguments[0].Arith.Res
-//	}
-//	return nil
-//}
-//
+func (gen *genGo) GenerateArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
+	fieldType, err := gen.getType(pureType.ElemType())
+	if err != nil {
+		return err
+	}
+	res := &TypeRWBrackets{
+		wr:          myWrapper,
+		vectorLike:  !pureType.IsTuple(),
+		dynamicSize: pureType.DynamicSize(),
+		size:        pureType.Count(),
+		element: Field{
+			t:       fieldType,
+			bare:    pureType.ElemBare(),
+			natArgs: pureType.ElemNatArgs(),
+		},
+	}
+	myWrapper.trw = res
+	myWrapper.fileName = fieldType.fileName
+	return nil
+}
+
 //func (gen *genGo) GenerateVector(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext, vectorElementTypeIndex int) error {
 //	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[vectorElementTypeIndex].FieldName}} // TODO - PR
 //	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)

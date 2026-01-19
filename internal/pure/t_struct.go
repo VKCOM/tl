@@ -201,7 +201,8 @@ func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, pr
 		*natParams = append(*natParams, prefix)
 		return
 	}
-	tip, ok := k.tips[rt.T.Type.String()]
+	tName := k.replaceTL1BuiltinName(rt.T.Type.String())
+	tip, ok := k.tips[tName]
 	if !ok {
 		panic("resolved type not found in global type map")
 	}
@@ -293,7 +294,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if !k.canonicalBrackets(fieldDef) {
 				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}, {T: tlast.TypeRef{Type: tlast.Name{Name: a.FieldName}}}}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: tlast.TypeRef{Type: tlast.Name{Name: a.FieldName}}}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
@@ -303,13 +304,13 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if !k.canonicalBrackets(fieldDef) {
 				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}, {}}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 			if fieldDef.ScaleRepeat.Scale.IsArith {
-				fieldDef.FieldType.Args[1] = tlast.ArithmeticOrType{IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
+				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
 			} else {
-				fieldDef.FieldType.Args[1] = tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
+				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
 			}
 		}
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)

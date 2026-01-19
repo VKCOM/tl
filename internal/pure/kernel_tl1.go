@@ -7,6 +7,7 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -24,6 +25,40 @@ func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
 	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
 }
 
+func (k *Kernel) CompileBuiltin(typ *tlast.Combinator) error {
+	addBuiltin := func(tl2name string, bigName string) error {
+		tip, ok := k.tips[tl2name]
+		if !ok {
+			return typ.Construct.NamePR.BeautifulError(errors.New("internal error builtin type not found"))
+		}
+		if _, ok2 := k.tips[bigName]; ok2 {
+			// TODO - see here
+			return typ.TypeDecl.NamePR.BeautifulError(errors.New("builtin type already defined as not builtin"))
+		}
+		if tip.combTL1[0].Construct.ID != nil {
+			// TODO - see here
+			return typ.Construct.NamePR.BeautifulError(errors.New("built-in type magic already defined by previous declaration"))
+		}
+		id := typ.Crc32()
+		tip.combTL1[0].Construct.ID = &id
+		k.tips[bigName] = tip
+		return nil
+	}
+	switch typ.Construct.Name.String() {
+	case "int":
+		return addBuiltin("int32", "Int")
+	case "long":
+		return addBuiltin("int64", "Long")
+	case "string":
+		return addBuiltin("string", "String")
+	case "float":
+		return addBuiltin("float32", "Float")
+	case "double":
+		return addBuiltin("float64", "Double")
+	}
+	return typ.Construct.NamePR.BeautifulError(errors.New("built-in type with such name not found"))
+}
+
 func (k *Kernel) CompileTL1() error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
@@ -33,6 +68,12 @@ func (k *Kernel) CompileTL1() error {
 		k.filesTL1[i].OriginalOrderIndex = i
 	}
 	for _, typ := range k.filesTL1 {
+		if typ.Builtin {
+			if err := k.CompileBuiltin(typ); err != nil {
+				return err
+			}
+			continue
+		}
 		// vector and tuple are magical, do not look inside
 		// TODO - require exact definitions
 		if !k.shouldSkipDefinition(typ) {

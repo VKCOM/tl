@@ -9,6 +9,7 @@ package pure
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
@@ -23,6 +24,7 @@ type LocalArg struct {
 // we remap TL1 type names into TL2 type names here.
 // hopefully, this does not cause too many irregularities downstream
 func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
+	canonicalName = strings.TrimPrefix(canonicalName, "%")
 	switch canonicalName {
 	case "int":
 		canonicalName = "int32"
@@ -218,15 +220,15 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 	case "__vector":
 		ref := k.addInstance(canonicalName, k.brackets)
 		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
-		ref.ins, err = k.createArrayTL1(canonicalName, false, leftArgs, tr.Args)
+		ref.ins, err = k.createVectorTL1(canonicalName, tr, leftArgs, tr.Args)
 		if err != nil {
 			return nil, err
 		}
 		return ref, nil
 	case "__tuple":
 		ref := k.addInstance(canonicalName, k.brackets)
-		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}, {FieldName: "n", IsNat: true}}
-		ref.ins, err = k.createArrayTL1(canonicalName, true, leftArgs, tr.Args)
+		leftArgs := []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}}
+		ref.ins, err = k.createTupleTL1(canonicalName, tr, leftArgs, tr.Args)
 		if err != nil {
 			return nil, err
 		}
