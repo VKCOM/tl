@@ -1,0 +1,98 @@
+digraph G {
+    c0 [color="red"];
+    c1 [color="red"];
+    f2 [color="red"];
+
+    u0 -> f0 [label="<name>|<depName>|_"];
+
+    f0 -> f1 [label=":"];
+    f0 -> f1a [label="?"];
+    f1a -> f1 [label=":"];
+    f1 -> f2 [label="<type>"];
+
+    u0 -> c0 [label="<name>"];
+    c0 -> c1 [label="<type>"];
+    c0 -> f0 [label="<name>|<depName>|_"];
+
+    f2 -> f0 [label="<name>|<depName>|_"];
+
+    g2 [color="red"];
+    t1 [color="red"];
+
+    t0 -> b0 [label="["];
+    b0 -> i0 [label="<type>|number"];
+    i0 -> b1 [label="]"];
+    b1 -> t1 [label="<name>|<nameNs>"];
+    t0 -> t1 [label="<name>|<nameNs>"];
+    t1 -> g0 [label="<"];
+    g0 -> g1 [label="<type>|number"];
+    g1 -> g1a [label=","];
+    g1a -> g1 [label="<type>|number"];
+    g1 -> g2 [label=">"];
+
+    cmb1 [color="red"];
+
+    cmb0 -> a0 [label="<annotation>"];
+    a0 -> a0 [label="<annotation>"];
+    a0 -> tt0 [label="<name>|<nameNs>"];
+    cmb0 -> tt0 [label="<name>|<nameNs>"];
+    a0 -> ff0 [label="<name>|<nameNs>"];
+    cmb0 -> ff0 [label="<name>|<nameNs>"];
+
+    ff0 -> ff1 [label="<magic>"];
+    ff1 -> ff1a [label="<field>"];
+    ff1a -> ff1a [label="<field>"];
+    ff1a -> ff2 [label="=>"];
+    ff1 -> ff2 [label="=>"];
+
+    ff2 -> ff2a [label="'<=>"];
+    ff2a -> ff3 [label="<type>"];
+    ff3 -> cmb1 [label="  ;"];
+
+    ff2 -> ff3 [label="<type>"];
+    ff2 -> ff4 [label="<struct>"];
+    ff4 -> cmb1 [label=";"];
+
+    tt0 -> tt0a [label="<magic>"];
+    tt0a -> tt1 [label="<>"];
+    tt0 -> tt1 [label="<>"];
+
+    tt1 -> tt1a [label="'<"];
+    tt1a -> tt1a1 [label="<name>"];
+    tt1a1 -> tt1a2 [label=":"];
+    tt1a2 -> tt1a3 [label="#|Type"];
+    tt1a3 -> tt1a [label=","];
+    tt1a3 -> tt2 [label="'>"];
+
+    tt1 -> tt2 [label="<>"];
+
+    tt2 -> tt3a [label="="];
+    tt2 -> tt3b [label="<=>"];
+
+
+    tt3a -> tt3a1 [label="<struct>"];
+    tt3b -> tt3b1 [label="<type>"];
+
+    tt3a1 -> cmb1 [label=";"];
+    tt3b1 -> cmb1 [label=";"];
+
+
+    str0 [color="red"];
+    str4 [color="red"];
+
+    str0 -> str2 [label="<name>|<depName>|_"];
+    str2 -> str3a [label="?"];
+    str3a -> str3 [label=":"];
+    str2 -> str3 [label=":"];
+    str3 -> str4 [label="<type>"];
+    str4 -> str2 [label="<name>|<depName>|_"];
+
+    str3u [color="red"];
+
+    str0 -> str2u [label="<union>"];
+    str0 -> str1u [label=" |"];
+    str1u -> str3u [label="<union>"];
+    str3u -> str1u [label=" |"];
+
+    str2u -> str1u [label=" |"];
+}

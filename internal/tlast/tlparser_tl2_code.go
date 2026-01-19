@@ -246,12 +246,16 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 			var localState OptionalState
 			localState, restTokens, result.ReturnType.StructType = parseTL2StructTypeDefinition(restTokens, position)
 			// maybe it is typeref
-			if !localState.StartProcessing {
+			if !localState.HasProgress() {
 				var tryRefState OptionalState
 				var ref TL2TypeRef
 				tryRefState, restTokens, ref = parseTL2Type(restTokens, position)
 				if tryRefState.IsFailed() {
 					state.Inherit(tryRefState)
+					return
+				} else if tryRefState.IsOmitted() {
+					state.Inherit(localState)
+					state.FailWithError(parseErrToken(fmt.Errorf("can't parse type declaration"), restTokens.front(), position))
 					return
 				}
 
@@ -363,6 +367,11 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 
 // TL2StructTypeDefinition := TL2Field* | TL2UnionType;
 func parseTL2StructTypeDefinition(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2StructTypeDefinition) {
+	defer func() {
+		if !state.HasProgress() {
+			restTokens = tokens
+		}
+	}()
 	restTokens = tokens
 	result.PR = restTokens.currentPositionRange(position)
 
@@ -370,15 +379,16 @@ func parseTL2StructTypeDefinition(tokens tokenIterator, position Position) (stat
 	if state.HasProgress() {
 		result.IsUnionType = true
 	} else {
-		//if state.IsFailed() {
-		//	return
-		//}
+		if state.IsFailed() && len(result.UnionType.Variants) != 0 {
+			return
+		}
 		restTokens = tokens
 		var fieldsState OptionalState
 		fieldsState, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
 		if fieldsState.IsFailed() {
 			//state.Inherit(fieldsState)
 			state.Error = fieldsState.Error
+			restTokens = tokens
 			//state.FailWithError(parseErrToken(fmt.Errorf("expected type field declaration"), restTokens.front(), position))
 		} else {
 			state = fieldsState
@@ -504,6 +514,11 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 				aliasState, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
 				state.Inherit(aliasState)
 				if aliasState.IsOmitted() {
+					// check field case
+					if restTokens.checkToken(colon) || restTokens.checkToken(questionMark) {
+						state.FailWithError(parseErrToken(fmt.Errorf("unexpected colon after one field union constructor declaration"), restTokens.front(), position))
+						return
+					}
 					restTokens = savedRestTokens
 					result.IsTypeAlias = false
 				}
