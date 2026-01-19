@@ -1,7 +1,9 @@
 package tlast
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +22,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(`   @gigi    `)
 			state, newIt, ann := parseTL2Annotation(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, "gigi", ann.Name)
 			assert.True(t, newIt.expect(eof))
 		})
@@ -29,7 +31,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(`   #11111111    `)
 			state, newIt, ann := parseTL2Annotation(it, Position{})
 			assert.False(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, "", ann.Name)
 			assert.True(t, newIt.expect(crc32hash))
 		})
@@ -38,7 +40,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(` @gigi @gaga #12345678  `)
 			state, newIt, anns := zeroOrMore(parseTL2Annotation)(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, 2, len(anns))
 			assert.Equal(t, "gigi", anns[0].Name)
 			assert.Equal(t, "gaga", anns[1].Name)
@@ -49,7 +51,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(` #12345678  `)
 			state, newIt, anns := zeroOrMore(parseTL2Annotation)(it, Position{})
 			assert.False(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, 0, len(anns))
 			assert.True(t, newIt.expect(crc32hash))
 		})
@@ -60,7 +62,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(` testName  `)
 			state, newIt, testName := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, "testName", testName.Name)
 			assert.True(t, newIt.expect(eof))
 		})
@@ -68,7 +70,7 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(` testNS.testName  `)
 			state, newIt, testName := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.Equal(t, "testName", testName.Name)
 			assert.Equal(t, "testNS", testName.Namespace)
 			assert.True(t, newIt.expect(eof))
@@ -77,14 +79,14 @@ func TestParseTL2(t *testing.T) {
 			it, _ := setupIterator(` TestName  `)
 			state, newIt, _ := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 		})
 		t.Run("success with ucNameNs", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.TestName  `)
 			state, newIt, _ := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 		})
 	})
@@ -94,7 +96,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("basic definition", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -117,7 +119,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("basic definition with crc32", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName #90abcdef = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -128,7 +130,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("basic definition with optional field", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = x?:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -152,7 +154,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("basic definition with ignored field", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = _:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -182,7 +184,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("empty definition", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = ; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -198,7 +200,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("type alias", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName <=> int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -216,7 +218,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("union", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = SomeInt int | SomeString string; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -238,7 +240,7 @@ func TestParseTL2(t *testing.T) {
 			t.Run("union with constructors", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName = Green x:int | Red | SomeString string; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -277,7 +279,7 @@ testNs.testName =
 	| Text string
 	;`)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 				assert.False(t, comb.IsFunction)
 				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
@@ -322,7 +324,7 @@ testNs.testName = Green x:int
 testNs.testName = | Green x:int
 	;`)
 				_, _, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 			})
 
 			t.Run("union with constructors with one constructor with leading vb and lcName", func(t *testing.T) {
@@ -330,7 +332,7 @@ testNs.testName = | Green x:int
 testNs.testName = | green x:int
 	;`)
 				_, _, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 			})
 
 			t.Run("union with constructors with zero constructor", func(t *testing.T) {
@@ -352,7 +354,7 @@ testNs.testName = Green x:int |
 			t.Run("basic definition with templates", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName<x:Type> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 
 				assert.Equal(t, 1, len(comb.TypeDecl.TemplateArguments))
@@ -374,7 +376,7 @@ testNs.testName = Green x:int |
 				it, _ := setupIterator(` testNs.testName<x:Type, y:#> = ; `)
 				_, _, err := parseTL2Combinator(it)
 				fmt.Println(err)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 			})
 
 			t.Run("incorrect categories", func(t *testing.T) {
@@ -387,7 +389,7 @@ testNs.testName = Green x:int |
 			t.Run("basic definition with multiple templates", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName<x:Type, y:#> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
-				assert.NoError(t, err)
+				assert.Nil(t, err)
 				assert.True(t, newIt.expect(eof))
 
 				assert.Equal(t, 2, len(comb.TypeDecl.TemplateArguments))
@@ -409,7 +411,7 @@ testNs.testName = Green x:int |
 		t.Run("simple function", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 			assert.True(t, comb.IsFunction)
 			assert.Equal(t, "testNs", comb.FuncDecl.Name.Namespace)
@@ -440,7 +442,7 @@ testNs.testName = Green x:int |
 		t.Run("simple function with crc32", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#90abcdef x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 			assert.True(t, comb.IsFunction)
 			assert.Equal(t, "testNs", comb.FuncDecl.Name.Namespace)
@@ -451,7 +453,7 @@ testNs.testName = Green x:int |
 		t.Run("simple function no arguments", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#09123456 => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 			assert.True(t, comb.IsFunction)
 			assert.Equal(t, "testNs", comb.FuncDecl.Name.Namespace)
@@ -465,7 +467,7 @@ testNs.testName = Green x:int |
 		t.Run("function with union type result", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#09123456 x:int => SomeInt int | NonFound | Found name:string _:int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 			assert.True(t, comb.IsFunction)
 			assert.Equal(t, "testNs", comb.FuncDecl.Name.Namespace)
@@ -509,7 +511,7 @@ testNs.testName = Green x:int |
 		t.Run("func with alias return type", func(t *testing.T) {
 			it, _ := setupIterator(`testNs.testName#09123456 x:int => <=>int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, comb.IsFunction)
@@ -520,7 +522,7 @@ testNs.testName = Green x:int |
 		t.Run("func with anonymous return type", func(t *testing.T) {
 			it, _ := setupIterator(`testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, comb.IsFunction)
@@ -542,7 +544,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.False(t, typeRef.IsBracket)
@@ -557,7 +559,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.False(t, typeRef.IsBracket)
@@ -572,7 +574,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, typeRef.IsBracket)
@@ -590,7 +592,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, typeRef.IsBracket)
@@ -610,7 +612,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, typeRef.IsBracket)
@@ -630,7 +632,7 @@ testNs.testName = Green x:int |
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
 			assert.True(t, typeRef.IsBracket)
@@ -650,7 +652,7 @@ testNs.testName = Green x:int |
 		t.Run("combinator", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#09abcdef <x:#,  y:Type  > =Green x:int |   Red | SomeStr string   ; `)
 			comb, _, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`testNs.testName#09abcdef<x:#,y:Type> = Green x:int | Red | SomeStr string;`,
 				comb.String(),
@@ -667,7 +669,7 @@ testNs.testName <x:#,  y:Type  > =
 @x@r testFunc#09123456 a:uint32 t:vector<vector < int>> 
 	=> int;`
 			combs, err := ParseTL2(str)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`testNs.testName<x:#,y:Type> = Green x:int | Red _:int | SomeStr string;
 @x @r testFunc#09123456 a:uint32 t:vector<vector<int>> => int;
@@ -679,7 +681,7 @@ testNs.testName <x:#,  y:Type  > =
 			it, _ := setupIterator(`// comment 
 testNs.testName  #09abcdef <x:#,  y:Type  > =Green x:int |   Red | SomeStr    string   ; `)
 			comb, _, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`// comment
 testNs.testName#09abcdef<x:#,y:Type> = Green x:int | Red | SomeStr string;`,
@@ -699,7 +701,7 @@ y:int
 
 z:int; `)
 			comb, _, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`testNs.testName#09abcdef<x:#,y:Type> = 
 	// a
@@ -726,7 +728,7 @@ y:int
 
 z:int; `)
 			comb, _, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`testNs.testName#09abcdef<x:#,y:Type> = 
 	| SomeInt int
@@ -751,7 +753,7 @@ SomeInt int
 | SomeStr string // Green 
 | Green; `)
 			comb, _, err := parseTL2Combinator(it)
-			assert.NoError(t, err)
+			assert.Nil(t, err)
 			assert.Equal(t,
 				`testNs.testName#09abcdef<x:#,y:Type> = 
 	// SomeInt
@@ -774,7 +776,7 @@ SomeInt int
 // b
 name = x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "// b", comb.CommentBefore)
 				})
 
@@ -785,7 +787,7 @@ name = x:int;`)
 // l2
 name = x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "// l1\n// l2", comb.CommentBefore)
 				})
 
@@ -797,7 +799,7 @@ name = x:int;`)
 
 name = x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "", comb.CommentBefore)
 				})
 			})
@@ -807,7 +809,7 @@ name = x:int;`)
 					it, _ := setupIterator(`name = // a
 														x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "// a", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 				})
 
@@ -816,7 +818,7 @@ name = x:int;`)
 						// a
 						x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 					assert.Equal(t, "// a", comb.TypeDecl.Type.StructType.ConstructorFields[1].CommentBefore)
 				})
@@ -827,7 +829,7 @@ name = // l1
 // l2
 x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "// l1\n// l2", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 				})
 
@@ -837,7 +839,7 @@ x:int;`)
 // b
 						x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 					assert.Equal(t, "// a\n// b", comb.TypeDecl.Type.StructType.ConstructorFields[1].CommentBefore)
 				})
@@ -849,7 +851,7 @@ name = // l1
 
 x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 				})
 
@@ -860,7 +862,7 @@ x:int;`)
 
 						x:int;`)
 					comb, _, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.Equal(t, "", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentBefore)
 					assert.Equal(t, "", comb.TypeDecl.Type.StructType.ConstructorFields[1].CommentBefore)
 				})
@@ -874,7 +876,7 @@ testNs.testName<x:Type, y:#> =
 	IntValue x:int
 	| StrValue string; `)
 					comb, newIt, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.True(t, newIt.expect(eof))
 
 					assert.Equal(t, `// IntValue`, comb.TypeDecl.Type.StructType.UnionType.Variants[0].CommentBefore)
@@ -887,7 +889,7 @@ testNs.testName<x:Type, y:#> =
 	| IntValue x:int
 	| StrValue string; `)
 					comb, newIt, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.True(t, newIt.expect(eof))
 
 					assert.Equal(t, `// IntValue`, comb.TypeDecl.Type.StructType.UnionType.Variants[0].CommentBefore)
@@ -899,7 +901,7 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 	// StrValue
 	| StrValue string; `)
 					comb, newIt, err := parseTL2Combinator(it)
-					assert.NoError(t, err)
+					assert.Nil(t, err)
 					assert.True(t, newIt.expect(eof))
 
 					assert.Equal(t, `// StrValue`, comb.TypeDecl.Type.StructType.UnionType.Variants[1].CommentBefore)
@@ -909,6 +911,110 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 	})
 
 	t.Run("beautiful errors", func(t *testing.T) {
+		t.Run("missed type name", func(t *testing.T) {
+			BeautifulErrorTL2Test(t, `.name`, "expected type name")
+		})
 
+		t.Run("missed semicolon", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName#09123456 x:int => SomeInt int | NonFound | Found name:string _:int`,
+				"expected semicolon in the end of combinator definition",
+			)
+		})
+
+		t.Run("zero magic", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName#00000000 x:int => `,
+				"magic should not be 0",
+			)
+		})
+
+		t.Run("function without magic", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName x:int => `,
+				"function must have magic",
+			)
+		})
+
+		t.Run("zero generics", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<> = ;`,
+				"expected type argument declaration",
+			)
+		})
+
+		t.Run("unexpected comma", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type,> = ;`,
+				"expected type argument declaration",
+			)
+		})
+
+		t.Run("unexpected category", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:type2> = ;`,
+				"unexpected type category \"type2\" (must be # or Type)",
+			)
+		})
+
+		t.Run("no close brackets for generic", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type = ;`,
+				"can't stop parse template arguments without closing brackets",
+			)
+		})
+
+		t.Run("wrong type for brackets", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName(x:Type) = ;`,
+				"wrong type of opening brackets for generics",
+			)
+		})
+
+		t.Run("no type for aliasing", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> <=> ;`,
+				"expected reference to type for aliasing",
+			)
+		})
+
+		t.Run("wrong field declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = x:_int;`,
+				"expected type of field",
+			)
+		})
+
+		t.Run("wrong inner type declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = x:vector<_int>;`,
+				"expected type argument",
+			)
+		})
+
+		t.Run("wrong inner type declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = x:vector<[]_int>;`,
+				"expected array type argument",
+			)
+		})
+
+		t.Run("wrong mono union declaration", func(t *testing.T) {
+			BeautifulErrorTL2Test(t,
+				`testNs.testName<x:Type> = green;`,
+				"expected array type argument",
+			)
+		})
 	})
+}
+
+func BeautifulErrorTL2Test(t *testing.T, input string, expectedError string) {
+	it, _ := setupIterator(input)
+	_, _, err := parseTL2Combinator(it)
+	assert.Error(t, err)
+	var parseErr *ParseError
+	ok := errors.As(err, &parseErr)
+	assert.True(t, ok)
+	assert.Equal(t, expectedError, parseErr.Error())
+	parseErr.PrintWarning(os.Stderr, nil)
 }
