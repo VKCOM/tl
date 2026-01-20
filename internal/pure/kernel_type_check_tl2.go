@@ -104,7 +104,7 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 		if err != nil {
 			return err
 		}
-		if targ.IsNat != (cat == tlast.TL2TypeCategoryNat) {
+		if targ.IsNat != cat.IsNat() {
 			return fmt.Errorf("typeref %s argument %s wrong isNat, must be %v", someType.String(), targ.FieldName, targ.IsNat)
 		}
 	}
