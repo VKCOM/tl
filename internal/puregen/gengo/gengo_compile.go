@@ -58,6 +58,9 @@ func (gen *genGo) compile() error {
 				return err
 			}
 		case *pure.TypeInstanceString:
+			if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {
+				return err
+			}
 		case *pure.TypeInstanceStruct:
 			head, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
@@ -76,6 +79,8 @@ func (gen *genGo) compile() error {
 			if err := gen.GenerateArray(myWrapper, pureType); err != nil {
 				return err
 			}
+		case *pure.TypeInstanceUnion:
+			
 		default:
 			return fmt.Errorf("kernel type for %s not implemented in go generator", pureType.CanonicalName())
 		}

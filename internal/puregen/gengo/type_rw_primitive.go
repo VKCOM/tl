@@ -24,11 +24,6 @@ type TypeRWPrimitive struct {
 	readJSONValue  string
 	readJSON2Value string
 	writeHasError  bool // we keep this for future types
-
-	cppFunctionSuffix string
-	cppPrimitiveType  string
-	cppDefaultInit    string
-	cppResetValue     string
 }
 
 var _ TypeRW = &TypeRWPrimitive{}

@@ -8,6 +8,8 @@ package pure
 
 import (
 	"fmt"
+	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -15,7 +17,7 @@ import (
 
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
-	def          tlast.TL2UnionType
+	variantNames []string
 	variantTypes []*TypeInstanceStruct
 }
 
@@ -53,7 +55,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			canonicalName: canonicalName,
 			tip:           tip,
 		},
-		def:          def,
+		variantNames: make([]string, len(def.Variants)),
 		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
@@ -63,6 +65,39 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
+		ins.variantNames[i] = variantDef.Name
+	}
+	return ins, nil
+}
+
+func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
+	resolvedType tlast.TypeRef, definition []*tlast.Combinator,
+	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
+
+	_, natParams := k.getTL1Args(leftArgs, actualArgs)
+	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+
+	ins := &TypeInstanceUnion{
+		TypeInstanceCommon: TypeInstanceCommon{
+			canonicalName: canonicalName,
+			NatParams:     natParams,
+			tip:           tip,
+			rt:            resolvedType,
+		},
+		variantNames: make([]string, len(definition)),
+		variantTypes: make([]*TypeInstanceStruct, len(definition)),
+	}
+	for i, variantDef := range definition {
+		element, err := k.createStructTL1FromTL1(canonicalName+"__"+fmt.Sprintf("%d", i), tip,
+			resolvedType,
+			variantDef.Fields,
+			leftArgs, actualArgs,
+			true, i, nil)
+		if err != nil {
+			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
+		}
+		ins.variantTypes[i] = element
+		ins.variantNames[i] = variantDef.Construct.Name.String()
 	}
 	return ins, nil
 }

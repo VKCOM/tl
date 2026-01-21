@@ -355,10 +355,9 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelT
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	switch {
-	//case len(definition) > 1:
-	//	return k.createUnion(canonicalName, definition.UnionType, leftArgs, actualArgs)
-	//case definition[0].IsAlias():
-	//	return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
+	case len(definition) > 1:
+		return k.createUnionTL1FromTL1(canonicalName, tip, resolvedType, definition,
+			leftArgs, actualArgs)
 	case len(definition) == 1:
 		return k.createStructTL1FromTL1(canonicalName, tip, resolvedType,
 			definition[0].Fields,

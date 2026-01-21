@@ -65,7 +65,7 @@ type TypeRWWrapper struct {
 	trw       TypeRW
 	NatParams []string // external params of type Read/Write method, with nat_ prefix
 
-	arguments []ResolvedArgument
+	arguments []ResolvedArgument // TODO - remove, partially move into pure kernel
 
 	goGlobalName string // globally unique, so could be used also in html anchors, internal C++ function names, etc.
 	goLocalName  string

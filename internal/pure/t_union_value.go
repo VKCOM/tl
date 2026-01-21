@@ -72,9 +72,8 @@ func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 }
 
 func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
-	defVariant := v.instance.def.Variants[v.index]
 	w = append(w, `{"type":"`...)
-	w = append(w, defVariant.Name...)
+	w = append(w, v.instance.variantNames[v.index]...)
 	if len(v.instance.variantTypes[v.index].fields) == 0 {
 		return append(w, `"}`...)
 	}
@@ -85,7 +84,6 @@ func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
-	defVariant := v.instance.def.Variants[v.index]
 	if onPath {
 		sb.WriteString(color.InBlue("{"))
 	} else {
@@ -96,7 +94,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		sb.WriteString(`"`)
-		sb.WriteString(defVariant.Name)
+		sb.WriteString(v.instance.variantNames[v.index])
 		sb.WriteString(`"`)
 	}
 	if len(v.instance.variantTypes[v.index].fields) == 0 {
