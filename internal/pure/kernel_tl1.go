@@ -93,7 +93,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	return typ.Construct.NamePR.BeautifulError(errors.New("built-in TL1 type with this name does not exist"))
 }
 
-func (k *Kernel) CompileTL1() error {
+func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}
@@ -113,15 +113,6 @@ func (k *Kernel) CompileTL1() error {
 			boolCombinators = append(boolCombinators, typ)
 			continue
 		}
-		// vector and tuple are magical, do not look inside
-		// TODO - require exact definitions
-		//if !k.shouldSkipDefinition(typ) {
-		//	for _, f := range typ.Fields {
-		//		if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
-		//			return f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
-		//		}
-		//	}
-		//}
 		conName := typ.Construct.Name.String()
 		if col, ok := allConstructors[conName]; ok {
 			// typeA = TypeA;
@@ -223,7 +214,21 @@ func (k *Kernel) CompileTL1() error {
 			instances: map[string]*TypeInstanceRef{},
 		}
 		if err := k.addTip(kt, tName.String(), ""); err != nil {
-			return fmt.Errorf("error adding type %s: %w", typ[0].String(), err)
+			return fmt.Errorf("error adding type %s: %w", tName.String(), err)
+		}
+	}
+	for _, typ := range allConstructors {
+		if !typ.IsFunction {
+			continue
+		}
+		kt := &KernelType{
+			originTL2: false,
+			combTL1:   []*tlast.Combinator{typ},
+			instances: map[string]*TypeInstanceRef{},
+		}
+		cName := typ.Construct.Name
+		if err := k.addTip(kt, cName.String(), ""); err != nil {
+			return fmt.Errorf("error adding function %s: %w", cName.String(), err)
 		}
 	}
 	//for _, comb := range k.filesTL1 {

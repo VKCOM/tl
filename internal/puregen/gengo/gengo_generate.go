@@ -405,26 +405,6 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			natArgs:      field.NatArgs(),
 			// origTL:       field, - TODO
 		}
-		//TODO - move into pure kernel
-		//if field.Mask != nil {
-		//	if field.Mask.BitNumber >= 32 {
-		//		return field.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", field.Mask.BitNumber))
-		//	}
-		//	newField.BitNumber = field.Mask.BitNumber
-		//	localArg, ok := lrc.localNatArgs[field.Mask.MaskName]
-		//	if !ok {
-		//		return field.Mask.PRName.BeautifulError(fmt.Errorf("failed to resolve field mask %q reference", field.Mask.MaskName))
-		//	}
-		//	if localArg.wrongTypeErr != nil {
-		//		e1 := field.Mask.PRName.BeautifulError(fmt.Errorf("field mask %q reference to field of wrong type", field.Mask.MaskName))
-		//		e2 := localArg.TypePR.BeautifulError(localArg.wrongTypeErr)
-		//		return tlast.BeautifulError2(e1, e2)
-		//	}
-		//	newField.fieldMask = &localArg.natArg
-		//	maskBit := nextTL2MaskBit
-		//	newField.MaskTL2Bit = &maskBit
-		//	nextTL2MaskBit++
-		//}
 		res.Fields = append(res.Fields, newField)
 
 		//TODO - move into pure kernel
@@ -454,6 +434,14 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 		//		e1.PrintWarning(gen.options.ErrorWriter, nil)
 		//	}
 		//}
+	}
+	if pureType.ResultType() != nil {
+		resultType, err := gen.getType(pureType.ResultType())
+		if err != nil {
+			return err
+		}
+		res.ResultType = resultType
+		res.ResultNatArgs = pureType.ResultNatArgs()
 	}
 	//if tlType.IsFunction {
 	//	resultResolvedType, resultResolvedTypeBare, resultNatArgs, resultHalfResolved, err := gen.getType(lrc, tlType.FuncDecl, nil)

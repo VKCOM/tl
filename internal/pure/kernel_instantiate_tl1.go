@@ -274,6 +274,9 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
+	if !create {
+		return nil, fmt.Errorf("internal error: instance %s must exist", canonicalName)
+	}
 	//if tr.Type.String() == "" {
 	//	log.Printf("creating a bracket instance of type %s", canonicalName)
 	//	// must store pointer before children GetInstance() terminates recursion
@@ -340,21 +343,14 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 		return nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
 	comb := kt.combTL1[0]
-	if !comb.IsFunction {
-		if len(comb.TemplateArguments) != len(tr.Args) {
-			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
-		}
-		//switch {
-		// TODO - union, etc.
-		//default:
-		ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
-		//}
-		if err != nil {
-			return nil, err
-		}
-		return ref, nil
+	if len(comb.TemplateArguments) != len(tr.Args) {
+		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
 	}
-	return nil, fmt.Errorf("TODO - function from TL1 not yet supported")
+	ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
+	if err != nil {
+		return nil, err
+	}
+	return ref, nil
 }
 
 func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition []*tlast.Combinator,
@@ -385,9 +381,9 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelT
 			leftArgs, actualArgs)
 	case len(definition) == 1:
 		return k.createStructTL1FromTL1(canonicalName, tip, resolvedType,
-			definition[0].Fields,
+			definition[0],
 			leftArgs, actualArgs,
-			false, 0, nil)
+			false, 0)
 	default:
 		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
 	}

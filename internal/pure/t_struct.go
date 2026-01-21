@@ -75,11 +75,20 @@ type TypeInstanceStruct struct {
 	unionIndex          int
 
 	// if function
-	resultType TypeInstance
+	resultType    TypeInstance
+	resultNatArgs []ActualNatArg // for TL1 only, empty for TL2
 }
 
 func (ins *TypeInstanceStruct) Fields() []Field {
 	return ins.fields
+}
+
+func (ins *TypeInstanceStruct) ResultType() TypeInstance {
+	return ins.resultType
+}
+
+func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
+	return ins.resultNatArgs
 }
 
 func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {
@@ -250,9 +259,11 @@ func (k *Kernel) canonicalBrackets(fieldDef tlast.Field) bool {
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, constructorFields []tlast.Field,
+	resolvedType tlast.TypeRef, def *tlast.Combinator,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
-	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
+	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
+
+	constructorFields := def.Fields
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
@@ -267,9 +278,9 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
-		resultType:          resultType,
 	}
 	nextTL2MaskBit := 0
+	var fieldsAfterReplace []tlast.Field
 	for i := 0; i < len(constructorFields); i++ {
 		fieldDef := constructorFields[i]
 		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(constructorFields) {
@@ -348,6 +359,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 
 		ins.fields = append(ins.fields, newField)
+		fieldsAfterReplace = append(fieldsAfterReplace, fieldDef)
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{
 				FieldName: fieldDef.FieldName,
@@ -369,6 +381,29 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				})
 			}
 		}
+	}
+	for _, f := range fieldsAfterReplace {
+		if f.FieldName == "" && (len(ins.fields) != 1 || f.Mask != nil) {
+			return nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+		}
+	}
+	if def.IsFunction {
+		rt, natArgs, err := k.resolveTypeTL1(def.FuncDecl, leftArgs, localArgs)
+		if err != nil {
+			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
+		}
+		log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
+		fieldIns, err := k.getInstanceTL1(rt, true)
+		if err != nil {
+			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
+		}
+		if rt.Bare {
+			// @read a.TypeA = int;
+			// @read a.TypeB = %Int;
+			return nil, def.FuncDecl.PR.BeautifulError(fmt.Errorf("function %q result cannot be bare", def.Construct.Name.String()))
+		}
+		ins.resultType = fieldIns.ins
+		ins.resultNatArgs = natArgs
 	}
 	return ins, nil
 }

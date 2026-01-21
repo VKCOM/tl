@@ -144,6 +144,7 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 			}
 			return ref, nil
 		}
+		// TODO - should we check template arguments, as above?
 		funcDecl := kt.combTL2.FuncDecl
 		resultType, err := k.createOrdinaryType(canonicalName, kt, funcDecl.ReturnType, nil, nil)
 		if err != nil {

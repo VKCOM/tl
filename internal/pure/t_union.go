@@ -143,9 +143,9 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	for i, variantDef := range definition {
 		element, err := k.createStructTL1FromTL1(canonicalName+"__"+fmt.Sprintf("%d", i), tip,
 			resolvedType,
-			variantDef.Fields,
+			variantDef,
 			leftArgs, actualArgs,
-			true, i, nil)
+			true, i)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
