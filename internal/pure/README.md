@@ -31,3 +31,9 @@ Then, when language generator wants to construct global names, it can select som
 We provide both `conName`, `typeName` names, but they will be the same for many types. Also they are set in a special manner for `int32`, `uint32` and `int64`, 
 we use old names `int`, `nat` and `long` for them.
 
+## TODO
+
+TL1 template argument/field normalized name collision
+
+modifiers in new kernel
+

@@ -18,7 +18,8 @@ import (
 // TODO - name collision checks
 
 type Kernel struct {
-	tips         map[string]*KernelType // TL1 single constructor names are also here
+	// each type can have up to 3 elements in this map, TL1 constructor, TL1 type and canonical primitive name
+	tips         map[string]*KernelType
 	tipsOrdered  []*KernelType
 	tipsTopLevel []*KernelType
 
@@ -116,6 +117,11 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 	return result
 }
 
+//func (k *Kernel) FunctionInstances() []*TypeInstanceStruct {
+//	return k.functionsOrdered
+//}
+
+// TODO - remove or fix
 func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct {
 	tip, ok := k.tips[name.String()]
 	if !ok {
@@ -179,7 +185,7 @@ func (k *Kernel) normalizeName(s string) string {
 }
 
 func (k *Kernel) Compile(opts *OptionsKernel) error {
-	if err := k.CompileTL1(); err != nil {
+	if err := k.CompileTL1(opts); err != nil {
 		return err
 	}
 	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
@@ -287,17 +293,16 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			}
 		} else {
 			comb := tip.combTL1[0]
-			if comb.IsFunction {
-				tr := tlast.TypeRef{Type: comb.Construct.Name}
-				if _, err := k.getInstanceTL1(tr, true); err != nil {
-					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
-				}
-				continue
-			}
 			if len(comb.TemplateArguments) != 0 {
 				continue // instantiate templates on demand only
 			}
 			tr := tlast.TypeRef{Type: comb.Construct.Name}
+			//if comb.IsFunction {
+			//	if _, err := k.getInstanceTL1(tr, true); err != nil {
+			//		return fmt.Errorf("error adding function %s: %w", tr.String(), err)
+			//	}
+			//	continue
+			//}
 			if len(tip.combTL1) != 1 {
 				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
 			}
