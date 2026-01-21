@@ -62,10 +62,6 @@ func (gen *genGo) compile() error {
 				return err
 			}
 		case *pure.TypeInstanceStruct:
-			head, tail := myWrapper.resolvedT2GoName("")
-			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 			if err := gen.generateTypeStruct(myWrapper, pureType); err != nil {
 				return err
 			}
@@ -76,11 +72,17 @@ func (gen *genGo) compile() error {
 			} else {
 				myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
 			}
-			if err := gen.GenerateArray(myWrapper, pureType); err != nil {
+			if err := gen.GenerateTypeArray(myWrapper, pureType); err != nil {
 				return err
 			}
 		case *pure.TypeInstanceUnion:
-			
+			head, tail := myWrapper.resolvedT2GoName("")
+			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+			if err := gen.generateTypeUnion(myWrapper, pureType); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("kernel type for %s not implemented in go generator", pureType.CanonicalName())
 		}
@@ -94,11 +96,9 @@ func (gen *genGo) compile() error {
 func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		myWrapper := &TypeRWWrapper{
-			gen:         gen,
-			pureType:    pureType,
-			NatParams:   pureType.Common().NatParams,
-			unionParent: nil, // TODO
-			unionIndex:  0,   // TODO
+			gen:       gen,
+			pureType:  pureType,
+			NatParams: pureType.Common().NatParams,
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
@@ -113,6 +113,9 @@ func (gen *genGo) addTypeWrappers() error {
 					myWrapper.fileName = myWrapper.tlName.String()
 				} else {
 					myWrapper.tlName = myWrapper.origTL[0].TypeDecl.Name
+					fileName := myWrapper.tlName
+					fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
+					myWrapper.fileName = fileName.String()
 				}
 			}
 			namespace := gen.getNamespace(myWrapper.tlName.Namespace)
