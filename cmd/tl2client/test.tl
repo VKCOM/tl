@@ -27,7 +27,7 @@ int#a8509bda ? = Int;
 resultFalse#27930a7b {t:Type} = Maybe t;
 resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
 
-pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
+//pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
 vector#1cb5c415 {t:Type} # [t] = Vector t;
 tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
@@ -102,12 +102,30 @@ boolTrue#997275b5 = Bool;
 
 //useBool n:# fm:# a:Bool b:Bool c:n*[Bool] d:pair<Bool, Bool> = UseBool;
 
-true = True; // this can be used as void type and serialized to empty array in PHP
-useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind
+//true = True; // this can be used as void type and serialized to empty array in PHP
+//useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind
+
+usefulService.userEntityPaymentItemPromo#24c7ec9f
+  {fields_mask: #}
+  content: string
+  = usefulService.UserEntityPaymentItemPromo fields_mask;
+
+usefulService.userEntityPaymentItem#4f798680
+  {fields_mask: #}
+  id: string
+  promo: (Maybe (usefulService.UserEntityPaymentItemPromo fields_mask))
+  = usefulService.UserEntityPaymentItem fields_mask;
+
+usefulService.getUserEntityResult#e494698a
+  {fields_mask: #}
+  entity_id: string
+  payment_items: (Maybe (Vector (usefulService.UserEntityPaymentItem fields_mask)))
+  = usefulService.GetUserEntityResult fields_mask;
 
 @readwrite
 usefulService.getUserEntity#3c857e52
   fields_mask: #
+  test: Vector<usefulService.UserEntityPaymentItem<fields_mask>>
   stage_id: fields_mask.0?string
   => Maybe<int>;
 //  => Maybe (usefulService.GetUserEntityResult fields_mask);

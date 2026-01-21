@@ -140,6 +140,9 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if tr.IsArith {
 		return tr, nil, nil
 	}
+	if tr.T.Type.String() == "*" {
+		panic("should not be here")
+	}
 	// names found in local arguments have priority over global type names
 	if tr.T.Type.Namespace == "" {
 		for i, targ := range leftArgs {

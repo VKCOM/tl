@@ -88,7 +88,8 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	elementT := actualArgs[0].T
+	//elementT := actualArgs[0].T
+	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
 	rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
 	if err != nil {
@@ -121,7 +122,8 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	elementT := actualArgs[1].T
+	// elementT := actualArgs[1].T
+	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
 	rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
 	if err != nil {
