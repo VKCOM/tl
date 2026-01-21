@@ -16,6 +16,7 @@ type TypeInstance interface {
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
 	FindCycle(c *cycleFinder)
+	BoxedOnly() bool
 
 	CreateValue() KernelValue
 	SkipTL2(r []byte) ([]byte, error)
@@ -44,6 +45,10 @@ func (ins *TypeInstanceCommon) KernelType() *KernelType {
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
 	return ins.rt
+}
+
+func (ins *TypeInstanceCommon) BoxedOnly() bool {
+	return false
 }
 
 func (ins *TypeInstanceCommon) Common() *TypeInstanceCommon {

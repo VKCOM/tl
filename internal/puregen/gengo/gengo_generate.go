@@ -8,6 +8,7 @@ package gengo
 
 import (
 	"github.com/vkcom/tl/internal/pure"
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
 
@@ -372,6 +373,10 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 }
 
 func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct) error {
+	head, tail := myWrapper.resolvedT2GoName("")
+	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	res := &TypeRWStruct{
 		wr: myWrapper,
 	}
@@ -465,7 +470,60 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	return nil
 }
 
-func (gen *genGo) GenerateArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
+func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
+	res := &TypeRWUnion{
+		wr:     myWrapper,
+		IsEnum: pureType.IsEnum(),
+	}
+	myWrapper.trw = res
+	for i, typ := range pureType.VariantTypes() {
+		variantName := pureType.VariantNames()[i]
+
+		variantWrapper := &TypeRWWrapper{
+			gen:         gen,
+			pureType:    pureType,
+			NatParams:   pureType.Common().NatParams,
+			unionParent: res,
+			unionIndex:  i,
+		}
+		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
+		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
+
+		kt := pureType.KernelType()
+		if kt.OriginTL2() {
+			variantWrapper.originateFromTL2 = kt.OriginTL2()
+		} else {
+			variantWrapper.origTL = append(variantWrapper.origTL, kt.TL1()[i])
+			variantWrapper.tlTag = variantWrapper.origTL[0].Crc32()
+			variantWrapper.tlName = variantWrapper.origTL[0].Construct.Name
+			variantWrapper.fileName = myWrapper.fileName
+		}
+		namespace := gen.getNamespace(variantWrapper.tlName.Namespace)
+		namespace.types = append(namespace.types, variantWrapper)
+		variantWrapper.ns = namespace
+
+		if err := gen.generateTypeStruct(variantWrapper, typ); err != nil {
+			return err
+		}
+
+		fieldGoName := canonicalGoName(tlast.Name(variantName), variantName.Namespace)
+		if res.fieldsDec.hasConflict(fieldGoName) { // try global, if local is already used
+			fieldGoName = canonicalGoName(tlast.Name(variantName), "")
+		}
+		newField := Field{
+			originalName: canonicalGoName(tlast.Name(variantName), ""),
+			t:            variantWrapper,
+			bare:         true,
+			goName:       res.fieldsDec.deconflictName(fieldGoName),
+			natArgs:      pureType.ElementNatArgs(),
+			// origTL:       ?, // We do not want to set it here for now
+		}
+		res.Fields = append(res.Fields, newField)
+	}
+	return nil
+}
+
+func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
 	fieldType, err := gen.getType(pureType.ElemType())
 	if err != nil {
 		return err

@@ -12,13 +12,24 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
-	variantNames []string
+	variantNames []tlast.TL2TypeName
 	variantTypes []*TypeInstanceStruct
+	isEnum       bool
+}
+
+func (ins *TypeInstanceUnion) VariantNames() []tlast.TL2TypeName   { return ins.variantNames }
+func (ins *TypeInstanceUnion) VariantTypes() []*TypeInstanceStruct { return ins.variantTypes }
+func (ins *TypeInstanceUnion) ElementNatArgs() []ActualNatArg      { return nil } // TODO
+func (ins *TypeInstanceUnion) IsEnum() bool                        { return ins.isEnum }
+
+func (ins *TypeInstanceUnion) BoxedOnly() bool {
+	return true
 }
 
 func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
@@ -55,7 +66,8 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			canonicalName: canonicalName,
 			tip:           tip,
 		},
-		variantNames: make([]string, len(def.Variants)),
+		isEnum:       true,
+		variantNames: make([]tlast.TL2TypeName, len(def.Variants)),
 		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
@@ -65,7 +77,10 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
-		ins.variantNames[i] = variantDef.Name
+		ins.variantNames[i] = tlast.TL2TypeName{Namespace: "", Name: variantDef.Name}
+		if len(element.fields) != 0 {
+			ins.isEnum = false
+		}
 	}
 	return ins, nil
 }
@@ -84,9 +99,26 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			rt:            resolvedType,
 		},
-		variantNames: make([]string, len(definition)),
+		isEnum:       true,
 		variantTypes: make([]*TypeInstanceStruct, len(definition)),
 	}
+	// Removing prefix/suffix common with union name.
+	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
+	typePrefix := strings.ToLower(utils.ToLowerFirst(definition[0].TypeDecl.Name.Name))
+	typeSuffix := strings.ToLower(definition[0].TypeDecl.Name.Name)
+	for _, typ := range definition {
+		conName := strings.ToLower(typ.Construct.Name.Name)
+		// if constructor is full prefix of type, we will shorten accessors
+		// ab.saveStateOne = ab.SaveState; // item.AsOne()
+		// ab.saveStateTwo = ab.SaveState; // item.AsTwo()
+		if !strings.HasPrefix(conName, typePrefix) { // same check as in checkUnionElementsCompatibility
+			typePrefix = ""
+		}
+		if !strings.HasSuffix(conName, typeSuffix) {
+			typeSuffix = ""
+		}
+	}
+
 	for i, variantDef := range definition {
 		element, err := k.createStructTL1FromTL1(canonicalName+"__"+fmt.Sprintf("%d", i), tip,
 			resolvedType,
@@ -97,7 +129,30 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
-		ins.variantNames[i] = variantDef.Construct.Name.String()
+		typeConstructName := variantDef.Construct.Name
+		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
+			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
+		} else if typeSuffix != "" && len(typeSuffix) < len(typeConstructName.Name) {
+			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
+		}
+		variantName := tlast.TL2TypeName{Namespace: "", Name: typeConstructName.Name}
+		// check against already defined fields
+		for _, usedName := range ins.variantNames {
+			if usedName == variantName {
+				variantName.Namespace = typeConstructName.Namespace // add namespace on collision
+				break
+			}
+		}
+		// check again
+		for _, usedName := range ins.variantNames {
+			if usedName == variantName {
+				return nil, fmt.Errorf("cannot define TL1 union - prohibited variant name collision")
+			}
+		}
+		ins.variantNames = append(ins.variantNames, variantName)
+		if len(element.fields) != 0 {
+			ins.isEnum = false
+		}
 	}
 	return ins, nil
 }

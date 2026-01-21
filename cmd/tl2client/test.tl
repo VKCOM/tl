@@ -65,6 +65,10 @@
 // a.middle<P1, pair<a.inner<P2>, a.inner<P3>>, a.Inner<3>>(w, pxi, pyi)
 // W:P1 P:pair<a.inner<P2>, a.inner<P3>> Q:a.Inner<3>
 
+
+ab.saveStateOne = ab.SaveState;
+ab.saveStateTwo = ab.SaveState;
+
 ab.empty = ab.Response; // Union comment - Empty
 ab.code x:int = ab.Response; // Union comment - Code
 ab.alias int = ab.Response;

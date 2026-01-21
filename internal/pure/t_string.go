@@ -67,5 +67,5 @@ func (k *Kernel) addString() {
 		panic(fmt.Sprintf("error adding primitive type %s: %v", name, err))
 	}
 	k.instances[name] = ref
-	// k.instancesOrdered = append(k.instancesOrdered, ref) - we do not yet know if we need them here
+	k.instancesOrdered = append(k.instancesOrdered, ref)
 }
