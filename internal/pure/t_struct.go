@@ -53,6 +53,8 @@ type Field struct {
 	fieldMask *ActualNatArg
 	bitNumber uint32 // only used when fieldMask != nil
 
+	maskTL2Bit *int
+
 	natArgs []ActualNatArg // for TL1 only, empty for TL2
 	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
 }
@@ -62,6 +64,7 @@ func (f *Field) Name() string               { return f.name }
 func (f *Field) TypeInstance() TypeInstance { return f.ins.ins }
 func (f *Field) FieldMask() *ActualNatArg   { return f.fieldMask }
 func (f *Field) BitNumber() uint32          { return f.bitNumber }
+func (f *Field) MaskTL2Bit() *int           { return f.maskTL2Bit }
 func (f *Field) NatArgs() []ActualNatArg    { return f.natArgs }
 
 type TypeInstanceStruct struct {
@@ -266,6 +269,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
 	}
+	nextTL2MaskBit := 0
 	for i := 0; i < len(constructorFields); i++ {
 		fieldDef := constructorFields[i]
 		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(constructorFields) {
@@ -322,18 +326,28 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
-		var fieldMask *ActualNatArg
-		//if fieldDef.IsOptional {
-		//	fieldMask = &ActualNatArg{} // TODO - mark as TL2
-		//}
+		newField := Field{
+			name:    fieldDef.FieldName,
+			ins:     fieldIns,
+			natArgs: natArgs,
+			bare:    rt.Bare,
+		}
+		if fieldDef.Mask != nil {
+			if fieldDef.Mask.BitNumber >= 32 {
+				return nil, fieldDef.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", fieldDef.Mask.BitNumber))
+			}
+			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs)
+			if err != nil {
+				return nil, err
+			}
+			newField.bitNumber = fieldDef.Mask.BitNumber
+			newField.fieldMask = &fieldMask
+			maskBit := nextTL2MaskBit
+			newField.maskTL2Bit = &maskBit
+			nextTL2MaskBit++
+		}
 
-		ins.fields = append(ins.fields, Field{
-			name:      fieldDef.FieldName,
-			ins:       fieldIns,
-			fieldMask: fieldMask,
-			natArgs:   natArgs,
-			bare:      rt.Bare,
-		})
+		ins.fields = append(ins.fields, newField)
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{
 				FieldName: fieldDef.FieldName,
