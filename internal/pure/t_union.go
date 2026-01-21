@@ -19,15 +19,16 @@ import (
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
 	variantNames         []tlast.TL2TypeName
-	variantOriginalNames []string
+	variantOriginalNames []string // TODO - rename to legacy JSON names
 	variantTypes         []*TypeInstanceStruct
+	elementNatArgs       []ActualNatArg // empty for TL2
 	isEnum               bool
 }
 
 func (ins *TypeInstanceUnion) VariantNames() []tlast.TL2TypeName   { return ins.variantNames }
 func (ins *TypeInstanceUnion) VariantOriginalNames() []string      { return ins.variantOriginalNames }
 func (ins *TypeInstanceUnion) VariantTypes() []*TypeInstanceStruct { return ins.variantTypes }
-func (ins *TypeInstanceUnion) ElementNatArgs() []ActualNatArg      { return nil } // TODO
+func (ins *TypeInstanceUnion) ElementNatArgs() []ActualNatArg      { return ins.elementNatArgs }
 func (ins *TypeInstanceUnion) IsEnum() bool                        { return ins.isEnum }
 
 func (ins *TypeInstanceUnion) BoxedOnly() bool {
@@ -93,8 +94,22 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, definition []*tlast.Combinator,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
-	_, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+
+	var natArgs []ActualNatArg
+	for _, localArg := range localArgs { // pass all our parameters to our variant
+		natArgs = append(natArgs, localArg.natArgs...)
+	}
+	//elementT := tlast.TypeRef{
+	//	Type: tlast.Name{Name: "__element"},
+	//	Bare: false,
+	//}
+	//rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
+	//if err != nil {
+	//	return nil, fmt.Errorf("fail to resolve type for %s union fields: %w", canonicalName, err)
+	//}
+	log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
@@ -106,6 +121,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		isEnum:               true,
 		variantTypes:         make([]*TypeInstanceStruct, len(definition)),
 		variantOriginalNames: make([]string, len(definition)),
+		elementNatArgs:       natArgs,
 	}
 	// Removing prefix/suffix common with union name.
 	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
