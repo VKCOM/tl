@@ -9,6 +9,7 @@ package pure
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -34,6 +35,72 @@ func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
 		canonicalName = "uint32"
 	}
 	return canonicalName
+}
+
+// top level types do not have bare/boxed in their names
+func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
+	var s strings.Builder
+
+	tName := tr.Type.String()
+	switch tName {
+	case "__vector", "__tuple":
+		s.WriteString(tName)
+	case "int":
+		s.WriteString("int32")
+	case "long":
+		s.WriteString("int64")
+	case "#":
+		s.WriteString("uint32")
+	default:
+		kt, ok := k.tips[tName]
+		if !ok {
+			panic(fmt.Sprintf("canonical string tip %s not found", tName))
+		}
+		if kt.originTL2 {
+			panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
+		}
+		if len(kt.combTL1) > 1 {
+			if tr.Bare {
+				panic(fmt.Sprintf("canonical string tip %s bare union", tName))
+			}
+			kt.combTL1[0].TypeDecl.Name.WriteString(&s)
+		} else if len(kt.combTL1) == 1 {
+			if tr.Bare || utils.ToLowerFirst(tr.Type.Name) == tr.Type.Name {
+				kt.combTL1[0].Construct.Name.WriteString(&s)
+			} else {
+				if !top {
+					s.WriteString("+")
+				}
+				kt.combTL1[0].Construct.Name.WriteString(&s)
+			}
+		} else {
+			panic("all builtins are parsed from TL text, so must have exactly one constructor")
+		}
+	}
+	if len(tr.Args) == 0 {
+		switch s.String() { // TODO - fix this hack as early as possible
+		case "int":
+			return "int32"
+		case "long":
+			return "int64"
+		}
+		return s.String()
+	}
+	s.WriteByte('<')
+	for i, a := range tr.Args {
+		if i != 0 {
+			s.WriteByte(',')
+		}
+		if a.IsArith {
+			s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+		} else if a.T.Type.String() == "*" {
+			s.WriteString("*")
+		} else {
+			s.WriteString(k.canonicalStringTL1(a.T, false))
+		}
+	}
+	s.WriteByte('>')
+	return s.String()
 }
 
 func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgument,
@@ -147,11 +214,12 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 			}
 			tr.T.Bare = true
 			tr.T.Type = kt.combTL1[0].Construct.Name // normalize
-		} else {
-			if len(kt.combTL1) == 1 {
-				tr.T.Type = kt.combTL1[0].Construct.Name // normalize
-			}
 		}
+		//else {
+		//	if len(kt.combTL1) == 1 {
+		//		tr.T.Type = kt.combTL1[0].TypeDecl.Name // normalize
+		//	}
+		//}
 	}
 	// TODO - we must perform canonical conversion of %Int to int here
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
@@ -176,7 +244,8 @@ func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, error) {
 }
 
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef, error) {
-	canonicalName := k.replaceTL1BuiltinName(tr.String())
+	canonicalName := k.canonicalStringTL1(tr, true)
+	// canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
