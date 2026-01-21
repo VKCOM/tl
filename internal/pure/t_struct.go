@@ -299,10 +299,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
 			if !fieldDef.ScaleRepeat.ExplicitScale {
-				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain explicit scale (with few exceptions used for vector and tuple definition)"))
+				return nil, fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("brackets must contain explicit scale n*[...] (with few exceptions used for vector and tuple definition)"))
 			}
 			if !k.canonicalBrackets(fieldDef) {
-				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+				return nil, fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}

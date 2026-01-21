@@ -13,36 +13,36 @@ import (
 )
 
 func (k *Kernel) typeCheckAliasFieldsTL1(fields []tlast.Field, leftArgs []tlast.TemplateArgument) error {
-	for _, f := range fields {
-		if f.IsRepeated && f.ScaleRepeat.ExplicitScale && !f.ScaleRepeat.Scale.IsArith {
-			arg := tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: f.ScaleRepeat.Scale.Scale}}}
-			isNat, err := k.typeCheckArgumentTL1(arg, leftArgs)
-			if err != nil {
-				return err
-			}
-			if !isNat {
-				return fmt.Errorf("scale repeat %s cannot be type", f.ScaleRepeat.Scale.Scale)
-			}
-		}
-		// TODO - if !f.ScaleRepeat.ExplicitScale - must be only in vector and tuple definitions, which we should skip and use internal representations
-		// TODO - the same is with various Dictionaries
-		arg := tlast.ArithmeticOrType{T: f.FieldType}
-		isNat, err := k.typeCheckArgumentTL1(arg, leftArgs)
-		if err != nil {
-			return err
-		}
-		if isNat {
-			return fmt.Errorf("field type %s cannot be number", f.FieldType.String())
-		}
-		if f.FieldName != "" && f.FieldType.String() == "#" {
-			// TODO - add other fields with wrong category to catch references to them
-			leftArgs = append(leftArgs, tlast.TemplateArgument{
-				FieldName: f.FieldName,
-				IsNat:     true,
-				PR:        f.PR,
-			})
-		}
-	}
+	//for _, f := range fields {
+	//	if f.IsRepeated && f.ScaleRepeat.ExplicitScale && !f.ScaleRepeat.Scale.IsArith {
+	//		arg := tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: f.ScaleRepeat.Scale.Scale}}}
+	//		isNat, err := k.typeCheckArgumentTL1(arg, leftArgs)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		if !isNat {
+	//			return fmt.Errorf("scale repeat %s cannot be type", f.ScaleRepeat.Scale.Scale)
+	//		}
+	//	}
+	//	// TODO - if !f.ScaleRepeat.ExplicitScale - must be only in vector and tuple definitions, which we should skip and use internal representations
+	//	// TODO - the same is with various Dictionaries
+	//	arg := tlast.ArithmeticOrType{T: f.FieldType}
+	//	isNat, err := k.typeCheckArgumentTL1(arg, leftArgs)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	if isNat {
+	//		return fmt.Errorf("field type %s cannot be number", f.FieldType.String())
+	//	}
+	//	if f.FieldName != "" && f.FieldType.String() == "#" {
+	//		// TODO - add other fields with wrong category to catch references to them
+	//		leftArgs = append(leftArgs, tlast.TemplateArgument{
+	//			FieldName: f.FieldName,
+	//			IsNat:     true,
+	//			PR:        f.PR,
+	//		})
+	//	}
+	//}
 	return nil
 }
 

@@ -27,9 +27,9 @@ func (e *UIEditorUnion) SetValue(v *KernelValueUnion) {
 	e.prefixRunes = e.prefixRunes[:0]
 	e.names = e.names[:0]
 	e.lowerNames = e.lowerNames[:0]
-	for _, va := range v.instance.def.Variants {
-		e.names = append(e.names, va.Name)
-		e.lowerNames = append(e.lowerNames, strings.ToLower(va.Name))
+	for _, vaName := range v.instance.variantNames {
+		e.names = append(e.names, vaName)
+		e.lowerNames = append(e.lowerNames, strings.ToLower(vaName))
 	}
 }
 
