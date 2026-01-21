@@ -401,6 +401,7 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			goName:       res.fieldsDec.deconflictName(utils.CNameToCamelName(fieldName)),
 			fieldMask:    field.FieldMask(),
 			BitNumber:    field.BitNumber(),
+			MaskTL2Bit:   field.MaskTL2Bit(),
 			natArgs:      field.NatArgs(),
 			// origTL:       field, - TODO
 		}

@@ -7,6 +7,7 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -237,6 +238,26 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		natArgs = append(natArgs, natArgs2...)
 	}
 	return tr, natArgs, nil
+}
+
+func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateArgument,
+	actualArgs []LocalArg) (ActualNatArg, error) {
+	for i, targ := range leftArgs {
+		if targ.FieldName == mask.MaskName {
+			actualArg := actualArgs[i]
+			if actualArg.wrongTypeErr != nil {
+				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("reference to field %s impossible, must have # type", targ.FieldName))
+			}
+			if !targ.IsNat {
+				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.FieldName))
+			}
+			if len(actualArg.natArgs) != 1 {
+				return ActualNatArg{}, fmt.Errorf("internal error fieldMask cannot reference Type-parameter %s", targ.FieldName)
+			}
+			return actualArg.natArgs[0], nil
+		}
+	}
+	return ActualNatArg{}, mask.PRName.BeautifulError(errors.New("fieldMask reference not found"))
 }
 
 func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, error) {
