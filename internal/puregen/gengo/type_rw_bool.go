@@ -23,10 +23,6 @@ type TypeRWBool struct {
 
 var _ TypeRW = &TypeRWBool{}
 
-func (trw *TypeRWBool) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
-}
-
 func (trw *TypeRWBool) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if !skipAlias {
 		return "bool"

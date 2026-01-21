@@ -27,7 +27,7 @@ int#a8509bda ? = Int;
 resultFalse#27930a7b {t:Type} = Maybe t;
 resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
 
-//pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
+pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
 vector#1cb5c415 {t:Type} # [t] = Vector t;
 tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
@@ -79,19 +79,25 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 //---- test maybe
 maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;
 testMaybe n:#
-//    a:(Maybe int) b:(Maybe Int)
-//    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
-      e:(Maybe (tuple int n))
-//    f:(maybeWrapper int 3)
+    a:(Maybe int) b:(Maybe Int)
+    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
+    e:(Maybe (tuple int n))
+    f:(maybeWrapper int 3)
     = TestMaybe;
 
-//ab.myType x:int = ab.MyType;
-//cd.myType x:int = cd.MyType;
+ab.myType x:int = ab.MyType;
+cd.myType x:int = cd.MyType;
 
-//testMaybe2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;
-//ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;
+testMaybe2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;
+ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;
 
-//innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
-//maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3))
-//    e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int))
-//    i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;
+innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
+maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3))
+    e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int))
+    i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;
+
+//----- Test Multiple bools
+boolFalse#bc799737 = Bool;
+boolTrue#997275b5 = Bool;
+
+useBool n:# fm:# a:Bool b:Bool c:n*[Bool] d:pair<Bool, Bool> = UseBool;

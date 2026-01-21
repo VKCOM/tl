@@ -259,7 +259,7 @@ func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
 			b.WriteString(head)
-			if !a.bare && !a.tip.pureType.BoxedOnly() { // If it cannot be bare, save on redundant suffix
+			if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() { // If it cannot be bare, save on redundant suffix
 				b.WriteString("Boxed")
 			}
 			b.WriteString(tail)
@@ -438,7 +438,8 @@ func (w *TypeRWWrapper) JSONHelpString() string {
 }
 
 // same code as in func (trw *TypeRWStruct) replaceUnwrapArgs
-func (w *TypeRWWrapper) transformNatArgsToChild(natArgs []pure.ActualNatArg, childNatArgs []pure.ActualNatArg) []pure.ActualNatArg {
+// public for now to avoid linter error
+func (w *TypeRWWrapper) TransformNatArgsToChild(natArgs []pure.ActualNatArg, childNatArgs []pure.ActualNatArg) []pure.ActualNatArg {
 	var result []pure.ActualNatArg
 outer:
 	for _, arg := range childNatArgs {

@@ -24,11 +24,10 @@ type TypeRWStruct struct {
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []pure.ActualNatArg
 
-	fieldsDec    Deconflicter // TODO - add all generated methods here
-	fieldsDecCPP Deconflicter // TODO - add all generated methods here
-	setNames     []string     // method names should be the same for bytes and normal versions, so we remember them here
-	clearNames   []string
-	isSetNames   []string
+	fieldsDec  Deconflicter // TODO - add all generated methods here
+	setNames   []string     // method names should be the same for bytes and normal versions, so we remember them here
+	clearNames []string
+	isSetNames []string
 }
 
 var _ TypeRW = &TypeRWStruct{}
@@ -239,7 +238,7 @@ func (trw *TypeRWStruct) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return true, true
 }
 
-// same code as in func (w *TypeRWWrapper) transformNatArgsToChild
+// same code as in func (w *TypeRWWrapper) TransformNatArgsToChild
 func (trw *TypeRWStruct) replaceUnwrapArgs(natArgs []string) []string {
 	// Caller called outer.Read(   , nat_x, nat_y)
 	// outer has func Read(   ,nat_inner_x uint32, nat_inner_y uint32) {
