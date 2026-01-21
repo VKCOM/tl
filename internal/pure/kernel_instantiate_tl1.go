@@ -189,7 +189,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		// probably ref to global type or a typo
 	}
 	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
-	if tName != "__vector" && tName != "__tuple" {
+	if tName != "__vector" && tName != "__tuple" && tName != "__element" {
 		kt, ok := k.tips[tName]
 		if !ok {
 			return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)

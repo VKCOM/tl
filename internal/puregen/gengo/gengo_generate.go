@@ -498,7 +498,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 				element: Field{
 					t:       fieldType,
 					bare:    elementField.Bare(),
-					natArgs: nil, // TODO
+					natArgs: pureType.ElementNatArgs(),
 				},
 				emptyTag: emptyDesc.Crc32(),
 				okTag:    okDesc.Crc32(),
