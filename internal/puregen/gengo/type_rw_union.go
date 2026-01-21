@@ -21,10 +21,6 @@ type TypeRWUnion struct {
 
 var _ TypeRW = &TypeRWUnion{}
 
-func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
-}
-
 func (trw *TypeRWUnion) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
 		return addBytes(trw.wr.goLocalName, bytesVersion)
