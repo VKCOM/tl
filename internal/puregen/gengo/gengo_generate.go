@@ -471,6 +471,48 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 }
 
 func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
+	kt := pureType.KernelType()
+	if !kt.OriginTL2() {
+		if isMaybe, emptyDesc, okDesc := IsUnionMaybe(kt.TL1()); isMaybe {
+			elementField := pureType.VariantTypes()[1].Fields()[0]
+
+			fieldType, err := gen.getType(elementField.TypeInstance())
+			if err != nil {
+				return err
+			}
+
+			//elementT := tlast.TypeRef{Type: tlast.Name{Name: okDesc.TemplateArguments[0].FieldName}} // TODO - PR
+
+			namespace := gen.getNamespace(fieldType.tlName.Namespace)
+			namespace.types = append(namespace.types, fieldType)
+			fieldType.ns = namespace
+
+			suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
+			head, tail := fieldType.resolvedT2GoName("")
+			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
+			head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
+			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
+
+			res := &TypeRWMaybe{
+				wr: myWrapper,
+				element: Field{
+					t:       fieldType,
+					bare:    elementField.Bare(),
+					natArgs: nil, // TODO
+				},
+				emptyTag: emptyDesc.Crc32(),
+				okTag:    okDesc.Crc32(),
+			}
+			myWrapper.fileName = fieldType.fileName
+			myWrapper.trw = res
+			return nil
+		}
+	}
+	head, tail := myWrapper.resolvedT2GoName("")
+	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+
 	res := &TypeRWUnion{
 		wr:     myWrapper,
 		IsEnum: pureType.IsEnum(),
@@ -490,7 +532,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
 
-		kt := pureType.KernelType()
 		if kt.OriginTL2() {
 			variantWrapper.originateFromTL2 = kt.OriginTL2()
 		} else {
