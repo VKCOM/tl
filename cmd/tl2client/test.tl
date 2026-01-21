@@ -125,7 +125,5 @@ usefulService.getUserEntityResult#e494698a
 @readwrite
 usefulService.getUserEntity#3c857e52
   fields_mask: #
-  test: Vector<usefulService.UserEntityPaymentItem<fields_mask>>
   stage_id: fields_mask.0?string
-  => Maybe<int>;
-//  => Maybe (usefulService.GetUserEntityResult fields_mask);
+  => Maybe (usefulService.GetUserEntityResult fields_mask);
