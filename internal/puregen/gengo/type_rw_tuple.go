@@ -28,10 +28,6 @@ type TypeRWBrackets struct {
 
 var _ TypeRW = &TypeRWBrackets{}
 
-func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
-}
-
 func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if trw.dictLike && !bytesVersion {
 		return fmt.Sprintf("map[%s]%s",

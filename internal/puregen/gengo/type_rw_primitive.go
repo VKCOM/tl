@@ -8,11 +8,12 @@ package gengo
 
 import (
 	"fmt"
-	"log"
 )
 
 type TypeRWPrimitive struct {
 	tlType string
+
+	tlTag uint32 // if != 0, then TL1 builtin wrapper was compiled
 
 	goType         string
 	resetValue     string
@@ -109,17 +110,18 @@ func (trw *TypeRWPrimitive) typeRandomCode(bytesVersion bool, directImports *Dir
 }
 
 func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
+	prefix := ""
 	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.tlType)
+		prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.tlTag)
 	}
 	code := fmt.Sprintf("%s(w, %s)", addBytes(trw.writeValue, bytesVersion), addAsterisk(ref, val))
 	if trw.writeHasError {
-		return wrapLastW(last, code, needError)
+		return prefix + wrapLastW(last, code, needError)
 	}
 	if needError {
-		return ifString(last, "return "+code+", nil", "w = "+code)
+		return prefix + ifString(last, "return "+code+", nil", "w = "+code)
 	} else {
-		return ifString(last, "return "+code, "w = "+code)
+		return prefix + ifString(last, "return "+code, "w = "+code)
 	}
 }
 
@@ -131,13 +133,14 @@ func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string
 }
 
 func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
+	prefix := ""
 	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.tlType)
+		prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.tlTag)
 	}
 	if bytesVersion {
-		return wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)
+		return prefix + wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)
 	}
-	return wrapLastW(last, fmt.Sprintf("%s(w, %s)", trw.readValue, addAmpersand(ref, val)), true)
+	return prefix + wrapLastW(last, fmt.Sprintf("%s(w, %s)", trw.readValue, addAmpersand(ref, val)), true)
 }
 
 func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {

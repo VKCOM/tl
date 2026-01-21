@@ -383,11 +383,15 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType *pure
 	for _, ct := range primitiveTypesList {
 		if ct.goType == pureType.CanonicalName() {
 			myWrapper.trw = ct
+			ct.tlTag = myWrapper.tlTag
 			return nil
 		}
 	}
-	myWrapper.trw = &TypeRWPrimitive{tlType: pureType.CanonicalName(), goType: pureType.CanonicalName()}
 	// this wrapper will crash if accessed. TODO - better idea
+	myWrapper.trw = &TypeRWPrimitive{
+		tlType: pureType.CanonicalName(),
+		goType: pureType.CanonicalName(),
+	}
 	return nil // fmt.Errorf("unknown primitive type")
 }
 
