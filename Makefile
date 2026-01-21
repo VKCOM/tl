@@ -205,7 +205,7 @@ testpure: build
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/genold/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl
@@ -218,7 +218,7 @@ testpure: build
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/gennew/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl

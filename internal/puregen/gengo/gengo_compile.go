@@ -76,10 +76,6 @@ func (gen *genGo) compile() error {
 				return err
 			}
 		case *pure.TypeInstanceUnion:
-			head, tail := myWrapper.resolvedT2GoName("")
-			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 			if err := gen.generateTypeUnion(myWrapper, pureType); err != nil {
 				return err
 			}

@@ -1,4 +1,4 @@
-//int#a8509bda ? = Int;
+int#a8509bda ? = Int;
 //long#22076cba ? = Long;
 //string#b5286e24 ? = String;
 
@@ -24,8 +24,8 @@
 //a.myFalse#00000002 = a.MyBool;
 //----- Test Common Types
 
-//resultFalse#27930a7b {t:Type} = Maybe t;
-//resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
+resultFalse#27930a7b {t:Type} = Maybe t;
+resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
 
 //pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
@@ -66,15 +66,32 @@
 // W:P1 P:pair<a.inner<P2>, a.inner<P3>> Q:a.Inner<3>
 
 
-ab.saveStateOne = ab.SaveState;
-ab.saveStateTwo = ab.SaveState;
-
-ab.empty = ab.Response; // Union comment - Empty
-ab.code x:int = ab.Response; // Union comment - Code
-ab.alias int = ab.Response;
+//ab.empty = ab.Response; // Union comment - Empty
+//ab.code x:int = ab.Response; // Union comment - Code
+//ab.alias int = ab.Response;
 
 // Also union comment
 // Multiline Alias
-cd.response x:int str:string = ab.Response;
+//cd.response x:int str:string = ab.Response;
 
-useResponse n:# x:n*[ab.Response] = UseResponse;
+//useResponse n:# x:n*[ab.Response] = UseResponse;
+
+//---- test maybe
+//maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;
+testMaybe n:#
+    a:(Maybe int) b:(Maybe Int)
+//    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
+//    e:(Maybe (tuple int n))
+//    f:(maybeWrapper int 3)
+    = TestMaybe;
+
+//ab.myType x:int = ab.MyType;
+//cd.myType x:int = cd.MyType;
+
+//testMaybe2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;
+//ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;
+
+//innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
+//maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3))
+//    e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int))
+//    i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;

@@ -20,10 +20,6 @@ type TypeRWMaybe struct {
 
 var _ TypeRW = &TypeRWMaybe{}
 
-func (trw *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
-}
-
 func (trw *TypeRWMaybe) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
 		return addBytes(trw.wr.goLocalName, bytesVersion)
