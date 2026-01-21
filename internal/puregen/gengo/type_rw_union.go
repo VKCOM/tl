@@ -15,8 +15,7 @@ type TypeRWUnion struct {
 	Fields []Field
 	IsEnum bool
 
-	fieldsDec    Deconflicter // TODO - add all generated methods here
-	fieldsDecCPP Deconflicter // TODO - add all generated methods here
+	fieldsDec Deconflicter // TODO - add all generated methods here
 }
 
 var _ TypeRW = &TypeRWUnion{}

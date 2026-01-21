@@ -25,7 +25,41 @@ func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
 	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
 }
 
-func (k *Kernel) CompileBuiltin(typ *tlast.Combinator) error {
+func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
+	// if type is
+	// 1. enum with 2 elements, 0 template arguments
+	// 2. has name "Bool"
+	// 3. fields have names "boolFalse" and "boolTrue"
+	if len(tlType) != 2 ||
+		len(tlType[0].Fields) != 0 || len(tlType[1].Fields) != 0 ||
+		len(tlType[0].TemplateArguments) != 0 || len(tlType[1].TemplateArguments) != 0 {
+		return fmt.Errorf("kernel supports only exact TL1 Bool definition: 'boolFalse#<magic1> = Bool; boolTrue#<magic2> = Bool;'")
+	}
+	falseDesc := tlType[0]
+	trueDesc := tlType[1]
+	if falseDesc.Construct.Name.String() != "boolFalse" { // fix constructors order
+		falseDesc, trueDesc = trueDesc, falseDesc
+	}
+	if falseDesc.Construct.Name.String() != "boolFalse" ||
+		trueDesc.Construct.Name.String() != "boolTrue" {
+		return fmt.Errorf("kernel supports only exact TL1 Bool definition: 'boolFalse#<magic1> = Bool; boolTrue#<magic2> = Bool;'")
+	}
+	tip, ok := k.tips["bool"]
+	if !ok {
+		return tlType[0].Construct.NamePR.BeautifulError(errors.New("internal error builtin type not found"))
+	}
+	if _, ok2 := k.tips["Bool"]; ok2 || len(tip.combTL1) != 1 {
+		// TODO - see here
+		return tlType[0].TypeDecl.NamePR.BeautifulError(errors.New("builtin type Bool already defined as not builtin"))
+	}
+	tip.combTL1 = []*tlast.Combinator{falseDesc, trueDesc}
+	tip.originTL2 = false // allow references from TL1
+	k.tips["Bool"] = tip
+
+	return nil
+}
+
+func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	addBuiltin := func(tl2name string, bigName string) error {
 		tip, ok := k.tips[tl2name]
 		if !ok {
@@ -56,7 +90,7 @@ func (k *Kernel) CompileBuiltin(typ *tlast.Combinator) error {
 	case "double":
 		return addBuiltin("float64", "Double")
 	}
-	return typ.Construct.NamePR.BeautifulError(errors.New("built-in type with such name not found"))
+	return typ.Construct.NamePR.BeautifulError(errors.New("built-in TL1 type with this name does not exist"))
 }
 
 func (k *Kernel) CompileTL1() error {
@@ -67,22 +101,27 @@ func (k *Kernel) CompileTL1() error {
 	for i := range k.filesTL1 {
 		k.filesTL1[i].OriginalOrderIndex = i
 	}
+	var boolCombinators []*tlast.Combinator
 	for _, typ := range k.filesTL1 {
 		if typ.Builtin {
-			if err := k.CompileBuiltin(typ); err != nil {
+			if err := k.CompileBuiltinTL1(typ); err != nil {
 				return err
 			}
 			continue
 		}
+		if typ.TypeDecl.Name.String() == "Bool" {
+			boolCombinators = append(boolCombinators, typ)
+			continue
+		}
 		// vector and tuple are magical, do not look inside
 		// TODO - require exact definitions
-		if !k.shouldSkipDefinition(typ) {
-			for _, f := range typ.Fields {
-				if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
-					return f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
-				}
-			}
-		}
+		//if !k.shouldSkipDefinition(typ) {
+		//	for _, f := range typ.Fields {
+		//		if f.FieldName == "" && (len(typ.Fields) != 1 || f.Mask != nil) {
+		//			return f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+		//		}
+		//	}
+		//}
 		conName := typ.Construct.Name.String()
 		if col, ok := allConstructors[conName]; ok {
 			// typeA = TypeA;
@@ -136,6 +175,11 @@ func (k *Kernel) CompileTL1() error {
 			//	}
 			//	e1.PrintWarning(gen.options.ErrorWriter, nil)
 			//}
+		}
+	}
+	if len(boolCombinators) != 0 {
+		if err := k.CompileBoolTL1(boolCombinators); err != nil {
+			return err
 		}
 	}
 	for _, typ := range typeDescriptors {

@@ -63,7 +63,11 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
 			if tr.Bare {
 				panic(fmt.Sprintf("canonical string tip %s bare union", tName))
 			}
-			kt.combTL1[0].TypeDecl.Name.WriteString(&s)
+			if tName == "Bool" {
+				s.WriteString("bool")
+			} else {
+				kt.combTL1[0].TypeDecl.Name.WriteString(&s)
+			}
 		} else if len(kt.combTL1) == 1 {
 			if tr.Bare || utils.ToLowerFirst(tr.Type.Name) == tr.Type.Name {
 				kt.combTL1[0].Construct.Name.WriteString(&s)
@@ -189,7 +193,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		// probably ref to global type or a typo
 	}
 	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
-	if tName != "__vector" && tName != "__tuple" && tName != "__element" {
+	if tName != "__vector" && tName != "__tuple" {
 		kt, ok := k.tips[tName]
 		if !ok {
 			return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)

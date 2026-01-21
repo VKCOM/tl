@@ -54,8 +54,14 @@ func (gen *genGo) compile() error {
 	for _, myWrapper := range gen.generatedTypesList {
 		switch pureType := myWrapper.pureType.(type) {
 		case *pure.TypeInstancePrimitive:
-			if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {
-				return err
+			if pureType.CanonicalName() == "bool" {
+				if err := gen.generateTypeBool(myWrapper, pureType); err != nil {
+					return err
+				}
+			} else {
+				if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {
+					return err
+				}
 			}
 		case *pure.TypeInstanceString:
 			if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {

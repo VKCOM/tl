@@ -470,6 +470,33 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	return nil
 }
 
+func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive) error {
+	namespace := gen.getNamespace(myWrapper.tlName.Namespace)
+	namespace.types = append(namespace.types, myWrapper)
+	myWrapper.ns = namespace
+
+	head, tail := myWrapper.resolvedT2GoName("")
+	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
+	if pureType.KernelType().OriginTL2() {
+		// TODO - ?
+	} else {
+		comb := pureType.KernelType().TL1()
+		falseDesc := comb[0]
+		trueDesc := comb[1]
+		myWrapper.trw = &TypeRWBool{
+			isBit:       false,
+			wr:          myWrapper,
+			falseGoName: gen.globalDec.deconflictName(utils.CNameToCamelName(falseDesc.Construct.Name.String())),
+			trueGoName:  gen.globalDec.deconflictName(utils.CNameToCamelName(trueDesc.Construct.Name.String())),
+			falseTag:    falseDesc.Crc32(),
+			trueTag:     trueDesc.Crc32(),
+		}
+	}
+	return nil
+}
+
 func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
 	kt := pureType.KernelType()
 	if !kt.OriginTL2() {
