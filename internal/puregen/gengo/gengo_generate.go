@@ -540,8 +540,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 
 		variantWrapper := &TypeRWWrapper{
 			gen:         gen,
-			pureType:    pureType,
-			NatParams:   pureType.Common().NatParams,
+			pureType:    typ,
+			NatParams:   myWrapper.NatParams,
+			arguments:   myWrapper.arguments,
 			unionParent: res,
 			unionIndex:  i,
 		}
