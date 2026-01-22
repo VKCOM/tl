@@ -55,6 +55,10 @@ func (k *Kernel) typeCheckTypeRefTL1(tr tlast.TypeRef, leftArgs []tlast.Template
 		typeName = "int32"
 	case "long":
 		typeName = "int64"
+	case "float":
+		typeName = "float32"
+	case "double":
+		typeName = "float64"
 	case "#":
 		typeName = "uint32"
 	}

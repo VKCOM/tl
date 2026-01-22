@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"slices"
+	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
 )
@@ -192,20 +193,20 @@ func (gen *genGo) prepareGeneration() error {
 	for _, v := range sortedTypes {
 		// @readwrite queueLong.getQueueKey id:long ip:int timeout:int queue:string = queueLong.TimestampKey;
 		// @readwrite queue.getQueueKey id:int ip:int timeout:int queue:string = queue.TimestampKey;
-		//longName := v.CanonicalStringTop()
-		//argsStart := strings.Index(longName, "<")
-		//if argsStart < 0 {
-		//	argsStart = len(longName)
-		//}
-		//if i := strings.Index(longName[:argsStart], "."); i >= 0 {
-		//	longName = longName[:i] + "Long" + longName[i:]
-		//
-		//	if tt, ok := gen.generatedTypes[longName]; ok {
-		//		// log.Printf("long name %s discovered for %s", longName, v.CanonicalStringTop())
-		//		v.WrLong = tt
-		//		tt.WrWithoutLong = v
-		//	}
-		//}
+		longName := v.pureType.CanonicalName()
+		argsStart := strings.Index(longName, "<")
+		if argsStart < 0 {
+			argsStart = len(longName)
+		}
+		if i := strings.Index(longName[:argsStart], "."); i >= 0 {
+			longName = longName[:i] + "Long" + longName[i:]
+
+			if tt, ok := gen.generatedTypes[longName]; ok {
+				// log.Printf("long name %s discovered for %s", longName, v.CanonicalStringTop())
+				v.WrLong = tt
+				tt.WrWithoutLong = v
+			}
+		}
 
 		v.trw.BeforeCodeGenerationStep2()
 	}

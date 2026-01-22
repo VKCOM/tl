@@ -32,6 +32,10 @@ func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
 		canonicalName = "int32"
 	case "long":
 		canonicalName = "int64"
+	case "float":
+		canonicalName = "float32"
+	case "double":
+		canonicalName = "float64"
 	case "#":
 		canonicalName = "uint32"
 	}
@@ -50,6 +54,10 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
 		s.WriteString("int32")
 	case "long":
 		s.WriteString("int64")
+	case "float":
+		s.WriteString("float32")
+	case "double":
+		s.WriteString("float64")
 	case "#":
 		s.WriteString("uint32")
 	default:
@@ -88,6 +96,10 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
 			return "int32"
 		case "long":
 			return "int64"
+		case "float":
+			return "float32"
+		case "double":
+			return "float64"
 		}
 		return s.String()
 	}

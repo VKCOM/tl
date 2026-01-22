@@ -141,16 +141,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 
 	for i, variantDef := range definition {
-		element, err := k.createStructTL1FromTL1(canonicalName+"__"+fmt.Sprintf("%d", i), tip,
-			resolvedType,
-			variantDef,
-			leftArgs, actualArgs,
-			true, i)
-		if err != nil {
-			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
-		}
-		ins.variantTypes[i] = element
-		ins.variantOriginalNames[i] = variantDef.Construct.Name.String()
 		typeConstructName := variantDef.Construct.Name
 		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
 			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
@@ -161,6 +151,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		// check against already defined fields
 		for _, usedName := range ins.variantNames {
 			if usedName == variantName {
+				// TODO - check if we have such cases in combined.tl, if not - simplify
 				variantName.Namespace = typeConstructName.Namespace // add namespace on collision
 				break
 			}
@@ -171,6 +162,17 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 				return nil, fmt.Errorf("cannot define TL1 union - prohibited variant name collision")
 			}
 		}
+
+		element, err := k.createStructTL1FromTL1(canonicalName+"__"+variantName.String(), tip,
+			resolvedType,
+			variantDef,
+			leftArgs, actualArgs,
+			true, i)
+		if err != nil {
+			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
+		}
+		ins.variantTypes[i] = element
+		ins.variantOriginalNames[i] = variantDef.Construct.Name.String()
 		ins.variantNames = append(ins.variantNames, variantName)
 		if len(element.fields) != 0 {
 			ins.isEnum = false

@@ -43,8 +43,10 @@ func NewKernel() *Kernel {
 	}
 	k.addPrimitive("uint32", "#", false, &KernelValueUint32{}, true)
 	k.addPrimitive("int32", "int", false, &KernelValueInt32{}, true)
+	k.addPrimitive("float32", "float", false, &KernelValueInt32{}, true)
 	k.addPrimitive("uint64", "", true, &KernelValueUint64{}, true)
 	k.addPrimitive("int64", "long", false, &KernelValueInt64{}, true)
+	k.addPrimitive("float64", "double", false, &KernelValueInt64{}, true)
 	k.addPrimitive("byte", "", true, &KernelValueByte{}, true)
 	k.addPrimitive("bool", "", true, &KernelValueBool{}, true)
 	k.addPrimitive("bit", "", true, &KernelValueBit{}, false)
@@ -312,15 +314,15 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 		}
 	}
 	// It is not easy to check all cycles before instantiation, so we do it afterward.
-	var cf cycleFinder
-	for _, ref := range k.instancesOrdered {
-		cf.reset()
-		ref.ins.FindCycle(&cf)
-		res := cf.printCycle()
-		if res != "" {
-			return fmt.Errorf("found recursive cycle %s", res)
-		}
-	}
+	//var cf cycleFinder
+	//for _, ref := range k.instancesOrdered {
+	//	cf.reset()
+	//	ref.ins.FindCycle(&cf)
+	//	res := cf.printCycle()
+	//	if res != "" {
+	//		return fmt.Errorf("found recursive cycle %s", res)
+	//	}
+	//}
 	return nil
 }
 
