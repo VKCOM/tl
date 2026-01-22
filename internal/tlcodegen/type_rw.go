@@ -60,16 +60,99 @@ var bannedCppFieldNames = []string{
 	"protected",
 	"struct",
 	"return",
+	"delete",
+	"alignas",
+	"constinit",
+	"extern",
+	"protected",
+	"throw",
+	"alignof",
+	"const_cast",
+	"false",
+	"public",
+	"true",
+	"asm",
+	"continue",
+	"float",
+	"register",
+	"try",
+	"auto",
+	"contract_assert",
+	"for",
+	"reinterpret_cast",
+	"typedef",
+	"bool",
+	"co_await",
+	"friend",
+	"requires",
+	"typeid",
+	"break",
+	"co_return",
+	"goto",
+	"return",
+	"typename",
+	"case",
+	"co_yield",
+	"if",
+	"short",
+	"union",
+	"catch",
+	"decltype",
+	"inline",
+	"signed",
+	"unsigned",
+	"char",
+	"default",
+	"int",
+	"sizeof",
+	"using",
+	"char8_t",
+	"delete",
+	"long",
+	"static",
+	"virtual",
+	"char16_t",
+	"do",
+	"mutable",
+	"static_assert",
+	"void",
+	"char32_t",
+	"double",
+	"namespace",
+	"static_cast",
+	"volatile",
+	"class",
+	"dynamic_cast",
+	"new",
+	"struct",
+	"wchar_t",
+	"concept",
+	"else",
+	"noexcept",
+	"switch",
+	"while",
+	"const",
+	"enum",
+	"nullptr",
+	"template",
+	"consteval",
+	"explicit",
+	"operator",
+	"this",
+	"constexpr",
+	"export",
+	"private",
+	"thread_local",
 }
 
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
-	d.deconflictName("int")
-	d.deconflictName("double")
-	d.deconflictName("float")
-	d.deconflictName("long")
-	d.deconflictName("else")
-	d.deconflictName("inline")
-	d.deconflictName("namespace")
+	//d.deconflictName("int")
+	//d.deconflictName("double")
+	//d.deconflictName("float")
+	//d.deconflictName("long")
+	//d.deconflictName("else")
+	//d.deconflictName("inline")
+	//d.deconflictName("namespace")
 
 	for _, word := range bannedCppFieldNames {
 		d.deconflictName(word)
