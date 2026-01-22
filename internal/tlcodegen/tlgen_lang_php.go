@@ -831,37 +831,3 @@ func phpFunctionArgumentsFormat(argNames []string) string {
 	}
 	return s
 }
-
-type CodeCreator struct {
-	Shift string
-
-	lines      []string
-	linesShift []int
-
-	currentShift int
-}
-
-func (cc *CodeCreator) AddLines(lines ...string) {
-	cc.lines = append(cc.lines, lines...)
-	for range lines {
-		cc.linesShift = append(cc.linesShift, cc.currentShift)
-	}
-}
-
-func (cc *CodeCreator) AddShift(shift int) {
-	cc.currentShift += shift
-}
-
-func (cc *CodeCreator) Print() []string {
-	s := make([]string, len(cc.lines))
-	for i, line := range cc.lines {
-		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
-	}
-	return s
-}
-
-func (cc *CodeCreator) AddBlock(block func(cc *CodeCreator)) {
-	cc.AddShift(1)
-	block(cc)
-	cc.AddShift(-1)
-}
