@@ -5,8 +5,6 @@ package gengo
 
 import "fmt"
 
-import "cmp"
-
 import "golang.org/x/exp/slices"
 
 import "github.com/vkcom/tl/internal/tlast"
@@ -21,6 +19,174 @@ var (
 	_ = qtio422016.Copy
 	_ = qt422016.AcquireByteBuffer
 )
+
+func (gen *genGo) streamgenerateFactory(qw422016 *qt422016.Writer, sortedImports []string, directImports *DirectImports) {
+	qw422016.N().S(HeaderComment)
+	qw422016.N().S(`
+package `)
+	qw422016.E().S(FactoryGoPackageName)
+	qw422016.N().S(`
+
+import (
+    "`)
+	qw422016.N().S(gen.MetaPackageName)
+	qw422016.N().S(`"
+`)
+	for _, wr := range sortedImports {
+		qw422016.N().S(`    "`)
+		qw422016.N().S(gen.options.Go.TLPackageNameFull)
+		qw422016.N().S(`/`)
+		qw422016.N().S(wr)
+		qw422016.N().S(`"
+`)
+	}
+	qw422016.N().S(`)
+
+func CreateFunction(tag uint32) meta.Function {
+    return meta.CreateFunction(tag)
+}
+
+func CreateObject(tag uint32) meta.Object {
+    return meta.CreateObject(tag)
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateFunctionFromName(name string) meta.Function {
+    return meta.CreateFunctionFromName(name)
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateObjectFromName(name string) meta.Object {
+    return meta.CreateObjectFromName(name)
+}
+
+func init() {
+`)
+	tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
+
+	if len(tl1Wrappers) != 0 {
+		qw422016.N().S(`// TL
+`)
+	}
+	for _, wr := range tl1Wrappers {
+		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
+			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+
+			if wr.unionParent != nil && wr.unionParent.IsEnum {
+				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
+				qw422016.E().S(tlTag)
+				qw422016.N().S(`)
+`)
+				continue
+			}
+			qw422016.N().S(`    `)
+			if fun.ResultType != nil {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
+				qw422016.N().S(tlTag)
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },`)
+				if wr.WrLong != nil {
+					qw422016.N().S(`func() meta.Function { var ret`)
+					qw422016.N().S(` `)
+					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(`; return &ret },`)
+				} else {
+					qw422016.N().S(`nil,`)
+				}
+			} else {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject(`)
+				qw422016.N().S(tlTag)
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret }`)
+			}
+			qw422016.N().S(`)`)
+			qw422016.N().S(`
+`)
+		}
+	}
+	if len(tl2Wrappers) != 0 {
+		qw422016.N().S(`// TL2
+`)
+	}
+	for _, wr := range tl2Wrappers {
+		if fun, ok := wr.trw.(*TypeRWStruct); ok {
+			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+
+			if wr.unionParent != nil && wr.unionParent.IsEnum {
+				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
+				qw422016.E().S(tlTag)
+				qw422016.N().S(`)
+`)
+				continue
+			}
+			qw422016.N().S(`    `)
+			if fun.ResultType != nil {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
+				qw422016.N().S(tlTag)
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },`)
+				if wr.WrLong != nil {
+					qw422016.N().S(`func() meta.Function { var ret`)
+					qw422016.N().S(` `)
+					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(`; return &ret },`)
+				} else {
+					qw422016.N().S(`nil,`)
+				}
+			} else {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret }`)
+			}
+			qw422016.N().S(`)`)
+			qw422016.N().S(`
+`)
+		}
+		if _, ok := wr.trw.(*TypeRWUnion); ok {
+			qw422016.N().S(`    `)
+			qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+			qw422016.N().Q(wr.tlName.String())
+			qw422016.N().S(`,func() meta.Object { var ret`)
+			qw422016.N().S(` `)
+			qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+			qw422016.N().S(`; return &ret })`)
+			qw422016.N().S(`
+`)
+		}
+	}
+	qw422016.N().S(`}
+
+`)
+}
+
+func (gen *genGo) writegenerateFactory(qq422016 qtio422016.Writer, sortedImports []string, directImports *DirectImports) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	gen.streamgenerateFactory(qw422016, sortedImports, directImports)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports) string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	gen.writegenerateFactory(qb422016, sortedImports, directImports)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
 
 func (gen *genGo) streamgenerateConstants(qw422016 *qt422016.Writer, commentString, pkgName string) {
 	qw422016.N().S(commentString)
@@ -37,17 +203,17 @@ package `)
 		sortedConstructors = append(sortedConstructors, c)
 	}
 	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-		return cmp.Compare(a.Construct.Name.String(), b.Construct.Name.String())
+		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
 
-	var sortedTL2Combinators []tlast.TL2Combinator
+	sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
 	for _, combinator := range gen.kernel.TL2() {
 		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
 			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
 		}
 	}
 	slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-		return cmp.Compare(a.ReferenceName().String(), b.ReferenceName().String())
+		return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
 	})
 
 	qw422016.N().S(`const (

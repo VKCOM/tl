@@ -102,9 +102,11 @@ func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgum
 		return tr, nil, err
 	}
 	if ac.IsArith {
+		// TODO - beautiful test case,
 		return tr, nil, fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Arith.Res)
 	}
 	if ac.T.String() == "*" {
+		// TODO - beautiful test case,
 		return tr, nil, tr.PR.BeautifulError(fmt.Errorf("type argument %s resolved to a nat argument %s", tr, ac.T))
 	}
 	return ac.T, natArgs, nil

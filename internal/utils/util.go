@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"runtime/debug"
+	"strings"
 )
 
 func JsonPrettyPrint(in []byte) []byte {
@@ -26,4 +27,16 @@ func AppVersion() string {
 		return info.Main.Version
 	}
 	return ""
+}
+
+func DoLint(commentRight string) bool {
+	if len(commentRight) < 2 {
+		return true
+	}
+	for _, f := range strings.Fields(commentRight[2:]) {
+		if f == "tlgen:nolint" {
+			return false
+		}
+	}
+	return true
 }

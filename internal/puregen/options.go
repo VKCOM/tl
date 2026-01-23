@@ -69,6 +69,7 @@ func (opt *Options) Bind(f *flag.FlagSet) {
 }
 
 func (opt *Options) Validate() error {
+	opt.Kernel.ErrorWriter = opt.ErrorWriter
 	opt.GenerateTL2 = opt.Kernel.GenerateTL2
 	if !opt.GenerateTL2 {
 		opt.Kernel.TL2WhiteList = "" // so if we do not generate TL2, all wantsTL flags are false

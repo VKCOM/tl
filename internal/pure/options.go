@@ -6,7 +6,10 @@
 
 package pure
 
-import "flag"
+import (
+	"flag"
+	"io"
+)
 
 type OptionsKernel struct {
 	WarningsAreErrors bool
@@ -14,6 +17,8 @@ type OptionsKernel struct {
 	TypesWhiteList string
 	GenerateTL2    bool
 	TL2WhiteList   string
+
+	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 }
 
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {

@@ -440,18 +440,6 @@ type Gen2 struct {
 	componentsOrder []int
 }
 
-func doLint(commentRight string) bool {
-	if len(commentRight) < 2 {
-		return true
-	}
-	for _, f := range strings.Fields(commentRight[2:]) {
-		if f == "tlgen:nolint" {
-			return false
-		}
-	}
-	return true
-}
-
 func (gen *Gen2) InternalPrefix() string {
 	if gen.options.SplitInternal {
 		return "internal."
@@ -1748,7 +1736,7 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 				// TODO - sort out things with rpc wrapping later which has a form
 				// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
 			}
-			if len(typ.Modifiers) == 0 && doLint(typ.CommentRight) {
+			if len(typ.Modifiers) == 0 && utils.DoLint(typ.CommentRight) {
 				e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
 				if gen.options.WarningsAreErrors {
 					return e1
@@ -1770,7 +1758,7 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 			}
 			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
 			if EnableWarningsSimpleTypeName && strings.ToLower(cName.Name) != typePrefix &&
-				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) && doLint(typ[0].CommentRight) {
+				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
 				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
 				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
 				if gen.options.WarningsAreErrors {
@@ -1809,7 +1797,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 		conName := strings.ToLower(typ.Construct.Name.Name)
 		if EnableWarningsUnionNamespace && typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
 			!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
-			doLint(typ.CommentRight) {
+			utils.DoLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -1821,7 +1809,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 			!strings.HasPrefix(conName, typePrefix) &&
 			!strings.HasSuffix(conName, typeSuffix) &&
 			!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
-			doLint(typ.CommentRight) { // same check as in generateType
+			utils.DoLint(typ.CommentRight) { // same check as in generateType
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -1832,7 +1820,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 		}
 		if EnableWarningsUnionNameExact && conName == typePrefix &&
 			!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
-			doLint(typ.CommentRight) {
+			utils.DoLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
 			e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -2516,7 +2504,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 					return nil, m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
 				}
 				if _, ok := allAnnotations[m.Name]; !ok {
-					if _, ok := gen.supportedAnnotations[m.Name]; !ok && doLint(typ.CommentRight) {
+					if _, ok := gen.supportedAnnotations[m.Name]; !ok && utils.DoLint(typ.CommentRight) {
 						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
 						if gen.options.WarningsAreErrors {
 							return nil, e1
@@ -2550,7 +2538,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			}
 		}
 		if len(gen.allAnnotations) > 32 {
-			return nil, fmt.Errorf("too many (%d) differnet annotations, max is 32 for now", len(gen.allAnnotations))
+			return nil, fmt.Errorf("too many (%d) different annotations, max is 32 for now", len(gen.allAnnotations))
 		}
 		sort.Strings(gen.allAnnotations)
 	}

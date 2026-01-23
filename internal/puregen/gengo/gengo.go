@@ -17,6 +17,7 @@ import (
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/puregen"
+	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -386,22 +387,22 @@ var _ = basictl.NatWrite
 		} else if gen.options.Verbose {
 			log.Printf("basictl code not written, expected to be available at %q", gen.options.Go.BasicPackageNameFull)
 		}
-		//directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-		//var sortedNames []string
-		//_ = gen.generateFactory(sortedNames, directImports)
-		//for im := range directImports.ns { // Imports of this file.
-		//	sortedNames = append(sortedNames, im.SubPath)
-		//}
-		//slices.Sort(sortedNames)
-		//if err := outdir.AddCodeFile(filepath.Join(FactoryGoPackageName, FactoryGoPackageName+".go"), gen.copyrightText+gen.generateFactory(sortedNames, directImports)); err != nil {
-		//	return err
-		//}
-		//if err := outdir.AddCodeFile(filepath.Join(FactoryGoPackageNameBytes, FactoryGoPackageNameBytes+".go"), gen.copyrightText+gen.generateFactoryBytes(sortedNames, directImports)); err != nil {
-		//	return err
-		//}
-		//if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.copyrightText+gen.generateMeta(utils.AppVersion())); err != nil {
-		//	return err
-		//}
+		directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+		var sortedNames []string
+		_ = gen.generateFactory(sortedNames, directImports)
+		for im := range directImports.ns { // Imports of this file.
+			sortedNames = append(sortedNames, im.SubPath)
+		}
+		slices.Sort(sortedNames)
+		if err := outdir.AddCodeFile(filepath.Join(FactoryGoPackageName, FactoryGoPackageName+".go"), gen.options.CopyrightText+gen.generateFactory(sortedNames, directImports)); err != nil {
+			return err
+		}
+		if err := outdir.AddCodeFile(filepath.Join(FactoryGoPackageNameBytes, FactoryGoPackageNameBytes+".go"), gen.options.CopyrightText+gen.generateFactoryBytes(sortedNames, directImports)); err != nil {
+			return err
+		}
+		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.options.CopyrightText+gen.generateMeta(utils.AppVersion())); err != nil {
+			return err
+		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
 		code = fmt.Sprintf(InternalTLCodeHeader, HeaderComment, "internal") + InternalTLCodeBody
 		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
@@ -443,4 +444,26 @@ func (gen *genGo) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
 		return nil, fmt.Errorf("internal error: type %q not found", t.CanonicalName())
 	}
 	return result, nil
+}
+
+func (gen *genGo) ExtractTopLevelTypes() (tl1Wrappers []*TypeRWWrapper, tl2Wrappers []*TypeRWWrapper) {
+	typeWrappers := gen.generatedTypesList
+	tl1Wrappers = make([]*TypeRWWrapper, 0)
+	tl2Wrappers = make([]*TypeRWWrapper, 0)
+	for _, wr := range typeWrappers {
+		if wr.IsTopLevel() && len(wr.NatParams) == 0 {
+			_, isStruct := wr.trw.(*TypeRWStruct)
+			_, isUnion := wr.trw.(*TypeRWUnion)
+			if wr.originateFromTL2 {
+				if isStruct || isUnion {
+					tl2Wrappers = append(tl2Wrappers, wr)
+				}
+			} else {
+				if wr.tlTag != 0 {
+					tl1Wrappers = append(tl1Wrappers, wr)
+				}
+			}
+		}
+	}
+	return
 }

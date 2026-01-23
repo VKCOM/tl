@@ -7,7 +7,7 @@ Primitive types are difficult, because they have different names in TL1/TL2.
 And TL1 types are themselves complicated, because they have 2 names - TypeDecl.Name and Construct.Name, `ab.t1 = cd.T2`, 
 but only if they are not unions, which use Construct.Name only for naming data structure for variant.
 
-Also TL1 type references can be bare or boxed (explicitly with % sign, or by using lower or upper case).
+Also, TL1 type references can be bare or boxed (explicitly with % sign, or by using lower or upper case).
 
 So, we inveneted those rules:
 
@@ -28,8 +28,8 @@ Bare and boxed references to single-constructor type `ab.con = ab.Type;` normali
 
 Then, when language generator wants to construct global names, it can select some strategy to use.
 
-We provide both `conName`, `typeName` names, but they will be the same for many types. Also they are set in a special manner for `int32`, `uint32` and `int64`, 
-we use old names `int`, `nat` and `long` for them.
+We also explicitly add legacy names to some primitives (`int`, `nat` and `long`), so we generate
+VectorInt not VectorInt32 in go generator. Later, we'll replace those to TL2 names.
 
 ## TODO
 
