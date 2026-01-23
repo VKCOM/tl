@@ -50,6 +50,7 @@ func NewKernel() *Kernel {
 	k.addPrimitive("bool", "", &KernelValueBool{}, true)
 	k.addPrimitive("bit", "", &KernelValueBit{}, false)
 	k.addString()
+	k.addTL1Brackets()
 
 	return k
 }

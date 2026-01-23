@@ -27,56 +27,50 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 	var s strings.Builder
 
 	tName := tr.Type.String()
-	switch tName {
-	case "__vector", "__tuple":
-		s.WriteString(tName)
-		bare = true
-	default:
-		kt, ok := k.tips[tName]
-		if !ok {
-			return "", false, tr.PR.BeautifulError(fmt.Errorf("type reference %s not found", tName))
-		}
-		if kt.isFunction && !allowFunctions {
-			e1 := tr.PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", tName))
-			if kt.originTL2 {
-				// TODO - beautiful
-				return "", false, e1
-			}
-			e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
-			return "", false, tlast.BeautifulError2(e1, e2)
-		}
-		// TODO - check TL1/TL2 references here
-		//if kt.originTL2 {
-		//	panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
-		//}
-		bare = tr.Bare
-		if tr.Type != kt.tl1BoxedName {
-			bare = true
-		}
-		if bare && !kt.CanBeBare() {
-			// TODO - we could simply treat % as "bare if possible", which would allow writing it basically everywhere
-			e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be bare", tName))
-			if kt.originTL2 {
-				// TODO - beautiful
-				return "", false, e1
-			}
-			e2 := kt.combTL1[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
-			return "", false, tlast.BeautifulError2(e1, e2)
-		}
-		if !bare && !kt.CanBeBoxed() { // TODO - impossible?
-			e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be boxed", tName))
-			if kt.originTL2 {
-				// TODO - beautiful
-				return "", false, e1
-			}
-			e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
-			return "", false, tlast.BeautifulError2(e1, e2)
-		}
-		if !top && !bare && kt.CanBeBare() {
-			s.WriteString("+")
-		}
-		s.WriteString(kt.canonicalName.String())
+	kt, ok := k.tips[tName]
+	if !ok {
+		return "", false, tr.PR.BeautifulError(fmt.Errorf("type reference %s not found", tName))
 	}
+	if kt.isFunction && !allowFunctions {
+		e1 := tr.PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", tName))
+		if kt.originTL2 {
+			// TODO - beautiful
+			return "", false, e1
+		}
+		e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+		return "", false, tlast.BeautifulError2(e1, e2)
+	}
+	// TODO - check TL1/TL2 references here
+	//if kt.originTL2 {
+	//	panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
+	//}
+	bare = tr.Bare
+	if tr.Type != kt.tl1BoxedName {
+		bare = true
+	}
+	if bare && !kt.CanBeBare() {
+		// TODO - we could simply treat % as "bare if possible", which would allow writing it basically everywhere
+		e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be bare", tName))
+		if kt.originTL2 {
+			// TODO - beautiful
+			return "", false, e1
+		}
+		e2 := kt.combTL1[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
+		return "", false, tlast.BeautifulError2(e1, e2)
+	}
+	if !bare && !kt.CanBeBoxed() { // TODO - impossible?
+		e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be boxed", tName))
+		if kt.originTL2 {
+			// TODO - beautiful
+			return "", false, e1
+		}
+		e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+		return "", false, tlast.BeautifulError2(e1, e2)
+	}
+	if !top && !bare && kt.CanBeBare() {
+		s.WriteString("+")
+	}
+	s.WriteString(kt.canonicalName.String())
 	if len(tr.Args) == 0 {
 		return s.String(), bare, nil
 	}
@@ -273,24 +267,24 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	tName := tr.Type.String()
-	switch tName {
-	case "__vector":
-		ref := k.addInstance(canonicalName, k.brackets)
-		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
-		ref.ins, err = k.createVectorTL1(canonicalName, tr, leftArgs, tr.Args)
-		if err != nil {
-			return nil, false, err
-		}
-		return ref, bare, nil
-	case "__tuple":
-		ref := k.addInstance(canonicalName, k.brackets)
-		leftArgs := []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}}
-		ref.ins, err = k.createTupleTL1(canonicalName, tr, leftArgs, tr.Args)
-		if err != nil {
-			return nil, false, err
-		}
-		return ref, bare, nil
-	}
+	//switch tName {
+	//case "__vector":
+	//	ref := k.addInstance(canonicalName, k.brackets)
+	//	leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
+	//	ref.ins, err = k.createVectorTL1(canonicalName, tr, leftArgs, tr.Args)
+	//	if err != nil {
+	//		return nil, false, err
+	//	}
+	//	return ref, bare, nil
+	//case "__tuple":
+	//	ref := k.addInstance(canonicalName, k.brackets)
+	//	leftArgs := []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}}
+	//	ref.ins, err = k.createTupleTL1(canonicalName, tr, leftArgs, tr.Args)
+	//	if err != nil {
+	//		return nil, false, err
+	//	}
+	//	return ref, bare, nil
+	//}
 	kt, ok := k.tips[tName]
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
@@ -330,7 +324,14 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 			return nil, false, tlast.BeautifulError2(e1, e2)
 		}
 	}
-	ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, td.TemplateArguments, tr.Args)
+	switch tName {
+	case "__vector":
+		ref.ins, err = k.createVectorTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+	case "__tuple":
+		ref.ins, err = k.createTupleTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+	default:
+		ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, td.TemplateArguments, tr.Args)
+	}
 	if err != nil {
 		return nil, false, err
 	}
