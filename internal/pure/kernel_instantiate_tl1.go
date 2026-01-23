@@ -34,10 +34,16 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 	default:
 		kt, ok := k.tips[tName]
 		if !ok {
-			return "", false, fmt.Errorf("type reference %s not found", tName)
+			return "", false, tr.PR.BeautifulError(fmt.Errorf("type reference %s not found", tName))
 		}
 		if kt.isFunction && !allowFunctions {
-			return "", false, fmt.Errorf("function %s cannot be referenced", tName)
+			e1 := tr.PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", tName))
+			if kt.originTL2 {
+				// TODO - beautiful
+				return "", false, e1
+			}
+			e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+			return "", false, tlast.BeautifulError2(e1, e2)
 		}
 		// TODO - check TL1/TL2 references here
 		//if kt.originTL2 {
@@ -48,10 +54,23 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 			bare = true
 		}
 		if bare && !kt.CanBeBare() {
-			return "", false, fmt.Errorf("type reference %s cannot be bare", tName)
+			// TODO - we could simply treat % as "bare if possible", which would allow writing it basically everywhere
+			e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be bare", tName))
+			if kt.originTL2 {
+				// TODO - beautiful
+				return "", false, e1
+			}
+			e2 := kt.combTL1[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
+			return "", false, tlast.BeautifulError2(e1, e2)
 		}
 		if !bare && !kt.CanBeBoxed() { // TODO - impossible?
-			return "", false, fmt.Errorf("type reference %s cannot be boxed", tName)
+			e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be boxed", tName))
+			if kt.originTL2 {
+				// TODO - beautiful
+				return "", false, e1
+			}
+			e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+			return "", false, tlast.BeautifulError2(e1, e2)
 		}
 		if !top && !bare && kt.CanBeBare() {
 			s.WriteString("+")
@@ -121,20 +140,23 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if tr.T.Type.Namespace == "" {
 		for i, targ := range leftArgs {
 			if targ.FieldName == tr.T.Type.Name {
-				if len(tr.T.Args) != 0 {
-					return tr, nil, fmt.Errorf("reference to template argument %s cannot have arguments", targ.FieldName)
+				for _, arg := range tr.T.Args {
+					e1 := arg.T.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.FieldName))
+					e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+					return tr, nil, tlast.BeautifulError2(e1, e2)
 				}
 				actualArg := actualArgs[i]
 				if actualArg.wrongTypeErr != nil {
-					e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", tr.T))
+					e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.FieldName))
 					return tr, nil, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 				}
 				actualArg.arg.T.PR = tr.T.PR
 				actualArg.arg.T.PRArgs = tr.T.PRArgs
 				if actualArg.arg.IsArith || actualArg.arg.T.Type.String() == "*" {
 					if tr.T.Bare {
-						e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference tp #-param %q cannot be bare", tr.T))
-						return tr, nil, e1
+						e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to #-param %q cannot be bare", targ.FieldName))
+						e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+						return tr, nil, tlast.BeautifulError2(e1, e2)
 					}
 					return actualArg.arg, actualArg.natArgs, nil
 				}
@@ -173,13 +195,22 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 		if targ.FieldName == mask.MaskName {
 			actualArg := actualArgs[i]
 			if actualArg.wrongTypeErr != nil {
-				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("reference to field %s impossible, must have # type", targ.FieldName))
+				e1 := mask.PRName.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.FieldName))
+				return ActualNatArg{}, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 			}
 			if !targ.IsNat {
-				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.FieldName))
+				e1 := mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.FieldName))
+				e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+				return ActualNatArg{}, tlast.BeautifulError2(e1, e2)
 			}
-			if len(actualArg.natArgs) != 1 {
+			if len(actualArg.natArgs) > 1 {
 				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("internal error: fieldMask reference len(natArg) == %d for parameter %s", len(actualArg.natArgs), targ.FieldName))
+			}
+			if actualArg.arg.IsArith {
+				return ActualNatArg{
+					isNumber: true,
+					number:   actualArg.arg.Arith.Res,
+				}, nil
 			}
 			return actualArg.natArgs[0], nil
 		}

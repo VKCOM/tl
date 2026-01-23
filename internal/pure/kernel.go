@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
@@ -181,11 +180,6 @@ func (k *Kernel) AddFileTL2(file string) error {
 	return nil
 }
 
-func (k *Kernel) normalizeName(s string) string {
-	s = strings.ReplaceAll(s, "_", "")
-	return strings.ToLower(s)
-}
-
 func (k *Kernel) Compile(opts *OptionsKernel) error {
 	if err := k.CompileTL1(opts); err != nil {
 		return err
@@ -205,21 +199,11 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
 			kt.tl2Names = map[string]struct{}{comb.ReferenceName().String(): {}}
 			kt.canonicalName = tlast.Name(comb.ReferenceName())
-			namesNormalized := map[string]*tlast.ParseError{}
-			names := map[string]*tlast.ParseError{}
+			var nc NameCollision
 			for _, targ := range comb.TypeDecl.TemplateArguments {
-				if err, ok := names[targ.Name]; ok {
-					e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s name collision", targ.Name))
-					return tlast.BeautifulError2(e1, err)
+				if err := nc.AddUniqueName(targ.Name, targ.PR, "template argument"); err != nil {
+					return err
 				}
-				nn := k.normalizeName(targ.Name)
-				if err, ok := namesNormalized[nn]; ok {
-					e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s normalized name collision", targ.Name))
-					return tlast.BeautifulError2(e1, err)
-				}
-				err := targ.PR.BeautifulError(fmt.Errorf("defined here"))
-				names[targ.Name] = err
-				namesNormalized[nn] = err
 			}
 		}
 		if err := k.addTip(kt, comb.ReferenceName().String(), ""); err != nil {
@@ -278,10 +262,10 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			//}
 		}
 	}
-	if err := k.CheckTagCollisions(opts); err != nil {
+	if err := k.checkTagCollisions(opts); err != nil {
 		return err
 	}
-	if err := k.CheckNamespaceCollisions(opts); err != nil {
+	if err := k.checkNamespaceCollisions(opts); err != nil {
 		return err
 	}
 	//instantiate all top-level declarations
@@ -318,7 +302,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
 			}
 			if _, _, err := k.getInstanceTL1(tr, true, true); err != nil {
-				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
+				return err
 			}
 		}
 	}
@@ -335,7 +319,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 	return nil
 }
 
-func (k *Kernel) CheckTagCollisions(opts *OptionsKernel) error {
+func (k *Kernel) checkTagCollisions(opts *OptionsKernel) error {
 	constructorTags := map[uint32]*tlast.ParseError{}
 	for _, typ := range k.filesTL1 {
 		crc32 := typ.Crc32()
@@ -375,7 +359,28 @@ func (k *Kernel) CheckTagCollisions(opts *OptionsKernel) error {
 	return nil
 }
 
-func (k *Kernel) CheckNamespaceCollisions(opts *OptionsKernel) error {
-	// TODO
+func (k *Kernel) checkNamespaceCollisions(opts *OptionsKernel) error {
+	var nc NameCollision
+	for _, comb := range k.filesTL1 {
+		if err := nc.AddSameCaseName(comb.Construct.Name.Namespace, comb.Construct.NamePR, "namespace"); err != nil {
+			return err
+		}
+		if !comb.IsFunction {
+			if err := nc.AddSameCaseName(comb.TypeDecl.Name.Namespace, comb.TypeDecl.NamePR, "namespace"); err != nil {
+				return err
+			}
+		}
+	}
+	for _, comb := range k.filesTL2 {
+		if comb.IsFunction {
+			if err := nc.AddSameCaseName(comb.FuncDecl.Name.Namespace, comb.FuncDecl.PRName, "namespace"); err != nil {
+				return err
+			}
+		} else {
+			if err := nc.AddSameCaseName(comb.TypeDecl.Name.Namespace, comb.TypeDecl.PRName, "namespace"); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }

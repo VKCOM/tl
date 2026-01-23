@@ -178,38 +178,19 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 			//	e1.PrintWarning(gen.options.ErrorWriter, nil)
 			//}
 		}
-		namesNormalized := map[string]*tlast.ParseError{}
-		names := map[string]*tlast.ParseError{}
+		var nc NameCollision
 		for _, targ := range typ.TemplateArguments {
-			if err, ok := names[targ.FieldName]; ok {
-				e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s name collision", targ.FieldName))
-				return tlast.BeautifulError2(e1, err)
+			if err := nc.AddUniqueName(targ.FieldName, targ.PR, "template argument"); err != nil {
+				return err
 			}
-			nn := k.normalizeName(targ.FieldName)
-			if err, ok := namesNormalized[nn]; ok {
-				e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s normalized name collision", targ.FieldName))
-				return tlast.BeautifulError2(e1, err)
-			}
-			err := targ.PR.BeautifulError(fmt.Errorf("defined here"))
-			names[targ.FieldName] = err
-			namesNormalized[nn] = err
 		}
 		for _, field := range typ.Fields {
 			if field.FieldName == "" {
 				continue
 			}
-			if err, ok := names[field.FieldName]; ok {
-				e1 := field.PR.BeautifulError(fmt.Errorf("field %s name collision", field.FieldName))
-				return tlast.BeautifulError2(e1, err)
+			if err := nc.AddUniqueName(field.FieldName, field.PR, "field"); err != nil {
+				return err
 			}
-			nn := k.normalizeName(field.FieldName)
-			if err, ok := namesNormalized[nn]; ok {
-				e1 := field.PR.BeautifulError(fmt.Errorf("field %s normalized name collision", field.FieldName))
-				return tlast.BeautifulError2(e1, err)
-			}
-			err := field.PR.BeautifulError(fmt.Errorf("defined here"))
-			names[field.FieldName] = err
-			namesNormalized[nn] = err
 		}
 	}
 	if len(boolCombinators) != 0 {
@@ -270,7 +251,7 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 			tl1BoxedName:  tName,
 		}
 		if err := k.addTip(kt, tName.String(), ""); err != nil {
-			return fmt.Errorf("error adding type %s: %w", tName.String(), err)
+			return err
 		}
 	}
 	for _, typ := range allConstructors {
