@@ -143,6 +143,8 @@ var bannedCppFieldNames = []string{
 	"export",
 	"private",
 	"thread_local",
+	"linux",
+	"windows",
 }
 
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
