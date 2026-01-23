@@ -112,13 +112,12 @@ func (gen *genGo) addTypeWrappers() error {
 		if kt := pureType.KernelType(); kt != nil {
 			myWrapper.originateFromTL2 = kt.OriginTL2()
 			myWrapper.origTL = kt.TL1()
+			myWrapper.tlName = kt.CanonicalNameLegacyGo()
 			if !myWrapper.originateFromTL2 {
 				if len(myWrapper.origTL) == 1 {
 					myWrapper.tlTag = myWrapper.origTL[0].Crc32()
-					myWrapper.tlName = myWrapper.origTL[0].Construct.Name
 					myWrapper.fileName = myWrapper.tlName.String()
 				} else {
-					myWrapper.tlName = myWrapper.origTL[0].TypeDecl.Name
 					fileName := myWrapper.tlName
 					fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
 					myWrapper.fileName = fileName.String()
