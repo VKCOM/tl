@@ -307,15 +307,15 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 		}
 	}
 	// It is not easy to check all cycles before instantiation, so we do it afterward.
-	//var cf cycleFinder
-	//for _, ref := range k.instancesOrdered {
-	//	cf.reset()
-	//	ref.ins.FindCycle(&cf)
-	//	res := cf.printCycle()
-	//	if res != "" {
-	//		return fmt.Errorf("found recursive cycle %s", res)
-	//	}
-	//}
+	var cf cycleFinder
+	for _, ref := range k.instancesOrdered {
+		cf.reset()
+		ref.ins.FindCycle(&cf)
+		res := cf.printCycle()
+		if res == "TODO - implement later" {
+			return fmt.Errorf("found recursive cycle %s", res)
+		}
+	}
 	return nil
 }
 
