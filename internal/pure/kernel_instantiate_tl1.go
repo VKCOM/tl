@@ -43,65 +43,49 @@ func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
 }
 
 // top level types do not have bare/boxed in their names
-func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
+func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (string, error) {
 	var s strings.Builder
 
 	tName := tr.Type.String()
 	switch tName {
 	case "__vector", "__tuple":
 		s.WriteString(tName)
-	case "int":
-		s.WriteString("int32")
-	case "long":
-		s.WriteString("int64")
-	case "float":
-		s.WriteString("float32")
-	case "double":
-		s.WriteString("float64")
-	case "#":
-		s.WriteString("uint32")
+	//case "int":
+	//	s.WriteString("int32")
+	//case "long":
+	//	s.WriteString("int64")
+	//case "float":
+	//	s.WriteString("float32")
+	//case "double":
+	//	s.WriteString("float64")
+	//case "#":
+	//	s.WriteString("uint32")
 	default:
 		kt, ok := k.tips[tName]
 		if !ok {
-			panic(fmt.Sprintf("canonical string tip %s not found", tName))
+			return "", fmt.Errorf("type reference %s not found", tName)
 		}
-		if kt.originTL2 {
-			panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
+		// TODO - check TL1/TL2 references here
+		//if kt.originTL2 {
+		//	panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
+		//}
+		if tr.Type != kt.tl1BoxedName {
+			tr.Bare = true
 		}
-		if len(kt.combTL1) > 1 {
-			if tr.Bare {
-				panic(fmt.Sprintf("canonical string tip %s bare union", tName))
-			}
-			if tName == "Bool" {
-				s.WriteString("bool")
-			} else {
-				kt.combTL1[0].TypeDecl.Name.WriteString(&s)
-			}
-		} else if len(kt.combTL1) == 1 {
-			if tr.Bare || utils.ToLowerFirst(tr.Type.Name) == tr.Type.Name {
-				kt.combTL1[0].Construct.Name.WriteString(&s)
-			} else {
-				if !top {
-					s.WriteString("+")
-				}
-				kt.combTL1[0].Construct.Name.WriteString(&s)
-			}
-		} else {
-			panic("all builtins are parsed from TL text, so must have exactly one constructor")
+		tr.Type = kt.canonicalName
+		if tr.Bare && !kt.CanBeBare() {
+			return "", fmt.Errorf("type reference %s cannot be bare", tName)
 		}
+		if !tr.Bare && !kt.CanBeBoxed() { // TODO - impossible?
+			return "", fmt.Errorf("type reference %s cannot be boxed", tName)
+		}
+		if !top && !tr.Bare && kt.CanBeBare() {
+			s.WriteString("+")
+		}
+		s.WriteString(tr.Type.String())
 	}
 	if len(tr.Args) == 0 {
-		switch s.String() { // TODO - fix this hack as early as possible
-		case "int":
-			return "int32"
-		case "long":
-			return "int64"
-		case "float":
-			return "float32"
-		case "double":
-			return "float64"
-		}
-		return s.String()
+		return s.String(), nil
 	}
 	s.WriteByte('<')
 	for i, a := range tr.Args {
@@ -113,11 +97,15 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) string {
 		} else if a.T.Type.String() == "*" {
 			s.WriteString("*")
 		} else {
-			s.WriteString(k.canonicalStringTL1(a.T, false))
+			str, err := k.canonicalStringTL1(a.T, false)
+			if err != nil {
+				return "", err
+			}
+			s.WriteString(str)
 		}
 	}
 	s.WriteByte('>')
-	return s.String()
+	return s.String(), nil
 }
 
 func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgument,
@@ -289,7 +277,10 @@ func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, error) {
 }
 
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef, error) {
-	canonicalName := k.canonicalStringTL1(tr, true)
+	canonicalName, err := k.canonicalStringTL1(tr, true)
+	if err != nil {
+		return nil, err
+	}
 	// canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
@@ -331,7 +322,6 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 	log.Printf("creating an instance of type %s", canonicalName)
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
-	var err error
 	tName := tr.Type.String()
 	switch tName {
 	case "__vector":

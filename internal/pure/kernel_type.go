@@ -16,10 +16,26 @@ type KernelType struct {
 	instances map[string]*TypeInstanceRef
 	// order of instantiation
 	instancesOrdered []*TypeInstanceRef
+
+	tl1Names map[string]struct{}
+	tl2Names map[string]struct{}
+
+	canonicalName tlast.Name
+	tl1BoxedName  tlast.Name
+	canBeBare     bool
+	tl1name       string // if !empty, go generator will use it for template names (VectorInt, not VectorInt32)
 }
 
 func (t *KernelType) OriginTL2() bool {
 	return t.originTL2
+}
+
+func (t *KernelType) CanBeBare() bool {
+	return t.canBeBare
+}
+
+func (t *KernelType) CanBeBoxed() bool {
+	return t.tl1BoxedName != tlast.Name{}
 }
 
 func (t *KernelType) TL1() []*tlast.Combinator {
