@@ -240,12 +240,12 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 		}
 		cName := typ.Construct.Name
 		kt := &KernelType{
-			originTL2: false,
-			combTL1:   []*tlast.Combinator{typ},
-			instances: map[string]*TypeInstanceRef{},
+			originTL2:  false,
+			combTL1:    []*tlast.Combinator{typ},
+			instances:  map[string]*TypeInstanceRef{},
+			isFunction: true,
 			// functions have no canonical name, because there is no references to functions
 			// also they have no TL1 names or TL2 names set.
-			// TODO - refactor function creation so we do not need canonicalName for functions
 			canonicalName: cName,
 			canBeBare:     true,
 		}

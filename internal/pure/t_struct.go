@@ -213,7 +213,7 @@ func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, pr
 		*natParams = append(*natParams, prefix)
 		return
 	}
-	tName := k.replaceTL1BuiltinName(rt.T.Type.String())
+	tName := rt.T.Type.String()
 	tip, ok := k.tips[tName]
 	if !ok {
 		panic("resolved type not found in global type map")
@@ -333,7 +333,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
@@ -393,7 +393,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
 		}
 		log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}

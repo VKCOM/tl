@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 type LocalArg struct {
@@ -23,27 +22,8 @@ type LocalArg struct {
 	natArgs      []ActualNatArg
 }
 
-// we remap TL1 type names into TL2 type names here.
-// hopefully, this does not cause too many irregularities downstream
-func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
-	canonicalName = strings.TrimPrefix(canonicalName, "%")
-	switch canonicalName {
-	case "int":
-		canonicalName = "int32"
-	case "long":
-		canonicalName = "int64"
-	case "float":
-		canonicalName = "float32"
-	case "double":
-		canonicalName = "float64"
-	case "#":
-		canonicalName = "uint32"
-	}
-	return canonicalName
-}
-
 // top level types do not have bare/boxed in their names
-func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare bool, _ error) {
+func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions bool) (_ string, bare bool, _ error) {
 	var s strings.Builder
 
 	tName := tr.Type.String()
@@ -55,6 +35,9 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare 
 		kt, ok := k.tips[tName]
 		if !ok {
 			return "", false, fmt.Errorf("type reference %s not found", tName)
+		}
+		if kt.isFunction && !allowFunctions {
+			return "", false, fmt.Errorf("function  %s cannot be referenced", tName)
 		}
 		// TODO - check TL1/TL2 references here
 		//if kt.originTL2 {
@@ -88,7 +71,7 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare 
 		} else if a.T.Type.String() == "*" {
 			s.WriteString("*")
 		} else {
-			str, _, err := k.canonicalStringTL1(a.T, false)
+			str, _, err := k.canonicalStringTL1(a.T, false, false)
 			if err != nil {
 				return "", false, err
 			}
@@ -223,9 +206,9 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	//	//	}
 	//	//}
 	//}
-	if utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
-		tr.T.Bare = true
-	}
+	//if utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
+	//	tr.T.Bare = true
+	//}
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
@@ -260,15 +243,15 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 }
 
 func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
-	ref, bare, err := k.getInstanceTL1(tr, false)
+	ref, bare, err := k.getInstanceTL1(tr, false, true)
 	if err != nil {
 		return nil, false, err
 	}
 	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
-	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
+func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bool) (_ *TypeInstanceRef, bare bool, _ error) {
+	canonicalName, bare, err := k.canonicalStringTL1(tr, true, allowFunctions)
 	if err != nil {
 		return nil, false, err
 	}
