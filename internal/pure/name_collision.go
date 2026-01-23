@@ -31,6 +31,11 @@ func (c *NameCollision) AddSameCaseName(name string, pr tlast.PositionRange, rea
 	return c.addName(name, pr, reason, true)
 }
 
+// allows normalized checks between template arguments and fields, but strict checks between them
+func (c *NameCollision) ResetNormalized() {
+	clear(c.namesNormalized)
+}
+
 func (c *NameCollision) addName(name string, pr tlast.PositionRange, reason string, sameCase bool) error {
 	nn := c.NormalizeName(name)
 	errName, okName := c.names[name]
@@ -53,6 +58,8 @@ func (c *NameCollision) addName(name string, pr tlast.PositionRange, reason stri
 	err := pr.BeautifulError(fmt.Errorf("see here"))
 	if c.names == nil {
 		c.names = make(map[string]*tlast.ParseError)
+	}
+	if c.namesNormalized == nil {
 		c.namesNormalized = make(map[string]*tlast.ParseError)
 	}
 	c.names[name] = err

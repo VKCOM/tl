@@ -184,6 +184,7 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 				return err
 			}
 		}
+		nc.ResetNormalized()
 		for _, field := range typ.Fields {
 			if field.FieldName == "" {
 				continue

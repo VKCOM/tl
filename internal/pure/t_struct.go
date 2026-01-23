@@ -319,11 +319,20 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
-			if !fieldDef.ScaleRepeat.ExplicitScale {
-				return nil, fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("brackets must contain explicit scale here"))
-			}
 			if err := k.canonicalBrackets(fieldDef); err != nil {
 				return nil, err
+			}
+			if !fieldDef.ScaleRepeat.ExplicitScale {
+				prevFieldDef := constructorFields[i-1] // never panics, due to checks above
+				if prevFieldDef.FieldType.String() != "#" {
+					e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references previous field %q, which should have type #", prevFieldDef.FieldName))
+					e2 := prevFieldDef.PR.BeautifulError(fmt.Errorf("see here"))
+					return nil, tlast.BeautifulError2(e1, e2)
+				}
+				fieldDef.ScaleRepeat.Scale = tlast.ScaleFactor{
+					IsArith: false,
+					Scale:   prevFieldDef.FieldName,
+				}
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
