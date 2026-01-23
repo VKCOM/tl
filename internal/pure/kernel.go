@@ -37,19 +37,19 @@ type Kernel struct {
 // Add builtin types
 func NewKernel() *Kernel {
 	k := &Kernel{
-		brackets:  &KernelType{originTL2: true, instances: map[string]*TypeInstanceRef{}},
+		brackets:  &KernelType{originTL2: true, instances: map[string]*TypeInstanceRef{}, canBeBare: true},
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
-	k.addPrimitive("uint32", "#", false, &KernelValueUint32{}, true)
-	k.addPrimitive("int32", "int", false, &KernelValueInt32{}, true)
-	k.addPrimitive("float32", "float", false, &KernelValueInt32{}, true)
-	k.addPrimitive("uint64", "", true, &KernelValueUint64{}, true)
-	k.addPrimitive("int64", "long", false, &KernelValueInt64{}, true)
-	k.addPrimitive("float64", "double", false, &KernelValueInt64{}, true)
-	k.addPrimitive("byte", "", true, &KernelValueByte{}, true)
-	k.addPrimitive("bool", "", true, &KernelValueBool{}, true)
-	k.addPrimitive("bit", "", true, &KernelValueBit{}, false)
+	k.addPrimitive("uint32", "#", &KernelValueUint32{}, true)
+	k.addPrimitive("int32", "int", &KernelValueInt32{}, true)
+	k.addPrimitive("float32", "float", &KernelValueInt32{}, true)
+	k.addPrimitive("uint64", "", &KernelValueUint64{}, true)
+	k.addPrimitive("int64", "long", &KernelValueInt64{}, true)
+	k.addPrimitive("float64", "double", &KernelValueInt64{}, true)
+	k.addPrimitive("byte", "", &KernelValueByte{}, true)
+	k.addPrimitive("bool", "", &KernelValueBool{}, true)
+	k.addPrimitive("bit", "", &KernelValueBit{}, false)
 	k.addString()
 
 	return k
@@ -198,8 +198,12 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			originTL2: true,
 			combTL2:   comb,
 			instances: map[string]*TypeInstanceRef{},
+			canBeBare: true,
 		}
 		if !comb.IsFunction {
+			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
+			kt.tl2Names = map[string]struct{}{comb.ReferenceName().String(): {}}
+			kt.canonicalName = tlast.Name(comb.ReferenceName())
 			namesNormalized := map[string]int{}
 			names := map[string]int{}
 			for i, targ := range comb.TypeDecl.TemplateArguments {

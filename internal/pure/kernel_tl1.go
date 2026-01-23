@@ -55,7 +55,9 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 	tip.combTL1 = []*tlast.Combinator{falseDesc, trueDesc}
 	tip.originTL2 = false // allow references from TL1
 	k.tips["Bool"] = tip
-
+	tip.tl1Names["Bool"] = struct{}{}
+	tip.tl1BoxedName = tlast.Name{Name: "Bool"}
+	// we do not allow references to boxed wrappers from TL2
 	return nil
 }
 
@@ -76,6 +78,9 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 		id := typ.Crc32()
 		tip.combTL1[0].Construct.ID = &id
 		k.tips[bigName] = tip
+		tip.tl1Names[bigName] = struct{}{}
+		tip.tl1BoxedName = tlast.Name{Name: bigName}
+		// we do not allow references to boxed wrappers from TL2
 		return nil
 	}
 	switch typ.Construct.Name.String() {
@@ -199,9 +204,14 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 			//	tlast.BeautifulError2(e1, e2).PrintWarning(gen.options.ErrorWriter, nil)
 			//}
 			kt := &KernelType{
-				originTL2: false,
-				combTL1:   typ,
-				instances: map[string]*TypeInstanceRef{},
+				originTL2:     false,
+				combTL1:       typ,
+				instances:     map[string]*TypeInstanceRef{},
+				tl1Names:      map[string]struct{}{cName.String(): {}, tName.String(): {}},
+				tl2Names:      map[string]struct{}{cName.String(): {}, tName.String(): {}},
+				canonicalName: cName,
+				tl1BoxedName:  tName,
+				canBeBare:     true,
 			}
 			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
 				return fmt.Errorf("error adding type %s: %w", typ[0].String(), err)
@@ -212,9 +222,13 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 			return err
 		}
 		kt := &KernelType{
-			originTL2: false,
-			combTL1:   typ,
-			instances: map[string]*TypeInstanceRef{},
+			originTL2:     false,
+			combTL1:       typ,
+			instances:     map[string]*TypeInstanceRef{},
+			tl1Names:      map[string]struct{}{tName.String(): {}},
+			tl2Names:      map[string]struct{}{tName.String(): {}},
+			canonicalName: tName,
+			tl1BoxedName:  tName,
 		}
 		if err := k.addTip(kt, tName.String(), ""); err != nil {
 			return fmt.Errorf("error adding type %s: %w", tName.String(), err)
@@ -224,12 +238,17 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 		if !typ.IsFunction {
 			continue
 		}
+		cName := typ.Construct.Name
 		kt := &KernelType{
 			originTL2: false,
 			combTL1:   []*tlast.Combinator{typ},
 			instances: map[string]*TypeInstanceRef{},
+			// functions have no canonical name, because there is no references to functions
+			// also they have no TL1 names or TL2 names set.
+			// TODO - refactor function creation so we do not need canonicalName for functions
+			canonicalName: cName,
+			canBeBare:     true,
 		}
-		cName := typ.Construct.Name
 		if err := k.addTip(kt, cName.String(), ""); err != nil {
 			return fmt.Errorf("error adding function %s: %w", cName.String(), err)
 		}

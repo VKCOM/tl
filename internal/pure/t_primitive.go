@@ -37,7 +37,7 @@ func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 	return ins.clone.ReadTL2(r, nil)
 }
 
-func (k *Kernel) addPrimitive(name string, tl1name string, originTL2 bool, clone KernelValue, goodForMapKey bool) {
+func (k *Kernel) addPrimitive(name string, tl1name string, clone KernelValue, goodForMapKey bool) {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
@@ -61,16 +61,25 @@ func (k *Kernel) addPrimitive(name string, tl1name string, originTL2 bool, clone
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2: originTL2,
-		combTL1:   []*tlast.Combinator{combTL1},
-		combTL2:   combTL2,
-		instances: map[string]*TypeInstanceRef{name: ref},
+		originTL2:     tl1name == "",
+		combTL1:       []*tlast.Combinator{combTL1},
+		combTL2:       combTL2,
+		instances:     map[string]*TypeInstanceRef{name: ref},
+		tl1Names:      map[string]struct{}{},
+		tl2Names:      map[string]struct{}{},
+		canonicalName: tlast.Name{Name: name},
+		tl1name:       tl1name,
+		canBeBare:     true,
+	}
+	kt.tl2Names[name] = struct{}{}
+	if tl1name != "" {
+		kt.tl1Names[name] = struct{}{}
 	}
 	ins.tip = kt
 	if _, ok := k.instances[name]; ok {
 		panic(fmt.Sprintf("error adding primitive type %s: exist in global list", name))
 	}
-	if err := k.addTip(kt, name, ""); err != nil {
+	if err := k.addTip(kt, name, tl1name); err != nil {
 		panic(fmt.Sprintf("error adding primitive type %s: %v", name, err))
 	}
 	k.instances[name] = ref
