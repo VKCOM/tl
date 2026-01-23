@@ -247,15 +247,21 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 	return
 }
 
-func (k *Kernel) canonicalBrackets(fieldDef tlast.Field) bool {
+func (k *Kernel) canonicalBrackets(fieldDef tlast.Field) error {
 	if !fieldDef.IsRepeated {
-		return true // always canonical
+		return nil // always canonical
 	}
 	if len(fieldDef.ScaleRepeat.Rep) != 1 {
-		return false
+		return fieldDef.ScaleRepeat.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
 	}
 	f := fieldDef.ScaleRepeat.Rep[0]
-	return !f.IsRepeated && f.FieldName == "" && f.Mask == nil && !f.Excl
+	if f.IsRepeated || f.FieldName != "" {
+		return f.PR.BeautifulError(fmt.Errorf("brackets field should not be named or contain brackets"))
+	}
+	if f.Mask != nil && f.Excl {
+		return f.PR.BeautifulError(fmt.Errorf("brackets field should not contain fieldsmask or exclamation"))
+	}
+	return nil
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
@@ -288,8 +294,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if nextFieldDef.Mask != nil || !nextFieldDef.IsRepeated || nextFieldDef.ScaleRepeat.ExplicitScale {
 				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
 			}
-			if !k.canonicalBrackets(fieldDef) {
-				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			if err := k.canonicalBrackets(fieldDef); err != nil {
+				return nil, err
 			}
 			// we replace 2 fields with vector
 			// hren # a:[int] = Hren;
@@ -302,30 +308,30 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			len(tip.combTL1[0].TemplateArguments) != 0 {
 			a := tip.combTL1[0].TemplateArguments[len(tip.combTL1[0].TemplateArguments)-1]
 			if !a.IsNat {
-				e1 := fieldDef.PR.BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
+				e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
 				e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
 				return nil, tlast.BeautifulError2(e1, e2)
 			}
-			if !k.canonicalBrackets(fieldDef) {
-				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			if err := k.canonicalBrackets(fieldDef); err != nil {
+				return nil, err
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: tlast.TypeRef{Type: tlast.Name{Name: a.FieldName}}}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
 			if !fieldDef.ScaleRepeat.ExplicitScale {
-				return nil, fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("brackets must contain explicit scale n*[...] (with few exceptions used for vector and tuple definition)"))
+				return nil, fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("brackets must contain explicit scale here"))
 			}
-			if !k.canonicalBrackets(fieldDef) {
-				return nil, fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("brackets must contain single type"))
+			if err := k.canonicalBrackets(fieldDef); err != nil {
+				return nil, err
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 			if fieldDef.ScaleRepeat.Scale.IsArith {
-				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
+				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR}, IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
 			} else {
-				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
+				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR, Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
 			}
 		}
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
@@ -335,7 +341,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 		if err != nil {
-			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
+			return nil, err
 		}
 		newField := Field{
 			name:    fieldDef.FieldName,
@@ -368,7 +374,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			})
 			if fieldDef.FieldType.String() != "#" {
 				localArgs = append(localArgs, LocalArg{
-					wrongTypeErr: fmt.Errorf("only reference to field with type # is allowed"),
+					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
 				})
 			} else {
 				localArgs = append(localArgs, LocalArg{

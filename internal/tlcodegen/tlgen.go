@@ -57,8 +57,8 @@ schema version: %d (%v)
 var (
 	errSeeHere                = fmt.Errorf("see here")
 	errFieldNameCollision     = fmt.Errorf("field name collision")
-	errNatParamNameCollision  = fmt.Errorf("nat-parametr name collision")
-	errTypeParamNameCollision = fmt.Errorf("type-parametr name collision ")
+	errNatParamNameCollision  = fmt.Errorf("nat-parameter name collision")
+	errTypeParamNameCollision = fmt.Errorf("type-parameter name collision ")
 )
 
 // For debugging
