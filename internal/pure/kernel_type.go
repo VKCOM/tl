@@ -17,6 +17,8 @@ type KernelType struct {
 	// order of instantiation
 	instancesOrdered []*TypeInstanceRef
 
+	isFunction bool // to prohibit references
+
 	tl1Names map[string]struct{}
 	tl2Names map[string]struct{}
 
@@ -28,6 +30,10 @@ type KernelType struct {
 
 func (t *KernelType) OriginTL2() bool {
 	return t.originTL2
+}
+
+func (t *KernelType) IsFunction() bool {
+	return t.isFunction
 }
 
 func (t *KernelType) CanBeBare() bool {

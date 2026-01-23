@@ -195,10 +195,11 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 	for _, comb := range k.filesTL2 {
 		log.Printf("tl2pure: compiling %s", comb)
 		kt := &KernelType{
-			originTL2: true,
-			combTL2:   comb,
-			instances: map[string]*TypeInstanceRef{},
-			canBeBare: true,
+			originTL2:  true,
+			combTL2:    comb,
+			instances:  map[string]*TypeInstanceRef{},
+			isFunction: comb.IsFunction,
+			canBeBare:  true,
 		}
 		if !comb.IsFunction {
 			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
@@ -312,7 +313,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			if len(tip.combTL1) != 1 {
 				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
 			}
-			if _, _, err := k.getInstanceTL1(tr, true); err != nil {
+			if _, _, err := k.getInstanceTL1(tr, true, true); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		}
