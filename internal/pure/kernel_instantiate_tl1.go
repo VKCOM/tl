@@ -340,6 +340,31 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	return ref, bare, nil
 }
 
+func (k *Kernel) getArgNamespace(rt tlast.TypeRef) string {
+	argNamespaces := map[string]struct{}{}
+	k.collectArgsNamespaces(tlast.ArithmeticOrType{T: rt}, argNamespaces)
+	if len(argNamespaces) == 1 {
+		for ns := range argNamespaces {
+			return ns
+		}
+	}
+	return rt.Type.Namespace
+}
+
+func (k *Kernel) collectArgsNamespaces(rt tlast.ArithmeticOrType, argNamespaces map[string]struct{}) {
+	// This is policy. You can adjust it, so more or less templates instantiations
+	// are moved into namespace of arguments. Code should compile anyway.
+	if rt.IsArith || rt.T.Type.String() == "*" {
+		return
+	}
+	if rt.T.Type.Namespace != "" {
+		argNamespaces[rt.T.Type.Namespace] = struct{}{}
+	}
+	for _, arg := range rt.T.Args {
+		k.collectArgsNamespaces(arg, argNamespaces)
+	}
+}
+
 func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition []*tlast.Combinator,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 

@@ -451,9 +451,6 @@ func init() {
 `)
 	}
 	for _, wr := range tl1Wrappers {
-		if wr.tlTag == 0 || !wr.IsTopLevel() {
-			continue
-		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
 			resultTypeContainsUnionTypes := false
 			argumentsTypesContainUnionTypes := false

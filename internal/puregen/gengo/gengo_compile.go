@@ -124,7 +124,7 @@ func (gen *genGo) addTypeWrappers() error {
 					myWrapper.fileName = fileName.String()
 				}
 			}
-			namespace := gen.getNamespace(myWrapper.tlName.Namespace)
+			namespace := gen.getNamespace(pureType.Common().ArgNamespace())
 			namespace.types = append(namespace.types, myWrapper)
 			myWrapper.ns = namespace
 		}
@@ -137,6 +137,7 @@ func (gen *genGo) prepareGeneration() error {
 
 	bytesWhiteList := pure.NewWhiteList(options.BytesWhiteList)
 	tl2WhiteList := pure.NewWhiteList(options.Kernel.TL2WhiteList)
+	gen.rawHandlerWhileList = pure.NewWhiteList(options.Go.RawHandlerWhileList)
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
