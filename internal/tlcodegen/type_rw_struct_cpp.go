@@ -158,10 +158,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
 
 	anyRecursive := false
-	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
-	if trw.wr.tlName.Namespace != "" {
-		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
-	}
+	typeNamespace := trw.wr.CPPNamespaceParts()
 	if hpp != nil {
 		if !forwardDeclaration {
 			deps := trw.AllTypeDependencies(true, false)
@@ -733,10 +730,10 @@ func (trw *TypeRWStruct) CPPReadFields(bytesVersion bool, hppDetInc *DirectInclu
 			s.WriteString("\t} else {\n")
 			if field.recursive {
 				s.WriteString(fmt.Sprintf("\t\tif (item.%s) {\n", field.cppName))
-				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
+				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsteriskAndBrackets(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
 				s.WriteString("\t\t}\n")
 			} else {
-				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
+				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsteriskAndBrackets(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
 			}
 			s.WriteString("\t}\n")
 		}

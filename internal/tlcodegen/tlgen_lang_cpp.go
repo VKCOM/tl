@@ -130,11 +130,14 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOStreamsPath(gen))))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOThrowableStreamsPath(gen))))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
+			if headerFile == header {
+				panic(fmt.Sprintf("CPP HEADER ERROR: header file %q depends on itself", headerFile))
+			}
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
@@ -177,8 +180,8 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 
 		hppDet.WriteString("#pragma once\n\n")
 
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOStreamsPath(gen))))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOThrowableStreamsPath(gen))))
 
 		if createdHpps[specs[0].fileName] {
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, specs[0].fileName+hppExt)))
@@ -410,7 +413,7 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		code.WriteString("{\n")
 
 		code.WriteString("\t\"io\": [")
-		code.WriteString("\"basictl\"")
+		code.WriteString(fmt.Sprintf("\"%s\"", CppBasictlPackage(gen)))
 		code.WriteString("],\n")
 
 		code.WriteString("\t\"dependencies\":[")
@@ -458,7 +461,11 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		var df1 func(v string)
 		df1 = func(v string) {
 			visited[v] = true
-			for u := range directDeps[v] {
+
+			directDepsList := utils.Keys(directDeps[v])
+			sort.Strings(directDepsList)
+
+			for _, u := range directDepsList {
 				if !visited[u] && allVertices[u] {
 					df1(u)
 				}
@@ -480,7 +487,10 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		df2 = func(v string) {
 			visited[v] = true
 			component = append(component, v)
-			for u := range revDirectDeps[v] {
+			revDepsList := utils.Keys(revDirectDeps[v])
+			sort.Strings(revDepsList)
+
+			for _, u := range revDepsList {
 				if !visited[u] && allVertices[u] {
 					df2(u)
 				}
@@ -488,11 +498,16 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		}
 
 		visited = make(map[string]bool)
-		for v := range allVertices {
+
+		listOfVertices := utils.Keys(allVertices)
+		sort.Strings(listOfVertices)
+
+		for _, v := range listOfVertices {
 			if !visited[v] {
 				df1(v)
 			}
 		}
+
 		visited = make(map[string]bool)
 		for i := range order {
 			v := order[len(order)-1-i]
@@ -503,18 +518,9 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 			}
 		}
 
-		for i, component := range components {
-			sort.Strings(component)
-			components[i] = component
+		for i := range components {
+			sort.Strings(components[i])
 		}
-
-		// sort components
-		sort.Slice(components, func(i, j int) bool {
-			if len(components[i]) == len(components[j]) {
-				return slices.Compare(components[i], components[j]) > 0
-			}
-			return len(components[i]) > len(components[j])
-		})
 
 		nsToComponentId := make(map[string]int)
 		for id, comp := range components {
@@ -595,6 +601,8 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 	for _, file := range exportingFiles {
 		data := []byte(exportingFilesSources[file])
 
+		data = bytes.ReplaceAll(data, []byte("basictl"), []byte(gen.options.BasicTLNamespace))
+
 		code := strings.Builder{}
 		code.Write([]byte(HeaderComment))
 		code.Write([]byte("\n"))
@@ -615,7 +623,7 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 					parts := bytes.Split(include, []byte("\""))
 					code.Write(parts[0])
 					code.Write([]byte("\""))
-					code.Write([]byte(filepath.Join(gen.options.RootCPP, basictlPackage, filepath.Dir(file), string(parts[1]))))
+					code.Write([]byte(filepath.Join(gen.options.RootCPP, CppBasictlPackage(gen), filepath.Dir(file), string(parts[1]))))
 					code.Write([]byte("\""))
 					code.Write(parts[2])
 
@@ -624,17 +632,17 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 			}
 
 			bodyCode := data[includesEnd+len(basictlCppIncludeEnd):]
-			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte(CppBasictlPackage(gen)), []byte(gen.cppBasictlNamespace()))
 
 			code.Write(bodyCode)
 		} else {
 			bodyCode := data
-			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte(CppBasictlPackage(gen)), []byte(gen.cppBasictlNamespace()))
 
 			code.Write(bodyCode)
 		}
 
-		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), gen.copyrightText+code.String()); err != nil {
+		if err := gen.addCodeFile(filepath.Join(CppBasictlPackage(gen), file), gen.copyrightText+code.String()); err != nil {
 			return err
 		}
 	}
@@ -652,7 +660,7 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 			}
 		}
 		code.WriteString("]\n}")
-		if err := gen.addCodeFile(filepath.Join(basictlPackage, "info.json"), code.String()); err != nil {
+		if err := gen.addCodeFile(filepath.Join(CppBasictlPackage(gen), "info.json"), code.String()); err != nil {
 			return err
 		}
 	}
@@ -661,18 +669,18 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 
 func createStreams(gen *Gen2, cppMake *strings.Builder) {
 	cppMake.WriteString("# compile streams which are used to work with io\n")
-	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/io_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_streams.cpp %[1]s/io_streams.h\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c %[1]s/io_streams.cpp\n", CppBasictlPackage(gen)))
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/io_throwable_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_throwable_streams.cpp %[1]s/io_throwable_streams.h\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c %[1]s/io_throwable_streams.cpp\n", CppBasictlPackage(gen)))
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/string_io.o: %[1]s/io_connectors.h %[1]s/impl/string_io.cpp %[1]s/impl/string_io.h\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c %[1]s/impl/string_io.cpp\n", CppBasictlPackage(gen)))
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
@@ -1018,12 +1026,12 @@ namespace %[3]s {
 
 	}
 }`,
-		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath),
-		filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath),
+		filepath.Join(gen.options.RootCPP, CppBasicTLIOStreamsPath(gen)),
+		filepath.Join(gen.options.RootCPP, CppBasicTLIOThrowableStreamsPath(gen)),
 		gen.options.RootCPPNamespace,
 		gen.cppBasictlNamespace()))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOStreamsPath(gen))))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -1298,5 +1306,5 @@ func cppRunLocalLinter(code, filename string) (string, string) {
 }
 
 func (gen *Gen2) cppBasictlNamespace() string {
-	return fmt.Sprintf("%[1]s::%[2]s", gen.options.RootCPPNamespace, "basictl")
+	return fmt.Sprintf("%[1]s::%[2]s", gen.options.RootCPPNamespace, CppBasictlPackage(gen))
 }

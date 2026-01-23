@@ -60,16 +60,101 @@ var bannedCppFieldNames = []string{
 	"protected",
 	"struct",
 	"return",
+	"delete",
+	"alignas",
+	"constinit",
+	"extern",
+	"protected",
+	"throw",
+	"alignof",
+	"const_cast",
+	"false",
+	"public",
+	"true",
+	"asm",
+	"continue",
+	"float",
+	"register",
+	"try",
+	"auto",
+	"contract_assert",
+	"for",
+	"reinterpret_cast",
+	"typedef",
+	"bool",
+	"co_await",
+	"friend",
+	"requires",
+	"typeid",
+	"break",
+	"co_return",
+	"goto",
+	"return",
+	"typename",
+	"case",
+	"co_yield",
+	"if",
+	"short",
+	"union",
+	"catch",
+	"decltype",
+	"inline",
+	"signed",
+	"unsigned",
+	"char",
+	"default",
+	"int",
+	"sizeof",
+	"using",
+	"char8_t",
+	"delete",
+	"long",
+	"static",
+	"virtual",
+	"char16_t",
+	"do",
+	"mutable",
+	"static_assert",
+	"void",
+	"char32_t",
+	"double",
+	"namespace",
+	"static_cast",
+	"volatile",
+	"class",
+	"dynamic_cast",
+	"new",
+	"struct",
+	"wchar_t",
+	"concept",
+	"else",
+	"noexcept",
+	"switch",
+	"while",
+	"const",
+	"enum",
+	"nullptr",
+	"template",
+	"consteval",
+	"explicit",
+	"operator",
+	"this",
+	"constexpr",
+	"export",
+	"private",
+	"thread_local",
+	"linux",
+	"windows",
 }
 
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
-	d.deconflictName("int")
-	d.deconflictName("double")
-	d.deconflictName("float")
-	d.deconflictName("long")
-	d.deconflictName("else")
-	d.deconflictName("inline")
-	d.deconflictName("namespace")
+	//d.deconflictName("int")
+	//d.deconflictName("double")
+	//d.deconflictName("float")
+	//d.deconflictName("long")
+	//d.deconflictName("else")
+	//d.deconflictName("inline")
+	//d.deconflictName("namespace")
 
 	for _, word := range bannedCppFieldNames {
 		d.deconflictName(word)
@@ -997,6 +1082,9 @@ func (w *TypeRWWrapper) cppNamespaceQualifier() string {
 	if w.tlName.Namespace != "" {
 		s.WriteString(w.tlName.Namespace)
 		s.WriteString("::")
+	} else {
+		s.WriteString("common")
+		s.WriteString("::")
 	}
 	return s.String()
 }
@@ -1488,4 +1576,15 @@ func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImport
 	}`, f.goName, resetCode)
 	}
 	return resetCode
+}
+
+func (wr *TypeRWWrapper) CPPNamespaceParts() []string {
+	ns := make([]string, len(wr.gen.RootCPPNamespaceElements))
+	copy(ns, wr.gen.RootCPPNamespaceElements)
+	if wr.tlName.Namespace != "" {
+		ns = append(ns, wr.tlName.Namespace)
+	} else {
+		ns = append(ns, CommonGroup)
+	}
+	return ns
 }
