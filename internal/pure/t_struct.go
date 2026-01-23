@@ -333,7 +333,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
 		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.FieldName, err)
 		}
@@ -341,7 +341,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			name:    fieldDef.FieldName,
 			ins:     fieldIns,
 			natArgs: natArgs,
-			bare:    rt.Bare,
+			bare:    fieldBare,
 		}
 		if fieldDef.Mask != nil {
 			if fieldDef.Mask.BitNumber >= 32 {
@@ -393,11 +393,11 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
 		}
 		log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}
-		if rt.Bare {
+		if fieldBare {
 			// @read a.TypeA = int;
 			// @read a.TypeB = %Int;
 			return nil, def.FuncDecl.PR.BeautifulError(fmt.Errorf("function %q result cannot be bare", def.Construct.Name.String()))

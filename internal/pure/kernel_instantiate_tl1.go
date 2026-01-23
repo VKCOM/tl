@@ -43,49 +43,40 @@ func (k *Kernel) replaceTL1BuiltinName(canonicalName string) string {
 }
 
 // top level types do not have bare/boxed in their names
-func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (string, error) {
+func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare bool, _ error) {
 	var s strings.Builder
 
 	tName := tr.Type.String()
 	switch tName {
 	case "__vector", "__tuple":
 		s.WriteString(tName)
-	//case "int":
-	//	s.WriteString("int32")
-	//case "long":
-	//	s.WriteString("int64")
-	//case "float":
-	//	s.WriteString("float32")
-	//case "double":
-	//	s.WriteString("float64")
-	//case "#":
-	//	s.WriteString("uint32")
+		bare = true
 	default:
 		kt, ok := k.tips[tName]
 		if !ok {
-			return "", fmt.Errorf("type reference %s not found", tName)
+			return "", false, fmt.Errorf("type reference %s not found", tName)
 		}
 		// TODO - check TL1/TL2 references here
 		//if kt.originTL2 {
 		//	panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
 		//}
+		bare = tr.Bare
 		if tr.Type != kt.tl1BoxedName {
-			tr.Bare = true
+			bare = true
 		}
-		tr.Type = kt.canonicalName
-		if tr.Bare && !kt.CanBeBare() {
-			return "", fmt.Errorf("type reference %s cannot be bare", tName)
+		if bare && !kt.CanBeBare() {
+			return "", false, fmt.Errorf("type reference %s cannot be bare", tName)
 		}
-		if !tr.Bare && !kt.CanBeBoxed() { // TODO - impossible?
-			return "", fmt.Errorf("type reference %s cannot be boxed", tName)
+		if !bare && !kt.CanBeBoxed() { // TODO - impossible?
+			return "", false, fmt.Errorf("type reference %s cannot be boxed", tName)
 		}
-		if !top && !tr.Bare && kt.CanBeBare() {
+		if !top && !bare && kt.CanBeBare() {
 			s.WriteString("+")
 		}
-		s.WriteString(tr.Type.String())
+		s.WriteString(kt.canonicalName.String())
 	}
 	if len(tr.Args) == 0 {
-		return s.String(), nil
+		return s.String(), bare, nil
 	}
 	s.WriteByte('<')
 	for i, a := range tr.Args {
@@ -97,15 +88,15 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (string, error) 
 		} else if a.T.Type.String() == "*" {
 			s.WriteString("*")
 		} else {
-			str, err := k.canonicalStringTL1(a.T, false)
+			str, _, err := k.canonicalStringTL1(a.T, false)
 			if err != nil {
-				return "", err
+				return "", false, err
 			}
 			s.WriteString(str)
 		}
 	}
 	s.WriteByte('>')
-	return s.String(), nil
+	return s.String(), bare, nil
 }
 
 func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgument,
@@ -268,25 +259,25 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 	return ActualNatArg{}, mask.PRName.BeautifulError(errors.New("fieldMask reference not found"))
 }
 
-func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, error) {
-	ref, err := k.getInstanceTL1(tr, false)
+func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
+	ref, bare, err := k.getInstanceTL1(tr, false)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
-	return ref.ins, nil
+	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef, error) {
-	canonicalName, err := k.canonicalStringTL1(tr, true)
+func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
+	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	// canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
-		return ref, nil
+		return ref, bare, nil
 	}
 	if !create {
-		return nil, fmt.Errorf("internal error: instance %s must exist", canonicalName)
+		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
 	//if tr.Type.String() == "" {
 	//	log.Printf("creating a bracket instance of type %s", canonicalName)
@@ -329,38 +320,38 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (*TypeInstanceRef
 		leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
 		ref.ins, err = k.createVectorTL1(canonicalName, tr, leftArgs, tr.Args)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
-		return ref, nil
+		return ref, bare, nil
 	case "__tuple":
 		ref := k.addInstance(canonicalName, k.brackets)
 		leftArgs := []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}}
 		ref.ins, err = k.createTupleTL1(canonicalName, tr, leftArgs, tr.Args)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
-		return ref, nil
+		return ref, bare, nil
 	}
 	kt, ok := k.tips[tName]
 	if !ok {
-		return nil, fmt.Errorf("type %s does not exist", tr.Type)
+		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
 	}
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 
 	if kt.originTL2 {
-		return nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
+		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
 	comb := kt.combTL1[0]
 	if len(comb.TemplateArguments) != len(tr.Args) {
-		return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
+		return nil, false, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
 	}
 	ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
-	return ref, nil
+	return ref, bare, nil
 }
 
 func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition []*tlast.Combinator,

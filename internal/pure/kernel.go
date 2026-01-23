@@ -312,7 +312,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			if len(tip.combTL1) != 1 {
 				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
 			}
-			if _, err := k.getInstanceTL1(tr, true); err != nil {
+			if _, _, err := k.getInstanceTL1(tr, true); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		}
