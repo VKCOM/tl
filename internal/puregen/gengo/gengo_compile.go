@@ -21,6 +21,9 @@ func (gen *genGo) compile() error {
 		return err
 	}
 	for _, myWrapper := range gen.generatedTypesList {
+		if strings.HasPrefix(myWrapper.pureType.CanonicalName(), "dictionary<string>") {
+			fmt.Printf("aha %s\n", myWrapper.pureType.CanonicalName())
+		}
 		for _, arg := range myWrapper.pureType.Common().ResolvedType().Args {
 			if arg.IsArith {
 				myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
@@ -37,7 +40,7 @@ func (gen *genGo) compile() error {
 				})
 				continue
 			}
-			ref, err := gen.kernel.GetInstanceTL1(arg.T)
+			ref, fieldBare, err := gen.kernel.GetInstanceTL1(arg.T)
 			if err != nil {
 				return fmt.Errorf("internal error: cannot get type of argument %s", arg.T)
 			}
@@ -48,7 +51,7 @@ func (gen *genGo) compile() error {
 			myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
 				isNat: false,
 				tip:   fieldType,
-				bare:  arg.T.Bare,
+				bare:  fieldBare,
 			})
 		}
 	}

@@ -96,7 +96,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		return nil, fmt.Errorf("fail to resolve type of vector %s element: %w", canonicalName, err)
 	}
 	log.Printf("resolveType of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	fieldIns, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s element: %w", canonicalName, err)
 	}
@@ -109,7 +109,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		},
 		isTuple:  false,
 		elemType: fieldIns,
-		elemBare: rt.Bare,
+		elemBare: fieldBare,
 		natArgs:  natArgs,
 	}
 	return ins, nil
@@ -130,7 +130,7 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 		return nil, fmt.Errorf("fail to resolve type of tuple %s element: %w", canonicalName, err)
 	}
 	log.Printf("resolveType of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	fieldIns, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s element: %w", canonicalName, err)
 	}
@@ -143,7 +143,7 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 		},
 		isTuple:     true,
 		elemType:    fieldIns,
-		elemBare:    rt.Bare,
+		elemBare:    fieldBare,
 		natArgs:     natArgs,
 		dynamicSize: !actualArgs[0].IsArith,
 		count:       actualArgs[0].Arith.Res,
