@@ -33,6 +33,7 @@ type TypeInstanceCommon struct {
 	NatParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	rt            tlast.TypeRef
+	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
@@ -45,6 +46,10 @@ func (ins *TypeInstanceCommon) KernelType() *KernelType {
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
 	return ins.rt
+}
+
+func (ins *TypeInstanceCommon) ArgNamespace() string {
+	return ins.argNamespace
 }
 
 func (ins *TypeInstanceCommon) BoxedOnly() bool {

@@ -460,14 +460,14 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 }
 
 func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive) error {
-	namespace := gen.getNamespace(myWrapper.tlName.Namespace)
-	namespace.types = append(namespace.types, myWrapper)
-	myWrapper.ns = namespace
+	//namespace := gen.getNamespace(myWrapper.tlName.Namespace)
+	//namespace.types = append(namespace.types, myWrapper)
+	//myWrapper.ns = namespace
 
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-	myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
+	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	if pureType.KernelType().OriginTL2() {
 		// TODO - ?
 	} else {
@@ -499,9 +499,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 
 			//elementT := tlast.TypeRef{Type: tlast.Name{Name: okDesc.TemplateArguments[0].FieldName}} // TODO - PR
 
-			namespace := gen.getNamespace(fieldType.tlName.Namespace)
-			namespace.types = append(namespace.types, fieldType)
-			fieldType.ns = namespace
+			//namespace := gen.getNamespace(fieldType.tlName.Namespace)
+			//namespace.types = append(namespace.types, fieldType)
+			//fieldType.ns = namespace
 
 			suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
 			head, tail := fieldType.resolvedT2GoName("")

@@ -1,0 +1,314 @@
+{% import "fmt" %}
+
+// will generate type aliases anyway and RPC code if appropriate flag is set
+{%- func (gen *genGo) generateNamespacesCode(anyTypeAlias bool, anyFunctions bool, name string, namespace *Namespace, sortedImports []string, directImports *DirectImports) -%}
+{%s= HeaderComment %}
+package {%s= gen.GlobalPackageName + name %}
+
+import (
+    {%- if gen.options.GenerateRPCCode && anyFunctions -%}
+    "context"
+    "time"
+
+    {%q= gen.options.Go.BasicRPCPath %}
+    {%q= gen.BasicPackageNameFull %}
+    "{%s= gen.options.Go.TLPackageNameFull %}/internal"
+    {%- endif -%}
+    {%- for _, wr := range sortedImports -%}
+    "{%s= gen.options.Go.TLPackageNameFull %}/{%s= wr %}"
+    {%- endfor -%}
+)
+
+    {%- code
+        ourTypes := map[*TypeRWWrapper]struct{}{}
+    -%}
+
+{%= typesAlias(gen, anyTypeAlias, name, namespace.types, directImports, ourTypes) %}
+
+    {%- if !gen.options.GenerateRPCCode || !anyFunctions -%}
+        {%- return -%}
+    {%- endif -%}
+
+type Client struct {
+    Client  rpc.Client
+    Network string // should be either "tcp4" or "unix"
+    Address string
+    ActorID int64         // should be >0 for routing via rpc-proxy
+    Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
+}
+
+{%= writeClientsCode(gen.GlobalPackageName, namespace.types, directImports, ourTypes) %}
+
+type Handler struct {
+    {%= handlerStructs(gen, name, namespace.types, directImports, ourTypes) %} }
+
+    {%- code
+        totalFuns := 0
+        for _, wr := range namespace.types {
+            if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
+                totalFuns++
+            }
+        }
+    -%}
+func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
+{%- if totalFuns != 0 -%}
+    {%= handleRequest(gen, namespace.types, directImports) -%}
+{%- endif -%}
+    return rpc.ErrNoHandler
+ }
+
+{%- endfunc -%}
+
+{%- func typesAlias(gen *genGo, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{})-%}
+    {%- if anyTypeAlias -%}
+type(
+        {%- for _, wr := range types -%}
+            {%- if wr.ShouldWriteTypeAlias() -%}
+                {%- code
+                    ourTypes[wr] = struct{}{}
+                -%}
+    {%s= wr.TypeString2(false, directImports, nil, true, true) %} = {%s= wr.TypeString2(false, directImports, nil, false, true) %}
+                {%- if wr.wantsBytesVersion && wr.hasBytesVersion -%}
+    {%s= wr.TypeString2(true, directImports, nil, true, true) %} = {%s= wr.TypeString2(true, directImports, nil, false, true) %}
+                {%- endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+
+    {%- if gen.options.GenerateRPCCode -%}
+    {%- for _, wr := range types  -%}
+        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
+            {%- code
+                 _, ourResultType := ourTypes[fun.ResultType]
+                ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+        		myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+                _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+            -%}
+        {%- if !ourResultType && len(myImports.ns) != 0 -%}
+    {%s= wr.TypeString2(false, directImports, nil, true, true) %}__Result = {%s= fun.ResultType.TypeString2(false, directImports, nil, false, false) %}
+                {%- if wr.wantsBytesVersion && wr.hasBytesVersion && fun.ResultType.hasBytesVersion -%}
+    {%s= wr.TypeString2(true, directImports, nil, true, true) %}__Result = {%s= fun.ResultType.TypeString2(true, directImports, nil, false, false) %}
+                {%- endif -%}
+        {%- endif -%}
+        {%- endif -%}
+    {%- endfor -%}
+    {%- endif -%}
+)
+    {%- endif -%}
+    {%- for _, wr := range types -%}
+        {%- if wr.ShouldWriteEnumElementAlias() -%}
+            {%- code
+                _, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
+                ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.unionParent.wr.tlName.Namespace // false for vectors moved into our namespace
+                typeString := wr.TypeString2(false, directImports, nil, true, true)
+            -%}
+func {%s= typeString %}() {%s= wr.unionParent.wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
+        {%- endif -%}
+    {%- endfor -%}
+    {%- for _, wr := range types -%}
+    {%- code
+         _, ok := wr.trw.(*TypeRWBool)
+    -%}
+        {%- if ok && !wr.originateFromTL2 -%}
+            {%- code
+                localTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
+            -%}
+
+func {%s= localTypeString %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
+    return {%s= globalTypeString %}ReadBoxed(w, v)
+}
+func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
+    return {%s= globalTypeString %}WriteBoxed(w, v)
+}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfunc -%}
+
+{%- func writeClientsCode(shortPackageName string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) -%}
+    {%- for _, wr := range types -%}
+        {%- if wr.wantsBytesVersion && wr.hasBytesVersion -%}
+{%= writeClientCode(true, shortPackageName, wr, directImports, ourTypes) %}
+        {%- endif -%}
+{%= writeClientCode(false, shortPackageName, wr, directImports, ourTypes) %}
+    {%- endfor -%}
+{%- endfunc -%}
+
+{%- func writeClientCode(bytesVersion bool, shortPackageName string, wr *TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) -%}
+    {%- code
+         fun, ok := wr.trw.(*TypeRWStruct)
+    -%}
+    {%- if !ok || fun.ResultType == nil -%} {%- return -%} {%- endif -%}
+    {%- code
+         _, ourResultType := ourTypes[fun.ResultType]
+         ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+         ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
+         funcTypeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
+         myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+         _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+         if !ourResultType && len(myImports.ns) != 0 {
+            ret = funcTypeString + "__Result"
+            if bytesVersion && !fun.ResultType.hasBytesVersion {
+                ret = wr.TypeString2(false, directImports, nil, true, true) + "__Result"
+            }
+         }
+         tlName := wr.tlName.String()
+    -%}
+func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
+    req := c.Client.GetRequest()
+    req.ActorID = c.ActorID
+    {%- if fun.wr.HasAnnotation("read") -%}
+        req.ReadOnly = true
+    {%- endif -%}
+    req.FunctionName = "{%s= tlName %}"
+    if extra != nil {
+        req.Extra = extra.RequestExtra
+        req.FailIfNoConnection = extra.FailIfNoConnection
+{%- if fun.wr.wantsTL2 -%}
+		if extra.PreferTL2 {
+			req.BodyFormatTL2 = true
+		}
+{%- endif -%}
+    }
+    rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+{%- if fun.wr.wantsTL2 -%}
+	if req.BodyFormatTL2 {
+	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
+	    tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+{%- endif -%}
+        req.Body, err = args.WriteBoxedGeneral(req.Body)
+        if err != nil {
+            return internal.ErrorClientWrite("{%s= tlName %}", err)
+        }
+{%- if fun.wr.wantsTL2 -%}
+    }
+{%- endif -%}
+    resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+    if extra != nil && resp != nil {
+        extra.ResponseExtra = resp.Extra
+    }
+    defer c.Client.PutResponse(resp)
+    if err != nil {
+        return internal.ErrorClientDo("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
+    }
+    if ret != nil {
+{%- if fun.wr.wantsTL2 -%}
+		if resp.BodyFormatTL2() {
+            tctx := basictl.TL2ReadContext{}
+			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
+		} else {
+{%- endif -%}
+			resp.Body, err = args.ReadResult(resp.Body, ret)
+{%- if fun.wr.wantsTL2 -%}
+		}
+{%- endif -%}
+		if err != nil {
+            return internal.ErrorClientReadResult("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
+        }
+    }
+    return nil
+}
+{%- endfunc -%}
+
+{%- func handlerStructs(gen *genGo, name string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) -%}
+    {%- for _, wr := range types  -%}
+        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
+            {%- code
+                tlName := wr.tlName.String()
+                 _, ourResultType := ourTypes[fun.ResultType]
+                 ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+                ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
+                funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+                _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+                if !ourResultType && len(myImports.ns) != 0 {
+                    ret = funcTypeString + "__Result"
+                }
+            -%}
+{%s= funcTypeString %} func(ctx context.Context, args {%s= funcTypeString %}) ({%s= ret %}, error) // {%s= tlName %}
+        {%- endif -%}
+    {%- endfor -%}
+
+    {%- for _, wr := range types  -%}
+        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
+            {%- code
+                tlName := wr.tlName.String()
+                funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+            -%}
+        {%- if hasRaw -%}
+Raw{%s= funcTypeString %} func(ctx context.Context, hctx *rpc.HandlerContext) error // {%s= tlName %}
+        {%- endif -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfunc -%}
+
+{%- func handleRequest(gen *genGo, types []*TypeRWWrapper, directImports *DirectImports) -%}
+tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
+switch tag {
+    {%- for _, wr := range types -%}
+        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
+            {%- code
+                tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+                funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                tlName := wr.tlName.String()
+                hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+            -%}
+case {%s= tlTag %}: // {%s= tlName %}
+    hctx.SetRequestFunctionName("{%s= tlName %}")
+{%- if hasRaw -%}
+    if h.Raw{%s= funcTypeString %} != nil && !hctx.BodyFormatTL2() {
+        hctx.Request = r
+        err = h.Raw{%s= funcTypeString %}(ctx, hctx)
+        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err) {
+            return err
+        }
+        if err != nil {
+            return internal.ErrorServerHandle("{%s= tlName %}", err)
+        }
+        return nil
+    }
+{%- endif -%}
+    if h.{%s= funcTypeString %} != nil {
+        var args {%s= funcTypeString %}
+{%- if fun.wr.gen.options.GenerateTL2 -%}
+        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2ReadContext{}
+   			_, err = args.ReadTL2(r, &tctx)
+		} else {
+{%- endif -%}
+            _, err = args.Read(r)
+{%- if fun.wr.gen.options.GenerateTL2 -%}
+        }
+{%- endif -%}
+        if err != nil {
+            return internal.ErrorServerRead("{%s= tlName %}", err)
+        }
+        ctx = hctx.WithContext(ctx)
+        ret, err := h.{%s= funcTypeString %}(ctx, args)
+        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err)  {
+            return err
+        }
+        if err != nil {
+            return internal.ErrorServerHandle("{%s= tlName %}", err)
+        }
+{%- if fun.wr.wantsTL2 -%}
+        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2WriteContext{}
+            hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
+        } else {
+{%- endif -%}
+            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+{%- if fun.wr.wantsTL2 -%}
+        }
+{%- endif -%}
+        if err != nil {
+            return internal.ErrorServerWriteResult("{%s= tlName %}", err)
+        }
+        return nil
+    }
+        {%- endif -%}
+    {%- endfor -%}
+}
+{%- endfunc -%}

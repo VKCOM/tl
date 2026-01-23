@@ -395,8 +395,7 @@ func init() {
 {%- if len(tl1Wrappers) != 0 -%}
 // TL
 {%- endif -%}
-{%- for _, wr := range tl1Wrappers  -%}
-    {%- if wr.tlTag == 0 || !wr.IsTopLevel() -%} {%- continue -%} {%- endif -%}
+{%- for _, wr := range tl1Wrappers -%}
 {%- stripspace -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 -%}
         {%- code
@@ -422,7 +421,7 @@ func init() {
 {%- if len(tl2Wrappers) != 0 -%}
 // TL2
 {%- endif -%}
-{%- for _, wr := range tl2Wrappers  -%}
+{%- for _, wr := range tl2Wrappers -%}
 {%- stripspace -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
         {%- code
