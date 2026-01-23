@@ -175,8 +175,11 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 	}
 	for _, typ := range typeDescriptors {
 		tName := typ[0].TypeDecl.Name
-		if len(typ) == 1 { // here there is no functions
-			cName := typ[0].Construct.Name
+		cName := typ[0].Construct.Name
+		if len(typ) == 1 {
+			if typ[0].IsFunction {
+				return fmt.Errorf("internal error - function %q must not be in type descriptors", cName)
+			}
 			//typePrefix := strings.ToLower(utils.LowerFirst(tName.Name))
 
 			if cName.Namespace != tName.Namespace {

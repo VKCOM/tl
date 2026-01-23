@@ -153,7 +153,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		return tr, nil, nil
 	}
 	if tr.T.Type.String() == "*" {
-		panic("should not be here")
+		return tr, nil, fmt.Errorf("internal error: resolving type more than once")
 	}
 	// names found in local arguments have priority over global type names
 	if tr.T.Type.Namespace == "" {
@@ -175,73 +175,78 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 					}
 					return actualArg.arg, actualArg.natArgs, nil
 				}
-				tName := k.replaceTL1BuiltinName(actualArg.arg.T.Type.String())
-				kt, ok := k.tips[tName]
-				if !ok {
-					return tr, nil, fmt.Errorf("type %s does not exist", actualArg.arg.T.Type)
-				}
-				if kt.originTL2 {
-					return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", actualArg.arg.T.Type)
-				}
-				if tr.T.Bare { // overwrite bare
-					// TODO - look up type, check if it is union
-					if len(kt.combTL1) > 1 {
-						// TODO - better error. Does not reference call site
-						//----- bare wrapping
-						// bareWrapper {X:Type} a:%X = BareWrapper X;
-						// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
-						e1 := tr.T.PR.BeautifulError(fmt.Errorf("field type %q is bare, so union %q cannot be passed", tr.T, actualArg.arg.T.Type))
-						//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-						//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
-						return tr, nil, e1
-					}
-					// myUnionA = MyUnion;
-					// myUnionB b:int = MyUnion;
-					// wrapper {T:Type} a:%T = Wrapper T;
-					// useWarpper xx:(wrapper MyUnion) = UseWrapper;
+				//tName := k.replaceTL1BuiltinName(actualArg.arg.T.Type.String())
+				//kt, ok := k.tips[tName]
+				//if !ok {
+				//	return tr, nil, fmt.Errorf("type %s does not exist", actualArg.arg.T.Type)
+				//}
+				//if kt.originTL2 {
+				//	return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", actualArg.arg.T.Type)
+				//}
+				//if tr.T.Bare { // overwrite bare
+				//	// TODO - look up type, check if it is union
+				//	if len(kt.combTL1) > 1 {
+				//		// TODO - better error. Does not reference call site
+				//		//----- bare wrapping
+				//		// bareWrapper {X:Type} a:%X = BareWrapper X;
+				//		// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
+				//		e1 := tr.T.PR.BeautifulError(fmt.Errorf("field type %q is bare, so union %q cannot be passed", tr.T, actualArg.arg.T.Type))
+				//		//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+				//		//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+				//		return tr, nil, e1
+				//	}
+				//	// myUnionA = MyUnion;
+				//	// myUnionB b:int = MyUnion;
+				//	// wrapper {T:Type} a:%T = Wrapper T;
+				//	// useWarpper xx:(wrapper MyUnion) = UseWrapper;
+				//	actualArg.arg.T.Bare = true
+				//	actualArg.arg.T.Type = kt.combTL1[0].Construct.Name // normalize
+				//	// TODO - we must perform canonical conversion of %Int to int here
+				//}
+				if tr.T.Bare {
 					actualArg.arg.T.Bare = true
-					actualArg.arg.T.Type = kt.combTL1[0].Construct.Name // normalize
-					// TODO - we must perform canonical conversion of %Int to int here
 				}
 				return actualArg.arg, actualArg.natArgs, nil
 			}
 		}
 		// probably ref to global type or a typo
 	}
-	tName := k.replaceTL1BuiltinName(tr.T.Type.String())
-	if tName != "__vector" && tName != "__tuple" {
-		kt, ok := k.tips[tName]
-		if !ok {
-			return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
-		}
-		if kt.originTL2 {
-			return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
-		}
-		if kt.combTL1[0].IsFunction {
-			return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
-		}
-		if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
-			// TODO - look up type, check if it is union
-			if len(kt.combTL1) > 1 {
-				// TODO - better error. Does not reference call site
-				//----- bare wrapping
-				// bareWrapper {X:Type} a:%X = BareWrapper X;
-				// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
-				e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
-				//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-				//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
-				return tr, nil, e1
-			}
-			tr.T.Bare = true
-			tr.T.Type = kt.combTL1[0].Construct.Name // normalize
-		}
-		//else {
-		//	if len(kt.combTL1) == 1 {
-		//		tr.T.Type = kt.combTL1[0].TypeDecl.Name // normalize
-		//	}
-		//}
+	//tName := k.replaceTL1BuiltinName(tr.T.Type.String())
+	//if tName != "__vector" && tName != "__tuple" {
+	//	kt, ok := k.tips[tName]
+	//	if !ok {
+	//		return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
+	//	}
+	//	if kt.originTL2 {
+	//		return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
+	//	}
+	//	if kt.combTL1[0].IsFunction {
+	//		return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
+	//	}
+	//	if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
+	//		// TODO - look up type, check if it is union
+	//		if len(kt.combTL1) > 1 {
+	//			// TODO - better error. Does not reference call site
+	//			//----- bare wrapping
+	//			// bareWrapper {X:Type} a:%X = BareWrapper X;
+	//			// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
+	//			e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
+	//			//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
+	//			//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+	//			return tr, nil, e1
+	//		}
+	//		tr.T.Bare = true
+	//		tr.T.Type = kt.combTL1[0].Construct.Name // normalize
+	//	}
+	//	//else {
+	//	//	if len(kt.combTL1) == 1 {
+	//	//		tr.T.Type = kt.combTL1[0].TypeDecl.Name // normalize
+	//	//	}
+	//	//}
+	//}
+	if utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
+		tr.T.Bare = true
 	}
-	// TODO - we must perform canonical conversion of %Int to int here
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
@@ -267,7 +272,7 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.FieldName))
 			}
 			if len(actualArg.natArgs) != 1 {
-				return ActualNatArg{}, fmt.Errorf("internal error fieldMask cannot reference Type-parameter %s", targ.FieldName)
+				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("internal error: fieldMask reference len(natArg) == %d for parameter %s", len(actualArg.natArgs), targ.FieldName))
 			}
 			return actualArg.natArgs[0], nil
 		}
