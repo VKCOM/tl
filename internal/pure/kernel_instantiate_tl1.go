@@ -17,12 +17,12 @@ import (
 )
 
 type LocalArg struct {
-	wrongTypeErr error // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
+	wrongTypeErr *tlast.ParseError // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
 	arg          tlast.ArithmeticOrType
 	natArgs      []ActualNatArg
 }
 
-// top level types do not have bare/boxed in their names
+// top level types do not have bare/boxed in their names, instead bare is returned from function
 func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions bool) (_ string, bare bool, _ error) {
 	var s strings.Builder
 
@@ -37,7 +37,7 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 			return "", false, fmt.Errorf("type reference %s not found", tName)
 		}
 		if kt.isFunction && !allowFunctions {
-			return "", false, fmt.Errorf("function  %s cannot be referenced", tName)
+			return "", false, fmt.Errorf("function %s cannot be referenced", tName)
 		}
 		// TODO - check TL1/TL2 references here
 		//if kt.originTL2 {
@@ -92,7 +92,7 @@ func (k *Kernel) resolveTypeTL1(tr tlast.TypeRef, leftArgs []tlast.TemplateArgum
 		return tr, nil, fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Arith.Res)
 	}
 	if ac.T.String() == "*" {
-		return tr, nil, fmt.Errorf("type argument %s resolved to a nat argument %s", tr, ac.T)
+		return tr, nil, tr.PR.BeautifulError(fmt.Errorf("type argument %s resolved to a nat argument %s", tr, ac.T))
 	}
 	return ac.T, natArgs, nil
 }
@@ -126,45 +126,18 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 				}
 				actualArg := actualArgs[i]
 				if actualArg.wrongTypeErr != nil {
-					return tr, nil, fmt.Errorf("reference to field %s impossible, must have # type", targ.FieldName)
+					e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", tr.T))
+					return tr, nil, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 				}
+				actualArg.arg.T.PR = tr.T.PR
+				actualArg.arg.T.PRArgs = tr.T.PRArgs
 				if actualArg.arg.IsArith || actualArg.arg.T.Type.String() == "*" {
 					if tr.T.Bare {
-						e1 := tr.T.PR.BeautifulError(fmt.Errorf("#-param reference %q cannot be bare", tr.T))
-						//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-						//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
+						e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference tp #-param %q cannot be bare", tr.T))
 						return tr, nil, e1
 					}
 					return actualArg.arg, actualArg.natArgs, nil
 				}
-				//tName := k.replaceTL1BuiltinName(actualArg.arg.T.Type.String())
-				//kt, ok := k.tips[tName]
-				//if !ok {
-				//	return tr, nil, fmt.Errorf("type %s does not exist", actualArg.arg.T.Type)
-				//}
-				//if kt.originTL2 {
-				//	return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", actualArg.arg.T.Type)
-				//}
-				//if tr.T.Bare { // overwrite bare
-				//	// TODO - look up type, check if it is union
-				//	if len(kt.combTL1) > 1 {
-				//		// TODO - better error. Does not reference call site
-				//		//----- bare wrapping
-				//		// bareWrapper {X:Type} a:%X = BareWrapper X;
-				//		// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
-				//		e1 := tr.T.PR.BeautifulError(fmt.Errorf("field type %q is bare, so union %q cannot be passed", tr.T, actualArg.arg.T.Type))
-				//		//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-				//		//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
-				//		return tr, nil, e1
-				//	}
-				//	// myUnionA = MyUnion;
-				//	// myUnionB b:int = MyUnion;
-				//	// wrapper {T:Type} a:%T = Wrapper T;
-				//	// useWarpper xx:(wrapper MyUnion) = UseWrapper;
-				//	actualArg.arg.T.Bare = true
-				//	actualArg.arg.T.Type = kt.combTL1[0].Construct.Name // normalize
-				//	// TODO - we must perform canonical conversion of %Int to int here
-				//}
 				if tr.T.Bare {
 					actualArg.arg.T.Bare = true
 				}
@@ -173,41 +146,13 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		// probably ref to global type or a typo
 	}
-	//tName := k.replaceTL1BuiltinName(tr.T.Type.String())
-	//if tName != "__vector" && tName != "__tuple" {
+	//tName := tr.Type.String()
+	//switch tName {
+	//case "__vector", "__tuple":
+	//	s.WriteString(tName)
+	//	bare = true
+	//default:
 	//	kt, ok := k.tips[tName]
-	//	if !ok {
-	//		return tr, nil, fmt.Errorf("type %s does not exist", tr.T.Type)
-	//	}
-	//	if kt.originTL2 {
-	//		return tr, nil, fmt.Errorf("cannot reference TL2 type %s from TL1", tr.T.Type)
-	//	}
-	//	if kt.combTL1[0].IsFunction {
-	//		return tr, nil, fmt.Errorf("cannot reference function %s", tr.T.Type)
-	//	}
-	//	if tr.T.Bare || utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
-	//		// TODO - look up type, check if it is union
-	//		if len(kt.combTL1) > 1 {
-	//			// TODO - better error. Does not reference call site
-	//			//----- bare wrapping
-	//			// bareWrapper {X:Type} a:%X = BareWrapper X;
-	//			// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
-	//			e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tr.T))
-	//			//e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-	//			//return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
-	//			return tr, nil, e1
-	//		}
-	//		tr.T.Bare = true
-	//		tr.T.Type = kt.combTL1[0].Construct.Name // normalize
-	//	}
-	//	//else {
-	//	//	if len(kt.combTL1) == 1 {
-	//	//		tr.T.Type = kt.combTL1[0].TypeDecl.Name // normalize
-	//	//	}
-	//	//}
-	//}
-	//if utils.ToLowerFirst(tr.T.Type.Name) == tr.T.Type.Name {
-	//	tr.T.Bare = true
 	//}
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
@@ -326,11 +271,35 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	if kt.originTL2 {
 		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
-	comb := kt.combTL1[0]
-	if len(comb.TemplateArguments) != len(tr.Args) {
-		return nil, false, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(tr.Args))
+	td := kt.combTL1[0]
+	// checks below are redundant, but they catch type resolve errors early
+	if len(td.TemplateArguments) > len(tr.Args) {
+		arg := td.TemplateArguments[len(tr.Args)]
+		e1 := tr.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
+		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
+		return nil, false, tlast.BeautifulError2(e1, e2)
 	}
-	ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, comb.TemplateArguments, tr.Args)
+	if len(td.TemplateArguments) < len(tr.Args) {
+		arg := tr.Args[len(td.TemplateArguments)]
+		e1 := arg.T.PR.BeautifulError(errors.New("excess template argument here"))
+		e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+		return nil, false, tlast.BeautifulError2(e1, e2)
+	}
+	for i, ta := range td.TemplateArguments {
+		arg := tr.Args[i]
+		argNat := arg.IsArith || arg.T.Type.String() == "*"
+		if ta.IsNat && !argNat {
+			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be # here"))
+			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			return nil, false, tlast.BeautifulError2(e1, e2)
+		}
+		if !ta.IsNat && argNat {
+			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be Type here"))
+			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			return nil, false, tlast.BeautifulError2(e1, e2)
+		}
+	}
+	ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, td.TemplateArguments, tr.Args)
 	if err != nil {
 		return nil, false, err
 	}

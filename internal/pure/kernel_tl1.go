@@ -17,13 +17,13 @@ import (
 var (
 	errSeeHere = fmt.Errorf("see here")
 	// errFieldNameCollision     = fmt.Errorf("field name collision")
-	// errNatParamNameCollision  = fmt.Errorf("nat-parametr name collision")
-	// errTypeParamNameCollision = fmt.Errorf("type-parametr name collision ")
+	// errNatParamNameCollision  = fmt.Errorf("nat-parameter name collision")
+	// errTypeParamNameCollision = fmt.Errorf("type-parameter name collision ")
 )
 
-func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
-	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
-}
+//func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
+//	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
+//}
 
 func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 	// if type is
@@ -62,7 +62,13 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 }
 
 func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
+	for _, arg := range typ.TemplateArguments {
+		return arg.PR.BeautifulError(errors.New("built-in wrapper cannot have template arguments"))
+	}
 	addBuiltin := func(tl2name string, bigName string) error {
+		if typ.TypeDecl.Name.String() != bigName {
+			return typ.TypeDecl.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have type name %s", bigName))
+		}
 		tip, ok := k.tips[tl2name]
 		if !ok {
 			return typ.Construct.NamePR.BeautifulError(errors.New("internal error builtin type not found"))
@@ -95,7 +101,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	case "double":
 		return addBuiltin("float64", "Double")
 	}
-	return typ.Construct.NamePR.BeautifulError(errors.New("built-in TL1 type with this name does not exist"))
+	return typ.Construct.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have constructor name %s equal to some built-in type", typ.Construct.Name.String()))
 }
 
 func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
@@ -172,6 +178,39 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 			//	e1.PrintWarning(gen.options.ErrorWriter, nil)
 			//}
 		}
+		namesNormalized := map[string]*tlast.ParseError{}
+		names := map[string]*tlast.ParseError{}
+		for _, targ := range typ.TemplateArguments {
+			if err, ok := names[targ.FieldName]; ok {
+				e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s name collision", targ.FieldName))
+				return tlast.BeautifulError2(e1, err)
+			}
+			nn := k.normalizeName(targ.FieldName)
+			if err, ok := namesNormalized[nn]; ok {
+				e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s normalized name collision", targ.FieldName))
+				return tlast.BeautifulError2(e1, err)
+			}
+			err := targ.PR.BeautifulError(fmt.Errorf("defined here"))
+			names[targ.FieldName] = err
+			namesNormalized[nn] = err
+		}
+		for _, field := range typ.Fields {
+			if field.FieldName == "" {
+				continue
+			}
+			if err, ok := names[field.FieldName]; ok {
+				e1 := field.PR.BeautifulError(fmt.Errorf("field %s name collision", field.FieldName))
+				return tlast.BeautifulError2(e1, err)
+			}
+			nn := k.normalizeName(field.FieldName)
+			if err, ok := namesNormalized[nn]; ok {
+				e1 := field.PR.BeautifulError(fmt.Errorf("field %s normalized name collision", field.FieldName))
+				return tlast.BeautifulError2(e1, err)
+			}
+			err := field.PR.BeautifulError(fmt.Errorf("defined here"))
+			names[field.FieldName] = err
+			namesNormalized[nn] = err
+		}
 	}
 	if len(boolCombinators) != 0 {
 		if err := k.CompileBoolTL1(boolCombinators); err != nil {
@@ -214,7 +253,7 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 				canBeBare:     true,
 			}
 			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
-				return fmt.Errorf("error adding type %s: %w", typ[0].String(), err)
+				return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
 			}
 			continue
 		}

@@ -205,17 +205,21 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
 			kt.tl2Names = map[string]struct{}{comb.ReferenceName().String(): {}}
 			kt.canonicalName = tlast.Name(comb.ReferenceName())
-			namesNormalized := map[string]int{}
-			names := map[string]int{}
-			for i, targ := range comb.TypeDecl.TemplateArguments {
-				if _, ok := names[targ.Name]; ok {
-					return fmt.Errorf("error adding type %s: template argument %s name collision", comb.TypeDecl.Name, targ.Name)
+			namesNormalized := map[string]*tlast.ParseError{}
+			names := map[string]*tlast.ParseError{}
+			for _, targ := range comb.TypeDecl.TemplateArguments {
+				if err, ok := names[targ.Name]; ok {
+					e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s name collision", targ.Name))
+					return tlast.BeautifulError2(e1, err)
 				}
 				nn := k.normalizeName(targ.Name)
-				if _, ok := names[nn]; ok {
-					return fmt.Errorf("error adding type %s: template argument %s normalized name collision", comb.TypeDecl.Name, nn)
+				if err, ok := namesNormalized[nn]; ok {
+					e1 := targ.PR.BeautifulError(fmt.Errorf("template argument %s normalized name collision", targ.Name))
+					return tlast.BeautifulError2(e1, err)
 				}
-				namesNormalized[nn] = i
+				err := targ.PR.BeautifulError(fmt.Errorf("defined here"))
+				names[targ.Name] = err
+				namesNormalized[nn] = err
 			}
 		}
 		if err := k.addTip(kt, comb.ReferenceName().String(), ""); err != nil {
@@ -238,40 +242,40 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 				return err
 			}
 		} else {
-			if tip.combTL1[0].IsFunction {
-				comb := tip.combTL1[0]
-				if err := k.typeCheckAliasFieldsTL1(comb.Fields, nil); err != nil {
-					return err
-				}
-				var leftArgs []tlast.TemplateArgument
-				for _, f := range comb.Fields {
-					if f.FieldName != "" && f.FieldType.String() == "#" {
-						// TODO - add other fields with wrong category to catch references to them
-						leftArgs = append(leftArgs, tlast.TemplateArgument{
-							FieldName: f.FieldName,
-							IsNat:     true,
-							PR:        f.PR,
-						})
-					}
-				}
-				if err := k.typeCheckTypeRefTL1(comb.FuncDecl, leftArgs); err != nil {
-					return err
-				}
-				//if err := k.typeCheck(comb..FuncDecl.ReturnType, nil); err != nil {
-				//	return err
-				//}
-				//if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.combTL2.FuncDecl.Arguments, nil); err != nil {
-				//	return err
-				//}
-				continue
-			}
-			for _, comb := range tip.combTL1 {
-				if !k.shouldSkipDefinition(comb) {
-					if err := k.typeCheckAliasFieldsTL1(comb.Fields, comb.TemplateArguments); err != nil {
-						return err
-					}
-				}
-			}
+			//if tip.combTL1[0].IsFunction {
+			//	comb := tip.combTL1[0]
+			//	if err := k.typeCheckAliasFieldsTL1(comb.Fields, nil); err != nil {
+			//		return err
+			//	}
+			//	var leftArgs []tlast.TemplateArgument
+			//	for _, f := range comb.Fields {
+			//		if f.FieldName != "" && f.FieldType.String() == "#" {
+			//			// TODO - add other fields with wrong category to catch references to them
+			//			leftArgs = append(leftArgs, tlast.TemplateArgument{
+			//				FieldName: f.FieldName,
+			//				IsNat:     true,
+			//				PR:        f.PR,
+			//			})
+			//		}
+			//	}
+			//	if err := k.typeCheckTypeRefTL1(comb.FuncDecl, leftArgs); err != nil {
+			//		return err
+			//	}
+			//	//if err := k.typeCheck(comb..FuncDecl.ReturnType, nil); err != nil {
+			//	//	return err
+			//	//}
+			//	//if err := k.typeCheckAliasFields(false, tlast.TL2TypeRef{}, tip.combTL2.FuncDecl.Arguments, nil); err != nil {
+			//	//	return err
+			//	//}
+			//	continue
+			//}
+			//for _, comb := range tip.combTL1 {
+			//	if !k.shouldSkipDefinition(comb) {
+			//		if err := k.typeCheckAliasFieldsTL1(comb.Fields, comb.TemplateArguments); err != nil {
+			//			return err
+			//		}
+			//	}
+			//}
 		}
 	}
 	if err := k.CheckTagCollisions(opts); err != nil {
@@ -332,7 +336,42 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 }
 
 func (k *Kernel) CheckTagCollisions(opts *OptionsKernel) error {
-	// TODO
+	constructorTags := map[uint32]*tlast.ParseError{}
+	for _, typ := range k.filesTL1 {
+		crc32 := typ.Crc32()
+		if crc32 == 0 {
+			// typeA#00000000 = TypeA;
+			return typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag 0 is prohibited, even if generated implicitly"))
+		}
+		if err, ok := constructorTags[crc32]; ok {
+			// typeA#dfc15abf = TypeA;
+			// typeB#dfc15abf = TypeB;
+			e1 := typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag #%08x is used again by %q", crc32, typ.Construct.Name.String()))
+			return tlast.BeautifulError2(e1, err)
+		}
+		constructorTags[crc32] = typ.Construct.IDPR.BeautifulError(errSeeHere)
+	}
+	for _, typ := range k.filesTL2 {
+		if typ.IsFunction {
+			crc32 := typ.FuncDecl.Magic
+			if crc32 != 0 {
+				if err, ok := constructorTags[crc32]; ok {
+					e1 := typ.FuncDecl.PRID.BeautifulError(fmt.Errorf("constructor tag #%08x is used again by %q", crc32, typ.FuncDecl.Name.String()))
+					return tlast.BeautifulError2(e1, err)
+				}
+				constructorTags[crc32] = typ.FuncDecl.PRID.BeautifulError(errSeeHere)
+			}
+			continue
+		}
+		crc32 := typ.TypeDecl.Magic
+		if crc32 != 0 {
+			if err, ok := constructorTags[crc32]; ok {
+				e1 := typ.TypeDecl.PRID.BeautifulError(fmt.Errorf("constructor tag #%08x is used again by %q", crc32, typ.TypeDecl.Name.String()))
+				return tlast.BeautifulError2(e1, err)
+			}
+			constructorTags[crc32] = typ.TypeDecl.PRID.BeautifulError(errSeeHere)
+		}
+	}
 	return nil
 }
 

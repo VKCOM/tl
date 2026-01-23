@@ -73,7 +73,7 @@ func TestBeautiful(t *testing.T) {
 			"local nat args name collision PURPLE",
 			"a {n:#} {n:#} = A n n;\nb n:# a:(a n n) = B;",
 			"",
-			"a " + color.InPurple("{n:#}") + " {n:#} = A n n;\n  " + color.InWhite("^^^^^--") + " see here  (line 1 col 3)\na {n:#} " + color.InRed("{n:#}") + " = A n n;\n        " + color.InWhite("^^^^^--") + " nat-parametr name collision  (line 1 col 9)\n",
+			"a " + color.InPurple("{n:#}") + " {n:#} = A n n;\n  " + color.InWhite("^^^^^--") + " see here  (line 1 col 3)\na {n:#} " + color.InRed("{n:#}") + " = A n n;\n        " + color.InWhite("^^^^^--") + " nat-parameter name collision  (line 1 col 9)\n",
 		},
 		{
 
