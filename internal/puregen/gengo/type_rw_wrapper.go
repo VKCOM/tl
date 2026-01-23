@@ -275,17 +275,18 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	tail = w.resolvedT2GoNameTail(insideNamespace)
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
-	if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "" || w.origTL[0].IsFunction || w.unionParent != nil) {
-		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), tail
-	}
-	var typeName tlast.Name
-	if w.originateFromTL2 {
-		typeName.Name = w.tl2Name.Name
-		typeName.Namespace = w.tl2Name.Namespace
-	} else {
-		typeName = w.origTL[0].TypeDecl.Name
-	}
-	return canonicalGoName(typeName, insideNamespace), tail
+	return canonicalGoName(w.tlName, insideNamespace), tail
+	//if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "" || w.origTL[0].IsFunction || w.unionParent != nil) {
+	//	return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), tail
+	//}
+	//var typeName tlast.Name
+	//if w.originateFromTL2 {
+	//	typeName.Name = w.tl2Name.Name
+	//	typeName.Namespace = w.tl2Name.Namespace
+	//} else {
+	//	typeName = w.origTL[0].TypeDecl.Name
+	//}
+	//return canonicalGoName(typeName, insideNamespace), tail
 }
 
 func stringCompare(a string, b string) int {
