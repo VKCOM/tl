@@ -7,6 +7,7 @@
 package gengo
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -111,6 +112,9 @@ func (wr *TypeRWWrapper) Namespace() string {
 // items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
 // they could not be distinguished by the magic. For example vector<int> and vector<long>.
 func (w *TypeRWWrapper) IsTopLevel() bool {
+	if w.pureType.CanonicalName() == "string" {
+		fmt.Printf("aja")
+	}
 	if w.originateFromTL2 {
 		if w.unionParent == nil {
 			if w.tl2IsResult {
@@ -129,6 +133,9 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 		} else {
 			return false
 		}
+	}
+	if len(w.origTL) == 0 {
+		return false
 	}
 	return len(w.origTL[0].TemplateArguments) == 0
 }

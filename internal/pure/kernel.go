@@ -10,8 +10,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 // TODO - name collision checks
@@ -30,7 +33,8 @@ type Kernel struct {
 	filesTL1 tlast.TL
 	filesTL2 []tlast.TL2Combinator
 
-	allAnnotations []string // position is bit
+	supportedAnnotations map[string]struct{}
+	allAnnotations       []string // position is bit
 }
 
 // Add builtin types
@@ -51,6 +55,9 @@ func NewKernel() *Kernel {
 	k.addPrimitive("bit", "", &KernelValueBit{}, false)
 	k.addString()
 	k.addTL1Brackets()
+
+	k.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
+	// TODO - add from options
 
 	return k
 }
@@ -268,6 +275,60 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 	}
 	if err := k.checkNamespaceCollisions(opts); err != nil {
 		return err
+	}
+
+	{
+		allAnnotations := map[string]struct{}{}
+		// generated RPC code can depend on those annotations, even
+		// if none present in current tl file.
+		// so we add all supported annotations always.
+		for m := range k.supportedAnnotations {
+			allAnnotations[m] = struct{}{}
+			k.allAnnotations = append(k.allAnnotations, m)
+		}
+		for _, typ := range k.filesTL1 {
+			for _, m := range typ.Modifiers {
+				if strings.ToLower(m.Name) != m.Name { // TODO - move into lexer
+					return m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
+				}
+				if _, ok := allAnnotations[m.Name]; !ok {
+					if _, ok := k.supportedAnnotations[m.Name]; !ok && utils.DoLint(typ.CommentRight) {
+						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
+						if opts.WarningsAreErrors {
+							return e1
+						}
+						e1.PrintWarning(opts.ErrorWriter, nil)
+					}
+					allAnnotations[m.Name] = struct{}{}
+					k.allAnnotations = append(k.allAnnotations, m.Name)
+				}
+			}
+		}
+		for _, combinator := range k.filesTL2 {
+			if combinator.IsFunction {
+				for _, m := range combinator.Annotations {
+					// to ignore diagonal legacy
+					//if m.Name == tl1Diagonal {
+					//	continue
+					//}
+					if _, ok := allAnnotations[m.Name]; !ok {
+						if _, ok := k.supportedAnnotations[m.Name]; !ok {
+							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
+							if opts.WarningsAreErrors {
+								return e1
+							}
+							e1.PrintWarning(opts.ErrorWriter, nil)
+						}
+						allAnnotations[m.Name] = struct{}{}
+						k.allAnnotations = append(k.allAnnotations, m.Name)
+					}
+				}
+			}
+		}
+		if len(k.allAnnotations) > 32 {
+			return fmt.Errorf("too many (%d) different annotations, max is 32 for now", len(k.allAnnotations))
+		}
+		sort.Strings(k.allAnnotations)
 	}
 	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {

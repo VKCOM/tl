@@ -1,32 +1,128 @@
 {%- import "fmt" -%}
-{%- import "cmp" -%}
 {%- import "golang.org/x/exp/slices" -%}
 {%- import "github.com/vkcom/tl/internal/tlast" -%}
+
+{%- func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports) -%}
+{%s= HeaderComment %}
+package {%s FactoryGoPackageName %}
+
+import (
+    "{%s= gen.MetaPackageName %}"
+    {%- for _, wr := range sortedImports -%}
+    "{%s= gen.options.Go.TLPackageNameFull %}/{%s= wr %}"
+    {%- endfor -%}
+)
+
+func CreateFunction(tag uint32) meta.Function {
+    return meta.CreateFunction(tag)
+}
+
+func CreateObject(tag uint32) meta.Object {
+    return meta.CreateObject(tag)
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateFunctionFromName(name string) meta.Function {
+    return meta.CreateFunctionFromName(name)
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateObjectFromName(name string) meta.Object {
+    return meta.CreateObjectFromName(name)
+}
+
+func init() {
+{%- code
+    tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
+-%}
+{%- if len(tl1Wrappers) != 0 -%}
+// TL
+{%- endif -%}
+{%- for _, wr := range tl1Wrappers  -%}
+    {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0-%}
+    {%- code tlTag := fmt.Sprintf("0x%08x", wr.tlTag) -%}
+        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
+            meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
+            {%- continue -%}
+        {%- endif -%}
+    {% stripspace %}
+        {%- if fun.ResultType != nil -%}
+        meta.SetGlobalFactoryCreateForFunction({%s= tlTag %},
+        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        {%- if wr.WrLong != nil -%}
+        func() meta.Function { var ret{% space %}{%s= wr.WrLong.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        {%- else -%}
+        nil,
+        {%- endif -%}
+        {%- else -%}
+        meta.SetGlobalFactoryCreateForObject({%s= tlTag %},
+        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
+        {%- endif -%}
+        ){% endstripspace %}
+    {%- endif -%}
+{%- endfor -%}
+{%- if len(tl2Wrappers) != 0 -%}
+// TL2
+{%- endif -%}
+{%- for _, wr := range tl2Wrappers  -%}
+    {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
+    {%- code tlTag := fmt.Sprintf("0x%08x", wr.tlTag) -%}
+        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
+            meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
+            {%- continue -%}
+        {%- endif -%}
+    {% stripspace %}
+        {%- if fun.ResultType != nil -%}
+        meta.SetGlobalFactoryCreateForFunction({%s= tlTag %},
+        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+            {%- if wr.WrLong != nil -%}
+        func() meta.Function { var ret{% space %}{%s= wr.WrLong.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+            {%- else -%}
+        nil,
+            {%- endif -%}
+        {%- else -%}
+        meta.SetGlobalFactoryCreateForObjectTL2({%q= wr.tlName.String() %},
+        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
+        {%- endif -%}
+        ){% endstripspace %}
+    {%- endif -%}
+    {%- if _, ok := wr.trw.(*TypeRWUnion); ok -%}
+    {% stripspace %}
+        meta.SetGlobalFactoryCreateForObjectTL2({%q= wr.tlName.String() %},
+        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
+        ){% endstripspace %}
+    {%- endif -%}
+{%- endfor -%}
+}
+
+{%- endfunc -%}
 
 {%- func (gen *genGo)generateConstants(commentString, pkgName string) -%}
 {%s= commentString %}
 package {%s= pkgName %}
 {%- code
-	var sortedConstructors []*tlast.Combinator
-	for _, c := range gen.kernel.TL1() {
-		if c.Crc32() == 0 {
-			continue
-		}
-		sortedConstructors = append(sortedConstructors, c)
-	}
-	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-		return cmp.Compare(a.Construct.Name.String(), b.Construct.Name.String())
-	})
+    var sortedConstructors []*tlast.Combinator
+    for _, c := range gen.kernel.TL1() {
+        if c.Crc32() == 0 {
+            continue
+        }
+        sortedConstructors = append(sortedConstructors, c)
+    }
+    slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
+        return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
+    })
 
-	var sortedTL2Combinators []tlast.TL2Combinator
-	for _, combinator := range gen.kernel.TL2()  {
-		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
-			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
-		}
-	}
-	slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-		return cmp.Compare(a.ReferenceName().String(), b.ReferenceName().String())
-	})
+    sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
+    for _, combinator := range gen.kernel.TL2() {
+        if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
+            sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+        }
+    }
+    slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
+        return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+    })
 -%}
 const (
     {%- for _, c := range sortedConstructors -%}
