@@ -230,7 +230,7 @@ func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
 				instances:     map[string]*TypeInstanceRef{},
 				tl1Names:      map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				tl2Names:      map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				canonicalName: cName,
+				canonicalName: tName,
 				tl1BoxedName:  tName,
 				canBeBare:     true,
 			}

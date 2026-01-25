@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 type TypeInstancePrimitive struct {
@@ -42,6 +43,9 @@ func (k *Kernel) addPrimitive(name string, tl1name string, clone KernelValue, go
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
 			Name: tlast.Name{Name: tl1name},
+		},
+		TypeDecl: tlast.TypeDeclaration{
+			Name: tlast.Name{Name: utils.ToUpperFirst(tl1name)},
 		},
 	}
 	combTL2 := tlast.TL2Combinator{

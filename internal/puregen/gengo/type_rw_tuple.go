@@ -74,7 +74,7 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.tlName.Name), "dictionary") {
 		return false, false, Field{}, Field{}
 	}
-	if structElement.Fields[0].fieldMask != nil { // TODO - allowing this complicates json serialization
+	if structElement.Fields[0].fieldMask != nil { // Allowing this complicates json serialization, so no.
 		return false, false, Field{}, Field{}
 	}
 	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()

@@ -40,14 +40,6 @@ func (t *KernelType) CanonicalName() tlast.Name {
 	return t.canonicalName
 }
 
-// int, long, nat. TODO - make large rename and remove this function
-func (t *KernelType) CanonicalNameLegacyGo() tlast.Name {
-	if t.tl1name != "" {
-		return tlast.Name{Name: t.tl1name}
-	}
-	return t.canonicalName
-}
-
 func (t *KernelType) CanBeBare() bool {
 	return t.canBeBare
 }

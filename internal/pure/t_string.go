@@ -38,6 +38,9 @@ func (k *Kernel) addString() {
 		Construct: tlast.Constructor{
 			Name: tlast.Name{Name: name},
 		},
+		TypeDecl: tlast.TypeDeclaration{
+			Name: tlast.Name{Name: "String"},
+		},
 	}
 	combTL2 := tlast.TL2Combinator{
 		TypeDecl: tlast.TL2TypeDeclaration{
