@@ -166,6 +166,12 @@ func (k *Kernel) AddFileTL1(file string) error {
 		return fmt.Errorf("error reading schema file %q: %w", file, err)
 	}
 	dataStr := string(data)
+
+	// we do not want to support those, they are soon to be removed forever
+	dataStr = strings.ReplaceAll(dataStr, "_ {X:Type} result:X = ReqResult X;", "")
+	dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
+	dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
+
 	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{AllowDirty: true})
 	if err != nil {
 		return err // Do not add excess info to already long parse error

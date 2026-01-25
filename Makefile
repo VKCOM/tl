@@ -196,7 +196,7 @@ lint:
 
 .PHONY: testpure
 testpure: build
-	@./target/bin/tlgen --language=go -v \
+	@./target/bin/tlgen --language=go -v --split-internal \
 		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/genold \
@@ -209,7 +209,7 @@ testpure: build
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl
-	@./target/bin/tl2gen --language=go -v \
+	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/gennew \
@@ -225,3 +225,6 @@ testpure: build
 	@echo "Checking that generated code actually compiles..."
 	$(GO) build ./cmd/tl2gen/genold/...
 	$(GO) build ./cmd/tl2gen/gennew/...
+
+# /home/user/go/src/gitlab.mvk.com/go/vkgo/pkg/vktl/combined.tl
+# ./cmd/tl2client/test.tl

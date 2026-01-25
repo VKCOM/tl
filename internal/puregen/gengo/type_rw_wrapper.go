@@ -67,6 +67,8 @@ type TypeRWWrapper struct {
 
 	arguments []ResolvedArgument // TODO - remove, partially move into pure kernel
 
+	goCanonicalName tlast.Name // name element for names below and template full names
+
 	goGlobalName string // globally unique, so could be used also in html anchors, internal C++ function names, etc.
 	goLocalName  string
 
@@ -82,8 +84,8 @@ type TypeRWWrapper struct {
 	originateFromTL2 bool
 
 	// tl1 info
-	tlTag  uint32     // TODO - turn into function
-	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
+	tlTag  uint32
+	tlName tlast.Name // constructor name, except for unions
 	origTL []*tlast.Combinator
 
 	unionParent *TypeRWUnion // a bit hackish, but simple
@@ -262,7 +264,9 @@ func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
 			b.WriteString(head)
-			if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() { // If it cannot be bare, save on redundant suffix
+			if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() {
+				// If it cannot be bare, save on redundant suffix
+				// Bool is exception, because it is bare in TL2, but boxed in TL1
 				b.WriteString("Boxed")
 			}
 			b.WriteString(tail)
@@ -275,7 +279,7 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	tail = w.resolvedT2GoNameTail(insideNamespace)
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
-	return canonicalGoName(w.tlName, insideNamespace), tail
+	return canonicalGoName(w.goCanonicalName, insideNamespace), tail
 	//if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "" || w.origTL[0].IsFunction || w.unionParent != nil) {
 	//	return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), tail
 	//}
