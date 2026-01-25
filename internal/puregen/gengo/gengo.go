@@ -213,7 +213,7 @@ func (gen *genGo) generateCodeGolang() error {
 		if typeRw.ins == nil {
 			continue
 		}
-		ff := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
+		ff := InsFile{ins: typeRw.ins, fileName: typeRw.FileName()}
 		internalFiles[ff] = append(internalFiles[ff], typeRw)
 	}
 	var s strings.Builder

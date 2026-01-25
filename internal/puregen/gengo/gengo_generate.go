@@ -162,19 +162,6 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 		res.ResultType = resultType
 		res.ResultNatArgs = pureType.ResultNatArgs()
 	}
-	//if tlType.IsFunction {
-	//	resultResolvedType, resultResolvedTypeBare, resultNatArgs, resultHalfResolved, err := gen.getType(lrc, tlType.FuncDecl, nil)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	if resultResolvedTypeBare {
-	//		// @read a.TypeA = int;
-	//		// @read a.TypeB = %Int;
-	//		return tlType.FuncDecl.PR.BeautifulError(fmt.Errorf("function %q result cannot be bare", tlType.Construct.Name.String()))
-	//	}
-	//	res.ResultType = resultResolvedType
-	//	res.ResultNatArgs = resultNatArgs
-	//}
 	return nil
 }
 
@@ -238,7 +225,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 				emptyTag: emptyDesc.Crc32(),
 				okTag:    okDesc.Crc32(),
 			}
-			myWrapper.fileName = fieldType.fileName
+			myWrapper.fileNameOverride = fieldType
 			myWrapper.trw = res
 			return nil
 		}
@@ -275,12 +262,23 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			variantWrapper.tlTag = variantWrapper.origTL[0].Crc32()
 			variantWrapper.tlName = variantWrapper.origTL[0].Construct.Name
 			variantWrapper.goCanonicalName = variantWrapper.tlName
-			variantWrapper.fileName = myWrapper.fileName
+			variantWrapper.fileNameOverride = myWrapper
 		}
-		namespace := gen.getNamespace(variantWrapper.tlName.Namespace)
-		namespace.types = append(namespace.types, variantWrapper)
-		variantWrapper.ns = namespace
-
+		// namespace := myWrapper.ns
+		if variantWrapper.tlName.Namespace == "" {
+			//left {X:Type} {Y:Type} value:X = Either X Y;
+			//right {X:Type} {Y:Type} value:Y = Either X Y;
+			// fn => Vector (Either %audiofp.Error %(Vector audiofp.findResultRow));
+			namespace := myWrapper.ns
+			namespace.types = append(namespace.types, variantWrapper)
+			variantWrapper.ns = namespace
+		} else {
+			//messages.oneUser#a6a042bd user_id:messages.userId = messages.ChatUsers;
+			//messagesLong.oneUser#5fb6003f user_id:messagesLong.userId = messages.ChatUsers;
+			namespace := gen.getNamespace(variantWrapper.tlName.Namespace)
+			namespace.types = append(namespace.types, variantWrapper)
+			variantWrapper.ns = namespace
+		}
 		if err := gen.generateTypeStruct(variantWrapper, typ); err != nil {
 			return err
 		}
@@ -319,6 +317,6 @@ func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		},
 	}
 	myWrapper.trw = res
-	myWrapper.fileName = fieldType.fileName
+	myWrapper.fileNameOverride = fieldType
 	return nil
 }

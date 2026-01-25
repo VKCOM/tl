@@ -8,7 +8,6 @@ package pure
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -95,21 +94,13 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
-	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
 	for _, localArg := range localArgs { // pass all our parameters to our variant
 		natArgs = append(natArgs, localArg.natArgs...)
 	}
-	//elementT := tlast.TypeRef{
-	//	Type: tlast.Name{Name: "__element"},
-	//	Bare: false,
-	//}
-	//rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
-	//if err != nil {
-	//	return nil, fmt.Errorf("fail to resolve type for %s union fields: %w", canonicalName, err)
-	//}
-	log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
+	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
@@ -164,7 +155,14 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			}
 		}
 
-		element, err := k.createStructTL1FromTL1(canonicalName+"__"+variantName.String(), tip,
+		// do not change canonical names before removing long adapters,
+		// otherwise long adapter discovery will break (see func (gen *genGo) findLongAdapter)
+		argsStart := len(canonicalName)
+		if st := strings.Index(canonicalName, "<"); st >= 0 {
+			argsStart = st
+		}
+		variantCanonicalName := variantDef.Construct.Name.String() + canonicalName[argsStart:]
+		element, err := k.createStructTL1FromTL1(variantCanonicalName, tip,
 			resolvedType,
 			variantDef,
 			leftArgs, actualArgs,
