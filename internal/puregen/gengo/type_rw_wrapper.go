@@ -80,6 +80,8 @@ type TypeRWWrapper struct {
 	hasErrorInWriteMethods bool
 
 	fileName string
+	// otherwise order-dependent
+	fileNameOverride *TypeRWWrapper
 
 	originateFromTL2 bool
 
@@ -99,6 +101,13 @@ type TypeRWWrapper struct {
 	tl2Origin            *tlast.TL2Combinator
 	tl2IsResult          bool
 	tl2IsBuiltinBrackets bool
+}
+
+func (wr *TypeRWWrapper) FileName() string {
+	if wr.fileNameOverride != nil {
+		return wr.fileNameOverride.FileName()
+	}
+	return wr.fileName
 }
 
 func (wr *TypeRWWrapper) Namespace() string {

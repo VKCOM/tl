@@ -8,8 +8,6 @@ package pure
 
 import (
 	"fmt"
-	"log"
-	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -86,16 +84,15 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
-	log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
+	// log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	//elementT := actualArgs[0].T
 	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
 	rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of vector %s element: %w", canonicalName, err)
 	}
-	log.Printf("resolveType of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
+	// log.Printf("resolveType of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
 	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s element: %w", canonicalName, err)
@@ -121,16 +118,15 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
-	log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
+	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	// elementT := actualArgs[1].T
 	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
 	rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of tuple %s element: %w", canonicalName, err)
 	}
-	log.Printf("resolveType of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
+	// log.Printf("resolveType of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
 	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s element: %w", canonicalName, err)

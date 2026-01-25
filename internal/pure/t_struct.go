@@ -8,8 +8,6 @@ package pure
 
 import (
 	"fmt"
-	"log"
-	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -272,7 +270,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	constructorFields := def.Fields
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
-	log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
@@ -348,7 +346,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, err
 		}
-		log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
+		// log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 		if err != nil {
 			return nil, err
@@ -408,7 +406,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
 		}
-		log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
+		// log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)

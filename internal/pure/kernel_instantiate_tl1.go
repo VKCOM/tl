@@ -9,7 +9,6 @@ package pure
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 
@@ -164,14 +163,6 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		// probably ref to global type or a typo
 	}
-	//tName := tr.Type.String()
-	//switch tName {
-	//case "__vector", "__tuple":
-	//	s.WriteString(tName)
-	//	bare = true
-	//default:
-	//	kt, ok := k.tips[tName]
-	//}
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
@@ -234,59 +225,8 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	if !create {
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
-	//if tr.Type.String() == "" {
-	//	log.Printf("creating a bracket instance of type %s", canonicalName)
-	//	// must store pointer before children GetInstance() terminates recursion
-	//	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-	//	ref := k.addInstance(canonicalName, k.brackets)
-	//
-	//	elemInstance, err := k.GetInstance(tr.BracketType.ArrayType)
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	if tr.BracketType.HasIndex {
-	//		if tr.BracketType.IndexType.IsNumber {
-	//			// tuple
-	//			ref.ins = k.createArray(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
-	//			return ref, nil
-	//		}
-	//		// dict
-	//		keyInstance, err := k.GetInstance(tr.BracketType.IndexType.Type)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		if !keyInstance.ins.GoodForMapKey() {
-	//			return nil, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
-	//		}
-	//		ref.ins = k.createDict(canonicalName, keyInstance, elemInstance)
-	//		return ref, nil
-	//	}
-	//	// vector
-	//	ref.ins = k.createArray(canonicalName, false, 0, elemInstance)
-	//	return ref, nil
-	//}
-	log.Printf("creating an instance of type %s", canonicalName)
-	// must store pointer before children GetInstance() terminates recursion
-	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
+	// log.Printf("creating an instance of type %s", canonicalName)
 	tName := tr.Type.String()
-	//switch tName {
-	//case "__vector":
-	//	ref := k.addInstance(canonicalName, k.brackets)
-	//	leftArgs := []tlast.TemplateArgument{{FieldName: "t", IsNat: false}}
-	//	ref.ins, err = k.createVectorTL1(canonicalName, tr, leftArgs, tr.Args)
-	//	if err != nil {
-	//		return nil, false, err
-	//	}
-	//	return ref, bare, nil
-	//case "__tuple":
-	//	ref := k.addInstance(canonicalName, k.brackets)
-	//	leftArgs := []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}}
-	//	ref.ins, err = k.createTupleTL1(canonicalName, tr, leftArgs, tr.Args)
-	//	if err != nil {
-	//		return nil, false, err
-	//	}
-	//	return ref, bare, nil
-	//}
 	kt, ok := k.tips[tName]
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
@@ -299,7 +239,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
 	td := kt.combTL1[0]
-	// checks below are redundant, but they catch type resolve errors early
+	// checks below are redundant, but they catch type resolve errors early for beautiful errors
 	if len(td.TemplateArguments) > len(tr.Args) {
 		arg := td.TemplateArguments[len(tr.Args)]
 		e1 := tr.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))

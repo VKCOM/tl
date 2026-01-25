@@ -120,7 +120,7 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		ref.ins = k.createArray(canonicalName, false, 0, elemInstance)
 		return ref, nil
 	}
-	log.Printf("creating an instance of type %s", canonicalName)
+	// log.Printf("creating an instance of type %s", canonicalName)
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	someType := tr.SomeType

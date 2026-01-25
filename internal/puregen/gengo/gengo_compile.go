@@ -200,23 +200,7 @@ func (gen *genGo) prepareGeneration() error {
 	// TODO - long adapters
 	// we link normal and long types for VK int->long conversion. This code is VK-specific and will be removed after full migration
 	for _, v := range sortedTypes {
-		// @readwrite queueLong.getQueueKey id:long ip:int timeout:int queue:string = queueLong.TimestampKey;
-		// @readwrite queue.getQueueKey id:int ip:int timeout:int queue:string = queue.TimestampKey;
-		longName := v.pureType.CanonicalName()
-		argsStart := strings.Index(longName, "<")
-		if argsStart < 0 {
-			argsStart = len(longName)
-		}
-		if i := strings.Index(longName[:argsStart], "."); i >= 0 {
-			longName = longName[:i] + "Long" + longName[i:]
-
-			if tt, ok := gen.generatedTypes[longName]; ok {
-				// log.Printf("long name %s discovered for %s", longName, v.CanonicalStringTop())
-				v.WrLong = tt
-				tt.WrWithoutLong = v
-			}
-		}
-
+		gen.findLongAdapter(v)
 		v.trw.BeforeCodeGenerationStep2()
 	}
 	// Order of these 2 loops is important, for example see TypeRWTuple where bytes version depends on whether it is dict_like
@@ -240,4 +224,30 @@ func (gen *genGo) prepareGeneration() error {
 		}
 	}
 	return nil
+}
+
+// this trash is to be removed with the last long adapter
+func (gen *genGo) findLongAdapter(v *TypeRWWrapper) {
+	//if strings.Contains(strings.ToLower(v.goCanonicalName.String()), "message") {
+	//	fmt.Printf("%s %s\n", v.goCanonicalName.String(), v.pureType.CanonicalName())
+	//}
+	// @readwrite queueLong.getQueueKey id:long ip:int timeout:int queue:string = queueLong.TimestampKey;
+	// @readwrite queue.getQueueKey id:int ip:int timeout:int queue:string = queue.TimestampKey;
+	longName := v.pureType.CanonicalName()
+	argsStart := strings.Index(longName, "<")
+	if argsStart < 0 {
+		argsStart = len(longName)
+	}
+	i := strings.Index(longName[:argsStart], ".")
+	if i < 0 {
+		return
+	}
+	longName = longName[:i] + "Long" + longName[i:]
+
+	if tt, ok := gen.generatedTypes[longName]; ok {
+		// log.Printf("long name %s discovered for %s", longName, v.pureType.CanonicalName())
+		v.WrLong = tt
+		tt.WrWithoutLong = v
+		return
+	}
 }
