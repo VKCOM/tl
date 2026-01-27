@@ -86,6 +86,15 @@ type BasicCodeCreator struct {
 	lastVarIdentifier uint32
 }
 
+func NewPhpCodeCreator() BasicCodeCreator {
+	return BasicCodeCreator{
+		CodeCreator: CodeCreator{
+			Shift: "  ",
+		},
+		LanguageBundle: phpLanguageBundle,
+	}
+}
+
 func (bcc *BasicCodeCreator) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator)) {
 	bcc.CodeCreator.addFullBlock(prefix, suffix, func(cc *CodeCreator) {
 		block(bcc)
@@ -142,13 +151,4 @@ func (bcc *BasicCodeCreator) NewVariable(name string) string {
 	}
 	bcc.lastVarIdentifier += 1
 	return fmt.Sprintf(bcc.varTemplate, name, strconv.FormatUint(uint64(bcc.lastVarIdentifier), 10))
-}
-
-func NewPhpCodeCreator() BasicCodeCreator {
-	return BasicCodeCreator{
-		CodeCreator: CodeCreator{
-			Shift: "  ",
-		},
-		LanguageBundle: phpLanguageBundle,
-	}
 }

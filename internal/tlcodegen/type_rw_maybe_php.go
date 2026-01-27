@@ -220,6 +220,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+	localUsedSizePointer := fmt.Sprintf("$used_size_%[1]s_%[2]d", supportSuffix, callLevel)
 
 	result := make([]string, 0)
 	result = append(result,
@@ -253,7 +254,9 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	if args != nil {
 		newArgs = args.children[0]
 	}
-	innerPart = append(innerPart, utils.ShiftAll(trw.element.t.trw.PhpWriteTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, "", false), "  ")...)
+
+	innerPart = append(innerPart, fmt.Sprintf("%[1]s = 0;", localUsedSizePointer))
+	innerPart = append(innerPart, utils.ShiftAll(trw.element.t.trw.PhpWriteTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, localUsedSizePointer, false), "  ")...)
 	innerPart = append(innerPart, "}")
 
 	// add it with shift
@@ -270,7 +273,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	result = append(result,
 		fmt.Sprintf("%s = 0;", localCurrentSize),
 		fmt.Sprintf("%s_index = $context_sizes->push_front(0);", localCurrentSize),
-		fmt.Sprintf("if (!is_null(%[1]s) {", targetName),
+		fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 	)
 
 	// write inner part
@@ -278,7 +281,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	innerPart = append(innerPart,
 		fmt.Sprintf("%[1]s = (1 << 0) + (1 << 1);", localBlock),
 		fmt.Sprintf("%[1]s_index = $context_blocks->push_back(%[1]s);", localBlock),
-		fmt.Sprintf("%[1]s += 1 + 1", localCurrentSize),
+		fmt.Sprintf("%[1]s += 1 + 1;", localCurrentSize),
 	)
 
 	var newArgs *TypeArgumentsTree
