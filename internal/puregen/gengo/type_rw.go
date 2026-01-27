@@ -68,8 +68,6 @@ type Field struct {
 	MaskTL2Bit *int
 
 	natArgs []pure.ActualNatArg
-
-	// origTL tlast.Field - uncomment on first usage
 }
 
 func (f *Field) Bare() bool {

@@ -48,10 +48,19 @@ type Arithmetic struct {
 	Res  uint32
 }
 
+type CombinatorField struct {
+	Comb       *Combinator
+	FieldIndex int
+}
+
 type ArithmeticOrType struct {
 	IsArith bool
 	Arith   Arithmetic
 	T       TypeRef // PR of T can also be used for Arith
+
+	// this is set during type resolution, so the information
+	// about which field masks are used where
+	SourceField CombinatorField
 }
 
 type ScaleFactor struct {
@@ -105,6 +114,14 @@ type Field struct {
 
 	CommentBefore string // comment before field
 	CommentRight  string // comment to the right of field
+
+	// this is set during type resolution, so the information
+	// about argument references not erased from the type
+	UsedAsMask     bool
+	UsedAsMaskPR   PositionRange
+	UsedAsSize     bool
+	UsedAsSizePR   PositionRange
+	AffectedFields []CombinatorField
 }
 
 type Combinator struct {

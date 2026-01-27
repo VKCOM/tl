@@ -245,7 +245,7 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 	return
 }
 
-func (k *Kernel) canonicalBrackets(fieldDef tlast.Field) error {
+func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
 	if !fieldDef.IsRepeated {
 		return nil // always canonical
 	}
@@ -293,14 +293,16 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if nextFieldDef.Mask != nil || !nextFieldDef.IsRepeated || nextFieldDef.ScaleRepeat.ExplicitScale {
 				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
 			}
-			if err := k.canonicalBrackets(fieldDef); err != nil {
+			if err := k.isGoodBrackets(fieldDef); err != nil {
 				return nil, err
 			}
 			// we replace 2 fields with vector
 			// hren # a:[int] = Hren;
 			i++
 			fieldDef = nextFieldDef
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__vector"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated && i == 0 && !fieldDef.ScaleRepeat.ExplicitScale &&
@@ -311,14 +313,17 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
 				return nil, tlast.BeautifulError2(e1, e2)
 			}
-			if err := k.canonicalBrackets(fieldDef); err != nil {
+			if err := k.isGoodBrackets(fieldDef); err != nil {
 				return nil, err
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{T: tlast.TypeRef{Type: tlast.Name{Name: a.FieldName}}}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+				{T: tlast.TypeRef{PR: a.PR, Type: tlast.Name{Name: a.FieldName}}},
+				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
-			if err := k.canonicalBrackets(fieldDef); err != nil {
+			if err := k.isGoodBrackets(fieldDef); err != nil {
 				return nil, err
 			}
 			if !fieldDef.ScaleRepeat.ExplicitScale {
@@ -333,7 +338,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 					Scale:   prevFieldDef.FieldName,
 				}
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{{}, {T: fieldDef.ScaleRepeat.Rep[0].FieldType}}
+			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+				{},
+				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			}
 			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
 			fieldDef.FieldType.Bare = true
 			if fieldDef.ScaleRepeat.Scale.IsArith {
@@ -361,7 +369,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if fieldDef.Mask.BitNumber >= 32 {
 				return nil, fieldDef.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", fieldDef.Mask.BitNumber))
 			}
-			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs)
+			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs,
+				tlast.CombinatorField{Comb: def, FieldIndex: i})
 			if err != nil {
 				return nil, err
 			}
@@ -387,7 +396,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			} else {
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
-					arg:          tlast.ArithmeticOrType{T: tlast.TypeRef{Type: tlast.Name{Name: "*"}}},
+					arg: tlast.ArithmeticOrType{
+						T:           tlast.TypeRef{Type: tlast.Name{Name: "*"}},
+						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: i},
+					},
 					natArgs: []ActualNatArg{{
 						isField:    true,
 						fieldIndex: i,
