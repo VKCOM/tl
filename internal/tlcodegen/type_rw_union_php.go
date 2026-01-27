@@ -345,7 +345,7 @@ func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("%[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true)),
+		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), usedBytesPointer),
 	)
 	return result
 }

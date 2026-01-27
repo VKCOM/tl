@@ -177,7 +177,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			fmt.Sprintf("    %[1]s += 1;", localUsedBytesPointer),
 			"  }",
 			fmt.Sprintf("  if (%[1]s) {", maybeContainsValueName),
-			fmt.Sprintf("    %[1]s = (%[2]s & (1 << 1) != 0);", maybeContainsValueName, localBlock),
+			fmt.Sprintf("    %[1]s = ((%[2]s & (1 << 1)) != 0);", maybeContainsValueName, localBlock),
 			"  }",
 			"}",
 		)
@@ -272,7 +272,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	result := make([]string, 0)
 	result = append(result,
 		fmt.Sprintf("%s = 0;", localCurrentSize),
-		fmt.Sprintf("%s_index = $context_sizes->push_front(0);", localCurrentSize),
+		fmt.Sprintf("%s_index = $context_sizes->push_back(0);", localCurrentSize),
 		fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 	)
 
