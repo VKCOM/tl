@@ -145,6 +145,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 					e1 := tr.T.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.FieldName))
 					return tr, nil, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 				}
+				actualArg.arg.T.OriginalArgumentName = targ.FieldName // TODO - check if this is enough
 				actualArg.arg.T.PR = tr.T.PR
 				actualArg.arg.T.PRArgs = tr.T.PRArgs
 				if actualArg.arg.IsArith || actualArg.arg.T.Type.String() == "*" {
@@ -177,7 +178,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 }
 
 func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateArgument,
-	actualArgs []LocalArg) (ActualNatArg, error) {
+	actualArgs []LocalArg, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
 	for i, targ := range leftArgs {
 		if targ.FieldName == mask.MaskName {
 			actualArg := actualArgs[i]
@@ -198,6 +199,19 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 					isNumber: true,
 					number:   actualArg.arg.Arith.Res,
 				}, nil
+			}
+			if sf := actualArg.arg.SourceField; sf != (tlast.CombinatorField{}) {
+				field := &sf.Comb.Fields[sf.FieldIndex]
+				if field.UsedAsSize {
+					e3 := field.UsedAsSizePR.BeautifulError(fmt.Errorf("used as size here"))
+					e3.PrintWarning(k.opts.ErrorWriter, nil)
+					e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as an field mask, while already being used as tuple size", field.FieldName))
+					e2 := mask.PRName.BeautifulError(fmt.Errorf("used as mask here"))
+					return ActualNatArg{}, tlast.BeautifulError2(e1, e2)
+				}
+				field.UsedAsMask = true
+				field.UsedAsMaskPR = mask.PRName
+				field.AffectedFields = append(field.AffectedFields, combinatorField)
 			}
 			return actualArg.natArgs[0], nil
 		}
@@ -266,13 +280,21 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 			return nil, false, tlast.BeautifulError2(e1, e2)
 		}
 	}
-	switch tName {
-	case "__vector":
+	switch {
+	case tName == "__vector":
 		ref.ins, err = k.createVectorTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
-	case "__tuple":
+	case tName == "__tuple":
 		ref.ins, err = k.createTupleTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+	case len(kt.combTL1) > 1:
+		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1,
+			td.TemplateArguments, tr.Args)
+	case len(kt.combTL1) == 1:
+		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr,
+			kt.combTL1[0],
+			td.TemplateArguments, tr.Args,
+			false, 0)
 	default:
-		ref.ins, err = k.createOrdinaryTypeTL1FromTL1(canonicalName, kt, tr, kt.combTL1, td.TemplateArguments, tr.Args)
+		return nil, false, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
 	}
 	if err != nil {
 		return nil, false, err
@@ -318,24 +340,6 @@ func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition [
 			definition[0].Fields,
 			leftArgs, actualArgs,
 			false, 0, nil)
-	default:
-		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
-	}
-}
-
-func (k *Kernel) createOrdinaryTypeTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, definition []*tlast.Combinator,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
-
-	switch {
-	case len(definition) > 1:
-		return k.createUnionTL1FromTL1(canonicalName, tip, resolvedType, definition,
-			leftArgs, actualArgs)
-	case len(definition) == 1:
-		return k.createStructTL1FromTL1(canonicalName, tip, resolvedType,
-			definition[0],
-			leftArgs, actualArgs,
-			false, 0)
 	default:
 		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
 	}

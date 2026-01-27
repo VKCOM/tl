@@ -149,7 +149,7 @@ func main() {
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
 	flag.Parse()
 
-	kernel := pure.NewKernel()
+	kernel := pure.NewKernel(&pure.OptionsKernel{})
 	if len(flag.Args()) == 0 {
 		log.Printf("tl2client requires 1 or more .tl and/or tl2 files")
 		os.Exit(2)
@@ -173,7 +173,7 @@ func main() {
 			os.Exit(5)
 		}
 	}
-	err := kernel.Compile(&pure.OptionsKernel{})
+	err := kernel.Compile()
 	if err != nil {
 		log.Printf("%v", err)
 		os.Exit(4)
