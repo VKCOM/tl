@@ -430,6 +430,9 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.AddBlock(func(cc *CodeCreator) {
 							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 							cc.AddLines("store_byte(2);")
+							if "gucene_getDocument" == trw.PhpClassName(false, true) {
+								debugf("")
+							}
 							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
 						})
 						cc.AddLines("} else {")
@@ -972,90 +975,96 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 }
 
 func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree, topLevel bool) []string {
-	result := make([]string, 0)
 	currentSize := "$current_size"
 	block := "$block"
 
-	if trw.wr.PHPUnionParent() == nil {
-		result = append(result, fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize))
-		result = append(result, fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize))
-		result = append(result,
-			fmt.Sprintf("if (%[1]s == 0) {", currentSize),
-			fmt.Sprintf("  return %[1]s;", usedBytesPointer),
-			"}",
-		)
-		// для удобства ослеживания
-		result = append(result, fmt.Sprintf("%[1]s += %[2]s;", currentSize, usedBytesPointer))
-		result = append(result, fmt.Sprintf("%[1]s = fetch_byte();", block))
-		result = append(result,
-			fmt.Sprintf("if ((%[1]s & 1) != 0) {", block),
-			"  $index = TL\\tl2_support::fetch_size();",
-			fmt.Sprintf("  %[1]s += TL\\tl2_support::count_used_bytes($index);", usedBytesPointer),
-			"  if ($index != 0) {",
-			fmt.Sprintf("    %[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", usedBytesPointer, currentSize),
-			fmt.Sprintf("    return %[1]s;", usedBytesPointer),
-			"  }",
-			"}",
-		)
-	} else {
-		// TODO
+	cc := NewPhpCodeCreator()
+
+	subtractSize := func(value string) string {
+		return fmt.Sprintf("%[1]s -= %[2]s;", currentSize, value)
 	}
+
+	if trw.wr.PHPUnionParent() == nil {
+		// fetch currentSize and update usedBytesPointer
+		cc.Comments("read size of object and update used bytes")
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
+			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s) + %[2]s;", usedBytesPointer, currentSize),
+		)
+
+		// if 0 return
+		cc.If(fmt.Sprintf("%[1]s == 0", currentSize), func(cc *BasicCodeCreator) {
+			cc.AddLines(fmt.Sprintf("return %[1]s;", usedBytesPointer))
+		})
+
+		// fetch 1st block and start subtract fron size
+		cc.Comments("read first block and check constructor id")
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = fetch_byte();", block),
+			subtractSize("1"),
+		)
+
+		cc.If(fmt.Sprintf("(%[1]s & 1) != 0", block), func(cc *BasicCodeCreator) {
+			cc.AddLines(
+				"$index = TL\\tl2_support::fetch_size();",
+				subtractSize("TL\\tl2_support::count_used_bytes($index)"),
+			)
+			cc.If("$index != 0", func(cc *BasicCodeCreator) {
+				cc.AddLines(
+					fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize),
+					fmt.Sprintf("return %[1]s;", usedBytesPointer),
+				)
+			})
+		})
+	}
+
 	for fieldIndex, field := range trw.Fields {
 		isTrue := field.t.IsTrueType()
 		fieldName := fmt.Sprintf("%[1]s->%[2]s", targetName, field.originalName)
-		//if isTrue {
-		//	fieldName = fmt.Sprintf("$true_%s", field.originalName)
-		//}
+		inBlockIndex := (fieldIndex + 1) % 8
+
 		// add new block
-		if (fieldIndex+1)%8 == 0 {
-			result = append(result,
-				fmt.Sprintf("// read new block with index %d", (fieldIndex+1)/8),
-				fmt.Sprintf("if (%[1]s <= %[2]s) {", currentSize, usedBytesPointer),
-				fmt.Sprintf("  %[1]s = 0;", block),
-				"} else {",
-				fmt.Sprintf("  %[1]s = fetch_byte();", block),
-				fmt.Sprintf("  %[1]s += 1;", usedBytesPointer),
-				"}",
+		if inBlockIndex == 0 {
+			cc.Comments(
+				fmt.Sprintf("read new block with index %d", (fieldIndex+1)/8),
+			)
+			cc.IfElse(fmt.Sprintf("%[1]s > 0", currentSize),
+				func(cc *BasicCodeCreator) {
+					cc.AddLines(
+						fmt.Sprintf("%[1]s = fetch_byte();", block),
+						subtractSize("1"),
+					)
+				},
+				func(cc *BasicCodeCreator) {
+					cc.AddLines(fmt.Sprintf("%[1]s = 0;", block))
+				},
 			)
 		}
-		//if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
-		//	continue
-		//}
+
 		// read field
-		result = append(result, fmt.Sprintf("// read field with index %d with name \"%s\"", fieldIndex, fieldName))
+		cc.Comments(fmt.Sprintf("read field with index %d with name \"%s\"", fieldIndex, fieldName))
 		if isTrue {
-			result = append(result, fmt.Sprintf("%[1]s = false;", fieldName))
+			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
 		}
-		result = append(result,
-			fmt.Sprintf("if (($block & (1 << %d)) != 0) {", (fieldIndex+1)%8),
-		)
-		shift := 1
-		tab := "  "
-		textTab := func() string { return strings.Repeat(tab, shift) }
-		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
-
-		if trw.PhpClassName(false, true) == "casesTL2_testObject" && fieldName == "$this->f4" {
-			debugf("")
-		}
-
-		fieldRead := field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), 0, usedBytesPointer, field.fieldMask == nil)
-		for _, line := range fieldRead {
-			result = append(result, textTab()+line)
-		}
-
-		result = append(result, "}")
-
-		result = append(result,
-			fmt.Sprintf("if (%[1]s < %[2]s) {", currentSize, usedBytesPointer),
-			`  throw new \Exception("read more bytes than passed in struct definition");`,
-			"}",
-		)
+		cc.If(fmt.Sprintf("($block & (1 << %d)) != 0", inBlockIndex), func(cc *BasicCodeCreator) {
+			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
+			localUsedBytes := "$local_used_bytes"
+			cc.AddLines(fmt.Sprintf("%[1]s = 0;", localUsedBytes))
+			cc.AddLines(
+				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), 0, localUsedBytes, field.fieldMask == nil)...,
+			)
+			cc.AddLines(subtractSize(localUsedBytes))
+			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func(cc *BasicCodeCreator) {
+				cc.AddLines(`throw new \Exception("read more bytes than passed in struct definition");`)
+			})
+		})
 	}
-	// skip rest
-	result = append(result,
-		fmt.Sprintf("%[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", usedBytesPointer, currentSize),
-	)
-	return result
+
+	// skip tail
+	cc.Comments("skip remaining bytes")
+	cc.AddLines(fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize))
+
+	return cc.Print()
 }
 
 func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
@@ -2002,7 +2011,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		panic("generation tl2 for mock types as forbidden")
+		return []string{"// TODO"}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
@@ -2110,18 +2119,21 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		panic("generation tl2 for mock types as forbidden")
+		return []string{"// TODO"}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			if trw.isUnwrapType() {
-				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
-				return calcText
-			} else {
-				return trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)
-			}
+			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+			return calcText
+		}
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+			return calcText
 		}
 	}
 	result := make([]string, 0)
@@ -2144,7 +2156,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		panic("generation tl2 for mock types as forbidden")
+		return []string{"// TODO"}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {

@@ -659,6 +659,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args.children[1], supportSuffix, callLevel+1, currentSize)...,
 				)
 			})
+			cc.AddLines("}")
 		// actual map / dictionary
 		case trw.dictLike:
 			keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
