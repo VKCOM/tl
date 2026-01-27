@@ -2,6 +2,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -50,10 +51,10 @@ func (cc *CodeCreator) addFullBlock(prefix, suffix string, block func(cc *CodeCr
 }
 
 type LanguageBundle struct {
-	// if
+	// condition -> if
 	ifPrefixTemplate string
 	ifSuffixTemplate string
-	// for
+	// (init, condition, step) -> for
 	forPrefixTemplate string
 	forSuffixTemplate string
 	// else
@@ -61,40 +62,51 @@ type LanguageBundle struct {
 	// comment
 	commentPrefix string
 
+	// (name, suffixSupport) -> variable initialization
+	varTemplate string
+
 	// allow Indexed For
 	allowIndexedFor bool
 }
 
 var phpLanguageBundle = LanguageBundle{
-	ifPrefixTemplate:   "if (%s) {",
+	ifPrefixTemplate:   "if (%[1]s) {",
 	ifSuffixTemplate:   "}",
 	elsePrefixTemplate: "} else {",
 	forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
 	forSuffixTemplate:  "}",
 	commentPrefix:      "// ",
+	varTemplate:        "$%[1]s_%[2]s",
 	allowIndexedFor:    true,
 }
 
 type BasicCodeCreator struct {
 	CodeCreator
 	LanguageBundle
+	lastVarIdentifier uint32
 }
 
-func (bcc *BasicCodeCreator) If(condition string, block func(cc *CodeCreator)) {
+func (bcc *BasicCodeCreator) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator)) {
+	bcc.CodeCreator.addFullBlock(prefix, suffix, func(cc *CodeCreator) {
+		block(bcc)
+	})
+}
+
+func (bcc *BasicCodeCreator) If(condition string, block func(cc *BasicCodeCreator)) {
 	bcc.addFullBlock(fmt.Sprintf(bcc.ifPrefixTemplate, condition), bcc.ifSuffixTemplate, block)
 }
 
-func (bcc *BasicCodeCreator) IfElse(condition string, block func(cc *CodeCreator), elseBlock func(cc *CodeCreator)) {
+func (bcc *BasicCodeCreator) IfElse(condition string, block func(cc *BasicCodeCreator), elseBlock func(cc *BasicCodeCreator)) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.ifPrefixTemplate, condition),
 		bcc.elsePrefixTemplate,
 		block,
 	)
-	bcc.AddBlock(elseBlock)
+	bcc.addFullBlock("", "", elseBlock)
 	bcc.AddLines(bcc.ifSuffixTemplate)
 }
 
-func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, block func(cc *CodeCreator)) {
+func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, block func(cc *BasicCodeCreator)) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.forPrefixTemplate, initState, condition, iterationStep),
 		bcc.forSuffixTemplate,
@@ -102,7 +114,7 @@ func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, blo
 	)
 }
 
-func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func(cc *CodeCreator)) {
+func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func(cc *BasicCodeCreator)) {
 	if !bcc.allowIndexedFor {
 		panic("can't use for by index")
 	}
@@ -114,10 +126,22 @@ func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step s
 	)
 }
 
-func (bcc *BasicCodeCreator) Comment(lines string) {
-	for _, s := range strings.Split(lines, "\n") {
+func (bcc *BasicCodeCreator) Comments(lines ...string) {
+	for _, s := range lines {
 		bcc.AddLines(bcc.commentPrefix + s)
 	}
+}
+
+func (bcc *BasicCodeCreator) Comment(lines string) {
+	bcc.Comments(strings.Split(lines, "\n")...)
+}
+
+func (bcc *BasicCodeCreator) NewVariable(name string) string {
+	if name == "" {
+		name = "var"
+	}
+	bcc.lastVarIdentifier += 1
+	return fmt.Sprintf(bcc.varTemplate, name, strconv.FormatUint(uint64(bcc.lastVarIdentifier), 10))
 }
 
 func NewPhpCodeCreator() BasicCodeCreator {
