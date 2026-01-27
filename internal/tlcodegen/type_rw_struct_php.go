@@ -430,9 +430,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.AddBlock(func(cc *CodeCreator) {
 							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 							cc.AddLines("store_byte(2);")
-							if "gucene_getDocument" == trw.PhpClassName(false, true) {
-								debugf("")
-							}
 							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
 						})
 						cc.AddLines("} else {")
@@ -1242,7 +1239,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 		)
 
 		// add constructor id
-		cc.AddLines(fmt.Sprintf("if ((%s & (1 << 0)) == 0) {", currentBlock))
+		cc.AddLines(fmt.Sprintf("if ((%s & (1 << 0)) != 0) {", currentBlock))
 		cc.AddBlock(func(cc *CodeCreator) {
 			index := 0
 			if trw.wr.PHPUnionParent() != nil {
@@ -2128,6 +2125,10 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 			return calcText
 		}
+		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
+			var result []string
+			return result
+		}
 		if !trw.wr.gen.options.InplaceSimpleStructs &&
 			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
 			trw.wr.tlName.Namespace == "" {
@@ -2137,6 +2138,11 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		}
 	}
 	result := make([]string, 0)
+	result = append(result,
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+		"}",
+	)
 	if trw.wr.phpInfo.IsDuplicate {
 		result = append(result, trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)...)
 	} else {
@@ -2162,15 +2168,20 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			if trw.isUnwrapType() {
-				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer)
-				return calcText
-			} else {
-				return trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)
-			}
+			calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer)
+			return calcText
+		}
+		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
+			var result []string
+			return result
 		}
 	}
 	result := make([]string, 0)
+	result = append(result,
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+		"}",
+	)
 	if trw.wr.phpInfo.IsDuplicate {
 		result = append(result, trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)...)
 	} else {
