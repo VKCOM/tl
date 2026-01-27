@@ -975,6 +975,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 	result := make([]string, 0)
 	currentSize := "$current_size"
 	block := "$block"
+
 	if trw.wr.PHPUnionParent() == nil {
 		result = append(result, fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize))
 		result = append(result, fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize))
@@ -1298,7 +1299,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	currentBlock := fmt.Sprintf("$current_block%s", uniqueSuffix)
 	currentBlockIndex := fmt.Sprintf("$current_block_index%s", uniqueSuffix)
 
-	cc := CodeCreator{Shift: "  "}
+	cc := NewPhpCodeCreator()
 
 	cc.AddLines(
 		fmt.Sprintf("%[1]s = 0;", currentSize),
@@ -1365,8 +1366,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			}
 		}
 
-		cc.AddLines(fmt.Sprintf("if (%s) {", fieldUsed))
-		cc.AddBlock(func(cc *CodeCreator) {
+		cc.If(fieldUsed, func(cc *BasicCodeCreator) {
 			cc.AddLines(
 				fmt.Sprintf("%[1]s |= (1 << %[2]d);", currentBlock, indexInBlock),
 				fmt.Sprintf("%[1]s += %[2]s;", currentSize, fieldSize),
@@ -1374,7 +1374,6 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 				fmt.Sprintf("%[1]s = %[2]d;", blocksUsed, 1+(i+1)/8),
 			)
 		})
-		cc.AddLines("}")
 	}
 
 	// add last block
@@ -1385,18 +1384,19 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	// add blocks
 	cc.AddLines(fmt.Sprintf("%[1]s += %[2]s;", currentSize, blocksUsed))
 	// remove tail of sizes if is zero
-	cc.AddLines(fmt.Sprintf("if (%[1]s == 0) {", currentSize))
-	cc.AddBlock(func(cc *CodeCreator) {
-		cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
-	})
-	cc.AddLines("} else {")
-	cc.AddBlock(func(cc *CodeCreator) {
-		cc.AddLines(
-			fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
-			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
-		)
-	})
-	cc.AddLines("}")
+	cc.IfElse(
+		fmt.Sprintf("%[1]s == 0", currentSize),
+		func(cc *BasicCodeCreator) {
+			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
+		},
+		func(cc *BasicCodeCreator) {
+			cc.AddLines(
+				fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
+				fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
+			)
+		},
+	)
+
 	// remove unused blocks
 	cc.AddLines(fmt.Sprintf("$context_blocks->cut_tail(%[1]s);", nextBlockIndex))
 	// add used size
