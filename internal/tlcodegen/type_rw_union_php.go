@@ -339,7 +339,7 @@ func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	return result
 }
 
-func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	result := make([]string, 0)
 	result = append(result,
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),

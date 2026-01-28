@@ -217,38 +217,50 @@ func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, 
 	panic("unsupported generation for primitive in php")
 }
 
-func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	if trw.gen.options.UseBuiltinDataProviders {
+		calcText := make([]string, 0)
+		checkZeroTarget := targetName
+
 		switch trw.goType {
 		case "int32":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 4;", usedBytesPointer),
 			}
 		case "int64":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 8;", usedBytesPointer),
 			}
 		case "uint32":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 4;", usedBytesPointer),
 			}
 		case "uint64":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 8;", usedBytesPointer),
 			}
 		case "float32":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 4;", usedBytesPointer),
 			}
 		case "float64":
-			return []string{
+			calcText = []string{
 				fmt.Sprintf("%s += 8;", usedBytesPointer),
 			}
 		case "string":
-			return []string{
+			checkZeroTarget = fmt.Sprintf("strlen(%[1]s)", targetName)
+			calcText = []string{
 				fmt.Sprintf("%[1]s += strlen(%[2]s) + TL\\tl2_support::count_used_bytes(strlen(%[2]s));", usedBytesPointer, targetName),
 			}
 		}
+		if canOmit {
+			cc := NewPhpCodeCreator()
+			cc.If(fmt.Sprintf("%[1]s != 0", checkZeroTarget), func(cc *BasicCodeCreator[PhpHelder]) {
+				cc.AddLines(calcText...)
+			})
+			calcText = cc.Print()
+		}
+		return calcText
 	}
 	panic("unsupported generation for primitive in php")
 }

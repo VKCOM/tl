@@ -265,7 +265,7 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	return result
 }
 
-func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
 
@@ -288,7 +288,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	if args != nil {
 		newArgs = args.children[0]
 	}
-	innerPart = append(innerPart, trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, usedBytesPointer)...)
+	innerPart = append(innerPart, trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, usedBytesPointer, false)...)
 	isSizeConstant, trivialSize := trw.element.t.PhpTL2TrivialSize(targetName, false, trw.element.recursive)
 	sizeValue := fmt.Sprintf("$context_sizes->get_value(%[1]s_index)", localCurrentSize)
 	if len(trivialSize) != 0 {
