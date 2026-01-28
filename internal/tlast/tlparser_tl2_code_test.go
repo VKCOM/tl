@@ -110,7 +110,7 @@ func TestParseTL2(t *testing.T) {
 				assert.Equal(t, "x", fields[0].Name)
 
 				field0Type := fields[0].Type
-				assert.False(t, field0Type.IsBracket)
+				assert.False(t, field0Type.IsBracket())
 
 				assert.Equal(t, "", field0Type.SomeType.Name.Namespace)
 				assert.Equal(t, "int", field0Type.SomeType.Name.Name)
@@ -145,7 +145,7 @@ func TestParseTL2(t *testing.T) {
 				assert.True(t, fields[0].IsOptional)
 
 				field0Type := fields[0].Type
-				assert.False(t, field0Type.IsBracket)
+				assert.False(t, field0Type.IsBracket())
 
 				assert.Equal(t, "", field0Type.SomeType.Name.Namespace)
 				assert.Equal(t, "int", field0Type.SomeType.Name.Name)
@@ -169,7 +169,7 @@ func TestParseTL2(t *testing.T) {
 				assert.True(t, fields[0].IsIgnored)
 
 				field0Type := fields[0].Type
-				assert.False(t, field0Type.IsBracket)
+				assert.False(t, field0Type.IsBracket())
 
 				assert.Equal(t, "", field0Type.SomeType.Name.Namespace)
 				assert.Equal(t, "int", field0Type.SomeType.Name.Name)
@@ -210,7 +210,7 @@ func TestParseTL2(t *testing.T) {
 
 				alias := comb.TypeDecl.Type.TypeAlias
 
-				assert.False(t, alias.IsBracket)
+				assert.False(t, alias.IsBracket())
 				assert.Equal(t, "", alias.SomeType.Name.Namespace)
 				assert.Equal(t, "int", alias.SomeType.Name.Name)
 			})
@@ -423,7 +423,7 @@ testNs.testName = Green x:int |
 			assert.Equal(t, "x", fields[0].Name)
 
 			field0Type := fields[0].Type
-			assert.False(t, field0Type.IsBracket)
+			assert.False(t, field0Type.IsBracket())
 
 			assert.Equal(t, "", field0Type.SomeType.Name.Namespace)
 			assert.Equal(t, "int", field0Type.SomeType.Name.Name)
@@ -479,7 +479,7 @@ testNs.testName = Green x:int |
 			assert.Equal(t, "x", fields[0].Name)
 
 			field0Type := fields[0].Type
-			assert.False(t, field0Type.IsBracket)
+			assert.False(t, field0Type.IsBracket())
 
 			assert.Equal(t, "", field0Type.SomeType.Name.Namespace)
 			assert.Equal(t, "int", field0Type.SomeType.Name.Name)
@@ -547,7 +547,7 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.False(t, typeRef.IsBracket)
+			assert.False(t, typeRef.IsBracket())
 			assert.Equal(t, "", typeRef.SomeType.Name.Namespace)
 			assert.Equal(t, "int", typeRef.SomeType.Name.Name)
 
@@ -562,7 +562,7 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.False(t, typeRef.IsBracket)
+			assert.False(t, typeRef.IsBracket())
 			assert.Equal(t, "ns", typeRef.SomeType.Name.Namespace)
 			assert.Equal(t, "int", typeRef.SomeType.Name.Name)
 
@@ -577,7 +577,7 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.True(t, typeRef.IsBracket)
+			assert.True(t, typeRef.IsBracket())
 
 			bracket := typeRef.BracketType
 
@@ -595,7 +595,7 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.True(t, typeRef.IsBracket)
+			assert.True(t, typeRef.IsBracket())
 
 			bracket := typeRef.BracketType
 
@@ -615,7 +615,7 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.True(t, typeRef.IsBracket)
+			assert.True(t, typeRef.IsBracket())
 
 			bracket := typeRef.BracketType
 
@@ -635,14 +635,14 @@ testNs.testName = Green x:int |
 			assert.Nil(t, state.Error)
 			assert.True(t, newIt.expect(eof))
 
-			assert.True(t, typeRef.IsBracket)
+			assert.True(t, typeRef.IsBracket())
 			assert.NotNil(t, typeRef.BracketType.IndexType)
 
 			indexType := typeRef.BracketType.IndexType
 			//arrayType := typeRef.BracketType.ArrayType
 
 			assert.False(t, indexType.IsNumber)
-			assert.True(t, indexType.Type.IsBracket)
+			assert.True(t, indexType.Type.IsBracket())
 			assert.False(t, indexType.Type.BracketType.HasIndex)
 			assert.Equal(t, "list", indexType.Type.BracketType.ArrayType.SomeType.Name.String())
 		})
