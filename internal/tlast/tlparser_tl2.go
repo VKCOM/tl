@@ -49,10 +49,10 @@ type TL2TypeRef struct {
 	SomeType    TL2TypeApplication
 	BracketType *TL2BracketType
 
-	IsBracket bool // TODO - remove, use BracketType != nil
-
 	PR PositionRange
 }
+
+func (t TL2TypeRef) IsBracket() bool { return t.BracketType != nil }
 
 // TL2Field := ((name qm?) | ucs) cl TL2TypeRef;
 type TL2Field struct {

@@ -599,7 +599,6 @@ func parseTL2Type(tokens tokenIterator, position Position) (state OptionalState,
 		state, restTokens, bracketType = parseTL2BracketType(restTokens, position)
 		if state.StartProcessing {
 			result.BracketType = &bracketType
-			result.IsBracket = true
 		}
 	} else {
 		result.SomeType = someType

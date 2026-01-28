@@ -431,7 +431,6 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			}
 
 			if isBracket {
-				newRef.IsBracket = true
 				newRef.BracketType = new(tlast.TL2BracketType)
 				arrayIndex := 0
 				if len(ref.Args) == 2 {
@@ -545,7 +544,6 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			calculatingType := &newField.Type
 			// if is repeated
 			if field.IsRepeated {
-				newField.Type.IsBracket = true
 				newField.Type.BracketType = new(tlast.TL2BracketType)
 				calculatingType = &newField.Type.BracketType.ArrayType
 				if !field.ScaleRepeat.ExplicitScale {
