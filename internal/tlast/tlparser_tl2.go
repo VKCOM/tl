@@ -49,7 +49,7 @@ type TL2TypeRef struct {
 	SomeType    TL2TypeApplication
 	BracketType *TL2BracketType
 
-	IsBracket bool
+	IsBracket bool // TODO - remove, use BracketType != nil
 
 	PR PositionRange
 }
