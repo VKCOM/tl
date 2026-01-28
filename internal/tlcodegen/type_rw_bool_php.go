@@ -115,9 +115,15 @@ func (trw *TypeRWBool) PhpCalculateSizesTL2MethodCall(targetName string, bare bo
 		if trw.isBit {
 			// nothing
 		} else {
-			return []string{
-				fmt.Sprintf("%[1]s += 1;", usedBytesPointer),
+			calcText := []string{fmt.Sprintf("%[1]s += 1;", usedBytesPointer)}
+			if canOmit {
+				cc := NewPhpCodeCreator()
+				cc.If(targetName, func(cc *PhpCodeCreator) {
+					cc.AddLines(calcText...)
+				})
+				calcText = cc.Print()
 			}
+			return calcText
 		}
 	} else {
 		panic("unsupported generation for bool in php")

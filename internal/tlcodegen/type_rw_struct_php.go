@@ -422,7 +422,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 							`$context_sizes = new TL\tl2_context();`,
 							`$context_blocks = new TL\tl2_context();`,
 						)
-						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
+						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", true)...)
 						cc.AddLines("if ($used_bytes != 0) {")
 						cc.AddBlock(func(cc *CodeCreator) {
 							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
