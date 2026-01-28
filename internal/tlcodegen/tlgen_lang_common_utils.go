@@ -80,14 +80,19 @@ var phpLanguageBundle = LanguageBundle{
 	allowIndexedFor:    true,
 }
 
-type BasicCodeCreator struct {
+type PhpHelder struct{}
+
+type BasicCodeCreator[T any] struct {
 	CodeCreator
 	LanguageBundle
 	lastVarIdentifier uint32
+	langHelp          T
 }
 
-func NewPhpCodeCreator() BasicCodeCreator {
-	return BasicCodeCreator{
+type PhpCodeCreator = BasicCodeCreator[PhpHelder]
+
+func NewPhpCodeCreator() PhpCodeCreator {
+	return BasicCodeCreator[PhpHelder]{
 		CodeCreator: CodeCreator{
 			Shift: "  ",
 		},
@@ -95,17 +100,17 @@ func NewPhpCodeCreator() BasicCodeCreator {
 	}
 }
 
-func (bcc *BasicCodeCreator) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator)) {
+func (bcc *BasicCodeCreator[T]) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator[T])) {
 	bcc.CodeCreator.addFullBlock(prefix, suffix, func(cc *CodeCreator) {
 		block(bcc)
 	})
 }
 
-func (bcc *BasicCodeCreator) If(condition string, block func(cc *BasicCodeCreator)) {
+func (bcc *BasicCodeCreator[T]) If(condition string, block func(cc *BasicCodeCreator[T])) {
 	bcc.addFullBlock(fmt.Sprintf(bcc.ifPrefixTemplate, condition), bcc.ifSuffixTemplate, block)
 }
 
-func (bcc *BasicCodeCreator) IfElse(condition string, block func(cc *BasicCodeCreator), elseBlock func(cc *BasicCodeCreator)) {
+func (bcc *BasicCodeCreator[T]) IfElse(condition string, block func(cc *BasicCodeCreator[T]), elseBlock func(cc *BasicCodeCreator[T])) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.ifPrefixTemplate, condition),
 		bcc.elsePrefixTemplate,
@@ -115,7 +120,7 @@ func (bcc *BasicCodeCreator) IfElse(condition string, block func(cc *BasicCodeCr
 	bcc.AddLines(bcc.ifSuffixTemplate)
 }
 
-func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, block func(cc *BasicCodeCreator)) {
+func (bcc *BasicCodeCreator[T]) For(initState, condition, iterationStep string, block func(cc *BasicCodeCreator[T])) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.forPrefixTemplate, initState, condition, iterationStep),
 		bcc.forSuffixTemplate,
@@ -123,7 +128,7 @@ func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, blo
 	)
 }
 
-func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func(cc *BasicCodeCreator)) {
+func (bcc *BasicCodeCreator[T]) ForIndexed(indexVar, startValue, upperBound, step string, block func(cc *BasicCodeCreator[T])) {
 	if !bcc.allowIndexedFor {
 		panic("can't use for by index")
 	}
@@ -135,17 +140,17 @@ func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step s
 	)
 }
 
-func (bcc *BasicCodeCreator) Comments(lines ...string) {
+func (bcc *BasicCodeCreator[T]) Comments(lines ...string) {
 	for _, s := range lines {
 		bcc.AddLines(bcc.commentPrefix + s)
 	}
 }
 
-func (bcc *BasicCodeCreator) Comment(lines string) {
+func (bcc *BasicCodeCreator[T]) Comment(lines string) {
 	bcc.Comments(strings.Split(lines, "\n")...)
 }
 
-func (bcc *BasicCodeCreator) NewVariable(name string) string {
+func (bcc *BasicCodeCreator[T]) NewVariable(name string) string {
 	if name == "" {
 		name = "var"
 	}
