@@ -20,41 +20,38 @@ func (gen *genGo) compile() error {
 	if err := gen.addTypeWrappers(); err != nil {
 		return err
 	}
-	for _, myWrapper := range gen.generatedTypesList {
-		if strings.HasPrefix(myWrapper.pureType.CanonicalName(), "dictionary<string>") {
-			fmt.Printf("aha %s\n", myWrapper.pureType.CanonicalName())
-		}
-		for _, arg := range myWrapper.pureType.Common().ResolvedType().Args {
-			if arg.IsArith {
-				myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
-					isNat:   true,
-					isArith: true,
-					Arith:   arg.Arith,
-				})
-				continue
-			}
-			if arg.T.String() == "*" {
-				myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
-					isNat:   true,
-					isArith: false,
-				})
-				continue
-			}
-			ref, fieldBare, err := gen.kernel.GetInstanceTL1(arg.T)
-			if err != nil {
-				return fmt.Errorf("internal error: cannot get type of argument %s", arg.T)
-			}
-			fieldType, err := gen.getType(ref)
-			if err != nil {
-				return err
-			}
-			myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
-				isNat: false,
-				tip:   fieldType,
-				bare:  fieldBare,
-			})
-		}
-	}
+	//for _, myWrapper := range gen.generatedTypesList {
+	//	for _, arg := range myWrapper.pureType.Common().ResolvedType().Args {
+	//		if arg.IsArith {
+	//			myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+	//				isNat:   true,
+	//				isArith: true,
+	//				Arith:   arg.Arith,
+	//			})
+	//			continue
+	//		}
+	//		if arg.T.String() == "*" {
+	//			myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+	//				isNat:   true,
+	//				isArith: false,
+	//			})
+	//			continue
+	//		}
+	//		ref, fieldBare, err := gen.kernel.GetInstanceTL1(arg.T)
+	//		if err != nil {
+	//			return fmt.Errorf("internal error: cannot get type of argument %s", arg.T)
+	//		}
+	//		fieldType, err := gen.getType(ref)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		myWrapper.arguments = append(myWrapper.arguments, ResolvedArgument{
+	//			isNat: false,
+	//			tip:   fieldType,
+	//			bare:  fieldBare,
+	//		})
+	//	}
+	//}
 	for _, myWrapper := range gen.generatedTypesList {
 		switch pureType := myWrapper.pureType.(type) {
 		case *pure.TypeInstancePrimitive:

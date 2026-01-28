@@ -245,10 +245,10 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		variantOriginalName := pureType.VariantOriginalNames()[i]
 
 		variantWrapper := &TypeRWWrapper{
-			gen:         gen,
-			pureType:    typ,
-			NatParams:   myWrapper.NatParams,
-			arguments:   myWrapper.arguments,
+			gen:       gen,
+			pureType:  typ,
+			NatParams: myWrapper.NatParams,
+			//arguments:   myWrapper.arguments,
 			unionParent: res,
 			unionIndex:  i,
 		}

@@ -232,7 +232,6 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	if err != nil {
 		return nil, false, err
 	}
-	// canonicalName := k.replaceTL1BuiltinName(tr.String())
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, bare, nil
 	}
