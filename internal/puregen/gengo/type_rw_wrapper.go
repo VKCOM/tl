@@ -7,6 +7,7 @@
 package gengo
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -47,14 +48,6 @@ func (d *Deconflicter) fillGolangIdentifies() {
 	d.deconflictName("ReadTL2")
 }
 
-type ResolvedArgument struct {
-	isNat   bool
-	isArith bool
-	Arith   tlast.Arithmetic
-	tip     *TypeRWWrapper
-	bare    bool // vector Int is not the same as vector int, we must capture the difference somewhere
-}
-
 type TypeRWWrapper struct {
 	gen *genGo // options and packages are here
 
@@ -64,8 +57,6 @@ type TypeRWWrapper struct {
 	ins       *InternalNamespace
 	trw       TypeRW
 	NatParams []string // external params of type Read/Write method, with nat_ prefix
-
-	arguments []ResolvedArgument // TODO - remove, partially move into pure kernel
 
 	goCanonicalName tlast.Name // name element for names below and template full names
 
@@ -147,69 +138,69 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 	return len(w.origTL[0].TemplateArguments) == 0
 }
 
-func (w *TypeRWWrapper) CanonicalStringTop() string {
-	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
-}
-
-func (w *TypeRWWrapper) CanonicalString(bare bool) string {
-	var s strings.Builder
-	if w.originateFromTL2 {
-		if w.unionParent == nil {
-			if w.tl2IsResult {
-				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
-			} else if w.tl2IsBuiltinBrackets {
-				s.WriteString("__builtin_brackets")
-			} else if w.tl2Origin != nil {
-				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
-			} else {
-				s.WriteString(w.tl2Name.String())
-			}
-		} else {
-			originType := w.unionParent.wr.tl2Origin
-			if w.unionParent.wr.tl2IsResult {
-				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.StructType.UnionType.Variants[w.unionIndex].Name)
-			} else {
-				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.StructType.UnionType.Variants[w.unionIndex].Name)
-			}
-		}
-	} else {
-		if len(w.origTL) > 1 {
-			if bare {
-				panic("CanonicalString of bare union")
-			}
-			w.origTL[0].TypeDecl.Name.WriteString(&s)
-		} else if len(w.origTL) == 1 {
-			if bare {
-				w.origTL[0].Construct.Name.WriteString(&s)
-			} else {
-				w.origTL[0].TypeDecl.Name.WriteString(&s)
-			}
-		} else {
-			panic("all builtins are parsed from TL text, so must have exactly one constructor")
-		}
-	}
-	if len(w.arguments) == 0 {
-		return s.String()
-	}
-	s.WriteByte('<')
-	for i, a := range w.arguments {
-		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
-		if i != 0 {
-			s.WriteByte(',')
-		}
-		if a.isNat {
-			if a.isArith {
-				s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-			} else {
-				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
-			}
-		} else {
-			s.WriteString(a.tip.CanonicalString(a.bare))
-		}
-	}
-	s.WriteByte('>')
-	return s.String()
-}
+//func (w *TypeRWWrapper) CanonicalStringTop() string {
+//	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
+//}
+//
+//func (w *TypeRWWrapper) CanonicalString(bare bool) string {
+//	var s strings.Builder
+//	if w.originateFromTL2 {
+//		if w.unionParent == nil {
+//			if w.tl2IsResult {
+//				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
+//			} else if w.tl2IsBuiltinBrackets {
+//				s.WriteString("__builtin_brackets")
+//			} else if w.tl2Origin != nil {
+//				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
+//			} else {
+//				s.WriteString(w.tl2Name.String())
+//			}
+//		} else {
+//			originType := w.unionParent.wr.tl2Origin
+//			if w.unionParent.wr.tl2IsResult {
+//				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.StructType.UnionType.Variants[w.unionIndex].Name)
+//			} else {
+//				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.StructType.UnionType.Variants[w.unionIndex].Name)
+//			}
+//		}
+//	} else {
+//		if len(w.origTL) > 1 {
+//			if bare {
+//				panic("CanonicalString of bare union")
+//			}
+//			w.origTL[0].TypeDecl.Name.WriteString(&s)
+//		} else if len(w.origTL) == 1 {
+//			if bare {
+//				w.origTL[0].Construct.Name.WriteString(&s)
+//			} else {
+//				w.origTL[0].TypeDecl.Name.WriteString(&s)
+//			}
+//		} else {
+//			panic("all builtins are parsed from TL text, so must have exactly one constructor")
+//		}
+//	}
+//	if len(w.arguments) == 0 {
+//		return s.String()
+//	}
+//	s.WriteByte('<')
+//	for i, a := range w.arguments {
+//		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+//		if i != 0 {
+//			s.WriteByte(',')
+//		}
+//		if a.isNat {
+//			if a.isArith {
+//				s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+//			} else {
+//				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
+//			}
+//		} else {
+//			s.WriteString(a.tip.CanonicalString(a.bare))
+//		}
+//	}
+//	s.WriteByte('>')
+//	return s.String()
+//}
 
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {
 	if w.originateFromTL2 {
@@ -265,22 +256,47 @@ func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 
 func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 	b := strings.Builder{}
-	for _, a := range w.arguments {
-		if a.isNat {
-			if a.isArith {
-				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-			}
-		} else {
-			head, tail := a.tip.resolvedT2GoName(insideNamespace)
-			b.WriteString(head)
-			if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() {
-				// If it cannot be bare, save on redundant suffix
-				// Bool is exception, because it is bare in TL2, but boxed in TL1
-				b.WriteString("Boxed")
-			}
-			b.WriteString(tail)
+	for _, arg := range w.pureType.Common().ResolvedType().Args {
+		if arg.IsArith {
+			b.WriteString(strconv.FormatUint(uint64(arg.Arith.Res), 10))
+			continue
 		}
+		if arg.T.String() == "*" {
+			continue
+		}
+		ref, fieldBare, err := w.gen.kernel.GetInstanceTL1(arg.T)
+		if err != nil {
+			panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", arg.T, err))
+		}
+		fieldType, err := w.gen.getType(ref)
+		if err != nil {
+			panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", arg.T, err))
+		}
+		head, tail := fieldType.resolvedT2GoName(insideNamespace)
+		b.WriteString(head)
+		if head != "Bool" && !fieldBare && !fieldType.pureType.BoxedOnly() {
+			// If it cannot be bare, save on redundant suffix
+			// Bool is exception, because it is bare in TL2, but boxed in TL1
+			b.WriteString("Boxed")
+		}
+		b.WriteString(tail)
 	}
+	//for _, a := range w.arguments {
+	//	if a.isNat {
+	//		if a.isArith {
+	//			b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+	//		}
+	//	} else {
+	//		head, tail := a.tip.resolvedT2GoName(insideNamespace)
+	//		b.WriteString(head)
+	//		if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() {
+	//			// If it cannot be bare, save on redundant suffix
+	//			// Bool is exception, because it is bare in TL2, but boxed in TL1
+	//			b.WriteString("Boxed")
+	//		}
+	//		b.WriteString(tail)
+	//	}
+	//}
 	return b.String()
 }
 
@@ -451,7 +467,7 @@ func (w *TypeRWWrapper) IsFunction() bool {
 }
 
 func (w *TypeRWWrapper) JSONHelpString() string {
-	return w.CanonicalStringTop()
+	return w.pureType.CanonicalName()
 }
 
 // same code as in func (trw *TypeRWStruct) replaceUnwrapArgs

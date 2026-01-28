@@ -20,6 +20,7 @@ import (
 // TODO - name collision checks
 
 type Kernel struct {
+	opts *OptionsKernel
 	// each type can have up to 3 elements in this map, TL1 constructor, TL1 type and canonical primitive name
 	tips         map[string]*KernelType
 	tipsOrdered  []*KernelType
@@ -38,8 +39,9 @@ type Kernel struct {
 }
 
 // Add builtin types
-func NewKernel() *Kernel {
+func NewKernel(opts *OptionsKernel) *Kernel {
 	k := &Kernel{
+		opts:      opts,
 		brackets:  &KernelType{originTL2: true, instances: map[string]*TypeInstanceRef{}, canBeBare: true},
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
@@ -194,8 +196,8 @@ func (k *Kernel) AddFileTL2(file string) error {
 	return nil
 }
 
-func (k *Kernel) Compile(opts *OptionsKernel) error {
-	if err := k.CompileTL1(opts); err != nil {
+func (k *Kernel) Compile() error {
+	if err := k.CompileTL1(); err != nil {
 		return err
 	}
 	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
@@ -276,10 +278,10 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 			//}
 		}
 	}
-	if err := k.checkTagCollisions(opts); err != nil {
+	if err := k.checkTagCollisions(); err != nil {
 		return err
 	}
-	if err := k.checkNamespaceCollisions(opts); err != nil {
+	if err := k.checkNamespaceCollisions(); err != nil {
 		return err
 	}
 
@@ -300,10 +302,10 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 				if _, ok := allAnnotations[m.Name]; !ok {
 					if _, ok := k.supportedAnnotations[m.Name]; !ok && utils.DoLint(typ.CommentRight) {
 						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
-						if opts.WarningsAreErrors {
+						if k.opts.WarningsAreErrors {
 							return e1
 						}
-						e1.PrintWarning(opts.ErrorWriter, nil)
+						e1.PrintWarning(k.opts.ErrorWriter, nil)
 					}
 					allAnnotations[m.Name] = struct{}{}
 					k.allAnnotations = append(k.allAnnotations, m.Name)
@@ -320,10 +322,10 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 					if _, ok := allAnnotations[m.Name]; !ok {
 						if _, ok := k.supportedAnnotations[m.Name]; !ok {
 							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
-							if opts.WarningsAreErrors {
+							if k.opts.WarningsAreErrors {
 								return e1
 							}
-							e1.PrintWarning(opts.ErrorWriter, nil)
+							e1.PrintWarning(k.opts.ErrorWriter, nil)
 						}
 						allAnnotations[m.Name] = struct{}{}
 						k.allAnnotations = append(k.allAnnotations, m.Name)
@@ -387,7 +389,7 @@ func (k *Kernel) Compile(opts *OptionsKernel) error {
 	return nil
 }
 
-func (k *Kernel) checkTagCollisions(opts *OptionsKernel) error {
+func (k *Kernel) checkTagCollisions() error {
 	constructorTags := map[uint32]*tlast.ParseError{}
 	for _, typ := range k.filesTL1 {
 		crc32 := typ.Crc32()
@@ -427,7 +429,7 @@ func (k *Kernel) checkTagCollisions(opts *OptionsKernel) error {
 	return nil
 }
 
-func (k *Kernel) checkNamespaceCollisions(opts *OptionsKernel) error {
+func (k *Kernel) checkNamespaceCollisions() error {
 	var nc NameCollision
 	for _, comb := range k.filesTL1 {
 		if err := nc.AddSameCaseName(comb.Construct.Name.Namespace, comb.Construct.NamePR, "namespace"); err != nil {

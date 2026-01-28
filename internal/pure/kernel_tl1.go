@@ -104,7 +104,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	return typ.Construct.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have constructor name %s equal to some built-in type", typ.Construct.Name.String()))
 }
 
-func (k *Kernel) CompileTL1(opts *OptionsKernel) error {
+func (k *Kernel) CompileTL1() error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}

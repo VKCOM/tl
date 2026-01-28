@@ -4,13 +4,6 @@
 int#a8509bda ? = Int;
 long#22076cba ? = Long;
 
-int32s#7934e71f int = Int32s;
-int64s#f5609de0 long = Int64s;
-string#b5286e24 ? = String;
-
-myInt32#ba59e151 int32s = MyInt32;
-myInt64#1d95db9d int64s = MyInt64;
-
 // innerType {t:Type} a:t = InnerType t;
 
 // allBoxed a:(innerType (Maybe int)) b:(innerType (Maybe Int))
@@ -19,15 +12,10 @@ myInt64#1d95db9d int64s = MyInt64;
 // Multiline comment before combinator
 //----- Test Multiple native wrappers
 //
-multiPoint#0e1ae81e a:3*[int] b:3*[Int] c:3*[int32s] d:3*[Int32s] e:3*[myInt32] f:3*[MyInt32]= MultiPoint;
-
-nativeWrappers#344ddf50 a:int b:Int c:int32s d:Int32s e:myInt32 f:MyInt32 = NativeWrappers; // combinator comment
 //----- Test Multiple bools
 boolFalse#bc799737 = Bool;
 boolTrue#997275b5 = Bool;
 
-a.myTrue#00000001 = a.MyBool;
-a.myFalse#00000002 = a.MyBool;
 //----- Test Common Types
 
 resultFalse#27930a7b {t:Type} = Maybe t;
@@ -48,202 +36,46 @@ dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
 dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
 
 true = True; // this can be used as void type and serialized to empty array in PHP
-useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind
 
-//---- test recursive struct without union as result
-list {X:Type} flag:# head:flag.0?X tail:flag.0?(list X) = List X;
+// testX a:# c:a*[int] b:a.0?int = TestX;
+// testY a:# c:tuple<int, a> b:a.0?int = TestY;
 
-//---- test bytes version propagation
-noStr x:int = NoStr;
-useStr x:string = UseStr;
-halfStr x:noStr y:useStr = HalfStr;
-ab.topLevel1 a:noStr b:noStr = ab.TopLevel1;
-
-ab.topLevel2 a:noStr b:useStr = ab.TopLevel2;
-// skipped comment
-
-// comment for TopLevel3
-// also comment for TopLevel3
-cd.topLevel3 a:useStr b:halfStr = cd.TopLevel3;
-//----- Test Dependent types
 a.inner {I:#} a:I*[int] = a.Inner I;
 a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
 a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;
-//---- test maybe
-maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;
-testMaybe n:# a:(Maybe int) b:(Maybe Int)
-    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
-    e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;
 
-ab.myType x:int = ab.MyType;
-cd.myType x:int = cd.MyType;
+curl.responseOk#57d7a33a
+  field_mask:   #
+  http_code:    int
+  http_headers: %(Dictionary string)
+  http_body:    field_mask.0?string
+  = curl.Response;
 
-testMaybe2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;
-ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;
-
-innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
-maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3))
-
-// This comment is before field e
-// Second line of comment before field e
-    e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int))
-    i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;
-//----- Test Recursive types
-myNat fields_mask:# a:fields_mask.0?myNat = MyNat;
-
-myZero = MyNat2;
-myPlus a:MyNat2 = MyNat2; // struct with field
-
-myZero3 = MyNat3;
-myPlus3 MyNat3 = MyNat3; // typedef
-
-// ban such things
-cycleTuple n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?3*[int] = CycleTuple;
-
-hren next:(Maybe hren) = Hren;
-//----- Test Recursive between namespaces
-cyc1.myCycle fields_mask:# a:fields_mask.0?cyc2.myCycle = cyc1.MyCycle;
-cyc2.myCycle fields_mask:# a:(Maybe cyc3.myCycle) b:a.Color = cyc2.MyCycle;
-cyc3.myCycle fields_mask:# a:(vector cyc1.myCycle) = cyc3.MyCycle;
-
-ab.useCycle a:cyc2.myCycle b:(vector a.Color) = ab.UseCycle;
-cd.useCycle a:cyc2.myCycle b:(Maybe a.Color) = cd.UseCycle;
-//----- Test Bracket replace
-inner {X:#} a:int = Inner X;
-replace1 {n:#} a:[int] = Replace1 n;
-replace2 n:# a:[int] = Replace2;
-replace3 a:3*[int] = Replace3;
-replace4 {n:#} a:n*[int] = Replace4 n;
-replace5 n:# a:n*[int] = Replace5;
-replace6 # a:[int] = Replace6;
-replace17 # x:[int] a:int # y:[int] = Replace17;
-
-replace n:# a:(replace1 n) a1:(replace1 3) b:replace2
- c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6
-= Replace;
-
-
-//----- Unions
-unionArgsXXX1 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;
-unionArgsXXX2 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;
-
-unionArgsUse k:# n:# a:(UnionArgsXXX int k) b:(UnionArgsXXX long n) = UnionArgsUse;
-
-a.uNionA a:int = a.MyUnion;
-au.nionA b:int = a.MyUnion;
-
-ab.empty = ab.Response; // Union comment - Empty
-ab.code x:int = ab.Response; // Union comment - Code
-ab.alias int = ab.Response;
-
-// Also union comment
-// Multiline Alias
-cd.response x:int str:string = ab.Response;
-
-
-useResponse n:# x:[ab.Response] = UseResponse;
-
-// remove common prefix
-ab.counterChangeRequestPeriodsMany
-  objects_peridos:(vector int)
-  = ab.CounterChangeRequestPeriods;
-
-ab.counterChangeRequestPeriodsOne
-  period:long
-  = ab.CounterChangeRequestPeriods;
-//----- enums
-a.color = a.Color;
-a.red   = a.Color; // Enum comment - red
-a.green = a.Color; // Enum comment - green
-b.red   = a.Color;
-a.blue  = a.Color; // Enum comment - blue, but
-// continues on the next line
-
-//----- Test Dictionaries
-usefulService.userEntityPaymentItemPromo#24c7ec9f
-  {fields_mask: #}
-  content: string
-  = usefulService.UserEntityPaymentItemPromo fields_mask;
-
-usefulService.userEntityPaymentItem#4f798680
-  {fields_mask: #}
-  id: string
-  promo: (Maybe (usefulService.UserEntityPaymentItemPromo fields_mask))
-  = usefulService.UserEntityPaymentItem fields_mask;
-
-usefulService.getUserEntityResult#e494698a
-  {fields_mask: #}
-  entity_id: string
-  payment_items: (Maybe (Dictionary (usefulService.UserEntityPaymentItem fields_mask)))
-  = usefulService.GetUserEntityResult fields_mask;
-
-@readwrite
-usefulService.getUserEntity#3c857e52
-  fields_mask: #
-  stage_id: fields_mask.0?string
-  => Maybe (usefulService.GetUserEntityResult fields_mask);
+curl.responseError#af514651
+  field_mask:   #
+  error_code:   int
+  error_string: string
+  = curl.Response;
 
 ---functions---
 
----types---
-
-//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;
-//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;
-dictionaryElem {k:Type} {v:Type} key:k value:v = DictionaryElem k v;
-
-useDictUgly#fb9ce817 n:#
-//    # a:[(dictionaryElemUgly n int string)]
-//    # b:[(dictionaryElemStrange string)]
-    # c:[(dictionaryElem (pair int int) int)]
-    # d:[(dictionaryElem (tuple string n) int)]
-    # e:[(dictionaryElem (pair Bool a.Color) int)]
-    # f:[(dictionaryElem (pair float double) int)]
-    # g:[(dictionaryElem (pair int (pair multiPoint string)) int)]
-    # x:[(dictionaryElem int (pair int int))]
-    # y:[(dictionaryElem long (pair int int))]
-    # z:[(dictionaryElem string (pair int int))]
-     = UseDictUgly;
-
-ab.useDictString#3325d884 fields_mask:#
-  tags:    %(Dictionary string)
-  = ab.UseDictString;
-//----- Test function calls to and from namespaces
-typeA x:int = TypeA;
-typeB x:int = TypeB;
-typeC x:ab.typeA = TypeC;
-typeD x:cd.typeA = TypeD;
-
-ab.typeA x:int = ab.TypeA;
-ab.typeB x:ab.typeA = ab.TypeB;
-ab.typeC x:cd.typeA = ab.TypeC;
-ab.typeD x:typeA = ab.TypeD;
-
-cd.typeA x:int = cd.TypeA;
-cd.typeB x:ab.typeA = cd.TypeB;
-cd.typeC x:ab.typeA = cd.TypeC;
-cd.typeD x:typeA = cd.TypeD;
-
-service5.emptyOutput#ff8f7db8 = service5.Output;
-service5.stringOutput#dc170ff4 http_code:int response:string = service5.Output;
-
-service5Long.emptyOutput#ff8f7db9 = service5Long.Output;
-service5Long.stringOutput#dc170ff7 http_code:long response:string = service5Long.Output;
-
-//hrenAlias {T:Type} {N:#} (Tuple T N) = HrenAlias T N;
-//topHrenAlias our_n:# our_m:# a:our_n*[int] b:(Tuple int our_m) c:our_n*[our_m*[int]] => HrenAlias (Inner our_n) our_m;
-//topHrenAlias2 our_n:# our_m:# => HrenAlias (Tuple (Inner 3) our_n) our_m;
-//topHrenAlias3 our_n:# our_m:# => Vector (Vector (Inner 3));
-
-@read ab.call1 x:ab.typeA => ab.TypeB;
-@read ab.call2 x:ab.typeA => cd.TypeB;
-@read ab.call3 x:ab.typeA => TypeB;
-@read ab.call4 x:cd.typeA => ab.TypeB;
-@read ab.call5 x:cd.typeA => cd.TypeB;
-@read ab.call6 x:cd.typeA => TypeB;
-@read ab.call7 x:typeA => ab.TypeB;
-@read ab.call8 x:typeA => cd.TypeB;
-@read ab.call9 x:typeA => TypeB;
-@read ab.call10 => a.Color;
-@read ab.call11 x:a.Color => a.Color;
-
-// @write logs2.addIndex      type_id:int field:%String => Bool; // Test that %String is canonically resolved into primitive string
+@kphp
+curl.request#3f5a4651
+  field_mask: #
+  method:             string
+  url:                string
+  headers:            field_mask.0?%(Dictionary string)
+  body:               field_mask.1?string
+  timeout:            field_mask.2?int
+  timeout_connection: field_mask.3?int
+  max_redirs:         field_mask.4?int
+  ssl_version:        field_mask.5?int
+  resolve_ipv:        field_mask.6?int
+  http_proxy:         field_mask.7?string
+  limit:              field_mask.8?int
+  route:              field_mask.9?string
+  version:            field_mask.10?int
+  origin:             field_mask.11?string
+  tls_cert:           field_mask.12?string
+  tls_cert_pk:        field_mask.13?string
+  = curl.Response;

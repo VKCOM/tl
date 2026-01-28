@@ -64,7 +64,7 @@ func runMain(opt *puregen.Options) error {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
 	}
 
-	kernel := pure.NewKernel()
+	kernel := pure.NewKernel(&opt.Kernel)
 
 	// parse tl1
 	pathsTL1, err := utils.WalkDeterministic(".tl", args...)
@@ -86,7 +86,7 @@ func runMain(opt *puregen.Options) error {
 			return err
 		}
 	}
-	if err := kernel.Compile(&opt.Kernel); err != nil {
+	if err := kernel.Compile(); err != nil {
 		return err
 	}
 	switch opt.Language {

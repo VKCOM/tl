@@ -304,10 +304,8 @@ func (t *TL2Field) Print(sb *strings.Builder) {
 }
 
 func (t *TL2TypeRef) Print(sb *strings.Builder) {
-	if t.IsBracket {
-		if t.BracketType != nil {
-			t.BracketType.Print(sb)
-		}
+	if t.BracketType != nil {
+		t.BracketType.Print(sb)
 	} else {
 		t.SomeType.Print(sb)
 	}

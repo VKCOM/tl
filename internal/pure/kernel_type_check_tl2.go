@@ -53,7 +53,7 @@ func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeR
 }
 
 func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate) error {
-	if tr.IsBracket {
+	if tr.IsBracket() {
 		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: tr.BracketType.ArrayType}, leftArgs)
 		if err != nil {
 			return err
@@ -115,7 +115,7 @@ func (k *Kernel) typeCheckArgument(arg tlast.TL2TypeArgument, leftArgs []tlast.T
 	if arg.IsNumber {
 		return tlast.TL2TypeCategory{IsNatValue: true}, nil
 	}
-	if !arg.Type.IsBracket && arg.Type.SomeType.Name.Namespace == "" {
+	if !arg.Type.IsBracket() && arg.Type.SomeType.Name.Namespace == "" {
 		for _, la := range leftArgs {
 			if arg.Type.SomeType.Name.Name == la.Name {
 				if len(arg.Type.SomeType.Arguments) != 0 {

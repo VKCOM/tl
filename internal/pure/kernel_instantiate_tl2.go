@@ -42,7 +42,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.
 	if tr.IsNumber {
 		return tr, nil
 	}
-	if tr.Type.IsBracket {
+	if tr.Type.IsBracket() {
 		bracketType := *tr.Type.BracketType
 		if bracketType.HasIndex {
 			ic, err := k.resolveArgument(bracketType.IndexType, leftArgs, actualArgs)
@@ -89,7 +89,7 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
-	if tr.IsBracket {
+	if tr.IsBracket() {
 		log.Printf("creating a bracket instance of type %s", canonicalName)
 		// must store pointer before children GetInstance() terminates recursion
 		// this instance stays not initialized in case of error, but kernel then is not consistent anyway

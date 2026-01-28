@@ -48,12 +48,7 @@ type ResolvedTL2References struct {
 
 func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tlast.TL2TypeRef, err error) {
 	newRef.PR = ref.PR
-	if ref.IsBracket {
-		newRef.IsBracket = true
-		if ref.BracketType == nil {
-			err = ref.PR.BeautifulError(fmt.Errorf("no bracket parsed"))
-			return
-		}
+	if ref.IsBracket() {
 		newRef.BracketType = new(tlast.TL2BracketType)
 		oldBracket := ref.BracketType
 		newBracket := newRef.BracketType
@@ -120,7 +115,7 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 				newType.Arguments[i].IsNumber = true
 				newType.Arguments[i].Number = argument.Number
 			} else {
-				if !argument.Type.IsBracket {
+				if !argument.Type.IsBracket() {
 					if resolvedNumber, ok := rtl2c.ResolvedNats[argument.Type.SomeType.Name.String()]; ok {
 						newType.Arguments[i].IsNumber = true
 						newType.Arguments[i].Number = resolvedNumber
@@ -156,10 +151,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		gen.generatedTypesList = append(gen.generatedTypesList, &kernelType)
 	}
 
-	if resolvedRef.IsBracket {
-		if resolvedRef.BracketType == nil {
-			return nil, resolvedRef.PR.BeautifulError(fmt.Errorf("expected bracket type declaration but it wasn't parsed"))
-		}
+	if resolvedRef.IsBracket() {
 		return gen.genBracketTypeTL2(&kernelType, *resolvedRef.BracketType)
 	}
 	typeApplication := resolvedRef.SomeType
@@ -740,7 +732,7 @@ func (gen *Gen2) genMaybeTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinato
 		if len(valueVariant.Fields) != 1 ||
 			valueVariant.Fields[0].IsOptional ||
 			valueVariant.Fields[0].IsIgnored ||
-			valueVariant.Fields[0].Type.IsBracket ||
+			valueVariant.Fields[0].Type.IsBracket() ||
 			valueVariant.Fields[0].Type.SomeType.Name.String() != comb.TypeDecl.TemplateArguments[0].Name {
 			return nil, comb.TypeDecl.PRName.BeautifulError(nonMaybeErr)
 		}
@@ -889,7 +881,7 @@ func (w *TypeRWWrapper) wrapperNameTail() (tail string) {
 }
 
 func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
-	if ref.IsBracket {
+	if ref.IsBracket() {
 		return false
 	}
 	typeApplication := ref.SomeType
