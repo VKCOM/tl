@@ -269,64 +269,41 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
 
-	result := make([]string, 0)
-	result = append(result,
+	cc := NewPhpCodeCreator()
+	cc.AddLines(
 		fmt.Sprintf("%s = 0;", localCurrentSize),
 		fmt.Sprintf("%s_index = $context_sizes->push_back(0);", localCurrentSize),
-		fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 	)
 
-	// write inner part
-	innerPart := make([]string, 0)
-	innerPart = append(innerPart,
-		fmt.Sprintf("%[1]s = (1 << 0) + (1 << 1);", localBlock),
-		fmt.Sprintf("%[1]s_index = $context_blocks->push_back(%[1]s);", localBlock),
-		fmt.Sprintf("%[1]s += 1 + 1;", localCurrentSize),
-	)
-
-	var newArgs *TypeArgumentsTree
-	if args != nil {
-		newArgs = args.children[0]
-	}
-	innerPart = append(innerPart, trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, usedBytesPointer, false)...)
-	isSizeConstant, trivialSize := trw.element.t.PhpTL2TrivialSize(targetName, false, trw.element.recursive)
-	sizeValue := fmt.Sprintf("$context_sizes->get_value(%[1]s_index)", localCurrentSize)
-	if len(trivialSize) != 0 {
-		sizeValue = trivialSize
-	}
-
-	innerTab := ""
-	if !isSizeConstant {
-		innerPart = append(innerPart,
-			fmt.Sprintf("if (%[1]s != 0) {", sizeValue),
+	cc.If(fmt.Sprintf("!is_null(%[1]s)", targetName), func(cc *BasicCodeCreator[PhpHelder]) {
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = (1 << 0) + (1 << 1);", localBlock),
+			fmt.Sprintf("%[1]s_index = $context_blocks->push_back(%[1]s);", localBlock),
+			fmt.Sprintf("%[1]s += 1 + 1;", localCurrentSize),
 		)
-		innerTab = "  "
-	}
-	innerPart = append(innerPart,
-		utils.ShiftAll([]string{
-			fmt.Sprintf("%[1]s += %[2]s;", localCurrentSize, sizeValue),
-		}, innerTab)...,
-	)
-	if trw.element.t.trw.isSizeWrittenInData() {
-		innerPart = append(innerPart,
-			utils.ShiftAll([]string{
-				fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localCurrentSize, sizeValue),
-			}, innerTab)...,
-		)
-	}
-	if !isSizeConstant {
-		innerPart = append(innerPart,
-			"}",
-		)
-	}
-	// add it with shift
-	result = append(result, utils.ShiftAll(innerPart, "  ")...)
+		var newArgs *TypeArgumentsTree
+		if args != nil {
+			newArgs = args.children[0]
+		}
+		cc.AddLines(trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, localCurrentSize, false)...)
+	})
 
-	result = append(result, "}")
-	// add actual size
-	result = append(result, fmt.Sprintf("$context_sizes->set_value(%[1]s_index, %[1]s);", localCurrentSize))
+	updateSizeState := func(cc *PhpCodeCreator) {
+		cc.AddLines(fmt.Sprintf("$context_sizes->set_value(%[1]s_index, %[1]s);", localCurrentSize))
+		cc.AddLines(fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize))
+	}
 
-	return result
+	if canOmit {
+		cc.IfElse(fmt.Sprintf("%[1]s != 0", localCurrentSize), func(cc *BasicCodeCreator[PhpHelder]) {
+			updateSizeState(cc)
+		}, func(cc *BasicCodeCreator[PhpHelder]) {
+			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s_index);", localCurrentSize))
+		})
+	} else {
+		updateSizeState(&cc)
+	}
+
+	return cc.Print()
 }
 
 func (trw *TypeRWMaybe) PhpDefaultInit() string {
