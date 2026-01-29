@@ -2165,7 +2165,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, false)
+			calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
 			return calcText
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
