@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -76,7 +77,7 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 		constructorNames[typ.Construct.Name.String()] = typ // overwrite if same, collision check is in another place
 		typeNames[typ.TypeDecl.Name.String()] = typ         // overwrite if same, collision check is in another place
 		for _, field := range typ.Fields {
-			if field.Excl && !LegacyEnableExclamation(typ.Construct.Name.String()) {
+			if field.Excl && !purelegacy.EnableExclamation(typ.Construct.Name.String()) {
 				return tl, field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
 			}
 		}

@@ -20,6 +20,7 @@ import (
 
 	"github.com/TwiN/go-color"
 	"github.com/google/go-cmp/cmp"
+	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
@@ -1758,7 +1759,7 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 			}
 			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
 			if EnableWarningsSimpleTypeName && strings.ToLower(cName.Name) != typePrefix &&
-				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
+				!purelegacy.EnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
 				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
 				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
 				if gen.options.WarningsAreErrors {
@@ -1796,7 +1797,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 	for _, typ := range types {
 		conName := strings.ToLower(typ.Construct.Name.Name)
 		if EnableWarningsUnionNamespace && typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
-			!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
+			!purelegacy.EnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
 			utils.DoLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
@@ -1808,7 +1809,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 		if EnableWarningsUnionNamePrefix &&
 			!strings.HasPrefix(conName, typePrefix) &&
 			!strings.HasSuffix(conName, typeSuffix) &&
-			!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
+			!purelegacy.EnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
 			utils.DoLint(typ.CommentRight) { // same check as in generateType
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
@@ -1819,7 +1820,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 			continue
 		}
 		if EnableWarningsUnionNameExact && conName == typePrefix &&
-			!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
+			!purelegacy.EnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
 			utils.DoLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
 			e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
@@ -2549,7 +2550,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	}
 
 	for _, typ := range tl {
-		if LegacyGenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
+		if purelegacy.GenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
 			t := tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
 			argT := tlast.TypeRef{Type: tlast.Name{
 				Namespace: "",
@@ -2609,7 +2610,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		}
 	}
 
-	LegacyPrintGlobalMap()
+	purelegacy.PrintGlobalMap()
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0

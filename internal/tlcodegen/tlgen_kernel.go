@@ -11,6 +11,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
@@ -565,7 +566,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		if newField.t.IsTrueType() && !newField.Bare() &&
 			newField.t.origTL[0].TypeDecl.Name.String() == "True" &&
 			newField.t.origTL[0].Construct.Name.String() == "true" &&
-			!LegacyAllowTrueBoxed(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
+			!purelegacy.AllowTrueBoxed(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
 			utils.DoLint(field.CommentRight) {
 			// We compare type by name, because there is examples of other true types which are to be extended
 			// to unions or have added fields in the future
@@ -578,7 +579,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		if _, ok := newField.t.trw.(*TypeRWBool); ok {
 			if newField.t.origTL[0].TypeDecl.Name.String() == "Bool" &&
 				newField.fieldMask != nil && !newField.fieldMask.isArith && newField.fieldMask.isField &&
-				!LegacyAllowBoolFieldsmask(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
+				!purelegacy.AllowBoolFieldsmask(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
 				utils.DoLint(field.CommentRight) {
 				// We compare type by name to make warning more narrow at first.
 				e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, you probably want to use 'true' instead of 'Bool'"))
