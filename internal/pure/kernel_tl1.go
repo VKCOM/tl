@@ -10,8 +10,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
+	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 var (
@@ -124,6 +127,11 @@ func (k *Kernel) CompileTL1() error {
 			boolCombinators = append(boolCombinators, typ)
 			continue
 		}
+		for _, field := range typ.Fields {
+			if field.Excl && !purelegacy.EnableExclamation(typ.Construct.Name.String()) {
+				return field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
+			}
+		}
 		conName := typ.Construct.Name.String()
 		if col, ok := allConstructors[conName]; ok {
 			// typeA = TypeA;
@@ -206,7 +214,7 @@ func (k *Kernel) CompileTL1() error {
 			if typ[0].IsFunction {
 				return fmt.Errorf("internal error - function %q must not be in type descriptors", cName)
 			}
-			//typePrefix := strings.ToLower(utils.LowerFirst(tName.Name))
+			typePrefix := strings.ToLower(utils.ToLowerFirst(tName.Name))
 
 			if cName.Namespace != tName.Namespace {
 				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor namespace should exactly match type namespace"))
@@ -214,16 +222,15 @@ func (k *Kernel) CompileTL1() error {
 				return tlast.BeautifulError2(e1, e2)
 			}
 			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
-			// TODO - copy from tlgen.go
-			//if EnableWarningsSimpleTypeName && strings.ToLower(cName.Name) != typePrefix &&
-			//	!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) && doLint(typ[0].CommentRight) {
-			//	e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
-			//	e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
-			//	if gen.options.WarningsAreErrors {
-			//		return tlast.BeautifulError2(e1, e2)
-			//	}
-			//	tlast.BeautifulError2(e1, e2).PrintWarning(gen.options.ErrorWriter, nil)
-			//}
+			if strings.ToLower(cName.Name) != typePrefix &&
+				!purelegacy.EnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
+				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
+				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
+				if k.opts.WarningsAreErrors {
+					return tlast.BeautifulError2(e1, e2)
+				}
+				tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+			}
 			kt := &KernelType{
 				originTL2:     false,
 				combTL1:       typ,
@@ -239,7 +246,7 @@ func (k *Kernel) CompileTL1() error {
 			}
 			continue
 		}
-		if err := checkUnionElementsCompatibility(typ); err != nil {
+		if err := k.checkUnionElementsCompatibility(typ); err != nil {
 			return err
 		}
 		kt := &KernelType{
@@ -302,47 +309,45 @@ func (k *Kernel) CompileTL1() error {
 	return nil
 }
 
-func checkUnionElementsCompatibility(types []*tlast.Combinator) error {
+func (k *Kernel) checkUnionElementsCompatibility(types []*tlast.Combinator) error {
 	// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
-	// TODO - copy from tlgen.go
-	//typePrefix := strings.ToLower(utils.LowerFirst(types[0].TypeDecl.Name.Name))
-	//typeSuffix := strings.ToLower(types[0].TypeDecl.Name.Name)
-	//for _, typ := range types {
-	//	conName := strings.ToLower(typ.Construct.Name.Name)
-	//	if EnableWarningsUnionNamespace && typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
-	//		!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
-	//		doLint(typ.CommentRight) {
-	//		e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
-	//		e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
-	//		if options.WarningsAreErrors {
-	//			return tlast.BeautifulError2(e1, e2)
-	//		}
-	//		tlast.BeautifulError2(e1, e2).PrintWarning(options.ErrorWriter, nil)
-	//	}
-	//	if EnableWarningsUnionNamePrefix &&
-	//		!strings.HasPrefix(conName, typePrefix) &&
-	//		!strings.HasSuffix(conName, typeSuffix) &&
-	//		!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
-	//		doLint(typ.CommentRight) { // same check as in generateType
-	//		e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
-	//		e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
-	//		if options.WarningsAreErrors {
-	//			return tlast.BeautifulError2(e1, e2)
-	//		}
-	//		tlast.BeautifulError2(e1, e2).PrintWarning(options.ErrorWriter, nil)
-	//		continue
-	//	}
-	//	if EnableWarningsUnionNameExact && conName == typePrefix &&
-	//		!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
-	//		doLint(typ.CommentRight) {
-	//		e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
-	//		e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
-	//		if options.WarningsAreErrors {
-	//			return tlast.BeautifulError2(e1, e2)
-	//		}
-	//		tlast.BeautifulError2(e1, e2).PrintWarning(options.ErrorWriter, nil)
-	//	}
-	//}
+	typePrefix := strings.ToLower(utils.ToLowerFirst(types[0].TypeDecl.Name.Name))
+	typeSuffix := strings.ToLower(types[0].TypeDecl.Name.Name)
+	for _, typ := range types {
+		conName := strings.ToLower(typ.Construct.Name.Name)
+		if typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
+			!purelegacy.EnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
+			utils.DoLint(typ.CommentRight) {
+			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
+			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
+			if k.opts.WarningsAreErrors {
+				return tlast.BeautifulError2(e1, e2)
+			}
+			tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+		}
+		if !strings.HasPrefix(conName, typePrefix) &&
+			!strings.HasSuffix(conName, typeSuffix) &&
+			!purelegacy.EnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
+			utils.DoLint(typ.CommentRight) { // same check as in generateType
+			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
+			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
+			if k.opts.WarningsAreErrors {
+				return tlast.BeautifulError2(e1, e2)
+			}
+			tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+			continue
+		}
+		if conName == typePrefix &&
+			!purelegacy.EnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
+			utils.DoLint(typ.CommentRight) {
+			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
+			e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
+			if k.opts.WarningsAreErrors {
+				return tlast.BeautifulError2(e1, e2)
+			}
+			tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+		}
+	}
 	base := types[0]
 	for _, typ := range types[1:] {
 		cur := typ.Construct.Name.String()

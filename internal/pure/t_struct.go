@@ -9,7 +9,9 @@ package pure
 import (
 	"fmt"
 
+	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -364,6 +366,19 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			ins:     fieldIns,
 			natArgs: natArgs,
 			bare:    fieldBare,
+		}
+		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
+			// newField.t.origTL[0].TypeDecl.Name.String() == "True" &&
+			// newField.t.origTL[0].Construct.Name.String() == "true" &&
+			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&
+			utils.DoLint(fieldDef.CommentRight) {
+			// We compare type by name, because there is examples of other true types which are to be extended
+			// to unions or have added fields in the future
+			e1 := fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("true type fields should be bare, use 'true' or '%%True' instead"))
+			if k.opts.WarningsAreErrors {
+				return nil, e1
+			}
+			e1.PrintWarning(k.opts.ErrorWriter, nil)
 		}
 		if fieldDef.Mask != nil {
 			if fieldDef.Mask.BitNumber >= 32 {

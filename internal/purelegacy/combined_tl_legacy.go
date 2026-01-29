@@ -4,14 +4,16 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package tlcodegen
+package purelegacy
 
 import (
 	"fmt"
 	"sort"
 )
 
-// All compatibility code that will be removed after some fixes to TL itself
+// For the long time, TL generator/linter allowed too much flexibility.
+// We prohibit new instances of many bad constructions for now.
+// Later when we stop writing more TL1, we will decide what should we do with those.
 
 type legacyPair struct {
 	conName   string
@@ -20,7 +22,7 @@ type legacyPair struct {
 
 var legacyExceptions []legacyPair // use it to populate this file with content of combined tl
 
-func LegacyPrintGlobalMap() {
+func PrintGlobalMap() {
 	sort.Slice(legacyExceptions, func(i, j int) bool {
 		if legacyExceptions[i].conName != legacyExceptions[j].conName {
 			return legacyExceptions[i].conName < legacyExceptions[j].conName
@@ -39,7 +41,7 @@ func LegacyPrintGlobalMap() {
 	}
 }
 
-func LegacyEnableExclamation(conFullName string) bool {
+func EnableExclamation(conFullName string) bool {
 	if conFullName == "rpcDestActor" {
 		return true
 	}
@@ -76,7 +78,7 @@ func LegacyEnableExclamation(conFullName string) bool {
 	return false
 }
 
-func LegacyEnableWarningsUnionNamespaceSkip(conNamespace string, typeNamespace string) bool {
+func EnableWarningsUnionNamespaceSkip(conNamespace string, typeNamespace string) bool {
 	if conNamespace == "messagesLong" && typeNamespace == "messages" {
 		return true
 	}
@@ -102,7 +104,7 @@ func LegacyEnableWarningsUnionNamespaceSkip(conNamespace string, typeNamespace s
 	return false
 }
 
-func LegacyEnableWarningsSimpleTypeNameSkip(conFullName string) bool {
+func EnableWarningsSimpleTypeNameSkip(conFullName string) bool {
 	if conFullName == "healthLoyalty.tmpGetCatalogResultOk" {
 		return true
 	}
@@ -194,11 +196,11 @@ func LegacyEnableWarningsSimpleTypeNameSkip(conFullName string) bool {
 }
 
 // too many of them, impractical
-func LegacyEnableWarningsUnionNamePrefixSkip(conName string, typePrefix string, typeSuffix string) bool {
+func EnableWarningsUnionNamePrefixSkip(conName string, typePrefix string, typeSuffix string) bool {
 	return true // skip all warnings for now
 }
 
-func LegacyEnableWarningsUnionNameExactSkip(conFullName string) bool {
+func EnableWarningsUnionNameExactSkip(conFullName string) bool {
 	if conFullName == "engine.queryResult" {
 		return true
 	}
@@ -227,11 +229,11 @@ func LegacyEnableWarningsUnionNameExactSkip(conFullName string) bool {
 	return false
 }
 
-func LegacyGenerateUnusedNatTemplates(conFullName string) bool {
+func GenerateUnusedNatTemplates(conFullName string) bool {
 	return conFullName == "rpcInvokeReqExtra" || conFullName == "rpcReqResultExtra"
 }
 
-func LegacyAllowTrueBoxed(conFullName string, fieldName string) bool {
+func AllowTrueBoxed(conFullName string, fieldName string) bool {
 	if conFullName == "genericModel.predict" && fieldName == "need_results_float" {
 		return true
 	}
@@ -266,7 +268,8 @@ func LegacyAllowTrueBoxed(conFullName string, fieldName string) bool {
 	return false
 }
 
-func LegacyAllowBoolFieldsmask(conFullName string, fieldName string) bool {
+// pure kernel does not care about this kind of errors
+func AllowBoolFieldsmask(conFullName string, fieldName string) bool {
 	if conFullName == "adsLalProcessing.processing" && fieldName == "is_deleted" {
 		return true
 	}
