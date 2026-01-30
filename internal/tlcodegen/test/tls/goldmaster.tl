@@ -41,9 +41,6 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 dictionaryField {t:Type} key:string value:t = DictionaryField t;
 dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
-// dictionaryField {t:Type} key:string value:t = DictionaryField t;
-// dictionary#1f4c618f {t:Type} # [(dictionaryField t)] = Dictionary t;
-
 dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
 dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
 
@@ -187,21 +184,32 @@ usefulService.getUserEntity#3c857e52
 
 ---types---
 
-//dictionaryElemStrange {v:Type} key:# value:key.31?v = DictionaryElemStrange v;
-//dictionaryElemUgly {f:#} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;
-dictionaryElem {k:Type} {v:Type} key:k value:v = DictionaryElem k v;
+intKeyDictionaryField {t:Type}
+    key:int
+    value:t
+    = IntKeyDictionaryField t;
+
+intKeyDictionary#07bafc42 {t:Type}
+    %(Vector %(intKeyDictionaryField t))
+    = IntKeyDictionary t;
+
+longKeyDictionaryField {t:Type}
+    key:long
+    value:t
+    = LongKeyDictionaryField t;
+
+longKeyDictionary#b424d8f1 {t:Type}
+    %(Vector %(longKeyDictionaryField t))
+    = LongKeyDictionary t;
 
 useDictUgly#fb9ce817 n:#
-//    # a:[(dictionaryElemUgly n int string)]
-//    # b:[(dictionaryElemStrange string)]
-    # c:[(dictionaryElem (pair int int) int)]
-    # d:[(dictionaryElem (tuple string n) int)]
-    # e:[(dictionaryElem (pair Bool a.Color) int)]
-    # f:[(dictionaryElem (pair float double) int)]
-    # g:[(dictionaryElem (pair int (pair multiPoint string)) int)]
-    # x:[(dictionaryElem int (pair int int))]
-    # y:[(dictionaryElem long (pair int int))]
-    # z:[(dictionaryElem string (pair int int))]
+    c:dictionaryAny<pair<int,int>, int>
+    d:intKeyDictionary<tuple<string,n>>
+    e:longKeyDictionary<tuple<string,n>>
+    f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+    x:dictionaryAny<int, pair<int,int>>
+    y:dictionaryAny<long, pair<int,int>>
+    z:dictionaryAny<string, pair<int,int>>
      = UseDictUgly;
 
 ab.useDictString#3325d884 fields_mask:#

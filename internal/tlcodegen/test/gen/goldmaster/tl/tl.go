@@ -24,14 +24,17 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall8"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemLongPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairFloatDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntPairMultiPointStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemStringPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemTupleStringInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyStringPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyStringPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldPairTupleStringTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryPairTupleStringTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlHalfStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe"
@@ -40,8 +43,12 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntKeyDictionaryFieldTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntKeyDictionaryTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLong"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLongKeyDictionaryFieldTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLongKeyDictionaryTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeTest1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeWrapperInt3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMultiPoint"
@@ -50,10 +57,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNativeWrappers"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNoStr"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairFloatDouble"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntPairMultiPointString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairMultiPointString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairTupleStringTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13"
@@ -92,113 +97,124 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseTrue"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorDictionaryFieldPairTupleStringTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntKeyDictionaryFieldTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorLongKeyDictionaryFieldTupleString"
 )
 
 type (
-	Call1                                        = tlCall1.Call1
-	Call2                                        = tlCall2.Call2
-	Call3                                        = tlCall3.Call3
-	Call4                                        = tlCall4.Call4
-	Call5                                        = tlCall5.Call5
-	Call6                                        = tlCall6.Call6
-	Call7                                        = tlCall7.Call7
-	Call8                                        = tlCall8.Call8
-	Call9                                        = tlCall9.Call9
-	CycleTuple                                   = cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
-	DictionaryElemIntPairIntInt                  = tlDictionaryElemIntPairIntInt.DictionaryElemIntPairIntInt
-	DictionaryElemLongPairIntInt                 = tlDictionaryElemLongPairIntInt.DictionaryElemLongPairIntInt
-	DictionaryElemPairFloatDoubleInt             = tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt
-	DictionaryElemPairIntIntInt                  = tlDictionaryElemPairIntIntInt.DictionaryElemPairIntIntInt
-	DictionaryElemPairIntPairMultiPointStringInt = tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt
-	DictionaryElemStringPairIntInt               = tlDictionaryElemStringPairIntInt.DictionaryElemStringPairIntInt
-	DictionaryElemTupleStringInt                 = tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt
-	DictionaryFieldString                        = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryFieldStringBytes                   = tlDictionaryFieldString.DictionaryFieldStringBytes
-	DictionaryString                             = tlDictionaryString.DictionaryString
-	DictionaryStringBytes                        = tlDictionaryString.DictionaryStringBytes
-	HalfStr                                      = tlHalfStr.HalfStr
-	Hren                                         = cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren
-	HrenMaybe                                    = cycle_38a9bf76d71419ee85afa2cdeb3445c4.HrenMaybe
-	InnerMaybe                                   = tlInnerMaybe.InnerMaybe
-	InnerMaybe0                                  = tlInnerMaybe0.InnerMaybe0
-	Int                                          = tlInt.Int
-	Int32s                                       = tlInt32s.Int32s
-	Int64s                                       = tlInt64s.Int64s
-	IntBoxedMaybe                                = tlIntBoxedMaybe.IntBoxedMaybe
-	IntMaybe                                     = tlIntMaybe.IntMaybe
-	Long                                         = tlLong.Long
-	MaybeTest1                                   = tlMaybeTest1.MaybeTest1
-	MaybeWrapperInt3                             = tlMaybeWrapperInt3.MaybeWrapperInt3
-	MultiPoint                                   = tlMultiPoint.MultiPoint
-	MyInt32                                      = tlMyInt32.MyInt32
-	MyInt64                                      = tlMyInt64.MyInt64
-	MyNat                                        = tlMyNat.MyNat
-	MyNat2                                       = cycle_1cc29369792b96d4551962ce180c8b39.MyNat2
-	MyNat3                                       = cycle_730fc36a9abee714fd77cf74c905e6e2.MyNat3
-	MyPlus                                       = cycle_1cc29369792b96d4551962ce180c8b39.MyPlus
-	MyPlus3                                      = cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3
-	MyZero                                       = cycle_1cc29369792b96d4551962ce180c8b39.MyZero
-	MyZero3                                      = cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3
-	NativeWrappers                               = tlNativeWrappers.NativeWrappers
-	NoStr                                        = tlNoStr.NoStr
-	PairFloatDouble                              = tlPairFloatDouble.PairFloatDouble
-	PairIntInt                                   = tlPairIntInt.PairIntInt
-	PairIntPairMultiPointString                  = tlPairIntPairMultiPointString.PairIntPairMultiPointString
-	PairMultiPointString                         = tlPairMultiPointString.PairMultiPointString
-	Replace                                      = tlReplace.Replace
-	Replace1                                     = tlReplace1.Replace1
-	Replace13                                    = tlReplace13.Replace13
-	Replace17                                    = tlReplace17.Replace17
-	Replace2                                     = tlReplace2.Replace2
-	Replace3                                     = tlReplace3.Replace3
-	Replace4                                     = tlReplace4.Replace4
-	Replace43                                    = tlReplace43.Replace43
-	Replace5                                     = tlReplace5.Replace5
-	Replace6                                     = tlReplace6.Replace6
-	String                                       = tlString.String
-	TestMaybe                                    = tlTestMaybe.TestMaybe
-	TestMaybe2                                   = tlTestMaybe2.TestMaybe2
-	True                                         = tlTrue.True
-	TupleCycleTuple                              = tlTupleCycleTuple.TupleCycleTuple
-	TupleCycleTuple2                             = tlTupleCycleTuple2.TupleCycleTuple2
-	TupleInt                                     = tlTupleInt.TupleInt
-	TupleInt0                                    = tlTupleInt0.TupleInt0
-	TupleInt0Maybe                               = tlTupleInt0Maybe.TupleInt0Maybe
-	TupleInt3                                    = tlTupleInt3.TupleInt3
-	TupleInt3BoxedMaybe                          = tlTupleInt3BoxedMaybe.TupleInt3BoxedMaybe
-	TupleInt3Maybe                               = tlTupleInt3Maybe.TupleInt3Maybe
-	TupleIntBoxed0                               = tlTupleIntBoxed0.TupleIntBoxed0
-	TupleIntBoxed0BoxedMaybe                     = tlTupleIntBoxed0BoxedMaybe.TupleIntBoxed0BoxedMaybe
-	TupleIntBoxed3                               = tlTupleIntBoxed3.TupleIntBoxed3
-	TupleIntBoxed3Maybe                          = tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
-	TupleIntMaybe                                = tlTupleIntMaybe.TupleIntMaybe
-	TupleLong                                    = tlTupleLong.TupleLong
-	TupleString                                  = tlTupleString.TupleString
-	TypeA                                        = tlTypeA.TypeA
-	TypeB                                        = tlTypeB.TypeB
-	TypeC                                        = tlTypeC.TypeC
-	TypeD                                        = tlTypeD.TypeD
-	UnionArgsUse                                 = tlUnionArgsUse.UnionArgsUse
-	UnionArgsXXX1Int                             = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX1Int
-	UnionArgsXXX1Long                            = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX1Long
-	UnionArgsXXX2Int                             = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX2Int
-	UnionArgsXXX2Long                            = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX2Long
-	UnionArgsXXXInt                              = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXXInt
-	UnionArgsXXXLong                             = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXXLong
-	UseDictUgly                                  = tlUseDictUgly.UseDictUgly
-	UseResponse                                  = tlUseResponse.UseResponse
-	UseStr                                       = tlUseStr.UseStr
-	UseStrBytes                                  = tlUseStr.UseStrBytes
-	UseTrue                                      = tlUseTrue.UseTrue
-	VectorDictionaryFieldString                  = tlVectorDictionaryFieldString.VectorDictionaryFieldString
-	VectorDictionaryFieldStringBytes             = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
-	VectorInt                                    = tlVectorInt.VectorInt
-	VectorIntBoxedMaybe                          = tlVectorIntBoxedMaybe.VectorIntBoxedMaybe
-	VectorIntMaybe                               = tlVectorIntMaybe.VectorIntMaybe
+	Call1                                           = tlCall1.Call1
+	Call2                                           = tlCall2.Call2
+	Call3                                           = tlCall3.Call3
+	Call4                                           = tlCall4.Call4
+	Call5                                           = tlCall5.Call5
+	Call6                                           = tlCall6.Call6
+	Call7                                           = tlCall7.Call7
+	Call8                                           = tlCall8.Call8
+	Call9                                           = tlCall9.Call9
+	CycleTuple                                      = cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
+	DictionaryAnyIntPairIntInt                      = tlDictionaryAnyIntPairIntInt.DictionaryAnyIntPairIntInt
+	DictionaryAnyLongPairIntInt                     = tlDictionaryAnyLongPairIntInt.DictionaryAnyLongPairIntInt
+	DictionaryAnyPairIntIntInt                      = tlDictionaryAnyPairIntIntInt.DictionaryAnyPairIntIntInt
+	DictionaryAnyStringPairIntInt                   = tlDictionaryAnyStringPairIntInt.DictionaryAnyStringPairIntInt
+	DictionaryFieldAnyIntPairIntInt                 = tlDictionaryFieldAnyIntPairIntInt.DictionaryFieldAnyIntPairIntInt
+	DictionaryFieldAnyLongPairIntInt                = tlDictionaryFieldAnyLongPairIntInt.DictionaryFieldAnyLongPairIntInt
+	DictionaryFieldAnyPairIntIntInt                 = tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt
+	DictionaryFieldAnyStringPairIntInt              = tlDictionaryFieldAnyStringPairIntInt.DictionaryFieldAnyStringPairIntInt
+	DictionaryFieldPairTupleStringTupleString       = tlDictionaryFieldPairTupleStringTupleString.DictionaryFieldPairTupleStringTupleString
+	DictionaryFieldString                           = tlDictionaryFieldString.DictionaryFieldString
+	DictionaryFieldStringBytes                      = tlDictionaryFieldString.DictionaryFieldStringBytes
+	DictionaryPairTupleStringTupleString            = tlDictionaryPairTupleStringTupleString.DictionaryPairTupleStringTupleString
+	DictionaryString                                = tlDictionaryString.DictionaryString
+	DictionaryStringBytes                           = tlDictionaryString.DictionaryStringBytes
+	HalfStr                                         = tlHalfStr.HalfStr
+	Hren                                            = cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren
+	HrenMaybe                                       = cycle_38a9bf76d71419ee85afa2cdeb3445c4.HrenMaybe
+	InnerMaybe                                      = tlInnerMaybe.InnerMaybe
+	InnerMaybe0                                     = tlInnerMaybe0.InnerMaybe0
+	Int                                             = tlInt.Int
+	Int32s                                          = tlInt32s.Int32s
+	Int64s                                          = tlInt64s.Int64s
+	IntBoxedMaybe                                   = tlIntBoxedMaybe.IntBoxedMaybe
+	IntKeyDictionaryFieldTupleString                = tlIntKeyDictionaryFieldTupleString.IntKeyDictionaryFieldTupleString
+	IntKeyDictionaryTupleString                     = tlIntKeyDictionaryTupleString.IntKeyDictionaryTupleString
+	IntMaybe                                        = tlIntMaybe.IntMaybe
+	Long                                            = tlLong.Long
+	LongKeyDictionaryFieldTupleString               = tlLongKeyDictionaryFieldTupleString.LongKeyDictionaryFieldTupleString
+	LongKeyDictionaryTupleString                    = tlLongKeyDictionaryTupleString.LongKeyDictionaryTupleString
+	MaybeTest1                                      = tlMaybeTest1.MaybeTest1
+	MaybeWrapperInt3                                = tlMaybeWrapperInt3.MaybeWrapperInt3
+	MultiPoint                                      = tlMultiPoint.MultiPoint
+	MyInt32                                         = tlMyInt32.MyInt32
+	MyInt64                                         = tlMyInt64.MyInt64
+	MyNat                                           = tlMyNat.MyNat
+	MyNat2                                          = cycle_1cc29369792b96d4551962ce180c8b39.MyNat2
+	MyNat3                                          = cycle_730fc36a9abee714fd77cf74c905e6e2.MyNat3
+	MyPlus                                          = cycle_1cc29369792b96d4551962ce180c8b39.MyPlus
+	MyPlus3                                         = cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3
+	MyZero                                          = cycle_1cc29369792b96d4551962ce180c8b39.MyZero
+	MyZero3                                         = cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3
+	NativeWrappers                                  = tlNativeWrappers.NativeWrappers
+	NoStr                                           = tlNoStr.NoStr
+	PairIntInt                                      = tlPairIntInt.PairIntInt
+	PairTupleStringTupleString                      = tlPairTupleStringTupleString.PairTupleStringTupleString
+	Replace                                         = tlReplace.Replace
+	Replace1                                        = tlReplace1.Replace1
+	Replace13                                       = tlReplace13.Replace13
+	Replace17                                       = tlReplace17.Replace17
+	Replace2                                        = tlReplace2.Replace2
+	Replace3                                        = tlReplace3.Replace3
+	Replace4                                        = tlReplace4.Replace4
+	Replace43                                       = tlReplace43.Replace43
+	Replace5                                        = tlReplace5.Replace5
+	Replace6                                        = tlReplace6.Replace6
+	String                                          = tlString.String
+	TestMaybe                                       = tlTestMaybe.TestMaybe
+	TestMaybe2                                      = tlTestMaybe2.TestMaybe2
+	True                                            = tlTrue.True
+	TupleCycleTuple                                 = tlTupleCycleTuple.TupleCycleTuple
+	TupleCycleTuple2                                = tlTupleCycleTuple2.TupleCycleTuple2
+	TupleInt                                        = tlTupleInt.TupleInt
+	TupleInt0                                       = tlTupleInt0.TupleInt0
+	TupleInt0Maybe                                  = tlTupleInt0Maybe.TupleInt0Maybe
+	TupleInt3                                       = tlTupleInt3.TupleInt3
+	TupleInt3BoxedMaybe                             = tlTupleInt3BoxedMaybe.TupleInt3BoxedMaybe
+	TupleInt3Maybe                                  = tlTupleInt3Maybe.TupleInt3Maybe
+	TupleIntBoxed0                                  = tlTupleIntBoxed0.TupleIntBoxed0
+	TupleIntBoxed0BoxedMaybe                        = tlTupleIntBoxed0BoxedMaybe.TupleIntBoxed0BoxedMaybe
+	TupleIntBoxed3                                  = tlTupleIntBoxed3.TupleIntBoxed3
+	TupleIntBoxed3Maybe                             = tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
+	TupleIntMaybe                                   = tlTupleIntMaybe.TupleIntMaybe
+	TupleLong                                       = tlTupleLong.TupleLong
+	TupleString                                     = tlTupleString.TupleString
+	TypeA                                           = tlTypeA.TypeA
+	TypeB                                           = tlTypeB.TypeB
+	TypeC                                           = tlTypeC.TypeC
+	TypeD                                           = tlTypeD.TypeD
+	UnionArgsUse                                    = tlUnionArgsUse.UnionArgsUse
+	UnionArgsXXX1Int                                = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX1Int
+	UnionArgsXXX1Long                               = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX1Long
+	UnionArgsXXX2Int                                = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX2Int
+	UnionArgsXXX2Long                               = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX2Long
+	UnionArgsXXXInt                                 = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXXInt
+	UnionArgsXXXLong                                = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXXLong
+	UseDictUgly                                     = tlUseDictUgly.UseDictUgly
+	UseResponse                                     = tlUseResponse.UseResponse
+	UseStr                                          = tlUseStr.UseStr
+	UseStrBytes                                     = tlUseStr.UseStrBytes
+	UseTrue                                         = tlUseTrue.UseTrue
+	VectorDictionaryFieldPairTupleStringTupleString = tlVectorDictionaryFieldPairTupleStringTupleString.VectorDictionaryFieldPairTupleStringTupleString
+	VectorDictionaryFieldString                     = tlVectorDictionaryFieldString.VectorDictionaryFieldString
+	VectorDictionaryFieldStringBytes                = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
+	VectorInt                                       = tlVectorInt.VectorInt
+	VectorIntBoxedMaybe                             = tlVectorIntBoxedMaybe.VectorIntBoxedMaybe
+	VectorIntKeyDictionaryFieldTupleString          = tlVectorIntKeyDictionaryFieldTupleString.VectorIntKeyDictionaryFieldTupleString
+	VectorIntMaybe                                  = tlVectorIntMaybe.VectorIntMaybe
+	VectorLongKeyDictionaryFieldTupleString         = tlVectorLongKeyDictionaryFieldTupleString.VectorLongKeyDictionaryFieldTupleString
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

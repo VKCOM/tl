@@ -9,20 +9,17 @@ package tlUseDictUgly
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemLongPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemPairBoolAColorInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemPairFloatDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemPairIntIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemStringPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryElemTupleStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairBoolAColorInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairFloatDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairIntPairMultiPointStringInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemTupleStringInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyStringPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldPairTupleStringTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorIntKeyDictionaryFieldTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorLongKeyDictionaryFieldTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyPairIntIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairTupleStringTupleString"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -31,11 +28,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type UseDictUgly struct {
 	N uint32
-	C []tlDictionaryElemPairIntIntInt.DictionaryElemPairIntIntInt
-	D []tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt
-	E []tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt
-	F []tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt
-	G []tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt
+	C tlDictionaryAnyPairIntIntInt.DictionaryAnyPairIntIntInt
+	D map[int32][]string
+	E map[int64][]string
+	F map[string]tlPairTupleStringTupleString.PairTupleStringTupleString
 	X map[int32]tlPairIntInt.PairIntInt
 	Y map[int64]tlPairIntInt.PairIntInt
 	Z map[string]tlPairIntInt.PairIntInt
@@ -46,54 +42,49 @@ func (UseDictUgly) TLTag() uint32  { return 0xfb9ce817 }
 
 func (item *UseDictUgly) Reset() {
 	item.N = 0
-	item.C = item.C[:0]
-	item.D = item.D[:0]
-	item.E = item.E[:0]
-	item.F = item.F[:0]
-	item.G = item.G[:0]
-	tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
-	tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
-	tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
+	item.C.Reset()
+	tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringReset(item.D)
+	tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringReset(item.E)
+	tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringReset(item.F)
+	tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReset(item.X)
+	tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntReset(item.Y)
+	tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntReset(item.Z)
 }
 
 func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomSize(rg)
-	tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntFillRandom(rg, &item.C)
-	tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntFillRandom(rg, &item.D, item.N)
-	tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntFillRandom(rg, &item.E)
-	tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntFillRandom(rg, &item.F)
-	tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntFillRandom(rg, &item.G)
-	tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntFillRandom(rg, &item.X)
-	tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntFillRandom(rg, &item.Y)
-	tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntFillRandom(rg, &item.Z)
+	item.C.FillRandom(rg)
+	tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringFillRandom(rg, &item.D, item.N)
+	tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringFillRandom(rg, &item.E, item.N)
+	tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringFillRandom(rg, &item.F, item.N, item.N)
+	tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntFillRandom(rg, &item.X)
+	tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntFillRandom(rg, &item.Y)
+	tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntFillRandom(rg, &item.Z)
 }
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntRead(w, &item.C); err != nil {
+	if w, err = item.C.Read(w); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntRead(w, &item.D, item.N); err != nil {
+	if w, err = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringRead(w, &item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntRead(w, &item.E); err != nil {
+	if w, err = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringRead(w, &item.E, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntRead(w, &item.F); err != nil {
+	if w, err = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringRead(w, &item.F, item.N, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(w, &item.G); err != nil {
+	if w, err = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntRead(w, &item.X); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntRead(w, &item.X); err != nil {
+	if w, err = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntRead(w, &item.Y); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntRead(w, &item.Y); err != nil {
-		return w, err
-	}
-	return tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntRead(w, &item.Z)
+	return tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntRead(w, &item.Z)
 }
 
 func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -102,16 +93,19 @@ func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	w = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntWrite(w, item.C)
-	if w, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntWrite(w, item.D, item.N); err != nil {
+	w = item.C.Write(w)
+	if w, err = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringWrite(w, item.D, item.N); err != nil {
 		return w, err
 	}
-	w = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntWrite(w, item.E)
-	w = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(w, item.F)
-	w = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(w, item.G)
-	w = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntWrite(w, item.X)
-	w = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntWrite(w, item.Y)
-	w = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntWrite(w, item.Z)
+	if w, err = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringWrite(w, item.E, item.N); err != nil {
+		return w, err
+	}
+	if w, err = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringWrite(w, item.F, item.N, item.N); err != nil {
+		return w, err
+	}
+	w = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntWrite(w, item.X)
+	w = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntWrite(w, item.Y)
+	w = tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntWrite(w, item.Z)
 	return w, nil
 }
 
@@ -148,9 +142,8 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propNPresented bool
 	var propCPresented bool
 	var rawD []byte
-	var propEPresented bool
-	var propFPresented bool
-	var propGPresented bool
+	var rawE []byte
+	var rawF []byte
 	var propXPresented bool
 	var propYPresented bool
 	var propZPresented bool
@@ -176,7 +169,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "c")
 				}
-				if err := tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntReadJSONGeneral(tctx, in, &item.C); err != nil {
+				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -189,34 +182,26 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return in.Error()
 				}
 			case "e":
-				if propEPresented {
+				if rawE != nil {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "e")
 				}
-				if err := tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntReadJSONGeneral(tctx, in, &item.E); err != nil {
-					return err
+				rawE = in.Raw()
+				if !in.Ok() {
+					return in.Error()
 				}
-				propEPresented = true
 			case "f":
-				if propFPresented {
+				if rawF != nil {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "f")
 				}
-				if err := tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSONGeneral(tctx, in, &item.F); err != nil {
-					return err
+				rawF = in.Raw()
+				if !in.Ok() {
+					return in.Error()
 				}
-				propFPresented = true
-			case "g":
-				if propGPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "g")
-				}
-				if err := tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSONGeneral(tctx, in, &item.G); err != nil {
-					return err
-				}
-				propGPresented = true
 			case "x":
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "x")
 				}
-				if err := tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true
@@ -224,7 +209,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "y")
 				}
-				if err := tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true
@@ -232,7 +217,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propZPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "z")
 				}
-				if err := tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
 					return err
 				}
 				propZPresented = true
@@ -250,32 +235,41 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 		item.N = 0
 	}
 	if !propCPresented {
-		item.C = item.C[:0]
-	}
-	if !propEPresented {
-		item.E = item.E[:0]
-	}
-	if !propFPresented {
-		item.F = item.F[:0]
-	}
-	if !propGPresented {
-		item.G = item.G[:0]
+		item.C.Reset()
 	}
 	if !propXPresented {
-		tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
+		tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReset(item.X)
 	}
 	if !propYPresented {
-		tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
+		tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntReset(item.Y)
 	}
 	if !propZPresented {
-		tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
+		tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntReset(item.Z)
 	}
 	var inDPointer *basictl.JsonLexer
 	inD := basictl.JsonLexer{Data: rawD}
 	if rawD != nil {
 		inDPointer = &inD
 	}
-	if err := tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
+	if err := tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
+		return err
+	}
+
+	var inEPointer *basictl.JsonLexer
+	inE := basictl.JsonLexer{Data: rawE}
+	if rawE != nil {
+		inEPointer = &inE
+	}
+	if err := tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inEPointer, &item.E, item.N); err != nil {
+		return err
+	}
+
+	var inFPointer *basictl.JsonLexer
+	inF := basictl.JsonLexer{Data: rawF}
+	if rawF != nil {
+		inFPointer = &inF
+	}
+	if err := tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringReadJSONGeneral(tctx, inFPointer, &item.F, item.N, item.N); err != nil {
 		return err
 	}
 
@@ -303,14 +297,14 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(tctx, w, item.C)
+	w = item.C.WriteJSONOpt(tctx, w)
 	if (len(item.C) != 0) == false {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
+	if w, err = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.D) != 0) == false {
@@ -319,42 +313,39 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(tctx, w, item.E)
+	if w, err = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
+		return w, err
+	}
 	if (len(item.E) != 0) == false {
 		w = w[:backupIndexE]
 	}
 	backupIndexF := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(tctx, w, item.F)
+	if w, err = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringWriteJSONOpt(tctx, w, item.F, item.N, item.N); err != nil {
+		return w, err
+	}
 	if (len(item.F) != 0) == false {
 		w = w[:backupIndexF]
-	}
-	backupIndexG := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"g":`...)
-	w = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(tctx, w, item.G)
-	if (len(item.G) != 0) == false {
-		w = w[:backupIndexG]
 	}
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(tctx, w, item.X)
+	w = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
+	w = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
 	if (len(item.Y) != 0) == false {
 		w = w[:backupIndexY]
 	}
 	backupIndexZ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"z":`...)
-	w = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
+	w = tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
 	if (len(item.Z) != 0) == false {
 		w = w[:backupIndexZ]
 	}
@@ -385,36 +376,32 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes, true, &item.C); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntCalculateLayout(sizes, true, (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(&item.C)); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes, true, &item.D); sz != 0 {
+	if sizes, sz = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.D); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes, true, &item.E); sz != 0 {
+	if sizes, sz = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.E); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes, true, &item.F); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringCalculateLayout(sizes, true, &item.F); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes, true, &item.G); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
 	currentSize++
-	if sizes, sz = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if sizes, sz = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -455,22 +442,22 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntInternalWriteTL2(w, sizes, true, (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(&item.C)); sz != 0 {
 		currentBlock |= 4
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
 		currentBlock |= 8
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w, sizes, true, &item.F); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalWriteTL2(w, sizes, true, &item.F); sz != 0 {
 		currentBlock |= 32
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w, sizes, true, &item.G); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
 		currentBlock |= 64
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
 		currentBlock |= 128
 	}
 	if currentBlockPosition < len(w) {
@@ -482,11 +469,8 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
 	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
 		currentBlock |= 1
-	}
-	if w, sizes, sz = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
-		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -552,46 +536,46 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.N = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(currentR, &item.C); err != nil {
+		if currentR, err = item.C.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.C = item.C[:0]
+		item.C.Reset()
 	}
 	if block&8 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(currentR, &item.D); err != nil {
+		if currentR, err = tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.D = item.D[:0]
+		tlBuiltinVectorIntKeyDictionaryFieldTupleString.BuiltinVectorIntKeyDictionaryFieldTupleStringReset(item.D)
 	}
 	if block&16 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(currentR, &item.E); err != nil {
+		if currentR, err = tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.E = item.E[:0]
+		tlBuiltinVectorLongKeyDictionaryFieldTupleString.BuiltinVectorLongKeyDictionaryFieldTupleStringReset(item.E)
 	}
 	if block&32 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(currentR, &item.F); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalReadTL2(currentR, &item.F); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F = item.F[:0]
+		tlBuiltinVectorDictionaryFieldPairTupleStringTupleString.BuiltinVectorDictionaryFieldPairTupleStringTupleStringReset(item.F)
 	}
 	if block&64 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(currentR, &item.G); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.G = item.G[:0]
+		tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReset(item.X)
 	}
 	if block&128 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
+		tlBuiltinVectorDictionaryFieldAnyLongPairIntInt.BuiltinVectorDictionaryFieldAnyLongPairIntIntReset(item.Y)
 	}
 	// start the next block
 	if len(currentR) > 0 {
@@ -602,18 +586,11 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		block = 0
 	}
 	if block&1 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
-	}
-	if block&2 != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
-			return currentR, err
-		}
-	} else {
-		tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
+		tlBuiltinVectorDictionaryFieldAnyStringPairIntInt.BuiltinVectorDictionaryFieldAnyStringPairIntIntReset(item.Z)
 	}
 	internal.Unused(currentR)
 	return r, nil

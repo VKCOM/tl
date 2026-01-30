@@ -286,567 +286,6 @@ func (item *PairAInnerAInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ 
 	return item.InternalReadTL2(r)
 }
 
-type PairBoolAColor struct {
-	A bool
-	B AColor
-}
-
-func (PairBoolAColor) TLName() string { return "pair" }
-func (PairBoolAColor) TLTag() uint32  { return 0x0f3c47ab }
-
-func (item *PairBoolAColor) Reset() {
-	item.A = false
-	item.B.Reset()
-}
-
-func (item *PairBoolAColor) FillRandom(rg *basictl.RandGenerator) {
-	item.A = basictl.RandomUint(rg)&1 == 1
-	item.B.FillRandom(rg)
-}
-
-func (item *PairBoolAColor) Read(w []byte) (_ []byte, err error) {
-	if w, err = BoolReadBoxed(w, &item.A); err != nil {
-		return w, err
-	}
-	return item.B.ReadBoxed(w)
-}
-
-func (item *PairBoolAColor) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
-}
-
-func (item *PairBoolAColor) Write(w []byte) []byte {
-	w = BoolWriteBoxed(w, item.A)
-	w = item.B.WriteBoxed(w)
-	return w
-}
-
-func (item *PairBoolAColor) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
-		return w, err
-	}
-	return item.Read(w)
-}
-
-func (item *PairBoolAColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
-func (item *PairBoolAColor) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x0f3c47ab)
-	return item.Write(w)
-}
-
-func (item PairBoolAColor) String() string {
-	return string(item.WriteJSON(nil))
-}
-
-func (item *PairBoolAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
-}
-
-func (item *PairBoolAColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propAPresented bool
-	var propBPresented bool
-
-	if in != nil {
-		in.Delim('{')
-		if !in.Ok() {
-			return in.Error()
-		}
-		for !in.IsDelim('}') {
-			key := in.UnsafeFieldName(true)
-			in.WantColon()
-			switch key {
-			case "a":
-				if propAPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
-				}
-				if err := Json2ReadBool(in, &item.A); err != nil {
-					return err
-				}
-				propAPresented = true
-			case "b":
-				if propBPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
-				}
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
-					return err
-				}
-				propBPresented = true
-			default:
-				return ErrorInvalidJSONExcessElement("pair", key)
-			}
-			in.WantComma()
-		}
-		in.Delim('}')
-		if !in.Ok() {
-			return in.Error()
-		}
-	}
-	if !propAPresented {
-		item.A = false
-	}
-	if !propBPresented {
-		item.B.Reset()
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *PairBoolAColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
-}
-
-func (item *PairBoolAColor) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
-}
-func (item *PairBoolAColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '{')
-	backupIndexA := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"a":`...)
-	w = basictl.JSONWriteBool(w, item.A)
-	if (item.A) == false {
-		w = w[:backupIndexA]
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
-	return append(w, '}')
-}
-
-func (item *PairBoolAColor) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil), nil
-}
-
-func (item *PairBoolAColor) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return ErrorInvalidJSON("pair", err.Error())
-	}
-	return nil
-}
-
-func (item *PairBoolAColor) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 255608747)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	if item.A {
-		currentSize += 1
-		lastUsedByte = currentSize
-	}
-	if sizes, sz = item.B.CalculateLayout(sizes, true); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *PairBoolAColor) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 255608747 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-	if optimizeEmpty && currentSize == 0 {
-		return w, sizes, 0
-	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	if item.A {
-		w = basictl.ByteBoolWriteTL2(w, item.A)
-		currentBlock |= 2
-	}
-	if w, sizes, sz = item.B.InternalWriteTL2(w, sizes, true); sz != 0 {
-		currentBlock |= 4
-	}
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, 1
-}
-
-func (item *PairBoolAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-	sizes, _ = item.CalculateLayout(sizes, false)
-	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
-	if len(sizes2) != 0 {
-		panic("tl2: internal write did not consume all size data")
-	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
-	}
-	return w
-}
-
-func (item *PairBoolAColor) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var index int
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return currentR, err
-		}
-		if index != 0 {
-			return r, ErrorInvalidUnionIndex("pair", index)
-		}
-	}
-	if block&2 != 0 {
-		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.A); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.A = false
-	}
-	if block&4 != 0 {
-		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.B.Reset()
-	}
-	Unused(currentR)
-	return r, nil
-}
-
-func (item *PairBoolAColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-	return item.InternalReadTL2(r)
-}
-
-type PairFloatDouble struct {
-	A float32
-	B float64
-}
-
-func (PairFloatDouble) TLName() string { return "pair" }
-func (PairFloatDouble) TLTag() uint32  { return 0x0f3c47ab }
-
-func (item *PairFloatDouble) Reset() {
-	item.A = 0
-	item.B = 0
-}
-
-func (item *PairFloatDouble) FillRandom(rg *basictl.RandGenerator) {
-	item.A = basictl.RandomFloat(rg)
-	item.B = basictl.RandomDouble(rg)
-}
-
-func (item *PairFloatDouble) Read(w []byte) (_ []byte, err error) {
-	if w, err = basictl.FloatRead(w, &item.A); err != nil {
-		return w, err
-	}
-	return basictl.DoubleRead(w, &item.B)
-}
-
-func (item *PairFloatDouble) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
-}
-
-func (item *PairFloatDouble) Write(w []byte) []byte {
-	w = basictl.FloatWrite(w, item.A)
-	w = basictl.DoubleWrite(w, item.B)
-	return w
-}
-
-func (item *PairFloatDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
-		return w, err
-	}
-	return item.Read(w)
-}
-
-func (item *PairFloatDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
-func (item *PairFloatDouble) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x0f3c47ab)
-	return item.Write(w)
-}
-
-func (item PairFloatDouble) String() string {
-	return string(item.WriteJSON(nil))
-}
-
-func (item *PairFloatDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
-}
-
-func (item *PairFloatDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propAPresented bool
-	var propBPresented bool
-
-	if in != nil {
-		in.Delim('{')
-		if !in.Ok() {
-			return in.Error()
-		}
-		for !in.IsDelim('}') {
-			key := in.UnsafeFieldName(true)
-			in.WantColon()
-			switch key {
-			case "a":
-				if propAPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
-				}
-				if err := Json2ReadFloat32(in, &item.A); err != nil {
-					return err
-				}
-				propAPresented = true
-			case "b":
-				if propBPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
-				}
-				if err := Json2ReadFloat64(in, &item.B); err != nil {
-					return err
-				}
-				propBPresented = true
-			default:
-				return ErrorInvalidJSONExcessElement("pair", key)
-			}
-			in.WantComma()
-		}
-		in.Delim('}')
-		if !in.Ok() {
-			return in.Error()
-		}
-	}
-	if !propAPresented {
-		item.A = 0
-	}
-	if !propBPresented {
-		item.B = 0
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *PairFloatDouble) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
-}
-
-func (item *PairFloatDouble) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
-}
-func (item *PairFloatDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '{')
-	backupIndexA := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"a":`...)
-	w = basictl.JSONWriteFloat32(w, item.A)
-	if (item.A != 0) == false {
-		w = w[:backupIndexA]
-	}
-	backupIndexB := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"b":`...)
-	w = basictl.JSONWriteFloat64(w, item.B)
-	if (item.B != 0) == false {
-		w = w[:backupIndexB]
-	}
-	return append(w, '}')
-}
-
-func (item *PairFloatDouble) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil), nil
-}
-
-func (item *PairFloatDouble) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return ErrorInvalidJSON("pair", err.Error())
-	}
-	return nil
-}
-
-func (item *PairFloatDouble) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 255608747)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	if item.A != 0 {
-		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if item.B != 0 {
-		currentSize += 8
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *PairFloatDouble) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 255608747 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-	if optimizeEmpty && currentSize == 0 {
-		return w, sizes, 0
-	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	if item.A != 0 {
-		w = basictl.FloatWrite(w, item.A)
-		currentBlock |= 2
-	}
-	if item.B != 0 {
-		w = basictl.DoubleWrite(w, item.B)
-		currentBlock |= 4
-	}
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, 1
-}
-
-func (item *PairFloatDouble) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-	sizes, _ = item.CalculateLayout(sizes, false)
-	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
-	if len(sizes2) != 0 {
-		panic("tl2: internal write did not consume all size data")
-	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
-	}
-	return w
-}
-
-func (item *PairFloatDouble) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var index int
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return currentR, err
-		}
-		if index != 0 {
-			return r, ErrorInvalidUnionIndex("pair", index)
-		}
-	}
-	if block&2 != 0 {
-		if currentR, err = basictl.FloatRead(currentR, &item.A); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.A = 0
-	}
-	if block&4 != 0 {
-		if currentR, err = basictl.DoubleRead(currentR, &item.B); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.B = 0
-	}
-	Unused(currentR)
-	return r, nil
-}
-
-func (item *PairFloatDouble) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-	return item.InternalReadTL2(r)
-}
-
 type PairIntInt struct {
 	A int32
 	B int32
@@ -1130,562 +569,6 @@ func (item *PairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte
 	return item.InternalReadTL2(r)
 }
 
-type PairIntPairMultiPointString struct {
-	A int32
-	B PairMultiPointString
-}
-
-func (PairIntPairMultiPointString) TLName() string { return "pair" }
-func (PairIntPairMultiPointString) TLTag() uint32  { return 0x0f3c47ab }
-
-func (item *PairIntPairMultiPointString) Reset() {
-	item.A = 0
-	item.B.Reset()
-}
-
-func (item *PairIntPairMultiPointString) FillRandom(rg *basictl.RandGenerator) {
-	item.A = basictl.RandomInt(rg)
-	item.B.FillRandom(rg)
-}
-
-func (item *PairIntPairMultiPointString) Read(w []byte) (_ []byte, err error) {
-	if w, err = basictl.IntRead(w, &item.A); err != nil {
-		return w, err
-	}
-	return item.B.Read(w)
-}
-
-func (item *PairIntPairMultiPointString) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
-}
-
-func (item *PairIntPairMultiPointString) Write(w []byte) []byte {
-	w = basictl.IntWrite(w, item.A)
-	w = item.B.Write(w)
-	return w
-}
-
-func (item *PairIntPairMultiPointString) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
-		return w, err
-	}
-	return item.Read(w)
-}
-
-func (item *PairIntPairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
-func (item *PairIntPairMultiPointString) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x0f3c47ab)
-	return item.Write(w)
-}
-
-func (item PairIntPairMultiPointString) String() string {
-	return string(item.WriteJSON(nil))
-}
-
-func (item *PairIntPairMultiPointString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
-}
-
-func (item *PairIntPairMultiPointString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propAPresented bool
-	var propBPresented bool
-
-	if in != nil {
-		in.Delim('{')
-		if !in.Ok() {
-			return in.Error()
-		}
-		for !in.IsDelim('}') {
-			key := in.UnsafeFieldName(true)
-			in.WantColon()
-			switch key {
-			case "a":
-				if propAPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
-				}
-				if err := Json2ReadInt32(in, &item.A); err != nil {
-					return err
-				}
-				propAPresented = true
-			case "b":
-				if propBPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
-				}
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
-					return err
-				}
-				propBPresented = true
-			default:
-				return ErrorInvalidJSONExcessElement("pair", key)
-			}
-			in.WantComma()
-		}
-		in.Delim('}')
-		if !in.Ok() {
-			return in.Error()
-		}
-	}
-	if !propAPresented {
-		item.A = 0
-	}
-	if !propBPresented {
-		item.B.Reset()
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *PairIntPairMultiPointString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
-}
-
-func (item *PairIntPairMultiPointString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
-}
-func (item *PairIntPairMultiPointString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '{')
-	backupIndexA := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"a":`...)
-	w = basictl.JSONWriteInt32(w, item.A)
-	if (item.A != 0) == false {
-		w = w[:backupIndexA]
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
-	return append(w, '}')
-}
-
-func (item *PairIntPairMultiPointString) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil), nil
-}
-
-func (item *PairIntPairMultiPointString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return ErrorInvalidJSON("pair", err.Error())
-	}
-	return nil
-}
-
-func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 255608747)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	if item.A != 0 {
-		currentSize += 4
-		lastUsedByte = currentSize
-	}
-	if sizes, sz = item.B.CalculateLayout(sizes, true); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *PairIntPairMultiPointString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 255608747 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-	if optimizeEmpty && currentSize == 0 {
-		return w, sizes, 0
-	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	if item.A != 0 {
-		w = basictl.IntWrite(w, item.A)
-		currentBlock |= 2
-	}
-	if w, sizes, sz = item.B.InternalWriteTL2(w, sizes, true); sz != 0 {
-		currentBlock |= 4
-	}
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, 1
-}
-
-func (item *PairIntPairMultiPointString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-	sizes, _ = item.CalculateLayout(sizes, false)
-	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
-	if len(sizes2) != 0 {
-		panic("tl2: internal write did not consume all size data")
-	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
-	}
-	return w
-}
-
-func (item *PairIntPairMultiPointString) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var index int
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return currentR, err
-		}
-		if index != 0 {
-			return r, ErrorInvalidUnionIndex("pair", index)
-		}
-	}
-	if block&2 != 0 {
-		if currentR, err = basictl.IntRead(currentR, &item.A); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.A = 0
-	}
-	if block&4 != 0 {
-		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.B.Reset()
-	}
-	Unused(currentR)
-	return r, nil
-}
-
-func (item *PairIntPairMultiPointString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-	return item.InternalReadTL2(r)
-}
-
-type PairMultiPointString struct {
-	A MultiPoint
-	B string
-}
-
-func (PairMultiPointString) TLName() string { return "pair" }
-func (PairMultiPointString) TLTag() uint32  { return 0x0f3c47ab }
-
-func (item *PairMultiPointString) Reset() {
-	item.A.Reset()
-	item.B = ""
-}
-
-func (item *PairMultiPointString) FillRandom(rg *basictl.RandGenerator) {
-	item.A.FillRandom(rg)
-	item.B = basictl.RandomString(rg)
-}
-
-func (item *PairMultiPointString) Read(w []byte) (_ []byte, err error) {
-	if w, err = item.A.Read(w); err != nil {
-		return w, err
-	}
-	return basictl.StringRead(w, &item.B)
-}
-
-func (item *PairMultiPointString) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
-}
-
-func (item *PairMultiPointString) Write(w []byte) []byte {
-	w = item.A.Write(w)
-	w = basictl.StringWrite(w, item.B)
-	return w
-}
-
-func (item *PairMultiPointString) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
-		return w, err
-	}
-	return item.Read(w)
-}
-
-func (item *PairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
-func (item *PairMultiPointString) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x0f3c47ab)
-	return item.Write(w)
-}
-
-func (item PairMultiPointString) String() string {
-	return string(item.WriteJSON(nil))
-}
-
-func (item *PairMultiPointString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
-}
-
-func (item *PairMultiPointString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propAPresented bool
-	var propBPresented bool
-
-	if in != nil {
-		in.Delim('{')
-		if !in.Ok() {
-			return in.Error()
-		}
-		for !in.IsDelim('}') {
-			key := in.UnsafeFieldName(true)
-			in.WantColon()
-			switch key {
-			case "a":
-				if propAPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
-				}
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
-					return err
-				}
-				propAPresented = true
-			case "b":
-				if propBPresented {
-					return ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
-				}
-				if err := Json2ReadString(in, &item.B); err != nil {
-					return err
-				}
-				propBPresented = true
-			default:
-				return ErrorInvalidJSONExcessElement("pair", key)
-			}
-			in.WantComma()
-		}
-		in.Delim('}')
-		if !in.Ok() {
-			return in.Error()
-		}
-	}
-	if !propAPresented {
-		item.A.Reset()
-	}
-	if !propBPresented {
-		item.B = ""
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *PairMultiPointString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
-}
-
-func (item *PairMultiPointString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
-}
-func (item *PairMultiPointString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '{')
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
-	backupIndexB := len(w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"b":`...)
-	w = basictl.JSONWriteString(w, item.B)
-	if (len(item.B) != 0) == false {
-		w = w[:backupIndexB]
-	}
-	return append(w, '}')
-}
-
-func (item *PairMultiPointString) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil), nil
-}
-
-func (item *PairMultiPointString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return ErrorInvalidJSON("pair", err.Error())
-	}
-	return nil
-}
-
-func (item *PairMultiPointString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 255608747)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	if sizes, sz = item.A.CalculateLayout(sizes, true); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-	if len(item.B) != 0 {
-		currentSize += basictl.TL2CalculateSize(len(item.B)) + len(item.B)
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *PairMultiPointString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 255608747 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-	if optimizeEmpty && currentSize == 0 {
-		return w, sizes, 0
-	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	if w, sizes, sz = item.A.InternalWriteTL2(w, sizes, true); sz != 0 {
-		currentBlock |= 2
-	}
-	if len(item.B) != 0 {
-		w = basictl.StringWriteTL2(w, item.B)
-		currentBlock |= 4
-	}
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, 1
-}
-
-func (item *PairMultiPointString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-	sizes, _ = item.CalculateLayout(sizes, false)
-	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
-	if len(sizes2) != 0 {
-		panic("tl2: internal write did not consume all size data")
-	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
-	}
-	return w
-}
-
-func (item *PairMultiPointString) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var index int
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return currentR, err
-		}
-		if index != 0 {
-			return r, ErrorInvalidUnionIndex("pair", index)
-		}
-	}
-	if block&2 != 0 {
-		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.A.Reset()
-	}
-	if block&4 != 0 {
-		if currentR, err = basictl.StringReadTL2(currentR, &item.B); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.B = ""
-	}
-	Unused(currentR)
-	return r, nil
-}
-
-func (item *PairMultiPointString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-	return item.InternalReadTL2(r)
-}
-
 type PairPairAInnerAInnerAInnerBoxed3 struct {
 	A PairAInnerAInner
 	B AInner3
@@ -1946,5 +829,286 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []byt
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
+type PairTupleStringTupleString struct {
+	A []string
+	B []string
+}
+
+func (PairTupleStringTupleString) TLName() string { return "pair" }
+func (PairTupleStringTupleString) TLTag() uint32  { return 0x0f3c47ab }
+
+func (item *PairTupleStringTupleString) Reset() {
+	item.A = item.A[:0]
+	item.B = item.B[:0]
+}
+
+func (item *PairTupleStringTupleString) FillRandom(rg *basictl.RandGenerator, nat_X uint32, nat_Y uint32) {
+	BuiltinTupleStringFillRandom(rg, &item.A, nat_X)
+	BuiltinTupleStringFillRandom(rg, &item.B, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) Read(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleStringRead(w, &item.A, nat_X); err != nil {
+		return w, err
+	}
+	return BuiltinTupleStringRead(w, &item.B, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) WriteGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.Write(w, nat_X, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) Write(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleStringWrite(w, item.A, nat_X); err != nil {
+		return w, err
+	}
+	if w, err = BuiltinTupleStringWrite(w, item.B, nat_Y); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *PairTupleStringTupleString) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
+		return w, err
+	}
+	return item.Read(w, nat_X, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) WriteBoxedGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_X, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) WriteBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0x0f3c47ab)
+	return item.Write(w, nat_X, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
+	var rawA []byte
+	var rawB []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "a":
+				if rawA != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
+				}
+				rawA = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "b":
+				if rawB != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
+				}
+				rawB = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("pair", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+	}
+	var inAPointer *basictl.JsonLexer
+	inA := basictl.JsonLexer{Data: rawA}
+	if rawA != nil {
+		inAPointer = &inA
+	}
+	if err := BuiltinTupleStringReadJSONGeneral(tctx, inAPointer, &item.A, nat_X); err != nil {
+		return err
+	}
+
+	var inBPointer *basictl.JsonLexer
+	inB := basictl.JsonLexer{Data: rawB}
+	if rawB != nil {
+		inBPointer = &inB
+	}
+	if err := BuiltinTupleStringReadJSONGeneral(tctx, inBPointer, &item.B, nat_Y); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *PairTupleStringTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_X, nat_Y)
+}
+
+func (item *PairTupleStringTupleString) WriteJSON(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_X, nat_Y)
+}
+func (item *PairTupleStringTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	w = append(w, '{')
+	backupIndexA := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"a":`...)
+	if w, err = BuiltinTupleStringWriteJSONOpt(tctx, w, item.A, nat_X); err != nil {
+		return w, err
+	}
+	if (len(item.A) != 0) == false {
+		w = w[:backupIndexA]
+	}
+	backupIndexB := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"b":`...)
+	if w, err = BuiltinTupleStringWriteJSONOpt(tctx, w, item.B, nat_Y); err != nil {
+		return w, err
+	}
+	if (len(item.B) != 0) == false {
+		w = w[:backupIndexB]
+	}
+	return append(w, '}'), nil
+}
+
+func (item *PairTupleStringTupleString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 255608747)
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
+	if sizes, sz = BuiltinTupleStringCalculateLayout(sizes, true, &item.A); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinTupleStringCalculateLayout(sizes, true, &item.B); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func (item *PairTupleStringTupleString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 255608747 {
+		panic("tl2: tag mismatch between calculate and write")
+	}
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes, 1
+	}
+	oldLen := len(w)
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	if w, sizes, sz = BuiltinTupleStringInternalWriteTL2(w, sizes, true, &item.A); sz != 0 {
+		currentBlock |= 2
+	}
+	if w, sizes, sz = BuiltinTupleStringInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
+		currentBlock |= 4
+	}
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
+}
+
+func (item *PairTupleStringTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes, sizes2 []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *PairTupleStringTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var index int
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+			return currentR, err
+		}
+		if index != 0 {
+			return r, ErrorInvalidUnionIndex("pair", index)
+		}
+	}
+	if block&2 != 0 {
+		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.A); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.A = item.A[:0]
+	}
+	if block&4 != 0 {
+		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.B); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.B = item.B[:0]
+	}
+	Unused(currentR)
+	return r, nil
+}
+
+func (item *PairTupleStringTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

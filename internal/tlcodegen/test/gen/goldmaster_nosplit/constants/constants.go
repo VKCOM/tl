@@ -75,7 +75,6 @@ const (
 	CycleTuple                              = 0xc867fae3 // cycleTuple
 	Dictionary                              = 0x1f4c618f // dictionary
 	DictionaryAny                           = 0x1f4c6190 // dictionaryAny
-	DictionaryElem                          = 0xa69d7dd0 // dictionaryElem
 	DictionaryField                         = 0x239c1b62 // dictionaryField
 	DictionaryFieldAny                      = 0x2c43a65b // dictionaryFieldAny
 	HalfStr                                 = 0x647ddaf5 // halfStr
@@ -85,8 +84,12 @@ const (
 	Int                                     = 0xa8509bda // int
 	Int32s                                  = 0x7934e71f // int32s
 	Int64s                                  = 0xf5609de0 // int64s
+	IntKeyDictionary                        = 0x07bafc42 // intKeyDictionary
+	IntKeyDictionaryField                   = 0x721ea8b9 // intKeyDictionaryField
 	List                                    = 0x02d80cdd // list
 	Long                                    = 0x22076cba // long
+	LongKeyDictionary                       = 0xb424d8f1 // longKeyDictionary
+	LongKeyDictionaryField                  = 0x19701e0b // longKeyDictionaryField
 	MaybeTest1                              = 0xc457763c // maybeTest1
 	MaybeWrapper                            = 0x723390c4 // maybeWrapper
 	MultiPoint                              = 0x0e1ae81e // multiPoint
