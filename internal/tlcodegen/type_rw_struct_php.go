@@ -410,32 +410,26 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args, "")
 				if trw.wr.wantsTL2 {
-					cc := CodeCreator{Shift: "  "}
-					cc.AddLines("if ($this->use_tl2 == 0) {")
-					cc.AddBlock(func(cc *CodeCreator) {
+					cc := NewPhpCodeCreator()
+					cc.IfElse("$this->use_tl2 == 0", func(cc *PhpCodeCreator) {
 						cc.AddLines(writeCallLines...)
-					})
-					cc.AddLines("} else {")
-					cc.AddBlock(func(cc *CodeCreator) {
+					}, func(cc *PhpCodeCreator) {
 						cc.AddLines(
 							"$used_bytes = 0;",
 							`$context_sizes = new TL\tl2_context();`,
 							`$context_blocks = new TL\tl2_context();`,
 						)
+						cc.Comments("calculate sizes")
 						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", true)...)
-						cc.AddLines("if ($used_bytes != 0) {")
-						cc.AddBlock(func(cc *CodeCreator) {
+						cc.Comments("write result")
+						cc.IfElse("$used_bytes != 0", func(cc *BasicCodeCreator[PhpHelder]) {
 							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 							cc.AddLines("store_byte(2);")
 							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
-						})
-						cc.AddLines("} else {")
-						cc.AddBlock(func(cc *CodeCreator) {
+						}, func(cc *BasicCodeCreator[PhpHelder]) {
 							cc.AddLines("TL\\tl2_support::store_size(0);")
 						})
-						cc.AddLines("}")
 					})
-					cc.AddLines("}")
 					writeCallLines = cc.Print()
 				}
 				for _, line := range writeCallLines {
@@ -1151,7 +1145,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			tab := strings.Repeat("  ", 2)
 
 			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructWriteTL2Code("$this", nil, "", 0, "$used_bytes") {
+			for _, line := range trw.phpStructWriteTL2Code("$this", nil, "", 0, "$used_bytes", false) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 			code.WriteString("    return $used_bytes;\n")
@@ -1166,7 +1160,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			))
 
 			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes") {
+			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes", false) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 			code.WriteString("    return $used_bytes;\n")
@@ -1209,7 +1203,10 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs *T
 	return result
 }
 
-func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool) []string {
+	if useItself && len(trw.Fields) != 1 {
+		panic("can't use itself (for case similar to typedef)")
+	}
 	uniqueSuffix := fmt.Sprintf("_%s_%d", supportSuffix, callLevel)
 
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
@@ -1276,6 +1273,9 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 			}
 
 			fieldTarget := fmt.Sprintf("%s->%s", targetName, field.originalName)
+			if useItself {
+				fieldTarget = targetName
+			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
 
 			cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << %[2]d)) != 0) {", currentBlock, indexInBlock))
@@ -1290,7 +1290,10 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	return cc.Print()
 }
 
-func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string) []string {
+func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool) []string {
+	if useItself && len(trw.Fields) != 1 {
+		panic("can't use itself (for case similar to typedef)")
+	}
 	uniqueSuffix := fmt.Sprintf("_%s_%d", supportSuffix, callLevel)
 
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
@@ -1348,6 +1351,10 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 		var fieldUsed string
 
 		fieldTarget := fmt.Sprintf("%s->%s", targetName, field.originalName)
+		if useItself {
+			fieldTarget = targetName
+		}
+
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
 
 		cc.AddLines(fmt.Sprintf("// calculate field %s", field.originalName))
@@ -2119,8 +2126,13 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
-			return calcText
+			if trw.isUnwrapType() {
+				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				return calcText
+			} else {
+				calcText := trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true)
+				return calcText
+			}
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
@@ -2141,7 +2153,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		"}",
 	)
 	if trw.wr.phpInfo.IsDuplicate {
-		result = append(result, trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)...)
+		result = append(result, trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, false)...)
 	} else {
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->internal_write_tl2(%[2]s);",
@@ -2165,8 +2177,13 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
-			return calcText
+			if trw.isUnwrapType() {
+				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
+				return calcText
+			} else {
+				calcText := trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true)
+				return calcText
+			}
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
@@ -2180,7 +2197,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 		"}",
 	)
 	if trw.wr.phpInfo.IsDuplicate {
-		result = append(result, trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer)...)
+		result = append(result, trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, false)...)
 	} else {
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);",
