@@ -172,7 +172,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+			fmt.Sprintf("  if ((%[1]s & 1) != 0) {", localBlock),
 			fmt.Sprintf("    %[1]s = (fetch_byte() == 1);", maybeContainsValueName),
 			fmt.Sprintf("    %[1]s += 1;", localUsedBytesPointer),
 			"  }",
