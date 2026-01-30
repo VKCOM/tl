@@ -1160,7 +1160,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			))
 
 			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes", false) {
+			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes", false, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 			code.WriteString("    return $used_bytes;\n")
@@ -1290,7 +1290,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	return cc.Print()
 }
 
-func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool) []string {
+func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool, canOmit bool) []string {
 	if useItself && len(trw.Fields) != 1 {
 		panic("can't use itself (for case similar to typedef)")
 	}
@@ -1398,6 +1398,9 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 		fmt.Sprintf("%[1]s == 0", currentSize),
 		func(cc *PhpCodeCreator) {
 			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
+			if !canOmit {
+				cc.AddLines(fmt.Sprintf("%[1]s = 1;", usedBytesPointer))
+			}
 		},
 		func(cc *PhpCodeCreator) {
 			cc.AddLines(
@@ -2040,11 +2043,11 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 					fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 					fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 					fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-					fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+					fmt.Sprintf("  if ((%[1]s & 1) != 0) {", localBlock),
 					fmt.Sprintf("    %[1]s = TL\\tl2_support::fetch_size();", localConstructor),
 					fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
 					"  }",
-					fmt.Sprintf("  if (%[1]s & (1 << 1) != 0) {", localBlock),
+					fmt.Sprintf("  if ((%[1]s & (1 << 1)) != 0) {", localBlock),
 				)
 				for _, line := range readText {
 					result = append(result, "    "+line)
@@ -2181,7 +2184,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
 				return calcText
 			} else {
-				calcText := trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true)
+				calcText := trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true, canOmit)
 				return calcText
 			}
 		}
@@ -2197,15 +2200,29 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 		"}",
 	)
 	if trw.wr.phpInfo.IsDuplicate {
-		result = append(result, trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, false)...)
+		result = append(result, trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, false, canOmit)...)
 	} else {
-		result = append(result,
+		localSize := fmt.Sprintf("$local_size_%[1]s_%[2]d", supportSuffix, callLevel)
+
+		cc := NewPhpCodeCreator()
+		cc.AddLines(
+			fmt.Sprintf("%[1]s = 0;", localSize),
 			fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);",
 				targetName,
 				phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true),
-				usedBytesPointer,
+				localSize,
 			),
 		)
+		if !canOmit {
+			cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *BasicCodeCreator[PhpHelder]) {
+				cc.AddLines(fmt.Sprintf("%[1]s = 1;", localSize))
+			})
+		}
+		cc.AddLines(
+			fmt.Sprintf("%[1]s += %[2]s;", usedBytesPointer, localSize),
+		)
+
+		result = append(result, cc.Print()...)
 	}
 	return result
 }
