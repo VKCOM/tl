@@ -77,8 +77,8 @@ const (
 	CasesBytesTestVector                            = 0x3647c8ae // cases_bytes.testVector
 	Dictionary                                      = 0x1f4c618f // dictionary
 	DictionaryAny                                   = 0x1f4c6190 // dictionaryAny
+	DictionaryAnyField                              = 0xe466c347 // dictionaryAnyField
 	DictionaryField                                 = 0x239c1b62 // dictionaryField
-	DictionaryFieldAny                              = 0x2c43a65b // dictionaryFieldAny
 	Int                                             = 0xa8509bda // int
 	Int32                                           = 0x7934e71f // int32
 	Int64                                           = 0xf5609de0 // int64

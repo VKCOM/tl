@@ -24,14 +24,14 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall8"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldStringPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyIntPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyLongPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyPairIntIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyStringPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyLongPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyPairIntIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyStringPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldPairTupleStringTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryPairTupleStringTupleString"
@@ -117,14 +117,14 @@ type (
 	Call8                                           = tlCall8.Call8
 	Call9                                           = tlCall9.Call9
 	CycleTuple                                      = cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
+	DictionaryAnyFieldIntPairIntInt                 = tlDictionaryAnyFieldIntPairIntInt.DictionaryAnyFieldIntPairIntInt
+	DictionaryAnyFieldLongPairIntInt                = tlDictionaryAnyFieldLongPairIntInt.DictionaryAnyFieldLongPairIntInt
+	DictionaryAnyFieldPairIntIntInt                 = tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt
+	DictionaryAnyFieldStringPairIntInt              = tlDictionaryAnyFieldStringPairIntInt.DictionaryAnyFieldStringPairIntInt
 	DictionaryAnyIntPairIntInt                      = tlDictionaryAnyIntPairIntInt.DictionaryAnyIntPairIntInt
 	DictionaryAnyLongPairIntInt                     = tlDictionaryAnyLongPairIntInt.DictionaryAnyLongPairIntInt
 	DictionaryAnyPairIntIntInt                      = tlDictionaryAnyPairIntIntInt.DictionaryAnyPairIntIntInt
 	DictionaryAnyStringPairIntInt                   = tlDictionaryAnyStringPairIntInt.DictionaryAnyStringPairIntInt
-	DictionaryFieldAnyIntPairIntInt                 = tlDictionaryFieldAnyIntPairIntInt.DictionaryFieldAnyIntPairIntInt
-	DictionaryFieldAnyLongPairIntInt                = tlDictionaryFieldAnyLongPairIntInt.DictionaryFieldAnyLongPairIntInt
-	DictionaryFieldAnyPairIntIntInt                 = tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt
-	DictionaryFieldAnyStringPairIntInt              = tlDictionaryFieldAnyStringPairIntInt.DictionaryFieldAnyStringPairIntInt
 	DictionaryFieldPairTupleStringTupleString       = tlDictionaryFieldPairTupleStringTupleString.DictionaryFieldPairTupleStringTupleString
 	DictionaryFieldString                           = tlDictionaryFieldString.DictionaryFieldString
 	DictionaryFieldStringBytes                      = tlDictionaryFieldString.DictionaryFieldStringBytes

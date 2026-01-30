@@ -10,9 +10,9 @@ package tl
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyFieldDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyFieldIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryFieldAnyDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryFieldAnyIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryFieldInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryInt"
@@ -44,10 +44,10 @@ import (
 
 type (
 	DictionaryAnyDoubleInt                                             = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
+	DictionaryAnyFieldDoubleInt                                        = tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
+	DictionaryAnyFieldIntInt                                           = tlDictionaryAnyFieldIntInt.DictionaryAnyFieldIntInt
 	DictionaryAnyIntInt                                                = tlDictionaryAnyIntInt.DictionaryAnyIntInt
 	DictionaryAnyIntIntBytes                                           = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
-	DictionaryFieldAnyDoubleInt                                        = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
-	DictionaryFieldAnyIntInt                                           = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
 	DictionaryFieldInt                                                 = tlDictionaryFieldInt.DictionaryFieldInt
 	DictionaryFieldIntBytes                                            = tlDictionaryFieldInt.DictionaryFieldIntBytes
 	DictionaryFieldString                                              = tlDictionaryFieldString.DictionaryFieldString

@@ -32,8 +32,8 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 // dictionaryField {t:Type} key:string value:t = DictionaryField t;
 // dictionary#1f4c618f {t:Type} # [(dictionaryField t)] = Dictionary t;
 
-dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
-dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
+dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
+dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
 
 intKeyDictionaryField {t:Type}
     key:int
