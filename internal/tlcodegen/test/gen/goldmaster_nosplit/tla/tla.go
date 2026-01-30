@@ -14,14 +14,12 @@ import (
 type (
 	Color                            = internal.AColor
 	ColorBoxedMaybe                  = internal.AColorBoxedMaybe
-	DictionaryElemPairBoolAColorInt  = internal.DictionaryElemPairBoolAColorInt
 	Inner                            = internal.AInner
 	Inner3                           = internal.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = internal.AMiddlePairAInnerAInnerAInnerBoxed3
 	MyBool                           = internal.AMyBool
 	MyUnion                          = internal.AMyUnion
 	PairAInnerAInner                 = internal.PairAInnerAInner
-	PairBoolAColor                   = internal.PairBoolAColor
 	PairPairAInnerAInnerAInnerBoxed3 = internal.PairPairAInnerAInnerAInnerBoxed3
 	Top2                             = internal.ATop2
 	UNionA                           = internal.AUNionA

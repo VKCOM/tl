@@ -15,6 +15,228 @@ import (
 
 var _ = basictl.NatWrite
 
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringReset(m map[string]PairTupleStringTupleString) {
+	clear(m)
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringFillRandom(rg *basictl.RandGenerator, m *map[string]PairTupleStringTupleString, nat_ttXn uint32, nat_ttYn uint32) {
+	rg.IncreaseDepth()
+	l := basictl.RandomSize(rg)
+	*m = make(map[string]PairTupleStringTupleString, l)
+	for i := 0; i < int(l); i++ {
+		var elem DictionaryFieldPairTupleStringTupleString
+		elem.FillRandom(rg, nat_ttXn, nat_ttYn)
+		(*m)[elem.Key] = elem.Value
+	}
+	rg.DecreaseDepth()
+}
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringRead(w []byte, m *map[string]PairTupleStringTupleString, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	var l uint32
+	if w, err = basictl.NatRead(w, &l); err != nil {
+		return w, err
+	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
+	clear(*m)
+	if l == 0 {
+		return w, nil
+	}
+	if *m == nil {
+		*m = make(map[string]PairTupleStringTupleString, l)
+	}
+	data := *m
+	for i := 0; i < int(l); i++ {
+		var elem DictionaryFieldPairTupleStringTupleString
+		if w, err = elem.Read(w, nat_ttXn, nat_ttYn); err != nil {
+			return w, err
+		}
+		data[elem.Key] = elem.Value
+	}
+	return w, nil
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringWrite(w []byte, m map[string]PairTupleStringTupleString, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, uint32(len(m)))
+	if len(m) == 0 {
+		return w, nil
+	}
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		val := m[key]
+		elem := DictionaryFieldPairTupleStringTupleString{Key: key, Value: val}
+		if w, err = elem.Write(w, nat_ttXn, nat_ttYn); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]PairTupleStringTupleString) ([]int, int) {
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
+	}
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	var sz int
+
+	currentSize += basictl.TL2CalculateSize(len(*m))
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		elem := DictionaryFieldPairTupleStringTupleString{Key: key, Value: (*m)[key]}
+		sizes, sz = elem.CalculateLayout(sizes, false)
+		currentSize += sz
+	}
+	sizes[sizePosition] = currentSize
+	currentSize += basictl.TL2CalculateSize(currentSize)
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]PairTupleStringTupleString) ([]byte, []int, int) {
+	if len(*m) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
+	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes, 1
+	}
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*m))
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var sz int
+	for _, key := range keys {
+		elem := DictionaryFieldPairTupleStringTupleString{Key: key, Value: (*m)[key]}
+		w, sizes, _ = elem.InternalWriteTL2(w, sizes, false)
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalReadTL2(r []byte, m *map[string]PairTupleStringTupleString) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
+	}
+
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
+	if *m == nil {
+		*m = make(map[string]PairTupleStringTupleString, elementCount)
+	}
+	data := *m
+
+	for i := 0; i < elementCount; i++ {
+		elem := DictionaryFieldPairTupleStringTupleString{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+		data[elem.Key] = elem.Value
+	}
+	return r, nil
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]PairTupleStringTupleString, nat_tXn uint32, nat_tYn uint32) error {
+	clear(*m)
+	if *m == nil {
+		*m = make(map[string]PairTupleStringTupleString, 0)
+	}
+	data := *m
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return ErrorInvalidJSON("map[string]PairTupleStringTupleString", "expected json object")
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			var value PairTupleStringTupleString
+			if err := value.ReadJSONGeneral(tctx, in, nat_tXn, nat_tYn); err != nil {
+				return err
+			}
+			data[key] = value
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return ErrorInvalidJSON("map[string]PairTupleStringTupleString", "expected json object's end")
+		}
+	}
+	return nil
+}
+
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringWriteJSON(w []byte, m map[string]PairTupleStringTupleString, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldPairTupleStringTupleStringWriteJSONOpt(&tctx, w, m, nat_tXn, nat_tYn)
+}
+func BuiltinVectorDictionaryFieldPairTupleStringTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]PairTupleStringTupleString, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	w = append(w, '{')
+	for _, key := range keys {
+		value := m[key]
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = basictl.JSONWriteString(w, key)
+		w = append(w, ':')
+		if w, err = value.WriteJSONOpt(tctx, w, nat_tXn, nat_tYn); err != nil {
+			return w, err
+		}
+	}
+	return append(w, '}'), nil
+}
+
 func BuiltinVectorDictionaryFieldStringReset(m map[string]string) {
 	clear(m)
 }
@@ -620,6 +842,274 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSO
 		w = value.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, '}')
+}
+
+type DictionaryFieldPairTupleStringTupleString struct {
+	Key   string
+	Value PairTupleStringTupleString
+}
+
+func (DictionaryFieldPairTupleStringTupleString) TLName() string { return "dictionaryField" }
+func (DictionaryFieldPairTupleStringTupleString) TLTag() uint32  { return 0x239c1b62 }
+
+func (item *DictionaryFieldPairTupleStringTupleString) Reset() {
+	item.Key = ""
+	item.Value.Reset()
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) FillRandom(rg *basictl.RandGenerator, nat_tXn uint32, nat_tYn uint32) {
+	item.Key = basictl.RandomString(rg)
+	item.Value.FillRandom(rg, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) Read(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	if w, err = basictl.StringRead(w, &item.Key); err != nil {
+		return w, err
+	}
+	return item.Value.Read(w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) WriteGeneral(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	return item.Write(w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) Write(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	w = basictl.StringWrite(w, item.Key)
+	if w, err = item.Value.Write(w, nat_tXn, nat_tYn); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) ReadBoxed(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x239c1b62); err != nil {
+		return w, err
+	}
+	return item.Read(w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) WriteBoxedGeneral(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) WriteBoxed(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0x239c1b62)
+	return item.Write(w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tXn uint32, nat_tYn uint32) error {
+	var propKeyPresented bool
+	var rawValue []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "key":
+				if propKeyPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryField", "key")
+				}
+				if err := Json2ReadString(in, &item.Key); err != nil {
+					return err
+				}
+				propKeyPresented = true
+			case "value":
+				if rawValue != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryField", "value")
+				}
+				rawValue = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("dictionaryField", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+	}
+	if !propKeyPresented {
+		item.Key = ""
+	}
+	var inValuePointer *basictl.JsonLexer
+	inValue := basictl.JsonLexer{Data: rawValue}
+	if rawValue != nil {
+		inValuePointer = &inValue
+	}
+	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, nat_tXn, nat_tYn); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *DictionaryFieldPairTupleStringTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_tXn, nat_tYn)
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) WriteJSON(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_tXn, nat_tYn)
+}
+func (item *DictionaryFieldPairTupleStringTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	w = append(w, '{')
+	backupIndexKey := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"key":`...)
+	w = basictl.JSONWriteString(w, item.Key)
+	if (len(item.Key) != 0) == false {
+		w = w[:backupIndexKey]
+	}
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"value":`...)
+	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_tXn, nat_tYn); err != nil {
+		return w, err
+	}
+	return append(w, '}'), nil
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 597433186)
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
+	if len(item.Key) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(item.Key)) + len(item.Key)
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = item.Value.CalculateLayout(sizes, true); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 597433186 {
+		panic("tl2: tag mismatch between calculate and write")
+	}
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes, 1
+	}
+	oldLen := len(w)
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	if len(item.Key) != 0 {
+		w = basictl.StringWriteTL2(w, item.Key)
+		currentBlock |= 2
+	}
+	if w, sizes, sz = item.Value.InternalWriteTL2(w, sizes, true); sz != 0 {
+		currentBlock |= 4
+	}
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes, sizes2 []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var index int
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+			return currentR, err
+		}
+		if index != 0 {
+			return r, ErrorInvalidUnionIndex("dictionaryField", index)
+		}
+	}
+	if block&2 != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Key); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Key = ""
+	}
+	if block&4 != 0 {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value.Reset()
+	}
+	Unused(currentR)
+	return r, nil
+}
+
+func (item *DictionaryFieldPairTupleStringTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryFieldString struct {

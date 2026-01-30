@@ -253,6 +253,110 @@ func (item *VectorCyc1MyCycle) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 	return item.InternalReadTL2(r)
 }
 
+type VectorDictionaryFieldPairTupleStringTupleString map[string]PairTupleStringTupleString
+
+func (VectorDictionaryFieldPairTupleStringTupleString) TLName() string { return "vector" }
+func (VectorDictionaryFieldPairTupleStringTupleString) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) Reset() {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	BuiltinVectorDictionaryFieldPairTupleStringTupleStringReset(*ptr)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) FillRandom(rg *basictl.RandGenerator, nat_ttXn uint32, nat_ttYn uint32) {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	BuiltinVectorDictionaryFieldPairTupleStringTupleStringFillRandom(rg, ptr, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) Read(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	return BuiltinVectorDictionaryFieldPairTupleStringTupleStringRead(w, ptr, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteGeneral(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	return item.Write(w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) Write(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	return BuiltinVectorDictionaryFieldPairTupleStringTupleStringWrite(w, *ptr, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) ReadBoxed(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.Read(w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteBoxedGeneral(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteBoxed(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.Write(w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_ttXn uint32, nat_ttYn uint32) error {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	if err := BuiltinVectorDictionaryFieldPairTupleStringTupleStringReadJSONGeneral(tctx, in, ptr, nat_ttXn, nat_ttYn); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteJSON(w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_ttXn, nat_ttYn)
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	if w, err = BuiltinVectorDictionaryFieldPairTupleStringTupleStringWriteJSONOpt(tctx, w, *ptr, nat_ttXn, nat_ttYn); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldPairTupleStringTupleStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*map[string]PairTupleStringTupleString)(item)
+	if r, err = BuiltinVectorDictionaryFieldPairTupleStringTupleStringInternalReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorDictionaryFieldPairTupleStringTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
 type VectorDictionaryFieldString map[string]string
 
 func (VectorDictionaryFieldString) TLName() string { return "vector" }
@@ -908,6 +1012,110 @@ func (item VectorIntBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+type VectorIntKeyDictionaryFieldTupleString map[int32][]string
+
+func (VectorIntKeyDictionaryFieldTupleString) TLName() string { return "vector" }
+func (VectorIntKeyDictionaryFieldTupleString) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorIntKeyDictionaryFieldTupleString) Reset() {
+	ptr := (*map[int32][]string)(item)
+	BuiltinVectorIntKeyDictionaryFieldTupleStringReset(*ptr)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
+	ptr := (*map[int32][]string)(item)
+	BuiltinVectorIntKeyDictionaryFieldTupleStringFillRandom(rg, ptr, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int32][]string)(item)
+	return BuiltinVectorIntKeyDictionaryFieldTupleStringRead(w, ptr, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.Write(w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int32][]string)(item)
+	return BuiltinVectorIntKeyDictionaryFieldTupleStringWrite(w, *ptr, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.Read(w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.Write(w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	ptr := (*map[int32][]string)(item)
+	if err := BuiltinVectorIntKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteJSON(w []byte, nat_t uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int32][]string)(item)
+	if w, err = BuiltinVectorIntKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, *ptr, nat_t); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	ptr := (*map[int32][]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorIntKeyDictionaryFieldTupleStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorIntKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*map[int32][]string)(item)
+	if r, err = BuiltinVectorIntKeyDictionaryFieldTupleStringInternalReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorIntKeyDictionaryFieldTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
 type VectorIntMaybe struct {
 	Value []int32 // not deterministic if !Ok
 	Ok    bool
@@ -1095,4 +1303,108 @@ func (item *VectorIntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 
 func (item VectorIntMaybe) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+type VectorLongKeyDictionaryFieldTupleString map[int64][]string
+
+func (VectorLongKeyDictionaryFieldTupleString) TLName() string { return "vector" }
+func (VectorLongKeyDictionaryFieldTupleString) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorLongKeyDictionaryFieldTupleString) Reset() {
+	ptr := (*map[int64][]string)(item)
+	BuiltinVectorLongKeyDictionaryFieldTupleStringReset(*ptr)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
+	ptr := (*map[int64][]string)(item)
+	BuiltinVectorLongKeyDictionaryFieldTupleStringFillRandom(rg, ptr, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int64][]string)(item)
+	return BuiltinVectorLongKeyDictionaryFieldTupleStringRead(w, ptr, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.Write(w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int64][]string)(item)
+	return BuiltinVectorLongKeyDictionaryFieldTupleStringWrite(w, *ptr, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.Read(w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.Write(w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	ptr := (*map[int64][]string)(item)
+	if err := BuiltinVectorLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteJSON(w []byte, nat_t uint32) (_ []byte, err error) {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[int64][]string)(item)
+	if w, err = BuiltinVectorLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, *ptr, nat_t); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer[:0]
+	}
+	ptr := (*map[int64][]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorLongKeyDictionaryFieldTupleStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorLongKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*map[int64][]string)(item)
+	if r, err = BuiltinVectorLongKeyDictionaryFieldTupleStringInternalReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorLongKeyDictionaryFieldTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

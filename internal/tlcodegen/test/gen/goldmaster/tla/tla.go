@@ -10,9 +10,7 @@ package tla
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_463e8ce0a74f5ec3e904ecdc85b1b857"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAColorBoxedMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryElemPairBoolAColorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairAInnerAInner"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairBoolAColor"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairPairAInnerAInnerAInnerBoxed3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorAColor"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlABlue"
@@ -32,14 +30,12 @@ import (
 type (
 	Color                            = tlAColor.AColor
 	ColorBoxedMaybe                  = tlAColorBoxedMaybe.AColorBoxedMaybe
-	DictionaryElemPairBoolAColorInt  = tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt
 	Inner                            = tlAInner.AInner
 	Inner3                           = tlAInner3.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = tlAMiddlePairAInnerAInnerAInnerBoxed3.AMiddlePairAInnerAInnerAInnerBoxed3
 	MyBool                           = tlAMyBool.AMyBool
 	MyUnion                          = cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AMyUnion
 	PairAInnerAInner                 = tlPairAInnerAInner.PairAInnerAInner
-	PairBoolAColor                   = tlPairBoolAColor.PairBoolAColor
 	PairPairAInnerAInnerAInnerBoxed3 = tlPairPairAInnerAInnerAInnerBoxed3.PairPairAInnerAInnerAInnerBoxed3
 	Top2                             = tlATop2.ATop2
 	UNionA                           = cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AUNionA

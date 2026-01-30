@@ -35,47 +35,34 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
 dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
 
-true = True; // this can be used as void type and serialized to empty array in PHP
+intKeyDictionaryField {t:Type}
+    key:int
+    value:t
+    = IntKeyDictionaryField t;
 
-// testX a:# c:a*[int] b:a.0?int = TestX;
-// testY a:# c:tuple<int, a> b:a.0?int = TestY;
+intKeyDictionary#07bafc42 {t:Type}
+    %(Vector %(intKeyDictionaryField t))
+    = IntKeyDictionary t;
 
-a.inner {I:#} a:I*[int] = a.Inner I;
-a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
-a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;
+longKeyDictionaryField {t:Type}
+    key:long
+    value:t
+    = LongKeyDictionaryField t;
 
-curl.responseOk#57d7a33a
-  field_mask:   #
-  http_code:    int
-  http_headers: %(Dictionary string)
-  http_body:    field_mask.0?string
-  = curl.Response;
+longKeyDictionary#b424d8f1 {t:Type}
+    %(Vector %(longKeyDictionaryField t))
+    = LongKeyDictionary t;
 
-curl.responseError#af514651
-  field_mask:   #
-  error_code:   int
-  error_string: string
-  = curl.Response;
+useDictUgly#fb9ce817 n:#
+    c:dictionaryAny<pair<int,int>, int>
+    d:intKeyDictionary<tuple<string,n>>
+    e:longKeyDictionary<tuple<string,n>>
+    f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+    x:dictionaryAny<int, pair<int,int>>
+    y:dictionaryAny<long, pair<int,int>>
+    z:dictionaryAny<string, pair<int,int>>
+     = UseDictUgly;
 
----functions---
-
-@kphp
-curl.request#3f5a4651
-  field_mask: #
-  method:             string
-  url:                string
-  headers:            field_mask.0?%(Dictionary string)
-  body:               field_mask.1?string
-  timeout:            field_mask.2?int
-  timeout_connection: field_mask.3?int
-  max_redirs:         field_mask.4?int
-  ssl_version:        field_mask.5?int
-  resolve_ipv:        field_mask.6?int
-  http_proxy:         field_mask.7?string
-  limit:              field_mask.8?int
-  route:              field_mask.9?string
-  version:            field_mask.10?int
-  origin:             field_mask.11?string
-  tls_cert:           field_mask.12?string
-  tls_cert_pk:        field_mask.13?string
-  = curl.Response;
+ab.useDictString#3325d884 fields_mask:#
+  tags:    %(Dictionary string)
+  = ab.UseDictString;
