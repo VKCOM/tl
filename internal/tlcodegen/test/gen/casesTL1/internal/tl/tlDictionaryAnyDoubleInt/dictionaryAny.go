@@ -9,32 +9,32 @@ package tlDictionaryAnyDoubleInt
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlBuiltinVectorDictionaryFieldAnyDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryFieldAnyDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlBuiltinVectorDictionaryAnyFieldDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type DictionaryAnyDoubleInt []tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
+type DictionaryAnyDoubleInt []tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
 
 func (DictionaryAnyDoubleInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyDoubleInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyDoubleInt) Reset() {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
 	*ptr = (*ptr)[:0]
 }
 
 func (item *DictionaryAnyDoubleInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntFillRandom(rg, ptr)
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
+	tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyDoubleInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntRead(w, ptr)
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
+	return tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntRead(w, ptr)
 }
 
 func (item *DictionaryAnyDoubleInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -42,8 +42,8 @@ func (item *DictionaryAnyDoubleInt) WriteGeneral(w []byte) (_ []byte, err error)
 }
 
 func (item *DictionaryAnyDoubleInt) Write(w []byte) []byte {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntWrite(w, *ptr)
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
+	return tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyDoubleInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -71,8 +71,8 @@ func (item *DictionaryAnyDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.J
 }
 
 func (item *DictionaryAnyDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	if err := tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
+	if err := tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -89,8 +89,8 @@ func (item *DictionaryAnyDoubleInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryAnyDoubleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	w = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(tctx, w, *ptr)
+	ptr := (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(item)
+	w = tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyDoubleInt) MarshalJSON() ([]byte, error) {

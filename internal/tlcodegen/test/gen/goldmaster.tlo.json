@@ -38,16 +38,16 @@
       "arity": 2
     },
     {
+      "name": -463027385,
+      "id": "DictionaryAnyField",
+      "constructors_num": 1,
+      "arity": 2
+    },
+    {
       "name": 597433186,
       "id": "DictionaryField",
       "constructors_num": 1,
       "arity": 1
-    },
-    {
-      "name": 742631003,
-      "id": "DictionaryFieldAny",
-      "constructors_num": 1,
-      "arity": 2
     },
     {
       "name": 1685969653,
@@ -1550,9 +1550,9 @@
     {
       "type": "tls.combinator_v4",
       "value": {
-        "name": 742631003,
-        "id": "dictionaryFieldAny",
-        "type_name": 742631003,
+        "name": -463027385,
+        "id": "dictionaryAnyField",
+        "type_name": -463027385,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
@@ -1603,7 +1603,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": 742631003,
+              "name": -463027385,
               "children_num": 2,
               "children": [
                 {
@@ -1691,7 +1691,7 @@
                         "type": {
                           "type": "tls.typeExpr",
                           "value": {
-                            "name": 742631003,
+                            "name": -463027385,
                             "flags": 1,
                             "children_num": 2,
                             "children": [

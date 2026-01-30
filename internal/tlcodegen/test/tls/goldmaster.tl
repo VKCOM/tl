@@ -41,8 +41,8 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 dictionaryField {t:Type} key:string value:t = DictionaryField t;
 dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
-dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
-dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
+dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
+dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
 
 true = True; // this can be used as void type and serialized to empty array in PHP
 useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind

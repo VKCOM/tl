@@ -9,32 +9,32 @@ package tlDictionaryAnyPairIntIntInt
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyPairIntIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldAnyPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryAnyFieldPairIntIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldPairIntIntInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type DictionaryAnyPairIntIntInt []tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt
+type DictionaryAnyPairIntIntInt []tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt
 
 func (DictionaryAnyPairIntIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyPairIntIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyPairIntIntInt) Reset() {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
 	*ptr = (*ptr)[:0]
 }
 
 func (item *DictionaryAnyPairIntIntInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntFillRandom(rg, ptr)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyPairIntIntInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntRead(w, ptr)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	return tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntRead(w, ptr)
 }
 
 func (item *DictionaryAnyPairIntIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -42,8 +42,8 @@ func (item *DictionaryAnyPairIntIntInt) WriteGeneral(w []byte) (_ []byte, err er
 }
 
 func (item *DictionaryAnyPairIntIntInt) Write(w []byte) []byte {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntWrite(w, *ptr)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	return tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyPairIntIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -71,8 +71,8 @@ func (item *DictionaryAnyPairIntIntInt) ReadJSON(legacyTypeNames bool, in *basic
 }
 
 func (item *DictionaryAnyPairIntIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	if err := tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	if err := tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -89,8 +89,8 @@ func (item *DictionaryAnyPairIntIntInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryAnyPairIntIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	w = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntWriteJSONOpt(tctx, w, *ptr)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	w = tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyPairIntIntInt) MarshalJSON() ([]byte, error) {
@@ -109,12 +109,12 @@ func (item *DictionaryAnyPairIntIntInt) WriteTL2(w []byte, ctx *basictl.TL2Write
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntInternalWriteTL2(w, sizes, false, ptr)
 
 	internal.Unused(ptr)
 	internal.Unused(currentSize)
@@ -126,8 +126,8 @@ func (item *DictionaryAnyPairIntIntInt) WriteTL2(w []byte, ctx *basictl.TL2Write
 }
 
 func (item *DictionaryAnyPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]tlDictionaryFieldAnyPairIntIntInt.DictionaryFieldAnyPairIntIntInt)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldAnyPairIntIntInt.BuiltinVectorDictionaryFieldAnyPairIntIntIntInternalReadTL2(r, ptr); err != nil {
+	ptr := (*[]tlDictionaryAnyFieldPairIntIntInt.DictionaryAnyFieldPairIntIntInt)(item)
+	if r, err = tlBuiltinVectorDictionaryAnyFieldPairIntIntInt.BuiltinVectorDictionaryAnyFieldPairIntIntIntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil

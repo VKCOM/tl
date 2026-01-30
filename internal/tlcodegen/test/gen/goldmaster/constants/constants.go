@@ -75,8 +75,8 @@ const (
 	CycleTuple                              = 0xc867fae3 // cycleTuple
 	Dictionary                              = 0x1f4c618f // dictionary
 	DictionaryAny                           = 0x1f4c6190 // dictionaryAny
+	DictionaryAnyField                      = 0xe466c347 // dictionaryAnyField
 	DictionaryField                         = 0x239c1b62 // dictionaryField
-	DictionaryFieldAny                      = 0x2c43a65b // dictionaryFieldAny
 	HalfStr                                 = 0x647ddaf5 // halfStr
 	Hren                                    = 0x12ab5219 // hren
 	Inner                                   = 0x3b53db83 // inner

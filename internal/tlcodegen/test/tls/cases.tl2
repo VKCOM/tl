@@ -9,8 +9,8 @@ tuple<t:Type> <=> []t;
 @tl2ext tuple_N<t:Type,n:#> <=> [n]t;
 dictionaryField<t:Type> = key:string value:t;
 dictionary<t:Type> <=> vector<dictionaryField<t>>;
-dictionaryFieldAny<k:Type,v:Type> = key:k value:v;
-dictionaryAny<k:Type,v:Type> <=> []dictionaryFieldAny<k,v>;
+dictionaryAnyField<k:Type,v:Type> = key:k value:v;
+dictionaryAny<k:Type,v:Type> <=> []dictionaryAnyField<k,v>;
 true = ;
 @tl2Maybe maybe<t:Type> = 
 	// tlgen:tl1name:"resultFalse"

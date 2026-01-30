@@ -9,9 +9,9 @@ package tlCasesTestDictAny
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinVectorDictionaryFieldAnyDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinVectorDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldAnyDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -148,7 +148,7 @@ func (item *CasesTestDictAny) CalculateLayout(sizes []int, optimizeEmpty bool) (
 	lastUsedByte := 0
 	var sz int
 
-	if sizes, sz = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntCalculateLayout(sizes, true, (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(&item.Dict)); sz != 0 {
+	if sizes, sz = tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntCalculateLayout(sizes, true, (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(&item.Dict)); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -185,7 +185,7 @@ func (item *CasesTestDictAny) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	if w, sizes, sz = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntInternalWriteTL2(w, sizes, true, (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(&item.Dict)); sz != 0 {
+	if w, sizes, sz = tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntInternalWriteTL2(w, sizes, true, (*[]tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt)(&item.Dict)); sz != 0 {
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {

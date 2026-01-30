@@ -9,7 +9,7 @@ package tlDictionaryAnyIntPairIntInt
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldAnyIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryAnyFieldIntPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -24,17 +24,17 @@ func (DictionaryAnyIntPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyIntPairIntInt) Reset() {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReset(*ptr)
+	tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntReset(*ptr)
 }
 
 func (item *DictionaryAnyIntPairIntInt) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntFillRandom(rg, ptr)
+	tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyIntPairIntInt) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntRead(w, ptr)
+	return tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntRead(w, ptr)
 }
 
 func (item *DictionaryAnyIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -43,7 +43,7 @@ func (item *DictionaryAnyIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err er
 
 func (item *DictionaryAnyIntPairIntInt) Write(w []byte) []byte {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	return tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntWrite(w, *ptr)
+	return tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyIntPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -72,7 +72,7 @@ func (item *DictionaryAnyIntPairIntInt) ReadJSON(legacyTypeNames bool, in *basic
 
 func (item *DictionaryAnyIntPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	if err := tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -90,7 +90,7 @@ func (item *DictionaryAnyIntPairIntInt) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryAnyIntPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	w = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyIntPairIntInt) MarshalJSON() ([]byte, error) {
@@ -112,9 +112,9 @@ func (item *DictionaryAnyIntPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2Write
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w, sizes, false, ptr)
 
 	internal.Unused(ptr)
 	internal.Unused(currentSize)
@@ -127,7 +127,7 @@ func (item *DictionaryAnyIntPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2Write
 
 func (item *DictionaryAnyIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[int32]tlPairIntInt.PairIntInt)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldAnyIntPairIntInt.BuiltinVectorDictionaryFieldAnyIntPairIntIntInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorDictionaryAnyFieldIntPairIntInt.BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
