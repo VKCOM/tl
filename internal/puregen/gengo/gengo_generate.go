@@ -7,6 +7,8 @@
 package gengo
 
 import (
+	"fmt"
+
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
@@ -318,5 +320,34 @@ func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	}
 	myWrapper.trw = res
 	myWrapper.fileNameOverride = fieldType
+	return nil
+}
+
+func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceDict) error {
+	fieldType, err := gen.getType(pureType.FieldType())
+	if err != nil {
+		return err
+	}
+	structElement, ok := fieldType.trw.(*TypeRWStruct)
+	if !ok || len(structElement.Fields) != 2 {
+		return fmt.Errorf("dict %s element is not struct with 2 fields", pureType.CanonicalName())
+	}
+	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()
+	if !ok {
+		return fmt.Errorf("dict %s element key is not dict safe", pureType.CanonicalName())
+	}
+	res := &TypeRWDict{
+		wr: myWrapper,
+		element: Field{
+			t:       fieldType,
+			bare:    pureType.FieldBare(),
+			natArgs: pureType.FieldNatArgs(),
+		},
+		dictKeyString:  isString,
+		dictKeyField:   structElement.Fields[0],
+		dictValueField: structElement.Fields[1],
+	}
+	myWrapper.trw = res
+	//myWrapper.fileNameOverride = fieldType
 	return nil
 }

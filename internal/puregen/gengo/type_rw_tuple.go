@@ -115,12 +115,6 @@ func (trw *TypeRWBrackets) BeforeCodeGenerationStep2() {
 }
 
 func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-		// We can make vector break the loop, but then we'd need forward declaration of each type used
-		trw.element.t.FillRecursiveChildren(visitedNodes)
-		return
-	}
-	// for golang
 	if trw.vectorLike || trw.dynamicSize {
 		return
 	}

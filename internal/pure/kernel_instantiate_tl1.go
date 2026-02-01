@@ -279,11 +279,33 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 			return nil, false, tlast.BeautifulError2(e1, e2)
 		}
 	}
+	isDict := false
+	if k.opts.NewDicts &&
+		strings.Contains(strings.ToLower(tName), "dictionary") && !kt.originTL2 &&
+		len(kt.combTL1) == 1 {
+		fieldT, fieldOk := k.tips[tName+"Field"]
+		if fieldOk && !fieldT.originTL2 && len(fieldT.combTL1) == 1 &&
+			len(fieldT.combTL1[0].TemplateArguments) != 0 &&
+			len(fieldT.combTL1[0].TemplateArguments) == len(kt.combTL1[0].TemplateArguments) &&
+			len(fieldT.combTL1[0].Fields) == 2 {
+			// This only checks some type properties, they are enough for us for now
+			isDict = true
+			for i, targ := range kt.combTL1[0].TemplateArguments {
+				farg := fieldT.combTL1[0].TemplateArguments[i]
+				if targ.IsNat || farg.IsNat {
+					isDict = false
+				}
+			}
+			// log.Printf("creating an instance of dictionary type %s", canonicalName)
+		}
+	}
 	switch {
 	case tName == "__vector":
 		ref.ins, err = k.createVectorTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
 	case tName == "__tuple":
 		ref.ins, err = k.createTupleTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+	case isDict:
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1,
 			td.TemplateArguments, tr.Args)
