@@ -19,6 +19,10 @@ type OptionsKernel struct {
 	TL2WhiteList   string
 
 	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+
+	// TODO - quickly adapt new rules, remove these options
+	NewDicts    bool
+	NewBrackets bool // TODO - implement new brackets
 }
 
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {

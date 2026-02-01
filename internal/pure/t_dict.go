@@ -7,14 +7,24 @@
 package pure
 
 import (
+	"fmt"
+
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type TypeInstanceDict struct {
 	TypeInstanceCommon
 
-	fieldType TypeInstanceStruct
+	fieldType *TypeInstanceStruct
+
+	fieldBare    bool           // for TL1 only, false for TL2
+	fieldNatArgs []ActualNatArg // for TL1 only, empty for TL2
 }
+
+func (ins *TypeInstanceDict) FieldType() TypeInstance      { return ins.fieldType }
+func (ins *TypeInstanceDict) FieldBare() bool              { return ins.fieldBare }
+func (ins *TypeInstanceDict) FieldNatArgs() []ActualNatArg { return ins.fieldNatArgs }
 
 func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
 }
@@ -36,7 +46,7 @@ func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fiel
 			canonicalName: canonicalName,
 			tip:           nil, // TODO - dicts have no corresponding type
 		},
-		fieldType: TypeInstanceStruct{
+		fieldType: &TypeInstanceStruct{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName + "__elem",
 				tip:           nil, //  TODO - TL2 dict elements have no corresponding type
@@ -52,4 +62,53 @@ func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fiel
 		},
 	}
 	return ins
+}
+
+func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
+	resolvedType tlast.TypeRef,
+	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
+
+	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
+
+	fieldT := tlast.TypeRef{
+		Type: tlast.Name{Name: resolvedType.Type.String() + "Field"},
+		Bare: true,
+	}
+	for _, targ := range tip.combTL1[0].TemplateArguments {
+		fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
+			T: tlast.TypeRef{Type: tlast.Name{Name: targ.FieldName}},
+		})
+	}
+
+	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
+	if err != nil {
+		return nil, fmt.Errorf("fail to resolve type of dict %s element: %w", canonicalName, err)
+	}
+	//log.Printf("resolveType of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
+	if err != nil {
+		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
+	}
+	fieldInsStruct, ok := fieldIns.ins.(*TypeInstanceStruct)
+	if !ok {
+		return nil, fmt.Errorf("internal error: dict %s element is not a struct", canonicalName)
+	}
+	if !fieldInsStruct.fields[0].ins.ins.GoodForMapKey() {
+		return nil, resolvedType.PR.BeautifulError(fmt.Errorf("dict %s incompatible key type", canonicalName))
+	}
+
+	ins := &TypeInstanceDict{
+		TypeInstanceCommon: TypeInstanceCommon{
+			canonicalName: canonicalName,
+			NatParams:     natParams,
+			tip:           tip,
+			rt:            resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
+		},
+		fieldType:    fieldInsStruct,
+		fieldBare:    fieldBare,
+		fieldNatArgs: fieldNatArgs,
+	}
+	return ins, nil
 }

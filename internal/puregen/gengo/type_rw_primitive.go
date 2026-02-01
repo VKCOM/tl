@@ -115,9 +115,8 @@ func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *Di
 	}
 	if needError {
 		return prefix + ifString(last, "return "+code+", nil", "w = "+code)
-	} else {
-		return prefix + ifString(last, "return "+code, "w = "+code)
 	}
+	return prefix + ifString(last, "return "+code, "w = "+code)
 }
 
 func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

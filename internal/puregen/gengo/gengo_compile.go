@@ -82,12 +82,24 @@ func (gen *genGo) compile() error {
 			if err := gen.GenerateTypeArray(myWrapper, pureType); err != nil {
 				return err
 			}
+		case *pure.TypeInstanceDict:
+			// requires fully filled element, done on the next iteration
 		case *pure.TypeInstanceUnion:
 			if err := gen.generateTypeUnion(myWrapper, pureType); err != nil {
 				return err
 			}
 		default:
 			return fmt.Errorf("kernel type for %s not implemented in go generator", pureType.CanonicalName())
+		}
+	}
+	for _, myWrapper := range gen.generatedTypesList {
+		switch pureType := myWrapper.pureType.(type) {
+		case *pure.TypeInstanceDict:
+			head, tail := myWrapper.resolvedT2GoName("")
+			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			if err := gen.GenerateTypeDict(myWrapper, pureType); err != nil {
+				return err
+			}
 		}
 	}
 	if err := gen.prepareGeneration(); err != nil {

@@ -53,15 +53,16 @@ longKeyDictionary#b424d8f1 {t:Type}
     %(Vector %(longKeyDictionaryField t))
     = LongKeyDictionary t;
 
-useDictUgly#fb9ce817 n:#
-    c:dictionaryAny<pair<int,int>, int>
+ab.useDictUgly#fb9ce817 n:#
+    //c:dictionaryAny<pair<int,int>, int>
     d:intKeyDictionary<tuple<string,n>>
     e:longKeyDictionary<tuple<string,n>>
     f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+    g:Dictionary<pair<tuple<string,n>, tuple<string,n>>>
     x:dictionaryAny<int, pair<int,int>>
     y:dictionaryAny<long, pair<int,int>>
     z:dictionaryAny<string, pair<int,int>>
-     = UseDictUgly;
+     = ab.UseDictUgly;
 
 ab.useDictString#3325d884 fields_mask:#
   tags:    %(Dictionary string)
