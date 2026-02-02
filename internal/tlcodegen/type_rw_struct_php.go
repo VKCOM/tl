@@ -1005,6 +1005,9 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 				)
 			})
 		})
+	} else {
+		cc.Comments("add full size to used bytes")
+		cc.AddLines(fmt.Sprintf("%[1]s += %[2]s;", usedBytesPointer, currentSize))
 	}
 
 	for fieldIndex, field := range trw.Fields {
@@ -2086,7 +2089,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 	additionalArguments := make([]string, 0)
 	if unionParent != nil {
 		currentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
-		currentBlock := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+		currentBlock := fmt.Sprintf("$current_block_%[1]s_%[2]d", supportSuffix, callLevel)
 
 		additionalArguments = append(additionalArguments, currentBlock, currentSize)
 
@@ -2101,6 +2104,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentSize))
 		cc.AddBlock(func(cc *codecreator.CodeCreator) {
 			cc.AddLines(fmt.Sprintf("%[1]s = fetch_byte();", currentBlock))
+			cc.AddLines(fmt.Sprintf("%[1]s -= 1;", currentSize))
 			cc.AddLines(fmt.Sprintf("%[1]s += 1;", usedBytesPointer))
 		})
 		cc.AddLines("}")

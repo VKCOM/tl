@@ -335,7 +335,7 @@ func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("%[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true)),
+		fmt.Sprintf("%[3]s += %[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), usedBytesPointer),
 	)
 	return result
 }
