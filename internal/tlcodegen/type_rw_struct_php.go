@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
 	"github.com/vkcom/tl/internal/utils"
 )
 
@@ -374,18 +375,18 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			} else {
 				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args, "")
 				if trw.wr.wantsTL2 {
-					cc := NewPhpCodeCreator()
-					cc.IfElse("$this->use_tl2 == 0", func(cc *PhpCodeCreator) {
+					cc := codecreator.NewPhpCodeCreator()
+					cc.IfElse("$this->use_tl2 == 0", func(cc *codecreator.PhpCodeCreator) {
 						// tl1 case
 						cc.AddLines(readCallLines...)
-					}, func(cc *PhpCodeCreator) {
+					}, func(cc *codecreator.PhpCodeCreator) {
 						// tl2 case
 						cc.AddLines("$used_bytes = 0;")
 						cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
-						cc.If("$obj_size != 0", func(cc *PhpCodeCreator) {
+						cc.If("$obj_size != 0", func(cc *codecreator.PhpCodeCreator) {
 							cc.AddLines("$obj_block = fetch_byte();")
 							cc.AddLines("$used_bytes += 1;")
-							cc.If("$obj_block == (1 << 1)", func(cc *PhpCodeCreator) {
+							cc.If("$obj_block == (1 << 1)", func(cc *codecreator.PhpCodeCreator) {
 								cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, &args, "", 0, "$used_bytes", false)...)
 							})
 						})
@@ -410,10 +411,10 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args, "")
 				if trw.wr.wantsTL2 {
-					cc := NewPhpCodeCreator()
-					cc.IfElse("$this->use_tl2 == 0", func(cc *PhpCodeCreator) {
+					cc := codecreator.NewPhpCodeCreator()
+					cc.IfElse("$this->use_tl2 == 0", func(cc *codecreator.PhpCodeCreator) {
 						cc.AddLines(writeCallLines...)
-					}, func(cc *PhpCodeCreator) {
+					}, func(cc *codecreator.PhpCodeCreator) {
 						cc.AddLines(
 							"$used_bytes = 0;",
 							`$context_sizes = new TL\tl2_context();`,
@@ -422,11 +423,11 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.Comments("calculate sizes")
 						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", true)...)
 						cc.Comments("write result")
-						cc.IfElse("$used_bytes != 0", func(cc *BasicCodeCreator[PhpHelder]) {
+						cc.IfElse("$used_bytes != 0", func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
 							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 							cc.AddLines("store_byte(2);")
 							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, &args, "", 0, "$used_bytes", false)...)
-						}, func(cc *BasicCodeCreator[PhpHelder]) {
+						}, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
 							cc.AddLines("TL\\tl2_support::store_size(0);")
 						})
 					})
@@ -966,7 +967,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 	currentSize := "$current_size"
 	block := "$block"
 
-	cc := NewPhpCodeCreator()
+	cc := codecreator.NewPhpCodeCreator()
 
 	subtractSize := func(value string) string {
 		return fmt.Sprintf("%[1]s -= %[2]s;", currentSize, value)
@@ -981,7 +982,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		)
 
 		// if 0 return
-		cc.If(fmt.Sprintf("%[1]s == 0", currentSize), func(cc *PhpCodeCreator) {
+		cc.If(fmt.Sprintf("%[1]s == 0", currentSize), func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(fmt.Sprintf("return %[1]s;", usedBytesPointer))
 		})
 
@@ -992,12 +993,12 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			subtractSize("1"),
 		)
 
-		cc.If(fmt.Sprintf("(%[1]s & 1) != 0", block), func(cc *PhpCodeCreator) {
+		cc.If(fmt.Sprintf("(%[1]s & 1) != 0", block), func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(
 				"$index = TL\\tl2_support::fetch_size();",
 				subtractSize("TL\\tl2_support::count_used_bytes($index)"),
 			)
-			cc.If("$index != 0", func(cc *PhpCodeCreator) {
+			cc.If("$index != 0", func(cc *codecreator.PhpCodeCreator) {
 				cc.AddLines(
 					fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize),
 					fmt.Sprintf("return %[1]s;", usedBytesPointer),
@@ -1017,13 +1018,13 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 				fmt.Sprintf("read new block with index %d", (fieldIndex+1)/8),
 			)
 			cc.IfElse(fmt.Sprintf("%[1]s > 0", currentSize),
-				func(cc *PhpCodeCreator) {
+				func(cc *codecreator.PhpCodeCreator) {
 					cc.AddLines(
 						fmt.Sprintf("%[1]s = fetch_byte();", block),
 						subtractSize("1"),
 					)
 				},
-				func(cc *PhpCodeCreator) {
+				func(cc *codecreator.PhpCodeCreator) {
 					cc.AddLines(fmt.Sprintf("%[1]s = 0;", block))
 				},
 			)
@@ -1034,7 +1035,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		if isTrue {
 			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
 		}
-		cc.If(fmt.Sprintf("($block & (1 << %d)) != 0", inBlockIndex), func(cc *PhpCodeCreator) {
+		cc.If(fmt.Sprintf("($block & (1 << %d)) != 0", inBlockIndex), func(cc *codecreator.PhpCodeCreator) {
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
 			localUsedBytes := "$local_used_bytes"
 			cc.AddLines(fmt.Sprintf("%[1]s = 0;", localUsedBytes))
@@ -1042,7 +1043,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), 0, localUsedBytes, field.fieldMask == nil)...,
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
-			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func(cc *PhpCodeCreator) {
+			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func(cc *codecreator.PhpCodeCreator) {
 				cc.AddLines(`throw new \Exception("read more bytes than passed in struct definition");`)
 			})
 		})
@@ -1212,7 +1213,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
 	writeSize := fmt.Sprintf("$write_size%s", uniqueSuffix)
 
-	cc := CodeCreator{Shift: "  "}
+	cc := codecreator.CodeCreator{Shift: "  "}
 
 	// add size
 	cc.AddLines(
@@ -1223,7 +1224,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	)
 
 	cc.AddLines(fmt.Sprintf("if (%s != 0) {", currentSize))
-	cc.AddBlock(func(cc *CodeCreator) {
+	cc.AddBlock(func(cc *codecreator.CodeCreator) {
 		currentBlock := fmt.Sprintf("$block%s", uniqueSuffix)
 
 		cc.AddLines(
@@ -1234,7 +1235,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 
 		// add constructor id
 		cc.AddLines(fmt.Sprintf("if ((%s & (1 << 0)) != 0) {", currentBlock))
-		cc.AddBlock(func(cc *CodeCreator) {
+		cc.AddBlock(func(cc *codecreator.CodeCreator) {
 			index := 0
 			if trw.wr.PHPUnionParent() != nil {
 				index = trw.wr.unionIndex
@@ -1252,7 +1253,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 				cc.AddLines("// write next block")
 				cc.AddLines(fmt.Sprintf("%[1]s = 0;", currentBlock))
 				cc.AddLines(fmt.Sprintf("if (%[1]s > %[2]s) {", currentSize, writeSize))
-				cc.AddBlock(func(cc *CodeCreator) {
+				cc.AddBlock(func(cc *codecreator.CodeCreator) {
 					// read next block
 					cc.AddLines(
 						fmt.Sprintf("%s = $context_blocks->pop_front();", currentBlock),
@@ -1279,8 +1280,16 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
 
 			cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << %[2]d)) != 0) {", currentBlock, indexInBlock))
-			cc.AddBlock(func(cc *CodeCreator) {
+			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				if field.MaskTL2Bit != nil {
+					cc.AddLines(fmt.Sprintf("if (%[1]s !== null) {", fieldTarget))
+					cc.AddShift(1)
+				}
 				cc.AddLines(field.t.trw.PhpWriteTL2MethodCall(fieldTarget, true, &tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, writeSize, true)...)
+				if field.MaskTL2Bit != nil {
+					cc.AddShift(-1)
+					cc.AddLines("}")
+				}
 			})
 			cc.AddLines("}")
 		}
@@ -1305,7 +1314,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	currentBlock := fmt.Sprintf("$current_block%s", uniqueSuffix)
 	currentBlockIndex := fmt.Sprintf("$current_block_index%s", uniqueSuffix)
 
-	cc := NewPhpCodeCreator()
+	cc := codecreator.NewPhpCodeCreator()
 
 	cc.AddLines(
 		fmt.Sprintf("%[1]s = 0;", currentSize),
@@ -1376,7 +1385,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			}
 		}
 
-		cc.If(fieldUsed, func(cc *PhpCodeCreator) {
+		cc.If(fieldUsed, func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(
 				fmt.Sprintf("%[1]s |= (1 << %[2]d);", currentBlock, indexInBlock),
 				fmt.Sprintf("%[1]s += %[2]s;", currentSize, fieldSize),
@@ -1396,13 +1405,13 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	// remove tail of sizes if is zero
 	cc.IfElse(
 		fmt.Sprintf("%[1]s == 0", currentSize),
-		func(cc *PhpCodeCreator) {
+		func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
 			if !canOmit {
 				cc.AddLines(fmt.Sprintf("%[1]s = 1;", usedBytesPointer))
 			}
 		},
-		func(cc *PhpCodeCreator) {
+		func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(
 				fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", currentSizeIndex, currentSize),
 				fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
@@ -2081,7 +2090,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 
 		additionalArguments = append(additionalArguments, currentBlock, currentSize)
 
-		cc := CodeCreator{Shift: "  "}
+		cc := codecreator.CodeCreator{Shift: "  "}
 		cc.AddLines(
 			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
 			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
@@ -2090,7 +2099,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		cc.AddLines(fmt.Sprintf("%[1]s = 0;", currentBlock))
 
 		cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentSize))
-		cc.AddBlock(func(cc *CodeCreator) {
+		cc.AddBlock(func(cc *codecreator.CodeCreator) {
 			cc.AddLines(fmt.Sprintf("%[1]s = fetch_byte();", currentBlock))
 			cc.AddLines(fmt.Sprintf("%[1]s += 1;", usedBytesPointer))
 		})
@@ -2204,7 +2213,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	} else {
 		localSize := fmt.Sprintf("$local_size_%[1]s_%[2]d", supportSuffix, callLevel)
 
-		cc := NewPhpCodeCreator()
+		cc := codecreator.NewPhpCodeCreator()
 		cc.AddLines(
 			fmt.Sprintf("%[1]s = 0;", localSize),
 			fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);",
@@ -2214,8 +2223,13 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 			),
 		)
 		if !canOmit {
-			cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *BasicCodeCreator[PhpHelder]) {
+			cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
 				cc.AddLines(fmt.Sprintf("%[1]s = 1;", localSize))
+			})
+		} else {
+			// remove itself
+			cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+				cc.AddLines("$context_sizes->cut_tail($context_sizes->get_current_size() - 1);")
 			})
 		}
 		cc.AddLines(
