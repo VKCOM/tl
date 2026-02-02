@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
 	"github.com/vkcom/tl/internal/utils"
 )
 
@@ -340,14 +341,30 @@ func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args
 }
 
 func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
-	result := make([]string, 0)
-	result = append(result,
-		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
-		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
-		"}",
-		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), usedBytesPointer),
+	localSize := fmt.Sprintf("$local_size_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	cc := codecreator.NewPhpCodeCreator()
+	cc.If(fmt.Sprintf("is_null(%[1]s)", targetName), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.AddLines(fmt.Sprintf("%[1]s = %[2]s;", targetName, trw.PhpDefaultInit()))
+	})
+	cc.AddLines(
+		fmt.Sprintf("%[1]s = 0;", localSize),
+		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), localSize),
 	)
-	return result
+	if !canOmit {
+		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+			cc.AddLines(fmt.Sprintf("%[1]s = 1;", localSize))
+		})
+	} else {
+		// remove itself
+		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+			cc.AddLines("$context_sizes->cut_tail($context_sizes->get_current_size() - 1);")
+		})
+	}
+	cc.AddLines(
+		fmt.Sprintf("%[1]s += %[2]s;", usedBytesPointer, localSize),
+	)
+	return cc.Print()
 }
 
 func (trw *TypeRWUnion) PhpDefaultInit() string {

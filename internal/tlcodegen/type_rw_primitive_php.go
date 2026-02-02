@@ -9,6 +9,8 @@ package tlcodegen
 import (
 	"fmt"
 	"strings"
+
+	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
 )
 
 func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {
@@ -254,8 +256,8 @@ func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, ba
 			}
 		}
 		if canOmit {
-			cc := NewPhpCodeCreator()
-			cc.If(fmt.Sprintf("%[1]s != 0", checkZeroTarget), func(cc *BasicCodeCreator[PhpHelder]) {
+			cc := codecreator.NewPhpCodeCreator()
+			cc.If(fmt.Sprintf("%[1]s != 0", checkZeroTarget), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
 				cc.AddLines(calcText...)
 			})
 			calcText = cc.Print()
