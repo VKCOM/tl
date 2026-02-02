@@ -1,4 +1,4 @@
-package tlcodegen
+package codecreator
 
 import (
 	"fmt"
@@ -69,35 +69,11 @@ type LanguageBundle struct {
 	allowIndexedFor bool
 }
 
-var phpLanguageBundle = LanguageBundle{
-	ifPrefixTemplate:   "if (%[1]s) {",
-	ifSuffixTemplate:   "}",
-	elsePrefixTemplate: "} else {",
-	forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
-	forSuffixTemplate:  "}",
-	commentPrefix:      "// ",
-	varTemplate:        "$%[1]s_%[2]s",
-	allowIndexedFor:    true,
-}
-
-type PhpHelder struct{}
-
 type BasicCodeCreator[T any] struct {
 	CodeCreator
 	LanguageBundle
 	lastVarIdentifier uint32
-	langHelp          T
-}
-
-type PhpCodeCreator = BasicCodeCreator[PhpHelder]
-
-func NewPhpCodeCreator() PhpCodeCreator {
-	return BasicCodeCreator[PhpHelder]{
-		CodeCreator: CodeCreator{
-			Shift: "  ",
-		},
-		LanguageBundle: phpLanguageBundle,
-	}
+	Lang              T
 }
 
 func (bcc *BasicCodeCreator[T]) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator[T])) {
