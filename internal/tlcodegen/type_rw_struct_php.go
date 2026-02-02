@@ -2030,7 +2030,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			if trw.isUnwrapType() {
+			if trw.isUnwrapType() || trw.isTypeDef() {
 				// inplace
 				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 				return readText
@@ -2138,7 +2138,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			if trw.isUnwrapType() {
+			if trw.isUnwrapType() || trw.isTypeDef() {
 				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 				return calcText
 			} else {
@@ -2189,7 +2189,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			if trw.isUnwrapType() {
+			if trw.isUnwrapType() || trw.isTypeDef() {
 				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
 				return calcText
 			} else {
