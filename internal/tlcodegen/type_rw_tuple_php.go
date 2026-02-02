@@ -406,24 +406,6 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 			cc.AddLines(cc.Lang.AddAssign(localUsedBytesPointer, pairCurrentSize))
 			cc.AddLines(cc.Lang.AddAssign(localUsedBytesPointer, cc.Lang.TL2CountBytes(pairCurrentSize)))
 
-			cc.If(cc.Lang.Equal(pairCurrentSize, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-				cc.AddLines("continue;")
-			})
-
-			// read block
-			cc.AddLines(cc.Lang.Assign(pairBlock, "fetch_byte()"))
-			cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, "1"))
-
-			cc.If(cc.Lang.CheckBit(pairBlock, 0), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-				constructorIndex := fmt.Sprintf("$%s___index", trw.PhpClassName(false, true))
-				cc.AddLines(cc.Lang.TL2FetchSizeTo(constructorIndex))
-				cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, cc.Lang.TL2CountBytes(constructorIndex)))
-				cc.If(cc.Lang.NotEqual(constructorIndex, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-					cc.AddLines(cc.Lang.TL2SkipBytes(pairCurrentSize))
-					cc.AddLines("continue;")
-				})
-			})
-
 			cc.AddLines(
 				fmt.Sprintf("/** @var %[1]s */", trw.dictKeyField.t.trw.PhpTypeName(true, true)),
 				fmt.Sprintf("%[1]s = %[2]s;", keyElement, trw.dictKeyField.t.trw.PhpDefaultInit()),
@@ -431,19 +413,35 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 				fmt.Sprintf("%[1]s = %[2]s;", valueElement, trw.dictValueField.t.trw.PhpDefaultInit()),
 			)
 
-			fieldUsedBytesPointer := fmt.Sprintf("$field_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
-			cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+			cc.If(cc.Lang.NotEqual(pairCurrentSize, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+				// read block
+				cc.AddLines(cc.Lang.Assign(pairBlock, "fetch_byte()"))
+				cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, "1"))
 
-			cc.If(cc.Lang.CheckBit(pairBlock, 1), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-				cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
-				cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
-				cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
-			})
+				cc.If(cc.Lang.CheckBit(pairBlock, 0), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+					constructorIndex := fmt.Sprintf("$%s___index", trw.PhpClassName(false, true))
+					cc.AddLines(cc.Lang.TL2FetchSizeTo(constructorIndex))
+					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, cc.Lang.TL2CountBytes(constructorIndex)))
+					cc.If(cc.Lang.NotEqual(constructorIndex, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+						cc.AddLines(cc.Lang.TL2SkipBytes(pairCurrentSize))
+						cc.AddLines("continue;")
+					})
+				})
 
-			cc.If(cc.Lang.CheckBit(pairBlock, 2), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+				fieldUsedBytesPointer := fmt.Sprintf("$field_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
 				cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
-				cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
-				cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
+
+				cc.If(cc.Lang.CheckBit(pairBlock, 1), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+					cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
+				})
+
+				cc.If(cc.Lang.CheckBit(pairBlock, 2), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+					cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
+				})
 			})
 
 			// skip rest
