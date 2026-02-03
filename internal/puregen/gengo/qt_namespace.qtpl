@@ -235,7 +235,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
             {%- code
                 tlName := wr.tlName.String()
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-                hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+                hasRaw := gen.rawHandlerWhileList.HasName(wr.tlName)
             -%}
         {%- if hasRaw -%}
 Raw{%s= funcTypeString %} func(ctx context.Context, hctx *rpc.HandlerContext) error // {%s= tlName %}
@@ -253,7 +253,7 @@ switch tag {
                 tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
                 tlName := wr.tlName.String()
-                hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+                hasRaw := gen.rawHandlerWhileList.HasName(wr.tlName)
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
     hctx.SetRequestFunctionName("{%s= tlName %}")

@@ -156,7 +156,7 @@ func (gen *genGo) prepareGeneration() error {
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	for _, v := range gen.generatedTypesList {
-		if bytesWhiteList.InNameFilter(v.tlName) {
+		if bytesWhiteList.HasName(v.tlName) {
 			v.MarkWantsBytesVersion(bytesChildren)
 			typesCounterMarkBytes++
 		}
@@ -164,7 +164,7 @@ func (gen *genGo) prepareGeneration() error {
 	typesCounterMarkTL2 := 0
 	tl2Children := map[*TypeRWWrapper]bool{}
 	for _, v := range gen.generatedTypesList {
-		if tl2WhiteList.InNameFilter(v.tlName) {
+		if tl2WhiteList.HasName(v.tlName) {
 			v.MarkWantsTL2(tl2Children)
 			typesCounterMarkTL2++
 		}

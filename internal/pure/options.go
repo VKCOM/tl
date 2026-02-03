@@ -15,8 +15,7 @@ type OptionsKernel struct {
 	WarningsAreErrors bool
 
 	TypesWhiteList string
-	GenerateTL2    bool
-	TL2WhiteList   string
+	TL2WhiteList   string // if !empty, will generate also TL2 factory, meta, etc.
 
 	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 
@@ -30,8 +29,6 @@ func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 		"treat all warnings as errors")
 	f.StringVar(&opt.TypesWhiteList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
-	f.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
-		"generate code for tl2 methods (currently work only for golang)")
-	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "*",
+	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 }

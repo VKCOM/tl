@@ -210,7 +210,7 @@ testpure: build
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl
 	@./target/bin/tl2gen --language=go -v --split-internal \
-		--tl2-generate=true \
+		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/gennew \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \

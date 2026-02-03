@@ -47,7 +47,7 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 
 	// General TL2
 	flag.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
-		"generate code for tl2 methods (currently work only for golang)")
+		"generate code for tl2 methods (currently works only for golang)")
 	flag.StringVar(&opt.TL2MigrationFile, "tl2-migration-file", "",
 		"file to create .tl2 file with migrated files (if --tl2-migration-by-namespaces=true then it is path to common folder)")
 	flag.BoolVar(&opt.TL2MigrateByNamespaces, "tl2-migration-by-namespaces", false,
