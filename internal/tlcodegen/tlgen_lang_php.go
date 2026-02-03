@@ -543,6 +543,21 @@ class tl2_context {
     }
     $this->current_size = $size;
   }
+
+  /**
+   * @return string
+   */
+  public function show_state() {
+    $s = "[";
+    for ($i = $this->current_index; $i < $this->current_size; $i++) {
+      if ($i != $this->current_index) {
+        $s .= ", ";
+      }
+      $s .= $this->values[$i] . "";
+    }
+    $s .= "]";
+    return $s;
+  }
 }`, gen.copyrightText))
 
 	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_context.php"), code.String())
