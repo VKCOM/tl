@@ -61,8 +61,9 @@ func BuiltinTuple0BoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[0]b
 
 	currentSize += basictl.TL2CalculateSize(len(*vec))
 
-	// special case for bool
-	currentSize += (0 + 7) / 8
+	for i := 0; i < 0; i++ {
+		currentSize += 1
+	}
 	sizes[sizePosition] = currentSize
 	currentSize += basictl.TL2CalculateSize(currentSize)
 	internal.Unused(sz)
@@ -117,10 +118,14 @@ func BuiltinTuple0BoolInternalReadTL2(r []byte, vec *[0]bool) (_ []byte, err err
 	}
 
 	lastIndex := min(elementCount, 0)
-	if currentR, err = basictl.VectorBitContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil {
-		return currentR, err
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = basictl.ByteBoolReadTL2(currentR, &(*vec)[i]); err != nil {
+			return currentR, err
+		}
 	}
-	clear((*vec)[lastIndex:])
+	for i := lastIndex; i < 0; i++ {
+		(*vec)[i] = false
+	}
 
 	return r, nil
 }
