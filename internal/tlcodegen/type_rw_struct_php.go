@@ -1167,6 +1167,9 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes", false, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
+			code.WriteString(fmt.Sprintf("%sif ($used_bytes == 0) {\n", tab))
+			code.WriteString(fmt.Sprintf("%s  $context_sizes->push_back(0);\n", tab))
+			code.WriteString(fmt.Sprintf("%s}\n", tab))
 			code.WriteString("    return $used_bytes;\n")
 			code.WriteString("  }\n")
 		}
@@ -1409,9 +1412,11 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 	cc.IfElse(
 		fmt.Sprintf("%[1]s == 0", currentSize),
 		func(cc *codecreator.PhpCodeCreator) {
-			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
 			if !canOmit {
+				cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
 				cc.AddLines(fmt.Sprintf("%[1]s = 1;", usedBytesPointer))
+			} else {
+				cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s);", currentSizeIndex))
 			}
 		},
 		func(cc *codecreator.PhpCodeCreator) {
