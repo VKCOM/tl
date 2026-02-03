@@ -977,21 +977,20 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		// fetch currentSize and update usedBytesPointer
 		cc.Comments("read size of object and update used bytes")
 		cc.AddLines(
+			fmt.Sprintf("%[1]s = 0;", block),
 			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
 			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s) + %[2]s;", usedBytesPointer, currentSize),
 		)
 
-		// if 0 return
-		cc.If(fmt.Sprintf("%[1]s == 0", currentSize), func(cc *codecreator.PhpCodeCreator) {
-			cc.AddLines(fmt.Sprintf("return %[1]s;", usedBytesPointer))
-		})
+		cc.If(fmt.Sprintf("%[1]s != 0", currentSize), func(cc *codecreator.PhpCodeCreator) {
+			// fetch 1st block and start subtract fron size
+			cc.Comments("read first block and check constructor id")
+			cc.AddLines(
+				fmt.Sprintf("%[1]s = fetch_byte();", block),
+				subtractSize("1"),
+			)
 
-		// fetch 1st block and start subtract fron size
-		cc.Comments("read first block and check constructor id")
-		cc.AddLines(
-			fmt.Sprintf("%[1]s = fetch_byte();", block),
-			subtractSize("1"),
-		)
+		})
 
 		cc.If(fmt.Sprintf("(%[1]s & 1) != 0", block), func(cc *codecreator.PhpCodeCreator) {
 			cc.AddLines(
@@ -1001,7 +1000,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			cc.If("$index != 0", func(cc *codecreator.PhpCodeCreator) {
 				cc.AddLines(
 					fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize),
-					fmt.Sprintf("return %[1]s;", usedBytesPointer),
+					fmt.Sprintf(`throw new \Exception("unknown index = " . $index . "for %s");`, trw.PhpClassName(false, true)),
 				)
 			})
 		})
@@ -1011,7 +1010,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 	}
 
 	for fieldIndex, field := range trw.Fields {
-		isTrue := field.t.IsTrueType()
+		isTrue := field.t.PHPIsTrueType()
 		fieldName := fmt.Sprintf("%[1]s->%[2]s", targetName, field.originalName)
 		inBlockIndex := (fieldIndex + 1) % 8
 
