@@ -541,7 +541,7 @@ const TL2SupportPHP = `class tl2_support {
    * @param boolean|null $value
    */
   public static function store_legacy_bool_tl2($value) {
-    if ($value == null) {
+    if ($value === null) {
       return;
     }
     if ($value == 0) {

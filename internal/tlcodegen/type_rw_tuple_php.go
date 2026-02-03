@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
@@ -286,44 +285,44 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 				fmt.Sprintf("%[1]s = [];", targetName),
 			)
 		}
-		if _, ok := trw.element.t.trw.(*TypeRWBool); ok {
-			localBytesCount := fmt.Sprintf("$byte_blocks_count_%[1]s_%[2]d", supportSuffix, callLevel)
-			localByteIndex := fmt.Sprintf("$byte_index_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBitIndex := fmt.Sprintf("$bit_index_%[1]s_%[2]d", supportSuffix, callLevel)
-
-			localByte := fmt.Sprintf("$byte_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBooleanPointer := fmt.Sprintf("$boolean_index_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBooleanCount := fmt.Sprintf("$boolean_count_%[1]s_%[2]d", supportSuffix, callLevel)
-
-			bytesRead := []string{
-				fmt.Sprintf("%[1]s = 0;", localBooleanPointer),
-				fmt.Sprintf("%[1]s = (%[2]s + 7) / 8;", localBytesCount, localElementCount),
-				fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localByteIndex, localBytesCount),
-				fmt.Sprintf("  %[1]s = fetch_byte();", localByte),
-				fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-				fmt.Sprintf("  %[1]s = 8;", localBooleanCount),
-				fmt.Sprintf("  if (%[1]s + %[2]s > %[3]s) {", localBooleanPointer, localBooleanCount, localElementCount),
-				fmt.Sprintf("    %[1]s = %[2]s - %[3]s;", localBooleanCount, localElementCount, localBooleanPointer),
-				"  }",
-				fmt.Sprintf("  for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localBitIndex, localBooleanCount),
-				fmt.Sprintf("    %[1]s[] = (%[2]s & (1 << %[3]s)) != 0;", targetName, localByte, localBitIndex),
-				fmt.Sprintf("    %[1]s += 1;", localBooleanPointer),
-				"  }",
-				"}",
-			}
-			result = append(result, utils.ShiftAll(bytesRead, "  ")...)
-		} else {
-			result = append(result,
-				fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, localElementCount),
-				fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
-				fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
-			)
-			result = append(result, elementRead...)
-			result = append(result,
-				fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
-				"}",
-			)
-		}
+		//if _, ok := trw.element.t.trw.(*TypeRWBool); ok {
+		//	localBytesCount := fmt.Sprintf("$byte_blocks_count_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localByteIndex := fmt.Sprintf("$byte_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBitIndex := fmt.Sprintf("$bit_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//
+		//	localByte := fmt.Sprintf("$byte_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBooleanPointer := fmt.Sprintf("$boolean_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBooleanCount := fmt.Sprintf("$boolean_count_%[1]s_%[2]d", supportSuffix, callLevel)
+		//
+		//	bytesRead := []string{
+		//		fmt.Sprintf("%[1]s = 0;", localBooleanPointer),
+		//		fmt.Sprintf("%[1]s = (%[2]s + 7) / 8;", localBytesCount, localElementCount),
+		//		fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localByteIndex, localBytesCount),
+		//		fmt.Sprintf("  %[1]s = fetch_byte();", localByte),
+		//		fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
+		//		fmt.Sprintf("  %[1]s = 8;", localBooleanCount),
+		//		fmt.Sprintf("  if (%[1]s + %[2]s > %[3]s) {", localBooleanPointer, localBooleanCount, localElementCount),
+		//		fmt.Sprintf("    %[1]s = %[2]s - %[3]s;", localBooleanCount, localElementCount, localBooleanPointer),
+		//		"  }",
+		//		fmt.Sprintf("  for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localBitIndex, localBooleanCount),
+		//		fmt.Sprintf("    %[1]s[] = (%[2]s & (1 << %[3]s)) != 0;", targetName, localByte, localBitIndex),
+		//		fmt.Sprintf("    %[1]s += 1;", localBooleanPointer),
+		//		"  }",
+		//		"}",
+		//	}
+		//	result = append(result, utils.ShiftAll(bytesRead, "  ")...)
+		//} else {
+		result = append(result,
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, localElementCount),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		//}
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
@@ -339,47 +338,47 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 				fmt.Sprintf("%[1]s = [];", targetName),
 			)
 		}
-		if _, ok := trw.element.t.trw.(*TypeRWBool); ok {
-			localBytesCount := fmt.Sprintf("$byte_blocks_count_%[1]s_%[2]d", supportSuffix, callLevel)
-			localByteIndex := fmt.Sprintf("$byte_index_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBitIndex := fmt.Sprintf("$bit_index_%[1]s_%[2]d", supportSuffix, callLevel)
-
-			localByte := fmt.Sprintf("$byte_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBooleanPointer := fmt.Sprintf("$boolean_index_%[1]s_%[2]d", supportSuffix, callLevel)
-			localBooleanCount := fmt.Sprintf("$boolean_count_%[1]s_%[2]d", supportSuffix, callLevel)
-
-			bytesRead := []string{
-				fmt.Sprintf("%[1]s = 0;", localBooleanPointer),
-				fmt.Sprintf("if (%[1]s > %[2]s) {", localElementCount, tupleSize),
-				fmt.Sprintf("  %[1]s = %[2]s;", localElementCount, tupleSize),
-				"}",
-				fmt.Sprintf("%[1]s = (%[2]s + 7) / 8;", localBytesCount, localElementCount),
-				fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localByteIndex, localBytesCount),
-				fmt.Sprintf("  %[1]s = fetch_byte();", localByte),
-				fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-				fmt.Sprintf("  %[1]s = 8;", localBooleanCount),
-				fmt.Sprintf("  if (%[1]s + %[2]s > %[3]s) {", localBooleanPointer, localBooleanCount, localElementCount),
-				fmt.Sprintf("    %[1]s = %[2]s - %[3]s;", localBooleanCount, localElementCount, localBooleanPointer),
-				"  }",
-				fmt.Sprintf("  for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localBitIndex, localBooleanCount),
-				fmt.Sprintf("    %[1]s[] = (%[2]s & (1 << %[3]s)) != 0;", targetName, localByte, localBitIndex),
-				fmt.Sprintf("    %[1]s += 1;", localBooleanPointer),
-				"  }",
-				"}",
-			}
-			result = append(result, utils.ShiftAll(bytesRead, "  ")...)
-		} else {
-			result = append(result,
-				fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
-				fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
-				fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
-			)
-			result = append(result, elementRead...)
-			result = append(result,
-				fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
-				"}",
-			)
-		}
+		//if _, ok := trw.element.t.trw.(*TypeRWBool); ok {
+		//	localBytesCount := fmt.Sprintf("$byte_blocks_count_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localByteIndex := fmt.Sprintf("$byte_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBitIndex := fmt.Sprintf("$bit_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//
+		//	localByte := fmt.Sprintf("$byte_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBooleanPointer := fmt.Sprintf("$boolean_index_%[1]s_%[2]d", supportSuffix, callLevel)
+		//	localBooleanCount := fmt.Sprintf("$boolean_count_%[1]s_%[2]d", supportSuffix, callLevel)
+		//
+		//	bytesRead := []string{
+		//		fmt.Sprintf("%[1]s = 0;", localBooleanPointer),
+		//		fmt.Sprintf("if (%[1]s > %[2]s) {", localElementCount, tupleSize),
+		//		fmt.Sprintf("  %[1]s = %[2]s;", localElementCount, tupleSize),
+		//		"}",
+		//		fmt.Sprintf("%[1]s = (%[2]s + 7) / 8;", localBytesCount, localElementCount),
+		//		fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localByteIndex, localBytesCount),
+		//		fmt.Sprintf("  %[1]s = fetch_byte();", localByte),
+		//		fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
+		//		fmt.Sprintf("  %[1]s = 8;", localBooleanCount),
+		//		fmt.Sprintf("  if (%[1]s + %[2]s > %[3]s) {", localBooleanPointer, localBooleanCount, localElementCount),
+		//		fmt.Sprintf("    %[1]s = %[2]s - %[3]s;", localBooleanCount, localElementCount, localBooleanPointer),
+		//		"  }",
+		//		fmt.Sprintf("  for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", localBitIndex, localBooleanCount),
+		//		fmt.Sprintf("    %[1]s[] = (%[2]s & (1 << %[3]s)) != 0;", targetName, localByte, localBitIndex),
+		//		fmt.Sprintf("    %[1]s += 1;", localBooleanPointer),
+		//		"  }",
+		//		"}",
+		//	}
+		//	result = append(result, utils.ShiftAll(bytesRead, "  ")...)
+		//} else {
+		result = append(result,
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		//}
 	// actual map / dictionary
 	case trw.dictLike:
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
