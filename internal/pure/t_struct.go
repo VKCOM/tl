@@ -264,39 +264,18 @@ func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
 	return nil
 }
 
-func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, def *tlast.Combinator,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
-	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
-
-	constructorFields := def.Fields
-
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
-	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
-
-	ins := &TypeInstanceStruct{
-		TypeInstanceCommon: TypeInstanceCommon{
-			canonicalName: canonicalName,
-			NatParams:     natParams,
-			tip:           tip,
-			rt:            resolvedType,
-			argNamespace:  k.getArgNamespace(resolvedType),
-		},
-		isConstructorFields: true,
-		isUnionElement:      isUnionElement,
-		unionIndex:          unionIndex,
-	}
-	nextTL2MaskBit := 0
+func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []int, error) {
 	var fieldsAfterReplace []tlast.Field
-	for i := 0; i < len(constructorFields); i++ {
-		fieldDef := constructorFields[i]
-		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(constructorFields) {
-			nextFieldDef := constructorFields[i+1]
+	var originalFieldIndices []int
+	for i := 0; i < len(def.Fields); i++ {
+		fieldDef := def.Fields[i]
+		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(def.Fields) {
+			nextFieldDef := def.Fields[i+1]
 			if nextFieldDef.Mask != nil || !nextFieldDef.IsRepeated || nextFieldDef.ScaleRepeat.ExplicitScale {
-				return nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
+				return nil, nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
 			}
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			// we replace 2 fields with vector
 			// hren # a:[int] = Hren;
@@ -308,15 +287,15 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldDef.FieldType.Type = tlast.Name{Name: "__vector"}
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated && i == 0 && !fieldDef.ScaleRepeat.ExplicitScale &&
-			len(tip.combTL1[0].TemplateArguments) != 0 {
-			a := tip.combTL1[0].TemplateArguments[len(tip.combTL1[0].TemplateArguments)-1]
+			len(def.TemplateArguments) != 0 {
+			a := def.TemplateArguments[len(def.TemplateArguments)-1]
 			if !a.IsNat {
 				e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
 				e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
-				return nil, tlast.BeautifulError2(e1, e2)
+				return nil, nil, tlast.BeautifulError2(e1, e2)
 			}
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
 				{T: tlast.TypeRef{PR: a.PR, Type: tlast.Name{Name: a.FieldName}}},
@@ -326,14 +305,14 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			if !fieldDef.ScaleRepeat.ExplicitScale {
-				prevFieldDef := constructorFields[i-1] // never panics, due to checks above
+				prevFieldDef := def.Fields[i-1] // never panics, due to checks above
 				if prevFieldDef.FieldType.String() != "#" {
 					e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references previous field %q, which should have type #", prevFieldDef.FieldName))
 					e2 := prevFieldDef.PR.BeautifulError(fmt.Errorf("see here"))
-					return nil, tlast.BeautifulError2(e1, e2)
+					return nil, nil, tlast.BeautifulError2(e1, e2)
 				}
 				fieldDef.ScaleRepeat.Scale = tlast.ScaleFactor{
 					IsArith: false,
@@ -352,6 +331,44 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR, Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
 			}
 		}
+		fieldsAfterReplace = append(fieldsAfterReplace, fieldDef)
+		originalFieldIndices = append(originalFieldIndices, i)
+	}
+	for _, f := range fieldsAfterReplace {
+		if f.FieldName == "" && (len(fieldsAfterReplace) != 1 || f.Mask != nil) {
+			return nil, nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are only allowed when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+		}
+	}
+	return fieldsAfterReplace, originalFieldIndices, nil
+}
+
+func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
+	resolvedType tlast.TypeRef, def *tlast.Combinator,
+	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
+	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
+
+	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+
+	ins := &TypeInstanceStruct{
+		TypeInstanceCommon: TypeInstanceCommon{
+			canonicalName: canonicalName,
+			NatParams:     natParams,
+			tip:           tip,
+			rt:            resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
+		},
+		isConstructorFields: true,
+		isUnionElement:      isUnionElement,
+		unionIndex:          unionIndex,
+	}
+	nextTL2MaskBit := 0
+	fieldsAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
+	if err != nil {
+		return nil, err
+	}
+	for i, fieldDef := range fieldsAfterReplace {
+		originalFieldIndex := originalFieldIndices[i]
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
@@ -368,8 +385,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			bare:    fieldBare,
 		}
 		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
-			// newField.t.origTL[0].TypeDecl.Name.String() == "True" &&
-			// newField.t.origTL[0].Construct.Name.String() == "true" &&
 			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&
 			utils.DoLint(fieldDef.CommentRight) {
 			// We compare type by name, because there is examples of other true types which are to be extended
@@ -385,7 +400,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				return nil, fieldDef.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", fieldDef.Mask.BitNumber))
 			}
 			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs,
-				tlast.CombinatorField{Comb: def, FieldIndex: i})
+				tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex})
 			if err != nil {
 				return nil, err
 			}
@@ -397,7 +412,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 
 		ins.fields = append(ins.fields, newField)
-		fieldsAfterReplace = append(fieldsAfterReplace, fieldDef)
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{
 				FieldName: fieldDef.FieldName,
@@ -413,19 +427,14 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 					wrongTypeErr: nil,
 					arg: tlast.ArithmeticOrType{
 						T:           tlast.TypeRef{Type: tlast.Name{Name: "*"}},
-						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: i},
+						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
 					},
 					natArgs: []ActualNatArg{{
 						isField:    true,
-						fieldIndex: i,
+						fieldIndex: i, // not originalFieldIndex
 					}},
 				})
 			}
-		}
-	}
-	for _, f := range fieldsAfterReplace {
-		if f.FieldName == "" && (len(ins.fields) != 1 || f.Mask != nil) {
-			return nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
 		}
 	}
 	if def.IsFunction {

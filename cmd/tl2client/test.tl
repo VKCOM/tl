@@ -49,9 +49,17 @@ longKeyDictionaryField {t:Type}
     value:t
     = LongKeyDictionaryField t;
 
+// comments #1
+
+ab.something fields_mask:# = ab.Something;
+
+// comments #2
+
 longKeyDictionary#b424d8f1 {t:Type}
     %(Vector %(longKeyDictionaryField t))
     = LongKeyDictionary t;
+
+// comments #3
 
 ab.useDictUgly#fb9ce817 n:#
     //c:dictionaryAny<pair<int,int>, int>
@@ -64,6 +72,10 @@ ab.useDictUgly#fb9ce817 n:#
     z:dictionaryAny<string, pair<int,int>>
      = ab.UseDictUgly;
 
+// comments #4
+
 ab.useDictString#3325d884 fields_mask:#
   tags:    %(Dictionary string)
   = ab.UseDictString;
+
+// comments #5

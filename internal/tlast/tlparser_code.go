@@ -561,6 +561,7 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 	rest := tokens
 
 	td := Combinator{PR: rest.skipWS(Position{})}
+	td.AllPR.Begin = commentStart.front().pos
 	td.CommentBefore = parseCommentBefore(commentStart, rest)
 
 	outer := td.PR.Begin
@@ -617,12 +618,12 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 	if !rest.expect(semiColon) {
 		return Combinator{}, tokens, parseErrToken(fmt.Errorf("';' or type argument expected"), rest.front(), outer)
 	}
-	td.PR.End = rest.front().pos
 	commentStart = rest
 	if rest.skipToNewline() {
 		td.CommentRight = parseCommentRight(commentStart, rest)
 	}
-
+	td.PR.End = rest.front().pos
+	td.AllPR.End = td.PR.End
 	return td, rest, nil
 }
 
@@ -650,7 +651,7 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 	orderIndex := 0
 	rest := tokenIterator{tokens: allTokens}
 	commentStart := rest
-	for !rest.expect(eof) {
+	for !rest.checkToken(eof) {
 		switch rest.front().tokenType {
 		case typesSection:
 			functionSection = false
@@ -675,6 +676,9 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 		orderIndex++
 		res = append(res, &td)
 		commentStart = rest
+	}
+	if len(res) != 0 {
+		res[len(res)-1].AllPR.End = rest.front().pos
 	}
 	return res, nil
 }

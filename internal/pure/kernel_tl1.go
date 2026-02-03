@@ -177,14 +177,13 @@ func (k *Kernel) CompileTL1() error {
 				// TODO - sort out things with rpc wrapping later which has a form
 				// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
 			}
-			// TODO - copy from tlgen.go
-			//if len(typ.Modifiers) == 0 && doLint(typ.CommentRight) {
-			//	e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
-			//	if gen.options.WarningsAreErrors {
-			//		return e1
-			//	}
-			//	e1.PrintWarning(gen.options.ErrorWriter, nil)
-			//}
+			if len(typ.Modifiers) == 0 && utils.DoLint(typ.CommentRight) {
+				e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
+				if k.opts.WarningsAreErrors {
+					return e1
+				}
+				e1.PrintWarning(k.opts.ErrorWriter, nil)
+			}
 		}
 		var nc NameCollision
 		for _, targ := range typ.TemplateArguments {
