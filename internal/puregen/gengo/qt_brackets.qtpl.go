@@ -1305,7 +1305,7 @@ func `)
 
     currentSize += basictl.TL2CalculateSize(len(*vec))
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        // special case for bool
         currentSize += (len(*vec) + 7) / 8
 `)
@@ -1347,7 +1347,7 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
 `)
 				} else {
@@ -1400,7 +1400,7 @@ func `)
 				/* this check is slightly relaxed, because we cannot +7 without overflow check */
 
 				qw422016.N().S(`        if elementCount`)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`/8`)
 				}
 				qw422016.N().S(`> len(currentR) {
@@ -1415,7 +1415,7 @@ func `)
     }
     *vec = (*vec)[:elementCount]
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
@@ -1669,7 +1669,7 @@ func `)
 
     currentSize += basictl.TL2CalculateSize(len(*vec))
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        // special case for bool
         currentSize += (len(*vec) + 7) / 8
 `)
@@ -1711,7 +1711,7 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
 `)
 				} else {
@@ -1764,7 +1764,7 @@ func `)
 				/* this check is slightly relaxed, because we cannot +7 without overflow check */
 
 				qw422016.N().S(`        if elementCount`)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`/8`)
 				}
 				qw422016.N().S(`> len(currentR) {
@@ -1779,7 +1779,7 @@ func `)
     }
     *vec = (*vec)[:elementCount]
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
@@ -2060,7 +2060,7 @@ func `)
     currentSize += basictl.TL2CalculateSize(len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        // special case for bool
         currentSize += (`)
 					qw422016.N().V(tuple.size)
@@ -2108,7 +2108,7 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])
 `)
 				} else {
@@ -2168,7 +2168,7 @@ func `)
 				qw422016.N().V(tuple.size)
 				qw422016.N().S(`)
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
 					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
 `)
 					/* reset elements if received less elements */
