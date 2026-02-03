@@ -60,7 +60,7 @@ func (v *KernelValueArrayBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPat
 
 	w.WriteElementCount(len(v.elements))
 
-	w.buf = basictl.VectorBoolContentWriteTL2(w.buf, v.elements)
+	w.buf = basictl.VectorBitContentWriteTL2(w.buf, v.elements)
 
 	lastUsedByte := w.Len()
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
@@ -91,7 +91,7 @@ func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err 
 		v.resize(elementCount)
 	}
 	lastIndex := min(elementCount, elementCount)
-	if _, err = basictl.VectorBoolContentReadTL2(currentR, v.elements[:lastIndex]); err != nil {
+	if _, err = basictl.VectorBitContentReadTL2(currentR, v.elements[:lastIndex]); err != nil {
 		return r, err
 	}
 	clear(v.elements[lastIndex:])

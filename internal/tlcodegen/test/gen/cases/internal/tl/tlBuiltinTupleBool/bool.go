@@ -88,7 +88,11 @@ func BuiltinTupleBoolInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,
 	oldLen := len(w)
 	w = basictl.TL2WriteSize(w, len(*vec))
 
-	w = basictl.VectorBoolContentWriteTL2(w, *vec)
+	var sz int
+	for i := 0; i < len(*vec); i++ {
+		w = basictl.ByteBoolWriteTL2(w, (*vec)[i])
+	}
+	internal.Unused(sz)
 	if len(w)-oldLen != currentSize {
 		panic("tl2: mismatch between calculate and write")
 	}
@@ -121,7 +125,7 @@ func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err error
 		*vec = make([]bool, elementCount)
 	}
 	*vec = (*vec)[:elementCount]
-	if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil {
+	if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil {
 		return currentR, err
 	}
 	return r, nil
