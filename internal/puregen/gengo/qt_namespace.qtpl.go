@@ -406,7 +406,7 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, gen *genGo, name string, ty
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			tlName := wr.tlName.String()
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-			hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+			hasRaw := gen.rawHandlerWhileList.HasName(wr.tlName)
 
 			if hasRaw {
 				qw422016.N().S(`Raw`)
@@ -443,7 +443,7 @@ switch tag {
 			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			tlName := wr.tlName.String()
-			hasRaw := gen.rawHandlerWhileList.InNameFilter(wr.tlName)
+			hasRaw := gen.rawHandlerWhileList.HasName(wr.tlName)
 
 			qw422016.N().S(`case `)
 			qw422016.N().S(tlTag)

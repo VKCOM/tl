@@ -12,6 +12,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/puregen"
@@ -19,6 +21,25 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
+
+var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
+	"":             func(kernel *pure.Kernel, options *puregen.Options) error { return nil },
+	"go":           gengo.Generate,
+	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
+	"tlo":          func(kernel *pure.Kernel, options *puregen.Options) error { return fmt.Errorf("TODO generate TLO here") },
+	"tljson.html": func(kernel *pure.Kernel, options *puregen.Options) error {
+		return fmt.Errorf("TODO generate tljson.html")
+	},
+}
+
+func languagesString() string {
+	var keys []string
+	for k := range languages {
+		keys = append(keys, fmt.Sprintf(`"%s"`, k))
+	}
+	sort.Strings(keys)
+	return fmt.Sprintf("one of %s (empty language is linter)", strings.Join(keys, ", "))
+}
 
 func main() {
 	log.Printf("tl2gen version: %s", utils.AppVersion())
@@ -28,7 +49,7 @@ func main() {
 	opt := puregen.Options{
 		ErrorWriter: os.Stdout,
 	}
-	opt.Bind(flag.CommandLine)
+	opt.Bind(flag.CommandLine, languagesString())
 
 	flag.Parse()
 
@@ -89,16 +110,13 @@ func runMain(opt *puregen.Options) error {
 	if err := kernel.Compile(); err != nil {
 		return err
 	}
-	switch opt.Language {
-	case "":
-		return nil
-	case "go":
-		return gengo.Generate(kernel, opt)
-	case "tlo":
-		return fmt.Errorf("TODO generate TLO here")
-	case "tljson.html":
-		return fmt.Errorf("TODO generate tljson.html")
-	default:
-		return fmt.Errorf("unsupported language, must be 'go', 'tlo', 'htmldoc' or empty for linter: %q", opt.Language)
+	if f, ok := languages[opt.Language]; ok {
+		return f(kernel, opt)
 	}
+	var keys []string
+	for k := range languages {
+		keys = append(keys, fmt.Sprintf("'%s'", k))
+	}
+	sort.Strings(keys)
+	return fmt.Errorf("unsupported language %q, must be %s", opt.Language, languagesString())
 }
