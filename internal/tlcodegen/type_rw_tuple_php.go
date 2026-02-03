@@ -716,7 +716,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 				if trw.dictKeyField.IsBit() {
 					pairPartUsed = fmt.Sprintf("%[1]s", keyElement)
 				} else {
-					cc.AddLines(trw.dictKeyField.t.trw.PhpCalculateSizesTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, pairPartSize, false)...)
+					cc.AddLines(trw.dictKeyField.t.trw.PhpCalculateSizesTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, pairPartSize, true)...)
 				}
 				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
 				cc.AddBlock(func(cc *codecreator.CodeCreator) {
@@ -734,7 +734,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 				if trw.dictValueField.IsBit() {
 					pairPartUsed = fmt.Sprintf("%[1]s", keyElement)
 				} else {
-					cc.AddLines(trw.dictValueField.t.trw.PhpCalculateSizesTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, pairPartSize, false)...)
+					cc.AddLines(trw.dictValueField.t.trw.PhpCalculateSizesTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, pairPartSize, true)...)
 				}
 				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
 				cc.AddBlock(func(cc *codecreator.CodeCreator) {
