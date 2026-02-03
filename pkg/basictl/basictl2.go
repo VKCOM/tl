@@ -237,7 +237,7 @@ func SkipFixedSizedValue(r []byte, l int) (_ []byte, err error) {
 	return r, err
 }
 
-func VectorBoolContentWriteTL2(w []byte, vec []bool) []byte {
+func VectorBitContentWriteTL2(w []byte, vec []bool) []byte {
 	blockOffset := 0
 	for ; blockOffset+8 <= len(vec); blockOffset += 8 {
 		var block byte
@@ -260,7 +260,7 @@ func VectorBoolContentWriteTL2(w []byte, vec []bool) []byte {
 	return w
 }
 
-func VectorBoolContentReadTL2(w []byte, vec []bool) (_ []byte, err error) {
+func VectorBitContentReadTL2(w []byte, vec []bool) (_ []byte, err error) {
 	blockOffset := 0
 	for ; blockOffset+8 <= len(vec); blockOffset += 8 {
 		var block byte

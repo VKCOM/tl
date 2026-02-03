@@ -1347,8 +1347,8 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
+					qw422016.N().S(`        w = basictl.VectorBitContentWriteTL2(w, *vec)
 `)
 				} else {
 					qw422016.N().S(`    var sz int
@@ -1416,7 +1416,7 @@ func `)
     *vec = (*vec)[:elementCount]
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < elementCount; i++ {
@@ -1711,8 +1711,8 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
+					qw422016.N().S(`        w = basictl.VectorBitContentWriteTL2(w, *vec)
 `)
 				} else {
 					qw422016.N().S(`    var sz int
@@ -1780,7 +1780,7 @@ func `)
     *vec = (*vec)[:elementCount]
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < elementCount; i++ {
@@ -2108,8 +2108,8 @@ func `)
     w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
-				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])
+				if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit {
+					qw422016.N().S(`        w = basictl.VectorBitContentWriteTL2(w, (*vec)[:])
 `)
 				} else {
 					qw422016.N().S(`    var sz int
@@ -2169,7 +2169,7 @@ func `)
 				qw422016.N().S(`)
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBitContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
 `)
 					/* reset elements if received less elements */
 

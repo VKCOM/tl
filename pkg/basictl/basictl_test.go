@@ -293,9 +293,9 @@ func TestBuf_ByteSliceHuge(t *testing.T) {
 func TestVectorBool(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		val := rapid.SliceOf(rapid.Bool()).Draw(t, "values")
-		w := VectorBoolContentWriteTL2(nil, val)
+		w := VectorBitContentWriteTL2(nil, val)
 		val2 := make([]bool, len(val))
-		w2, err := VectorBoolContentReadTL2(w, val2)
+		w2, err := VectorBitContentReadTL2(w, val2)
 		require.NoError(t, err)
 		require.Equal(t, len(w2), 0)
 		require.Equal(t, val, val2)

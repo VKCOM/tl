@@ -773,8 +773,8 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
-    {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        w = basictl.VectorBoolContentWriteTL2(w, *vec)
+    {%- if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit -%}
+        w = basictl.VectorBitContentWriteTL2(w, *vec)
     {%- else -%}
     var sz int
     for i := 0; i < len(*vec); i++ {
@@ -816,7 +816,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
     }
     *vec = (*vec)[:elementCount]
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
+        if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil { return currentR, err }
     {%- else -%}
     for i := 0; i < elementCount; i++ {
         {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false) %}
@@ -986,8 +986,8 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
-    {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        w = basictl.VectorBoolContentWriteTL2(w, *vec)
+    {%- if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit -%}
+        w = basictl.VectorBitContentWriteTL2(w, *vec)
     {%- else -%}
     var sz int
     for i := 0; i < len(*vec); i++ {
@@ -1029,7 +1029,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
     }
     *vec = (*vec)[:elementCount]
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
+        if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil { return currentR, err }
     {%- else -%}
     for i := 0; i < elementCount; i++ {
         {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false) %}
@@ -1216,8 +1216,8 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     oldLen := len(w)
     w = basictl.TL2WriteSize(w, len(*vec))
 
-    {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])
+    {%- if bb, ok := tuple.element.t.trw.(*TypeRWBool); ok && bb.isBit -%}
+        w = basictl.VectorBitContentWriteTL2(w, (*vec)[:])
     {%- else -%}
     var sz int
     for i := 0; i < {%v= tuple.size %}; i++ {
@@ -1253,7 +1253,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 
     lastIndex := min(elementCount, {%v= tuple.size %})
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
-        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
+        if currentR, err = basictl.VectorBitContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
         {%- code /* reset elements if received less elements */ -%}
         clear((*vec)[lastIndex:])
     {%- else -%}
