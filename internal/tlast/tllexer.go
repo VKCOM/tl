@@ -74,8 +74,16 @@ type Position struct {
 	offset          int
 }
 
-func (p *Position) GetFile() string {
+func (p *Position) FileName() string {
 	return p.file
+}
+
+func (p *Position) FileContent() string {
+	return p.fileContent
+}
+
+func (p *Position) Offset() int {
+	return p.offset
 }
 
 type PositionRange struct {
