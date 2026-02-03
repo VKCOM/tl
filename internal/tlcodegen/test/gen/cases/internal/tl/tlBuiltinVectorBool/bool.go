@@ -65,8 +65,9 @@ func BuiltinVectorBoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]bo
 	var sz int
 
 	currentSize += basictl.TL2CalculateSize(len(*vec))
-	// special case for bool
-	currentSize += (len(*vec) + 7) / 8
+	for i := 0; i < len(*vec); i++ {
+		currentSize += 1
+	}
 	sizes[sizePosition] = currentSize
 	currentSize += basictl.TL2CalculateSize(currentSize)
 	internal.Unused(sz)
@@ -118,7 +119,7 @@ func BuiltinVectorBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err erro
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if elementCount/8 > len(currentR) {
+		if elementCount > len(currentR) {
 			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
@@ -127,8 +128,10 @@ func BuiltinVectorBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err erro
 		*vec = make([]bool, elementCount)
 	}
 	*vec = (*vec)[:elementCount]
-	if currentR, err = basictl.VectorBitContentReadTL2(currentR, *vec); err != nil {
-		return currentR, err
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = basictl.ByteBoolReadTL2(currentR, &(*vec)[i]); err != nil {
+			return currentR, err
+		}
 	}
 	return r, nil
 }
