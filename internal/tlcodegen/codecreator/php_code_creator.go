@@ -43,7 +43,7 @@ func (ph PhpHelder) TL2CountBytes(value string) string {
 }
 
 func (ph PhpHelder) TL2FetchSize() string {
-	return fmt.Sprintf("TL\\tl2_support::fetch_size()")
+	return "TL\\tl2_support::fetch_size()"
 }
 
 func (ph PhpHelder) TL2FetchSizeTo(name string) string {
