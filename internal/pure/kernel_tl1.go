@@ -206,7 +206,30 @@ func (k *Kernel) CompileTL1() error {
 			return err
 		}
 	}
-	for _, typ := range typeDescriptors {
+	// in order for deterministic migration
+	for _, comb := range k.filesTL1 {
+		if comb.IsFunction {
+			cName := comb.Construct.Name
+			kt := &KernelType{
+				originTL2:  false,
+				combTL1:    []*tlast.Combinator{comb},
+				instances:  map[string]*TypeInstanceRef{},
+				isFunction: true,
+				// functions have no canonical name, because there is no references to functions
+				// also they have no TL1 names or TL2 names set.
+				canonicalName: cName,
+				canBeBare:     true,
+			}
+			if err := k.addTip(kt, cName.String(), ""); err != nil {
+				return fmt.Errorf("error adding function %s: %w", cName.String(), err)
+			}
+			continue
+		}
+		typ, ok := typeDescriptors[comb.TypeDecl.Name.String()]
+		if !ok {
+			continue
+		}
+		delete(typeDescriptors, comb.TypeDecl.Name.String())
 		tName := typ[0].TypeDecl.Name
 		cName := typ[0].Construct.Name
 		if len(typ) == 1 {
@@ -259,25 +282,6 @@ func (k *Kernel) CompileTL1() error {
 		}
 		if err := k.addTip(kt, tName.String(), ""); err != nil {
 			return err
-		}
-	}
-	for _, typ := range allConstructors {
-		if !typ.IsFunction {
-			continue
-		}
-		cName := typ.Construct.Name
-		kt := &KernelType{
-			originTL2:  false,
-			combTL1:    []*tlast.Combinator{typ},
-			instances:  map[string]*TypeInstanceRef{},
-			isFunction: true,
-			// functions have no canonical name, because there is no references to functions
-			// also they have no TL1 names or TL2 names set.
-			canonicalName: cName,
-			canBeBare:     true,
-		}
-		if err := k.addTip(kt, cName.String(), ""); err != nil {
-			return fmt.Errorf("error adding function %s: %w", cName.String(), err)
 		}
 	}
 	//for _, comb := range k.filesTL1 {

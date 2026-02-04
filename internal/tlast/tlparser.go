@@ -33,6 +33,11 @@ type TemplateArgument struct {
 	FieldName string
 	IsNat     bool
 	PR        PositionRange // TODO - split into type and name
+
+	// this is set during type resolution, so the information
+	// about argument references not erased from the type
+	UsedAsNatVariable bool
+	UsedAsNatConst    map[uint32]struct{}
 }
 
 type TypeDeclaration struct {

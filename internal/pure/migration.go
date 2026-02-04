@@ -192,7 +192,7 @@ outer:
 						return nil, err
 					}
 				}
-				bb.WriteString(";\n")
+				bb.WriteString(";")
 			} else {
 				// migrate struct
 				bb.WriteString(cName.String())
@@ -213,14 +213,14 @@ outer:
 					if err := k.MigrationTypeRef(bb, comb, fieldsAfterReplace[0].FieldType); err != nil {
 						return nil, err
 					}
-					bb.WriteString(";\n")
+					bb.WriteString(";")
 				} else {
 					// migrate fields
 					bb.WriteString(" = ")
 					if err := k.MigrationFields(bb, comb, fieldsAfterReplace); err != nil {
 						return nil, err
 					}
-					bb.WriteString(";\n")
+					bb.WriteString(";")
 				}
 			}
 			bb.WriteString(comb.PR.End.FileContent()[comb.PR.End.Offset():comb.AllPR.End.Offset()])
@@ -254,7 +254,7 @@ outer:
 					}
 				}
 			}
-			bb.WriteString(";\n")
+			bb.WriteString(";")
 		}
 	}
 	return allFiles, nil
@@ -265,7 +265,13 @@ func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
 }
 
 func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, comb *tlast.Combinator) error {
-	for i, targ := range comb.TemplateArguments {
+	var targs []tlast.TemplateArgument
+	for _, targ := range comb.TemplateArguments {
+		if !targ.IsNat || !targ.UsedAsNatVariable {
+			targs = append(targs, targ)
+		}
+	}
+	for i, targ := range targs {
 		if i == 0 {
 			bb.WriteString("<")
 		} else {

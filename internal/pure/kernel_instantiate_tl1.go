@@ -278,6 +278,16 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
 			return nil, false, tlast.BeautifulError2(e1, e2)
 		}
+		if ta.IsNat {
+			if arg.IsArith {
+				if td.TemplateArguments[i].UsedAsNatConst == nil {
+					td.TemplateArguments[i].UsedAsNatConst = map[uint32]struct{}{}
+				}
+				td.TemplateArguments[i].UsedAsNatConst[arg.Arith.Res] = struct{}{}
+			} else {
+				td.TemplateArguments[i].UsedAsNatVariable = true
+			}
+		}
 	}
 	isDict := false
 	if k.opts.NewDicts &&
