@@ -128,7 +128,7 @@ replace5 n:# a:n*[int] = Replace5;`
 					},
 				},
 				TemplateArguments: []TemplateArgument{
-					{"n", true, PositionRange{}},
+					{FieldName: "n", IsNat: true},
 				},
 				TypeDecl: TypeDeclaration{
 					Name: Name{
@@ -146,7 +146,7 @@ replace5 n:# a:n*[int] = Replace5;`
 					},
 				},
 				TemplateArguments: []TemplateArgument{
-					{"m", true, PositionRange{}},
+					{FieldName: "m", IsNat: true},
 				},
 				Fields: []Field{
 					{
