@@ -58,6 +58,7 @@ func (k *Kernel) addString() {
 	}
 	kt := &KernelType{
 		originTL2:     false,
+		builtin:       true,
 		combTL1:       []*tlast.Combinator{combTL1},
 		combTL2:       combTL2,
 		instances:     map[string]*TypeInstanceRef{name: ref},

@@ -59,3 +59,17 @@
 
 //@read memcache.get#11111111 key:string  => memcache.value;
 //@write memcache.set#22222222 key?:string tpl?:[3]byte arr:[]optStruct pa?:pair<byte, byte> value:memcache.value => bool;
+// Please add -types- to the end of section if section ends with functions
+
+//----- Test Multiple native wrappers
+
+// innerType {t:Type} a:t = InnerType t;
+
+// allBoxed a:(innerType (Maybe int)) b:(innerType (Maybe Int))
+// c:(innerType (Maybe int)) d:(innerType (Maybe Int)) = AllBoxed;
+
+// Multiline comment before combinator
+//----- Test Multiple native wrappers
+//
+//----- Test Multiple bools
+//----- Test Common Types

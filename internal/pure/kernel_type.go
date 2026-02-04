@@ -10,6 +10,7 @@ import "github.com/vkcom/tl/internal/tlast"
 
 type KernelType struct {
 	originTL2 bool
+	builtin   bool
 	combTL1   []*tlast.Combinator
 	combTL2   tlast.TL2Combinator
 	// index by canonical name
