@@ -197,7 +197,7 @@ lint:
 .PHONY: testpure
 testpure: build
 	@./target/bin/tlgen --language=go -v --split-internal \
-		--tl2-generate=true \
+		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/genold \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \

@@ -46,8 +46,9 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
 	// General TL2
-	flag.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
-		"generate code for tl2 methods (currently works only for golang)")
+	generateTL2 := false
+	flag.BoolVar(&generateTL2, "tl2-generate", false,
+		"this option is ignored, use tl2WhiteList instead")
 	flag.StringVar(&opt.TL2MigrationFile, "tl2-migration-file", "",
 		"file to create .tl2 file with migrated files (if --tl2-migration-by-namespaces=true then it is path to common folder)")
 	flag.BoolVar(&opt.TL2MigrateByNamespaces, "tl2-migration-by-namespaces", false,
@@ -82,7 +83,7 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
 	flag.StringVar(&opt.RawHandlerWhileList, "rawHandlerWhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate RAW function handlers. Empty means none, '*' means all")
-	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "*",
+	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
@@ -158,6 +159,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	if opt.AddFactoryData {
 		opt.AddMetaData = true
 		opt.AddFunctionBodies = true
+	}
+
+	if opt.TL2WhiteList != "" {
+		opt.GenerateTL2 = true
 	}
 }
 

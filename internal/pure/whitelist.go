@@ -32,25 +32,6 @@ func (w *Whitelist) Empty() bool {
 	return len(w.filters) == 0
 }
 
-func (w *Whitelist) HasNamespace(ns string) bool {
-	inNameFilterElement := func(ns string, filter string) bool {
-		if filter == "*" {
-			return true
-		}
-		if strings.HasSuffix(filter, ".") {
-			return ns == strings.TrimSuffix(filter, ".")
-		}
-		return false
-	}
-
-	for _, filter := range w.filters {
-		if inNameFilterElement(ns, filter) {
-			return true
-		}
-	}
-	return false
-}
-
 func (w *Whitelist) HasName(name tlast.Name) bool {
 	inNameFilterElement := func(name tlast.Name, filter string) bool {
 		if filter == "*" {
