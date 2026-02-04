@@ -51,6 +51,8 @@ longKeyDictionaryField {t:Type}
 
 // comments #1
 
+---functions---
+
 ---types---
 
 ab.something fields_mask:# = ab.Something;
@@ -81,3 +83,5 @@ ab.useDictString#3325d884 fields_mask:#
   = ab.UseDictString;
 
 // comments #5
+
+---functions---

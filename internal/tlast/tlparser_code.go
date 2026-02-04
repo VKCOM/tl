@@ -561,7 +561,6 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 	rest := tokens
 
 	td := Combinator{PR: rest.skipWS(Position{})}
-	td.AllPR.Begin = commentStart.front().pos
 	td.CommentBefore = parseCommentBefore(commentStart, rest)
 
 	outer := td.PR.Begin
@@ -623,7 +622,6 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 		td.CommentRight = parseCommentRight(commentStart, rest)
 	}
 	td.PR.End = rest.front().pos
-	td.AllPR.End = td.PR.End
 	return td, rest, nil
 }
 
@@ -650,16 +648,20 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 
 	orderIndex := 0
 	rest := tokenIterator{tokens: allTokens}
+	sectionStart := rest
 	commentStart := rest
+	firstSectionAfterComb := false
+	// we must preserve sections and all whitespaces during migration,
+	// so we add them to appopriate combinator, depending on sections
 	for !rest.checkToken(eof) {
 		switch rest.front().tokenType {
-		case typesSection:
-			functionSection = false
-			rest.popFront()
-			commentStart = rest
-			continue
-		case functionsSection:
-			functionSection = true
+		case typesSection, functionsSection:
+			if firstSectionAfterComb {
+				firstSectionAfterComb = false
+				res[len(res)-1].AllPR.End = rest.front().pos
+				sectionStart = rest
+			}
+			functionSection = rest.front().tokenType == functionsSection
 			rest.popFront()
 			commentStart = rest
 			continue
@@ -672,12 +674,20 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 			}
 			return nil, fmt.Errorf("type declaration error: %w", err)
 		}
+		firstSectionAfterComb = true
+		td.SectionPR.Begin = sectionStart.front().pos
+		td.SectionPR.End = commentStart.front().pos
+		td.AllPR.Begin = commentStart.front().pos
+		td.AllPR.End = td.PR.End
 		td.OriginalOrderIndex = orderIndex
 		orderIndex++
 		res = append(res, &td)
+		sectionStart = rest
 		commentStart = rest
 	}
 	if len(res) != 0 {
+		// will include trailing sections as well,
+		// this is completely marvelous for migration
 		res[len(res)-1].AllPR.End = rest.front().pos
 	}
 	return res, nil
