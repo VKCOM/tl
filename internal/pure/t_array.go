@@ -171,6 +171,7 @@ func (k *Kernel) addTL1Brackets() {
 	}
 	kt := &KernelType{
 		originTL2:     false,
+		builtin:       true,
 		combTL1:       []*tlast.Combinator{combTL1},
 		instances:     map[string]*TypeInstanceRef{},
 		tl1Names:      map[string]struct{}{"__vector": {}},
@@ -190,6 +191,7 @@ func (k *Kernel) addTL1Brackets() {
 	}
 	kt = &KernelType{
 		originTL2:     false,
+		builtin:       true,
 		combTL1:       []*tlast.Combinator{combTL1},
 		instances:     map[string]*TypeInstanceRef{},
 		tl1Names:      map[string]struct{}{"__tuple": {}},

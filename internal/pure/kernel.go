@@ -42,7 +42,7 @@ type Kernel struct {
 func NewKernel(opts *OptionsKernel) *Kernel {
 	k := &Kernel{
 		opts:      opts,
-		brackets:  &KernelType{originTL2: true, instances: map[string]*TypeInstanceRef{}, canBeBare: true},
+		brackets:  &KernelType{originTL2: true, builtin: true, instances: map[string]*TypeInstanceRef{}, canBeBare: true},
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}

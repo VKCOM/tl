@@ -66,6 +66,7 @@ func (k *Kernel) addPrimitive(name string, tl1name string, clone KernelValue, go
 	}
 	kt := &KernelType{
 		originTL2:     tl1name == "",
+		builtin:       true,
 		combTL1:       []*tlast.Combinator{combTL1},
 		combTL2:       combTL2,
 		instances:     map[string]*TypeInstanceRef{name: ref},
