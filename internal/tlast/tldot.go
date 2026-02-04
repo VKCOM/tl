@@ -121,13 +121,13 @@ func (c *Constructor) toDot(s *strings.Builder) {
 	createNode(s, parent, nameID, "Name", "white")
 	c.Name.toDot(s)
 
-	if c.ID == nil {
+	if !c.IDExplicit {
 		return
 	}
 	idID := fmt.Sprintf("\"%p\"", &c.ID)
 	createNode(s, parent, idID, "tag", "white")
 	id := hash(idID)
-	createNode(s, idID, id, fmt.Sprintf("%08x", *c.ID), "cyan")
+	createNode(s, idID, id, fmt.Sprintf("%08x", c.ID), "cyan")
 }
 
 func (n *Name) toDot(s *strings.Builder) {

@@ -80,12 +80,12 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 			// TODO - see here
 			return typ.TypeDecl.NamePR.BeautifulError(errors.New("builtin type already defined as not builtin"))
 		}
-		if tip.combTL1[0].Construct.ID != nil {
+		if tip.combTL1[0].Construct.IDExplicit {
 			// TODO - see here
 			return typ.Construct.NamePR.BeautifulError(errors.New("built-in type magic already defined by previous declaration"))
 		}
-		id := typ.Crc32()
-		tip.combTL1[0].Construct.ID = &id
+		tip.combTL1[0].Construct.ID = typ.Crc32()
+		tip.combTL1[0].Construct.IDExplicit = true
 		k.tips[bigName] = tip
 		tip.tl1Names[bigName] = struct{}{}
 		tip.tl1BoxedName = tlast.Name{Name: bigName}

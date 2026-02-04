@@ -20,11 +20,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr(i uint32) *uint32 {
-	var x = i
-	return &x
-}
-
 func requireEqualTL(t *testing.T, a TL, b TL) {
 	tlText1 := a.String()
 	tlText2 := b.String()
@@ -66,7 +61,7 @@ replace5 n:# a:n*[int] = Replace5;`
 		tl2 := TL{
 			{
 				Builtin:           true,
-				Construct:         Constructor{Name: Name{Name: "int"}, ID: ptr(0xa8509bda)},
+				Construct:         Constructor{Name: Name{Name: "int"}, ID: 0xa8509bda, IDExplicit: true},
 				TemplateArguments: nil,
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "Int"}},
 			},
@@ -77,7 +72,7 @@ replace5 n:# a:n*[int] = Replace5;`
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "PositiveInt"}},
 			},
 			{
-				Construct:         Constructor{Name: Name{Name: "boolFalse"}, ID: ptr(0xbc799737)},
+				Construct:         Constructor{Name: Name{Name: "boolFalse"}, ID: 0xbc799737, IDExplicit: true},
 				TemplateArguments: nil,
 				Fields:            nil,
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "Bool"}},
@@ -96,7 +91,7 @@ replace5 n:# a:n*[int] = Replace5;`
 		require.NoError(t, err)
 		tl2 := TL{
 			{
-				Construct:         Constructor{Name: Name{Name: "stat"}, ID: ptr(0x9d56e6b2)},
+				Construct:         Constructor{Name: Name{Name: "stat"}, ID: 0x9d56e6b2, IDExplicit: true},
 				TemplateArguments: nil,
 				Fields: []Field{
 					{

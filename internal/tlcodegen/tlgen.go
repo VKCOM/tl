@@ -2416,8 +2416,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	// Int and %Int will reference wrappers, while int will reference builtin constructor.
 	// To avoid 2 canonical forms, resolveType will replace %Int to int for wrappers
 	for _, bt := range btl {
-		var zero uint32
-		bt.Construct.ID = &zero
+		bt.Construct.ID = 0
+		bt.Construct.IDExplicit = true
 		tName := bt.Construct.Name.String()
 		if tName == BuiltinTupleName || tName == BuiltinVectorName {
 			gen.allConstructors[tName] = bt

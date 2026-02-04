@@ -196,8 +196,8 @@ func parseConstructor(tokens tokenIterator, outer Position, allowBuiltin bool) (
 		if err != nil {
 			return Constructor{}, tokens, parseErrToken(fmt.Errorf("error converting constructor tag to uint32: %w", err), rest.front(), outer)
 		}
-		x := uint32(i)
-		res.ID = &x
+		res.ID = uint32(i)
+		res.IDExplicit = true
 		rest.expectOrPanic(crc32hash)
 		res.IDPR.End = rest.front().pos
 	}
@@ -616,6 +616,9 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 	}
 	if !rest.expect(semiColon) {
 		return Combinator{}, tokens, parseErrToken(fmt.Errorf("';' or type argument expected"), rest.front(), outer)
+	}
+	if !td.Construct.IDExplicit {
+		td.Construct.ID = td.crc32()
 	}
 	commentStart = rest
 	if rest.skipToNewline() {

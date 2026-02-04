@@ -187,19 +187,19 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   <dd>
     <ul>
     <li>
-    <code>a.color#f35d7a69 = a.Color;</code>
+    <code>a.color = a.Color;</code>
     </li>
     <li>
-    <code>a.red#b83a723d = a.Color;</code>
+    <code>a.red = a.Color;</code>
     </li>
     <li>
-    <code>a.green#6127e7b8 = a.Color;</code>
+    <code>a.green = a.Color;</code>
     </li>
     <li>
-    <code>b.red#a9471844 = a.Color;</code>
+    <code>b.red = a.Color;</code>
     </li>
     <li>
-    <code>a.blue#623360f3 = a.Color;</code>
+    <code>a.blue = a.Color;</code>
     </li>
     </ul>
   </dd>
@@ -249,7 +249,7 @@ External # (nat) arguments: <b>I</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>a.inner#ec5089b9 {I:#} a:%(__tuple I int) = a.Inner I;</code>
+    <code>a.inner {I:#} a:%(__tuple I int) = a.Inner I;</code>
   </dd>
 </dl>
 
@@ -274,7 +274,7 @@ External # (nat) arguments: <b>I</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>a.inner#ec5089b9 {I:#} a:%(__tuple I int) = a.Inner I;</code>
+    <code>a.inner {I:#} a:%(__tuple I int) = a.Inner I;</code>
   </dd>
 </dl>
 
@@ -306,7 +306,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>a.middle#af5e2b14 {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;</code>
+    <code>a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;</code>
   </dd>
 </dl>
 
@@ -365,10 +365,10 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   <dd>
     <ul>
     <li>
-    <code>a.uNionA#a7662843 a:int = a.MyUnion;</code>
+    <code>a.uNionA a:int = a.MyUnion;</code>
     </li>
     <li>
-    <code>au.nionA#df61f632 b:int = a.MyUnion;</code>
+    <code>au.nionA b:int = a.MyUnion;</code>
     </li>
     </ul>
   </dd>
@@ -409,7 +409,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>a.top2#7082d18f n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;</code>
+    <code>a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;</code>
   </dd>
 </dl>
 
@@ -433,7 +433,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>a.uNionA#a7662843 a:int = a.MyUnion;</code>
+    <code>a.uNionA a:int = a.MyUnion;</code>
   </dd>
 </dl>
 
@@ -459,7 +459,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call1#20c5fb2d x:ab.typeA = ab.TypeB;</code>
+    <code>@read ab.call1 x:ab.typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -474,7 +474,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call10#8db2a4f8 = a.Color;</code>
+    <code>@read ab.call10 = a.Color;</code>
   </dd>
 </dl>
 
@@ -499,7 +499,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call11#ecb2a36c x:a.Color = a.Color;</code>
+    <code>@read ab.call11 x:a.Color = a.Color;</code>
   </dd>
 </dl>
 
@@ -524,7 +524,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call2#77d5f057 x:ab.typeA = cd.TypeB;</code>
+    <code>@read ab.call2 x:ab.typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -549,7 +549,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call3#0a083445 x:ab.typeA = TypeB;</code>
+    <code>@read ab.call3 x:ab.typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -574,7 +574,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call4#c1220a1e x:cd.typeA = ab.TypeB;</code>
+    <code>@read ab.call4 x:cd.typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -599,7 +599,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call5#7ba4d28d x:cd.typeA = cd.TypeB;</code>
+    <code>@read ab.call5 x:cd.typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -624,7 +624,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call6#84d815cb x:cd.typeA = TypeB;</code>
+    <code>@read ab.call6 x:cd.typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -649,7 +649,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call7#46ec10bf x:typeA = ab.TypeB;</code>
+    <code>@read ab.call7 x:typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -674,7 +674,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call8#1b8652d9 x:typeA = cd.TypeB;</code>
+    <code>@read ab.call8 x:typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -699,7 +699,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read ab.call9#75de906c x:typeA = TypeB;</code>
+    <code>@read ab.call9 x:typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -723,7 +723,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.code#7651b1ac x:int = ab.Response;</code>
+    <code>ab.code x:int = ab.Response;</code>
     <code style="color:DarkCyan">// Union comment - Code</code></br>
   </dd>
 </dl>
@@ -749,10 +749,10 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   <dd>
     <ul>
     <li>
-    <code>ab.counterChangeRequestPeriodsMany#14a35d80 objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
+    <code>ab.counterChangeRequestPeriodsMany objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
     </li>
     <li>
-    <code>ab.counterChangeRequestPeriodsOne#d9c36de5 period:long = ab.CounterChangeRequestPeriods;</code>
+    <code>ab.counterChangeRequestPeriodsOne period:long = ab.CounterChangeRequestPeriods;</code>
     </li>
     </ul>
   </dd>
@@ -779,7 +779,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.counterChangeRequestPeriodsMany#14a35d80 objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
+    <code>ab.counterChangeRequestPeriodsMany objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
   </dd>
 </dl>
 
@@ -803,7 +803,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.counterChangeRequestPeriodsOne#d9c36de5 period:long = ab.CounterChangeRequestPeriods;</code>
+    <code>ab.counterChangeRequestPeriodsOne period:long = ab.CounterChangeRequestPeriods;</code>
   </dd>
 </dl>
 
@@ -828,7 +828,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.myType#e0e96c86 x:int = ab.MyType;</code>
+    <code>ab.myType x:int = ab.MyType;</code>
   </dd>
 </dl>
 
@@ -903,16 +903,16 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   <dd>
     <ul>
     <li>
-    <code>ab.empty#1ec6a63e = ab.Response;</code>
+    <code>ab.empty = ab.Response;</code>
     </li>
     <li>
-    <code>ab.code#7651b1ac x:int = ab.Response;</code>
+    <code>ab.code x:int = ab.Response;</code>
     </li>
     <li>
-    <code>ab.alias#944aaa97 int = ab.Response;</code>
+    <code>ab.alias int = ab.Response;</code>
     </li>
     <li>
-    <code>cd.response#8c202f64 x:int str:string = ab.Response;</code>
+    <code>cd.response x:int str:string = ab.Response;</code>
     </li>
     </ul>
   </dd>
@@ -966,7 +966,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.testMaybe#4dac492a n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;</code>
+    <code>ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;</code>
   </dd>
 </dl>
 
@@ -997,7 +997,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.topLevel1#e67bce28 a:noStr b:noStr = ab.TopLevel1;</code>
+    <code>ab.topLevel1 a:noStr b:noStr = ab.TopLevel1;</code>
   </dd>
 </dl>
 
@@ -1028,7 +1028,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.topLevel2#cef933fb a:noStr b:useStr = ab.TopLevel2;</code>
+    <code>ab.topLevel2 a:noStr b:useStr = ab.TopLevel2;</code>
   </dd>
 </dl>
 
@@ -1052,7 +1052,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.typeA#a99fef6a x:int = ab.TypeA;</code>
+    <code>ab.typeA x:int = ab.TypeA;</code>
   </dd>
 </dl>
 
@@ -1076,7 +1076,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.typeB#ff2e6d58 x:ab.typeA = ab.TypeB;</code>
+    <code>ab.typeB x:ab.typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -1100,7 +1100,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.typeC#69920d6e x:cd.typeA = ab.TypeC;</code>
+    <code>ab.typeC x:cd.typeA = ab.TypeC;</code>
   </dd>
 </dl>
 
@@ -1124,7 +1124,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.typeD#76615bf1 x:typeA = ab.TypeD;</code>
+    <code>ab.typeD x:typeA = ab.TypeD;</code>
   </dd>
 </dl>
 
@@ -1155,7 +1155,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>ab.useCycle#71687381 a:cyc2.myCycle b:(vector a.Color) = ab.UseCycle;</code>
+    <code>ab.useCycle a:cyc2.myCycle b:(vector a.Color) = ab.UseCycle;</code>
   </dd>
 </dl>
 
@@ -1210,7 +1210,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>au.nionA#df61f632 b:int = a.MyUnion;</code>
+    <code>au.nionA b:int = a.MyUnion;</code>
   </dd>
 </dl>
 
@@ -1263,7 +1263,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call1#a7302fbc x:ab.typeA = ab.TypeB;</code>
+    <code>@read call1 x:ab.typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -1288,7 +1288,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call2#f02024c6 x:ab.typeA = cd.TypeB;</code>
+    <code>@read call2 x:ab.typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -1313,7 +1313,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call3#6ace6718 x:ab.typeA = TypeB;</code>
+    <code>@read call3 x:ab.typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -1338,7 +1338,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call4#46d7de8f x:cd.typeA = ab.TypeB;</code>
+    <code>@read call4 x:cd.typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -1363,7 +1363,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call5#fc51061c x:cd.typeA = cd.TypeB;</code>
+    <code>@read call5 x:cd.typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -1388,7 +1388,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call6#e41e4696 x:cd.typeA = TypeB;</code>
+    <code>@read call6 x:cd.typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -1413,7 +1413,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call7#262a43e2 x:typeA = ab.TypeB;</code>
+    <code>@read call7 x:typeA = ab.TypeB;</code>
   </dd>
 </dl>
 
@@ -1438,7 +1438,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call8#7b400184 x:typeA = cd.TypeB;</code>
+    <code>@read call8 x:typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -1463,7 +1463,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>@read call9#67a0d62d x:typeA = TypeB;</code>
+    <code>@read call9 x:typeA = TypeB;</code>
   </dd>
 </dl>
 
@@ -1487,7 +1487,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.myType#eab6a6b4 x:int = cd.MyType;</code>
+    <code>cd.myType x:int = cd.MyType;</code>
   </dd>
 </dl>
 
@@ -1540,7 +1540,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.response#8c202f64 x:int str:string = ab.Response;</code>
+    <code>cd.response x:int str:string = ab.Response;</code>
   </dd>
 </dl>
 
@@ -1573,7 +1573,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.topLevel3#5cd1ca89 a:useStr b:halfStr = cd.TopLevel3;</code>
+    <code>cd.topLevel3 a:useStr b:halfStr = cd.TopLevel3;</code>
   </dd>
 </dl>
 
@@ -1597,7 +1597,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.typeA#a831a920 x:int = cd.TypeA;</code>
+    <code>cd.typeA x:int = cd.TypeA;</code>
   </dd>
 </dl>
 
@@ -1621,7 +1621,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.typeB#377b4996 x:ab.typeA = cd.TypeB;</code>
+    <code>cd.typeB x:ab.typeA = cd.TypeB;</code>
   </dd>
 </dl>
 
@@ -1645,7 +1645,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.typeC#db0f93d4 x:ab.typeA = cd.TypeC;</code>
+    <code>cd.typeC x:ab.typeA = cd.TypeC;</code>
   </dd>
 </dl>
 
@@ -1669,7 +1669,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.typeD#b5528285 x:typeA = cd.TypeD;</code>
+    <code>cd.typeD x:typeA = cd.TypeD;</code>
   </dd>
 </dl>
 
@@ -1700,7 +1700,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cd.useCycle#6ed67ca0 a:cyc2.myCycle b:(Maybe a.Color) = cd.UseCycle;</code>
+    <code>cd.useCycle a:cyc2.myCycle b:(Maybe a.Color) = cd.UseCycle;</code>
   </dd>
 </dl>
 
@@ -1998,7 +1998,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cyc1.myCycle#136ecc9e fields_mask:# a:fields_mask.0?cyc2.myCycle = cyc1.MyCycle;</code>
+    <code>cyc1.myCycle fields_mask:# a:fields_mask.0?cyc2.myCycle = cyc1.MyCycle;</code>
   </dd>
 </dl>
 
@@ -2036,7 +2036,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cyc2.myCycle#fba5eecb fields_mask:# a:(Maybe cyc3.myCycle) b:a.Color = cyc2.MyCycle;</code>
+    <code>cyc2.myCycle fields_mask:# a:(Maybe cyc3.myCycle) b:a.Color = cyc2.MyCycle;</code>
   </dd>
 </dl>
 
@@ -2067,7 +2067,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cyc3.myCycle#47866860 fields_mask:# a:(vector cyc1.myCycle) = cyc3.MyCycle;</code>
+    <code>cyc3.myCycle fields_mask:# a:(vector cyc1.myCycle) = cyc3.MyCycle;</code>
   </dd>
 </dl>
 
@@ -2135,7 +2135,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cycleTuple#c867fae3 n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?%(__tuple 3 int) = CycleTuple;</code>
+    <code>cycleTuple n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?%(__tuple 3 int) = CycleTuple;</code>
   </dd>
 </dl>
 
@@ -2166,7 +2166,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryAnyField#e466c347 {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
+    <code>dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
   </dd>
 </dl>
 
@@ -2197,7 +2197,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryAnyField#e466c347 {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
+    <code>dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
   </dd>
 </dl>
 
@@ -2228,7 +2228,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryAnyField#e466c347 {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
+    <code>dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
   </dd>
 </dl>
 
@@ -2259,7 +2259,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryAnyField#e466c347 {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
+    <code>dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
   </dd>
 </dl>
 
@@ -2295,7 +2295,7 @@ External # (nat) arguments: <b>tXn, tYn</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+    <code>dictionaryField {t:Type} key:string value:t = DictionaryField t;</code>
   </dd>
 </dl>
 
@@ -2326,7 +2326,7 @@ External # (nat) arguments: <b>tXn, tYn</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+    <code>dictionaryField {t:Type} key:string value:t = DictionaryField t;</code>
   </dd>
 </dl>
 
@@ -2358,7 +2358,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+    <code>dictionaryField {t:Type} key:string value:t = DictionaryField t;</code>
   </dd>
 </dl>
 
@@ -2413,7 +2413,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>halfStr#647ddaf5 x:noStr y:useStr = HalfStr;</code>
+    <code>halfStr x:noStr y:useStr = HalfStr;</code>
   </dd>
 </dl>
 
@@ -2437,7 +2437,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>hren#12ab5219 next:(Maybe hren) = Hren;</code>
+    <code>hren next:(Maybe hren) = Hren;</code>
   </dd>
 </dl>
 
@@ -2482,7 +2482,7 @@ External # (nat) arguments: <b>X</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>innerMaybe#0a7d3b9e {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
+    <code>innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
   </dd>
 </dl>
 
@@ -2506,7 +2506,7 @@ External # (nat) arguments: <b>X</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>innerMaybe#0a7d3b9e {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
+    <code>innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
   </dd>
 </dl>
 
@@ -2561,7 +2561,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>intKeyDictionaryField#721ea8b9 {t:Type} key:int value:t = IntKeyDictionaryField t;</code>
+    <code>intKeyDictionaryField {t:Type} key:int value:t = IntKeyDictionaryField t;</code>
   </dd>
 </dl>
 
@@ -2623,7 +2623,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>list#02d80cdd {X:Type} flag:# head:flag.0?X tail:flag.0?(list X) = List X;</code>
+    <code>list {X:Type} flag:# head:flag.0?X tail:flag.0?(list X) = List X;</code>
   </dd>
 </dl>
 
@@ -2656,7 +2656,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>longKeyDictionaryField#19701e0b {t:Type} key:long value:t = LongKeyDictionaryField t;</code>
+    <code>longKeyDictionaryField {t:Type} key:long value:t = LongKeyDictionaryField t;</code>
   </dd>
 </dl>
 
@@ -2757,7 +2757,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>maybeTest1#c457763c n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3)) e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int)) i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;</code>
+    <code>maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3)) e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int)) i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;</code>
   </dd>
 </dl>
 
@@ -2782,7 +2782,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>maybeWrapper#723390c4 {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;</code>
+    <code>maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;</code>
   </dd>
 </dl>
 
@@ -2879,7 +2879,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>myNat#c60c1b41 fields_mask:# a:fields_mask.0?myNat = MyNat;</code>
+    <code>myNat fields_mask:# a:fields_mask.0?myNat = MyNat;</code>
   </dd>
 </dl>
 
@@ -2905,10 +2905,10 @@ External # (nat) arguments: <b>t</b>
   <dd>
     <ul>
     <li>
-    <code>myZero#8d868379 = MyNat2;</code>
+    <code>myZero = MyNat2;</code>
     </li>
     <li>
-    <code>myPlus#79e0c6df a:MyNat2 = MyNat2;</code>
+    <code>myPlus a:MyNat2 = MyNat2;</code>
     </li>
     </ul>
   </dd>
@@ -2936,10 +2936,10 @@ External # (nat) arguments: <b>t</b>
   <dd>
     <ul>
     <li>
-    <code>myZero3#103a40cf = MyNat3;</code>
+    <code>myZero3 = MyNat3;</code>
     </li>
     <li>
-    <code>myPlus3#692c291b MyNat3 = MyNat3;</code>
+    <code>myPlus3 MyNat3 = MyNat3;</code>
     </li>
     </ul>
   </dd>
@@ -2965,7 +2965,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>myPlus#79e0c6df a:MyNat2 = MyNat2;</code>
+    <code>myPlus a:MyNat2 = MyNat2;</code>
     <code style="color:DarkCyan">// struct with field</code></br>
   </dd>
 </dl>
@@ -3054,7 +3054,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>noStr#3a728324 x:int = NoStr;</code>
+    <code>noStr x:int = NoStr;</code>
   </dd>
 </dl>
 
@@ -3086,7 +3086,7 @@ External # (nat) arguments: <b>X, Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+    <code>pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
   </dd>
 </dl>
 
@@ -3117,7 +3117,7 @@ External # (nat) arguments: <b>X, Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+    <code>pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
   </dd>
 </dl>
 
@@ -3149,7 +3149,7 @@ External # (nat) arguments: <b>XXI, XYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+    <code>pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
   </dd>
 </dl>
 
@@ -3181,7 +3181,7 @@ External # (nat) arguments: <b>X, Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+    <code>pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
   </dd>
 </dl>
 
@@ -3261,7 +3261,7 @@ External # (nat) arguments: <b>X, Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace#ebb26b29 n:# a:(replace1 n) a1:(replace1 3) b:replace2 c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6 = Replace;</code>
+    <code>replace n:# a:(replace1 n) a1:(replace1 3) b:replace2 c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6 = Replace;</code>
   </dd>
 </dl>
 
@@ -3286,7 +3286,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace1#89eac43a {n:#} a:%(__tuple n int) = Replace1 n;</code>
+    <code>replace1 {n:#} a:%(__tuple n int) = Replace1 n;</code>
   </dd>
 </dl>
 
@@ -3310,7 +3310,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace1#89eac43a {n:#} a:%(__tuple n int) = Replace1 n;</code>
+    <code>replace1 {n:#} a:%(__tuple n int) = Replace1 n;</code>
   </dd>
 </dl>
 
@@ -3348,7 +3348,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace17#f46f9b9b x:%(__vector int) a:int y:%(__vector int) = Replace17;</code>
+    <code>replace17 x:%(__vector int) a:int y:%(__vector int) = Replace17;</code>
   </dd>
 </dl>
 
@@ -3379,7 +3379,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace2#e2d4ebee n:# a:%(__tuple n int) = Replace2;</code>
+    <code>replace2 n:# a:%(__tuple n int) = Replace2;</code>
   </dd>
 </dl>
 
@@ -3403,7 +3403,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace3#51e324e4 a:%(__tuple 3 int) = Replace3;</code>
+    <code>replace3 a:%(__tuple 3 int) = Replace3;</code>
   </dd>
 </dl>
 
@@ -3428,7 +3428,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace4#87995fb4 {n:#} a:%(__tuple n int) = Replace4 n;</code>
+    <code>replace4 {n:#} a:%(__tuple n int) = Replace4 n;</code>
   </dd>
 </dl>
 
@@ -3452,7 +3452,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace4#87995fb4 {n:#} a:%(__tuple n int) = Replace4 n;</code>
+    <code>replace4 {n:#} a:%(__tuple n int) = Replace4 n;</code>
   </dd>
 </dl>
 
@@ -3483,7 +3483,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace5#8b5bc78a n:# a:%(__tuple n int) = Replace5;</code>
+    <code>replace5 n:# a:%(__tuple n int) = Replace5;</code>
   </dd>
 </dl>
 
@@ -3507,7 +3507,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>replace6#abd49d06 a:%(__vector int) = Replace6;</code>
+    <code>replace6 a:%(__vector int) = Replace6;</code>
   </dd>
 </dl>
 
@@ -3798,7 +3798,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>testMaybe#88920e90 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (vector int)) d:(Maybe (tuple int 3)) e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;</code>
+    <code>testMaybe n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (vector int)) d:(Maybe (tuple int 3)) e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;</code>
   </dd>
 </dl>
 
@@ -3836,7 +3836,7 @@ External # (nat) arguments: <b>n</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>testMaybe2#0aa03cf2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;</code>
+    <code>testMaybe2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;</code>
   </dd>
 </dl>
 
@@ -3992,7 +3992,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>typeA#157673c1 x:int = TypeA;</code>
+    <code>typeA x:int = TypeA;</code>
   </dd>
 </dl>
 
@@ -4016,7 +4016,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>typeB#9d024802 x:int = TypeB;</code>
+    <code>typeB x:int = TypeB;</code>
   </dd>
 </dl>
 
@@ -4040,7 +4040,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>typeC#6b8ef43f x:ab.typeA = TypeC;</code>
+    <code>typeC x:ab.typeA = TypeC;</code>
   </dd>
 </dl>
 
@@ -4064,7 +4064,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>typeD#b1f4369e x:cd.typeA = TypeD;</code>
+    <code>typeD x:cd.typeA = TypeD;</code>
   </dd>
 </dl>
 
@@ -4109,7 +4109,7 @@ External # (nat) arguments: <b>t</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>unionArgsUse#742161d2 k:# n:# a:(UnionArgsXXX int k) b:(UnionArgsXXX long n) = UnionArgsUse;</code>
+    <code>unionArgsUse k:# n:# a:(UnionArgsXXX int k) b:(UnionArgsXXX long n) = UnionArgsUse;</code>
   </dd>
 </dl>
 
@@ -4135,7 +4135,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX1 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
   </dd>
 </dl>
 
@@ -4161,7 +4161,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX1 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
   </dd>
 </dl>
 
@@ -4186,7 +4186,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX2 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
   </dd>
 </dl>
 
@@ -4211,7 +4211,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX2 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
   </dd>
 </dl>
 
@@ -4237,10 +4237,10 @@ External # (nat) arguments: <b>Y</b>
   <dd>
     <ul>
     <li>
-    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX1 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
     </li>
     <li>
-    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX2 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
     </li>
     </ul>
   </dd>
@@ -4268,10 +4268,10 @@ External # (nat) arguments: <b>Y</b>
   <dd>
     <ul>
     <li>
-    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX1 {X:Type} {Y:#} x:(tuple X Y) = UnionArgsXXX X Y;</code>
     </li>
     <li>
-    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
+    <code>unionArgsXXX2 {X:Type} {Y:#} a:int = UnionArgsXXX X Y;</code>
     </li>
     </ul>
   </dd>
@@ -4377,7 +4377,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>useResponse#0a63ec5f n:# x:%(__tuple n ab.Response) = UseResponse;</code>
+    <code>useResponse n:# x:%(__tuple n ab.Response) = UseResponse;</code>
   </dd>
 </dl>
 
@@ -4401,7 +4401,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>useStr#9aa3dee5 x:string = UseStr;</code>
+    <code>useStr x:string = UseStr;</code>
   </dd>
 </dl>
 
