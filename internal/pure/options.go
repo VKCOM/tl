@@ -29,6 +29,9 @@ func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 		"treat all warnings as errors")
 	f.StringVar(&opt.TypesWhiteList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
+	generateTL2 := false
+	f.BoolVar(&generateTL2, "tl2-generate", false,
+		"this option is ignored, use tl2WhiteList instead")
 	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 }

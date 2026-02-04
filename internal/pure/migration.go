@@ -23,9 +23,7 @@ import (
 // remaining comments to the new file.
 func (k *Kernel) Migration() error {
 	tl2WhiteList := NewWhiteList(k.opts.TL2WhiteList)
-	if tl2WhiteList.HasNamespace("") {
-		return fmt.Errorf("migration whitelist %q should not contain empty (global) namespace, it must be migrated manually", k.opts.TL2WhiteList)
-	}
+
 	migrateTips := map[*KernelType]struct{}{}
 	migrateNames := map[tlast.Name]struct{}{}
 outer:
