@@ -38,6 +38,10 @@ func (ph PhpHelder) SubAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s -= %[2]s;", name, value)
 }
 
+func (ph PhpHelder) OrAssign(name, value string) string {
+	return fmt.Sprintf("%[1]s |= %[2]s;", name, value)
+}
+
 func (ph PhpHelder) TL2CountBytes(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::count_used_bytes(%[1]s)", value)
 }
