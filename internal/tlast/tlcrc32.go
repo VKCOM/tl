@@ -19,20 +19,10 @@ import (
 //   - all tokens are separates from each other with one space
 //   - square brackets are also separated from content inside with one space
 //     example: "[ T ]"
-func (descriptor *Combinator) Crc32() uint32 {
-	if descriptor.OriginalDescriptor != nil && descriptor.OriginalDescriptor != descriptor {
-		return descriptor.OriginalDescriptor.Crc32()
-	}
-	if descriptor.Construct.ID != nil {
-		return *descriptor.Construct.ID
-	}
-	// _, err := fmt.Fprintf(os.Stderr, "%s\n%x\n", s.String(), crc32.ChecksumIEEE([]byte(s.String())))
-	// if err != nil {
-	// 	os.Exit(1)
-	// }
+func (descriptor *Combinator) crc32() uint32 {
+	return crc32.ChecksumIEEE([]byte(descriptor.canonicalForm()))
+}
 
-	// save for further usage
-	descriptor.Construct.ID = new(uint32)
-	*descriptor.Construct.ID = crc32.ChecksumIEEE([]byte(descriptor.canonicalForm()))
-	return *descriptor.Construct.ID
+func (descriptor *Combinator) Crc32() uint32 {
+	return descriptor.Construct.ID
 }

@@ -21,8 +21,9 @@ type Modifier struct {
 }
 
 type Constructor struct {
-	Name Name
-	ID   *uint32 // TODO - uint32 + bool IsExplicit
+	Name       Name
+	ID         uint32
+	IDExplicit bool // if false, ID is calculated immediately after parsing
 
 	NamePR PositionRange
 	IDPR   PositionRange

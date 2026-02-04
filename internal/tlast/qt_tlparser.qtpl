@@ -11,8 +11,8 @@
 
 {%- func (c Constructor) String() -%}
   {%= c.Name.String() %}
-  {%- if c.ID != nil && *c.ID != 0 -%}
-    #{%s= fmt.Sprintf("%08x", *c.ID) %}
+  {%- if c.IDExplicit && c.ID != 0 -%}
+    #{%s= fmt.Sprintf("%08x", c.ID) %}
   {%- endif -%}
 {%- endfunc -%}
 

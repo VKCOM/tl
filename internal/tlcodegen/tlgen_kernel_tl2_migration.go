@@ -892,8 +892,8 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				Name:      lowerFirst(function.Construct.Name.Name),
 			}
 			// add magic
-			if function.Construct.ID != nil {
-				tl2Combinator.FuncDecl.Magic = *function.Construct.ID
+			if function.Construct.ID != 0 {
+				tl2Combinator.FuncDecl.Magic = function.Construct.ID
 			}
 			if len(function.TemplateArguments) == 0 {
 				// add arguments

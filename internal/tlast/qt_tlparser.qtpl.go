@@ -42,9 +42,9 @@ func (n Name) String() string {
 
 func (c Constructor) StreamString(qw422016 *qt422016.Writer) {
 	c.Name.StreamString(qw422016)
-	if c.ID != nil && *c.ID != 0 {
+	if c.IDExplicit && c.ID != 0 {
 		qw422016.N().S(`#`)
-		qw422016.N().S(fmt.Sprintf("%08x", *c.ID))
+		qw422016.N().S(fmt.Sprintf("%08x", c.ID))
 	}
 }
 

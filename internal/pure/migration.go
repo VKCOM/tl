@@ -173,8 +173,8 @@ outer:
 			if comb.IsFunction {
 				// migrate function
 				bb.WriteString(cName.String())
-				if comb.Construct.ID != nil {
-					_, _ = fmt.Fprintf(bb, "#%08x", *comb.Construct.ID)
+				if comb.Construct.IDExplicit {
+					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
 				}
 				if len(comb.TemplateArguments) != 0 {
 					return nil, comb.Construct.NamePR.BeautifulError(errors.New("internal error: function with template arguments cannot be migrated"))
@@ -196,8 +196,8 @@ outer:
 			} else {
 				// migrate struct
 				bb.WriteString(cName.String())
-				if comb.Construct.ID != nil {
-					_, _ = fmt.Fprintf(bb, "#%08x", *comb.Construct.ID)
+				if comb.Construct.IDExplicit {
+					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
 				}
 				if err := k.MigrationTemplateArguments(bb, comb); err != nil {
 					return nil, err
