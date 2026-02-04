@@ -51,6 +51,8 @@ longKeyDictionaryField {t:Type}
 
 // comments #1
 
+---types---
+
 ab.something fields_mask:# = ab.Something;
 
 // comments #2
