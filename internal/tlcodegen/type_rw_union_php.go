@@ -299,7 +299,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+			fmt.Sprintf("  if ((%[1]s & 1) != 0) {", localBlock),
 			fmt.Sprintf("    %[1]s = TL\\tl2_support::fetch_size();", localConstructor),
 			fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
 			"  }",
