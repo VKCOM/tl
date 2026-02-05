@@ -1413,7 +1413,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 		func(cc *codecreator.PhpCodeCreator) {
 			if !canOmit {
 				cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s + 1);", currentSizeIndex))
-				cc.AddLines(fmt.Sprintf("%[1]s = 1;", usedBytesPointer))
+				cc.AddLines(fmt.Sprintf("%[1]s += 1;", usedBytesPointer))
 			} else {
 				cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s);", currentSizeIndex))
 			}
