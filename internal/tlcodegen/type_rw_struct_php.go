@@ -911,7 +911,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			usedBytes := "$used_bytes"
 			code.WriteString(fmt.Sprintf("%[1]s%[2]s = 0;\n", tab, usedBytes))
 
-			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, nil, true) {
+			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, nil, "", 0, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 
@@ -963,9 +963,14 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 	return result
 }
 
-func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree, topLevel bool) []string {
+func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree, supportSuffix string, callLevel int, topLevel bool) []string {
 	currentSize := "$current_size"
 	block := "$block"
+
+	if !topLevel {
+		currentSize = fmt.Sprintf("$current_size_%s_%d", supportSuffix, callLevel)
+		block = fmt.Sprintf("$block_%s_%d", supportSuffix, callLevel)
+	}
 
 	cc := codecreator.NewPhpCodeCreator()
 
@@ -1039,10 +1044,11 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		}
 		cc.If(fmt.Sprintf("($block & (1 << %d)) != 0", inBlockIndex), func(cc *codecreator.PhpCodeCreator) {
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
-			localUsedBytes := "$local_used_bytes"
+			localUsedBytes := fmt.Sprintf("$local_used_bytes_%s_%d", supportSuffix, callLevel)
+			cc.Comments("local size for this field")
 			cc.AddLines(fmt.Sprintf("%[1]s = 0;", localUsedBytes))
 			cc.AddLines(
-				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), 0, localUsedBytes, field.fieldMask == nil)...,
+				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), callLevel+1, localUsedBytes, field.fieldMask == nil)...,
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
 			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func(cc *codecreator.PhpCodeCreator) {
@@ -2122,7 +2128,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		)
 	}
 	if trw.wr.phpInfo.IsDuplicate {
-		result = append(result, trw.phpStructReadTL2Code(targetName, usedBytesPointer, args, false)...)
+		result = append(result, trw.phpStructReadTL2Code(targetName, usedBytesPointer, args, supportSuffix, callLevel+1, false)...)
 	} else {
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->read_tl2(%[2]s);",
