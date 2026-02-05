@@ -1042,7 +1042,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		if isTrue {
 			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
 		}
-		cc.If(fmt.Sprintf("($block & (1 << %d)) != 0", inBlockIndex), func(cc *codecreator.PhpCodeCreator) {
+		cc.If(fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", block, inBlockIndex), func(cc *codecreator.PhpCodeCreator) {
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
 			localUsedBytes := fmt.Sprintf("$local_used_bytes_%s_%d", supportSuffix, callLevel)
 			cc.Comments("local size for this field")
