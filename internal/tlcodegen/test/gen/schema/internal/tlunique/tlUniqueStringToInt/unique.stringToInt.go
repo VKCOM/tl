@@ -104,14 +104,6 @@ func (item *UniqueStringToInt) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
-func (item *UniqueStringToInt) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("unique.stringToInt")
-}
-
-func (item *UniqueStringToInt) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("unique.stringToInt")
-}
-
 func (item UniqueStringToInt) String() string {
 	return string(item.WriteJSON(nil))
 }

@@ -108,14 +108,6 @@ func (item *Service6MultiFindWithBounds) ReadResultJSONWriteResult(r []byte, w [
 	return r, w, err
 }
 
-func (item *Service6MultiFindWithBounds) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFindWithBounds")
-}
-
-func (item *Service6MultiFindWithBounds) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFindWithBounds")
-}
-
 func (item Service6MultiFindWithBounds) String() string {
 	return string(item.WriteJSON(nil))
 }

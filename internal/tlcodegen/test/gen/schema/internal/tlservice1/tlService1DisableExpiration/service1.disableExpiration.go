@@ -101,14 +101,6 @@ func (item *Service1DisableExpiration) ReadResultJSONWriteResult(r []byte, w []b
 	return r, w, err
 }
 
-func (item *Service1DisableExpiration) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.disableExpiration")
-}
-
-func (item *Service1DisableExpiration) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.disableExpiration")
-}
-
 func (item Service1DisableExpiration) String() string {
 	return string(item.WriteJSON(nil))
 }

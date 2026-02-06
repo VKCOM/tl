@@ -96,14 +96,6 @@ func (item *TasksGetAnyTask) ReadResultJSONWriteResult(r []byte, w []byte) ([]by
 	return r, w, err
 }
 
-func (item *TasksGetAnyTask) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getAnyTask")
-}
-
-func (item *TasksGetAnyTask) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getAnyTask")
-}
-
 func (item TasksGetAnyTask) String() string {
 	return string(item.WriteJSON(nil))
 }

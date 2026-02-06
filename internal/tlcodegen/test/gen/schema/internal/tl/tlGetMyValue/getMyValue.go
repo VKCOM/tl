@@ -102,14 +102,6 @@ func (item *GetMyValue) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, [
 	return r, w, err
 }
 
-func (item *GetMyValue) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("getMyValue")
-}
-
-func (item *GetMyValue) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("getMyValue")
-}
-
 func (item GetMyValue) String() string {
 	return string(item.WriteJSON(nil))
 }

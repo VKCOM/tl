@@ -101,14 +101,6 @@ func (item *Service1Delete) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
 	return r, w, err
 }
 
-func (item *Service1Delete) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.delete")
-}
-
-func (item *Service1Delete) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.delete")
-}
-
 func (item Service1Delete) String() string {
 	return string(item.WriteJSON(nil))
 }

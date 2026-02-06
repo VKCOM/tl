@@ -140,14 +140,6 @@ func (item *Service2Set) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, 
 	return r, w, err
 }
 
-func (item *Service2Set) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service2.set")
-}
-
-func (item *Service2Set) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service2.set")
-}
-
 func (item Service2Set) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {

@@ -108,14 +108,6 @@ func (item *BoxedTupleSlice2) ReadResultJSONWriteResult(r []byte, w []byte) ([]b
 	return r, w, err
 }
 
-func (item *BoxedTupleSlice2) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("boxedTupleSlice2")
-}
-
-func (item *BoxedTupleSlice2) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("boxedTupleSlice2")
-}
-
 func (item BoxedTupleSlice2) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {

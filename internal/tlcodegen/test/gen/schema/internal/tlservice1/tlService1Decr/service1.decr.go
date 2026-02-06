@@ -108,14 +108,6 @@ func (item *Service1Decr) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte,
 	return r, w, err
 }
 
-func (item *Service1Decr) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.decr")
-}
-
-func (item *Service1Decr) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.decr")
-}
-
 func (item Service1Decr) String() string {
 	return string(item.WriteJSON(nil))
 }
