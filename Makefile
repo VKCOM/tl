@@ -175,22 +175,6 @@ cpp:
 	$(MAKE) cpp_gen
 	#$(MAKE) cpp_build
 
-.PHONY: php_gen_cases_tl2
-php_gen_cases_tl2: build
-	@./target/bin/tlgen --language=php --split-internal -v \
-		--tl2-generate=true \
-		--tl2WhiteList=casesTL2. \
-		--php-rpc-support=true \
-        --php-serialization-bodies=true \
-        --php-generate-fetchers=false \
-        --php-generate-switcher=true \
-        --php-use-builtin-data-providers=true \
-        --php-serialization-bodies-whitelist=casesTL2. \
-        --php-add-type-comments=true \
-		--outdir=./$(GEN_PATH)/cases_php_tl2 \
-		--basicPkgPath=$(BASIC_TL_PATH) \
-		./$(TLS_PATH)/cases.tl
-
 .PHONY: test_multi_lang_cases
 test_multi_lang_cases:
 	@cd internal/tlcodegen/test/codegen_test/; \
