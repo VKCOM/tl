@@ -230,10 +230,14 @@ outer:
 				return nil, err
 			}
 			bb.WriteString(" = ")
-			for _, comb := range tip.combTL1 {
+			variantNames, err := k.VariantNames(tip.combTL1)
+			if err != nil {
+				return nil, err
+			}
+			for i, comb := range tip.combTL1 {
+				_, _ = fmt.Fprintf(bb, "\n    // tlgen:tl1name:%s", comb.Construct.Name.String())
 				bb.WriteString("\n    | ")
-				// TODO - legacy JSON name if differs from inferred
-				bb.WriteString(comb.Construct.Name.String())
+				bb.WriteString(variantNames[i].String())
 				bb.WriteString(" ")
 				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
@@ -257,10 +261,6 @@ outer:
 		}
 	}
 	return allFiles, nil
-}
-
-func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
-	return rt.Type.String() == "true" || rt.Type.String() == "True"
 }
 
 func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, comb *tlast.Combinator) error {
@@ -372,7 +372,7 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 	tName := tr.Type.String()
 	// TODO - dictionaries
 	switch tName {
-	case "__vector":
+	case "__vector", "Vector", "vector":
 		if len(tr.Args) != 1 || tr.Args[0].IsArith {
 			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected single type argument here"))
 		}
@@ -381,16 +381,21 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 			return tlast.TL2TypeArgument{}, false, err
 		}
 		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &tlast.TL2BracketType{ArrayType: elemType}}}, false, nil
-	case "__tuple":
-		if len(tr.Args) != 2 || tr.Args[1].IsArith {
-			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected 2 arguments here, #-arg and Type-arg"))
+	case "__tuple", "Tuple", "tuple":
+		if len(tr.Args) != 2 {
+			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected 2 arguments here"))
 		}
-		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, tr.Args[1].T, leftArgs)
+		argType := tr.Args[0]
+		argCount := tr.Args[1]
+		if tName == "__tuple" {
+			argCount, argType = argType, argCount
+		}
+		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, argType.T, leftArgs)
 		if err != nil {
 			return tlast.TL2TypeArgument{}, false, err
 		}
 		bracketType := tlast.TL2BracketType{ArrayType: elemType}
-		indexType, removed, err := k.MigrationArgument(migrateTips, tip, tr.Args[0], leftArgs, true)
+		indexType, removed, err := k.MigrationArgument(migrateTips, tip, argCount, leftArgs, true)
 		if err != nil {
 			return tlast.TL2TypeArgument{}, false, err
 		}
@@ -403,6 +408,37 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 	kt, ok := k.tips[tName]
 	if !ok {
 		return tlast.TL2TypeArgument{}, false, fmt.Errorf("type %s does not exist", tr.Type)
+	}
+	isDict, dictFieldT := k.IsDict(kt)
+	if isDict {
+		if len(tr.Args) != len(dictFieldT.combTL1[0].TemplateArguments) {
+			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(fmt.Errorf("internal error during migration: expected %d arguments here", len(dictFieldT.combTL1[0].TemplateArguments)))
+		}
+		for _, targ := range tr.Args {
+			if targ.IsArith {
+				return tlast.TL2TypeArgument{}, false, targ.T.PR.BeautifulError(errors.New("internal error during migration: dictionary cannot be instantiated with number"))
+			}
+		}
+		keyRT := dictFieldT.combTL1[0].Fields[0].FieldType
+		valueRT := tr.Args[0].T
+		if len(tr.Args) == 2 {
+			keyRT = tr.Args[0].T
+			valueRT = tr.Args[1].T
+		}
+		valueType, err := k.MigrationTypeRefImpl(migrateTips, tip, keyRT, leftArgs)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		keyType, err := k.MigrationTypeRefImpl(migrateTips, tip, valueRT, leftArgs)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		bracketType := tlast.TL2BracketType{
+			ArrayType: valueType,
+			IndexType: tlast.TL2TypeArgument{Type: keyType},
+			HasIndex:  true,
+		}
+		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &bracketType}}, false, nil
 	}
 	if kt.originTL2 {
 		return tlast.TL2TypeArgument{}, false, fmt.Errorf("during migration, reference to TL2 type %s is found", tr.Type)

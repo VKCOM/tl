@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -102,6 +101,10 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
+	variantNames, err := k.VariantNames(definition)
+	if err != nil {
+		return nil, err
+	}
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -110,51 +113,14 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		isEnum:               true,
-		variantTypes:         make([]*TypeInstanceStruct, len(definition)),
+		variantNames:         variantNames,
 		variantOriginalNames: make([]string, len(definition)),
+		variantTypes:         make([]*TypeInstanceStruct, len(definition)),
 		elementNatArgs:       natArgs,
-	}
-	// Removing prefix/suffix common with union name.
-	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
-	typePrefix := strings.ToLower(utils.ToLowerFirst(definition[0].TypeDecl.Name.Name))
-	typeSuffix := strings.ToLower(definition[0].TypeDecl.Name.Name)
-	for _, typ := range definition {
-		conName := strings.ToLower(typ.Construct.Name.Name)
-		// if constructor is full prefix of type, we will shorten accessors
-		// ab.saveStateOne = ab.SaveState; // item.AsOne()
-		// ab.saveStateTwo = ab.SaveState; // item.AsTwo()
-		if !strings.HasPrefix(conName, typePrefix) { // same check as in checkUnionElementsCompatibility
-			typePrefix = ""
-		}
-		if !strings.HasSuffix(conName, typeSuffix) {
-			typeSuffix = ""
-		}
+		isEnum:               true,
 	}
 
 	for i, variantDef := range definition {
-		typeConstructName := variantDef.Construct.Name
-		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
-		} else if typeSuffix != "" && len(typeSuffix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
-		}
-		variantName := tlast.TL2TypeName{Namespace: "", Name: typeConstructName.Name}
-		// check against already defined fields
-		for _, usedName := range ins.variantNames {
-			if usedName == variantName {
-				// TODO - check if we have such cases in combined.tl, if not - simplify
-				variantName.Namespace = typeConstructName.Namespace // add namespace on collision
-				break
-			}
-		}
-		// check again
-		for _, usedName := range ins.variantNames {
-			if usedName == variantName {
-				return nil, fmt.Errorf("cannot define TL1 union - prohibited variant name collision")
-			}
-		}
-
 		// do not change canonical names before removing long adapters,
 		// otherwise long adapter discovery will break (see func (gen *genGo) findLongAdapter)
 		argsStart := len(canonicalName)
@@ -172,7 +138,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 		ins.variantTypes[i] = element
 		ins.variantOriginalNames[i] = variantDef.Construct.Name.String()
-		ins.variantNames = append(ins.variantNames, variantName)
 		if len(element.fields) != 0 {
 			ins.isEnum = false
 		}
