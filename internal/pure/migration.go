@@ -168,11 +168,10 @@ outer:
 			}
 		}
 		bb.WriteString(comb.AllPR.Begin.FileContent()[comb.AllPR.Begin.Offset():comb.PR.Begin.Offset()])
+		bb.WriteString(tip.canonicalName.String())
 		if len(tip.combTL1) == 1 {
-			cName := comb.Construct.Name
 			if comb.IsFunction {
 				// migrate function
-				bb.WriteString(cName.String())
 				if comb.Construct.IDExplicit {
 					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
 				}
@@ -183,23 +182,23 @@ outer:
 				if err != nil {
 					return nil, err
 				}
-				if err := k.MigrationFields(bb, comb, fieldsAfterReplace); err != nil {
+				leftArgs, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace)
+				if err != nil {
 					return nil, err
 				}
 				bb.WriteString(" =>\n    ")
 				if !k.IsTrueType(comb.FuncDecl) { // otherwise returns nothing
-					if err := k.MigrationTypeRef(bb, comb, comb.FuncDecl); err != nil {
+					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, comb.FuncDecl, leftArgs); err != nil {
 						return nil, err
 					}
 				}
 				bb.WriteString(";")
 			} else {
 				// migrate struct
-				bb.WriteString(cName.String())
 				if comb.Construct.IDExplicit {
 					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
 				}
-				if err := k.MigrationTemplateArguments(bb, comb); err != nil {
+				if err := k.MigrationTemplateArguments(bb, tip, comb); err != nil {
 					return nil, err
 				}
 				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
@@ -210,14 +209,15 @@ outer:
 					fieldsAfterReplace[0].Mask == nil {
 					// migrate alias
 					bb.WriteString(" <=> ")
-					if err := k.MigrationTypeRef(bb, comb, fieldsAfterReplace[0].FieldType); err != nil {
+					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldsAfterReplace[0].FieldType, comb.TemplateArguments); err != nil {
 						return nil, err
 					}
 					bb.WriteString(";")
 				} else {
 					// migrate fields
 					bb.WriteString(" = ")
-					if err := k.MigrationFields(bb, comb, fieldsAfterReplace); err != nil {
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace)
+					if err != nil {
 						return nil, err
 					}
 					bb.WriteString(";")
@@ -226,9 +226,7 @@ outer:
 			bb.WriteString(comb.PR.End.FileContent()[comb.PR.End.Offset():comb.AllPR.End.Offset()])
 		} else {
 			// migrate union
-			tName := comb.TypeDecl.Name
-			bb.WriteString(tName.String())
-			if err := k.MigrationTemplateArguments(bb, comb); err != nil {
+			if err := k.MigrationTemplateArguments(bb, tip, comb); err != nil {
 				return nil, err
 			}
 			bb.WriteString(" = ")
@@ -244,12 +242,13 @@ outer:
 				if len(fieldsAfterReplace) == 1 && fieldsAfterReplace[0].FieldName == "" &&
 					fieldsAfterReplace[0].Mask == nil {
 					// migrate alias
-					if err := k.MigrationTypeRef(bb, comb, fieldsAfterReplace[0].FieldType); err != nil {
+					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldsAfterReplace[0].FieldType, comb.TemplateArguments); err != nil {
 						return nil, err
 					}
 				} else {
 					// migrate fields
-					if err := k.MigrationFields(bb, comb, fieldsAfterReplace); err != nil {
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace)
+					if err != nil {
 						return nil, err
 					}
 				}
@@ -264,10 +263,10 @@ func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
 	return rt.Type.String() == "true" || rt.Type.String() == "True"
 }
 
-func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, comb *tlast.Combinator) error {
+func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, comb *tlast.Combinator) error {
 	var targs []tlast.TemplateArgument
-	for _, targ := range comb.TemplateArguments {
-		if !targ.IsNat || !targ.UsedAsNatVariable {
+	for i, targ := range comb.TemplateArguments {
+		if !tip.targs[i].usedAsNatVariable {
 			targs = append(targs, targ)
 		}
 	}
@@ -275,7 +274,7 @@ func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, comb *tlast.Combin
 		if i == 0 {
 			bb.WriteString("<")
 		} else {
-			bb.WriteString(",")
+			bb.WriteString(", ")
 		}
 		bb.WriteString(targ.FieldName)
 		if targ.IsNat {
@@ -283,17 +282,18 @@ func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, comb *tlast.Combin
 		} else {
 			bb.WriteString(":Type")
 		}
-		if i == len(comb.TemplateArguments)-1 {
+		if i == len(targs)-1 {
 			bb.WriteString(">")
 		}
 	}
 	return nil
 }
 
-func (k *Kernel) MigrationFields(bb *bytes.Buffer, comb *tlast.Combinator, fieldsAfterReplace []tlast.Field) error {
+func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]struct{}, tip *KernelType, comb *tlast.Combinator, fieldsAfterReplace []tlast.Field) ([]tlast.TemplateArgument, error) {
+	leftArgs := comb.TemplateArguments
 	for i, fieldDef := range fieldsAfterReplace {
 		if fieldDef.FieldName == "" {
-			return fieldDef.PR.BeautifulError(fmt.Errorf("internal error: anonymous field cannot be migrated"))
+			return nil, fieldDef.PR.BeautifulError(fmt.Errorf("internal error: anonymous field cannot be migrated"))
 		}
 		if i != 0 {
 			bb.WriteString(" ")
@@ -303,14 +303,131 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, comb *tlast.Combinator, field
 			bb.WriteString("?")
 		}
 		bb.WriteString(":")
-		if err := k.MigrationTypeRef(bb, comb, fieldDef.FieldType); err != nil {
-			return err
+		if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldDef.FieldType, leftArgs); err != nil {
+			return nil, err
+		}
+		if fieldDef.FieldName != "" {
+			leftArgs = append(leftArgs, tlast.TemplateArgument{
+				FieldName: fieldDef.FieldName,
+				IsNat:     true,
+				PR:        fieldDef.PR,
+			})
 		}
 	}
+	return leftArgs, nil
+}
+
+func (k *Kernel) MigrationTypeRef(bb *bytes.Buffer, migrateTips map[*KernelType]struct{}, tip *KernelType, comb *tlast.Combinator,
+	tr tlast.TypeRef, leftArgs []tlast.TemplateArgument) error {
+	result, err := k.MigrationTypeRefImpl(migrateTips, tip, tr, leftArgs)
+	if err != nil {
+		return err
+	}
+	_, _ = fmt.Fprintf(bb, "%s", result.String())
 	return nil
 }
 
-func (k *Kernel) MigrationTypeRef(bb *bytes.Buffer, comb *tlast.Combinator, rt tlast.TypeRef) error {
-	_, _ = fmt.Fprintf(bb, "%s", rt.String())
-	return nil
+func (k *Kernel) MigrationTypeRefImpl(migrateTips map[*KernelType]struct{}, tip *KernelType,
+	tr tlast.TypeRef, leftArgs []tlast.TemplateArgument) (tlast.TL2TypeRef, error) {
+	result, _, err := k.MigrationArgument(migrateTips, tip, tlast.ArithmeticOrType{T: tr}, leftArgs, false)
+	if err != nil {
+		return tlast.TL2TypeRef{}, err
+	}
+	if result.IsNumber {
+		return tlast.TL2TypeRef{}, fmt.Errorf("internal error during migration: number where type reference is required")
+	}
+	return result.Type, nil
+}
+
+func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *KernelType,
+	tra tlast.ArithmeticOrType, leftArgs []tlast.TemplateArgument, allowRemoved bool) (tlast.TL2TypeArgument, bool, error) {
+
+	if tra.IsArith {
+		return tlast.TL2TypeArgument{IsNumber: true, Number: tra.Arith.Res}, false, nil
+	}
+	tr := tra.T
+
+	if tr.Type.Namespace == "" {
+		for i, targ := range leftArgs {
+			if targ.FieldName == tr.Type.Name {
+				for _, arg := range tr.Args {
+					e1 := arg.T.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.FieldName))
+					e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+					return tlast.TL2TypeArgument{}, false, tlast.BeautifulError2(e1, e2)
+				}
+				result := tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName(tr.Type)}}}
+				removed := i >= len(tip.targs) || tip.targs[i].usedAsNatVariable
+				if removed {
+					// reference to field or removed argument
+					if !allowRemoved {
+						e1 := tr.PR.BeautifulError(fmt.Errorf("reference to template argument  %s being removed during migration", targ.FieldName))
+						e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+						return tlast.TL2TypeArgument{}, false, tlast.BeautifulError2(e1, e2)
+					}
+				}
+				return result, removed, nil
+			}
+		}
+	}
+	tName := tr.Type.String()
+	// TODO - dictionaries
+	switch tName {
+	case "__vector":
+		if len(tr.Args) != 1 || tr.Args[0].IsArith {
+			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected single type argument here"))
+		}
+		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, tr.Args[0].T, leftArgs)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &tlast.TL2BracketType{ArrayType: elemType}}}, false, nil
+	case "__tuple":
+		if len(tr.Args) != 2 || tr.Args[1].IsArith {
+			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected 2 arguments here, #-arg and Type-arg"))
+		}
+		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, tr.Args[1].T, leftArgs)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		bracketType := tlast.TL2BracketType{ArrayType: elemType}
+		indexType, removed, err := k.MigrationArgument(migrateTips, tip, tr.Args[0], leftArgs, true)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		if !removed {
+			bracketType.IndexType = indexType
+			bracketType.HasIndex = true
+		}
+		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &bracketType}}, false, nil
+	}
+	kt, ok := k.tips[tName]
+	if !ok {
+		return tlast.TL2TypeArgument{}, false, fmt.Errorf("type %s does not exist", tr.Type)
+	}
+	if kt.originTL2 {
+		return tlast.TL2TypeArgument{}, false, fmt.Errorf("during migration, reference to TL2 type %s is found", tr.Type)
+	}
+	_, migrateTip := migrateTips[kt]
+	//result := tlast.TL2TypeApplication{Name: tlast.TL2TypeName(tr.Type)}
+	//if migrateTip {
+	result := tlast.TL2TypeApplication{Name: tlast.TL2TypeName(kt.canonicalName)}
+	//}
+	if len(tr.Args) != len(kt.targs) {
+		return tlast.TL2TypeArgument{}, false, fmt.Errorf("internal error during migration, reference to type %s has wrong # of arguments found", tr.Type)
+	}
+	for i, arg := range tr.Args {
+		if migrateTip && kt.targs[i].usedAsNatVariable { // target type removes this arg
+			continue
+		}
+		if arg.IsArith {
+			result.Arguments = append(result.Arguments, tlast.TL2TypeArgument{IsNumber: true, Number: arg.Arith.Res})
+			continue
+		}
+		indexType, _, err := k.MigrationArgument(migrateTips, tip, arg, leftArgs, false)
+		if err != nil {
+			return tlast.TL2TypeArgument{}, false, err
+		}
+		result.Arguments = append(result.Arguments, indexType)
+	}
+	return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: result}}, false, nil
 }
