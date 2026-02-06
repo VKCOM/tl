@@ -48,10 +48,10 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	}
 	k.addPrimitive("uint32", "#", &KernelValueUint32{}, true)
 	k.addPrimitive("int32", "int", &KernelValueInt32{}, true)
-	k.addPrimitive("float32", "float", &KernelValueInt32{}, true)
+	k.addPrimitive("float32", "float", &KernelValueInt32{}, false)
 	k.addPrimitive("uint64", "", &KernelValueUint64{}, true)
 	k.addPrimitive("int64", "long", &KernelValueInt64{}, true)
-	k.addPrimitive("float64", "double", &KernelValueInt64{}, true)
+	k.addPrimitive("float64", "double", &KernelValueInt64{}, false)
 	k.addPrimitive("byte", "", &KernelValueByte{}, true)
 	k.addPrimitive("bool", "", &KernelValueBool{}, true)
 	k.addPrimitive("bit", "", &KernelValueBit{}, false)
