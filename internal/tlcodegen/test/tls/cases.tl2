@@ -32,6 +32,7 @@ cases.testDictString = dict:dictionary<int>;
 cases.testDictInt = dict:dictionaryAny<int,int>;
 // will be array of tuples
 cases.testDictAny = dict:dictionaryAny<double,int>;
+cases.testAllDicts = f1:cases.testDictString f2:cases.testDictInt f3:cases.testDictAny;
 // BLOCK: TEST UNIONS
 cases.testMaybe = value:maybe<int>;
 cases.testUnion = 
@@ -169,5 +170,7 @@ casesGo.testNames = write:int read:int;
 @read casesTL2.testFunctionNoDep3#f020849b x:int => ;
 @read casesTL2.testFunctionNoDep4#5a933a50 x:int => ;
 @read casesTL2.testFunctionNoDep5#2b47b925 x:int => ;
+@read casesTL2.testFunctionNoDep6#9a316c2e x:int => ;
+@read casesTL2.testFunctionNoDep7#08824518 x:int => ;
 @read casesTL2.testFunctionWithDep1#b6c63b07 n:uint32 => ;
 @read casesTL2.testFunctionWithDep2#9d44a2fd n:uint32 => ;
