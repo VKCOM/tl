@@ -19,7 +19,9 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryFieldStringReset(m map[string]string) {
-	clear(m)
+	for k := range m {
+		delete(m, k)
+	}
 }
 
 func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ []byte, err error) {
@@ -30,14 +32,19 @@ func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ [
 	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
-	clear(*m)
-	if l == 0 {
-		return w, nil
-	}
+	var data map[string]string
 	if *m == nil {
-		*m = make(map[string]string, l)
+		if l == 0 {
+			return w, nil
+		}
+		data = make(map[string]string, l)
+		*m = data
+	} else {
+		data = *m
+		for k := range data {
+			delete(data, k)
+		}
 	}
-	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldString.DictionaryFieldString
 		if w, err = elem.Read(w); err != nil {
@@ -67,12 +74,16 @@ func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []by
 }
 
 func BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
-	clear(*m)
+	var data map[string]string
 	if *m == nil {
 		*m = make(map[string]string, 0)
+		data = *m
+	} else {
+		data = *m
+		for k := range data {
+			delete(data, k)
+		}
 	}
-	data := *m
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

@@ -102,14 +102,6 @@ func (item *Service3GetLastVisitTimestamp) ReadResultJSONWriteResult(r []byte, w
 	return r, w, err
 }
 
-func (item *Service3GetLastVisitTimestamp) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getLastVisitTimestamp")
-}
-
-func (item *Service3GetLastVisitTimestamp) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getLastVisitTimestamp")
-}
-
 func (item Service3GetLastVisitTimestamp) String() string {
 	return string(item.WriteJSON(nil))
 }

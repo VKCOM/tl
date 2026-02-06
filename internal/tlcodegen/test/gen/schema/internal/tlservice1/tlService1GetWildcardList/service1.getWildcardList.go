@@ -106,14 +106,6 @@ func (item *Service1GetWildcardList) ReadResultJSONWriteResult(r []byte, w []byt
 	return r, w, err
 }
 
-func (item *Service1GetWildcardList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardList")
-}
-
-func (item *Service1GetWildcardList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardList")
-}
-
 func (item Service1GetWildcardList) String() string {
 	return string(item.WriteJSON(nil))
 }

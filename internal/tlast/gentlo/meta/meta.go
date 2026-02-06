@@ -10,8 +10,8 @@ package meta
 import (
 	"fmt"
 
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
-	"github.com/vkcom/tl/pkg/basictl"
 )
 
 func SchemaGenerator() string { return "(devel)" }
@@ -46,7 +46,6 @@ type Function interface {
 	// pass empty basictl.JSONWriteContext{} if you do not know which options you need
 	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error)                                 // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
-
 }
 
 func GetAllTLItems() []TLItem {
