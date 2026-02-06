@@ -179,6 +179,7 @@ func (k *Kernel) addTL1Brackets() {
 		canonicalName: tlast.Name{Name: "__vector"},
 		tl1name:       "__vector",
 		canBeBare:     true,
+		targs:         make([]KernelTypeTarg, 1),
 	}
 	if err := k.addTip(kt, "__vector", ""); err != nil {
 		panic(fmt.Sprintf("error adding __vector: %v", err))
@@ -199,6 +200,7 @@ func (k *Kernel) addTL1Brackets() {
 		canonicalName: tlast.Name{Name: "__tuple"},
 		tl1name:       "__tuple",
 		canBeBare:     true,
+		targs:         make([]KernelTypeTarg, 2),
 	}
 	if err := k.addTip(kt, "__tuple", ""); err != nil {
 		panic(fmt.Sprintf("error adding __tuple: %v", err))

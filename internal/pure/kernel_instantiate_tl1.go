@@ -280,12 +280,12 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 		}
 		if ta.IsNat {
 			if arg.IsArith {
-				if td.TemplateArguments[i].UsedAsNatConst == nil {
-					td.TemplateArguments[i].UsedAsNatConst = map[uint32]struct{}{}
+				if kt.targs[i].usedAsNatConst == nil {
+					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
 				}
-				td.TemplateArguments[i].UsedAsNatConst[arg.Arith.Res] = struct{}{}
+				kt.targs[i].usedAsNatConst[arg.Arith.Res] = struct{}{}
 			} else {
-				td.TemplateArguments[i].UsedAsNatVariable = true
+				kt.targs[i].usedAsNatVariable = true
 			}
 		}
 	}
