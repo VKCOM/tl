@@ -43,7 +43,7 @@ func (k *Kernel) IsDict(kt *KernelType) (bool, *KernelType) {
 	return true, fieldT
 }
 
-func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]tlast.TL2TypeName, error) {
+func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]string, error) {
 	// Removing prefix/suffix common with union name.
 	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
 	typePrefix := strings.ToLower(utils.ToLowerFirst(definition[0].TypeDecl.Name.Name))
@@ -61,20 +61,21 @@ func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]tlast.TL2TypeNa
 		}
 	}
 
-	var variantNames []tlast.TL2TypeName
+	var variantNames []string
 	for _, variantDef := range definition {
-		typeConstructName := variantDef.Construct.Name
-		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
-		} else if typeSuffix != "" && len(typeSuffix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
+		variantName := variantDef.Construct.Name.Name
+		if typePrefix != "" && len(typePrefix) < len(variantName) {
+			variantName = variantName[len(typePrefix):]
+		} else if typeSuffix != "" && len(typeSuffix) < len(variantName) {
+			variantName = variantName[:len(variantName)-len(typeSuffix)]
 		}
-		variantName := tlast.TL2TypeName{Namespace: "", Name: typeConstructName.Name}
 		// check against already defined fields
 		for _, usedName := range variantNames {
 			if usedName == variantName {
-				// TODO - check if we have such cases in combined.tl, if not - simplify
-				variantName.Namespace = typeConstructName.Namespace // add namespace on collision
+				// We have such cases in combined.tl, for example
+				// messages.oneUser#a6a042bd user_id:messages.userId = messages.ChatUsers;
+				// messagesLong.oneUser#5fb6003f user_id:messagesLong.userId = messages.ChatUsers;
+				variantName = variantDef.Construct.Name.Namespace + "_" + variantName // add namespace on collision
 				break
 			}
 		}

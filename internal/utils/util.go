@@ -40,3 +40,29 @@ func DoLint(commentRight string) bool {
 	}
 	return true
 }
+
+// finds value for tags in comment with template {tag}:"{value}"
+func ExtractTLGenTag(comment string, tag string) (found bool, value string) {
+	index := strings.Index(comment, tag)
+	if index == -1 {
+		return
+	}
+	comment = comment[index+len(tag):]
+	index = strings.Index(comment, ":")
+	if index == -1 {
+		return
+	}
+	comment = comment[index+1:]
+	index = strings.Index(comment, "\"")
+	if index == -1 {
+		return
+	}
+	comment = comment[index+1:]
+	index = strings.Index(comment, "\"")
+	if index == -1 {
+		return
+	}
+	found = true
+	value = comment[:index]
+	return
+}

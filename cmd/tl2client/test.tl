@@ -35,6 +35,9 @@ a.inner {I:#} a:I*[int] = a.Inner I;
 a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
 a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;
 
+ch_proxy.emptyOutput#ff8f7db8 = ch_proxy.Output;
+ch_proxy.stringOutput#dc170ff4 http_code:int response:string = ch_proxy.Output;
+
 // BLOCK: TEST RECURSIVE TYPES
 cases.myCycle1 fields_mask:# a:fields_mask.0?cases.myCycle2 = cases.MyCycle1;
 cases.myCycle2 fields_mask:# a:fields_mask.0?cases.myCycle3 = cases.MyCycle2;
