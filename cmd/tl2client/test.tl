@@ -84,25 +84,25 @@ cases.testRecursiveFieldMask f0:# f1:f0.0?# f2:f1.1?# t1:f0.0?%True t2:f1.1?%Tru
 cases.testLocalFieldmask f1:# f2:f1.0?# f3:f2.1?%True f4:f2.1?%True = cases.TestLocalFieldmask;
 
 
-cases.testOutFieldMask {f:#} f1:f.0?# f2:f.3?%True f3:f*[int] = cases.TestOutFieldMask f;
-cases.testOutFieldMaskContainer f:# inner:(cases.testOutFieldMask f) = cases.TestOutFieldMaskContainer;
-cases.testBeforeReadBitValidation n:# a:n.0?n*[int] b:n.1?n*[int] = cases.TestBeforeReadBitValidation;
+cases.testOutFieldMask {f:#} {f_s:#} f1:f.0?# f2:f.3?%True f3:f_s*[int] = cases.TestOutFieldMask f f_s;
+cases.testOutFieldMaskContainer f:# f_s:# inner:(cases.testOutFieldMask f f_s) = cases.TestOutFieldMaskContainer;
+cases.testBeforeReadBitValidation n:# n_s:# a:n.0?n_s*[int] b:n.1?n_s*[int] = cases.TestBeforeReadBitValidation;
 
-cases.testAllPossibleFieldConfigs {outer:#} local:#
+cases.testAllPossibleFieldConfigs {outer:#} {outer_s:#} local:# local_s:#
     f00:int                 // no fieldmask, no nat dependencies in type
     f01:%True               // no fieldmask, true type
-    f02:local*[int]         // no fieldmask, have some local nat dependencies in type
-    f03:outer*[int]         // no fieldmask, have only external nat dependencies in type
+    f02:local_s*[int]         // no fieldmask, have some local nat dependencies in type
+    f03:outer_s*[int]         // no fieldmask, have only external nat dependencies in type
     f10:local.0?int         // local fieldmask, no nat dependencies in type
     f11:local.1?%True       // local fieldmask, true type
-    f12:local.2?local*[int] // local fieldmask, have some local nat dependencies in type
-    f13:local.3?outer*[int] // local fieldmask, have only external nat dependencies in type
+    f12:local.2?local_s*[int] // local fieldmask, have some local nat dependencies in type
+    f13:local.3?outer_s*[int] // local fieldmask, have only external nat dependencies in type
     f20:outer.0?int         // outer fieldmask, no nat dependencies in type
     f21:outer.1?%True       // outer fieldmask, true type
-    f22:outer.2?local*[int] // outer fieldmask, have some local nat dependencies in type
-    f23:outer.3?outer*[int] // outer fieldmask, have only external nat dependencies in type
-= cases.TestAllPossibleFieldConfigs outer;
+    f22:outer.2?local_s*[int] // outer fieldmask, have some local nat dependencies in type
+    f23:outer.3?outer_s*[int] // outer fieldmask, have only external nat dependencies in type
+= cases.TestAllPossibleFieldConfigs outer outer_s;
 
-cases.testAllPossibleFieldConfigsContainer outer:#
-    value:(cases.testAllPossibleFieldConfigs outer)
+cases.testAllPossibleFieldConfigsContainer outer:# outer_s:#
+    value:(cases.testAllPossibleFieldConfigs outer outer_s)
 = cases.TestAllPossibleFieldConfigsContainer;

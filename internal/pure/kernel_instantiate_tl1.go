@@ -28,7 +28,7 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 	tName := tr.Type.String()
 	kt, ok := k.tips[tName]
 	if !ok {
-		return "", false, tr.PR.BeautifulError(fmt.Errorf("type reference %s not found", tName))
+		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
 	if kt.isFunction && !allowFunctions {
 		e1 := tr.PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", tName))
@@ -164,6 +164,43 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		// probably ref to global type or a typo
 	}
+	tName := tr.T.Type.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+	}
+	if kt.originTL2 {
+		return tr, nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.T.Type)
+	}
+	td := kt.combTL1[0]
+	// checks below are redundant, but they catch type resolve errors early for beautiful errors
+	if len(td.TemplateArguments) > len(tr.T.Args) {
+		arg := td.TemplateArguments[len(tr.T.Args)]
+		e1 := tr.T.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
+		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
+		return tr, nil, tlast.BeautifulError2(e1, e2)
+	}
+	if len(td.TemplateArguments) < len(tr.T.Args) {
+		arg := tr.T.Args[len(td.TemplateArguments)]
+		e1 := arg.T.PR.BeautifulError(errors.New("excess template argument here"))
+		e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+		return tr, nil, tlast.BeautifulError2(e1, e2)
+	}
+	if tName == "__tuple" {
+		if sf := tr.T.Args[0].SourceField; sf != (tlast.CombinatorField{}) {
+			field := &sf.Comb.Fields[sf.FieldIndex]
+			if field.UsedAsMask {
+				e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
+				e3.PrintWarning(k.opts.ErrorWriter, nil)
+				e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
+				e2 := tr.T.Args[0].T.PR.BeautifulError(fmt.Errorf("used as size here"))
+				return tr, nil, tlast.BeautifulError2(e1, e2)
+			}
+			field.UsedAsSize = true
+			field.UsedAsSizePR = tr.T.Args[0].T.PR
+		}
+	}
+
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
@@ -173,6 +210,29 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		tr.T.Args[i] = rt
 		natArgs = append(natArgs, natArgs2...)
+
+		ta := td.TemplateArguments[i]
+		argNat := rt.IsArith || rt.T.Type.String() == "*"
+		if ta.IsNat && !argNat {
+			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be # here"))
+			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			return tr, nil, tlast.BeautifulError2(e1, e2)
+		}
+		if !ta.IsNat && argNat {
+			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be Type here"))
+			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			return tr, nil, tlast.BeautifulError2(e1, e2)
+		}
+		if ta.IsNat {
+			if arg.IsArith {
+				if kt.targs[i].usedAsNatConst == nil {
+					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
+				}
+				kt.targs[i].usedAsNatConst[arg.Arith.Res] = struct{}{}
+			} else {
+				kt.targs[i].usedAsNatVariable = true
+			}
+		}
 	}
 	return tr, natArgs, nil
 }
@@ -235,61 +295,6 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
 	}
-	if kt.originTL2 {
-		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
-	}
-	td := kt.combTL1[0]
-	// checks below are redundant, but they catch type resolve errors early for beautiful errors
-	if len(td.TemplateArguments) > len(tr.Args) {
-		arg := td.TemplateArguments[len(tr.Args)]
-		e1 := tr.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
-		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
-		return nil, false, tlast.BeautifulError2(e1, e2)
-	}
-	if len(td.TemplateArguments) < len(tr.Args) {
-		arg := tr.Args[len(td.TemplateArguments)]
-		e1 := arg.T.PR.BeautifulError(errors.New("excess template argument here"))
-		e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-		return nil, false, tlast.BeautifulError2(e1, e2)
-	}
-	for i, ta := range td.TemplateArguments {
-		arg := tr.Args[i]
-		argNat := arg.IsArith || arg.T.Type.String() == "*"
-		if ta.IsNat && !argNat {
-			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be # here"))
-			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-			return nil, false, tlast.BeautifulError2(e1, e2)
-		}
-		if !ta.IsNat && argNat {
-			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be Type here"))
-			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-			return nil, false, tlast.BeautifulError2(e1, e2)
-		}
-		if ta.IsNat {
-			if arg.IsArith {
-				if kt.targs[i].usedAsNatConst == nil {
-					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
-				}
-				kt.targs[i].usedAsNatConst[arg.Arith.Res] = struct{}{}
-			} else {
-				kt.targs[i].usedAsNatVariable = true
-			}
-		}
-	}
-	if tName == "__tuple" {
-		if sf := tr.Args[0].SourceField; sf != (tlast.CombinatorField{}) {
-			field := &sf.Comb.Fields[sf.FieldIndex]
-			if field.UsedAsMask {
-				e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
-				e3.PrintWarning(k.opts.ErrorWriter, nil)
-				e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
-				e2 := tr.Args[0].T.PR.BeautifulError(fmt.Errorf("used as size here"))
-				return nil, false, tlast.BeautifulError2(e1, e2)
-			}
-			field.UsedAsSize = true
-			field.UsedAsSizePR = tr.Args[0].T.PR
-		}
-	}
 	canonicalName, bare, err := k.canonicalStringTL1(tr, true, allowFunctions)
 	if err != nil {
 		return nil, false, err
@@ -301,11 +306,13 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
 	// log.Printf("creating an instance of type %s", canonicalName)
-
+	if kt.originTL2 {
+		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
+	}
+	td := kt.combTL1[0]
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
-
 	isDict, _ := k.IsDict(kt)
 	switch {
 	case tName == "__vector":
