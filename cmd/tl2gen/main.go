@@ -107,6 +107,10 @@ func runMain(opt *puregen.Options) error {
 			return err
 		}
 	}
+	if opt.Language == "tl2migration" {
+		opt.Kernel.NewDicts = true // migration requires this
+	}
+
 	if err := kernel.Compile(); err != nil {
 		return err
 	}

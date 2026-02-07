@@ -11,21 +11,22 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
-	variantNames         []tlast.TL2TypeName
-	variantOriginalNames []string // TODO - rename to legacy JSON names
-	variantTypes         []*TypeInstanceStruct
-	elementNatArgs       []ActualNatArg // empty for TL2
-	isEnum               bool
+	variantNames             []string
+	variantTL1ConstructNames []string // we keep them during migration to preserve legacy JSON format, if needed
+	variantTypes             []*TypeInstanceStruct
+	elementNatArgs           []ActualNatArg // empty for TL2
+	isEnum                   bool
 }
 
-func (ins *TypeInstanceUnion) VariantNames() []tlast.TL2TypeName   { return ins.variantNames }
-func (ins *TypeInstanceUnion) VariantOriginalNames() []string      { return ins.variantOriginalNames }
+func (ins *TypeInstanceUnion) VariantNames() []string { return ins.variantNames }
+func (ins *TypeInstanceUnion) VariantTL1ConstructNames() []string {
+	return ins.variantTL1ConstructNames
+}
 func (ins *TypeInstanceUnion) VariantTypes() []*TypeInstanceStruct { return ins.variantTypes }
 func (ins *TypeInstanceUnion) ElementNatArgs() []ActualNatArg      { return ins.elementNatArgs }
 func (ins *TypeInstanceUnion) IsEnum() bool                        { return ins.isEnum }
@@ -68,10 +69,10 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			canonicalName: canonicalName,
 			tip:           tip,
 		},
-		isEnum:               true,
-		variantNames:         make([]tlast.TL2TypeName, len(def.Variants)),
-		variantOriginalNames: make([]string, len(def.Variants)),
-		variantTypes:         make([]*TypeInstanceStruct, len(def.Variants)),
+		isEnum:                   true,
+		variantNames:             make([]string, len(def.Variants)),
+		variantTL1ConstructNames: make([]string, len(def.Variants)),
+		variantTypes:             make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip,
@@ -80,8 +81,8 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
-		ins.variantNames[i] = tlast.TL2TypeName{Namespace: "", Name: variantDef.Name}
-		ins.variantOriginalNames[i] = variantDef.Name
+		ins.variantNames[i] = variantDef.Name
+		ins.variantTL1ConstructNames[i] = variantDef.Name
 		if len(element.fields) != 0 {
 			ins.isEnum = false
 		}
@@ -102,6 +103,10 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
+	variantNames, err := k.VariantNames(definition)
+	if err != nil {
+		return nil, err
+	}
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -110,51 +115,14 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		isEnum:               true,
-		variantTypes:         make([]*TypeInstanceStruct, len(definition)),
-		variantOriginalNames: make([]string, len(definition)),
-		elementNatArgs:       natArgs,
-	}
-	// Removing prefix/suffix common with union name.
-	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
-	typePrefix := strings.ToLower(utils.ToLowerFirst(definition[0].TypeDecl.Name.Name))
-	typeSuffix := strings.ToLower(definition[0].TypeDecl.Name.Name)
-	for _, typ := range definition {
-		conName := strings.ToLower(typ.Construct.Name.Name)
-		// if constructor is full prefix of type, we will shorten accessors
-		// ab.saveStateOne = ab.SaveState; // item.AsOne()
-		// ab.saveStateTwo = ab.SaveState; // item.AsTwo()
-		if !strings.HasPrefix(conName, typePrefix) { // same check as in checkUnionElementsCompatibility
-			typePrefix = ""
-		}
-		if !strings.HasSuffix(conName, typeSuffix) {
-			typeSuffix = ""
-		}
+		variantNames:             variantNames,
+		variantTL1ConstructNames: make([]string, len(definition)),
+		variantTypes:             make([]*TypeInstanceStruct, len(definition)),
+		elementNatArgs:           natArgs,
+		isEnum:                   true,
 	}
 
 	for i, variantDef := range definition {
-		typeConstructName := variantDef.Construct.Name
-		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
-		} else if typeSuffix != "" && len(typeSuffix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
-		}
-		variantName := tlast.TL2TypeName{Namespace: "", Name: typeConstructName.Name}
-		// check against already defined fields
-		for _, usedName := range ins.variantNames {
-			if usedName == variantName {
-				// TODO - check if we have such cases in combined.tl, if not - simplify
-				variantName.Namespace = typeConstructName.Namespace // add namespace on collision
-				break
-			}
-		}
-		// check again
-		for _, usedName := range ins.variantNames {
-			if usedName == variantName {
-				return nil, fmt.Errorf("cannot define TL1 union - prohibited variant name collision")
-			}
-		}
-
 		// do not change canonical names before removing long adapters,
 		// otherwise long adapter discovery will break (see func (gen *genGo) findLongAdapter)
 		argsStart := len(canonicalName)
@@ -171,8 +139,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
-		ins.variantOriginalNames[i] = variantDef.Construct.Name.String()
-		ins.variantNames = append(ins.variantNames, variantName)
+		ins.variantTL1ConstructNames[i] = variantDef.Construct.Name.String()
 		if len(element.fields) != 0 {
 			ins.isEnum = false
 		}

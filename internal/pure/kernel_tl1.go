@@ -262,6 +262,7 @@ func (k *Kernel) CompileTL1() error {
 				canonicalName: tName,
 				tl1BoxedName:  tName,
 				canBeBare:     true,
+				targs:         make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 			}
 			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
 				return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
@@ -279,6 +280,7 @@ func (k *Kernel) CompileTL1() error {
 			tl2Names:      map[string]struct{}{tName.String(): {}},
 			canonicalName: tName,
 			tl1BoxedName:  tName,
+			targs:         make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 		}
 		if err := k.addTip(kt, tName.String(), ""); err != nil {
 			return err

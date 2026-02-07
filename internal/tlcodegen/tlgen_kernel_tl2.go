@@ -212,7 +212,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		kernelType.originateFromTL2 = false
 
 		notParsedError := comb.TypeDecl.PRName.BeautifulError(fmt.Errorf("can't find reference to tl1-type"))
-		found, comment := extractTLGenTag(comb.CommentBefore, "tlgen:tl1type")
+		found, comment := utils.ExtractTLGenTag(comb.CommentBefore, "tlgen:tl1type")
 
 		if !found {
 			return nil, notParsedError
@@ -810,7 +810,7 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructors []tlast.TL2UnionCon
 	suffix := strings.ToLower(tl2Name.Name)
 
 	for _, unionConstructor := range constructors {
-		localFound, localComment := extractTLGenTag(unionConstructor.CommentBefore, Tag)
+		localFound, localComment := utils.ExtractTLGenTag(unionConstructor.CommentBefore, Tag)
 		if localFound {
 			_, tl1Name := "", localComment
 			if strings.Contains(tl1Name, ".") {
@@ -826,7 +826,7 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructors []tlast.TL2UnionCon
 	}
 
 	constructor := constructors[constructorId]
-	found, comment := extractTLGenTag(constructor.CommentBefore, Tag)
+	found, comment := utils.ExtractTLGenTag(constructor.CommentBefore, Tag)
 
 	if found {
 		tl1Namespace, tl1Name := "", comment
@@ -894,30 +894,4 @@ func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
 		return false
 	}
 	return comb.HasAnnotation(tl1Ref)
-}
-
-// finds value for tags in comment with template {tag}:"{value}"
-func extractTLGenTag(comment string, tag string) (found bool, value string) {
-	index := strings.Index(comment, tag)
-	if index == -1 {
-		return
-	}
-	comment = comment[index+len(tag):]
-	index = strings.Index(comment, ":")
-	if index == -1 {
-		return
-	}
-	comment = comment[index+1:]
-	index = strings.Index(comment, "\"")
-	if index == -1 {
-		return
-	}
-	comment = comment[index+1:]
-	index = strings.Index(comment, "\"")
-	if index == -1 {
-		return
-	}
-	found = true
-	value = comment[:index]
-	return
 }

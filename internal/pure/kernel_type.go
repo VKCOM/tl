@@ -8,6 +8,13 @@ package pure
 
 import "github.com/vkcom/tl/internal/tlast"
 
+type KernelTypeTarg struct {
+	// this is set during type resolution, so the information
+	// about argument references not erased from the type
+	usedAsNatVariable bool
+	usedAsNatConst    map[uint32]struct{}
+}
+
 type KernelType struct {
 	originTL2 bool
 	builtin   bool
@@ -23,10 +30,22 @@ type KernelType struct {
 	tl1Names map[string]struct{}
 	tl2Names map[string]struct{}
 
+	// for TL2-defined types, simply name of combinator
+	// for TL2 dictionary element, __dictionary_elem
+	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
+	// for TL1-defined types, if function, Constructor.Name (left side of =)
+	// for primitive types, TL2 name (int32, uint32, etc).
+	// for TL1 brackets, __tuple, __vector
 	canonicalName tlast.Name
-	tl1BoxedName  tlast.Name
-	canBeBare     bool
-	tl1name       string // if !empty, go generator will use it for template names (VectorInt, not VectorInt32)
+	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
+	// for TL1 Bool, Bool
+	tl1BoxedName tlast.Name
+	canBeBare    bool
+	tl1name      string // if !empty, go generator will use it for template names (VectorInt, not VectorInt32)
+
+	// usage tracking for migration/compilcation.
+	// common for union types, so cannot be in combinator itself
+	targs []KernelTypeTarg
 }
 
 func (t *KernelType) OriginTL2() bool {

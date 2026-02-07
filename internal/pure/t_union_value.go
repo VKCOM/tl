@@ -73,7 +73,7 @@ func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 
 func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, `{"type":"`...)
-	w = append(w, v.instance.variantNames[v.index].String()...)
+	w = append(w, v.instance.variantNames[v.index]...)
 	if len(v.instance.variantTypes[v.index].fields) == 0 {
 		return append(w, `"}`...)
 	}
@@ -94,7 +94,7 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		sb.WriteString(`"`)
-		sb.WriteString(v.instance.variantNames[v.index].String())
+		sb.WriteString(v.instance.variantNames[v.index])
 		sb.WriteString(`"`)
 	}
 	if len(v.instance.variantTypes[v.index].fields) == 0 {

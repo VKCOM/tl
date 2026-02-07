@@ -32,6 +32,13 @@ func ToUpperFirst(str string) string {
 	return strings.ToUpper(str) // zero or single rune
 }
 
+func IsFirstBasicLatin(str string) bool {
+	for _, r := range str {
+		return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')
+	}
+	return false // empty string
+}
+
 func ToLowerFirst(str string) string {
 	for i := range str {
 		if i != 0 {

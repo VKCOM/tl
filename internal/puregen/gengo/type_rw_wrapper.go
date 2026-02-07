@@ -23,10 +23,10 @@ type Deconflicter struct {
 	usedNames map[string]bool
 }
 
-func (d *Deconflicter) hasConflict(s string) bool {
-	_, ok := d.usedNames[s]
-	return ok
-}
+//func (d *Deconflicter) hasConflict(s string) bool {
+//	_, ok := d.usedNames[s]
+//	return ok
+//}
 
 func (d *Deconflicter) deconflictName(s string) string {
 	if d.usedNames == nil {
