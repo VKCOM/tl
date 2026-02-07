@@ -228,26 +228,13 @@ func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
 }
 
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bool) (_ *TypeInstanceRef, bare bool, _ error) {
-	canonicalName, bare, err := k.canonicalStringTL1(tr, true, allowFunctions)
-	if err != nil {
-		return nil, false, err
-	}
-	if ref, ok := k.instances[canonicalName]; ok {
-		return ref, bare, nil
-	}
-	if !create {
-		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
-	}
-	// log.Printf("creating an instance of type %s", canonicalName)
+	// we must mark all usedAsNatConst, usedAsNatVariable, so
+	// will do some work before looking up and returning existing instance
 	tName := tr.Type.String()
 	kt, ok := k.tips[tName]
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
 	}
-	// must store pointer before children GetInstance() terminates recursion
-	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-	ref := k.addInstance(canonicalName, kt)
-
 	if kt.originTL2 {
 		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
@@ -289,6 +276,36 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 			}
 		}
 	}
+	if tName == "__tuple" {
+		if sf := tr.Args[0].SourceField; sf != (tlast.CombinatorField{}) {
+			field := &sf.Comb.Fields[sf.FieldIndex]
+			if field.UsedAsMask {
+				e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
+				e3.PrintWarning(k.opts.ErrorWriter, nil)
+				e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
+				e2 := tr.Args[0].T.PR.BeautifulError(fmt.Errorf("used as size here"))
+				return nil, false, tlast.BeautifulError2(e1, e2)
+			}
+			field.UsedAsSize = true
+			field.UsedAsSizePR = tr.Args[0].T.PR
+		}
+	}
+	canonicalName, bare, err := k.canonicalStringTL1(tr, true, allowFunctions)
+	if err != nil {
+		return nil, false, err
+	}
+	if ref, ok := k.instances[canonicalName]; ok {
+		return ref, bare, nil
+	}
+	if !create {
+		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
+	}
+	// log.Printf("creating an instance of type %s", canonicalName)
+
+	// must store pointer before children GetInstance() terminates recursion
+	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+	ref := k.addInstance(canonicalName, kt)
+
 	isDict, _ := k.IsDict(kt)
 	switch {
 	case tName == "__vector":
