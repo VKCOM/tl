@@ -78,3 +78,31 @@ cases.testEnum2 = cases.TestEnum;
 cases.testEnum3 = cases.TestEnum;
 
 cases.testEnumContainer value:cases.TestEnum = cases.TestEnumContainer;
+
+// BLOCK: TEST FIELD MASKS
+cases.testRecursiveFieldMask f0:# f1:f0.0?# f2:f1.1?# t1:f0.0?%True t2:f1.1?%True t3:f2.2?%True = cases.TestRecursiveFieldmask;
+cases.testLocalFieldmask f1:# f2:f1.0?# f3:f2.1?%True f4:f2.1?%True = cases.TestLocalFieldmask;
+
+
+cases.testOutFieldMask {f:#} f1:f.0?# f2:f.3?%True f3:f*[int] = cases.TestOutFieldMask f;
+cases.testOutFieldMaskContainer f:# inner:(cases.testOutFieldMask f) = cases.TestOutFieldMaskContainer;
+cases.testBeforeReadBitValidation n:# a:n.0?n*[int] b:n.1?n*[int] = cases.TestBeforeReadBitValidation;
+
+cases.testAllPossibleFieldConfigs {outer:#} local:#
+    f00:int                 // no fieldmask, no nat dependencies in type
+    f01:%True               // no fieldmask, true type
+    f02:local*[int]         // no fieldmask, have some local nat dependencies in type
+    f03:outer*[int]         // no fieldmask, have only external nat dependencies in type
+    f10:local.0?int         // local fieldmask, no nat dependencies in type
+    f11:local.1?%True       // local fieldmask, true type
+    f12:local.2?local*[int] // local fieldmask, have some local nat dependencies in type
+    f13:local.3?outer*[int] // local fieldmask, have only external nat dependencies in type
+    f20:outer.0?int         // outer fieldmask, no nat dependencies in type
+    f21:outer.1?%True       // outer fieldmask, true type
+    f22:outer.2?local*[int] // outer fieldmask, have some local nat dependencies in type
+    f23:outer.3?outer*[int] // outer fieldmask, have only external nat dependencies in type
+= cases.TestAllPossibleFieldConfigs outer;
+
+cases.testAllPossibleFieldConfigsContainer outer:#
+    value:(cases.testAllPossibleFieldConfigs outer)
+= cases.TestAllPossibleFieldConfigsContainer;
