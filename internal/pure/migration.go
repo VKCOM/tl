@@ -329,12 +329,16 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 			bb.WriteString(" ")
 		}
 		bb.WriteString(fieldDef.FieldName)
-		if fieldDef.Mask != nil && !k.IsTrueType(fieldDef.FieldType) { // bit cannot be optional
-			bb.WriteString("?")
-		}
-		bb.WriteString(":")
-		if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldDef.FieldType, leftArgs); err != nil {
-			return nil, err
+		if fieldDef.Mask != nil && k.IsTrueType(fieldDef.FieldType) {
+			bb.WriteString(":bit")
+		} else {
+			if fieldDef.Mask != nil {
+				bb.WriteString("?")
+			}
+			bb.WriteString(":")
+			if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldDef.FieldType, leftArgs); err != nil {
+				return nil, err
+			}
 		}
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{
