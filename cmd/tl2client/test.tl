@@ -106,3 +106,129 @@ cases.testAllPossibleFieldConfigs {outer:#} {outer_s:#} local:# local_s:#
 cases.testAllPossibleFieldConfigsContainer outer:# outer_s:#
     value:(cases.testAllPossibleFieldConfigs outer outer_s)
 = cases.TestAllPossibleFieldConfigsContainer;
+
+
+// BLOCK: TEST INPLACING ARGUMENTS
+cases.testInplaceStructArgs a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, int> = cases.TestInplaceStructArgs;
+cases.testInplaceStructArgs2 a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, pair<tuple<int, a3>, tuple<int, a2>>> = cases.TestInplaceStructArgs2;
+
+cases.inplace1 {a1:#} {a2:#} {a3:#} {X:Type} value:cases.inplace2<a2, a3, a1, X> = cases.Inplace1 a1 a2 a3 X;
+cases.inplace2 {a1:#} {a2:#} {a3:#} {X:Type} value:cases.inplace3<a2, a3, a1, tuple<X, 2>> = cases.Inplace2 a1 a2 a3 X;
+cases.inplace3 {a1:#} {a2:#} {a3:#} {X:Type} value:pair<tuple<X, a2>, tuple<X, a3>> = cases.Inplace3 a1 a2 a3 X;
+
+// BLOCK: Bytes vesrion
+cases_bytes.testArray n:# arr:n*[string] = cases_bytes.TestArray;
+cases_bytes.testVector arr:(vector string) = cases_bytes.TestVector;
+cases_bytes.testTuple tpl:(tuple string 4) = cases_bytes.TestTuple;
+
+
+// will be map
+cases_bytes.testDictStringString dict:(dictionary string) = cases_bytes.TestDictStringString;
+// will be map
+cases_bytes.testDictString dict:(dictionary int) = cases_bytes.TestDictString;
+// will be map
+cases_bytes.testDictInt dict:(dictionaryAny int int) = cases_bytes.TestDictInt;
+// will be array of tuples
+cases_bytes.testDictAny dict:(dictionaryAny long int) = cases_bytes.TestDictAny;
+
+cases_bytes.testEnum1 = cases_bytes.TestEnum;
+cases_bytes.testEnum2 = cases_bytes.TestEnum;
+cases_bytes.testEnum3 = cases_bytes.TestEnum;
+cases_bytes.testEnumContainer value:cases.TestEnum = cases_bytes.TestEnumContainer;
+
+
+// BLOCK: BENCHMARKS
+benchmarks.vruhash#d31bd0fd low:long high:long = benchmarks.VruHash; // We store xxh3 components in LE endianness, as common in TL
+
+benchmarks.vruposition#32792c04 fields_mask:#
+    commit_bit:         fields_mask.0?true // we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
+    meta_block:         fields_mask.1?true // this block contains meta data of VR protocol
+    split_payload:      fields_mask.3?true // this position splits payload. If this set, meta_block and commit_bit are both not set
+    rotation_block:     fields_mask.5?true // If set, binlog should rotate and this block should be in new file
+    canonical_hash:     fields_mask.15?true // If set, hash is stored in canonical byte order.
+    payload_offset:     long // Motivation for storing it in each block - when random seeking into the middle of file, we must be sure without scanning from beginning
+    block_time_nano:    long // Only for debug, not used in any logic
+    hash:               benchmarks.vruhash
+    file_offset:        long
+    seq_number:         fields_mask.14?long // incremented after each block.
+= benchmarks.VruPosition;
+
+benchmarks.vrutoytopLevelUnionBig
+    next_positions:(vector benchmarks.vruposition)
+= benchmarks.VrutoyTopLevelUnion;
+
+benchmarks.vrutoytopLevelUnionEmpty
+= benchmarks.VrutoyTopLevelUnion;
+
+benchmarks.vrutoyTopLevelContainer
+    value: benchmarks.VrutoyTopLevelUnion
+= benchmarks.VrutoyTopLevelContainer;
+
+benchmarks.vrutoyPositions {n: #}
+    next_positions:n*[benchmarks.vruposition]
+= benchmarks.VrutoyPositions n;
+
+benchmarks.vrutoyTopLevelContainerWithDependency
+    n:# value:(benchmarks.vrutoyPositions n)
+= benchmarks.VrutoyTopLevelContainerWithDependency;
+
+
+casesTL2.testObject
+    n:#
+    f1:n.0?true
+    f2:Bool
+    f3:vector<Bool>
+    f4:(benchmarks.vrutoyPositions n)
+    f5:n.1?Bool
+    f6:vector<benchmarks.VrutoyTopLevelUnion>
+    f7:n.14?vector<True>
+    = casesTL2.TestObject;
+
+
+casesTL2.testVectorBool x:vector<Bool> = casesTL2.TestVectorBool;
+casesTL2.testArrayFixedBool
+    a1:1*[Bool]
+    a2:0*[Bool]
+    a3:7*[Bool]
+    a4:8*[Bool]
+    a5:11*[Bool]
+    a6:16*[Bool] = casesTL2.TestArrayFixedBool;
+
+casesTL2.testArrayFlexibleBool
+    n:#
+    arr:n*[Bool] = casesTL2.TestArrayFlexibleBool;
+
+casesTL2.testFixedParam
+    x: casesTL2.testObjectWithParam<4> = casesTL2.TestFixedParam;
+
+casesTL2.testObjectWithParam {n:#}
+    x:n.0?int
+    y:n*[int] = casesTL2.TestObjectWithParam n;
+
+
+casesTL2.testParamsGeneration
+    n1:#
+    n2:#
+    x1: casesTL2.testObjectWithMuiltiParams<4, 1>
+    x2: casesTL2.testObjectWithMuiltiParams<n1, 2>
+    x3: casesTL2.testObjectWithMuiltiParams<3, n2>
+    x4: casesTL2.testObjectWithMuiltiParams<n1, n2>
+    = casesTL2.TestParamsGeneration;
+
+casesTL2.testObjectWithMuiltiParams {n:#} {m:#}
+    f1:n.0?n*[int]
+    f2:m.0?m*[int] = casesTL2.TestObjectWithMuiltiParams n m;
+
+
+@read casesTL2.testFunctionNoDep1 x:int => Int;
+@read casesTL2.testFunctionNoDep2 x:int => True;
+@read casesTL2.testFunctionNoDep3 x:int => Vector<int>;
+@read casesTL2.testFunctionNoDep4 x:int => Bool;
+@read casesTL2.testFunctionNoDep5 x:int => casesTL2.TestObject;
+@read casesTL2.testFunctionNoDep6 x:int => casesTL2.TestArrayFixedBool;
+@read casesTL2.testFunctionNoDep7 x:int => cases.TestAllDicts;
+
+@read casesTL2.testFunctionWithDep1 n:# => Tuple<int, n>;
+@read casesTL2.testFunctionWithDep2 n:# => benchmarks.VrutoyPositions n;
+
+casesGo.testNames write:int read:int = casesGo.TestNames;
