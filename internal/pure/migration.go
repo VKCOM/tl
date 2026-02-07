@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 // Overwrites all files given to kernel.
@@ -235,9 +236,38 @@ outer:
 				return nil, err
 			}
 			for i, comb := range tip.combTL1 {
-				_, _ = fmt.Fprintf(bb, "\n    // tlgen:tl1name:%s", comb.Construct.Name.String())
+				// Ensure the same generation for both old JSON format and
+				// the same golang type names to reduce diff and changes to projects.
+				// After some time, remove this logic and simply use names which fit.
+				// TODO - it appears to be too complex task for now.
+				// We will return to this code later, for now all unions will have their
+				// tl1name stored.
+				//wouldBeName := tip.CanonicalName()
+				//writeExplicitTL1Name := variantNames[i].Namespace != ""
+				//if !writeExplicitTL1Name {
+				//	wouldBeName.Name += variantNames[i].Name
+				//	wouldBeName.Name = utils.ToLowerFirst(wouldBeName.Name)
+				//	writeExplicitTL1Name = wouldBeName != comb.Construct.Name
+				//	if writeExplicitTL1Name {
+				//		wouldBeName = tip.CanonicalName()
+				//		wouldBeName.Name = variantNames[i].Name + wouldBeName.Name
+				//		writeExplicitTL1Name = wouldBeName != comb.Construct.Name
+				//	}
+				//}
+				//if writeExplicitTL1Name {
+				_, _ = fmt.Fprintf(bb, "\n    // tlgen:tl1name:%q", comb.Construct.Name.String())
+				//}
 				bb.WriteString("\n    | ")
-				bb.WriteString(variantNames[i].String())
+				variantName := variantNames[i]
+				for strings.HasPrefix(variantName, "_") {
+					variantName = strings.TrimPrefix(variantName, "_")
+				}
+				if !utils.IsFirstBasicLatin(variantName) {
+					variantName = fmt.Sprintf("variant%d", i)
+					e1 := comb.Construct.NamePR.BeautifulError(fmt.Errorf("variant name %q violated TL2 rules and was changed to %q, please edit manually after migration", variantNames[i], variantName))
+					e1.PrintWarning(k.opts.ErrorWriter, e1)
+				}
+				bb.WriteString(variantName)
 				bb.WriteString(" ")
 				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
