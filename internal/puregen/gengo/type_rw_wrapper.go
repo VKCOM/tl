@@ -57,7 +57,7 @@ type TypeRWWrapper struct {
 	ns        *Namespace
 	ins       *InternalNamespace
 	trw       TypeRW
-	NatParams []string // external params of type Read/Write method, with nat_ prefix
+	NatParams []string // external params of type Read/Write method
 
 	goCanonicalName tlast.Name // name element for names below and template full names
 

@@ -104,7 +104,7 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			NatParams:     natParams,
+			natParams:     natParams,
 			tip:           tip,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),

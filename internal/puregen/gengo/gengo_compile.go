@@ -81,7 +81,7 @@ func (gen *genGo) addTypeWrappers() error {
 		myWrapper := &TypeRWWrapper{
 			gen:       gen,
 			pureType:  pureType,
-			NatParams: pureType.Common().NatParams,
+			NatParams: pureType.Common().NatParams(),
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
