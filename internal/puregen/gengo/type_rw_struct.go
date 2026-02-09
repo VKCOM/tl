@@ -123,10 +123,6 @@ func (trw *TypeRWStruct) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 	}
 }
 
-func (trw *TypeRWStruct) IsWrappingType() bool {
-	return trw.isUnwrapType()
-}
-
 func (trw *TypeRWStruct) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	for _, f := range trw.Fields {
 		if f.t.containsUnion(visitedNodes) {

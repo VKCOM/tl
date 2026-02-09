@@ -46,10 +46,6 @@ func (trw *TypeRWMaybe) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 	trw.element.t.MarkWantsTL2(visitedNodes)
 }
 
-func (trw *TypeRWMaybe) IsWrappingType() bool {
-	return true
-}
-
 func (trw *TypeRWMaybe) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.containsUnion(visitedNodes)
 }

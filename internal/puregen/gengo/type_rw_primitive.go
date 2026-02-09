@@ -59,10 +59,6 @@ func (trw *TypeRWPrimitive) markWantsBytesVersion(visitedNodes map[*TypeRWWrappe
 func (trw *TypeRWPrimitive) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) IsWrappingType() bool {
-	return true
-}
-
 func (trw *TypeRWPrimitive) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }

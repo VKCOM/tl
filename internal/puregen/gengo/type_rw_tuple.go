@@ -84,18 +84,6 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
-func (trw *TypeRWBrackets) IsBuiltinVector() bool {
-	return len(trw.wr.origTL) == 1 && trw.wr.origTL[0].Builtin
-}
-
-func (trw *TypeRWBrackets) IsWrappingType() bool {
-	return trw.IsBuiltinVector()
-	//if trw.IsBuiltinVector() {
-	//	return trw.element.t.trw.IsWrappingType()
-	//}
-	//return false
-}
-
 func (trw *TypeRWBrackets) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.containsUnion(visitedNodes)
 }

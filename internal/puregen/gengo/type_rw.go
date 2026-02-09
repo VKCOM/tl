@@ -27,7 +27,6 @@ type TypeRW interface {
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
-	IsWrappingType() bool
 	ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
