@@ -43,6 +43,12 @@ func (d *Deconflicter) deconflictName(s string) string {
 	return s
 }
 
+func (d *Deconflicter) removeName(s string) {
+	if d.hasConflict(s) {
+		delete(d.usedNames, s)
+	}
+}
+
 var bannedCppFieldNames = []string{
 	"and",
 	"or",

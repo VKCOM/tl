@@ -807,6 +807,39 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string
 		}
 	}
 
+	// union fix same names in lowercase for mac
+	{
+		fdec := Deconflicter{usedNames: make(map[string]bool)}
+		fDetDec := Deconflicter{usedNames: make(map[string]bool)}
+
+		allUnions := make([]*TypeRWUnion, 0)
+		for _, t := range allTypes {
+			// add originally created file names
+			name := strings.ToLower(t.fileName)
+			fdec.usedNames[name] = true
+			fDetDec.usedNames[name] = true
+
+			// collect all unions
+			if u, ok := t.trw.(*TypeRWUnion); ok {
+				allUnions = append(allUnions, u)
+			}
+		}
+		for _, union := range allUnions {
+			unionFile := union.wr.fileName
+			for _, field := range union.Fields {
+				cnstrFile := field.t.fileName
+				if strings.EqualFold(unionFile, cnstrFile) {
+					field.t.fileName = fdec.deconflictName(field.t.fileName + "_variant")
+					field.t.hppDetailsFileName = fDetDec.deconflictName(field.t.hppDetailsFileName + "_variant")
+
+					// to avoid recursive deconflicts
+					fdec.removeName(field.t.fileName)
+					fDetDec.removeName(field.t.hppDetailsFileName)
+				}
+			}
+		}
+	}
+
 	for _, t := range allTypes {
 		typeGroup := t.tlName.Namespace
 		if typeGroup == NoNamespaceGroup {
