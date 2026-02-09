@@ -80,8 +80,9 @@ type TypeRWWrapper struct {
 	// tl1 info
 	tlTag  uint32
 	tlName tlast.Name // constructor name, except for unions
-	origTL []*tlast.Combinator
+	//origTL []*tlast.Combinator
 
+	// TODO - move into TypeRWStruct
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
 
@@ -89,10 +90,10 @@ type TypeRWWrapper struct {
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 
 	// tl2 info (if union is not nil otherwise check there)
-	tl2Name              tlast.TL2TypeName
-	tl2Origin            *tlast.TL2Combinator
-	tl2IsResult          bool
-	tl2IsBuiltinBrackets bool
+	//tl2Name              tlast.TL2TypeName
+	//tl2Origin            *tlast.TL2Combinator
+	//tl2IsResult          bool
+	//tl2IsBuiltinBrackets bool
 }
 
 func (wr *TypeRWWrapper) FileName() string {
@@ -103,11 +104,7 @@ func (wr *TypeRWWrapper) FileName() string {
 }
 
 func (wr *TypeRWWrapper) Namespace() string {
-	if wr.originateFromTL2 {
-		return wr.tl2Name.Namespace
-	} else {
-		return wr.tlName.Namespace
-	}
+	return wr.tlName.Namespace
 }
 
 // Those have unique structure fully defined by the magic.

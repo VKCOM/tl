@@ -246,9 +246,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		if kt.OriginTL2() {
 			variantWrapper.originateFromTL2 = kt.OriginTL2()
 		} else {
-			variantWrapper.origTL = append(variantWrapper.origTL, kt.TL1()[i])
-			variantWrapper.tlTag = variantWrapper.origTL[0].Crc32()
-			variantWrapper.tlName = variantWrapper.origTL[0].Construct.Name
+			origTL := kt.TL1()[i]
+			variantWrapper.tlTag = origTL.Crc32()
+			variantWrapper.tlName = origTL.Construct.Name
 			variantWrapper.goCanonicalName = variantWrapper.tlName
 			variantWrapper.fileNameOverride = myWrapper
 		}

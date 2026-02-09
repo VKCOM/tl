@@ -69,7 +69,7 @@ func init() {
 `)
 	}
 	for _, wr := range tl1Wrappers {
-		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
+		if fun, ok := wr.trw.(*TypeRWStruct); ok {
 			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
 
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
