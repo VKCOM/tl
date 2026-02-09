@@ -32,6 +32,7 @@ type TypeInstanceCommon struct {
 	canonicalName string
 	NatParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
+	isTopLevel    bool
 	rt            tlast.TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 }
@@ -42,6 +43,10 @@ func (ins *TypeInstanceCommon) CanonicalName() string {
 
 func (ins *TypeInstanceCommon) KernelType() *KernelType {
 	return ins.tip
+}
+
+func (ins *TypeInstanceCommon) IsTopLevel() bool {
+	return ins.isTopLevel
 }
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {

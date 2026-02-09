@@ -25,7 +25,9 @@ type KernelType struct {
 	// order of instantiation
 	instancesOrdered []*TypeInstanceRef
 
-	isFunction bool // to prohibit references
+	isTopLevel  bool
+	isFunction  bool // to prohibit references
+	annotations []string
 
 	tl1Names map[string]struct{}
 	tl2Names map[string]struct{}
@@ -56,6 +58,19 @@ func (t *KernelType) OriginTL2() bool {
 
 func (t *KernelType) IsFunction() bool {
 	return t.isFunction
+}
+
+func (t *KernelType) Annotations() []string {
+	return t.annotations
+}
+
+func (t *KernelType) HasAnnotation(a string) bool {
+	for _, an := range t.annotations {
+		if an == a {
+			return true
+		}
+	}
+	return false
 }
 
 func (t *KernelType) CanonicalName() tlast.Name {

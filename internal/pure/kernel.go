@@ -7,6 +7,7 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -41,8 +42,13 @@ type Kernel struct {
 // Add builtin types
 func NewKernel(opts *OptionsKernel) *Kernel {
 	k := &Kernel{
-		opts:      opts,
-		brackets:  &KernelType{originTL2: true, builtin: true, instances: map[string]*TypeInstanceRef{}, canBeBare: true},
+		opts: opts,
+		brackets: &KernelType{
+			originTL2: true,
+			builtin:   true,
+			instances: map[string]*TypeInstanceRef{},
+			canBeBare: true,
+		},
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
@@ -209,6 +215,7 @@ func (k *Kernel) Compile() error {
 			combTL2:    comb,
 			instances:  map[string]*TypeInstanceRef{},
 			isFunction: comb.IsFunction,
+			isTopLevel: len(comb.TypeDecl.TemplateArguments) == 0,
 			canBeBare:  true,
 		}
 		if !comb.IsFunction {
@@ -309,6 +316,9 @@ func (k *Kernel) Compile() error {
 					}
 					allAnnotations[m.Name] = struct{}{}
 					k.allAnnotations = append(k.allAnnotations, m.Name)
+					if len(k.allAnnotations) > 32 {
+						return m.PR.BeautifulError(errors.New("too many different annotations, max is 32 for now"))
+					}
 				}
 			}
 		}
@@ -329,12 +339,12 @@ func (k *Kernel) Compile() error {
 						}
 						allAnnotations[m.Name] = struct{}{}
 						k.allAnnotations = append(k.allAnnotations, m.Name)
+						if len(k.allAnnotations) > 32 {
+							return m.PR.BeautifulError(errors.New("too many different annotations, max is 32 for now"))
+						}
 					}
 				}
 			}
-		}
-		if len(k.allAnnotations) > 32 {
-			return fmt.Errorf("too many (%d) different annotations, max is 32 for now", len(k.allAnnotations))
 		}
 		sort.Strings(k.allAnnotations)
 	}
