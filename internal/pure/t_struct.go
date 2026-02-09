@@ -73,6 +73,7 @@ type TypeInstanceStruct struct {
 	fields              []Field
 	isUnionElement      bool
 	unionIndex          int
+	isUnwrap            bool
 
 	// if function
 	resultType    TypeInstance
@@ -81,6 +82,10 @@ type TypeInstanceStruct struct {
 
 func (ins *TypeInstanceStruct) Fields() []Field {
 	return ins.fields
+}
+
+func (ins *TypeInstanceStruct) IsUnwrap() bool {
+	return ins.isUnwrap
 }
 
 func (ins *TypeInstanceStruct) ResultType() TypeInstance {
@@ -361,6 +366,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
+		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
 	nextTL2MaskBit := 0
 	fieldsAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)

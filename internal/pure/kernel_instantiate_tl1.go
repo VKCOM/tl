@@ -169,6 +169,16 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if !ok {
 		return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
+	if tr.T.Bare && kt.builtinWrappedCanonicalName != "" {
+		tName = kt.builtinWrappedCanonicalName
+		kt, ok = k.tips[tName]
+		if !ok {
+			return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("internal error: built-in wrapped type %s not found", tName))
+		}
+		tr.T.Type = tlast.Name{Name: tName}
+		tr.T.Bare = false // not required
+	}
+
 	if kt.originTL2 {
 		return tr, nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.T.Type)
 	}
