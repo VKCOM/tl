@@ -89,7 +89,6 @@ func (gen *genGo) addTypeWrappers() error {
 		if kt := pureType.KernelType(); kt != nil {
 			myWrapper.originateFromTL2 = kt.OriginTL2()
 			origTL := kt.TL1()
-			myWrapper.origTL = origTL
 			if !myWrapper.originateFromTL2 {
 				if len(origTL) == 1 {
 					myWrapper.tlTag = origTL[0].Crc32()
