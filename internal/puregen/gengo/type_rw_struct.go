@@ -18,8 +18,9 @@ import (
 )
 
 type TypeRWStruct struct {
-	wr     *TypeRWWrapper
-	Fields []Field
+	wr       *TypeRWWrapper
+	Fields   []Field
+	isUnwrap bool
 
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []pure.ActualNatArg
@@ -37,14 +38,17 @@ func (trw *TypeRWStruct) isTypeDef() bool {
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
+	if trw.isUnwrap { // kernel told us so
+		return true
+	}
 	if !trw.isTypeDef() || trw.wr.preventUnwrap {
 		return false
 	}
 	// Motivation - we want default wrappers for primitive types, vector and tuple to generate primitive language types
-	primitive, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
-	if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
-		return true
-	}
+	//primitive, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
+	//if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
+	//	return true
+	//}
 	brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
 	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
 		return true

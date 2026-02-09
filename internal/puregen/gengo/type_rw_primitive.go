@@ -8,12 +8,14 @@ package gengo
 
 import (
 	"fmt"
+	"log"
 )
 
 type TypeRWPrimitive struct {
 	tlType string
 
-	tlTag uint32 // if != 0, then TL1 builtin wrapper was compiled
+	// TODO - remove, this is never set by the pure kernel
+	//tlTag uint32 // if != 0, then TL1 builtin wrapper was compiled
 
 	goType         string
 	resetValue     string
@@ -103,7 +105,8 @@ func (trw *TypeRWPrimitive) typeRandomCode(bytesVersion bool, directImports *Dir
 func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	prefix := ""
 	if !bare {
-		prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.tlTag)
+		log.Panicf("trw %q cannot be boxed", trw.tlType)
+		//prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.tlTag)
 	}
 	code := fmt.Sprintf("%s(w, %s)", addBytes(trw.writeValue, bytesVersion), addAsterisk(ref, val))
 	if trw.writeHasError {
@@ -125,7 +128,8 @@ func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string
 func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	prefix := ""
 	if !bare {
-		prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.tlTag)
+		log.Panicf("trw %q cannot be boxed", trw.tlType)
+		//prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.tlTag)
 	}
 	if bytesVersion {
 		return prefix + wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)

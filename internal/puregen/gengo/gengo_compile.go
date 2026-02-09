@@ -88,18 +88,19 @@ func (gen *genGo) addTypeWrappers() error {
 
 		if kt := pureType.KernelType(); kt != nil {
 			myWrapper.originateFromTL2 = kt.OriginTL2()
-			myWrapper.origTL = kt.TL1()
+			origTL := kt.TL1()
+			myWrapper.origTL = origTL
 			if !myWrapper.originateFromTL2 {
-				if len(myWrapper.origTL) == 1 {
-					myWrapper.tlTag = myWrapper.origTL[0].Crc32()
-					myWrapper.tlName = myWrapper.origTL[0].Construct.Name
+				if len(origTL) == 1 {
+					myWrapper.tlTag = origTL[0].Crc32()
+					myWrapper.tlName = origTL[0].Construct.Name
 					myWrapper.goCanonicalName = myWrapper.tlName
 					myWrapper.fileName = myWrapper.tlName.String()
-					if !myWrapper.origTL[0].IsFunction {
-						myWrapper.goCanonicalName = myWrapper.origTL[0].TypeDecl.Name
+					if !origTL[0].IsFunction {
+						myWrapper.goCanonicalName = origTL[0].TypeDecl.Name
 					}
 				} else {
-					myWrapper.tlName = myWrapper.origTL[0].TypeDecl.Name
+					myWrapper.tlName = origTL[0].TypeDecl.Name
 					myWrapper.goCanonicalName = myWrapper.tlName
 					fileName := myWrapper.tlName
 					fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
@@ -163,7 +164,9 @@ func (gen *genGo) prepareGeneration() error {
 		v.trw.fillRecursiveUnwrap(visitedNodes)
 		v.preventUnwrap = visitedNodes[v]
 		if v.preventUnwrap {
-			fmt.Printf("prevented unwrap of %v\n", v.tlName)
+			// TODO - we need at least test for this, cannot catch one in real life.
+			// May be this only affects C++ generator?
+			panic(fmt.Sprintf("prevented unwrap of %v\n", v.tlName))
 		}
 	}
 	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited

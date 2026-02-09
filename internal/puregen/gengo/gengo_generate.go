@@ -81,7 +81,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 	for _, ct := range primitiveTypesList {
 		if ct.goType == pureType.CanonicalName() {
 			myWrapper.trw = ct
-			ct.tlTag = myWrapper.tlTag
+			//ct.tlTag = myWrapper.tlTag
 			return nil
 		}
 	}
@@ -99,7 +99,8 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	res := &TypeRWStruct{
-		wr: myWrapper,
+		wr:       myWrapper,
+		isUnwrap: pureType.IsUnwrap(),
 	}
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
@@ -124,24 +125,10 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			BitNumber:    field.BitNumber(),
 			MaskTL2Bit:   field.MaskTL2Bit(),
 			natArgs:      field.NatArgs(),
-			// origTL:       field, - TODO
 		}
 		res.Fields = append(res.Fields, newField)
 
 		//TODO - move into pure kernel
-		//if newField.t.IsTrueType() && !newField.Bare() &&
-		//	newField.t.origTL[0].TypeDecl.Name.String() == "True" &&
-		//	newField.t.origTL[0].Construct.Name.String() == "true" &&
-		//	!LegacyAllowTrueBoxed(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
-		//	utils.DoLint(field.CommentRight) {
-		//	// We compare type by name, because there is examples of other true types which are to be extended
-		//	// to unions or have added fields in the future
-		//	e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("true type fields should be bare, use 'true' or '%%True' instead"))
-		//	if gen.options.WarningsAreErrors {
-		//		return e1
-		//	}
-		//	e1.PrintWarning(gen.options.ErrorWriter, nil)
-		//}
 		//if _, ok := newField.t.trw.(*TypeRWBool); ok {
 		//	if newField.t.origTL[0].TypeDecl.Name.String() == "Bool" &&
 		//		newField.fieldMask != nil && !newField.fieldMask.isArith && newField.fieldMask.isField &&

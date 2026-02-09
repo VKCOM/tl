@@ -78,17 +78,33 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 		}
 		if _, ok2 := k.tips[bigName]; ok2 {
 			// TODO - see here
-			return typ.TypeDecl.NamePR.BeautifulError(errors.New("builtin type already defined as not builtin"))
+			return typ.TypeDecl.NamePR.BeautifulError(errors.New("builtin type already defined"))
 		}
-		if tip.combTL1[0].Construct.IDExplicit {
-			// TODO - see here
-			return typ.Construct.NamePR.BeautifulError(errors.New("built-in type magic already defined by previous declaration"))
+		combTL1 := *typ
+		combTL1.Builtin = false
+		combTL1.Fields = []tlast.Field{{
+			FieldType: tlast.TypeRef{Type: typ.Construct.Name},
+		}}
+		kt := &KernelType{
+			originTL2:     false,
+			combTL1:       []*tlast.Combinator{&combTL1},
+			instances:     map[string]*TypeInstanceRef{},
+			tl1Names:      map[string]struct{}{bigName: {}},
+			tl2Names:      map[string]struct{}{},
+			canonicalName: typ.TypeDecl.Name,
+			tl1name:       typ.Construct.Name.String(),
+			tl1BoxedName:  tlast.Name{Name: bigName},
+
+			builtinWrappedCanonicalName: typ.Construct.Name.String(),
 		}
-		tip.combTL1[0].Construct.ID = typ.Crc32()
-		tip.combTL1[0].Construct.IDExplicit = true
-		k.tips[bigName] = tip
-		tip.tl1Names[bigName] = struct{}{}
-		tip.tl1BoxedName = tlast.Name{Name: bigName}
+		//if tip.combTL1[0].Construct.IDExplicit {
+		//TODO - see here
+		//return typ.Construct.NamePR.BeautifulError(errors.New("built-in type magic already defined by previous declaration"))
+		//}
+		k.tips[bigName] = kt
+		k.tipsTopLevel = append(k.tipsTopLevel, tip)
+		//tip.tl1Names[bigName] = struct{}{}
+		//tip.tl1BoxedName = tlast.Name{Name: bigName}
 		// we do not allow references to boxed wrappers from TL2
 		return nil
 	}
