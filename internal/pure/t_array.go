@@ -101,7 +101,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			NatParams:     natParams,
+			natParams:     natParams,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
@@ -135,7 +135,7 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			NatParams:     natParams,
+			natParams:     natParams,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},

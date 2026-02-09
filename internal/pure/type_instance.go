@@ -30,7 +30,7 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
-	NatParams     []string // external nat params (empty for TL2 types)
+	natParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	isTopLevel    bool
 	rt            tlast.TypeRef
@@ -39,6 +39,10 @@ type TypeInstanceCommon struct {
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
+}
+
+func (ins *TypeInstanceCommon) NatParams() []string {
+	return ins.natParams
 }
 
 func (ins *TypeInstanceCommon) KernelType() *KernelType {
