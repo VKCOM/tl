@@ -68,6 +68,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tip:           tip,
+			isTopLevel:    tip.isTopLevel,
 		},
 		isEnum:                   true,
 		variantNames:             make([]string, len(def.Variants)),
@@ -112,6 +113,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			canonicalName: canonicalName,
 			NatParams:     natParams,
 			tip:           tip,
+			isTopLevel:    false, // in TL1, union variants are top level, not union itself
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},

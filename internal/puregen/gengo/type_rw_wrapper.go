@@ -113,31 +113,32 @@ func (wr *TypeRWWrapper) Namespace() string {
 // Those have unique structure fully defined by the magic.
 // items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
 // they could not be distinguished by the magic. For example vector<int> and vector<long>.
-func (w *TypeRWWrapper) IsTopLevel() bool {
-	if w.originateFromTL2 {
-		if w.unionParent == nil {
-			if w.tl2IsResult {
-				return false
-			}
-			if w.tl2IsBuiltinBrackets {
-				return false
-			}
-			if w.tl2Origin != nil {
-				if w.tl2Origin.IsFunction {
-					return true
-				}
-				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
-			}
-			return false
-		} else {
-			return false
-		}
-	}
-	if len(w.origTL) == 0 {
-		return false
-	}
-	return len(w.origTL[0].TemplateArguments) == 0
-}
+//func (w *TypeRWWrapper) IsTopLevel() bool {
+//	if w.originateFromTL2 {
+//		if w.unionParent == nil {
+//			if w.tl2IsResult {
+//				return false
+//			}
+//			if w.tl2IsBuiltinBrackets {
+//				return false
+//			}
+//			if w.tl2Origin != nil {
+//				if w.tl2Origin.IsFunction {
+//					return true
+//				}
+//				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
+//			}
+//			return false
+//		} else {
+//			return false
+//		}
+//	}
+//	if len(w.origTL) == 0 {
+//		// fmt.Printf("Empty origTL for %s %v\n", w.goGlobalName, w.pureType.KernelType().)
+//		return false
+//	}
+//	return len(w.origTL[0].TemplateArguments) == 0
+//}
 
 //func (w *TypeRWWrapper) CanonicalStringTop() string {
 //	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
@@ -204,20 +205,7 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 //}
 
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {
-	if w.originateFromTL2 {
-		for _, annotation := range w.tl2Origin.Annotations {
-			if annotation.Name == str {
-				return true
-			}
-		}
-	} else {
-		for _, m := range w.origTL[0].Modifiers {
-			if m.Name == str {
-				return true
-			}
-		}
-	}
-	return false
+	return w.pureType.KernelType().HasAnnotation(str)
 }
 
 func (w *TypeRWWrapper) AnnotationsMask() uint32 {

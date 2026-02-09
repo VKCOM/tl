@@ -59,6 +59,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, alias tlast.
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tip:           tip,
+			isTopLevel:    tip.isTopLevel,
 		},
 		fieldType: fieldType,
 	}
