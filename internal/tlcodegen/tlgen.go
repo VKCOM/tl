@@ -2020,7 +2020,9 @@ func (gen *Gen2) cppFilterFile(file string, filters []string) bool {
 	//	}
 	//	return !inNameFilter(tlast.Name{Namespace: folder}, filters)
 	//}
-	return true
+
+	// TODO change for future development
+	return false
 }
 
 func (gen *Gen2) addCodeFile(filepathName string, code string) error {
