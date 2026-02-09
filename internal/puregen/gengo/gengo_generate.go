@@ -247,10 +247,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		variantOriginalName := pureType.VariantTL1ConstructNames()[i]
 
 		variantWrapper := &TypeRWWrapper{
-			gen:       gen,
-			pureType:  typ,
-			NatParams: myWrapper.NatParams,
-			//arguments:   myWrapper.arguments,
+			gen:         gen,
+			pureType:    typ,
+			NatParams:   myWrapper.NatParams,
 			unionParent: res,
 			unionIndex:  i,
 		}
@@ -292,7 +291,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			bare:         true,
 			goName:       res.fieldsDec.deconflictName(fieldGoName),
 			natArgs:      pureType.ElementNatArgs(),
-			// origTL:       ?, // We do not want to set it here for now
 		}
 		res.Fields = append(res.Fields, newField)
 	}

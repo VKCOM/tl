@@ -55,18 +55,6 @@ func (trw *TypeRWDict) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 func (trw *TypeRWDict) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
-func (trw *TypeRWDict) IsBuiltinVector() bool {
-	return len(trw.wr.origTL) == 1 && trw.wr.origTL[0].Builtin
-}
-
-func (trw *TypeRWDict) IsWrappingType() bool {
-	return trw.IsBuiltinVector()
-	//if trw.IsBuiltinVector() {
-	//	return trw.element.t.trw.IsWrappingType()
-	//}
-	//return false
-}
-
 func (trw *TypeRWDict) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.containsUnion(visitedNodes)
 }

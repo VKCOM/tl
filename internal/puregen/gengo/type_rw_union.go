@@ -72,10 +72,6 @@ func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]in
 	visitedNodes[trw.wr] = 2
 }
 
-func (trw *TypeRWUnion) IsWrappingType() bool {
-	return false
-}
-
 func (trw *TypeRWUnion) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return true
 }

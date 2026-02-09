@@ -7,6 +7,7 @@
 package gengo
 
 import (
+	"cmp"
 	"fmt"
 	"strconv"
 	"strings"
@@ -60,7 +61,7 @@ type TypeRWWrapper struct {
 
 	goCanonicalName tlast.Name // name element for names below and template full names
 
-	goGlobalName string // globally unique, so could be used also in html anchors, internal C++ function names, etc.
+	goGlobalName string // globally unique
 	goLocalName  string
 
 	wantsBytesVersion bool
@@ -281,22 +282,6 @@ func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 		}
 		b.WriteString(tail)
 	}
-	//for _, a := range w.arguments {
-	//	if a.isNat {
-	//		if a.isArith {
-	//			b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-	//		}
-	//	} else {
-	//		head, tail := a.tip.resolvedT2GoName(insideNamespace)
-	//		b.WriteString(head)
-	//		if head != "Bool" && !a.bare && !a.tip.pureType.BoxedOnly() {
-	//			// If it cannot be bare, save on redundant suffix
-	//			// Bool is exception, because it is bare in TL2, but boxed in TL1
-	//			b.WriteString("Boxed")
-	//		}
-	//		b.WriteString(tail)
-	//	}
-	//}
 	return b.String()
 }
 
@@ -305,17 +290,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
 	return canonicalGoName(w.goCanonicalName, insideNamespace), tail
-	//if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "" || w.origTL[0].IsFunction || w.unionParent != nil) {
-	//	return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), tail
-	//}
-	//var typeName tlast.Name
-	//if w.originateFromTL2 {
-	//	typeName.Name = w.tl2Name.Name
-	//	typeName.Namespace = w.tl2Name.Namespace
-	//} else {
-	//	typeName = w.origTL[0].TypeDecl.Name
-	//}
-	//return canonicalGoName(typeName, insideNamespace), tail
 }
 
 func stringCompare(a string, b string) int {
@@ -331,12 +305,12 @@ func stringCompare(a string, b string) int {
 func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 	an := a.TypeString2(false, nil, nil, true, true)
 	bn := b.TypeString2(false, nil, nil, true, true)
-	return stringCompare(an, bn)
+	return cmp.Compare(an, bn)
 }
 
 func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 	// return stringCompare(a.CanonicalString(), b.CanonicalString()) TODO - better idea after everything is stabilized
-	return stringCompare(a.goGlobalName, b.goGlobalName)
+	return cmp.Compare(a.goGlobalName, b.goGlobalName)
 }
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
