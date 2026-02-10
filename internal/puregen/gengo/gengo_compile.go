@@ -41,12 +41,16 @@ func (gen *genGo) compile() error {
 				return err
 			}
 		case *pure.TypeInstanceArray:
-			tail := myWrapper.resolvedT2GoNameTail("")
-			if pureType.IsTuple() {
-				myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
-			} else {
-				myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
-			}
+			head, tail := myWrapper.resolvedT2GoName("")
+			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+			//tail := myWrapper.resolvedT2GoNameTail("")
+			//if pureType.IsTuple() {
+			//	myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
+			//} else {
+			//	myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
+			//}
 			if err := gen.GenerateTypeArray(myWrapper, pureType); err != nil {
 				return err
 			}
@@ -65,6 +69,8 @@ func (gen *genGo) compile() error {
 		case *pure.TypeInstanceDict:
 			head, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 			if err := gen.GenerateTypeDict(myWrapper, pureType); err != nil {
 				return err
 			}
@@ -106,9 +112,6 @@ func (gen *genGo) addTypeWrappers() error {
 				myWrapper.fileName = fileName.String()
 			}
 		}
-		//if kt.HistoricalName() != myWrapper.goCanonicalName {
-		//	fmt.Printf("wrong name: %s %s\n", kt.HistoricalName(), myWrapper.goCanonicalName)
-		//}
 		namespace := gen.getNamespace(pureType.Common().ArgNamespace())
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace
