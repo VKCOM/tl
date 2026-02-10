@@ -22,7 +22,8 @@ cases.testPrimitive
     g:vector<Int>
     h:Vector<Int>
     i:%Vector<Int>
- = cases.TestPrimitive;
+    j:vector<#>
+= cases.TestPrimitive;
 
 // will be map
 // cases.testDictString dict:(dictionary int) = cases.TestDictString;
@@ -37,8 +38,8 @@ cases.testPrimitive
 //    f3:cases.testDictAny
 //    = cases.TestAllDicts;
 
-pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
+//pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
-a.inner {I:#} a:I*[int] = a.Inner I;
-a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
-a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;
+//a.inner {I:#} a:I*[int] = a.Inner I;
+//a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
+//a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;

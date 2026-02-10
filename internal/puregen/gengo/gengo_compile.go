@@ -86,30 +86,32 @@ func (gen *genGo) addTypeWrappers() error {
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
 
-		if kt := pureType.KernelType(); kt != nil {
-			myWrapper.originateFromTL2 = kt.OriginTL2()
-			origTL := kt.TL1()
-			if !myWrapper.originateFromTL2 {
-				if len(origTL) == 1 {
-					myWrapper.tlTag = origTL[0].Crc32()
-					myWrapper.tlName = origTL[0].Construct.Name
-					myWrapper.goCanonicalName = myWrapper.tlName
-					myWrapper.fileName = myWrapper.tlName.String()
-					if !origTL[0].IsFunction {
-						myWrapper.goCanonicalName = origTL[0].TypeDecl.Name
-					}
-				} else {
-					myWrapper.tlName = origTL[0].TypeDecl.Name
-					myWrapper.goCanonicalName = myWrapper.tlName
-					fileName := myWrapper.tlName
-					fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
-					myWrapper.fileName = fileName.String()
+		kt := pureType.KernelType()
+		myWrapper.goCanonicalName = kt.HistoricalName()
+
+		myWrapper.originateFromTL2 = kt.OriginTL2()
+		origTL := kt.TL1()
+		if !myWrapper.originateFromTL2 {
+			if len(origTL) == 1 {
+				myWrapper.tlTag = origTL[0].Crc32()
+				myWrapper.tlName = origTL[0].Construct.Name
+				myWrapper.fileName = myWrapper.tlName.String()
+				if myWrapper.fileName == "#" {
+					myWrapper.fileName = "nat"
 				}
+			} else {
+				myWrapper.tlName = origTL[0].TypeDecl.Name
+				fileName := myWrapper.tlName
+				fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
+				myWrapper.fileName = fileName.String()
 			}
-			namespace := gen.getNamespace(pureType.Common().ArgNamespace())
-			namespace.types = append(namespace.types, myWrapper)
-			myWrapper.ns = namespace
 		}
+		//if kt.HistoricalName() != myWrapper.goCanonicalName {
+		//	fmt.Printf("wrong name: %s %s\n", kt.HistoricalName(), myWrapper.goCanonicalName)
+		//}
+		namespace := gen.getNamespace(pureType.Common().ArgNamespace())
+		namespace.types = append(namespace.types, myWrapper)
+		myWrapper.ns = namespace
 	}
 	return nil
 }

@@ -326,9 +326,9 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	isDict, _ := k.IsDict(kt)
 	switch {
 	case tName == "__vector":
-		ref.ins, err = k.createVectorTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 	case tName == "__tuple":
-		ref.ins, err = k.createTupleTL1(canonicalName, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 	case isDict:
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)

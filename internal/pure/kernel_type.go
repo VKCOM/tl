@@ -43,9 +43,9 @@ type KernelType struct {
 	canonicalName tlast.Name
 	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
 	// for TL1 Bool, Bool
-	tl1BoxedName tlast.Name
-	canBeBare    bool
-	tl1name      string // if !empty, go generator will use it for template names (VectorInt, not VectorInt32)
+	tl1BoxedName   tlast.Name
+	canBeBare      bool
+	historicalName tlast.Name // go gen historically uses TL1-style names for builtin types
 
 	// usage tracking for migration/compilcation.
 	// common for union types, so cannot be in combinator itself
@@ -75,6 +75,10 @@ func (t *KernelType) HasAnnotation(a string) bool {
 
 func (t *KernelType) CanonicalName() tlast.Name {
 	return t.canonicalName
+}
+
+func (t *KernelType) HistoricalName() tlast.Name {
+	return t.historicalName
 }
 
 func (t *KernelType) CanBeBare() bool {

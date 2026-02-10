@@ -192,12 +192,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 				return err
 			}
 
-			//elementT := tlast.TypeRef{Type: tlast.Name{Name: okDesc.TemplateArguments[0].FieldName}} // TODO - PR
-
-			//namespace := gen.getNamespace(fieldType.tlName.Namespace)
-			//namespace.types = append(namespace.types, fieldType)
-			//fieldType.ns = namespace
-
 			suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
 			head, tail := fieldType.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)

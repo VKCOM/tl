@@ -79,7 +79,7 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, e
 	return ins
 }
 
-func (k *Kernel) createVectorTL1(canonicalName string,
+func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
@@ -102,6 +102,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			natParams:     natParams,
+			tip:           tip,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
@@ -113,7 +114,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	return ins, nil
 }
 
-func (k *Kernel) createTupleTL1(canonicalName string,
+func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
@@ -136,6 +137,7 @@ func (k *Kernel) createTupleTL1(canonicalName string,
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			natParams:     natParams,
+			tip:           tip,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
@@ -158,16 +160,16 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
 	}
 	kt := &KernelType{
-		originTL2:     false,
-		builtin:       true,
-		combTL1:       []*tlast.Combinator{combTL1},
-		instances:     map[string]*TypeInstanceRef{},
-		tl1Names:      map[string]struct{}{"__vector": {}},
-		tl2Names:      map[string]struct{}{},
-		canonicalName: tlast.Name{Name: "__vector"},
-		tl1name:       "__vector",
-		canBeBare:     true,
-		targs:         make([]KernelTypeTarg, 1),
+		originTL2:      false,
+		builtin:        true,
+		combTL1:        []*tlast.Combinator{combTL1},
+		instances:      map[string]*TypeInstanceRef{},
+		tl1Names:       map[string]struct{}{"__vector": {}},
+		tl2Names:       map[string]struct{}{},
+		canonicalName:  tlast.Name{Name: "__vector"},
+		historicalName: tlast.Name{Name: "BuiltinVector"},
+		canBeBare:      true,
+		targs:          make([]KernelTypeTarg, 1),
 	}
 	if err := k.addTip(kt, "__vector", ""); err != nil {
 		panic(fmt.Sprintf("error adding __vector: %v", err))
@@ -179,16 +181,16 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}},
 	}
 	kt = &KernelType{
-		originTL2:     false,
-		builtin:       true,
-		combTL1:       []*tlast.Combinator{combTL1},
-		instances:     map[string]*TypeInstanceRef{},
-		tl1Names:      map[string]struct{}{"__tuple": {}},
-		tl2Names:      map[string]struct{}{},
-		canonicalName: tlast.Name{Name: "__tuple"},
-		tl1name:       "__tuple",
-		canBeBare:     true,
-		targs:         make([]KernelTypeTarg, 2),
+		originTL2:      false,
+		builtin:        true,
+		combTL1:        []*tlast.Combinator{combTL1},
+		instances:      map[string]*TypeInstanceRef{},
+		tl1Names:       map[string]struct{}{"__tuple": {}},
+		tl2Names:       map[string]struct{}{},
+		canonicalName:  tlast.Name{Name: "__tuple"},
+		historicalName: tlast.Name{Name: "BuiltinTuple"},
+		canBeBare:      true,
+		targs:          make([]KernelTypeTarg, 2),
 	}
 	if err := k.addTip(kt, "__tuple", ""); err != nil {
 		panic(fmt.Sprintf("error adding __tuple: %v", err))
