@@ -271,6 +271,9 @@ func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
 }
 
 func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
+	//if w.pureType.CanonicalName() == "Vector<uint32>" {
+	//	fmt.Printf("aga")
+	//}
 	tail = w.resolvedT2GoNameTail(insideNamespace)
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here

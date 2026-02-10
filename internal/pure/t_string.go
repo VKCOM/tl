@@ -57,15 +57,16 @@ func (k *Kernel) addString() {
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2:     false,
-		builtin:       true,
-		combTL1:       []*tlast.Combinator{combTL1},
-		combTL2:       combTL2,
-		instances:     map[string]*TypeInstanceRef{name: ref},
-		tl1Names:      map[string]struct{}{name: {}},
-		tl2Names:      map[string]struct{}{name: {}},
-		canonicalName: tlast.Name{Name: name},
-		canBeBare:     true,
+		originTL2:      false,
+		builtin:        true,
+		combTL1:        []*tlast.Combinator{combTL1},
+		combTL2:        combTL2,
+		instances:      map[string]*TypeInstanceRef{name: ref},
+		tl1Names:       map[string]struct{}{name: {}},
+		tl2Names:       map[string]struct{}{name: {}},
+		canonicalName:  tlast.Name{Name: name},
+		historicalName: tlast.Name{Name: name},
+		canBeBare:      true,
 	}
 	ins.tip = kt
 	if _, ok := k.instances[name]; ok {

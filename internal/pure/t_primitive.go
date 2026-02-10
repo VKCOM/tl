@@ -38,7 +38,7 @@ func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 	return ins.clone.ReadTL2(r, nil)
 }
 
-func (k *Kernel) addPrimitive(name string, tl1name string, clone KernelValue, goodForMapKey bool) {
+func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, clone KernelValue, goodForMapKey bool) {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
@@ -65,16 +65,16 @@ func (k *Kernel) addPrimitive(name string, tl1name string, clone KernelValue, go
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2:     tl1name == "",
-		builtin:       true,
-		combTL1:       []*tlast.Combinator{combTL1},
-		combTL2:       combTL2,
-		instances:     map[string]*TypeInstanceRef{name: ref},
-		tl1Names:      map[string]struct{}{},
-		tl2Names:      map[string]struct{}{},
-		canonicalName: tlast.Name{Name: name},
-		tl1name:       tl1name,
-		canBeBare:     true,
+		originTL2:      tl1name == "",
+		builtin:        true,
+		combTL1:        []*tlast.Combinator{combTL1},
+		combTL2:        combTL2,
+		instances:      map[string]*TypeInstanceRef{name: ref},
+		tl1Names:       map[string]struct{}{},
+		tl2Names:       map[string]struct{}{},
+		canonicalName:  tlast.Name{Name: name},
+		historicalName: tlast.Name{Name: historicalName},
+		canBeBare:      true,
 	}
 	kt.tl2Names[name] = struct{}{}
 	if tl1name != "" {
