@@ -155,10 +155,6 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 }
 
 func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive) error {
-	//namespace := gen.getNamespace(myWrapper.tlName.Namespace)
-	//namespace.types = append(namespace.types, myWrapper)
-	//myWrapper.ns = namespace
-
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
