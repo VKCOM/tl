@@ -35,6 +35,18 @@ func (ins *TypeInstanceUnion) BoxedOnly() bool {
 	return true
 }
 
+// This is hint to generators
+func (ins *TypeInstanceUnion) IsUnionMaybe() (isMaybe bool, elementField Field) {
+	// this is not exhaustive, but good enough for now
+	if len(ins.variantTypes) != 2 || ins.tip.canonicalName.String() != "Maybe" {
+		return
+	}
+	if len(ins.variantTypes[0].fields) != 0 || len(ins.variantTypes[1].fields) != 1 {
+		return
+	}
+	return true, ins.variantTypes[1].fields[0]
+}
+
 func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return
