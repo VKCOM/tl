@@ -2314,6 +2314,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 						},
 					},
 				})
+				// TODO make normal version for this
+				tl[len(tl)-1].Construct.ID = tl[len(tl)-1].GenCrc32()
 			}
 			tl = append(tl, &tlast.Combinator{
 				CommentRight: "// tlgen:nolint",
@@ -2322,6 +2324,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 				},
 				Construct: tlast.Constructor{Name: rpcFunctionTypeRef.Type},
 			})
+			// TODO make normal version for this
+			tl[len(tl)-1].Construct.ID = tl[len(tl)-1].GenCrc32()
 			tl = append(tl, &tlast.Combinator{
 				CommentRight: "// tlgen:nolint",
 				TypeDecl: tlast.TypeDeclaration{
@@ -2329,6 +2333,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 				},
 				Construct: tlast.Constructor{Name: rpcFunctionResultTypeRef.Type},
 			})
+			// TODO make normal version for this
+			tl[len(tl)-1].Construct.ID = tl[len(tl)-1].GenCrc32()
 			for _, typ := range tl {
 				if typ.IsFunction && len(typ.TemplateArguments) == 1 {
 					// copy original
@@ -2345,6 +2351,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 				} else if !typ.IsFunction &&
 					rpcResultsMapping[typ.Construct.Name.String()] != "" &&
 					typ.TypeDecl.Name.String() == rpcRequestResultName {
+					typ.Construct.ID = typ.GenCrc32()
+
 					typ.Crc32()
 					typ.Construct.Name.Name = rpcResultsMapping[typ.Construct.Name.String()]
 					// copy original

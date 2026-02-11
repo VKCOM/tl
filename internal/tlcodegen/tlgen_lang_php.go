@@ -177,8 +177,14 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfac
 				// skip comment generation
 			} else {
 				if desc.IsFunction || len(desc.Fields) >= 0 {
+					// TODO strange grisha generation
+					savedIDExplicit := desc.Construct.IDExplicit
+					desc.Construct.IDExplicit = true
+
 					definitionText += "\n *\n"
 					definitionText += " * " + desc.Construct.String()
+
+					desc.Construct.IDExplicit = savedIDExplicit
 					hasFields := len(desc.TemplateArguments) > 0 || len(desc.Fields) > 0
 					for _, template := range desc.TemplateArguments {
 						definitionText += "\n"
