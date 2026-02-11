@@ -86,17 +86,17 @@ func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		kt := pureType.KernelType()
 		myWrapper := &TypeRWWrapper{
-			gen:             gen,
-			pureType:        pureType,
-			NatParams:       pureType.Common().NatParams(),
-			goCanonicalName: kt.HistoricalName(),
-			tlTag:           pureType.Common().TLTag(),
-			tlName:          pureType.Common().TLName(),
+			gen:              gen,
+			pureType:         pureType,
+			NatParams:        pureType.Common().NatParams(),
+			goCanonicalName:  kt.HistoricalName(),
+			originateFromTL2: kt.OriginTL2(),
+			tlTag:            pureType.Common().TLTag(),
+			tlName:           pureType.Common().TLName(),
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
 
-		myWrapper.originateFromTL2 = kt.OriginTL2()
 		// TODO - we'd like to change this to fileName = goCanonicalName
 		fileName := myWrapper.tlName
 		fileName.Name = ToLowerFirst(fileName.Name)
