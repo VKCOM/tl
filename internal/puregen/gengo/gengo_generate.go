@@ -178,37 +178,32 @@ func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.Type
 }
 
 func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
-	kt := pureType.KernelType()
-	if !kt.OriginTL2() {
-		if isMaybe, emptyDesc, okDesc := IsUnionMaybe(kt.TL1()); isMaybe {
-			elementField := pureType.VariantTypes()[1].Fields()[0]
-
-			fieldType, err := gen.getType(elementField.TypeInstance())
-			if err != nil {
-				return err
-			}
-
-			// Customizing maybe name was really stupid idea, actually.
-			suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
-			head, tail := fieldType.resolvedT2GoName("")
-			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
-			head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
-			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
-
-			res := &TypeRWMaybe{
-				wr: myWrapper,
-				element: Field{
-					t:       fieldType,
-					bare:    elementField.Bare(),
-					natArgs: pureType.ElementNatArgs(),
-				},
-				emptyTag: emptyDesc.Crc32(),
-				okTag:    okDesc.Crc32(),
-			}
-			myWrapper.fileNameOverride = fieldType
-			myWrapper.trw = res
-			return nil
+	if isMaybe, elementField := pureType.IsUnionMaybe(); isMaybe {
+		fieldType, err := gen.getType(elementField.TypeInstance())
+		if err != nil {
+			return err
 		}
+
+		// Customizing maybe name was really stupid idea, actually.
+		suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
+		head, tail := fieldType.resolvedT2GoName("")
+		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
+		head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
+		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
+
+		res := &TypeRWMaybe{
+			wr: myWrapper,
+			element: Field{
+				t:       fieldType,
+				bare:    elementField.Bare(),
+				natArgs: pureType.ElementNatArgs(),
+			},
+			emptyTag: pureType.VariantTypes()[0].TLTag(),
+			okTag:    pureType.VariantTypes()[1].TLTag(),
+		}
+		myWrapper.fileNameOverride = fieldType
+		myWrapper.trw = res
+		return nil
 	}
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
@@ -220,6 +215,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		IsEnum: pureType.IsEnum(),
 	}
 	myWrapper.trw = res
+	kt := pureType.KernelType()
 	for i, typ := range pureType.VariantTypes() {
 		variantName := pureType.VariantNames()[i]
 		variantOriginalName := pureType.VariantTL1ConstructNames()[i]

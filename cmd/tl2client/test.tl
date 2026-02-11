@@ -43,3 +43,12 @@ cases.testPrimitive
 //a.inner {I:#} a:I*[int] = a.Inner I;
 //a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
 //a.top2 n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;
+
+
+resultFalse#27930a7b {t:Type} = Maybe t;
+resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
+
+maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;
+testMaybe n:# a:(Maybe int) b:(Maybe Int)
+    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
+    e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;
