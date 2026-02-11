@@ -26,3 +26,7 @@ func (descriptor *Combinator) crc32() uint32 {
 func (descriptor *Combinator) Crc32() uint32 {
 	return descriptor.Construct.ID
 }
+
+func (descriptor *Combinator) GenCrc32() uint32 {
+	return descriptor.crc32()
+}
