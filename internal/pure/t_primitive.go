@@ -57,6 +57,7 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 	ins := TypeInstancePrimitive{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
+			tlName:        tlast.Name{Name: historicalName},
 		},
 		clone:         clone,
 		goodForMapKey: goodForMapKey,

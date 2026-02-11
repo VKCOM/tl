@@ -359,6 +359,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tlName:        def.Construct.Name,
+			tlTag:         def.Construct.ID,
 			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements

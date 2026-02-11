@@ -84,34 +84,24 @@ func (gen *genGo) compile() error {
 
 func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
+		kt := pureType.KernelType()
 		myWrapper := &TypeRWWrapper{
-			gen:       gen,
-			pureType:  pureType,
-			NatParams: pureType.Common().NatParams(),
+			gen:             gen,
+			pureType:        pureType,
+			NatParams:       pureType.Common().NatParams(),
+			goCanonicalName: kt.HistoricalName(),
+			tlTag:           pureType.Common().TLTag(),
+			tlName:          pureType.Common().TLName(),
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
 
-		kt := pureType.KernelType()
-		myWrapper.goCanonicalName = kt.HistoricalName()
-
 		myWrapper.originateFromTL2 = kt.OriginTL2()
-		origTL := kt.TL1()
-		if !myWrapper.originateFromTL2 {
-			if len(origTL) == 1 {
-				myWrapper.tlTag = origTL[0].Crc32()
-				myWrapper.tlName = origTL[0].Construct.Name
-				myWrapper.fileName = myWrapper.tlName.String()
-				if myWrapper.fileName == "#" {
-					myWrapper.fileName = "nat"
-				}
-			} else {
-				myWrapper.tlName = origTL[0].TypeDecl.Name
-				fileName := myWrapper.tlName
-				fileName.Name = ToLowerFirst(fileName.Name) // TODO - remove this rule?
-				myWrapper.fileName = fileName.String()
-			}
-		}
+		// TODO - we'd like to change this to fileName = goCanonicalName
+		fileName := myWrapper.tlName
+		fileName.Name = ToLowerFirst(fileName.Name)
+		myWrapper.fileName = fileName.String()
+
 		namespace := gen.getNamespace(pureType.Common().ArgNamespace())
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace

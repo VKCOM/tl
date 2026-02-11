@@ -51,6 +51,7 @@ func (k *Kernel) addString() {
 	ins := TypeInstanceString{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
+			tlName:        tlast.Name{Name: name},
 		},
 	}
 	ref := &TypeInstanceRef{
