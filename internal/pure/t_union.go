@@ -111,6 +111,8 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tlName:        definition[0].TypeDecl.Name,
+			tlTag:         0,
 			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    false, // in TL1, union variants are top level, not union itself

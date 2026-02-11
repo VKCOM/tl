@@ -188,6 +188,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 				return err
 			}
 
+			// Customizing maybe name was really stupid idea, actually.
 			suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
 			head, tail := fieldType.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)

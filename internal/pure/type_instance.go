@@ -30,6 +30,8 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
+	tlName        tlast.Name
+	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	isTopLevel    bool
@@ -39,6 +41,16 @@ type TypeInstanceCommon struct {
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
+}
+
+func (ins *TypeInstanceCommon) TLName() tlast.Name {
+	return ins.tlName
+}
+
+// for TL1 union zero, for TL2 union as specified by user
+// for TL1 union variant !zero, for TL2 union variant zero
+func (ins *TypeInstanceCommon) TLTag() uint32 {
+	return ins.tlTag
 }
 
 func (ins *TypeInstanceCommon) NatParams() []string {
