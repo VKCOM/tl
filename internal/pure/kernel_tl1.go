@@ -38,13 +38,8 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 		len(tlType[0].TemplateArguments) != 0 || len(tlType[1].TemplateArguments) != 0 {
 		return fmt.Errorf("kernel supports only exact TL1 Bool definition: 'boolFalse#<magic1> = Bool; boolTrue#<magic2> = Bool;'")
 	}
-	falseDesc := tlType[0]
-	trueDesc := tlType[1]
-	if falseDesc.Construct.Name.String() != "boolFalse" { // fix constructors order
-		falseDesc, trueDesc = trueDesc, falseDesc
-	}
-	if falseDesc.Construct.Name.String() != "boolFalse" ||
-		trueDesc.Construct.Name.String() != "boolTrue" {
+	if tlType[0].Construct.Name.String() != "boolFalse" ||
+		tlType[1].Construct.Name.String() != "boolTrue" {
 		return fmt.Errorf("kernel supports only exact TL1 Bool definition: 'boolFalse#<magic1> = Bool; boolTrue#<magic2> = Bool;'")
 	}
 	tip, ok := k.tips["bool"]
@@ -55,7 +50,7 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 		// TODO - see here
 		return tlType[0].TypeDecl.NamePR.BeautifulError(errors.New("builtin type Bool already defined as not builtin"))
 	}
-	tip.combTL1 = []*tlast.Combinator{falseDesc, trueDesc}
+	tip.combTL1 = tlType
 	tip.originTL2 = false // allow references from TL1
 	k.tips["Bool"] = tip
 	tip.tl1Names["Bool"] = struct{}{}
