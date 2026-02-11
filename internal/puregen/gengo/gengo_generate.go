@@ -221,24 +221,21 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		variantOriginalName := pureType.VariantTL1ConstructNames()[i]
 
 		variantWrapper := &TypeRWWrapper{
-			gen:         gen,
-			pureType:    typ,
-			NatParams:   myWrapper.NatParams,
-			unionParent: res,
-			unionIndex:  i,
+			gen:              gen,
+			pureType:         typ,
+			NatParams:        myWrapper.NatParams,
+			originateFromTL2: kt.OriginTL2(),
+			tlTag:            typ.TLTag(),
+			tlName:           typ.TLName(),
+			unionParent:      res,
+			unionIndex:       i,
 		}
 		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
 
-		if kt.OriginTL2() {
-			variantWrapper.originateFromTL2 = kt.OriginTL2()
-		} else {
-			origTL := kt.TL1()[i]
-			variantWrapper.tlTag = origTL.Crc32()
-			variantWrapper.tlName = origTL.Construct.Name
-			variantWrapper.goCanonicalName = variantWrapper.tlName
-			variantWrapper.fileNameOverride = myWrapper
-		}
+		variantWrapper.goCanonicalName = variantWrapper.tlName
+		variantWrapper.fileNameOverride = myWrapper
+
 		// namespace := myWrapper.ns
 		if variantWrapper.tlName.Namespace == "" {
 			//left {X:Type} {Y:Type} value:X = Either X Y;
