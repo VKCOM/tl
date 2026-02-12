@@ -127,21 +127,6 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			natArgs:      field.NatArgs(),
 		}
 		res.Fields = append(res.Fields, newField)
-
-		//TODO - move into pure kernel
-		//if _, ok := newField.t.trw.(*TypeRWBool); ok {
-		//	if newField.t.origTL[0].TypeDecl.Name.String() == "Bool" &&
-		//		newField.fieldMask != nil && !newField.fieldMask.isArith && newField.fieldMask.isField &&
-		//		!LegacyAllowBoolFieldsmask(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
-		//		utils.DoLint(field.CommentRight) {
-		//		// We compare type by name to make warning more narrow at first.
-		//		e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, you probably want to use 'true' instead of 'Bool'"))
-		//		if gen.options.WarningsAreErrors {
-		//			return e1
-		//		}
-		//		e1.PrintWarning(gen.options.ErrorWriter, nil)
-		//	}
-		//}
 	}
 	if pureType.ResultType() != nil {
 		resultType, err := gen.getType(pureType.ResultType())

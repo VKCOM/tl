@@ -584,7 +584,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 				!purelegacy.AllowBoolFieldsmask(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) &&
 				utils.DoLint(field.CommentRight) {
 				// We compare type by name to make warning more narrow at first.
-				e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, you probably want to use 'true' instead of 'Bool'"))
+				e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, use 'true' instead of 'Bool' or add // tlgen:nolint to the right"))
 				if gen.options.WarningsAreErrors {
 					return e1
 				}
