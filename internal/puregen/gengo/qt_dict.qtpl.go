@@ -3,8 +3,6 @@
 
 package gengo
 
-import "fmt"
-
 import (
 	qtio422016 "io"
 
@@ -19,8 +17,8 @@ var (
 func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(tuple.wr.goGlobalName, bytesVersion)
 	natDecl := formatNatArgsDecl(tuple.wr.NatParams)
-	natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
-	tlTag := fmt.Sprintf("0x%08x", tuple.wr.tlTag)
+	// natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
+	// tlTag := fmt.Sprintf("0x%08x", tuple.wr.tlTag)
 	typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
@@ -53,27 +51,10 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
     }
     rg.DecreaseDepth()
 }
+
 `)
 		}
 		qw422016.N().S(`func `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`ReadBoxed(w []byte, vec *`)
-		qw422016.N().S(typeString)
-		qw422016.N().S(` `)
-		qw422016.N().S(natDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
-    if w, err = basictl.NatReadExactTag(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`); err != nil {
-        return w, err
-    }
-    return `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`Read(w, vec `)
-		qw422016.N().S(natCall)
-		qw422016.N().S(`)
-}
-func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`Read(w []byte, vec *`)
 		qw422016.N().S(typeString)
@@ -113,24 +94,6 @@ func `)
 		}
 		qw422016.N().S(`}
 
-func `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`WriteBoxed(w []byte, vec `)
-		qw422016.N().S(typeString)
-		qw422016.N().S(` `)
-		qw422016.N().S(natDecl)
-		qw422016.N().S(`) `)
-		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
-		qw422016.N().S(` {
-    w = basictl.NatWrite(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`)
-    return `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`Write(w, vec`)
-		qw422016.N().S(natCall)
-		qw422016.N().S(`)
-}
 func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`Write(w []byte, vec `)
@@ -639,26 +602,6 @@ func `)
 		}
 		qw422016.N().S(`func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`ReadBoxed(w []byte, m *map[`)
-		qw422016.N().S(keyTypeString)
-		qw422016.N().S(`]`)
-		qw422016.N().S(valueTypeString)
-		qw422016.N().S(` `)
-		qw422016.N().S(natDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
-    if w, err = basictl.NatReadExactTag(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`); err != nil {
-        return w, err
-    }
-    return `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`Read(w, m `)
-		qw422016.N().S(natCall)
-		qw422016.N().S(`)
-}
-func `)
-		qw422016.N().S(goName)
 		qw422016.N().S(`Read(w []byte, m *map[`)
 		qw422016.N().S(keyTypeString)
 		qw422016.N().S(`]`)
@@ -712,26 +655,6 @@ func `)
 		}
 		qw422016.N().S(`}
 
-func `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`WriteBoxed(w []byte, m map[`)
-		qw422016.N().S(keyTypeString)
-		qw422016.N().S(`]`)
-		qw422016.N().S(valueTypeString)
-		qw422016.N().S(` `)
-		qw422016.N().S(natDecl)
-		qw422016.N().S(`) `)
-		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
-		qw422016.N().S(` {
-    w = basictl.NatWrite(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`)
-    return `)
-		qw422016.N().S(goName)
-		qw422016.N().S(`Write(w, m`)
-		qw422016.N().S(natCall)
-		qw422016.N().S(`)
-}
 func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`Write(w []byte, m map[`)

@@ -377,6 +377,33 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	if err != nil {
 		return nil, err
 	}
+	if tip.canonicalName.String() == "Vector" || tip.canonicalName.String() == "Tuple" {
+		ins.isUnwrap = true
+	}
+	if isDict, _ := k.IsDict(tip); isDict {
+		fieldT := tlast.TypeRef{
+			Type: tlast.Name{Name: resolvedType.Type.String() + "Field"},
+			Bare: true,
+		}
+		for _, targ := range tip.combTL1[0].TemplateArguments {
+			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
+				T: tlast.TypeRef{Type: tlast.Name{Name: targ.FieldName}},
+			})
+		}
+		ins.isUnwrap = true
+		fieldsAfterReplace = []tlast.Field{{
+			FieldName: "",
+			FieldType: tlast.TypeRef{
+				Type: tlast.Name{Name: "__dict"},
+				Bare: true,
+				Args: []tlast.ArithmeticOrType{{
+					T: fieldT,
+				}},
+			},
+		}}
+		originalFieldIndices = []int{0}
+	}
+
 	for i, fieldDef := range fieldsAfterReplace {
 		originalFieldIndex := originalFieldIndices[i]
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)

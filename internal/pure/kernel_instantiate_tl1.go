@@ -323,13 +323,12 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	// must store pointer before children GetInstance() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
-	isDict, _ := k.IsDict(kt)
 	switch {
 	case tName == "__vector":
 		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 	case tName == "__tuple":
 		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
-	case isDict:
+	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 	case len(kt.combTL1) > 1:

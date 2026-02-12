@@ -314,6 +314,6 @@ func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.Type
 		dictValueField: structElement.Fields[1],
 	}
 	myWrapper.trw = res
-	//myWrapper.fileNameOverride = fieldType
+	myWrapper.fileNameOverride = fieldType
 	return nil
 }

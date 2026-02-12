@@ -71,15 +71,7 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	fieldT := tlast.TypeRef{
-		Type: tlast.Name{Name: resolvedType.Type.String() + "Field"},
-		Bare: true,
-	}
-	for _, targ := range tip.combTL1[0].TemplateArguments {
-		fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
-			T: tlast.TypeRef{Type: tlast.Name{Name: targ.FieldName}},
-		})
-	}
+	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
 	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
 	if err != nil {
