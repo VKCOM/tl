@@ -1,5 +1,5 @@
-boolFalse#bc799737 = Bool;
-boolTrue#997275b5 = Bool;
+//boolFalse#bc799737 = Bool;
+//boolTrue#997275b5 = Bool;
 // BASE TYPES
 int#a8509bda ? = Int;
 
@@ -13,8 +13,6 @@ dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = Dictiona
 
 
  cases.testPrimitive
-     n:#
-     boo:n.0?Bool
      a:int
      b:Int
      c:%Int
