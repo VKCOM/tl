@@ -8,6 +8,7 @@ package pure
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
@@ -94,6 +95,32 @@ func (ins *TypeInstanceStruct) ResultType() TypeInstance {
 
 func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
 	return ins.resultNatArgs
+}
+
+// same code as in func (w *TypeRWWrapper) TransformNatArgsToChild
+func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(natArgs []string) []string {
+	// Caller called outer.Read(   , nat_x, nat_y)
+	// outer has func Read(   ,nat_inner_x uint32, nat_inner_y uint32) {
+	// which calls for example inner.Read(   , nat_inner_y, nat_inner_y)
+	// in other words, outer passes some parameters to inner in some order, with potential repeats.
+	// When unwrapping, we do the job of golang compiler, replacing references to outer nat parameters,
+	// so that at the calling site outer.Read(   , nat_x, nat_y) is replaced to
+	// inner.Read(   , nat_y, nat_y)
+	var result []string
+outer:
+	for _, arg := range ins.fields[0].natArgs {
+		if arg.IsNumber() || arg.IsField() {
+			panic("cannot replace to child arith or field nat param")
+		}
+		for i, p := range ins.natParams {
+			if p == arg.Name() {
+				result = append(result, natArgs[i])
+				continue outer
+			}
+		}
+		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type %s", arg.Name(), ins.canonicalName)
+	}
+	return result
 }
 
 func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {

@@ -69,10 +69,6 @@ func (trw *TypeRWBool) IsDictKeySafe() (isSafe bool, isString bool) {
 	return false, false // TODO - low priority future
 }
 
-func (trw *TypeRWBool) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return false, true
-}
-
 func (trw *TypeRWBool) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	return fmt.Sprintf("%s = false", addAsterisk(ref, val))
 }

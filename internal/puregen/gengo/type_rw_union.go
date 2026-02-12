@@ -80,12 +80,10 @@ func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
-	if trw.wr.gen.options.Language == "go" {
-		for i, f := range trw.Fields {
-			visitedNodes := map[*TypeRWWrapper]bool{}
-			f.t.trw.fillRecursiveChildren(visitedNodes)
-			trw.Fields[i].recursive = visitedNodes[trw.wr]
-		}
+	for i, f := range trw.Fields {
+		visitedNodes := map[*TypeRWWrapper]bool{}
+		f.t.trw.fillRecursiveChildren(visitedNodes)
+		trw.Fields[i].recursive = visitedNodes[trw.wr]
 	}
 	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
 	//	var nf []Field
@@ -111,10 +109,6 @@ func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 
 func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {
 	return false, false // trw.IsEnum - TODO - in the future?
-}
-
-func (trw *TypeRWUnion) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return false, true
 }
 
 func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {

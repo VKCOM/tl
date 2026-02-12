@@ -99,8 +99,8 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	res := &TypeRWStruct{
-		wr:       myWrapper,
-		isUnwrap: pureType.IsUnwrap(),
+		wr:             myWrapper,
+		pureTypeStruct: pureType,
 	}
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
