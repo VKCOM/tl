@@ -12,7 +12,7 @@ all: build
 
 .PHONY: build
 build: # build static binary to run on many linux variants
-	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+	CGO_ENABLED=0 $(GO) build -buildvcs=true -o target/bin/tlgen ./cmd/tlgen
 	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tl2gen ./cmd/tl2gen
 	CGO_ENABLED=0 $(GO) build -buildvcs=false -o target/bin/tl2client ./cmd/tl2client
 

@@ -1,6 +1,6 @@
 module github.com/vkcom/tl
 
-go 1.21
+go 1.24
 
 require (
 	github.com/TwiN/go-color v1.4.1
