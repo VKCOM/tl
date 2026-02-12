@@ -182,6 +182,22 @@ func visit(
 				}
 			}
 		}
+	case *TypeRWDict:
+		{
+			elementType := i.element.t
+			natIndexes := make([]int, 0)
+			for i, natParam := range i.element.natArgs {
+				if !natParam.IsNumber() && natParam.Name() == natParamName {
+					natIndexes = append(natIndexes, i)
+				}
+			}
+			for _, index := range natIndexes {
+				res := visit(elementType, index, visitResults, affectedIndexes, natProps)
+				if res == VisitSuccess {
+					(*visitResults)[key] = VisitSuccess
+				}
+			}
+		}
 	}
 
 	if (*visitResults)[key] == VisitInProgress {

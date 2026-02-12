@@ -155,11 +155,32 @@ func (k *Kernel) addTL1Brackets() {
 	// for the purpose of type check, this is object with no fields, like __vector {t:Type} = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__vector"},
+			Name: tlast.Name{Name: "__dict"},
 		},
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
 	}
 	kt := &KernelType{
+		originTL2:      false,
+		builtin:        true,
+		combTL1:        []*tlast.Combinator{combTL1},
+		instances:      map[string]*TypeInstanceRef{},
+		tl1Names:       map[string]struct{}{"__dict": {}},
+		tl2Names:       map[string]struct{}{},
+		canonicalName:  tlast.Name{Name: "__dict"},
+		historicalName: tlast.Name{Name: "BuiltinVector"}, // BuiltinDict
+		canBeBare:      true,
+		targs:          make([]KernelTypeTarg, 1),
+	}
+	if err := k.addTip(kt, "__dict", ""); err != nil {
+		panic(fmt.Sprintf("error adding __dict: %v", err))
+	}
+	combTL1 = &tlast.Combinator{
+		Construct: tlast.Constructor{
+			Name: tlast.Name{Name: "__vector"},
+		},
+		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
+	}
+	kt = &KernelType{
 		originTL2:      false,
 		builtin:        true,
 		combTL1:        []*tlast.Combinator{combTL1},

@@ -404,7 +404,6 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 		}
 	}
 	tName := tr.Type.String()
-	// TODO - dictionaries
 	switch tName {
 	case "__vector", "Vector", "vector":
 		if len(tr.Args) != 1 || tr.Args[0].IsArith {

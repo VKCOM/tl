@@ -38,12 +38,13 @@ func (trw *TypeRWStruct) isTypeDef() bool {
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
-	if trw.isUnwrap { // kernel told us so
-		return true
-	}
 	if !trw.isTypeDef() || trw.wr.preventUnwrap {
 		return false
 	}
+	if trw.isUnwrap { // kernel told us so
+		return true
+	}
+	// TODO - remove code below after newDicts is default
 	// Motivation - we want default wrappers for primitive types, vector and tuple to generate primitive language types
 	//primitive, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
 	//if isPrimitive && primitive.tlType == trw.wr.tlName.String() {

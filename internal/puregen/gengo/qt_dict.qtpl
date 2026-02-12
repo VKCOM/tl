@@ -1,11 +1,10 @@
-{% import "fmt" %}
 
 {%- func (tuple *TypeRWDict) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(tuple.wr.goGlobalName, bytesVersion)
         natDecl := formatNatArgsDecl(tuple.wr.NatParams)
-        natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
-        tlTag := fmt.Sprintf("0x%08x", tuple.wr.tlTag)
+        // natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
+        // tlTag := fmt.Sprintf("0x%08x", tuple.wr.tlTag)
         typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
@@ -29,13 +28,8 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
     }
     rg.DecreaseDepth()
 }
+
                 {%- endif -%}
-func {%s= goName %}ReadBoxed(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
-        return w, err
-    }
-    return {%s= goName %}Read(w, vec {%s= natCall %})
-}
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     {%- if tuple.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -61,10 +55,6 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     {%- endif -%}
 }
 
-func {%s= goName %}WriteBoxed(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    w = basictl.NatWrite(w, {%s= tlTag %})
-    return {%s= goName %}Write(w, vec{%s= natCall %})
-}
 func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     {%- if tuple.wr.originateFromTL2 -%}
         {%- if writeElementNeedsError -%}
@@ -347,12 +337,6 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeStri
     rg.DecreaseDepth()
 }
             {%- endif -%}
-func {%s= goName %}ReadBoxed(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
-    if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
-        return w, err
-    }
-    return {%s= goName %}Read(w, m {%s= natCall %})
-}
 func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
     {%- if tuple.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -383,10 +367,6 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
     {%- endif -%}
 }
 
-func {%s= goName %}WriteBoxed(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    w = basictl.NatWrite(w, {%s= tlTag %})
-    return {%s= goName %}Write(w, m{%s= natCall %})
-}
 func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     {%- if tuple.wr.originateFromTL2 -%}
         {%- if writeElementNeedsError -%}

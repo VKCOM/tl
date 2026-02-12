@@ -211,6 +211,7 @@ testpure: build
 		./cmd/tl2client/test.tl
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
+		--newDicts \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/gennew \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
