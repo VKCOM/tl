@@ -447,6 +447,17 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			newField.maskTL2Bit = &maskBit
 			nextTL2MaskBit++
 		}
+		if fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "bool" &&
+			newField.fieldMask != nil && !newField.fieldMask.isNumber && newField.fieldMask.isField &&
+			!purelegacy.AllowBoolFieldsmask(def.Construct.Name.String(), newField.name) &&
+			utils.DoLint(fieldDef.CommentRight) {
+			// We compare type by name to make warning more narrow at first.
+			e1 := fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, use 'true' instead of 'Bool' or add // tlgen:nolint to the right"))
+			if k.opts.WarningsAreErrors {
+				return nil, e1
+			}
+			e1.PrintWarning(k.opts.ErrorWriter, nil)
+		}
 
 		ins.fields = append(ins.fields, newField)
 		if fieldDef.FieldName != "" {

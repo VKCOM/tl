@@ -13,6 +13,8 @@ dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = Dictiona
 
 
  cases.testPrimitive
+     n:#
+     boo:n.0?Bool
      a:int
      b:Int
      c:%Int
