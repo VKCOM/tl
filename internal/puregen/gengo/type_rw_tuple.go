@@ -113,10 +113,6 @@ func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {
 	return false, false
 }
 
-func (trw *TypeRWBrackets) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return true, false
-}
-
 func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if trw.dictLike && !bytesVersion {

@@ -35,7 +35,6 @@ type TypeRW interface {
 	// methods below depend on target language
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
-	CanBeBareBoxed() (canBare bool, canBoxed bool)
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool

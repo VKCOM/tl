@@ -81,10 +81,6 @@ func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
 	return !trw.isFloat(), trw.tlType == "string"
 }
 
-func (trw *TypeRWPrimitive) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return true, false
-}
-
 func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	if bytesVersion {
 		if ref {
