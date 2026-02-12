@@ -148,14 +148,11 @@ func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.Type
 		isBit: false,
 		wr:    myWrapper,
 	}
-	if !myWrapper.originateFromTL2 {
-		comb := pureType.KernelType().TL1()
-		falseDesc := comb[0]
-		trueDesc := comb[1]
-		res.falseGoName = gen.globalDec.deconflictName(utils.CNameToCamelName(falseDesc.Construct.Name.String()))
-		res.trueGoName = gen.globalDec.deconflictName(utils.CNameToCamelName(trueDesc.Construct.Name.String()))
-		res.falseTag = falseDesc.Crc32()
-		res.trueTag = trueDesc.Crc32()
+	if ok, falseTag, trueTag := pureType.IsTL1Bool(); ok {
+		res.falseTag = falseTag
+		res.trueTag = trueTag
+		res.falseGoName = gen.globalDec.deconflictName("BoolFalse")
+		res.trueGoName = gen.globalDec.deconflictName("BoolTrue")
 	}
 	myWrapper.trw = res
 	return nil
