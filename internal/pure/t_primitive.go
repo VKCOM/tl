@@ -38,6 +38,13 @@ func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 	return ins.clone.ReadTL2(r, nil)
 }
 
+func (ins *TypeInstancePrimitive) IsTL1Bool() (ok bool, falseTag uint32, trueTag uint32) {
+	if ins.canonicalName == "bool" && len(ins.tip.combTL1) == 2 {
+		return true, ins.tip.combTL1[0].Crc32(), ins.tip.combTL1[1].Crc32()
+	}
+	return false, 0, 0
+}
+
 func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, clone KernelValue, goodForMapKey bool) {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
 	combTL1 := &tlast.Combinator{

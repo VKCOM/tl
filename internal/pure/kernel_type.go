@@ -89,10 +89,12 @@ func (t *KernelType) CanBeBoxed() bool {
 	return t.tl1BoxedName != tlast.Name{}
 }
 
-func (t *KernelType) TL1() []*tlast.Combinator {
-	return t.combTL1
-}
-
-func (t *KernelType) TL2() tlast.TL2Combinator {
-	return t.combTL2
-}
+// We do not want to give generators access to combinators directly.
+// We want every piece of information to come through strict pure public interface.
+//func (t *KernelType) TL1() []*tlast.Combinator {
+//	return t.combTL1
+//}
+//
+//func (t *KernelType) TL2() tlast.TL2Combinator {
+//	return t.combTL2
+//}
