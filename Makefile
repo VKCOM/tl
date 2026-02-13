@@ -30,15 +30,14 @@ gen_check: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/schema \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/schema/tl \
-		--tloPath=./$(TLOS_PATH)/test.tlo \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/schema.tl
-	#@./target/bin/tl2gen --language=tlo \
-	#	--outfile=./$(TLOS_PATH)/test.tlo \
-	#	--schemaTimestamp=1761907954 \
-	#	./$(TLS_PATH)/schema.tl
+	@./target/bin/tl2gen --language=tlo \
+		--outfile=./$(TLOS_PATH)/test.tlo \
+		--schemaTimestamp=1761907954 \
+		./$(TLS_PATH)/schema.tl
 
 .PHONY: gen
 gen: gen_check
@@ -97,18 +96,16 @@ goldmaster_nocompile: build
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
-		--tloPath=./$(TLOS_PATH)/goldmaster.tlo \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
-	#@./target/bin/tl2gen --language=tlo -v \
-	#	--outfile=./$(TLOS_PATH)/goldmaster.tlo \
-	#	--schemaTimestamp=301822800 \
-	#	./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
-	#@./target/bin/tl2gen --language=canonical -v \
-	#	--outfile=./$(TLS_PATH)/goldmaster_canonical.tl \
-	#	./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	@./target/bin/tl2gen --language=tlo -v \
+		--outfile=./$(TLOS_PATH)/goldmaster.tlo \
+		--schemaTimestamp=301822800 \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	@./target/bin/tl2gen --language=canonical -v \
+		--outfile=./$(TLS_PATH)/goldmaster_canonical.tl \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
