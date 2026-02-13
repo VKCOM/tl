@@ -1,1 +1,3 @@
 ../target/bin/tlgen usr/bin/
+../target/bin/tl2gen usr/bin/
+../target/bin/tl2client usr/bin/

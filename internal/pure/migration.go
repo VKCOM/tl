@@ -442,6 +442,15 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 	if !ok {
 		return tlast.TL2TypeArgument{}, false, fmt.Errorf("type %s does not exist", tr.Type)
 	}
+	if kt.builtinWrappedCanonicalName != "" {
+		tName = kt.builtinWrappedCanonicalName
+		kt, ok = k.tips[tName]
+		if !ok {
+			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(fmt.Errorf("internal error: built-in wrapped type %s not found", tName))
+		}
+		//tr.T.Type = tlast.Name{Name: tName}
+		//tr.T.Bare = false // not required
+	}
 	isDict, dictFieldT := k.IsDict(kt)
 	if isDict {
 		if len(tr.Args) != len(dictFieldT.combTL1[0].TemplateArguments) {

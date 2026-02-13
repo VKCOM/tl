@@ -52,3 +52,18 @@ cases.testDictAny dict:(dictionaryAny long int) = cases.TestDictAny;
 //testMaybe n:# a:(Maybe int) b:(Maybe Int)
 //    c:(Maybe (vector int)) d:(Maybe (tuple int 3)) // comment for d field
 //    e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;
+
+
+statshouseApi.getMappingResponse {fields_mask:#}
+    intValue:fields_mask.3?int
+    stringValue:fields_mask.4?string
+    = statshouseApi.GetMappingResponse fields_mask;
+
+---functions---
+
+@readwrite statshouseApi.getMapping#4239a8f8
+    fields_mask:#
+    access_token: string
+    intValue:fields_mask.0?int
+    stringValue:fields_mask.1?string
+     = statshouseApi.GetMappingResponse fields_mask;
