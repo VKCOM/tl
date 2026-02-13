@@ -118,15 +118,8 @@ func tlJSON(kernel *pure.Kernel, options *puregen.Options, sortedInstances []pur
 }
 
 func streamprintJSONHelpType2(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pure.TypeInstance, bare bool, fields []pure.Field, natArgs []pure.ActualNatArg) {
-	if strings.Contains(trww.CanonicalName(), "Dictionary") {
-		fmt.Printf("aga")
-	}
 	switch trw := trww.(type) {
 	case *pure.TypeInstancePrimitive:
-		qw422016.E().S("<")
-		qw422016.E().S(trw.CanonicalName())
-		qw422016.E().S(">")
-	case *pure.TypeInstanceString:
 		qw422016.E().S("<")
 		qw422016.E().S(trw.CanonicalName())
 		qw422016.E().S(">")
@@ -197,9 +190,6 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 		return
 	}
 	if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
-		return
-	}
-	if _, ok := trww.(*pure.TypeInstanceString); ok {
 		return
 	}
 	commentsBefore := trww.KernelType().CommentsBefore()

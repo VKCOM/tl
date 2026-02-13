@@ -63,8 +63,6 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   {%- switch trw := trww.(type) -%}
   {%- case *pure.TypeInstancePrimitive -%}
 {%s "<"%}{%s trw.CanonicalName() %}{%s ">"%}
-  {%- case *pure.TypeInstanceString -%}
-{%s "<"%}{%s trw.CanonicalName() %}{%s ">"%}
   {%- case *pure.TypeInstanceStruct -%}
     {%- if trw.IsTypeDef()-%}
       {%= printJSONHelpType2(kernel, trw.Fields()[0].TypeInstance(), trw.Fields()[0].Bare(), fields, trww.Common().TransformNatArgsToChild(natArgs, trw.Fields()[0].NatArgs())) %}
@@ -110,9 +108,6 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
           return
       }
       if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
-          return
-      }
-      if _, ok := trww.(*pure.TypeInstanceString); ok {
           return
       }
       commentsBefore := trww.KernelType().CommentsBefore()
