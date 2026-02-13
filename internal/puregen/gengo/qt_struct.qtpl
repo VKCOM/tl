@@ -1264,9 +1264,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- if !struct_.wr.wantsTL2 -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
-            {%- if field.t.trw.doesReadTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
-            {%- endif -%}
     {%s= field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true) %}
     return r, nil
     {%- endif -%}

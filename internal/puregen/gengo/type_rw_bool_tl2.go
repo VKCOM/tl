@@ -91,7 +91,3 @@ func (trw *TypeRWBool) skipTL2Call(
 		"",
 		targetBytes)
 }
-
-func (trw *TypeRWBool) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
-	return true
-}
