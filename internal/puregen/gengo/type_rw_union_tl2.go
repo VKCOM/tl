@@ -74,7 +74,3 @@ func (trw *TypeRWUnion) skipTL2Call(
 		"",
 		targetBytes)
 }
-
-func (trw *TypeRWUnion) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
-	return true
-}

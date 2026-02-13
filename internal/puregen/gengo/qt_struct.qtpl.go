@@ -2463,13 +2463,10 @@ func (item *`)
 			qw422016.N().S(`)
 `)
 		} else {
-			if field.t.trw.doesReadTL2UseObject(false) {
-				qw422016.N().S(`    ptr := (*`)
-				qw422016.N().S(fieldTypeString)
-				qw422016.N().S(`)(item)
-`)
-			}
-			qw422016.N().S(`    `)
+			qw422016.N().S(`    ptr := (*`)
+			qw422016.N().S(fieldTypeString)
+			qw422016.N().S(`)(item)
+    `)
 			qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true))
 			qw422016.N().S(`
     return r, nil

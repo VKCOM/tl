@@ -128,10 +128,6 @@ func (trw *TypeRWPrimitive) skipTL2Call(
 		size)
 }
 
-func (trw *TypeRWPrimitive) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
-	return true
-}
-
 func (trw *TypeRWPrimitive) trivialSize() int {
 	switch trw.goType {
 	case "byte":

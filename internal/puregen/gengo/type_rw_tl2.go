@@ -46,8 +46,6 @@ type TypeRWTL2 interface {
 		ins *InternalNamespace,
 		refObject bool,
 	) string
-
-	doesReadTL2UseObject(canDependOnLocalBit bool) bool
 }
 
 func (w *TypeRWWrapper) CalculateLayoutCall(

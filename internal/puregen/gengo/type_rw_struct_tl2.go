@@ -130,16 +130,6 @@ func (trw *TypeRWStruct) skipTL2Call(
 		targetBytes)
 }
 
-func (trw *TypeRWStruct) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
-	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-	//	return false
-	//}
-	if trw.isUnwrapType() {
-		return trw.Fields[0].t.trw.doesReadTL2UseObject(canDependOnLocalBit)
-	}
-	return true
-}
-
 func (trw *TypeRWStruct) AllNewTL2Masks() []string {
 	var result []string
 	for _, field := range trw.Fields {
