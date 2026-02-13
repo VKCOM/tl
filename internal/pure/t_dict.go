@@ -22,9 +22,9 @@ type TypeInstanceDict struct {
 	fieldNatArgs []ActualNatArg // for TL1 only, empty for TL2
 }
 
-func (ins *TypeInstanceDict) FieldType() TypeInstance      { return ins.fieldType }
-func (ins *TypeInstanceDict) FieldBare() bool              { return ins.fieldBare }
-func (ins *TypeInstanceDict) FieldNatArgs() []ActualNatArg { return ins.fieldNatArgs }
+func (ins *TypeInstanceDict) FieldType() *TypeInstanceStruct { return ins.fieldType }
+func (ins *TypeInstanceDict) FieldBare() bool                { return ins.fieldBare }
+func (ins *TypeInstanceDict) FieldNatArgs() []ActualNatArg   { return ins.fieldNatArgs }
 
 func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
 }

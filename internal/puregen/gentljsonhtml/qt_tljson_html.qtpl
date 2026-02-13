@@ -1,0 +1,251 @@
+{% package gentljsonhtml %}
+
+{% import "fmt" %}
+{% import "time" %}
+{% import "strings" %}
+{% import "github.com/vkcom/tl/internal/tlast" %}
+{% import "github.com/vkcom/tl/internal/pure" %}
+{% import "github.com/vkcom/tl/internal/puregen" %}
+
+{%- func tlJSON(kernel *pure.Kernel, options *puregen.Options, tlgenVersion string) -%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TL JSON help</title>
+  </head>
+  <body>
+    <h1>Schema</h1>
+    <ul>
+      <li>tlgen version: {%s tlgenVersion %}</li>
+      {%- if options.SchemaURL != "" -%}
+      <li><abbr>TL</abbr> schema <a href="{%s options.SchemaURL %}">url</a></li>
+      {%- endif -%}
+      {%- if options.SchemaCommit != "" -%}
+      <li><abbr>TL</abbr> schema commit: {%s options.SchemaCommit %}</li>
+      {%- endif -%}
+      {%- if options.SchemaTimestamp != 0 -%}
+      <li><abbr>TL</abbr> schema version: {%v options.SchemaTimestamp %} ({%v time.Unix(int64(options.SchemaTimestamp),0).UTC() %})</li>
+      {%- endif -%}
+      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
+    </ul>
+    <h1>Functions</h1>
+    <ul>
+  {%- for _, trww := range kernel.TopLeveTypeInstances() -%}
+    {%- if trww.KernelType().OriginTL2() -%}
+        {%- continue -%}
+    {%- endif -%}
+    {%- if fun, ok := trww.(*pure.TypeInstanceStruct); ok && fun.ResultType() != nil -%}
+      <li>
+        <a href="#{%s trww.CanonicalName() %}">
+        <code>{%s JSONHelpString(trww) %}</code></a>
+        → <code>{%= printJSONHelpType2(kernel, fun.ResultType(), false, fun.Fields(), fun.ResultNatArgs()) %}</code>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+    </ul>
+    <h1>Types</h1>
+<h2 id="#">#</h2>
+Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
+  {%- for _, trww := range kernel.TopLeveTypeInstances() -%}
+    {%- if trww.KernelType().OriginTL2() -%}
+        {%- continue -%}
+    {%- endif -%}
+{%= printHTMLHelp(kernel, trww) %}
+  {%- endfor -%}
+  </body>
+</html>
+{%- endfunc -%}
+
+{%- func printJSONHelpType2(kernel *pure.Kernel, trww pure.TypeInstance, bare bool, fields []pure.Field, natArgs []pure.ActualNatArg) -%}
+{%- stripspace -%}
+  {%- switch trw := trww.(type) -%}
+  {%- case *pure.TypeInstancePrimitive -%}
+{%s "<"%}{%s trw.CanonicalName() %}{%s ">"%}
+  {%- case *pure.TypeInstanceStruct -%}
+    {%- if trw.IsTypeDef()-%}
+      {%= printJSONHelpType2(kernel, trw.Fields()[0].TypeInstance(), trw.Fields()[0].Bare(), fields, trww.Common().TransformNatArgsToChild(natArgs, trw.Fields()[0].NatArgs())) %}
+    {%- elseif len(trw.Fields()) == 0 -%}
+{%s "{}" %}
+    {%- else -%}
+       {%= makeRef(trw.CanonicalName(), JSONHelpFullType(kernel, trww, bare, fields, natArgs)) %}
+    {%- endif -%}
+  {%- case *pure.TypeInstanceUnion -%}
+       {%= makeRef(trw.CanonicalName(), JSONHelpFullType(kernel, trww, bare, fields, natArgs)) %}
+  {%- case *pure.TypeInstanceDict -%}
+    {%- code
+		elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.FieldNatArgs())
+    -%}
+{%s "{" %}
+{%= printJSONHelpType2(kernel, trw.FieldType().Fields()[0].TypeInstance(), trw.FieldType().Fields()[0].Bare(), fields, trw.FieldType().Common().TransformNatArgsToChild(elementNatArgs, trw.FieldType().Fields()[0].NatArgs())) %}{%s ": " %}
+{%= printJSONHelpType2(kernel, trw.FieldType().Fields()[1].TypeInstance(), trw.FieldType().Fields()[1].Bare(), fields, trw.FieldType().Common().TransformNatArgsToChild(elementNatArgs, trw.FieldType().Fields()[1].NatArgs())) %}{%s "}"%}
+  {%- case *pure.TypeInstanceArray -%}
+    {%- code
+    elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.ElemNatArgs())
+    -%}
+    {%- switch -%}
+    {%- case !trw.IsTuple() -%}
+{%s "[" %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s ", ...]" %}
+    {%- case trw.DynamicSize() -%}
+{%s "[" %}{%s JSONHelpNatArg(trww, fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s "]"%}
+    {%- default -%}
+{%s "[" %}{%v trw.Count() %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s "]"%}
+    {%- endswitch -%}
+  {%- endswitch -%}
+{%- endstripspace -%}
+{%- endfunc -%}
+
+{%- func printHTMLHelp(kernel *pure.Kernel, trww pure.TypeInstance) -%}
+  {%- code
+      if trw, ok := trww.(*pure.TypeInstanceStruct); ok && ((trw.ResultType() == nil && len(trw.Fields()) == 0) || trw.IsTypeDef()) {
+          return
+      }
+      if _, ok := trww.(*pure.TypeInstanceDict); ok {
+          return
+      }
+      if _, ok := trww.(*pure.TypeInstanceArray); ok {
+          return
+      }
+      if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
+          return
+      }
+  -%}
+<h2 id="{%s trww.CanonicalName() %}">{%s JSONHelpString(trww) %}</h2>
+    {%- if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentBefore) -%}
+    <code style="color:DarkCyan">{%s line %}</code></br>
+    {%- endfor -%}
+    {%- endif -%}
+
+    {%- if len(trww.NatParams) != 0 -%}
+External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
+    {%- endif -%}
+<p></p>
+  {%- switch trw := trww.trw.(type) -%}
+  {%- case *TypeRWPrimitive -%}
+<dl>
+  <dt>JSON</dt>
+  <dd>{%s trw.goType %}</dd>
+</dl>
+  {%- case *TypeRWMaybe -%}
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, nil, trw.element.natArgs) %}{%s "}" %}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>{%s trww.origTL[0].String() %}</code></li>
+    <li><code>{%s trww.origTL[1].String() %}</code></li>
+    </ul>
+  </dd>
+</dl>
+  {%- case *TypeRWStruct -%}
+  {%- if trw.ResultType != nil -%}
+  Returns <code>{%= printJSONHelpType2(gen, trw.ResultType, false, trw.Fields, trw.ResultNatArgs) %}</code>
+  {%- endif -%}
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+  {%- if trw.ResultType != nil && trww.IsTrueType() -%}
+    {}
+  {%- else -%}
+    {
+      <table>
+      {%- for i, field := range trw.Fields -%}
+            {%- if field.origTL.CommentBefore != "" -%}
+            {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentBefore) -%}
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">{%s line %}</code>
+          </td></tr>
+            {%- endfor -%}
+            {%- endif -%}
+        <tr>
+
+        {%- if field.t.IsTrueType() -%}
+          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: true{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+        {%- else -%}
+          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, field.bare, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+        {%- endif -%}
+          <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
+          <td>
+    {%- if field.origTL.CommentRight != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentRight) -%}
+    <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="4">
+    {%- endfor -%}
+    {%- endif -%}
+          </td>
+        </tr>
+      {%- endfor -%}
+      </table>
+    }
+  {%- endif -%}</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>{%s trww.origTL[0].String() %}</code>
+    {%- if trww.origTL[0].CommentRight != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentRight) -%}
+    <code style="color:DarkCyan">{%s line %}</code></br>
+    {%- endfor -%}
+    {%- endif -%}
+  </dd>
+</dl>
+  {%- case *TypeRWUnion -%}
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+    {%- for _, field := range trw.Fields -%}
+            {%- code
+                tag := fmt.Sprintf("%08x", field.t.tlTag)
+            -%}
+            <tr>
+            {%- if trw.IsEnum -%}
+                <td><span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span></td><td></td>
+            {%- else -%}
+                <td>{"type":<span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span>{%- if !field.t.IsTrueType() -%},</td><td>"value":{%= makeRef(field.t.goGlobalName, JSONHelpString(field.t)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
+            {%- endif -%}
+          <td>
+    {%- if field.t.origTL[0].CommentRight != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.t.origTL[0].CommentRight) -%}
+    <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="3">
+    {%- endfor -%}
+    {%- endif -%}
+          </td>
+        </tr>
+    {%- endfor -%}
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    {%- for _, origTL := range trww.origTL -%}
+    <li>
+    <code>{%s origTL.String() %}</code>
+    </li>
+    {%- endfor -%}
+    </ul>
+  </dd>
+</dl>
+  {%- endswitch -%}
+{%- endfunc -%}
+
+{%- func jsonCommentFieldMask(fm *pure.ActualNatArg, num uint32, fields []pure.Field) -%}
+  {%- if fm == nil -%}{%- return -%}{%- endif -%}
+  {%- if fm.IsField() -%}
+// {%s fields[fm.FieldIndex()].Name() %} bit #{%v num %}
+  {%- elseif fm.IsNumber() && (fm.Number() & (1 << num)) != 0 -%}
+// {%v fm.Number() %} bit #{%v num %} = true
+  {%- elseif fm.IsNumber() -%}
+// {%v fm.Number() %} bit #{%v num %} = false
+  {%- else -%}
+// {%s fm.Name() %} bit #{%v num %}
+  {%- endif -%}
+{%- endfunc -%}
+
+{%- func makeRef(a string, s string) -%}<a href="#{%s a %}">{%s s %}</a>{%- endfunc -%}
