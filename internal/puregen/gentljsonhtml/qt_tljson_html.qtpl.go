@@ -3,8 +3,13 @@
 
 package gentljsonhtml
 
+import "fmt"
 
 import "time"
+
+import "strings"
+
+import "github.com/vkcom/tl/internal/tlast"
 
 import "github.com/vkcom/tl/internal/pure"
 
@@ -21,7 +26,7 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *puregen.Options, tlgenVersion string) {
+func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *puregen.Options, sortedInstances []pure.TypeInstance, tlgenVersion string) {
 	qw422016.N().S(`<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -61,7 +66,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *pureg
     <h1>Functions</h1>
     <ul>
 `)
-	for _, trww := range kernel.TopLeveTypeInstances() {
+	for _, trww := range sortedInstances {
 		if trww.KernelType().OriginTL2() {
 			continue
 		}
@@ -71,7 +76,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *pureg
 			qw422016.E().S(trww.CanonicalName())
 			qw422016.N().S(`">
         <code>`)
-			qw422016.E().S(JSONHelpString(trww))
+			qw422016.E().S(JSONHelpString(kernel, trww))
 			qw422016.N().S(`</code></a>
         → <code>`)
 			streamprintJSONHelpType2(qw422016, kernel, fun.ResultType(), false, fun.Fields(), fun.ResultNatArgs())
@@ -85,7 +90,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *pureg
 <h2 id="#">#</h2>
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
 `)
-	for _, trww := range kernel.TopLeveTypeInstances() {
+	for _, trww := range sortedInstances {
 		if trww.KernelType().OriginTL2() {
 			continue
 		}
@@ -98,23 +103,30 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 `)
 }
 
-func writetlJSON(qq422016 qtio422016.Writer, kernel *pure.Kernel, options *puregen.Options, tlgenVersion string) {
+func writetlJSON(qq422016 qtio422016.Writer, kernel *pure.Kernel, options *puregen.Options, sortedInstances []pure.TypeInstance, tlgenVersion string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamtlJSON(qw422016, kernel, options, tlgenVersion)
+	streamtlJSON(qw422016, kernel, options, sortedInstances, tlgenVersion)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func tlJSON(kernel *pure.Kernel, options *puregen.Options, tlgenVersion string) string {
+func tlJSON(kernel *pure.Kernel, options *puregen.Options, sortedInstances []pure.TypeInstance, tlgenVersion string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writetlJSON(qb422016, kernel, options, tlgenVersion)
+	writetlJSON(qb422016, kernel, options, sortedInstances, tlgenVersion)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016
 }
 
 func streamprintJSONHelpType2(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pure.TypeInstance, bare bool, fields []pure.Field, natArgs []pure.ActualNatArg) {
+	if strings.Contains(trww.CanonicalName(), "Dictionary") {
+		fmt.Printf("aga")
+	}
 	switch trw := trww.(type) {
 	case *pure.TypeInstancePrimitive:
+		qw422016.E().S("<")
+		qw422016.E().S(trw.CanonicalName())
+		qw422016.E().S(">")
+	case *pure.TypeInstanceString:
 		qw422016.E().S("<")
 		qw422016.E().S(trw.CanonicalName())
 		qw422016.E().S(">")
@@ -175,6 +187,255 @@ func printJSONHelpType2(kernel *pure.Kernel, trww pure.TypeInstance, bare bool, 
 }
 
 func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pure.TypeInstance) {
+	if trw, ok := trww.(*pure.TypeInstanceStruct); ok && ((trw.ResultType() == nil && len(trw.Fields()) == 0) || trw.IsTypeDef()) {
+		return
+	}
+	if _, ok := trww.(*pure.TypeInstanceDict); ok {
+		return
+	}
+	if _, ok := trww.(*pure.TypeInstanceArray); ok {
+		return
+	}
+	if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
+		return
+	}
+	if _, ok := trww.(*pure.TypeInstanceString); ok {
+		return
+	}
+	commentsBefore := trww.KernelType().CommentsBefore()
+	commentsRight := trww.KernelType().CommentsRight()
+	combinatorTexts := trww.KernelType().CombinatorTexts()
+
+	qw422016.N().S(`<h2 id="`)
+	qw422016.E().S(trww.CanonicalName())
+	qw422016.N().S(`">`)
+	qw422016.E().S(JSONHelpString(kernel, trww))
+	qw422016.N().S(`</h2>
+`)
+	if len(commentsBefore) == 1 && commentsBefore[0] != "" {
+		for _, line := range tlast.SplitMultilineComment(commentsBefore[0]) {
+			qw422016.N().S(`    <code style="color:DarkCyan">`)
+			qw422016.E().S(line)
+			qw422016.N().S(`</code></br>
+`)
+		}
+	}
+	qw422016.N().S(`
+`)
+	if len(trww.Common().NatParams()) != 0 {
+		qw422016.N().S(`External # (nat) arguments: <b>`)
+		qw422016.E().S(strings.Join(trww.Common().NatParams(), ", "))
+		qw422016.N().S(`</b>
+`)
+	}
+	qw422016.N().S(`<p></p>
+`)
+	switch trw := trww.(type) {
+	case *pure.TypeInstancePrimitive:
+		qw422016.N().S(`<dl>
+  <dt>JSON</dt>
+  <dd>`)
+		qw422016.E().S(trw.CanonicalName())
+		qw422016.N().S(`</dd>
+</dl>
+`)
+	case *pure.TypeInstanceStruct:
+		if trw.ResultType() != nil {
+			qw422016.N().S(`  Returns <code>`)
+			streamprintJSONHelpType2(qw422016, kernel, trw.ResultType(), false, trw.Fields(), trw.ResultNatArgs())
+			qw422016.N().S(`</code>
+`)
+		}
+		qw422016.N().S(`<dl>
+  <dt>JSON</dt>
+  <dd><code>
+`)
+		if trw.ResultType() != nil && len(trw.Fields()) == 0 {
+			qw422016.N().S(`    {}
+`)
+		} else {
+			qw422016.N().S(`    {
+      <table>
+`)
+			for i, field := range trw.Fields() {
+				if field.CommentBefore() != "" {
+					for _, line := range tlast.SplitMultilineComment(field.CommentBefore()) {
+						qw422016.N().S(`          <tr><td colspan="4">
+            <code style="color:DarkCyan">`)
+						qw422016.E().S(line)
+						qw422016.N().S(`</code>
+          </td></tr>
+`)
+					}
+				}
+				qw422016.N().S(`        <tr>
+
+`)
+				if IsTrueType(field.TypeInstance()) {
+					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
+					qw422016.E().S(field.Name())
+					qw422016.N().S(`"</td><td>: true`)
+					if i != len(trw.Fields())-1 {
+						qw422016.N().S(`,`)
+					}
+					qw422016.N().S(`</td>
+`)
+				} else {
+					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
+					qw422016.E().S(field.Name())
+					qw422016.N().S(`"</td><td>: `)
+					streamprintJSONHelpType2(qw422016, kernel, field.TypeInstance(), field.Bare(), trw.Fields(), field.NatArgs())
+					if i != len(trw.Fields())-1 {
+						qw422016.N().S(`,`)
+					}
+					qw422016.N().S(`</td>
+`)
+				}
+				qw422016.N().S(`          <td>`)
+				streamjsonCommentFieldMask(qw422016, field.FieldMask(), field.BitNumber(), trw.Fields())
+				qw422016.N().S(`</td>
+          <td>
+`)
+				if field.CommentRight() != "" {
+					for _, line := range tlast.SplitMultilineComment(field.CommentRight()) {
+						qw422016.N().S(`    <code style="color:DarkCyan">`)
+						qw422016.E().S(line)
+						qw422016.N().S(`</code></td></tr><tr><td colspan="4">
+`)
+					}
+				}
+				qw422016.N().S(`          </td>
+        </tr>
+`)
+			}
+			qw422016.N().S(`      </table>
+    }
+`)
+		}
+		qw422016.N().S(`</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>`)
+		qw422016.E().S(combinatorTexts[0])
+		qw422016.N().S(`</code>
+`)
+		if commentsRight[0] != "" {
+			for _, line := range tlast.SplitMultilineComment(commentsRight[0]) {
+				qw422016.N().S(`    <code style="color:DarkCyan">`)
+				qw422016.E().S(line)
+				qw422016.N().S(`</code></br>
+`)
+			}
+		}
+		qw422016.N().S(`  </dd>
+</dl>
+`)
+	case *pure.TypeInstanceUnion:
+		if isMaybe, elementField := trw.IsUnionMaybe(); isMaybe {
+			qw422016.N().S(`<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>`)
+			qw422016.E().S(`{"value": `)
+			streamprintJSONHelpType2(qw422016, kernel, elementField.TypeInstance(), elementField.Bare(), nil, trw.ElementNatArgs())
+			qw422016.E().S("}")
+			qw422016.N().S(`</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>`)
+			qw422016.E().S(combinatorTexts[0])
+			qw422016.N().S(`</code></li>
+    <li><code>`)
+			qw422016.E().S(combinatorTexts[1])
+			qw422016.N().S(`</code></li>
+    </ul>
+  </dd>
+</dl>
+`)
+		}
+		qw422016.N().S(`<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+`)
+		for i, field := range trw.VariantTypes() {
+			tag := fmt.Sprintf("%08x", field.TLTag())
+			originalName := trw.VariantTL1ConstructNames()[i]
+
+			qw422016.N().S(`            <tr>
+`)
+			if trw.IsEnum() {
+				qw422016.N().S(`                <td><span title='Can be also specified as "`)
+				qw422016.E().S(originalName)
+				qw422016.N().S(`" or "#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`"' style="color:MediumVioletRed">"`)
+				qw422016.E().S(originalName)
+				qw422016.N().S(`#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`"</span></td><td></td>
+`)
+			} else {
+				qw422016.N().S(`                <td>{"type":<span title='Can be also specified as "`)
+				qw422016.E().S(originalName)
+				qw422016.N().S(`" or "#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`"' style="color:MediumVioletRed">"`)
+				qw422016.E().S(originalName)
+				qw422016.N().S(`#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`"</span>`)
+				if !IsTrueType(field) {
+					qw422016.N().S(`,</td><td>"value":`)
+					streammakeRef(qw422016, field.CanonicalName(), JSONHelpString(kernel, field))
+					qw422016.N().S(`}</td>`)
+				} else {
+					qw422016.N().S(`}</td><td></td>`)
+				}
+			}
+			qw422016.N().S(`          <td>
+`)
+			if commentsRight[i] != "" {
+				for _, line := range tlast.SplitMultilineComment(commentsRight[i]) {
+					qw422016.N().S(`    <code style="color:DarkCyan">`)
+					qw422016.E().S(line)
+					qw422016.N().S(`</code></td></tr><tr><td colspan="3">
+`)
+				}
+			}
+			qw422016.N().S(`          </td>
+        </tr>
+`)
+		}
+		qw422016.N().S(`      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+`)
+		for _, origTL := range combinatorTexts {
+			qw422016.N().S(`    <li>
+    <code>`)
+			qw422016.E().S(origTL)
+			qw422016.N().S(`</code>
+    </li>
+`)
+		}
+		qw422016.N().S(`    </ul>
+  </dd>
+</dl>
+`)
+		for _, field := range trw.VariantTypes() {
+			streamprintHTMLHelp(qw422016, kernel, field)
+			qw422016.N().S(`
+`)
+		}
+	}
 }
 
 func writeprintHTMLHelp(qq422016 qtio422016.Writer, kernel *pure.Kernel, trww pure.TypeInstance) {

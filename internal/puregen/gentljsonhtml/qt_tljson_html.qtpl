@@ -7,7 +7,7 @@
 {% import "github.com/vkcom/tl/internal/pure" %}
 {% import "github.com/vkcom/tl/internal/puregen" %}
 
-{%- func tlJSON(kernel *pure.Kernel, options *puregen.Options, tlgenVersion string) -%}
+{%- func tlJSON(kernel *pure.Kernel, options *puregen.Options, sortedInstances []pure.TypeInstance, tlgenVersion string) -%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,14 +32,14 @@
     </ul>
     <h1>Functions</h1>
     <ul>
-  {%- for _, trww := range kernel.TopLeveTypeInstances() -%}
+  {%- for _, trww := range sortedInstances -%}
     {%- if trww.KernelType().OriginTL2() -%}
         {%- continue -%}
     {%- endif -%}
     {%- if fun, ok := trww.(*pure.TypeInstanceStruct); ok && fun.ResultType() != nil -%}
       <li>
         <a href="#{%s trww.CanonicalName() %}">
-        <code>{%s JSONHelpString(trww) %}</code></a>
+        <code>{%s JSONHelpString(kernel, trww) %}</code></a>
         → <code>{%= printJSONHelpType2(kernel, fun.ResultType(), false, fun.Fields(), fun.ResultNatArgs()) %}</code>
       </li>
     {%- endif -%}
@@ -48,7 +48,7 @@
     <h1>Types</h1>
 <h2 id="#">#</h2>
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
-  {%- for _, trww := range kernel.TopLeveTypeInstances() -%}
+  {%- for _, trww := range sortedInstances -%}
     {%- if trww.KernelType().OriginTL2() -%}
         {%- continue -%}
     {%- endif -%}
@@ -62,6 +62,8 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 {%- stripspace -%}
   {%- switch trw := trww.(type) -%}
   {%- case *pure.TypeInstancePrimitive -%}
+{%s "<"%}{%s trw.CanonicalName() %}{%s ">"%}
+  {%- case *pure.TypeInstanceString -%}
 {%s "<"%}{%s trw.CanonicalName() %}{%s ">"%}
   {%- case *pure.TypeInstanceStruct -%}
     {%- if trw.IsTypeDef()-%}
@@ -110,56 +112,45 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
       if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
           return
       }
-  -%}
-<h2 id="{%s trww.CanonicalName() %}">{%s JSONHelpString(trww) %}</h2>
-    {%- if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentBefore) -%}
+      if _, ok := trww.(*pure.TypeInstanceString); ok {
+          return
+      }
+      commentsBefore := trww.KernelType().CommentsBefore()
+      commentsRight := trww.KernelType().CommentsRight()
+      combinatorTexts := trww.KernelType().CombinatorTexts()
+ -%}
+<h2 id="{%s trww.CanonicalName() %}">{%s JSONHelpString(kernel, trww) %}</h2>
+    {%- if len(commentsBefore) == 1 && commentsBefore[0] != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(commentsBefore[0]) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
 
-    {%- if len(trww.NatParams) != 0 -%}
-External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
+    {%- if len(trww.Common().NatParams()) != 0 -%}
+External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ") %}</b>
     {%- endif -%}
 <p></p>
-  {%- switch trw := trww.trw.(type) -%}
-  {%- case *TypeRWPrimitive -%}
+  {%- switch trw := trww.(type) -%}
+  {%- case *pure.TypeInstancePrimitive -%}
 <dl>
   <dt>JSON</dt>
-  <dd>{%s trw.goType %}</dd>
+  <dd>{%s trw.CanonicalName() %}</dd>
 </dl>
-  {%- case *TypeRWMaybe -%}
-<dl>
-  <dt>JSON</dt>
-  <dd>
-    <ul>
-      <li><code>{}</code></li>
-      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, nil, trw.element.natArgs) %}{%s "}" %}</code></li>
-    </ul>
-  </dd>
-  <dt>TL</dt>
-  <dd>
-    <ul>
-    <li><code>{%s trww.origTL[0].String() %}</code></li>
-    <li><code>{%s trww.origTL[1].String() %}</code></li>
-    </ul>
-  </dd>
-</dl>
-  {%- case *TypeRWStruct -%}
-  {%- if trw.ResultType != nil -%}
-  Returns <code>{%= printJSONHelpType2(gen, trw.ResultType, false, trw.Fields, trw.ResultNatArgs) %}</code>
+  {%- case *pure.TypeInstanceStruct -%}
+  {%- if trw.ResultType() != nil -%}
+  Returns <code>{%= printJSONHelpType2(kernel, trw.ResultType(), false, trw.Fields(), trw.ResultNatArgs()) %}</code>
   {%- endif -%}
 <dl>
   <dt>JSON</dt>
   <dd><code>
-  {%- if trw.ResultType != nil && trww.IsTrueType() -%}
+  {%- if trw.ResultType() != nil && len(trw.Fields()) == 0 -%}
     {}
   {%- else -%}
     {
       <table>
-      {%- for i, field := range trw.Fields -%}
-            {%- if field.origTL.CommentBefore != "" -%}
-            {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentBefore) -%}
+      {%- for i, field := range trw.Fields() -%}
+            {%- if field.CommentBefore() != "" -%}
+            {%- for _, line := range tlast.SplitMultilineComment(field.CommentBefore()) -%}
           <tr><td colspan="4">
             <code style="color:DarkCyan">{%s line %}</code>
           </td></tr>
@@ -167,15 +158,15 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
             {%- endif -%}
         <tr>
 
-        {%- if field.t.IsTrueType() -%}
-          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: true{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+        {%- if IsTrueType(field.TypeInstance()) -%}
+          <td>&nbsp;&nbsp;"{%s field.Name() %}"</td><td>: true{%- if i != len(trw.Fields()) - 1 -%},{%- endif -%}</td>
         {%- else -%}
-          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, field.bare, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+          <td>&nbsp;&nbsp;"{%s field.Name() %}"</td><td>: {%= printJSONHelpType2(kernel, field.TypeInstance(), field.Bare(), trw.Fields(), field.NatArgs()) %}{%- if i != len(trw.Fields()) - 1 -%},{%- endif -%}</td>
         {%- endif -%}
-          <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
+          <td>{%= jsonCommentFieldMask(field.FieldMask(), field.BitNumber(), trw.Fields()) %}</td>
           <td>
-    {%- if field.origTL.CommentRight != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentRight) -%}
+    {%- if field.CommentRight() != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.CommentRight()) -%}
     <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="4">
     {%- endfor -%}
     {%- endif -%}
@@ -187,32 +178,51 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
   {%- endif -%}</code></dd>
   <dt>TL</dt>
   <dd>
-    <code>{%s trww.origTL[0].String() %}</code>
-    {%- if trww.origTL[0].CommentRight != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentRight) -%}
+    <code>{%s combinatorTexts[0] %}</code>
+    {%- if commentsRight[0] != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(commentsRight[0]) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
   </dd>
 </dl>
-  {%- case *TypeRWUnion -%}
+  {%- case *pure.TypeInstanceUnion -%}
+    {%- if isMaybe, elementField := trw.IsUnionMaybe(); isMaybe -%}
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(kernel, elementField.TypeInstance(), elementField.Bare(), nil, trw.ElementNatArgs()) %}{%s "}" %}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>{%s combinatorTexts[0] %}</code></li>
+    <li><code>{%s combinatorTexts[1] %}</code></li>
+    </ul>
+  </dd>
+</dl>
+    {%- endif -%}
 <dl>
   <dt>JSON</dt>
   <dd><code>
       <table>
-    {%- for _, field := range trw.Fields -%}
+    {%- for i, field := range trw.VariantTypes() -%}
             {%- code
-                tag := fmt.Sprintf("%08x", field.t.tlTag)
+                tag := fmt.Sprintf("%08x", field.TLTag())
+                originalName := trw.VariantTL1ConstructNames()[i]
             -%}
             <tr>
-            {%- if trw.IsEnum -%}
-                <td><span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span></td><td></td>
+            {%- if trw.IsEnum() -%}
+                <td><span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span></td><td></td>
             {%- else -%}
-                <td>{"type":<span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span>{%- if !field.t.IsTrueType() -%},</td><td>"value":{%= makeRef(field.t.goGlobalName, JSONHelpString(field.t)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
+                <td>{"type":<span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span>{%- if !IsTrueType(field) -%},</td><td>"value":{%= makeRef(field.CanonicalName(), JSONHelpString(kernel, field)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
             {%- endif -%}
           <td>
-    {%- if field.t.origTL[0].CommentRight != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(field.t.origTL[0].CommentRight) -%}
+    {%- if commentsRight[i] != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(commentsRight[i]) -%}
     <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="3">
     {%- endfor -%}
     {%- endif -%}
@@ -224,14 +234,17 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
   <dt>TL</dt>
   <dd>
     <ul>
-    {%- for _, origTL := range trww.origTL -%}
+    {%- for _, origTL := range combinatorTexts -%}
     <li>
-    <code>{%s origTL.String() %}</code>
+    <code>{%s origTL %}</code>
     </li>
     {%- endfor -%}
     </ul>
   </dd>
 </dl>
+    {%- for _, field := range trw.VariantTypes() -%}
+{%= printHTMLHelp(kernel, field) %}
+    {%- endfor -%}
   {%- endswitch -%}
 {%- endfunc -%}
 

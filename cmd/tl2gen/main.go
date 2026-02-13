@@ -19,6 +19,7 @@ import (
 	"github.com/vkcom/tl/internal/puregen"
 	"github.com/vkcom/tl/internal/puregen/gencanonical"
 	"github.com/vkcom/tl/internal/puregen/gengo"
+	"github.com/vkcom/tl/internal/puregen/gentljsonhtml"
 	"github.com/vkcom/tl/internal/puregen/gentlo"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
@@ -27,12 +28,10 @@ import (
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
 	"canonical":    gencanonical.Generate,
 	"go":           gengo.Generate,
-	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return nil },
+	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return nil }, // nothing more than lint
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
+	"tljson.html":  gentljsonhtml.Generate,
 	"tlo":          gentlo.Generate,
-	"tljson.html": func(kernel *pure.Kernel, options *puregen.Options) error {
-		return fmt.Errorf("TODO generate tljson.html")
-	},
 }
 
 func languagesString() string {
@@ -110,8 +109,8 @@ func runMain(opt *puregen.Options) error {
 			return err
 		}
 	}
-	if opt.Language == "tl2migration" {
-		opt.Kernel.NewDicts = true // migration requires this
+	if opt.Language == "tl2migration" || opt.Language == "tljson.html" {
+		opt.Kernel.NewDicts = true // TODO - remove after this option is default
 	}
 
 	if err := kernel.Compile(); err != nil {

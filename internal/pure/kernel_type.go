@@ -98,3 +98,27 @@ func (t *KernelType) CanBeBoxed() bool {
 //func (t *KernelType) TL2() tlast.TL2Combinator {
 //	return t.combTL2
 //}
+
+func (t *KernelType) CommentsBefore() []string {
+	var result []string
+	for _, comb := range t.combTL1 {
+		result = append(result, comb.CommentBefore)
+	}
+	return result
+}
+
+func (t *KernelType) CommentsRight() []string {
+	var result []string
+	for _, comb := range t.combTL1 {
+		result = append(result, comb.CommentRight)
+	}
+	return result
+}
+
+func (t *KernelType) CombinatorTexts() []string {
+	var result []string
+	for _, comb := range t.combTL1 {
+		result = append(result, comb.String())
+	}
+	return result
+}

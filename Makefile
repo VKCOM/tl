@@ -106,6 +106,12 @@ goldmaster_nocompile: build
 	@./target/bin/tl2gen --language=canonical -v \
 		--outfile=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	@./target/bin/tl2gen --language=tljson.html -v \
+		--outfile=./$(GEN_PATH)/goldmaster_nosplit/tljson.html \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
+		--schemaCommit=abcdefgh \
+		--schemaTimestamp=301822800 \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build

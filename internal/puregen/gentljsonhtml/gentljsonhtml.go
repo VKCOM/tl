@@ -7,15 +7,17 @@
 package gentljsonhtml
 
 import (
-	"bytes"
+	"cmp"
 	"fmt"
 	"log"
 	"os"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/puregen"
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
@@ -25,16 +27,45 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if options.Outfile == "" {
 		return fmt.Errorf("--outfile should not be empty")
 	}
-	var buf bytes.Buffer
-	tlast.TL(kernel.TL1()).WriteGenerate2TL(&buf)
-	if err := os.WriteFile(options.Outfile, buf.Bytes(), 0644); err != nil {
-		return fmt.Errorf("error writing canonical form file %q: %w", options.Outfile, err)
+	sortedInstances := kernel.AllTypeInstances()
+	slices.SortStableFunc(sortedInstances, func(a, b pure.TypeInstance) int {
+		return cmp.Compare(a.CanonicalName(), b.CanonicalName())
+	})
+
+	buf := tlJSON(kernel, options, sortedInstances, utils.AppVersion())
+	if err := os.WriteFile(options.Outfile, []byte(buf), 0644); err != nil {
+		return fmt.Errorf("error writing tljson file %q: %w", options.Outfile, err)
 	}
 	return nil
 }
 
-func JSONHelpString(ins pure.TypeInstance) string {
-	return ins.CanonicalName()
+func JSONHelpString(kernel *pure.Kernel, ins pure.TypeInstance) string {
+	var s strings.Builder
+	s.WriteString(ins.KernelType().CanonicalName().String())
+	rt := ins.Common().ResolvedType()
+	if len(rt.Args) == 0 {
+		return s.String()
+	}
+	s.WriteByte('<')
+	for i, a := range rt.Args {
+		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+		if i != 0 {
+			s.WriteByte(',')
+		}
+		if a.IsArith {
+			s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+		} else if a.T.String() == "*" {
+			s.WriteString("#") // TODO - write fieldName here if special argument to function is set
+		} else {
+			ref, _, err := kernel.GetInstanceTL1(a.T)
+			if err != nil {
+				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.T, err))
+			}
+			s.WriteString(JSONHelpString(kernel, ref))
+		}
+	}
+	s.WriteByte('>')
+	return s.String()
 }
 
 func JSONHelpFullType(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields []pure.Field, natArgs []pure.ActualNatArg) string {
@@ -57,7 +88,7 @@ func JSONHelpNatArg(ins pure.TypeInstance, fields []pure.Field, natArg pure.Actu
 
 func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields []pure.Field, natArgs *[]pure.ActualNatArg) string {
 	var s strings.Builder
-	// TODO implement
+	// TODO - we used those code before, should we simply remove it and use canonical names?
 	//if len(w.origTL) > 1 {
 	//	if bare {
 	//		panic("helpString2 of bare union")
@@ -100,4 +131,13 @@ func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields [
 	}
 	s.WriteString(">")
 	return s.String()
+}
+
+// TODO - use IsBit after TrueType-like structs are generated as Bit instances
+func IsTrueType(ins pure.TypeInstance) bool {
+	structElement, ok := ins.(*pure.TypeInstanceStruct)
+	if !ok {
+		return false
+	}
+	return len(structElement.Fields()) == 0
 }

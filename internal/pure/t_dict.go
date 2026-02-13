@@ -87,10 +87,10 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 		return nil, fmt.Errorf("internal error: dict %s element is not a struct", canonicalName)
 	}
 	if !fieldInsStruct.fields[0].ins.ins.GoodForMapKey() {
-		if len(resolvedType.Args) < 1 { // should be impossible, but who knows
-			return nil, resolvedType.PR.BeautifulError(fmt.Errorf("dict %s key type must be bit, bool or integer", canonicalName))
+		if len(rt.Args) < 1 { // should be impossible, but who knows
+			return nil, rt.PR.BeautifulError(fmt.Errorf("dict %s key type must be bit, bool, string or integer", canonicalName))
 		}
-		return nil, resolvedType.Args[0].T.PR.BeautifulError(fmt.Errorf("dict %s key type must be bit, bool or integer", canonicalName))
+		return nil, rt.Args[0].T.PR.BeautifulError(fmt.Errorf("dict %s key type must be bit, bool, string or integer", canonicalName))
 	}
 
 	ins := &TypeInstanceDict{

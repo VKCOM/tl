@@ -1240,8 +1240,6 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 
 
 
-
-
 <h2 id="Call1">call1</h2>
 
 <p></p>
@@ -2201,37 +2199,6 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
   </dd>
 </dl>
 
-<h2 id="DictionaryAnyFieldPairIntIntInt">dictionaryAnyField&lt;pair&lt;int,int&gt;,int&gt;</h2>
-
-<p></p>
-<dl>
-  <dt>JSON</dt>
-  <dd><code>
-    {
-      <table>
-        <tr>
-
-          <td>&nbsp;&nbsp;"key"</td><td>: <a href="#PairIntInt">pair&lt;int,int&gt;</a>,</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-      </table>
-    }
-</code></dd>
-  <dt>TL</dt>
-  <dd>
-    <code>dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;</code>
-  </dd>
-</dl>
-
 <h2 id="DictionaryAnyFieldStringPairIntInt">dictionaryAnyField&lt;string,pair&lt;int,int&gt;&gt;</h2>
 
 <p></p>
@@ -2265,39 +2232,6 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 
 
 
-
-
-<h2 id="DictionaryFieldPairTupleStringTupleString">dictionaryField&lt;pair&lt;tuple&lt;string,#&gt;,tuple&lt;string,#&gt;&gt;&gt;</h2>
-
-External # (nat) arguments: <b>tXn, tYn</b>
-<p></p>
-<dl>
-  <dt>JSON</dt>
-  <dd><code>
-    {
-      <table>
-        <tr>
-
-          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#PairTupleStringTupleString">pair&lt;tuple&lt;string,tXn&gt;,tuple&lt;string,tYn&gt;&gt;</a></td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-      </table>
-    }
-</code></dd>
-  <dt>TL</dt>
-  <dd>
-    <code>dictionaryField {t:Type} key:string value:t = DictionaryField t;</code>
-  </dd>
-</dl>
 
 <h2 id="DictionaryFieldString">dictionaryField&lt;string&gt;</h2>
 
@@ -2361,7 +2295,6 @@ External # (nat) arguments: <b>t</b>
     <code>dictionaryField {t:Type} key:string value:t = DictionaryField t;</code>
   </dd>
 </dl>
-
 
 
 
@@ -3140,38 +3073,6 @@ External # (nat) arguments: <b>XXI, XYI</b>
         <tr>
 
           <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AInner3">a.Inner&lt;3&gt;</a></td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-      </table>
-    }
-</code></dd>
-  <dt>TL</dt>
-  <dd>
-    <code>pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
-  </dd>
-</dl>
-
-<h2 id="PairTupleStringTupleString">pair&lt;tuple&lt;string,#&gt;,tuple&lt;string,#&gt;&gt;</h2>
-
-External # (nat) arguments: <b>X, Y</b>
-<p></p>
-<dl>
-  <dt>JSON</dt>
-  <dd><code>
-    {
-      <table>
-        <tr>
-
-          <td>&nbsp;&nbsp;"a"</td><td>: [X × &lt;string&gt;],</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"b"</td><td>: [Y × &lt;string&gt;]</td>
           <td></td>
           <td>
           </td>
@@ -4292,13 +4193,9 @@ External # (nat) arguments: <b>Y</b>
           <td>
           </td>
         </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"c"</td><td>: [<a href="#DictionaryAnyFieldPairIntIntInt">dictionaryAnyField&lt;pair&lt;int,int&gt;,int&gt;</a>, ...],</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">// c:dictionaryAny&lt;pair&lt;int,int&gt;, int&gt;</code>
+          </td></tr>
         <tr>
 
           <td>&nbsp;&nbsp;"d"</td><td>: {&lt;int32&gt;: [n × &lt;string&gt;]},</td>
@@ -4313,13 +4210,9 @@ External # (nat) arguments: <b>Y</b>
           <td>
           </td>
         </tr>
-        <tr>
-
-          <td>&nbsp;&nbsp;"f"</td><td>: {&lt;string&gt;: <a href="#PairTupleStringTupleString">pair&lt;tuple&lt;string,n&gt;,tuple&lt;string,n&gt;&gt;</a>},</td>
-          <td></td>
-          <td>
-          </td>
-        </tr>
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">// f:dictionary&lt;pair&lt;tuple&lt;string,n&gt;, tuple&lt;string,n&gt;&gt;&gt;</code>
+          </td></tr>
         <tr>
 
           <td>&nbsp;&nbsp;"x"</td><td>: {&lt;int32&gt;: <a href="#PairIntInt">pair&lt;int,int&gt;</a>},</td>
@@ -4346,7 +4239,7 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>useDictUgly#fb9ce817 n:# c:(dictionaryAny (pair int int) int) d:(intKeyDictionary (tuple string n)) e:(longKeyDictionary (tuple string n)) f:(dictionary (pair (tuple string n) (tuple string n))) x:(dictionaryAny int (pair int int)) y:(dictionaryAny long (pair int int)) z:(dictionaryAny string (pair int int)) = UseDictUgly;</code>
+    <code>useDictUgly#fb9ce817 n:# d:(intKeyDictionary (tuple string n)) e:(longKeyDictionary (tuple string n)) x:(dictionaryAny int (pair int int)) y:(dictionaryAny long (pair int int)) z:(dictionaryAny string (pair int int)) = UseDictUgly;</code>
   </dd>
 </dl>
 
@@ -4632,7 +4525,6 @@ External # (nat) arguments: <b>t</b>
     </ul>
   </dd>
 </dl>
-
 
 
 

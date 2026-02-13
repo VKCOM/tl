@@ -203,10 +203,10 @@ longKeyDictionary#b424d8f1 {t:Type}
     = LongKeyDictionary t;
 
 useDictUgly#fb9ce817 n:#
-    c:dictionaryAny<pair<int,int>, int>
+    // c:dictionaryAny<pair<int,int>, int>
     d:intKeyDictionary<tuple<string,n>>
     e:longKeyDictionary<tuple<string,n>>
-    f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+    // f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
     x:dictionaryAny<int, pair<int,int>>
     y:dictionaryAny<long, pair<int,int>>
     z:dictionaryAny<string, pair<int,int>>
