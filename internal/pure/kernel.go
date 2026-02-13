@@ -116,7 +116,7 @@ func (k *Kernel) AllAnnotations() []string {
 	return k.allAnnotations
 }
 
-func (k *Kernel) TopLeveTypeInstances() []TypeInstance {
+func (k *Kernel) TopLevelTypeInstances() []TypeInstance {
 	var result []TypeInstance
 	for _, tip := range k.tipsTopLevel {
 		for _, ref := range tip.instances {

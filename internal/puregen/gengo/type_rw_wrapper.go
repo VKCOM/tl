@@ -431,23 +431,3 @@ func (w *TypeRWWrapper) IsFunction() bool {
 func (w *TypeRWWrapper) JSONHelpString() string {
 	return w.pureType.CanonicalName()
 }
-
-// same code as in func (trw *TypeRWStruct) replaceUnwrapArgs
-// public for now to avoid linter error
-func (w *TypeRWWrapper) TransformNatArgsToChild(natArgs []pure.ActualNatArg, childNatArgs []pure.ActualNatArg) []pure.ActualNatArg {
-	var result []pure.ActualNatArg
-outer:
-	for _, arg := range childNatArgs {
-		if arg.IsNumber() || arg.IsField() {
-			panic("cannot transform to child arith or field nat param")
-		}
-		for i, p := range w.NatParams {
-			if p == arg.Name() {
-				result = append(result, natArgs[i])
-				continue outer
-			}
-		}
-		panic("nat param not found in parent nat params")
-	}
-	return result
-}

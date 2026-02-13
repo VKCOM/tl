@@ -48,6 +48,9 @@ type Field struct {
 	name string
 	ins  *TypeInstanceRef
 
+	commentBefore string
+	commentRight  string
+
 	bare bool // for TL1 only, false for TL2
 	//recursive bool
 
@@ -62,6 +65,8 @@ type Field struct {
 
 func (f *Field) Bare() bool                 { return f.bare }
 func (f *Field) Name() string               { return f.name }
+func (f *Field) CommentBefore() string      { return f.commentBefore }
+func (f *Field) CommentRight() string       { return f.commentRight }
 func (f *Field) TypeInstance() TypeInstance { return f.ins.ins }
 func (f *Field) FieldMask() *ActualNatArg   { return f.fieldMask }
 func (f *Field) BitNumber() uint32          { return f.bitNumber }
@@ -417,9 +422,13 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			Type: tlast.Name{Name: resolvedType.Type.String() + "Field"},
 			Bare: true,
 		}
-		for _, targ := range tip.combTL1[0].TemplateArguments {
+		// TODO - I'm not sure if passing PR of actualArgs is correct
+		for i, targ := range tip.combTL1[0].TemplateArguments {
 			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
-				T: tlast.TypeRef{Type: tlast.Name{Name: targ.FieldName}},
+				T: tlast.TypeRef{
+					Type: tlast.Name{Name: targ.FieldName},
+					PR:   actualArgs[i].T.PR,
+				},
 			})
 		}
 		ins.isUnwrap = true
@@ -448,10 +457,12 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		newField := Field{
-			name:    fieldDef.FieldName,
-			ins:     fieldIns,
-			natArgs: natArgs,
-			bare:    fieldBare,
+			name:          fieldDef.FieldName,
+			commentBefore: fieldDef.CommentBefore,
+			commentRight:  fieldDef.CommentRight,
+			ins:           fieldIns,
+			natArgs:       natArgs,
+			bare:          fieldBare,
 		}
 		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
 			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&

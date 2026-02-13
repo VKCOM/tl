@@ -6342,7 +6342,7 @@
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
-            "args_num": 8,
+            "args_num": 6,
             "args": [
               {
                 "id": "n",
@@ -6352,70 +6352,6 @@
                   "type": "tls.typeExpr",
                   "value": {
                     "name": 1885708031
-                  }
-                }
-              },
-              {
-                "id": "c",
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 525099408,
-                    "flags": 1,
-                    "children_num": 2,
-                    "children": [
-                      {
-                        "type": "tls.exprType",
-                        "value": {
-                          "expr": {
-                            "type": "tls.typeExpr",
-                            "value": {
-                              "name": 255608747,
-                              "flags": 1,
-                              "children_num": 2,
-                              "children": [
-                                {
-                                  "type": "tls.exprType",
-                                  "value": {
-                                    "expr": {
-                                      "type": "tls.typeExpr",
-                                      "value": {
-                                        "name": -1471112230,
-                                        "flags": 1
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "tls.exprType",
-                                  "value": {
-                                    "expr": {
-                                      "type": "tls.typeExpr",
-                                      "value": {
-                                        "name": -1471112230,
-                                        "flags": 1
-                                      }
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "type": "tls.exprType",
-                        "value": {
-                          "expr": {
-                            "type": "tls.typeExpr",
-                            "value": {
-                              "name": -1471112230,
-                              "flags": 1
-                            }
-                          }
-                        }
-                      }
-                    ]
                   }
                 }
               },
@@ -6505,106 +6441,6 @@
                                     "expr": {
                                       "type": "tls.natVar",
                                       "value": {}
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                "id": "f",
-                "type": {
-                  "type": "tls.typeExpr",
-                  "value": {
-                    "name": 525099407,
-                    "flags": 1,
-                    "children_num": 1,
-                    "children": [
-                      {
-                        "type": "tls.exprType",
-                        "value": {
-                          "expr": {
-                            "type": "tls.typeExpr",
-                            "value": {
-                              "name": 255608747,
-                              "flags": 1,
-                              "children_num": 2,
-                              "children": [
-                                {
-                                  "type": "tls.exprType",
-                                  "value": {
-                                    "expr": {
-                                      "type": "tls.typeExpr",
-                                      "value": {
-                                        "name": -1754237302,
-                                        "flags": 1,
-                                        "children_num": 2,
-                                        "children": [
-                                          {
-                                            "type": "tls.exprType",
-                                            "value": {
-                                              "expr": {
-                                                "type": "tls.typeExpr",
-                                                "value": {
-                                                  "name": -1255641564,
-                                                  "flags": 1
-                                                }
-                                              }
-                                            }
-                                          },
-                                          {
-                                            "type": "tls.exprNat",
-                                            "value": {
-                                              "expr": {
-                                                "type": "tls.natVar",
-                                                "value": {}
-                                              }
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "tls.exprType",
-                                  "value": {
-                                    "expr": {
-                                      "type": "tls.typeExpr",
-                                      "value": {
-                                        "name": -1754237302,
-                                        "flags": 1,
-                                        "children_num": 2,
-                                        "children": [
-                                          {
-                                            "type": "tls.exprType",
-                                            "value": {
-                                              "expr": {
-                                                "type": "tls.typeExpr",
-                                                "value": {
-                                                  "name": -1255641564,
-                                                  "flags": 1
-                                                }
-                                              }
-                                            }
-                                          },
-                                          {
-                                            "type": "tls.exprNat",
-                                            "value": {
-                                              "expr": {
-                                                "type": "tls.natVar",
-                                                "value": {}
-                                              }
-                                            }
-                                          }
-                                        ]
-                                      }
                                     }
                                   }
                                 }

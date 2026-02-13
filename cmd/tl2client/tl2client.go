@@ -178,7 +178,7 @@ func main() {
 		log.Printf("%v", err)
 		os.Exit(4)
 	}
-	//	tlt := kernel.TopLeveTypeInstances()
+	//	tlt := kernel.TopLevelTypeInstances()
 	tlt := kernel.AllTypeInstances()
 	rnd := rand.New(rand.NewSource(1))
 	for _, t := range tlt {
