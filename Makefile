@@ -35,6 +35,10 @@ gen_check: build
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/schema.tl
+	#@./target/bin/tl2gen --language=tlo \
+	#	--outfile=./$(TLOS_PATH)/test.tlo \
+	#	--schemaTimestamp=1761907954 \
+	#	./$(TLS_PATH)/schema.tl
 
 .PHONY: gen
 gen: gen_check
@@ -81,7 +85,6 @@ goldmaster_nocompile: build
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
-		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tlgen --language=go -v \
 		--tl2WhiteList=* \
@@ -99,6 +102,13 @@ goldmaster_nocompile: build
 		--generateLegacyJsonRead=false \
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	#@./target/bin/tl2gen --language=tlo -v \
+	#	--outfile=./$(TLOS_PATH)/goldmaster.tlo \
+	#	--schemaTimestamp=301822800 \
+	#	./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	#@./target/bin/tl2gen --language=canonical -v \
+	#	--outfile=./$(TLS_PATH)/goldmaster_canonical.tl \
+	#	./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
@@ -187,8 +197,8 @@ test:
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
 check: build test lint
-	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 --version
-	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 --version
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 ./... # update version together with github actions
 
 .PHONY: lint
 lint:

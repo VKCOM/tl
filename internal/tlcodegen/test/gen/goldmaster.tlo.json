@@ -7463,7 +7463,7 @@
                 }
               },
               {
-                "id": "a",
+                "id": "aa",
                 "flags": 2,
                 "var_num": 3,
                 "type": {
@@ -7511,7 +7511,7 @@
                 }
               },
               {
-                "id": "a0",
+                "id": "aa0",
                 "flags": 4,
                 "exist_var_num": 3,
                 "exist_var_bit": 0,
@@ -7524,7 +7524,7 @@
                 }
               },
               {
-                "id": "a1",
+                "id": "aa1",
                 "flags": 4,
                 "exist_var_num": 3,
                 "exist_var_bit": 1,

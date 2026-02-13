@@ -1,6 +1,6 @@
 ---types---
 // test field mask var_num and var_bit
-aaa  {A:#} {T:Type} {U:Type}  a:# B:# A0:A.0?string A1:A.1?string a0:a.0?string a1:a.1?string B0:B.0?string B1:B.1?U = Aaa A T U;
+aaa#05b0e500 {A:#} {T:Type} {U:Type}  aa:# B:# A0:A.0?string A1:A.1?string aa0:aa.0?string aa1:aa.1?string B0:B.0?string B1:B.1?U = Aaa A T U;
 
 curl.responseOk#57d7a33a
   field_mask:   #

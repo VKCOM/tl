@@ -18,6 +18,7 @@ import (
 type Options struct {
 	Language          string
 	Outdir            string
+	Outfile           string
 	CopyrightFilePath string
 	CopyrightText     string // set to content of CopyrightFilePath
 
@@ -41,10 +42,12 @@ type Options struct {
 }
 
 func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
-	f.StringVar(&opt.Language, "language", "",
+	f.StringVar(&opt.Language, "language", "lint",
 		fmt.Sprintf(`generation target language, must be %s`, languagesString))
 	f.StringVar(&opt.Outdir, "outdir", "",
 		`where to write generated files`)
+	f.StringVar(&opt.Outfile, "outfile", "",
+		`where to write generated file`)
 	f.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
 	f.BoolVar(&opt.Verbose, "v", false,
