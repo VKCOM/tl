@@ -153,7 +153,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
             {%- endif -%}
         <tr>
 
-        {%- if IsTrueType(field.TypeInstance()) -%}
+        {%- if field.IsBit() -%}
           <td>&nbsp;&nbsp;"{%s field.Name() %}"</td><td>: true{%- if i != len(trw.Fields()) - 1 -%},{%- endif -%}</td>
         {%- else -%}
           <td>&nbsp;&nbsp;"{%s field.Name() %}"</td><td>: {%= printJSONHelpType2(kernel, field.TypeInstance(), field.Bare(), trw.Fields(), field.NatArgs()) %}{%- if i != len(trw.Fields()) - 1 -%},{%- endif -%}</td>
@@ -213,7 +213,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
             {%- if trw.IsEnum() -%}
                 <td><span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span></td><td></td>
             {%- else -%}
-                <td>{"type":<span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span>{%- if !IsTrueType(field) -%},</td><td>"value":{%= makeRef(field.CanonicalName(), JSONHelpString(kernel, field)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
+                <td>{"type":<span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span>{%- if !IsEmptyStruct(field) -%},</td><td>"value":{%= makeRef(field.CanonicalName(), JSONHelpString(kernel, field)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
             {%- endif -%}
           <td>
     {%- if commentsRight[i] != "" -%}
