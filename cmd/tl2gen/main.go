@@ -17,16 +17,19 @@ import (
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/puregen"
+	"github.com/vkcom/tl/internal/puregen/gencanonical"
 	"github.com/vkcom/tl/internal/puregen/gengo"
+	"github.com/vkcom/tl/internal/puregen/gentlo"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
 
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
-	"":             func(kernel *pure.Kernel, options *puregen.Options) error { return nil },
+	"canonical":    gencanonical.Generate,
 	"go":           gengo.Generate,
+	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return nil },
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
-	"tlo":          func(kernel *pure.Kernel, options *puregen.Options) error { return fmt.Errorf("TODO generate TLO here") },
+	"tlo":          gentlo.Generate,
 	"tljson.html": func(kernel *pure.Kernel, options *puregen.Options) error {
 		return fmt.Errorf("TODO generate tljson.html")
 	},
@@ -38,7 +41,7 @@ func languagesString() string {
 		keys = append(keys, fmt.Sprintf(`"%s"`, k))
 	}
 	sort.Strings(keys)
-	return fmt.Sprintf("one of %s (empty language is linter)", strings.Join(keys, ", "))
+	return fmt.Sprintf("one of %s", strings.Join(keys, ", "))
 }
 
 func main() {
@@ -60,7 +63,7 @@ func main() {
 		} else {
 			log.Println(err.Error())
 		}
-		if opt.Language == "" {
+		if opt.Language == "lint" {
 			log.Printf("TL Linter Failed") // do not check Verbose
 		} else {
 			log.Printf("TL Generation Failed") // do not check Verbose
@@ -68,7 +71,7 @@ func main() {
 		os.Exit(1)
 		return
 	}
-	if opt.Language == "" {
+	if opt.Language == "lint" {
 		log.Printf("TL Linter Success") // do not check Verbose
 	} else {
 		log.Printf("TL Generation Success") // do not check Verbose

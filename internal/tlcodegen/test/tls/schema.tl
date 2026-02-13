@@ -63,7 +63,7 @@ service4.modifiedNewsEntry#da19832a
   fields_mask:# // type = (fields_mask & 3) (0 - not modified, 1 - restored, 2 - deleted)
   restoration_date:fields_mask.0?int
   deletion_date:fields_mask.1?int
-  hidden_by_privacy:fields_mask.16?Bool
+  hidden_by_privacy:fields_mask.16?Bool // tlgen:nolint
   = service4.ModifiedNewsEntry;
 
 service4.object
@@ -74,14 +74,14 @@ service4.object
 
 tasks.queueTypeSettings#561fbc09
     fields_mask:#
-    is_enabled:fields_mask.0?Bool // default is false
-    is_persistent:fields_mask.1?Bool // default is false
+    is_enabled:fields_mask.0?Bool // tlgen:nolint default is false
+    is_persistent:fields_mask.1?Bool // tlgen:nolint default is false
     // default priority is 10, should be in range [1..100], task with priority 100 has bigger probability to be executed than task with priority 1
     priority:fields_mask.2?int
     default_retry_time:fields_mask.3?int
     default_retry_num:fields_mask.3?int
     move_to_queue_type_on_error:fields_mask.4?string // empty string for doing nothing
-    is_blocking:fields_mask.5?Bool  // default is true, you can't get task from queue_id before previous is done
+    is_blocking:fields_mask.5?Bool  // tlgen:nolint default is true, you can't get task from queue_id before previous is done
     // if engine doesn't receive responseTask{Done/Retry/Failed} in timelimit, it automatically do responseTaskRetry
     timelimit:fields_mask.6?int // default is 60
     max_queue_size:fields_mask.7?int // maximum number of tasks in one queue_id, older tasks will be removed
@@ -276,14 +276,14 @@ service3.product#461f4ce2 {mode:#}
     info:%(Vector int)
     date:int
     expiration_date:int
-    removed:mode.0?Bool
+    removed:mode.0?Bool // tlgen:nolint
     = service3.Product mode;
 
 service3.groupRecord#8d6c22ea {mode:#}
     info:%(Vector int)
     date:int
     expiration_date:int
-    removed:mode.0?Bool
+    removed:mode.0?Bool // tlgen:nolint
     = service3.GroupRecord mode;
 
 service3.groupedProducts {mode:#}

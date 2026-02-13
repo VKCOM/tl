@@ -24,6 +24,10 @@ func JsonPrettyPrint(in []byte) []byte {
 
 func AppVersion() string {
 	if info, ok := debug.ReadBuildInfo(); ok {
+		if strings.Contains(info.Main.Version, "dirty") || strings.Contains(info.Main.Version, "-") {
+			// during development, we regenerate goldmaster files, and we do not want them to contain dirty version
+			return "(devel)"
+		}
 		return info.Main.Version
 	}
 	return ""
