@@ -133,8 +133,7 @@ func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields [
 	return s.String()
 }
 
-// TODO - use IsBit after TrueType-like structs are generated as Bit instances
-func IsTrueType(ins pure.TypeInstance) bool {
+func IsEmptyStruct(ins pure.TypeInstance) bool {
 	structElement, ok := ins.(*pure.TypeInstanceStruct)
 	if !ok {
 		return false

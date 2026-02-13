@@ -261,7 +261,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 				qw422016.N().S(`        <tr>
 
 `)
-				if IsTrueType(field.TypeInstance()) {
+				if field.IsBit() {
 					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
 					qw422016.E().S(field.Name())
 					qw422016.N().S(`"</td><td>: true`)
@@ -380,7 +380,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 				qw422016.N().S(`#`)
 				qw422016.E().S(tag)
 				qw422016.N().S(`"</span>`)
-				if !IsTrueType(field) {
+				if !IsEmptyStruct(field) {
 					qw422016.N().S(`,</td><td>"value":`)
 					streammakeRef(qw422016, field.CanonicalName(), JSONHelpString(kernel, field))
 					qw422016.N().S(`}</td>`)
