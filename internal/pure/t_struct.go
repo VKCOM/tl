@@ -73,6 +73,13 @@ func (f *Field) BitNumber() uint32          { return f.bitNumber }
 func (f *Field) MaskTL2Bit() *int           { return f.maskTL2Bit }
 func (f *Field) NatArgs() []ActualNatArg    { return f.natArgs }
 
+func (f *Field) IsBit() bool {
+	if f.ins.ins.IsBit() {
+		return true
+	}
+	return f.fieldMask != nil && f.ins.ins.CanonicalName() == "True"
+}
+
 type TypeInstanceStruct struct {
 	TypeInstanceCommon
 	isConstructorFields bool

@@ -110,21 +110,17 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 		if err != nil {
 			return err
 		}
-		fieldName := field.Name()
-		if fieldName == "" {
-			// only for typedefs, but TODO - harmonize condition with func (trw *TypeRWStruct) isTypeDef()
-			// TODO - should never be necessary
-			fieldName = "a"
-		}
 		newField := Field{
 			originalName: field.Name(),
 			t:            fieldType,
 			bare:         field.Bare(),
-			goName:       res.fieldsDec.deconflictName(utils.CNameToCamelName(fieldName)),
 			fieldMask:    field.FieldMask(),
 			BitNumber:    field.BitNumber(),
 			MaskTL2Bit:   field.MaskTL2Bit(),
 			natArgs:      field.NatArgs(),
+		}
+		if field.Name() != "" { // empty only for typedef single field
+			newField.goName = res.fieldsDec.deconflictName(utils.CNameToCamelName(field.Name()))
 		}
 		res.Fields = append(res.Fields, newField)
 	}
