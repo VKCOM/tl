@@ -61,7 +61,8 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	k.addPrimitive("byte", "", "byte", &KernelValueByte{}, true)
 	k.addPrimitive("bool", "", "bool", &KernelValueBool{}, true)
 	k.addPrimitive("bit", "", "bit", &KernelValueBit{}, true)
-	k.addString()
+	k.addPrimitive("string", "string", "string", &KernelValueString{}, true)
+	//k.addString()
 	k.addTL1Brackets()
 
 	k.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}

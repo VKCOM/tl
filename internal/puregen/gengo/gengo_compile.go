@@ -32,10 +32,6 @@ func (gen *genGo) compile() error {
 					return err
 				}
 			}
-		case *pure.TypeInstanceString:
-			if err := gen.generateTypePrimitive(myWrapper, pureType); err != nil {
-				return err
-			}
 		case *pure.TypeInstanceStruct:
 			if err := gen.generateTypeStruct(myWrapper, pureType); err != nil {
 				return err
