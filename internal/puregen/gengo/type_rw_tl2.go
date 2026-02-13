@@ -17,10 +17,6 @@ type TypeRWTL2 interface {
 		refObject bool,
 	) string
 
-	doesCalculateLayoutUseObject(allowInplace bool) bool
-	isSizeWrittenInData() bool
-	doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool
-
 	writeTL2Call(
 		directImports *DirectImports,
 		bytesVersion bool,
@@ -31,9 +27,6 @@ type TypeRWTL2 interface {
 		ins *InternalNamespace,
 		refObject bool,
 	) string
-
-	doesWriteTL2UseObject(canDependOnLocalBit bool) bool
-	tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string)
 
 	readTL2Call(
 		directImports *DirectImports,
@@ -55,7 +48,6 @@ type TypeRWTL2 interface {
 	) string
 
 	doesReadTL2UseObject(canDependOnLocalBit bool) bool
-	doesReadTL2UseBytes(canDependOnLocalBit bool) bool
 }
 
 func (w *TypeRWWrapper) CalculateLayoutCall(

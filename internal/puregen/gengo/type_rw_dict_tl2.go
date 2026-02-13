@@ -86,30 +86,6 @@ func (trw *TypeRWDict) skipTL2Call(
 		targetBytes)
 }
 
-func (trw *TypeRWDict) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
-	return true
-}
-
-func (trw *TypeRWDict) doesCalculateLayoutUseObject(allowInplace bool) bool {
-	return true
-}
-
-func (trw *TypeRWDict) isSizeWrittenInData() bool {
-	return true
-}
-
-func (trw *TypeRWDict) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
-	return true
-}
-
 func (trw *TypeRWDict) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
-}
-
-func (trw *TypeRWDict) doesReadTL2UseBytes(canDependOnLocalBit bool) bool {
-	return true
-}
-
-func (trw *TypeRWDict) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
-	return false, ""
 }
