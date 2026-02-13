@@ -88,3 +88,22 @@ func (ins *TypeInstanceCommon) GoodForMapKey() bool {
 func (ins *TypeInstanceCommon) IsBit() bool {
 	return false
 }
+
+// same code as in func (ins *TypeInstanceStruct) ReplaceUnwrapArgs
+func (w *TypeInstanceCommon) TransformNatArgsToChild(natArgs []ActualNatArg, childNatArgs []ActualNatArg) []ActualNatArg {
+	var result []ActualNatArg
+outer:
+	for _, arg := range childNatArgs {
+		if arg.isNumber || arg.isField {
+			panic("cannot transform to child arith or field nat param")
+		}
+		for i, p := range w.natParams {
+			if p == arg.name {
+				result = append(result, natArgs[i])
+				continue outer
+			}
+		}
+		panic("nat param not found in parent nat params")
+	}
+	return result
+}

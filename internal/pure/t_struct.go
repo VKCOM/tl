@@ -97,7 +97,12 @@ func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
 	return ins.resultNatArgs
 }
 
-// same code as in func (w *TypeRWWrapper) TransformNatArgsToChild
+// most generators will need to add !recursive
+func (trw *TypeInstanceStruct) IsTypeDef() bool {
+	return len(trw.fields) == 1 && trw.fields[0].name == "" && trw.fields[0].fieldMask == nil
+}
+
+// same code as in func (w *TypeInstanceCommon) TransformNatArgsToChild
 func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(natArgs []string) []string {
 	// Caller called outer.Read(   , nat_x, nat_y)
 	// outer has func Read(   ,nat_inner_x uint32, nat_inner_y uint32) {
