@@ -35,6 +35,8 @@ type Kernel struct {
 	filesTL1 tlast.TL
 	filesTL2 []tlast.TL2Combinator
 
+	filesTL1Full tlast.TL // for TLO generation. Remove after TLO is removed,
+
 	supportedAnnotations map[string]struct{}
 	allAnnotations       []string // position is bit
 }
@@ -157,16 +159,12 @@ func (k *Kernel) TL1() []*tlast.Combinator {
 	return k.filesTL1
 }
 
+func (k *Kernel) TL1FullForTLO() []*tlast.Combinator {
+	return k.filesTL1Full
+}
+
 func (k *Kernel) TL2() []tlast.TL2Combinator {
 	return k.filesTL2
-}
-
-func (k *Kernel) AddParsedFileTL1(f tlast.TL) {
-	k.filesTL1 = append(k.filesTL1, f...)
-}
-
-func (k *Kernel) AddParsedFileTL2(f tlast.TL2File) {
-	k.filesTL2 = append(k.filesTL2, f.Combinators...)
 }
 
 func (k *Kernel) AddFileTL1(file string) error {
@@ -175,17 +173,22 @@ func (k *Kernel) AddFileTL1(file string) error {
 		return fmt.Errorf("error reading schema file %q: %w", file, err)
 	}
 	dataStr := string(data)
+	fullTL, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{AllowDirty: true})
+	if err != nil {
+		return err // Do not add excess info to already long parse error
+	}
 
 	// we do not want to support those, they are soon to be removed forever
 	dataStr = strings.ReplaceAll(dataStr, "_ {X:Type} result:X = ReqResult X;", "")
 	dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
 	dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
 
-	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{AllowDirty: true})
+	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{AllowDirty: false})
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
-	k.AddParsedFileTL1(tl)
+	k.filesTL1 = append(k.filesTL1, tl...)
+	k.filesTL1Full = append(k.filesTL1Full, fullTL...)
 	return nil
 }
 
@@ -199,7 +202,7 @@ func (k *Kernel) AddFileTL2(file string) error {
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
-	k.AddParsedFileTL2(tl)
+	k.filesTL2 = append(k.filesTL2, tl.Combinators...)
 	return nil
 }
 

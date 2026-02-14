@@ -347,7 +347,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	}
 	if opt.CanonicalFormPath != "" {
 		if opt.Verbose {
-			log.Print("generating file with combinators in canonical form,,,")
+			log.Print("generating file with combinators in canonical form...")
 		}
 		var buf bytes.Buffer
 		fullAst.WriteGenerate2TL(&buf)
