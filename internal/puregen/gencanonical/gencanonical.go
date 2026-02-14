@@ -19,7 +19,7 @@ import (
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if options.Verbose {
-		log.Print("generating file with combinators in canonical form,,,")
+		log.Print("generating file with combinators in canonical form...")
 	}
 	if options.Outfile == "" {
 		return fmt.Errorf("--outfile should not be empty")
