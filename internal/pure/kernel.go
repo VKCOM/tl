@@ -370,27 +370,16 @@ func (k *Kernel) Compile() error {
 			if _, err := k.GetInstance(tr); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
-		} else {
-			comb := tip.combTL1[0]
-			if len(comb.TemplateArguments) != 0 {
-				continue // instantiate templates on demand only
-			}
-			tr := tlast.TypeRef{Type: comb.Construct.Name}
-			//if comb.IsFunction {
-			//	if _, err := k.getInstanceTL1(tr, true); err != nil {
-			//		return fmt.Errorf("error adding function %s: %w", tr.String(), err)
-			//	}
-			//	continue
-			//}
-			if len(tip.combTL1) != 1 {
-				tr = tlast.TypeRef{Type: comb.TypeDecl.Name}
-			}
+		}
+	}
+	for _, tip := range k.tipsTopLevel {
+		if !tip.originTL2 {
+			tr := tlast.TypeRef{Type: tip.canonicalName}
 			if _, _, err := k.getInstanceTL1(tr, true, true); err != nil {
 				return err
 			}
 		}
 	}
-	// It is not easy to check all cycles before instantiation, so we do it afterward.
 	var cf cycleFinder
 	for _, ref := range k.instancesOrdered {
 		cf.reset()

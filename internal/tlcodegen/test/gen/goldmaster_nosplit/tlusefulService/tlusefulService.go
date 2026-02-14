@@ -12,14 +12,13 @@ import (
 )
 
 type (
-	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed       = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
-	DictionaryUsefulServiceUserEntityPaymentItemBoxed            = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
-	DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe  = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
-	GetUserEntity                                                = internal.UsefulServiceGetUserEntity
-	GetUserEntityResult                                          = internal.UsefulServiceGetUserEntityResult
-	GetUserEntityResultBoxedMaybe                                = internal.UsefulServiceGetUserEntityResultBoxedMaybe
-	UserEntityPaymentItem                                        = internal.UsefulServiceUserEntityPaymentItem
-	UserEntityPaymentItemPromo                                   = internal.UsefulServiceUserEntityPaymentItemPromo
-	UserEntityPaymentItemPromoBoxedMaybe                         = internal.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
-	VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = internal.VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed      = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUsefulServiceUserEntityPaymentItemBoxed           = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
+	GetUserEntity                                               = internal.UsefulServiceGetUserEntity
+	GetUserEntityResult                                         = internal.UsefulServiceGetUserEntityResult
+	GetUserEntityResultBoxedMaybe                               = internal.UsefulServiceGetUserEntityResultBoxedMaybe
+	UserEntityPaymentItem                                       = internal.UsefulServiceUserEntityPaymentItem
+	UserEntityPaymentItemPromo                                  = internal.UsefulServiceUserEntityPaymentItemPromo
+	UserEntityPaymentItemPromoBoxedMaybe                        = internal.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
 )
