@@ -28,7 +28,7 @@ const (
 	CasesTestAllPossibleFieldConfigsContainer       = 0xe3fae936 // cases.testAllPossibleFieldConfigsContainer
 	CasesTestArray                                  = 0xa888030d // cases.testArray
 	CasesTestBeforeReadBitValidation                = 0x9b2396db // cases.testBeforeReadBitValidation
-	CasesTestDictAny                                = 0xe29b8ae6 // cases.testDictAny
+	CasesTestDictAny                                = 0x252b4ddb // cases.testDictAny
 	CasesTestDictInt                                = 0xd3877643 // cases.testDictInt
 	CasesTestDictString                             = 0xc463c79b // cases.testDictString
 	CasesTestEnum1                                  = 0x6c6c55ac // cases.testEnum1
@@ -68,7 +68,7 @@ const (
 	CasesTL2TestParamsGeneration                    = 0xaac2f033 // casesTL2.testParamsGeneration
 	CasesTL2TestVectorBool                          = 0x644bb447 // casesTL2.testVectorBool
 	CasesBytesTestArray                             = 0x3762fb81 // cases_bytes.testArray
-	CasesBytesTestDictAny                           = 0x5a5fce57 // cases_bytes.testDictAny
+	CasesBytesTestDictAny                           = 0xee586c08 // cases_bytes.testDictAny
 	CasesBytesTestDictInt                           = 0x453ace07 // cases_bytes.testDictInt
 	CasesBytesTestDictString                        = 0x6c04d6ce // cases_bytes.testDictString
 	CasesBytesTestDictStringString                  = 0xad69c772 // cases_bytes.testDictStringString
@@ -83,8 +83,6 @@ const (
 	DictionaryAnyField                              = 0xe466c347 // dictionaryAnyField
 	DictionaryField                                 = 0x239c1b62 // dictionaryField
 	Int                                             = 0xa8509bda // int
-	Int32                                           = 0x7934e71f // int32
-	Int64                                           = 0xf5609de0 // int64
 	Long                                            = 0x22076cba // long
 	Pair                                            = 0xf01604df // pair
 	ResultFalse                                     = 0x27930a7b // resultFalse

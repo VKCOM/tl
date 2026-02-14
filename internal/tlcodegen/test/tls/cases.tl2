@@ -1,8 +1,6 @@
 // BASE TYPES
 int <=> int;
 long <=> long;
-int32 <=> int;
-int64 <=> long;
 string <=> string;
 vector<t:Type> <=> []t;
 tuple<t:Type> <=> []t;
@@ -31,7 +29,7 @@ cases.testDictString = dict:dictionary<int>;
 // will be map
 cases.testDictInt = dict:dictionaryAny<int,int>;
 // will be array of tuples
-cases.testDictAny = dict:dictionaryAny<double,int>;
+cases.testDictAny = dict:vector<dictionaryAnyField<double,int>>;
 cases.testAllDicts = f1:cases.testDictString f2:cases.testDictInt f3:cases.testDictAny;
 // BLOCK: TEST UNIONS
 cases.testMaybe = value:maybe<int>;
@@ -103,7 +101,7 @@ cases_bytes.testDictString = dict:dictionary<int>;
 // will be map
 cases_bytes.testDictInt = dict:dictionaryAny<int,int>;
 // will be array of tuples
-cases_bytes.testDictAny = dict:dictionaryAny<double,int>;
+cases_bytes.testDictAny = dict:vector<dictionaryAnyField<double,int>>;
 cases_bytes.testEnum = 
 	// tlgen:tl1name:"cases_bytes.testEnum1"
 	| TestEnum1

@@ -9,7 +9,8 @@ package tlCasesBytesTestDictAny
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlBuiltinVectorDictionaryAnyFieldDoubleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,22 +18,22 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesBytesTestDictAny struct {
-	Dict tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
+	Dict []tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
 }
 
 func (CasesBytesTestDictAny) TLName() string { return "cases_bytes.testDictAny" }
-func (CasesBytesTestDictAny) TLTag() uint32  { return 0x5a5fce57 }
+func (CasesBytesTestDictAny) TLTag() uint32  { return 0xee586c08 }
 
 func (item *CasesBytesTestDictAny) Reset() {
-	item.Dict.Reset()
+	item.Dict = item.Dict[:0]
 }
 
 func (item *CasesBytesTestDictAny) FillRandom(rg *basictl.RandGenerator) {
-	item.Dict.FillRandom(rg)
+	tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictAny) Read(w []byte) (_ []byte, err error) {
-	return item.Dict.Read(w)
+	return tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntRead(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictAny) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -40,12 +41,12 @@ func (item *CasesBytesTestDictAny) WriteGeneral(w []byte) (_ []byte, err error) 
 }
 
 func (item *CasesBytesTestDictAny) Write(w []byte) []byte {
-	w = item.Dict.Write(w)
+	w = tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntWrite(w, item.Dict)
 	return w
 }
 
 func (item *CasesBytesTestDictAny) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x5a5fce57); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xee586c08); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -56,7 +57,7 @@ func (item *CasesBytesTestDictAny) WriteBoxedGeneral(w []byte) (_ []byte, err er
 }
 
 func (item *CasesBytesTestDictAny) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x5a5fce57)
+	w = basictl.NatWrite(w, 0xee586c08)
 	return item.Write(w)
 }
 
@@ -85,7 +86,7 @@ func (item *CasesBytesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictAny", "dict")
 				}
-				if err := item.Dict.ReadJSONGeneral(tctx, in); err != nil {
+				if err := tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -100,7 +101,7 @@ func (item *CasesBytesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext
 		}
 	}
 	if !propDictPresented {
-		item.Dict.Reset()
+		item.Dict = item.Dict[:0]
 	}
 	return nil
 }
@@ -119,7 +120,7 @@ func (item *CasesBytesTestDictAny) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = item.Dict.WriteJSONOpt(tctx, w)
+	w = tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
