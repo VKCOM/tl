@@ -67,10 +67,10 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 		if typ.TypeDecl.Name.String() != bigName {
 			return typ.TypeDecl.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have type name %s", bigName))
 		}
-		tip, ok := k.tips[tl2name]
-		if !ok {
-			return typ.Construct.NamePR.BeautifulError(errors.New("internal error builtin type not found"))
-		}
+		//tip, ok := k.tips[tl2name]
+		//if !ok {
+		//	return typ.Construct.NamePR.BeautifulError(errors.New("internal error builtin type not found"))
+		//}
 		if _, ok2 := k.tips[bigName]; ok2 {
 			// TODO - see here
 			return typ.TypeDecl.NamePR.BeautifulError(errors.New("builtin type already defined"))
@@ -93,12 +93,11 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 
 			builtinWrappedCanonicalName: typ.Construct.Name.String(),
 		}
-		//if tip.combTL1[0].Construct.IDExplicit {
-		//TODO - see here
-		//return typ.Construct.NamePR.BeautifulError(errors.New("built-in type magic already defined by previous declaration"))
-		//}
-		k.tips[bigName] = kt
-		k.tipsTopLevel = append(k.tipsTopLevel, tip)
+		if err := k.addTip(kt, bigName, ""); err != nil {
+			return err
+		}
+		//k.tips[bigName] = kt
+		//k.tipsTopLevel = append(k.tipsTopLevel, tip)
 		//tip.tl1Names[bigName] = struct{}{}
 		//tip.tl1BoxedName = tlast.Name{Name: bigName}
 		// we do not allow references to boxed wrappers from TL2

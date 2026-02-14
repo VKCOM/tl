@@ -70,11 +70,11 @@ goldmaster_nocompile: build
 		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
-	@./target/bin/tlgen --language=go --split-internal -v \
+	@./target/bin/tl2gen --language=go --split-internal -v \
+		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster \
-		--generateSchemaDocumentation \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
@@ -85,11 +85,11 @@ goldmaster_nocompile: build
 		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
-	@./target/bin/tlgen --language=go -v \
+	@./target/bin/tl2gen --language=go -v \
+		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
-		--generateSchemaDocumentation \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
