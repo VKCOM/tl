@@ -49,7 +49,8 @@ gen_dev: qtpl gen
 
 .PHONY: goldmaster_nocompile
 goldmaster_nocompile: build
-	@./target/bin/tlgen --language=go --split-internal -v \
+	@./target/bin/tl2gen --language=go --split-internal -v \
+		--newDicts \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/casesTL1 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
@@ -59,7 +60,8 @@ goldmaster_nocompile: build
 		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
-	@./target/bin/tlgen --language=go --split-internal -v \
+	@./target/bin/tl2gen --language=go --split-internal -v \
+		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/cases \

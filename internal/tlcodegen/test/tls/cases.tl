@@ -2,8 +2,6 @@
 int#a8509bda ? = Int;
 long#22076cba ? = Long;
 
-int32 int = Int32;
-int64 long = Int64;
 string#b5286e24 ? = String;
 
 vector#1cb5c415 {t:Type} # [t] = Vector t;
@@ -36,7 +34,7 @@ cases.testDictString dict:(dictionary int) = cases.TestDictString;
 // will be map
 cases.testDictInt dict:(dictionaryAny int int) = cases.TestDictInt;
 // will be array of tuples
-cases.testDictAny dict:(dictionaryAny double int) = cases.TestDictAny;
+cases.testDictAny dict:vector<dictionaryAnyField<double,int>> = cases.TestDictAny;
 
 cases.testAllDicts
     f1:cases.testDictString
@@ -109,7 +107,7 @@ cases_bytes.testDictString dict:(dictionary int) = cases_bytes.TestDictString;
 // will be map
 cases_bytes.testDictInt dict:(dictionaryAny int int) = cases_bytes.TestDictInt;
 // will be array of tuples
-cases_bytes.testDictAny dict:(dictionaryAny double int) = cases_bytes.TestDictAny;
+cases_bytes.testDictAny dict:vector<dictionaryAnyField<double,int>> = cases_bytes.TestDictAny;
 
 cases_bytes.testEnum1 = cases_bytes.TestEnum;
 cases_bytes.testEnum2 = cases_bytes.TestEnum;

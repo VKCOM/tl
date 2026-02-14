@@ -9,7 +9,6 @@ package tl
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyFieldIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyIntInt"
@@ -18,8 +17,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlInt32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlInt64"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleIntTupleInt"
@@ -35,15 +32,13 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryAnyFieldDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorTrueBoxed"
 )
 
 type (
-	DictionaryAnyDoubleInt                                             = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
 	DictionaryAnyFieldDoubleInt                                        = tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
 	DictionaryAnyFieldIntInt                                           = tlDictionaryAnyFieldIntInt.DictionaryAnyFieldIntInt
 	DictionaryAnyIntInt                                                = tlDictionaryAnyIntInt.DictionaryAnyIntInt
@@ -57,8 +52,6 @@ type (
 	DictionaryString                                                   = tlDictionaryString.DictionaryString
 	DictionaryStringBytes                                              = tlDictionaryString.DictionaryStringBytes
 	Int                                                                = tlInt.Int
-	Int32                                                              = tlInt32.Int32
-	Int64                                                              = tlInt64.Int64
 	IntMaybe                                                           = tlIntMaybe.IntMaybe
 	Long                                                               = tlLong.Long
 	PairTupleIntTupleInt                                               = tlPairTupleIntTupleInt.PairTupleIntTupleInt
@@ -75,10 +68,7 @@ type (
 	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
 	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
 	VectorBool                                                         = tlVectorBool.VectorBool
-	VectorDictionaryFieldInt                                           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
-	VectorDictionaryFieldIntBytes                                      = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
-	VectorDictionaryFieldString                                        = tlVectorDictionaryFieldString.VectorDictionaryFieldString
-	VectorDictionaryFieldStringBytes                                   = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
+	VectorDictionaryAnyFieldDoubleInt                                  = tlVectorDictionaryAnyFieldDoubleInt.VectorDictionaryAnyFieldDoubleInt
 	VectorInt                                                          = tlVectorInt.VectorInt
 	VectorString                                                       = tlVectorString.VectorString
 	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
