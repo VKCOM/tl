@@ -92,7 +92,7 @@ func (k *Kernel) addTip(kt *KernelType, name1 string, name2 string) error {
 			k.tipsTopLevel = append(k.tipsTopLevel, kt)
 		}
 	} else {
-		if kt.combTL1[0].IsFunction || len(kt.combTL1[0].TemplateArguments) == 0 {
+		if len(kt.combTL1[0].TemplateArguments) == 0 {
 			k.tipsTopLevel = append(k.tipsTopLevel, kt)
 		}
 	}
