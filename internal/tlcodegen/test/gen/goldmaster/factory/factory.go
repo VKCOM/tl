@@ -8,17 +8,10 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_1cc29369792b96d4551962ce180c8b39"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_38a9bf76d71419ee85afa2cdeb3445c4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_463e8ce0a74f5ec3e904ecdc85b1b857"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_4a924d2e3c79aa77f775dccf98b0eec6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_6773d270c7798864aaf892b26109e9a4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_730fc36a9abee714fd77cf74c905e6e2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_98d4570147919cfd6f6ebfc47c3e10a0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b51088a4226835d54f08524a36f8aa77"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall3"
@@ -59,40 +52,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseTrue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall10"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall11"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall5"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall7"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall8"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbMyType"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTestMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeA"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeB"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeC"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeD"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseCycle"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdMyType"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTopLevel3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeA"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeB"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeC"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceGetUserEntity"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
@@ -129,120 +88,50 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	meta.SetGlobalFactoryCreateForEnumElement("a.blue")
-	meta.SetGlobalFactoryCreateForEnumElement("a.color")
-	meta.SetGlobalFactoryCreateForEnumElement("a.green")
-	meta.SetGlobalFactoryCreateForEnumElement("a.myFalse")
-	meta.SetGlobalFactoryCreateForEnumElement("a.myTrue")
-	meta.SetGlobalFactoryCreateForEnumElement("a.red")
-	meta.SetGlobalFactoryCreateForObject("a.top2", func() meta.Object { var ret tlATop2.ATop2; return &ret })
-	meta.SetGlobalFactoryCreateForObject("a.uNionA", func() meta.Object { var ret cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AUNionA; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.alias", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.AbAlias; return &ret })
-	meta.SetGlobalFactoryCreateForFunction("ab.call1", func() meta.Function { var ret tlAbCall1.AbCall1; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call10", func() meta.Function { var ret tlAbCall10.AbCall10; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call11", func() meta.Function { var ret tlAbCall11.AbCall11; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call2", func() meta.Function { var ret tlAbCall2.AbCall2; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call3", func() meta.Function { var ret tlAbCall3.AbCall3; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call4", func() meta.Function { var ret tlAbCall4.AbCall4; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call5", func() meta.Function { var ret tlAbCall5.AbCall5; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call6", func() meta.Function { var ret tlAbCall6.AbCall6; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call7", func() meta.Function { var ret tlAbCall7.AbCall7; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call8", func() meta.Function { var ret tlAbCall8.AbCall8; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("ab.call9", func() meta.Function { var ret tlAbCall9.AbCall9; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObject("ab.code", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.AbCode; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsMany", func() meta.Object {
-		var ret cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsMany
-		return &ret
-	})
-	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsOne", func() meta.Object {
-		var ret cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsOne
-		return &ret
-	})
-	meta.SetGlobalFactoryCreateForObject("ab.empty", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.AbEmpty; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.myType", func() meta.Object { var ret tlAbMyType.AbMyType; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.testMaybe", func() meta.Object { var ret tlAbTestMaybe.AbTestMaybe; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.topLevel1", func() meta.Object { var ret tlAbTopLevel1.AbTopLevel1; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.topLevel2", func() meta.Object { var ret tlAbTopLevel2.AbTopLevel2; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.typeA", func() meta.Object { var ret tlAbTypeA.AbTypeA; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.typeB", func() meta.Object { var ret tlAbTypeB.AbTypeB; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.typeC", func() meta.Object { var ret tlAbTypeC.AbTypeC; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.typeD", func() meta.Object { var ret tlAbTypeD.AbTypeD; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.useCycle", func() meta.Object { var ret tlAbUseCycle.AbUseCycle; return &ret })
-	meta.SetGlobalFactoryCreateForObject("ab.useDictString", func() meta.Object { var ret tlAbUseDictString.AbUseDictString; return &ret })
-	meta.SetGlobalFactoryCreateForObject("au.nionA", func() meta.Object { var ret cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AuNionA; return &ret })
-	meta.SetGlobalFactoryCreateForEnumElement("b.red")
-	meta.SetGlobalFactoryCreateForFunction("call1", func() meta.Function { var ret tlCall1.Call1; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call2", func() meta.Function { var ret tlCall2.Call2; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call3", func() meta.Function { var ret tlCall3.Call3; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call4", func() meta.Function { var ret tlCall4.Call4; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call5", func() meta.Function { var ret tlCall5.Call5; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call6", func() meta.Function { var ret tlCall6.Call6; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call7", func() meta.Function { var ret tlCall7.Call7; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call8", func() meta.Function { var ret tlCall8.Call8; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction("call9", func() meta.Function { var ret tlCall9.Call9; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObject("cd.myType", func() meta.Object { var ret tlCdMyType.CdMyType; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.response", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponse; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.topLevel3", func() meta.Object { var ret tlCdTopLevel3.CdTopLevel3; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.typeA", func() meta.Object { var ret tlCdTypeA.CdTypeA; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.typeB", func() meta.Object { var ret tlCdTypeB.CdTypeB; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.typeC", func() meta.Object { var ret tlCdTypeC.CdTypeC; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.typeD", func() meta.Object { var ret tlCdTypeD.CdTypeD; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cd.useCycle", func() meta.Object { var ret tlCdUseCycle.CdUseCycle; return &ret })
-	meta.SetGlobalFactoryCreateForFunction("curl.request", func() meta.Function { var ret tlCurlRequest.CurlRequest; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObject("curl.responseError", func() meta.Object { var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseError; return &ret })
-	meta.SetGlobalFactoryCreateForObject("curl.responseOk", func() meta.Object { var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseOk; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cyc1.myCycle", func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cyc2.myCycle", func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc2MyCycle; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cyc3.myCycle", func() meta.Object { var ret cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc3MyCycle; return &ret })
-	meta.SetGlobalFactoryCreateForObject("cycleTuple", func() meta.Object { var ret cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple; return &ret })
-	meta.SetGlobalFactoryCreateForObject("halfStr", func() meta.Object { var ret tlHalfStr.HalfStr; return &ret })
-	meta.SetGlobalFactoryCreateForObject("hren", func() meta.Object { var ret cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren; return &ret })
-	meta.SetGlobalFactoryCreateForObject("int", func() meta.Object { var ret tlInt.Int; return &ret })
-	meta.SetGlobalFactoryCreateForObject("int32s", func() meta.Object { var ret tlInt32s.Int32s; return &ret })
-	meta.SetGlobalFactoryCreateForObject("int64s", func() meta.Object { var ret tlInt64s.Int64s; return &ret })
-	meta.SetGlobalFactoryCreateForObject("long", func() meta.Object { var ret tlLong.Long; return &ret })
-	meta.SetGlobalFactoryCreateForObject("maybeTest1", func() meta.Object { var ret tlMaybeTest1.MaybeTest1; return &ret })
-	meta.SetGlobalFactoryCreateForObject("multiPoint", func() meta.Object { var ret tlMultiPoint.MultiPoint; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myInt32", func() meta.Object { var ret tlMyInt32.MyInt32; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myInt64", func() meta.Object { var ret tlMyInt64.MyInt64; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myNat", func() meta.Object { var ret tlMyNat.MyNat; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myPlus", func() meta.Object { var ret cycle_1cc29369792b96d4551962ce180c8b39.MyPlus; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myPlus3", func() meta.Object { var ret cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myZero", func() meta.Object { var ret cycle_1cc29369792b96d4551962ce180c8b39.MyZero; return &ret })
-	meta.SetGlobalFactoryCreateForObject("myZero3", func() meta.Object { var ret cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3; return &ret })
-	meta.SetGlobalFactoryCreateForObject("nativeWrappers", func() meta.Object { var ret tlNativeWrappers.NativeWrappers; return &ret })
-	meta.SetGlobalFactoryCreateForObject("noStr", func() meta.Object { var ret tlNoStr.NoStr; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace", func() meta.Object { var ret tlReplace.Replace; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace17", func() meta.Object { var ret tlReplace17.Replace17; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace2", func() meta.Object { var ret tlReplace2.Replace2; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace3", func() meta.Object { var ret tlReplace3.Replace3; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace5", func() meta.Object { var ret tlReplace5.Replace5; return &ret })
-	meta.SetGlobalFactoryCreateForObject("replace6", func() meta.Object { var ret tlReplace6.Replace6; return &ret })
-	meta.SetGlobalFactoryCreateForObject("service5.emptyOutput", func() meta.Object { var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput; return &ret })
-	meta.SetGlobalFactoryCreateForFunction("service5.insert", func() meta.Function { var ret tlService5Insert.Service5Insert; return &ret }, func() meta.Function { var ret tlService5LongInsert.Service5LongInsert; return &ret })
-	meta.SetGlobalFactoryCreateForFunction("service5.insertList", func() meta.Function { var ret tlService5InsertList.Service5InsertList; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObject("service5Long.emptyOutput", func() meta.Object {
-		var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongEmptyOutput
-		return &ret
-	})
-	meta.SetGlobalFactoryCreateForFunction("service5Long.insert", func() meta.Function { var ret tlService5LongInsert.Service5LongInsert; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObject("service5Long.stringOutput", func() meta.Object {
-		var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongStringOutput
-		return &ret
-	})
-	meta.SetGlobalFactoryCreateForObject("service5.stringOutput", func() meta.Object { var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5StringOutput; return &ret })
-	meta.SetGlobalFactoryCreateForObject("string", func() meta.Object { var ret tlString.String; return &ret })
-	meta.SetGlobalFactoryCreateForObject("testMaybe", func() meta.Object { var ret tlTestMaybe.TestMaybe; return &ret })
-	meta.SetGlobalFactoryCreateForObject("testMaybe2", func() meta.Object { var ret tlTestMaybe2.TestMaybe2; return &ret })
-	meta.SetGlobalFactoryCreateForObject("true", func() meta.Object { var ret tlTrue.True; return &ret })
-	meta.SetGlobalFactoryCreateForObject("typeA", func() meta.Object { var ret tlTypeA.TypeA; return &ret })
-	meta.SetGlobalFactoryCreateForObject("typeB", func() meta.Object { var ret tlTypeB.TypeB; return &ret })
-	meta.SetGlobalFactoryCreateForObject("typeC", func() meta.Object { var ret tlTypeC.TypeC; return &ret })
-	meta.SetGlobalFactoryCreateForObject("typeD", func() meta.Object { var ret tlTypeD.TypeD; return &ret })
-	meta.SetGlobalFactoryCreateForObject("unionArgsUse", func() meta.Object { var ret tlUnionArgsUse.UnionArgsUse; return &ret })
-	meta.SetGlobalFactoryCreateForObject("useDictUgly", func() meta.Object { var ret tlUseDictUgly.UseDictUgly; return &ret })
-	meta.SetGlobalFactoryCreateForObject("useResponse", func() meta.Object { var ret tlUseResponse.UseResponse; return &ret })
-	meta.SetGlobalFactoryCreateForObject("useStr", func() meta.Object { var ret tlUseStr.UseStr; return &ret })
-	meta.SetGlobalFactoryCreateForObject("useTrue", func() meta.Object { var ret tlUseTrue.UseTrue; return &ret })
-	meta.SetGlobalFactoryCreateForFunction("usefulService.getUserEntity", func() meta.Function { var ret tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call1", func() meta.Function { return new(tlCall1.Call1) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call2", func() meta.Function { return new(tlCall2.Call2) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call3", func() meta.Function { return new(tlCall3.Call3) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call4", func() meta.Function { return new(tlCall4.Call4) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call5", func() meta.Function { return new(tlCall5.Call5) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call6", func() meta.Function { return new(tlCall6.Call6) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call7", func() meta.Function { return new(tlCall7.Call7) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call8", func() meta.Function { return new(tlCall8.Call8) }, nil)
+	meta.SetGlobalFactoryCreateForFunction("call9", func() meta.Function { return new(tlCall9.Call9) }, nil)
+	meta.SetGlobalFactoryCreateForObject("cycleTuple", func() meta.Object { return new(cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple) })
+	meta.SetGlobalFactoryCreateForObject("halfStr", func() meta.Object { return new(tlHalfStr.HalfStr) })
+	meta.SetGlobalFactoryCreateForObject("hren", func() meta.Object { return new(cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren) })
+	meta.SetGlobalFactoryCreateForObject("int", func() meta.Object { return new(tlInt.Int) })
+	meta.SetGlobalFactoryCreateForObject("int32s", func() meta.Object { return new(tlInt32s.Int32s) })
+	meta.SetGlobalFactoryCreateForObject("int64s", func() meta.Object { return new(tlInt64s.Int64s) })
+	meta.SetGlobalFactoryCreateForObject("long", func() meta.Object { return new(tlLong.Long) })
+	meta.SetGlobalFactoryCreateForObject("maybeTest1", func() meta.Object { return new(tlMaybeTest1.MaybeTest1) })
+	meta.SetGlobalFactoryCreateForObject("multiPoint", func() meta.Object { return new(tlMultiPoint.MultiPoint) })
+	meta.SetGlobalFactoryCreateForObject("myInt32", func() meta.Object { return new(tlMyInt32.MyInt32) })
+	meta.SetGlobalFactoryCreateForObject("myInt64", func() meta.Object { return new(tlMyInt64.MyInt64) })
+	meta.SetGlobalFactoryCreateForObject("myNat", func() meta.Object { return new(tlMyNat.MyNat) })
+	meta.SetGlobalFactoryCreateForObject("myPlus", func() meta.Object { return new(cycle_1cc29369792b96d4551962ce180c8b39.MyPlus) })
+	meta.SetGlobalFactoryCreateForObject("myPlus3", func() meta.Object { return new(cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3) })
+	meta.SetGlobalFactoryCreateForObject("myZero", func() meta.Object { return new(cycle_1cc29369792b96d4551962ce180c8b39.MyZero) })
+	meta.SetGlobalFactoryCreateForObject("myZero3", func() meta.Object { return new(cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3) })
+	meta.SetGlobalFactoryCreateForObject("nativeWrappers", func() meta.Object { return new(tlNativeWrappers.NativeWrappers) })
+	meta.SetGlobalFactoryCreateForObject("noStr", func() meta.Object { return new(tlNoStr.NoStr) })
+	meta.SetGlobalFactoryCreateForObject("replace", func() meta.Object { return new(tlReplace.Replace) })
+	meta.SetGlobalFactoryCreateForObject("replace17", func() meta.Object { return new(tlReplace17.Replace17) })
+	meta.SetGlobalFactoryCreateForObject("replace2", func() meta.Object { return new(tlReplace2.Replace2) })
+	meta.SetGlobalFactoryCreateForObject("replace3", func() meta.Object { return new(tlReplace3.Replace3) })
+	meta.SetGlobalFactoryCreateForObject("replace5", func() meta.Object { return new(tlReplace5.Replace5) })
+	meta.SetGlobalFactoryCreateForObject("replace6", func() meta.Object { return new(tlReplace6.Replace6) })
+	meta.SetGlobalFactoryCreateForObject("string", func() meta.Object { return new(tlString.String) })
+	meta.SetGlobalFactoryCreateForObject("testMaybe", func() meta.Object { return new(tlTestMaybe.TestMaybe) })
+	meta.SetGlobalFactoryCreateForObject("testMaybe2", func() meta.Object { return new(tlTestMaybe2.TestMaybe2) })
+	meta.SetGlobalFactoryCreateForObject("true", func() meta.Object { return new(tlTrue.True) })
+	meta.SetGlobalFactoryCreateForObject("typeA", func() meta.Object { return new(tlTypeA.TypeA) })
+	meta.SetGlobalFactoryCreateForObject("typeB", func() meta.Object { return new(tlTypeB.TypeB) })
+	meta.SetGlobalFactoryCreateForObject("typeC", func() meta.Object { return new(tlTypeC.TypeC) })
+	meta.SetGlobalFactoryCreateForObject("typeD", func() meta.Object { return new(tlTypeD.TypeD) })
+	meta.SetGlobalFactoryCreateForObject("unionArgsUse", func() meta.Object { return new(tlUnionArgsUse.UnionArgsUse) })
+	meta.SetGlobalFactoryCreateForObject("useDictUgly", func() meta.Object { return new(tlUseDictUgly.UseDictUgly) })
+	meta.SetGlobalFactoryCreateForObject("useResponse", func() meta.Object { return new(tlUseResponse.UseResponse) })
+	meta.SetGlobalFactoryCreateForObject("useStr", func() meta.Object { return new(tlUseStr.UseStr) })
+	meta.SetGlobalFactoryCreateForObject("useTrue", func() meta.Object { return new(tlUseTrue.UseTrue) })
 }
