@@ -14,11 +14,16 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-func (gen *genGo) streamgenerateFactory(qw422016 *qt422016.Writer, sortedImports []string, directImports *DirectImports) {
+func (gen *genGo) streamgenerateFactory(qw422016 *qt422016.Writer, sortedImports []string, directImports *DirectImports, bytesVersion bool) {
+	bytesStr := addBytes("", bytesVersion)
+
+	qw422016.N().S(`
+`)
 	qw422016.N().S(HeaderComment)
 	qw422016.N().S(`
 package `)
-	qw422016.E().S(FactoryGoPackageName)
+	qw422016.N().S(FactoryGoPackageName)
+	qw422016.N().S(addBytesLower("", bytesVersion))
 	qw422016.N().S(`
 
 import (
@@ -41,7 +46,9 @@ func CreateFunction(tag uint32) meta.Function {
     if item == nil || !item.IsFunction() {
         return nil
     }
-    return item.CreateFunction()
+    return item.CreateFunction`)
+	qw422016.N().S(bytesStr)
+	qw422016.N().S(`()
 }
 
 func CreateObject(tag uint32) meta.Object {
@@ -49,7 +56,9 @@ func CreateObject(tag uint32) meta.Object {
     if item == nil {
         return nil
     }
-    return item.CreateObject()
+    return item.CreateObject`)
+	qw422016.N().S(bytesStr)
+	qw422016.N().S(`()
 }
 
 func CreateFunctionFromName(name string) meta.Function {
@@ -57,7 +66,9 @@ func CreateFunctionFromName(name string) meta.Function {
     if item == nil || !item.IsFunction() {
         return nil
     }
-    return item.CreateFunction()
+    return item.CreateFunction`)
+	qw422016.N().S(bytesStr)
+	qw422016.N().S(`()
 }
 
 func CreateObjectFromName(name string) meta.Object {
@@ -65,7 +76,9 @@ func CreateObjectFromName(name string) meta.Object {
     if item == nil {
         return nil
     }
-    return item.CreateObject()
+    return item.CreateObject`)
+	qw422016.N().S(bytesStr)
+	qw422016.N().S(`()
 }
 
 func init() {
@@ -77,6 +90,11 @@ func init() {
 `)
 	}
 	for _, wr := range tl1Wrappers {
+		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
+
+		if bytesVersion && !hasBytes {
+			continue
+		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
@@ -87,26 +105,30 @@ func init() {
 			}
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction`)
+				qw422016.N().S(bytesStr)
+				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)
 				if wr.WrLong != nil {
 					qw422016.N().S(`func() meta.Function { var ret`)
 					qw422016.N().S(` `)
-					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true))
 					qw422016.N().S(`; return &ret },`)
 				} else {
 					qw422016.N().S(`nil,`)
 				}
 			} else {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject(`)
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
+				qw422016.N().S(bytesStr)
+				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Object { var ret`)
 				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret }`)
 			}
 			qw422016.N().S(`)`)
@@ -119,11 +141,12 @@ func init() {
 `)
 	}
 	for _, wr := range tl2Wrappers {
+		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
+
+		if bytesVersion && !hasBytes {
+			continue
+		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			qw422016.N().S(``)
-			qw422016.N().S("`")
-			qw422016.N().S(``)
-			qw422016.N().S("`")
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
 				qw422016.N().Q(wr.tlName.String())
@@ -133,26 +156,30 @@ func init() {
 			}
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction`)
+				qw422016.N().S(bytesStr)
+				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)
 				if wr.WrLong != nil {
 					qw422016.N().S(`func() meta.Function { var ret`)
 					qw422016.N().S(` `)
-					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true))
 					qw422016.N().S(`; return &ret },`)
 				} else {
 					qw422016.N().S(`nil,`)
 				}
 			} else {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
+				qw422016.N().S(bytesStr)
+				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Object { var ret`)
 				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret }`)
 			}
 			qw422016.N().S(`)`)
@@ -161,11 +188,13 @@ func init() {
 		}
 		if _, ok := wr.trw.(*TypeRWUnion); ok {
 			qw422016.N().S(`    `)
-			qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+			qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
+			qw422016.N().S(bytesStr)
+			qw422016.N().S(`(`)
 			qw422016.N().Q(wr.tlName.String())
 			qw422016.N().S(`,func() meta.Object { var ret`)
 			qw422016.N().S(` `)
-			qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+			qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 			qw422016.N().S(`; return &ret })`)
 			qw422016.N().S(`
 `)
@@ -176,15 +205,15 @@ func init() {
 `)
 }
 
-func (gen *genGo) writegenerateFactory(qq422016 qtio422016.Writer, sortedImports []string, directImports *DirectImports) {
+func (gen *genGo) writegenerateFactory(qq422016 qtio422016.Writer, sortedImports []string, directImports *DirectImports, bytesVersion bool) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	gen.streamgenerateFactory(qw422016, sortedImports, directImports)
+	gen.streamgenerateFactory(qw422016, sortedImports, directImports, bytesVersion)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports) string {
+func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports, bytesVersion bool) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	gen.writegenerateFactory(qb422016, sortedImports, directImports)
+	gen.writegenerateFactory(qb422016, sortedImports, directImports, bytesVersion)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

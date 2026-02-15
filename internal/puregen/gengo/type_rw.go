@@ -200,6 +200,10 @@ func addBytes(val string, bytesVersion bool) string {
 	return ifString(bytesVersion, val+"Bytes", val)
 }
 
+func addBytesLower(val string, bytesVersion bool) string {
+	return ifString(bytesVersion, val+"_bytes", val)
+}
+
 func addBare(bare bool) string {
 	return ifString(bare, "", "Boxed")
 }

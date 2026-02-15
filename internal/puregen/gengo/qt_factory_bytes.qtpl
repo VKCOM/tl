@@ -1,6 +1,6 @@
 {%- func (gen *genGo) generateFactoryBytes(sortedImports []string, directImports *DirectImports) -%}
 {%s= HeaderComment %}
-package {%s FactoryGoPackageNameBytes %}
+package {%s FactoryGoPackageName %}_bytes
 
 import (
     "{%s= gen.MetaPackageName %}"
