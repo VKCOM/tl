@@ -245,10 +245,9 @@ func (item *Service5Insert) ReadResultWriteResultJSON(tctx *basictl.JSONWriteCon
 	return r, w, err
 }
 
-func (item *Service5Insert) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service5Insert) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
@@ -270,6 +269,24 @@ func (item *Service5Insert) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContex
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
+	return r, w, err
+}
+
+func (item *Service5Insert) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
+	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.writeResultJSON(jctx, w, ret)
+	return r, w, err
+}
+
+func (item *Service5Insert) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResultTL2(w, tctx, ret)
 	return r, w, err
 }
 
