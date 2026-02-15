@@ -428,7 +428,11 @@ func (item *`)
 		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
 		if !union.wr.wantsTL2 {
-			qw422016.N().S(`    return w
+			qw422016.N().S(`    panic(`)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`))
 `)
 		} else {
 			qw422016.N().S(`    var sizes, sizes2 []int

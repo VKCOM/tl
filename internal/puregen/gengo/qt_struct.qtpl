@@ -1238,7 +1238,7 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !struct_.wr.wantsTL2 -%}
-    return w
+    panic({%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
 {%- else -%}
     var sizes []int
     if ctx != nil {
@@ -1426,7 +1426,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
         {%- if !struct_.wr.wantsTL2 -%}
-    return w
+        panic({%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
         {%- else -%}
     var sizes, sizes2 []int
     if ctx != nil {

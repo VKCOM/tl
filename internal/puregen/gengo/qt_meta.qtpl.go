@@ -144,7 +144,9 @@ type TLItem struct {
     tag                uint32
     annotations        uint32
     tlName             string
-    isTL2              bool
+
+    hasTL1             bool
+    hasTL2             bool
 
     resultTypeContainsUnionTypes bool
     argumentsTypesContainUnionTypes bool
@@ -163,7 +165,10 @@ type TLItem struct {
 
 func (item TLItem) TLTag() uint32            { return item.tag }
 func (item TLItem) TLName() string           { return item.tlName }
-func (item TLItem) IsTL2() bool              { return item.isTL2 }
+// true for TL1-originated types
+func (item TLItem) HasTL1() bool              { return item.hasTL1 }
+// true for TL2-originated types and for TL1-originated types if in TL2 generation whitelist
+func (item TLItem) HasTL2() bool              { return item.hasTL2 }
 func (item TLItem) CreateObject() Object     {
     if item.createFunction != nil {
         return item.createFunction()
@@ -406,7 +411,9 @@ func init() {
 			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", isTL2: false, resultTypeContainsUnionTypes:`)
+			qw422016.N().S(`", hasTL1:true, hasTL2:`)
+			qw422016.N().V(wr.wantsTL2)
+			qw422016.N().S(`, resultTypeContainsUnionTypes:`)
 			qw422016.N().V(resultTypeContainsUnionTypes)
 			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
 			qw422016.N().V(argumentsTypesContainUnionTypes)
@@ -438,7 +445,7 @@ func init() {
 			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", isTL2: true, resultTypeContainsUnionTypes:`)
+			qw422016.N().S(`", hasTL1: false, hasTL2: true, resultTypeContainsUnionTypes:`)
 			qw422016.N().V(resultTypeContainsUnionTypes)
 			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
 			qw422016.N().V(argumentsTypesContainUnionTypes)
@@ -451,7 +458,7 @@ func init() {
 			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})`)
+			qw422016.N().S(`", hasTL1: false, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})`)
 		}
 		qw422016.N().S(`
 `)
