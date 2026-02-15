@@ -333,39 +333,45 @@ func fillFunction(item *TLItem)  {
 	item.createFunction = pleaseImportFactoryFunction
 }
 
-func init() {
-{%- code
-    tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
--%}
-{%- if len(tl1Wrappers) != 0 -%}
-// TL
+{%- endfunc -%}
+
+{%- func (gen *genGo) generateMetaInit(addHeader bool, forNamespace func(ns string)bool, hasTypes *bool) -%}
+{%- if addHeader -%}
+    {%s= HeaderComment %}
+    package {%s MetaGoPackageName %}
 {%- endif -%}
-{%- for _, wr := range tl1Wrappers -%}
-{%- stripspace -%}
+
+func init() {
+{%- for _, wr := range gen.generatedTypesList -%}
+    {%- if !forNamespace(wr.tlName.Namespace) -%}
+        {%- continue -%}
+    {%- endif -%}
+    {%- if !wr.pureType.Common().IsTopLevel() -%}
+        {%- continue -%}
+    {%- endif -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
         {%- code
             resultTypeContainsUnionTypes := false
             argumentsTypesContainUnionTypes := false
+            if hasTypes != nil {
+                *hasTypes = true
+            }
         -%}
         {%- if fun.ResultType != nil -%}
             {%- code
                 resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
                 argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
             -%}
-        fillFunction(
-        {%- else -%}
-        fillObject(
-        {%- endif -%}
+        fillFunction({%- else -%}fillObject({%- endif -%}
         &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", hasTL1:true, hasTL2:{%v= wr.wantsTL2 %}, resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}, argumentsTypesContainUnionTypes: {%v= argumentsTypesContainUnionTypes %}})
     {%- endif -%}
-{%- endstripspace -%}
-
 {%- endfor -%}
-{%- if len(tl2Wrappers) != 0 -%}
-// TL2
-{%- endif -%}
+{%- comment %}
 {%- for _, wr := range tl2Wrappers -%}
 {%- stripspace -%}
+    {%- if gen.options.Go.SplitInternal && startsWithAnyLetter(wr.tlName.Namespace) -%}
+        {%- continue -%}
+    {%- endif -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
         {%- code
             resultTypeContainsUnionTypes := false
@@ -389,6 +395,6 @@ func init() {
 {%- endstripspace -%}
 
 {%- endfor -%}
+{% endcomment -%}
 }
-
 {%- endfunc -%}

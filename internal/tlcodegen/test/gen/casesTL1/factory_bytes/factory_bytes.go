@@ -50,7 +50,6 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	// TL
 	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testArray", func() meta.Object { var ret tlCasesBytesTestArray.CasesBytesTestArrayBytes; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testDictInt", func() meta.Object { var ret tlCasesBytesTestDictInt.CasesBytesTestDictIntBytes; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testDictString", func() meta.Object { var ret tlCasesBytesTestDictString.CasesBytesTestDictStringBytes; return &ret })

@@ -46,13 +46,10 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-{%- code
-    tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
--%}
-{%- if len(tl1Wrappers) != 0 -%}
-// TL
-{%- endif -%}
-{%- for _, wr := range tl1Wrappers  -%}
+{%- for _, wr := range gen.generatedTypesList -%}
+    {%- if !wr.pureType.Common().IsTopLevel() -%}
+        {%- continue -%}
+    {%- endif -%}
     {%- code hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion -%}
     {%- if bytesVersion && !hasBytes -%}
         {%- continue -%}
@@ -78,9 +75,7 @@ func init() {
         ){% endstripspace %}
     {%- endif -%}
 {%- endfor -%}
-{%- if len(tl2Wrappers) != 0 -%}
-// TL2
-{%- endif -%}
+{%- comment %}
 {%- for _, wr := range tl2Wrappers  -%}
     {%- code hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion -%}
     {%- if bytesVersion && !hasBytes -%}
@@ -112,6 +107,7 @@ func init() {
         ){% endstripspace %}
     {%- endif -%}
 {%- endfor -%}
+{% endcomment -%}
 }
 
 {%- endfunc -%}

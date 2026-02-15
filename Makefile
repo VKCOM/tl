@@ -50,7 +50,6 @@ gen_dev: qtpl gen
 .PHONY: goldmaster_nocompile
 goldmaster_nocompile: build
 	@./target/bin/tl2gen --language=go --split-internal -v \
-		--newDicts \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/casesTL1 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
@@ -61,7 +60,6 @@ goldmaster_nocompile: build
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tl2gen --language=go --split-internal -v \
-		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/cases \
@@ -73,7 +71,6 @@ goldmaster_nocompile: build
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tl2gen --language=go --split-internal -v \
-		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster \
@@ -88,7 +85,6 @@ goldmaster_nocompile: build
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tl2gen --language=go -v \
-		--newDicts \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
@@ -226,7 +222,6 @@ testpure: build
 		./cmd/tl2client/test.tl
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
-		--newDicts \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/gennew \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \

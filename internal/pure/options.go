@@ -22,7 +22,6 @@ type OptionsKernel struct {
 	// TODO - remove after migration code stabilized
 	TL2MigrationDevMode bool
 	// TODO - quickly adapt new rules, remove these options
-	NewDicts    bool
 	NewBrackets bool // TODO - implement new brackets
 }
 
@@ -31,16 +30,11 @@ func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 		"treat all warnings as errors")
 	f.StringVar(&opt.TypesWhiteList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
-	generateTL2 := false
-	f.BoolVar(&generateTL2, "tl2-generate", false,
-		"this option is ignored, use tl2WhiteList instead")
 	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 
 	f.BoolVar(&opt.TL2MigrationDevMode, "tl2migrationdevmode", false,
 		"during migration, do not overwrite existing files")
-	f.BoolVar(&opt.NewDicts, "newDicts", false,
-		"generate dictionaries in pure kernel")
 	f.BoolVar(&opt.NewBrackets, "newBrackets", false,
 		"generate vectors/tuples in pure kernel")
 }

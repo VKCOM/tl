@@ -83,13 +83,10 @@ func CreateObjectFromName(name string) meta.Object {
 
 func init() {
 `)
-	tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
-
-	if len(tl1Wrappers) != 0 {
-		qw422016.N().S(`// TL
-`)
-	}
-	for _, wr := range tl1Wrappers {
+	for _, wr := range gen.generatedTypesList {
+		if !wr.pureType.Common().IsTopLevel() {
+			continue
+		}
 		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
 
 		if bytesVersion && !hasBytes {
@@ -132,66 +129,6 @@ func init() {
 				qw422016.N().S(`; return &ret }`)
 			}
 			qw422016.N().S(`)`)
-			qw422016.N().S(`
-`)
-		}
-	}
-	if len(tl2Wrappers) != 0 {
-		qw422016.N().S(`// TL2
-`)
-	}
-	for _, wr := range tl2Wrappers {
-		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
-
-		if bytesVersion && !hasBytes {
-			continue
-		}
-		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			if wr.unionParent != nil {
-				continue
-			}
-			qw422016.N().S(`    `)
-			if fun.ResultType != nil {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction`)
-				qw422016.N().S(bytesStr)
-				qw422016.N().S(`(`)
-				qw422016.N().Q(wr.tlName.String())
-				qw422016.N().S(`,func() meta.Function { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret },`)
-				if wr.WrLong != nil {
-					qw422016.N().S(`func() meta.Function { var ret`)
-					qw422016.N().S(` `)
-					qw422016.N().S(wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true))
-					qw422016.N().S(`; return &ret },`)
-				} else {
-					qw422016.N().S(`nil,`)
-				}
-			} else {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
-				qw422016.N().S(bytesStr)
-				qw422016.N().S(`(`)
-				qw422016.N().Q(wr.tlName.String())
-				qw422016.N().S(`,func() meta.Object { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret }`)
-			}
-			qw422016.N().S(`)`)
-			qw422016.N().S(`
-`)
-		}
-		if _, ok := wr.trw.(*TypeRWUnion); ok {
-			qw422016.N().S(`    `)
-			qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
-			qw422016.N().S(bytesStr)
-			qw422016.N().S(`(`)
-			qw422016.N().Q(wr.tlName.String())
-			qw422016.N().S(`,func() meta.Object { var ret`)
-			qw422016.N().S(` `)
-			qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
-			qw422016.N().S(`; return &ret })`)
 			qw422016.N().S(`
 `)
 		}

@@ -48,7 +48,6 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	// TL
 	meta.SetGlobalFactoryCreateForObjectBytes("ab.topLevel2", func() meta.Object { var ret tlAbTopLevel2.AbTopLevel2Bytes; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes("ab.useDictString", func() meta.Object { var ret tlAbUseDictString.AbUseDictStringBytes; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes("cd.response", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponseBytes; return &ret })

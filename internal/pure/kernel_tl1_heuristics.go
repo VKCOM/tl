@@ -19,7 +19,7 @@ func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
 }
 
 func (k *Kernel) IsDict(kt *KernelType) (bool, *KernelType) {
-	if !k.opts.NewDicts || kt.originTL2 || len(kt.combTL1) != 1 ||
+	if kt.originTL2 || len(kt.combTL1) != 1 ||
 		!strings.Contains(strings.ToLower(kt.canonicalName.Name), "dictionary") {
 		return false, nil
 	}
