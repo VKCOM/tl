@@ -79,6 +79,10 @@ type TLItem struct {
 	resultTypeContainsUnionTypes    bool
 	argumentsTypesContainUnionTypes bool
 
+	// either createObject != nil or createFunction != nil for object/function respectively
+	// also, createFunctionLong can be != nil if there is long adapter (legacy to be removed soon)
+	// also, createObjectBytes, createFunctionBytes, createFunctionLongBytes
+	// can be != nil independently, if factory_bytes is imported
 	createFunction          func() Function
 	createFunctionLong      func() Function
 	createObject            func() Object
@@ -96,21 +100,25 @@ func (item TLItem) CreateObject() Object {
 	}
 	return item.createObject()
 }
+
+// used in TL generator tests only, do not use in product code
 func (item TLItem) CreateObjectBytes() Object {
 	if item.createFunctionBytes != nil {
 		return item.createFunctionBytes()
 	}
-	if item.createObjectBytes != nil {
-		return item.createObjectBytes()
-	}
 	if item.createFunction != nil {
 		return item.createFunction()
+	}
+	if item.createObjectBytes != nil {
+		return item.createObjectBytes()
 	}
 	return item.createObject()
 }
 
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
+
+// used in TL generator tests only, do not use in product code
 func (item TLItem) CreateFunctionBytes() Function {
 	if item.createFunctionBytes != nil {
 		return item.createFunctionBytes()
@@ -124,12 +132,15 @@ func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesC
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
-func (item TLItem) CreateFunctionLongBytes() Function {
-	if item.createFunctionLongBytes != nil {
-		return item.createFunctionLongBytes()
-	}
-	return item.createFunctionLong()
-}
+
+// we simplify interface by commenting this method no one yet needs.
+// hopefully it will be removed together with long adapters code
+// func (item TLItem) CreateFunctionLongBytes() Function {
+//     if item.createFunctionLongBytes != nil {
+//         return item.createFunctionLongBytes()
+//     }
+//     return item.createFunctionLong()
+// }
 
 // Annotations
 func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
@@ -139,7 +150,7 @@ func (item TLItem) AnnotationRead() bool      { return item.annotations&0x8 != 0
 func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 0 }
 func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
-// TLItem serves as a single type for all enum values
+// TLItem serves as a single type for all TL1 enum values
 func (item *TLItem) Reset()                                {}
 func (item *TLItem) FillRandom(rg *basictl.RandGenerator)  {}
 func (item *TLItem) Read(w []byte) ([]byte, error)         { return w, nil }
@@ -199,7 +210,7 @@ var itemsByName = map[string]*TLItem{}
 // Do not call directly, called by factory init code
 func SetGlobalFactoryCreateForFunction(name string, createFunction func() Function, createFunctionLong func() Function) {
 	item := itemsByName[name]
-	if item == nil || item.createFunction == nil {
+	if item == nil || item.createFunction == nil { // only replace !nil createFunction
 		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
 	item.createFunction = createFunction
@@ -209,7 +220,7 @@ func SetGlobalFactoryCreateForFunction(name string, createFunction func() Functi
 // Do not call directly, called by factory init code
 func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
 	item := itemsByName[name]
-	if item == nil {
+	if item == nil || item.createObject == nil { // only replace !nil createObject
 		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
 	item.createObject = createObject
@@ -218,38 +229,29 @@ func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
 // Do not call directly, called by factory init code
 func SetGlobalFactoryCreateForEnumElement(name string) {
 	item := itemsByName[name]
-	if item == nil {
+	if item == nil || item.createObject == nil { // only replace !nil createObject
 		panic(fmt.Sprintf("factory cannot find enum %s to set", name))
 	}
 	item.createObject = func() Object { return item }
 }
 
 // Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForFunctionBytes(name string, createFunction func() Function, createFunctionLong func() Function) {
+func SetGlobalFactoryCreateForFunctionBytes(name string, createFunctionBytes func() Function, createFunctionLongBytes func() Function) {
 	item := itemsByName[name]
-	if item == nil || item.createFunction == nil {
+	if item == nil || item.createFunction == nil { // only replace !nil createFunction
 		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
-	item.createFunctionBytes = createFunction
-	item.createFunctionLongBytes = createFunctionLong
+	item.createFunctionBytes = createFunctionBytes
+	item.createFunctionLongBytes = createFunctionLongBytes
 }
 
 // Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForObjectBytes(name string, createObject func() Object) {
+func SetGlobalFactoryCreateForObjectBytes(name string, createObjectBytes func() Object) {
 	item := itemsByName[name]
-	if item == nil {
+	if item == nil || item.createObject == nil { // only replace !nil createObject
 		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
-	item.createObjectBytes = createObject
-}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForEnumElementBytes(name string) {
-	item := itemsByName[name]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find enum %s to set", name))
-	}
-	item.createObjectBytes = func() Object { return item }
+	item.createObjectBytes = createObjectBytes
 }
 
 func pleaseImportFactoryObject() Object {
