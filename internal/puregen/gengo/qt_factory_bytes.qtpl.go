@@ -18,8 +18,8 @@ func (gen *genGo) streamgenerateFactoryBytes(qw422016 *qt422016.Writer, sortedIm
 	qw422016.N().S(HeaderComment)
 	qw422016.N().S(`
 package `)
-	qw422016.E().S(FactoryGoPackageNameBytes)
-	qw422016.N().S(`
+	qw422016.E().S(FactoryGoPackageName)
+	qw422016.N().S(`_bytes
 
 import (
     "`)
