@@ -234,7 +234,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
 {%- endif -%}
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !union.wr.wantsTL2 -%}
-    return w
+    panic({%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
 {%- else -%}
     var sizes, sizes2 []int
     if ctx != nil {
