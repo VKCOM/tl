@@ -15,11 +15,11 @@ import (
 
 var _ = basictl.NatWrite
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringReset(m map[int64][]string) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringReset(m map[int64][]string) {
 	clear(m)
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringFillRandom(rg *basictl.RandGenerator, m *map[int64][]string, nat_t uint32) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringFillRandom(rg *basictl.RandGenerator, m *map[int64][]string, nat_t uint32) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[int64][]string, l)
@@ -30,7 +30,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringFillRandom(rg *basictl.RandGe
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorLongKeyDictionaryFieldTupleStringRead(w []byte, m *map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringRead(w []byte, m *map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -56,7 +56,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringRead(w []byte, m *map[int64][
 	return w, nil
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringWrite(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringWrite(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w, nil
@@ -78,7 +78,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringWrite(w []byte, m map[int64][
 	return w, nil
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int64][]string) ([]int, int) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int64][]string) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -112,7 +112,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringCalculateLayout(sizes []int, 
 	return sizes, currentSize
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int64][]string) ([]byte, []int, int) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int64][]string) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -149,7 +149,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringInternalWriteTL2(w []byte, si
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringInternalReadTL2(r []byte, m *map[int64][]string) (_ []byte, err error) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringInternalReadTL2(r []byte, m *map[int64][]string) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -190,7 +190,7 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringInternalReadTL2(r []byte, m *
 	return r, nil
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64][]string, nat_t uint32) error {
+func BuiltinDictLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64][]string, nat_t uint32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int64][]string, 0)
@@ -228,11 +228,11 @@ func BuiltinVectorLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx *basictl
 	return nil
 }
 
-func BuiltinVectorLongKeyDictionaryFieldTupleStringWriteJSON(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSON(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorLongKeyDictionaryFieldTupleStringWriteJSONOpt(&tctx, w, m, nat_t)
+	return BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSONOpt(&tctx, w, m, nat_t)
 }
-func BuiltinVectorLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

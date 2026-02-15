@@ -15,11 +15,11 @@ import (
 
 var _ = basictl.NatWrite
 
-func BuiltinVectorDictionaryFieldStringReset(m map[string]string) {
+func BuiltinDictDictionaryFieldStringReset(m map[string]string) {
 	clear(m)
 }
 
-func BuiltinVectorDictionaryFieldStringFillRandom(rg *basictl.RandGenerator, m *map[string]string) {
+func BuiltinDictDictionaryFieldStringFillRandom(rg *basictl.RandGenerator, m *map[string]string) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[string]string, l)
@@ -30,7 +30,7 @@ func BuiltinVectorDictionaryFieldStringFillRandom(rg *basictl.RandGenerator, m *
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldStringRead(w []byte, m *map[string]string) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -56,7 +56,7 @@ func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ [
 	return w, nil
 }
 
-func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []byte {
+func BuiltinDictDictionaryFieldStringWrite(w []byte, m map[string]string) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -74,7 +74,7 @@ func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []by
 	return w
 }
 
-func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]string) ([]int, int) {
+func BuiltinDictDictionaryFieldStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]string) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -106,7 +106,7 @@ func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, optimizeEmpt
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]string) ([]byte, []int, int) {
+func BuiltinDictDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]string) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -141,7 +141,7 @@ func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, o
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldStringInternalReadTL2(r []byte, m *map[string]string) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldStringInternalReadTL2(r []byte, m *map[string]string) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -182,7 +182,7 @@ func BuiltinVectorDictionaryFieldStringInternalReadTL2(r []byte, m *map[string]s
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
+func BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]string, 0)
@@ -212,11 +212,11 @@ func BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadCon
 	return nil
 }
 
-func BuiltinVectorDictionaryFieldStringWriteJSON(w []byte, m map[string]string) []byte {
+func BuiltinDictDictionaryFieldStringWriteJSON(w []byte, m map[string]string) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(&tctx, w, m)
+	return BuiltinDictDictionaryFieldStringWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
+func BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -233,7 +233,7 @@ func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteConte
 	return append(w, '}')
 }
 
-func BuiltinVectorDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryFieldStringBytes) {
+func BuiltinDictDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryFieldStringBytes) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryFieldStringBytes, l)
@@ -243,7 +243,7 @@ func BuiltinVectorDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator
 	rg.DecreaseDepth()
 }
 
-func BuiltinVectorDictionaryFieldStringBytesRead(w []byte, vec *[]DictionaryFieldStringBytes) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldStringBytesRead(w []byte, vec *[]DictionaryFieldStringBytes) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -264,7 +264,7 @@ func BuiltinVectorDictionaryFieldStringBytesRead(w []byte, vec *[]DictionaryFiel
 	return w, nil
 }
 
-func BuiltinVectorDictionaryFieldStringBytesWrite(w []byte, vec []DictionaryFieldStringBytes) []byte {
+func BuiltinDictDictionaryFieldStringBytesWrite(w []byte, vec []DictionaryFieldStringBytes) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = elem.Write(w)
@@ -272,7 +272,7 @@ func BuiltinVectorDictionaryFieldStringBytesWrite(w []byte, vec []DictionaryFiel
 	return w
 }
 
-func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]int, int) {
+func BuiltinDictDictionaryFieldStringBytesCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -296,7 +296,7 @@ func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, optimiz
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]byte, []int, int) {
+func BuiltinDictDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]DictionaryFieldStringBytes) ([]byte, []int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -324,7 +324,7 @@ func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []i
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]DictionaryFieldStringBytes) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]DictionaryFieldStringBytes) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -359,7 +359,7 @@ func BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]Dic
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryFieldStringBytes) error {
+func BuiltinDictDictionaryFieldStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryFieldStringBytes) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -389,11 +389,11 @@ func BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx *basictl.JSONRe
 	return nil
 }
 
-func BuiltinVectorDictionaryFieldStringBytesWriteJSON(w []byte, vec []DictionaryFieldStringBytes) []byte {
+func BuiltinDictDictionaryFieldStringBytesWriteJSON(w []byte, vec []DictionaryFieldStringBytes) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(&tctx, w, vec)
+	return BuiltinDictDictionaryFieldStringBytesWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryFieldStringBytes) []byte {
+func BuiltinDictDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryFieldStringBytes) []byte {
 	w = append(w, '{')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -404,11 +404,11 @@ func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWrite
 	return append(w, '}')
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(m map[string]UsefulServiceUserEntityPaymentItem) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(m map[string]UsefulServiceUserEntityPaymentItem) {
 	clear(m)
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basictl.RandGenerator, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basictl.RandGenerator, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[string]UsefulServiceUserEntityPaymentItem, l)
@@ -419,7 +419,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRand
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -445,7 +445,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w [
 	return w, nil
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -463,7 +463,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w 
 	return w
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]int, int) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -495,7 +495,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculat
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]byte, []int, int) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]UsefulServiceUserEntityPaymentItem) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -530,7 +530,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r []byte, m *map[string]UsefulServiceUserEntityPaymentItem) (_ []byte, err error) {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r []byte, m *map[string]UsefulServiceUserEntityPaymentItem) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -571,7 +571,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) error {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]UsefulServiceUserEntityPaymentItem, 0)
@@ -601,11 +601,11 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSON
 	return nil
 }
 
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&tctx, w, m, nat_t)
+	return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&tctx, w, m, nat_t)
 }
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

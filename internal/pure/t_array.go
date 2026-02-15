@@ -167,7 +167,7 @@ func (k *Kernel) addTL1Brackets() {
 		tl1Names:       map[string]struct{}{"__dict": {}},
 		tl2Names:       map[string]struct{}{},
 		canonicalName:  tlast.Name{Name: "__dict"},
-		historicalName: tlast.Name{Name: "BuiltinVector"}, // BuiltinDict
+		historicalName: tlast.Name{Name: "BuiltinDict"},
 		canBeBare:      true,
 		targs:          make([]KernelTypeTarg, 1),
 	}

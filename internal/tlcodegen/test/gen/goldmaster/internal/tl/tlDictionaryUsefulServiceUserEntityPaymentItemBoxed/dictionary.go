@@ -9,7 +9,7 @@ package tlDictionaryUsefulServiceUserEntityPaymentItemBoxed
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceUserEntityPaymentItem"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -24,17 +24,17 @@ func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLTag() uint32  { retur
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Reset() {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(*ptr)
+	tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(*ptr)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, ptr, nat_t)
+	tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	return tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
+	return tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -43,7 +43,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_t uint32) []byte {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	return tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
+	return tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -64,7 +64,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteBoxed(w []by
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	if err := tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+	if err := tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -82,7 +82,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byt
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
+	w = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
 	return w
 }
 
@@ -94,9 +94,9 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
 
 	internal.Unused(ptr)
 	internal.Unused(currentSize)
@@ -109,7 +109,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil

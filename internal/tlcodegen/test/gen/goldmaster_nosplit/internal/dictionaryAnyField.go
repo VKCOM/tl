@@ -15,11 +15,11 @@ import (
 
 var _ = basictl.NatWrite
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntReset(m map[int32]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntReset(m map[int32]PairIntInt) {
 	clear(m)
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]PairIntInt) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[int32]PairIntInt, l)
@@ -30,7 +30,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntFillRandom(rg *basictl.RandGene
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntRead(w []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntRead(w []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -56,7 +56,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntRead(w []byte, m *map[int32]Pai
 	return w, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntWrite(w []byte, m map[int32]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntWrite(w []byte, m map[int32]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -76,7 +76,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntWrite(w []byte, m map[int32]Pai
 	return w
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]int, int) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -110,7 +110,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes []int, op
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]byte, []int, int) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int32]PairIntInt) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -147,7 +147,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w []byte, size
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalReadTL2(r []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntInternalReadTL2(r []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -188,7 +188,7 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntInternalReadTL2(r []byte, m *ma
 	return r, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]PairIntInt) error {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]PairIntInt) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int32]PairIntInt, 0)
@@ -226,11 +226,11 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx *basictl.J
 	return nil
 }
 
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntWriteJSON(w []byte, m map[int32]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntWriteJSON(w []byte, m map[int32]PairIntInt) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryAnyFieldIntPairIntIntWriteJSONOpt(&tctx, w, m)
+	return BuiltinDictDictionaryAnyFieldIntPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int32]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int32]PairIntInt) []byte {
 	keys := make([]int32, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -250,11 +250,11 @@ func BuiltinVectorDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx *basictl.JSON
 	return append(w, '}')
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntReset(m map[int64]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntReset(m map[int64]PairIntInt) {
 	clear(m)
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64]PairIntInt) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[int64]PairIntInt, l)
@@ -265,7 +265,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntFillRandom(rg *basictl.RandGen
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntRead(w []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntRead(w []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -291,7 +291,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntRead(w []byte, m *map[int64]Pa
 	return w, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntWrite(w []byte, m map[int64]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntWrite(w []byte, m map[int64]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -311,7 +311,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntWrite(w []byte, m map[int64]Pa
 	return w
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]int, int) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -345,7 +345,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntCalculateLayout(sizes []int, o
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]byte, []int, int) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[int64]PairIntInt) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -382,7 +382,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntInternalWriteTL2(w []byte, siz
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntInternalReadTL2(r []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntInternalReadTL2(r []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -423,7 +423,7 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntInternalReadTL2(r []byte, m *m
 	return r, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]PairIntInt) error {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]PairIntInt) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int64]PairIntInt, 0)
@@ -461,11 +461,11 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntReadJSONGeneral(tctx *basictl.
 	return nil
 }
 
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntWriteJSON(w []byte, m map[int64]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntWriteJSON(w []byte, m map[int64]PairIntInt) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryAnyFieldLongPairIntIntWriteJSONOpt(&tctx, w, m)
+	return BuiltinDictDictionaryAnyFieldLongPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryAnyFieldLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64]PairIntInt) []byte {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -485,11 +485,11 @@ func BuiltinVectorDictionaryAnyFieldLongPairIntIntWriteJSONOpt(tctx *basictl.JSO
 	return append(w, '}')
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntReset(m map[string]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntReset(m map[string]PairIntInt) {
 	clear(m)
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[string]PairIntInt) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[string]PairIntInt) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
 	*m = make(map[string]PairIntInt, l)
@@ -500,7 +500,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntFillRandom(rg *basictl.RandG
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntRead(w []byte, m *map[string]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntRead(w []byte, m *map[string]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -526,7 +526,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntRead(w []byte, m *map[string
 	return w, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntWrite(w []byte, m map[string]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntWrite(w []byte, m map[string]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -544,7 +544,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntWrite(w []byte, m map[string
 	return w
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]int, int) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntCalculateLayout(sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -576,7 +576,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntCalculateLayout(sizes []int,
 	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]byte, []int, int) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[string]PairIntInt) ([]byte, []int, int) {
 	if len(*m) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -611,7 +611,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntInternalWriteTL2(w []byte, s
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntInternalReadTL2(r []byte, m *map[string]PairIntInt) (_ []byte, err error) {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntInternalReadTL2(r []byte, m *map[string]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -652,7 +652,7 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntInternalReadTL2(r []byte, m 
 	return r, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]PairIntInt) error {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]PairIntInt) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]PairIntInt, 0)
@@ -682,11 +682,11 @@ func BuiltinVectorDictionaryAnyFieldStringPairIntIntReadJSONGeneral(tctx *basict
 	return nil
 }
 
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntWriteJSON(w []byte, m map[string]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntWriteJSON(w []byte, m map[string]PairIntInt) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryAnyFieldStringPairIntIntWriteJSONOpt(&tctx, w, m)
+	return BuiltinDictDictionaryAnyFieldStringPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryAnyFieldStringPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]PairIntInt) []byte {
+func BuiltinDictDictionaryAnyFieldStringPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]PairIntInt) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

@@ -20,17 +20,17 @@ func (DictionaryAnyIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyIntInt) Reset() {
 	ptr := (*map[int32]int32)(item)
-	BuiltinVectorDictionaryAnyFieldIntIntReset(*ptr)
+	BuiltinDictDictionaryAnyFieldIntIntReset(*ptr)
 }
 
 func (item *DictionaryAnyIntInt) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[int32]int32)(item)
-	BuiltinVectorDictionaryAnyFieldIntIntFillRandom(rg, ptr)
+	BuiltinDictDictionaryAnyFieldIntIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyIntInt) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[int32]int32)(item)
-	return BuiltinVectorDictionaryAnyFieldIntIntRead(w, ptr)
+	return BuiltinDictDictionaryAnyFieldIntIntRead(w, ptr)
 }
 
 func (item *DictionaryAnyIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -39,7 +39,7 @@ func (item *DictionaryAnyIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryAnyIntInt) Write(w []byte) []byte {
 	ptr := (*map[int32]int32)(item)
-	return BuiltinVectorDictionaryAnyFieldIntIntWrite(w, *ptr)
+	return BuiltinDictDictionaryAnyFieldIntIntWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -68,7 +68,7 @@ func (item *DictionaryAnyIntInt) ReadJSON(legacyTypeNames bool, in *basictl.Json
 
 func (item *DictionaryAnyIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[int32]int32)(item)
-	if err := BuiltinVectorDictionaryAnyFieldIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryAnyFieldIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -86,7 +86,7 @@ func (item *DictionaryAnyIntInt) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryAnyIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[int32]int32)(item)
-	w = BuiltinVectorDictionaryAnyFieldIntIntWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryAnyFieldIntIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyIntInt) MarshalJSON() ([]byte, error) {
@@ -112,12 +112,12 @@ func (item *DictionaryAnyIntIntBytes) Reset() {
 
 func (item *DictionaryAnyIntIntBytes) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	BuiltinVectorDictionaryAnyFieldIntIntBytesFillRandom(rg, ptr)
+	BuiltinDictDictionaryAnyFieldIntIntBytesFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) Read(w []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	return BuiltinVectorDictionaryAnyFieldIntIntBytesRead(w, ptr)
+	return BuiltinDictDictionaryAnyFieldIntIntBytesRead(w, ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -126,7 +126,7 @@ func (item *DictionaryAnyIntIntBytes) WriteGeneral(w []byte) (_ []byte, err erro
 
 func (item *DictionaryAnyIntIntBytes) Write(w []byte) []byte {
 	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	return BuiltinVectorDictionaryAnyFieldIntIntBytesWrite(w, *ptr)
+	return BuiltinDictDictionaryAnyFieldIntIntBytesWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -155,7 +155,7 @@ func (item *DictionaryAnyIntIntBytes) ReadJSON(legacyTypeNames bool, in *basictl
 
 func (item *DictionaryAnyIntIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	if err := BuiltinVectorDictionaryAnyFieldIntIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryAnyFieldIntIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -173,7 +173,7 @@ func (item *DictionaryAnyIntIntBytes) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryAnyIntIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	w = BuiltinVectorDictionaryAnyFieldIntIntBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryAnyFieldIntIntBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyIntIntBytes) MarshalJSON() ([]byte, error) {

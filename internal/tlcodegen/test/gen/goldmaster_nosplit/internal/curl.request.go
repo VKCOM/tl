@@ -44,7 +44,7 @@ func (item *CurlRequest) SetHeaders(v map[string]string) {
 	item.tl2mask0 |= 1
 }
 func (item *CurlRequest) ClearHeaders() {
-	BuiltinVectorDictionaryFieldStringReset(item.Headers)
+	BuiltinDictDictionaryFieldStringReset(item.Headers)
 	item.FieldMask &^= 1 << 0
 	item.tl2mask0 &^= 1
 }
@@ -210,7 +210,7 @@ func (item *CurlRequest) Reset() {
 	item.FieldMask = 0
 	item.Method = ""
 	item.Url = ""
-	BuiltinVectorDictionaryFieldStringReset(item.Headers)
+	BuiltinDictDictionaryFieldStringReset(item.Headers)
 	item.Body = ""
 	item.Timeout = 0
 	item.TimeoutConnection = 0
@@ -236,9 +236,9 @@ func (item *CurlRequest) FillRandom(rg *basictl.RandGenerator) {
 	item.Url = basictl.RandomString(rg)
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinVectorDictionaryFieldStringFillRandom(rg, &item.Headers)
+		BuiltinDictDictionaryFieldStringFillRandom(rg, &item.Headers)
 	} else {
-		BuiltinVectorDictionaryFieldStringReset(item.Headers)
+		BuiltinDictDictionaryFieldStringReset(item.Headers)
 	}
 	if item.FieldMask&(1<<1) != 0 {
 		item.tl2mask0 |= 2
@@ -334,11 +334,11 @@ func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {
 	}
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinVectorDictionaryFieldStringRead(w, &item.Headers); err != nil {
+		if w, err = BuiltinDictDictionaryFieldStringRead(w, &item.Headers); err != nil {
 			return w, err
 		}
 	} else {
-		BuiltinVectorDictionaryFieldStringReset(item.Headers)
+		BuiltinDictDictionaryFieldStringReset(item.Headers)
 	}
 	if item.FieldMask&(1<<1) != 0 {
 		item.tl2mask0 |= 2
@@ -456,7 +456,7 @@ func (item *CurlRequest) Write(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Method)
 	w = basictl.StringWrite(w, item.Url)
 	if item.FieldMask&(1<<0) != 0 {
-		w = BuiltinVectorDictionaryFieldStringWrite(w, item.Headers)
+		w = BuiltinDictDictionaryFieldStringWrite(w, item.Headers)
 	}
 	if item.FieldMask&(1<<1) != 0 {
 		w = basictl.StringWrite(w, item.Body)
@@ -783,7 +783,7 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propHeadersPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "headers")
 				}
-				if err := BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, &item.Headers); err != nil {
+				if err := BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, &item.Headers); err != nil {
 					return err
 				}
 				propHeadersPresented = true
@@ -911,7 +911,7 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 		item.Url = ""
 	}
 	if !propHeadersPresented {
-		BuiltinVectorDictionaryFieldStringReset(item.Headers)
+		BuiltinDictDictionaryFieldStringReset(item.Headers)
 	}
 	if !propBodyPresented {
 		item.Body = ""
@@ -1074,7 +1074,7 @@ func (item *CurlRequest) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	if item.FieldMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"headers":`...)
-		w = BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx, w, item.Headers)
+		w = BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, item.Headers)
 	}
 	if item.FieldMask&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -1177,7 +1177,7 @@ func (item *CurlRequest) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		lastUsedByte = currentSize
 	}
 	if item.tl2mask0&1 != 0 {
-		sizes, sz = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, false, &item.Headers)
+		sizes, sz = BuiltinDictDictionaryFieldStringCalculateLayout(sizes, false, &item.Headers)
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -1281,7 +1281,7 @@ func (item *CurlRequest) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		currentBlock |= 8
 	}
 	if item.tl2mask0&1 != 0 {
-		w, sizes, _ = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, false, &item.Headers)
+		w, sizes, _ = BuiltinDictDictionaryFieldStringInternalWriteTL2(w, sizes, false, &item.Headers)
 		currentBlock |= 16
 	}
 	if item.tl2mask0&2 != 0 {
@@ -1435,11 +1435,11 @@ func (item *CurlRequest) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	if block&16 != 0 {
 		item.tl2mask0 |= 1
-		if currentR, err = BuiltinVectorDictionaryFieldStringInternalReadTL2(currentR, &item.Headers); err != nil {
+		if currentR, err = BuiltinDictDictionaryFieldStringInternalReadTL2(currentR, &item.Headers); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinVectorDictionaryFieldStringReset(item.Headers)
+		BuiltinDictDictionaryFieldStringReset(item.Headers)
 	}
 	if block&32 != 0 {
 		item.tl2mask0 |= 2
