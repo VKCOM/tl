@@ -20,17 +20,17 @@ func (DictionaryString) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryString) Reset() {
 	ptr := (*map[string]string)(item)
-	BuiltinVectorDictionaryFieldStringReset(*ptr)
+	BuiltinDictDictionaryFieldStringReset(*ptr)
 }
 
 func (item *DictionaryString) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[string]string)(item)
-	BuiltinVectorDictionaryFieldStringFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldStringFillRandom(rg, ptr)
 }
 
 func (item *DictionaryString) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[string]string)(item)
-	return BuiltinVectorDictionaryFieldStringRead(w, ptr)
+	return BuiltinDictDictionaryFieldStringRead(w, ptr)
 }
 
 func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -39,7 +39,7 @@ func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryString) Write(w []byte) []byte {
 	ptr := (*map[string]string)(item)
-	return BuiltinVectorDictionaryFieldStringWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldStringWrite(w, *ptr)
 }
 
 func (item *DictionaryString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -68,7 +68,7 @@ func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 
 func (item *DictionaryString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[string]string)(item)
-	if err := BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -86,7 +86,7 @@ func (item *DictionaryString) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]string)(item)
-	w = BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryString) MarshalJSON() ([]byte, error) {
@@ -108,9 +108,9 @@ func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 	ptr := (*map[string]string)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictDictionaryFieldStringCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictDictionaryFieldStringInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -123,7 +123,7 @@ func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 
 func (item *DictionaryString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]string)(item)
-	if r, err = BuiltinVectorDictionaryFieldStringInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictDictionaryFieldStringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -145,12 +145,12 @@ func (item *DictionaryStringBytes) Reset() {
 
 func (item *DictionaryStringBytes) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	BuiltinVectorDictionaryFieldStringBytesFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldStringBytesFillRandom(rg, ptr)
 }
 
 func (item *DictionaryStringBytes) Read(w []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	return BuiltinVectorDictionaryFieldStringBytesRead(w, ptr)
+	return BuiltinDictDictionaryFieldStringBytesRead(w, ptr)
 }
 
 func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -159,7 +159,7 @@ func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) 
 
 func (item *DictionaryStringBytes) Write(w []byte) []byte {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	return BuiltinVectorDictionaryFieldStringBytesWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldStringBytesWrite(w, *ptr)
 }
 
 func (item *DictionaryStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -188,7 +188,7 @@ func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Js
 
 func (item *DictionaryStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	if err := BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -206,7 +206,7 @@ func (item *DictionaryStringBytes) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	w = BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldStringBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryStringBytes) MarshalJSON() ([]byte, error) {
@@ -228,9 +228,9 @@ func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 	ptr := (*[]DictionaryFieldStringBytes)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictDictionaryFieldStringBytesCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictDictionaryFieldStringBytesInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -243,7 +243,7 @@ func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 
 func (item *DictionaryStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	if r, err = BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictDictionaryFieldStringBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -260,17 +260,17 @@ func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLTag() uint32  { retur
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Reset() {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(*ptr)
+	BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(*ptr)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, ptr, nat_t)
+	BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
+	return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -279,7 +279,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_t uint32) []byte {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
+	return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -300,7 +300,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteBoxed(w []by
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if err := BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+	if err := BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -318,7 +318,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byt
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	w = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
+	w = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
 	return w
 }
 
@@ -330,9 +330,9 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -345,7 +345,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -366,7 +366,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Reset()
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
 	if basictl.RandomUint(rg)&1 == 1 {
 		item.Ok = true
-		BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
+		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
 	} else {
 		item.Ok = false
 	}
@@ -380,7 +380,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadBox
 		if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 			return w, err
 		}
-		return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
+		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
 	}
 	return w, nil
 }
@@ -393,7 +393,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteBo
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		w = basictl.NatWrite(w, 0x1f4c618f)
-		return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
+		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }
@@ -415,7 +415,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Calcula
 	currentSize += basictl.TL2CalculateSize(1)
 	lastUsedByte = currentSize
 
-	if sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
+	if sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -448,7 +448,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Interna
 
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
-	if w, sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+	if w, sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
 		currentBlock |= 2
 	}
 	w[currentBlockPosition] = currentBlock
@@ -495,11 +495,11 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Interna
 	}
 
 	if block&2 != 0 {
-		if currentR, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+		if currentR, err = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
+		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
 	}
 	return r, nil
 }
@@ -516,7 +516,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadJSO
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -539,7 +539,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJS
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
+		w = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }

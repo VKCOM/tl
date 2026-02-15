@@ -20,17 +20,17 @@ func (DictionaryInt) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryInt) Reset() {
 	ptr := (*map[string]int32)(item)
-	BuiltinVectorDictionaryFieldIntReset(*ptr)
+	BuiltinDictDictionaryFieldIntReset(*ptr)
 }
 
 func (item *DictionaryInt) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[string]int32)(item)
-	BuiltinVectorDictionaryFieldIntFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryInt) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[string]int32)(item)
-	return BuiltinVectorDictionaryFieldIntRead(w, ptr)
+	return BuiltinDictDictionaryFieldIntRead(w, ptr)
 }
 
 func (item *DictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -39,7 +39,7 @@ func (item *DictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryInt) Write(w []byte) []byte {
 	ptr := (*map[string]int32)(item)
-	return BuiltinVectorDictionaryFieldIntWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldIntWrite(w, *ptr)
 }
 
 func (item *DictionaryInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -68,7 +68,7 @@ func (item *DictionaryInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 
 func (item *DictionaryInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[string]int32)(item)
-	if err := BuiltinVectorDictionaryFieldIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -86,7 +86,7 @@ func (item *DictionaryInt) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]int32)(item)
-	w = BuiltinVectorDictionaryFieldIntWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryInt) MarshalJSON() ([]byte, error) {
@@ -112,12 +112,12 @@ func (item *DictionaryIntBytes) Reset() {
 
 func (item *DictionaryIntBytes) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[]DictionaryFieldIntBytes)(item)
-	BuiltinVectorDictionaryFieldIntBytesFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldIntBytesFillRandom(rg, ptr)
 }
 
 func (item *DictionaryIntBytes) Read(w []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryFieldIntBytes)(item)
-	return BuiltinVectorDictionaryFieldIntBytesRead(w, ptr)
+	return BuiltinDictDictionaryFieldIntBytesRead(w, ptr)
 }
 
 func (item *DictionaryIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -126,7 +126,7 @@ func (item *DictionaryIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryIntBytes) Write(w []byte) []byte {
 	ptr := (*[]DictionaryFieldIntBytes)(item)
-	return BuiltinVectorDictionaryFieldIntBytesWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldIntBytesWrite(w, *ptr)
 }
 
 func (item *DictionaryIntBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -155,7 +155,7 @@ func (item *DictionaryIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *DictionaryIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryFieldIntBytes)(item)
-	if err := BuiltinVectorDictionaryFieldIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -173,7 +173,7 @@ func (item *DictionaryIntBytes) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]DictionaryFieldIntBytes)(item)
-	w = BuiltinVectorDictionaryFieldIntBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldIntBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryIntBytes) MarshalJSON() ([]byte, error) {
@@ -194,17 +194,17 @@ func (DictionaryString) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryString) Reset() {
 	ptr := (*map[string]string)(item)
-	BuiltinVectorDictionaryFieldStringReset(*ptr)
+	BuiltinDictDictionaryFieldStringReset(*ptr)
 }
 
 func (item *DictionaryString) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[string]string)(item)
-	BuiltinVectorDictionaryFieldStringFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldStringFillRandom(rg, ptr)
 }
 
 func (item *DictionaryString) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[string]string)(item)
-	return BuiltinVectorDictionaryFieldStringRead(w, ptr)
+	return BuiltinDictDictionaryFieldStringRead(w, ptr)
 }
 
 func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -213,7 +213,7 @@ func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryString) Write(w []byte) []byte {
 	ptr := (*map[string]string)(item)
-	return BuiltinVectorDictionaryFieldStringWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldStringWrite(w, *ptr)
 }
 
 func (item *DictionaryString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -242,7 +242,7 @@ func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 
 func (item *DictionaryString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[string]string)(item)
-	if err := BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -260,7 +260,7 @@ func (item *DictionaryString) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]string)(item)
-	w = BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryString) MarshalJSON() ([]byte, error) {
@@ -286,12 +286,12 @@ func (item *DictionaryStringBytes) Reset() {
 
 func (item *DictionaryStringBytes) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	BuiltinVectorDictionaryFieldStringBytesFillRandom(rg, ptr)
+	BuiltinDictDictionaryFieldStringBytesFillRandom(rg, ptr)
 }
 
 func (item *DictionaryStringBytes) Read(w []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	return BuiltinVectorDictionaryFieldStringBytesRead(w, ptr)
+	return BuiltinDictDictionaryFieldStringBytesRead(w, ptr)
 }
 
 func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -300,7 +300,7 @@ func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) 
 
 func (item *DictionaryStringBytes) Write(w []byte) []byte {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	return BuiltinVectorDictionaryFieldStringBytesWrite(w, *ptr)
+	return BuiltinDictDictionaryFieldStringBytesWrite(w, *ptr)
 }
 
 func (item *DictionaryStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -329,7 +329,7 @@ func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Js
 
 func (item *DictionaryStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	if err := BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictDictionaryFieldStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -347,7 +347,7 @@ func (item *DictionaryStringBytes) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	w = BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictDictionaryFieldStringBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryStringBytes) MarshalJSON() ([]byte, error) {

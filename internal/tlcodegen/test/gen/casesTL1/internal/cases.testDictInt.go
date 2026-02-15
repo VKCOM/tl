@@ -21,15 +21,15 @@ func (CasesTestDictInt) TLName() string { return "cases.testDictInt" }
 func (CasesTestDictInt) TLTag() uint32  { return 0xd3877643 }
 
 func (item *CasesTestDictInt) Reset() {
-	BuiltinVectorDictionaryAnyFieldIntIntReset(item.Dict)
+	BuiltinDictDictionaryAnyFieldIntIntReset(item.Dict)
 }
 
 func (item *CasesTestDictInt) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinVectorDictionaryAnyFieldIntIntFillRandom(rg, &item.Dict)
+	BuiltinDictDictionaryAnyFieldIntIntFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesTestDictInt) Read(w []byte) (_ []byte, err error) {
-	return BuiltinVectorDictionaryAnyFieldIntIntRead(w, &item.Dict)
+	return BuiltinDictDictionaryAnyFieldIntIntRead(w, &item.Dict)
 }
 
 func (item *CasesTestDictInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,7 +37,7 @@ func (item *CasesTestDictInt) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestDictInt) Write(w []byte) []byte {
-	w = BuiltinVectorDictionaryAnyFieldIntIntWrite(w, item.Dict)
+	w = BuiltinDictDictionaryAnyFieldIntIntWrite(w, item.Dict)
 	return w
 }
 
@@ -82,7 +82,7 @@ func (item *CasesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testDictInt", "dict")
 				}
-				if err := BuiltinVectorDictionaryAnyFieldIntIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictDictionaryAnyFieldIntIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -97,7 +97,7 @@ func (item *CasesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		}
 	}
 	if !propDictPresented {
-		BuiltinVectorDictionaryAnyFieldIntIntReset(item.Dict)
+		BuiltinDictDictionaryAnyFieldIntIntReset(item.Dict)
 	}
 	return nil
 }
@@ -116,7 +116,7 @@ func (item *CasesTestDictInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinVectorDictionaryAnyFieldIntIntWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictDictionaryAnyFieldIntIntWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
