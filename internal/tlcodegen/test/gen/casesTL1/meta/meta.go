@@ -70,66 +70,6 @@ func GetTLName(tag uint32, notFoundName string) string {
 	return notFoundName
 }
 
-func CreateFunction(tag uint32) Function {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createFunction != nil {
-		return item.createFunction()
-	}
-	return nil
-}
-
-func CreateObject(tag uint32) Object {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createObject != nil {
-		return item.createObject()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateFunctionFromName(name string) Function {
-	if item := FactoryItemByTLName(name); item != nil && item.createFunction != nil {
-		return item.createFunction()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateObjectFromName(name string) Object {
-	if item := FactoryItemByTLName(name); item != nil && item.createObject != nil {
-		return item.createObject()
-	}
-	return nil
-}
-
-func CreateFunctionBytes(tag uint32) Function {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createFunctionBytes != nil {
-		return item.createFunctionBytes()
-	}
-	return nil
-}
-
-func CreateObjectBytes(tag uint32) Object {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createObjectBytes != nil {
-		return item.createObjectBytes()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateFunctionFromNameBytes(name string) Function {
-	if item := FactoryItemByTLName(name); item != nil && item.createFunctionBytes != nil {
-		return item.createFunctionBytes()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateObjectFromNameBytes(name string) Object {
-	if item := FactoryItemByTLName(name); item != nil && item.createObjectBytes != nil {
-		return item.createObjectBytes()
-	}
-	return nil
-}
-
 type TLItem struct {
 	tag         uint32
 	annotations uint32
@@ -147,12 +87,36 @@ type TLItem struct {
 	createObjectBytes       func() Object
 }
 
-func (item TLItem) TLTag() uint32            { return item.tag }
-func (item TLItem) TLName() string           { return item.tlName }
-func (item TLItem) IsTL2() bool              { return item.isTL2 }
-func (item TLItem) CreateObject() Object     { return item.createObject() }
+func (item TLItem) TLTag() uint32  { return item.tag }
+func (item TLItem) TLName() string { return item.tlName }
+func (item TLItem) IsTL2() bool    { return item.isTL2 }
+func (item TLItem) CreateObject() Object {
+	if item.createFunction != nil {
+		return item.createFunction()
+	}
+	return item.createObject()
+}
+func (item TLItem) CreateObjectBytes() Object {
+	if item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	if item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	if item.createFunction != nil {
+		return item.createFunction()
+	}
+	return item.createObject()
+}
+
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
+func (item TLItem) CreateFunctionBytes() Function {
+	if item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return item.createFunction()
+}
 
 func (item TLItem) HasUnionTypesInResult() bool    { return item.resultTypeContainsUnionTypes }
 func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
@@ -160,6 +124,12 @@ func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesC
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
+func (item TLItem) CreateFunctionLongBytes() Function {
+	if item.createFunctionLongBytes != nil {
+		return item.createFunctionLongBytes()
+	}
+	return item.createFunctionLong()
+}
 
 // Annotations
 func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
@@ -226,80 +196,60 @@ var itemsByTag = map[uint32]*TLItem{}
 
 var itemsByName = map[string]*TLItem{}
 
-func SetGlobalFactoryCreateForFunction(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForFunction(name string, createFunction func() Function, createFunctionLong func() Function) {
+	item := itemsByName[name]
+	if item == nil || item.createFunction == nil {
+		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
-	item.createObject = createObject
 	item.createFunction = createFunction
 	item.createFunctionLong = createFunctionLong
 }
 
-func SetGlobalFactoryCreateForObject(itemTag uint32, createObject func() Object) {
-	item := itemsByTag[itemTag]
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
+	item := itemsByName[name]
 	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
 	item.createObject = createObject
 }
 
-func SetGlobalFactoryCreateForObjectTL2(itemName string, createObject func() Object) {
-	item := itemsByName[itemName]
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForEnumElement(name string) {
+	item := itemsByName[name]
 	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
-	}
-	item.createObject = createObject
-}
-
-func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
+		panic(fmt.Sprintf("factory cannot find enum %s to set", name))
 	}
 	item.createObject = func() Object { return item }
 }
 
-func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForFunctionBytes(name string, createFunction func() Function, createFunctionLong func() Function) {
+	item := itemsByName[name]
+	if item == nil || item.createFunction == nil {
+		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
-	item.createObjectBytes = createObject
 	item.createFunctionBytes = createFunction
 	item.createFunctionLongBytes = createFunctionLong
 }
 
-func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Object) {
-	item := itemsByTag[itemTag]
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForObjectBytes(name string, createObject func() Object) {
+	item := itemsByName[name]
 	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
 	item.createObjectBytes = createObject
 }
 
-func SetGlobalFactoryCreateForObjectBytesTL2(itemName string, createObject func() Object) {
-	item := itemsByName[itemName]
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForEnumElementBytes(name string) {
+	item := itemsByName[name]
 	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
-	}
-	item.createObjectBytes = createObject
-}
-
-func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
+		panic(fmt.Sprintf("factory cannot find enum %s to set", name))
 	}
 	item.createObjectBytes = func() Object { return item }
-}
-
-func pleaseImportFactoryBytesObject() Object {
-	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
-}
-
-func pleaseImportFactoryBytesFunction() Function {
-	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
 }
 
 func pleaseImportFactoryObject() Object {
@@ -310,97 +260,86 @@ func pleaseImportFactoryFunction() Function {
 	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
 }
 
-func fillObject(n1 string, n2 string, item *TLItem) {
-	itemsByTag[item.tag] = item
-	itemsByName[item.tlName] = item
-	itemsByName[n1] = item
-	itemsByName[n2] = item
-	item.createObject = pleaseImportFactoryObject
-	item.createObjectBytes = pleaseImportFactoryBytesObject
-	// code below is as fast, but allocates some extra strings which are already in binary const segment due to JSON code
-	// itemsByName[fmt.Sprintf("%s#%08x", item.tlName, item.tag)] = item
-	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
-}
-
-func fillObjectTL2(item *TLItem) {
+func fillObject(item *TLItem) {
 	itemsByName[item.tlName] = item
 	if item.tag != 0 {
 		itemsByTag[item.tag] = item
 	}
 	item.createObject = pleaseImportFactoryObject
-	item.createObjectBytes = pleaseImportFactoryBytesObject
 }
 
-func fillFunction(n1 string, n2 string, item *TLItem) {
-	fillObject(n1, n2, item)
+func fillFunction(item *TLItem) {
+	itemsByName[item.tlName] = item
+	if item.tag != 0 {
+		itemsByTag[item.tag] = item
+	}
 	item.createFunction = pleaseImportFactoryFunction
-	item.createFunctionBytes = pleaseImportFactoryBytesFunction
 }
 
 func init() {
 	// TL
-	fillObject("benchmarks.vruhash#d31bd0fd", "#d31bd0fd", &TLItem{tag: 0xd31bd0fd, annotations: 0x0, tlName: "benchmarks.vruhash", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchmarks.vruposition#32792c04", "#32792c04", &TLItem{tag: 0x32792c04, annotations: 0x0, tlName: "benchmarks.vruposition", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchmarks.vrutoyTopLevelContainer#fb442ca5", "#fb442ca5", &TLItem{tag: 0xfb442ca5, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchmarks.vrutoyTopLevelContainerWithDependency#c176008e", "#c176008e", &TLItem{tag: 0xc176008e, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainerWithDependency", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchmarks.vrutoytopLevelUnionBig#ef556bee", "#ef556bee", &TLItem{tag: 0xef556bee, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionBig", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "#ce27c770", &TLItem{tag: 0xce27c770, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionEmpty", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testArray#3762fb81", "#3762fb81", &TLItem{tag: 0x3762fb81, annotations: 0x0, tlName: "cases_bytes.testArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testDictAny#ee586c08", "#ee586c08", &TLItem{tag: 0xee586c08, annotations: 0x0, tlName: "cases_bytes.testDictAny", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testDictInt#453ace07", "#453ace07", &TLItem{tag: 0x453ace07, annotations: 0x0, tlName: "cases_bytes.testDictInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testDictString#6c04d6ce", "#6c04d6ce", &TLItem{tag: 0x6c04d6ce, annotations: 0x0, tlName: "cases_bytes.testDictString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testDictStringString#ad69c772", "#ad69c772", &TLItem{tag: 0xad69c772, annotations: 0x0, tlName: "cases_bytes.testDictStringString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testEnum1#58aad3f5", "#58aad3f5", &TLItem{tag: 0x58aad3f5, annotations: 0x0, tlName: "cases_bytes.testEnum1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testEnum2#00b47add", "#00b47add", &TLItem{tag: 0x00b47add, annotations: 0x0, tlName: "cases_bytes.testEnum2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testEnum3#81911ffa", "#81911ffa", &TLItem{tag: 0x81911ffa, annotations: 0x0, tlName: "cases_bytes.testEnum3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testEnumContainer#32b92037", "#32b92037", &TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testTuple#2dd3bacf", "#2dd3bacf", &TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases_bytes.testVector#3647c8ae", "#3647c8ae", &TLItem{tag: 0x3647c8ae, annotations: 0x0, tlName: "cases_bytes.testVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesGo.testNames#6b61936a", "#6b61936a", &TLItem{tag: 0x6b61936a, annotations: 0x0, tlName: "casesGo.testNames", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.myCycle1#d3ca919d", "#d3ca919d", &TLItem{tag: 0xd3ca919d, annotations: 0x0, tlName: "cases.myCycle1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.myCycle2#5444c9a2", "#5444c9a2", &TLItem{tag: 0x5444c9a2, annotations: 0x0, tlName: "cases.myCycle2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.myCycle3#7624f86b", "#7624f86b", &TLItem{tag: 0x7624f86b, annotations: 0x0, tlName: "cases.myCycle3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testArrayFixedBool#f704cf4e", "#f704cf4e", &TLItem{tag: 0xf704cf4e, annotations: 0x0, tlName: "casesTL2.testArrayFixedBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testArrayFlexibleBool#974a9b29", "#974a9b29", &TLItem{tag: 0x974a9b29, annotations: 0x0, tlName: "casesTL2.testArrayFlexibleBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testFixedParam#22c48297", "#22c48297", &TLItem{tag: 0x22c48297, annotations: 0x0, tlName: "casesTL2.testFixedParam", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep1#1b8b9feb", "#1b8b9feb", &TLItem{tag: 0x1b8b9feb, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep2#0a2c0bf9", "#0a2c0bf9", &TLItem{tag: 0x0a2c0bf9, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep3#f020849b", "#f020849b", &TLItem{tag: 0xf020849b, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep4#5a933a50", "#5a933a50", &TLItem{tag: 0x5a933a50, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep5#2b47b925", "#2b47b925", &TLItem{tag: 0x2b47b925, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep5", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep6#9a316c2e", "#9a316c2e", &TLItem{tag: 0x9a316c2e, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep7#08824518", "#08824518", &TLItem{tag: 0x08824518, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionWithDep1#b6c63b07", "#b6c63b07", &TLItem{tag: 0xb6c63b07, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionWithDep2#9d44a2fd", "#9d44a2fd", &TLItem{tag: 0x9d44a2fd, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testObject#4f96dd95", "#4f96dd95", &TLItem{tag: 0x4f96dd95, annotations: 0x0, tlName: "casesTL2.testObject", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testParamsGeneration#aac2f033", "#aac2f033", &TLItem{tag: 0xaac2f033, annotations: 0x0, tlName: "casesTL2.testParamsGeneration", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testVectorBool#644bb447", "#644bb447", &TLItem{tag: 0x644bb447, annotations: 0x0, tlName: "casesTL2.testVectorBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testAllDicts#ec4b79a6", "#ec4b79a6", &TLItem{tag: 0xec4b79a6, annotations: 0x0, tlName: "cases.testAllDicts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testDictAny#252b4ddb", "#252b4ddb", &TLItem{tag: 0x252b4ddb, annotations: 0x0, tlName: "cases.testDictAny", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testDictInt#d3877643", "#d3877643", &TLItem{tag: 0xd3877643, annotations: 0x0, tlName: "cases.testDictInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testDictString#c463c79b", "#c463c79b", &TLItem{tag: 0xc463c79b, annotations: 0x0, tlName: "cases.testDictString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testEnum1#6c6c55ac", "#6c6c55ac", &TLItem{tag: 0x6c6c55ac, annotations: 0x0, tlName: "cases.testEnum1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testEnum2#86ea88ce", "#86ea88ce", &TLItem{tag: 0x86ea88ce, annotations: 0x0, tlName: "cases.testEnum2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testEnum3#69b83e2f", "#69b83e2f", &TLItem{tag: 0x69b83e2f, annotations: 0x0, tlName: "cases.testEnum3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testEnumContainer#cb684231", "#cb684231", &TLItem{tag: 0xcb684231, annotations: 0x0, tlName: "cases.testEnumContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testInplaceStructArgs#a9e4441e", "#a9e4441e", &TLItem{tag: 0xa9e4441e, annotations: 0x0, tlName: "cases.testInplaceStructArgs", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testInplaceStructArgs2#aa9f2480", "#aa9f2480", &TLItem{tag: 0xaa9f2480, annotations: 0x0, tlName: "cases.testInplaceStructArgs2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testLocalFieldmask#f68fd3f9", "#f68fd3f9", &TLItem{tag: 0xf68fd3f9, annotations: 0x0, tlName: "cases.testLocalFieldmask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testMaybe#d6602613", "#d6602613", &TLItem{tag: 0xd6602613, annotations: 0x0, tlName: "cases.testMaybe", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testOutFieldMaskContainer#1850ffe4", "#1850ffe4", &TLItem{tag: 0x1850ffe4, annotations: 0x0, tlName: "cases.testOutFieldMaskContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testRecursiveFieldMask#c58cf85e", "#c58cf85e", &TLItem{tag: 0xc58cf85e, annotations: 0x0, tlName: "cases.testRecursiveFieldMask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testTuple#4b9caf8f", "#4b9caf8f", &TLItem{tag: 0x4b9caf8f, annotations: 0x0, tlName: "cases.testTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testUnion1#4b4f09b1", "#4b4f09b1", &TLItem{tag: 0x4b4f09b1, annotations: 0x0, tlName: "cases.testUnion1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testUnion2#464f96c4", "#464f96c4", &TLItem{tag: 0x464f96c4, annotations: 0x0, tlName: "cases.testUnion2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testUnion3#9b8c9e4c", "#9b8c9e4c", &TLItem{tag: 0x9b8c9e4c, annotations: 0x0, tlName: "cases.testUnion3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testUnion4#d6e28ad9", "#d6e28ad9", &TLItem{tag: 0xd6e28ad9, annotations: 0x0, tlName: "cases.testUnion4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testUnionContainer#4497a381", "#4497a381", &TLItem{tag: 0x4497a381, annotations: 0x0, tlName: "cases.testUnionContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("cases.testVector#4975695c", "#4975695c", &TLItem{tag: 0x4975695c, annotations: 0x0, tlName: "cases.testVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("int#a8509bda", "#a8509bda", &TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("long#22076cba", "#22076cba", &TLItem{tag: 0x22076cba, annotations: 0x0, tlName: "long", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("true#3fedd339", "#3fedd339", &TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xd31bd0fd, annotations: 0x0, tlName: "benchmarks.vruhash", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x32792c04, annotations: 0x0, tlName: "benchmarks.vruposition", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xfb442ca5, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xc176008e, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainerWithDependency", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xef556bee, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionBig", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xce27c770, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionEmpty", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x3762fb81, annotations: 0x0, tlName: "cases_bytes.testArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xee586c08, annotations: 0x0, tlName: "cases_bytes.testDictAny", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x453ace07, annotations: 0x0, tlName: "cases_bytes.testDictInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x6c04d6ce, annotations: 0x0, tlName: "cases_bytes.testDictString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xad69c772, annotations: 0x0, tlName: "cases_bytes.testDictStringString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x58aad3f5, annotations: 0x0, tlName: "cases_bytes.testEnum1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x00b47add, annotations: 0x0, tlName: "cases_bytes.testEnum2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x81911ffa, annotations: 0x0, tlName: "cases_bytes.testEnum3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x3647c8ae, annotations: 0x0, tlName: "cases_bytes.testVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x6b61936a, annotations: 0x0, tlName: "casesGo.testNames", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xd3ca919d, annotations: 0x0, tlName: "cases.myCycle1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x5444c9a2, annotations: 0x0, tlName: "cases.myCycle2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x7624f86b, annotations: 0x0, tlName: "cases.myCycle3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xf704cf4e, annotations: 0x0, tlName: "casesTL2.testArrayFixedBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x974a9b29, annotations: 0x0, tlName: "casesTL2.testArrayFlexibleBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x22c48297, annotations: 0x0, tlName: "casesTL2.testFixedParam", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x1b8b9feb, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x0a2c0bf9, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0xf020849b, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x5a933a50, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x2b47b925, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep5", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x9a316c2e, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x08824518, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0xb6c63b07, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tag: 0x9d44a2fd, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x4f96dd95, annotations: 0x0, tlName: "casesTL2.testObject", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xaac2f033, annotations: 0x0, tlName: "casesTL2.testParamsGeneration", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x644bb447, annotations: 0x0, tlName: "casesTL2.testVectorBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xec4b79a6, annotations: 0x0, tlName: "cases.testAllDicts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x252b4ddb, annotations: 0x0, tlName: "cases.testDictAny", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xd3877643, annotations: 0x0, tlName: "cases.testDictInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xc463c79b, annotations: 0x0, tlName: "cases.testDictString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x6c6c55ac, annotations: 0x0, tlName: "cases.testEnum1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x86ea88ce, annotations: 0x0, tlName: "cases.testEnum2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x69b83e2f, annotations: 0x0, tlName: "cases.testEnum3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xcb684231, annotations: 0x0, tlName: "cases.testEnumContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xa9e4441e, annotations: 0x0, tlName: "cases.testInplaceStructArgs", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xaa9f2480, annotations: 0x0, tlName: "cases.testInplaceStructArgs2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xf68fd3f9, annotations: 0x0, tlName: "cases.testLocalFieldmask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xd6602613, annotations: 0x0, tlName: "cases.testMaybe", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x1850ffe4, annotations: 0x0, tlName: "cases.testOutFieldMaskContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xc58cf85e, annotations: 0x0, tlName: "cases.testRecursiveFieldMask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x4b9caf8f, annotations: 0x0, tlName: "cases.testTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x4b4f09b1, annotations: 0x0, tlName: "cases.testUnion1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x464f96c4, annotations: 0x0, tlName: "cases.testUnion2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x9b8c9e4c, annotations: 0x0, tlName: "cases.testUnion3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xd6e28ad9, annotations: 0x0, tlName: "cases.testUnion4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x4497a381, annotations: 0x0, tlName: "cases.testUnionContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x4975695c, annotations: 0x0, tlName: "cases.testVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x22076cba, annotations: 0x0, tlName: "long", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 }

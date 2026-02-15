@@ -3,12 +3,6 @@
 
 package gengo
 
-import "fmt"
-
-import "golang.org/x/exp/slices"
-
-import "github.com/vkcom/tl/internal/tlast"
-
 import (
 	qtio422016 "io"
 
@@ -43,21 +37,35 @@ import (
 	qw422016.N().S(`)
 
 func CreateFunction(tag uint32) meta.Function {
-    return meta.CreateFunction(tag)
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunction()
 }
 
 func CreateObject(tag uint32) meta.Object {
-    return meta.CreateObject(tag)
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObject()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateFunctionFromName(name string) meta.Function {
-    return meta.CreateFunctionFromName(name)
+    item := meta.FactoryItemByTLName(name)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunction()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateObjectFromName(name string) meta.Object {
-    return meta.CreateObjectFromName(name)
+    item := meta.FactoryItemByTLName(name)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObject()
 }
 
 func init() {
@@ -70,11 +78,9 @@ func init() {
 	}
 	for _, wr := range tl1Wrappers {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
-
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
-				qw422016.E().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`)
 `)
 				continue
@@ -82,11 +88,8 @@ func init() {
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
-				qw422016.N().S(tlTag)
-				qw422016.N().S(`,func() meta.Object { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)
@@ -100,7 +103,7 @@ func init() {
 				}
 			} else {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject(`)
-				qw422016.N().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Object { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
@@ -117,11 +120,13 @@ func init() {
 	}
 	for _, wr := range tl2Wrappers {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
-
+			qw422016.N().S(``)
+			qw422016.N().S("`")
+			qw422016.N().S(``)
+			qw422016.N().S("`")
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
-				qw422016.E().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`)
 `)
 				continue
@@ -129,11 +134,8 @@ func init() {
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
-				qw422016.N().S(tlTag)
-				qw422016.N().S(`,func() meta.Object { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)
@@ -183,84 +185,6 @@ func (gen *genGo) writegenerateFactory(qq422016 qtio422016.Writer, sortedImports
 func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports) string {
 	qb422016 := qt422016.AcquireByteBuffer()
 	gen.writegenerateFactory(qb422016, sortedImports, directImports)
-	qs422016 := string(qb422016.B)
-	qt422016.ReleaseByteBuffer(qb422016)
-	return qs422016
-}
-
-func (gen *genGo) streamgenerateConstants(qw422016 *qt422016.Writer, commentString, pkgName string) {
-	qw422016.N().S(commentString)
-	qw422016.N().S(`
-package `)
-	qw422016.N().S(pkgName)
-	qw422016.N().S(`
-`)
-	var sortedConstructors []*tlast.Combinator
-	for _, c := range gen.kernel.TL1() {
-		if c.Crc32() == 0 {
-			continue
-		}
-		sortedConstructors = append(sortedConstructors, c)
-	}
-	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
-	})
-
-	sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
-	for _, combinator := range gen.kernel.TL2() {
-		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
-			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
-		}
-	}
-	slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-		return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
-	})
-
-	qw422016.N().S(`const (
-`)
-	for _, c := range sortedConstructors {
-		if c.Crc32() == 0 {
-			continue
-		}
-		qw422016.N().S(`        `)
-		qw422016.N().S(canonicalGoName(c.Construct.Name, ""))
-		qw422016.N().S(` = `)
-		qw422016.N().S(fmt.Sprintf("%#08x", c.Crc32()))
-		qw422016.N().S(` // `)
-		qw422016.N().S(c.Construct.Name.String())
-		qw422016.N().S(`
-`)
-	}
-	for _, c := range sortedTL2Combinators {
-		refName := c.ReferenceName()
-		magic := c.FuncDecl.Magic
-		if !c.IsFunction {
-			magic = c.TypeDecl.Magic
-		}
-		name := canonicalGoName2(refName, "")
-
-		qw422016.N().S(`        `)
-		qw422016.E().S(name)
-		qw422016.N().S(` = `)
-		qw422016.N().S(fmt.Sprintf("%#08x", magic))
-		qw422016.N().S(` // `)
-		qw422016.N().S(refName.String())
-		qw422016.N().S(`
-`)
-	}
-	qw422016.N().S(`)
-`)
-}
-
-func (gen *genGo) writegenerateConstants(qq422016 qtio422016.Writer, commentString, pkgName string) {
-	qw422016 := qt422016.AcquireWriter(qq422016)
-	gen.streamgenerateConstants(qw422016, commentString, pkgName)
-	qt422016.ReleaseWriter(qw422016)
-}
-
-func (gen *genGo) generateConstants(commentString, pkgName string) string {
-	qb422016 := qt422016.AcquireByteBuffer()
-	gen.writegenerateConstants(qb422016, commentString, pkgName)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

@@ -1,7 +1,3 @@
-{%- import "fmt" -%}
-{%- import "golang.org/x/exp/slices" -%}
-{%- import "github.com/vkcom/tl/internal/tlast" -%}
-
 {%- func (gen *genGo) generateFactory(sortedImports []string, directImports *DirectImports) -%}
 {%s= HeaderComment %}
 package {%s FactoryGoPackageName %}
@@ -14,21 +10,35 @@ import (
 )
 
 func CreateFunction(tag uint32) meta.Function {
-    return meta.CreateFunction(tag)
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunction()
 }
 
 func CreateObject(tag uint32) meta.Object {
-    return meta.CreateObject(tag)
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObject()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateFunctionFromName(name string) meta.Function {
-    return meta.CreateFunctionFromName(name)
+    item := meta.FactoryItemByTLName(name)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunction()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateObjectFromName(name string) meta.Object {
-    return meta.CreateObjectFromName(name)
+    item := meta.FactoryItemByTLName(name)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObject()
 }
 
 func init() {
@@ -40,15 +50,13 @@ func init() {
 {%- endif -%}
 {%- for _, wr := range tl1Wrappers  -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok-%}
-    {%- code tlTag := fmt.Sprintf("0x%08x", wr.tlTag) -%}
         {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
-            meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
+            meta.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
             {%- continue -%}
         {%- endif -%}
     {% stripspace %}
         {%- if fun.ResultType != nil -%}
-        meta.SetGlobalFactoryCreateForFunction({%s= tlTag %},
-        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        meta.SetGlobalFactoryCreateForFunction({%q= wr.tlName.String() %},
         func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
         {%- if wr.WrLong != nil -%}
         func() meta.Function { var ret{% space %}{%s= wr.WrLong.TypeString2(false, directImports, nil, false, true) %}; return &ret },
@@ -56,7 +64,7 @@ func init() {
         nil,
         {%- endif -%}
         {%- else -%}
-        meta.SetGlobalFactoryCreateForObject({%s= tlTag %},
+        meta.SetGlobalFactoryCreateForObject({%q= wr.tlName.String() %},
         func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
         {%- endif -%}
         ){% endstripspace %}
@@ -67,15 +75,13 @@ func init() {
 {%- endif -%}
 {%- for _, wr := range tl2Wrappers  -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
-    {%- code tlTag := fmt.Sprintf("0x%08x", wr.tlTag) -%}
-        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
-            meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
+``        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
+            meta.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
             {%- continue -%}
         {%- endif -%}
     {% stripspace %}
         {%- if fun.ResultType != nil -%}
-        meta.SetGlobalFactoryCreateForFunction({%s= tlTag %},
-        func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        meta.SetGlobalFactoryCreateForFunction({%q= wr.tlName.String() %},
         func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
             {%- if wr.WrLong != nil -%}
         func() meta.Function { var ret{% space %}{%s= wr.WrLong.TypeString2(false, directImports, nil, false, true) %}; return &ret },
@@ -98,47 +104,3 @@ func init() {
 }
 
 {%- endfunc -%}
-
-{%- func (gen *genGo)generateConstants(commentString, pkgName string) -%}
-{%s= commentString %}
-package {%s= pkgName %}
-{%- code
-    var sortedConstructors []*tlast.Combinator
-    for _, c := range gen.kernel.TL1() {
-        if c.Crc32() == 0 {
-            continue
-        }
-        sortedConstructors = append(sortedConstructors, c)
-    }
-    slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-        return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
-    })
-
-    sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
-    for _, combinator := range gen.kernel.TL2() {
-        if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
-            sortedTL2Combinators = append(sortedTL2Combinators, combinator)
-        }
-    }
-    slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-        return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
-    })
--%}
-const (
-    {%- for _, c := range sortedConstructors -%}
-        {%- if c.Crc32() == 0 -%} {%- continue -%} {%- endif -%}
-        {%s= canonicalGoName(c.Construct.Name, "") %} = {%s= fmt.Sprintf("%#08x", c.Crc32()) %} // {%s= c.Construct.Name.String() %}
-    {%- endfor -%}
-    {%- for _, c := range sortedTL2Combinators -%}
-        {%- code
-            refName := c.ReferenceName()
-            magic := c.FuncDecl.Magic
-            if !c.IsFunction {
-                magic = c.TypeDecl.Magic
-            }
-            name := canonicalGoName2(refName, "")
-        -%}
-        {%s name %} = {%s= fmt.Sprintf("%#08x", magic) %} // {%s= refName.String() %}
-    {%- endfor -%}
-)
-{%- endfunc  -%}
