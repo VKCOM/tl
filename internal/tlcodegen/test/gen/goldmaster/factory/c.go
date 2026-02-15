@@ -8,9 +8,8 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_6773d270c7798864aaf892b26109e9a4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdMyType"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTopLevel3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeA"
@@ -19,12 +18,13 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
 func init() {
 	meta.SetGlobalFactoryCreateForObject("cd.myType", func() meta.Object { return new(tlCdMyType.CdMyType) })
-	meta.SetGlobalFactoryCreateForObject("cd.response", func() meta.Object { return new(cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponse) })
+	meta.SetGlobalFactoryCreateForObject("cd.response", func() meta.Object { return new(tlAbResponse.CdResponse) })
 	meta.SetGlobalFactoryCreateForObject("cd.topLevel3", func() meta.Object { return new(tlCdTopLevel3.CdTopLevel3) })
 	meta.SetGlobalFactoryCreateForObject("cd.typeA", func() meta.Object { return new(tlCdTypeA.CdTypeA) })
 	meta.SetGlobalFactoryCreateForObject("cd.typeB", func() meta.Object { return new(tlCdTypeB.CdTypeB) })
@@ -32,8 +32,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("cd.typeD", func() meta.Object { return new(tlCdTypeD.CdTypeD) })
 	meta.SetGlobalFactoryCreateForObject("cd.useCycle", func() meta.Object { return new(tlCdUseCycle.CdUseCycle) })
 	meta.SetGlobalFactoryCreateForFunction("curl.request", func() meta.Function { return new(tlCurlRequest.CurlRequest) }, nil)
-	meta.SetGlobalFactoryCreateForObject("curl.responseError", func() meta.Object { return new(cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseError) })
-	meta.SetGlobalFactoryCreateForObject("curl.responseOk", func() meta.Object { return new(cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseOk) })
+	meta.SetGlobalFactoryCreateForObject("curl.responseError", func() meta.Object { return new(tlCurlResponse.CurlResponseError) })
+	meta.SetGlobalFactoryCreateForObject("curl.responseOk", func() meta.Object { return new(tlCurlResponse.CurlResponseOk) })
 	meta.SetGlobalFactoryCreateForObject("cyc1.myCycle", func() meta.Object { return new(cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle) })
 	meta.SetGlobalFactoryCreateForObject("cyc2.myCycle", func() meta.Object { return new(cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc2MyCycle) })
 	meta.SetGlobalFactoryCreateForObject("cyc3.myCycle", func() meta.Object { return new(cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc3MyCycle) })

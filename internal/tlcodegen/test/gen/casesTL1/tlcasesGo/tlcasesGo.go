@@ -8,9 +8,9 @@
 package tlcasesGo
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesGo/tlCasesGoTestNames"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
 )
 
 type (
-	TestNames = tlCasesGoTestNames.CasesGoTestNames
+	TestNames = internal.CasesGoTestNames
 )

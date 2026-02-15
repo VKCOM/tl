@@ -8,10 +8,10 @@
 package factory_bytes
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
 func init() {
-	meta.SetGlobalFactoryCreateForObjectBytes("cd.response", func() meta.Object { return new(cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponseBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cd.response", func() meta.Object { return new(tlAbResponse.CdResponseBytes) })
 }

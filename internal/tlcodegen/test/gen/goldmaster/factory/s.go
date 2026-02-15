@@ -8,20 +8,20 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_98d4570147919cfd6f6ebfc47c3e10a0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
 func init() {
-	meta.SetGlobalFactoryCreateForObject("service5.emptyOutput", func() meta.Object { return new(cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput) })
+	meta.SetGlobalFactoryCreateForObject("service5.emptyOutput", func() meta.Object { return new(tlService5Output.Service5EmptyOutput) })
 	meta.SetGlobalFactoryCreateForFunction("service5.insert", func() meta.Function { return new(tlService5Insert.Service5Insert) }, func() meta.Function { return new(tlService5LongInsert.Service5LongInsert) })
 	meta.SetGlobalFactoryCreateForFunction("service5.insertList", func() meta.Function { return new(tlService5InsertList.Service5InsertList) }, nil)
-	meta.SetGlobalFactoryCreateForObject("service5Long.emptyOutput", func() meta.Object { return new(cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongEmptyOutput) })
+	meta.SetGlobalFactoryCreateForObject("service5Long.emptyOutput", func() meta.Object { return new(tlService5LongOutput.Service5LongEmptyOutput) })
 	meta.SetGlobalFactoryCreateForFunction("service5Long.insert", func() meta.Function { return new(tlService5LongInsert.Service5LongInsert) }, nil)
-	meta.SetGlobalFactoryCreateForObject("service5Long.stringOutput", func() meta.Object { return new(cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongStringOutput) })
-	meta.SetGlobalFactoryCreateForObject("service5.stringOutput", func() meta.Object { return new(cycle_16847572a0831d4cd4c0c0fb513151f3.Service5StringOutput) })
+	meta.SetGlobalFactoryCreateForObject("service5Long.stringOutput", func() meta.Object { return new(tlService5LongOutput.Service5LongStringOutput) })
+	meta.SetGlobalFactoryCreateForObject("service5.stringOutput", func() meta.Object { return new(tlService5Output.Service5StringOutput) })
 }

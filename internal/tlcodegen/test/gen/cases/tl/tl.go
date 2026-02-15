@@ -8,76 +8,49 @@
 package tl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyFieldDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyFieldIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlIntMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleIntTupleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleTupleInt2TupleTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTuplePairTupleIntTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleString4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTuplePairTupleIntTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryAnyFieldDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorTrueBoxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 )
 
 type (
-	DictionaryAnyFieldDoubleInt                                        = tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
-	DictionaryAnyFieldIntInt                                           = tlDictionaryAnyFieldIntInt.DictionaryAnyFieldIntInt
-	DictionaryAnyIntInt                                                = tlDictionaryAnyIntInt.DictionaryAnyIntInt
-	DictionaryAnyIntIntBytes                                           = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
-	DictionaryFieldInt                                                 = tlDictionaryFieldInt.DictionaryFieldInt
-	DictionaryFieldIntBytes                                            = tlDictionaryFieldInt.DictionaryFieldIntBytes
-	DictionaryFieldString                                              = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryFieldStringBytes                                         = tlDictionaryFieldString.DictionaryFieldStringBytes
-	DictionaryInt                                                      = tlDictionaryInt.DictionaryInt
-	DictionaryIntBytes                                                 = tlDictionaryInt.DictionaryIntBytes
-	DictionaryString                                                   = tlDictionaryString.DictionaryString
-	DictionaryStringBytes                                              = tlDictionaryString.DictionaryStringBytes
-	Int                                                                = tlInt.Int
-	IntMaybe                                                           = tlIntMaybe.IntMaybe
-	Long                                                               = tlLong.Long
-	PairTupleIntTupleInt                                               = tlPairTupleIntTupleInt.PairTupleIntTupleInt
-	PairTupleTupleInt2TupleTupleInt2                                   = tlPairTupleTupleInt2TupleTupleInt2.PairTupleTupleInt2TupleTupleInt2
-	PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2 = tlPairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2.PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2
-	String                                                             = tlString.String
-	True                                                               = tlTrue.True
-	TupleInt                                                           = tlTupleInt.TupleInt
-	TupleInt2                                                          = tlTupleInt2.TupleInt2
-	TupleInt4                                                          = tlTupleInt4.TupleInt4
-	TuplePairTupleIntTupleInt2                                         = tlTuplePairTupleIntTupleInt2.TuplePairTupleIntTupleInt2
-	TupleString4                                                       = tlTupleString4.TupleString4
-	TupleString4Bytes                                                  = tlTupleString4.TupleString4Bytes
-	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
-	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
-	VectorBool                                                         = tlVectorBool.VectorBool
-	VectorDictionaryAnyFieldDoubleInt                                  = tlVectorDictionaryAnyFieldDoubleInt.VectorDictionaryAnyFieldDoubleInt
-	VectorInt                                                          = tlVectorInt.VectorInt
-	VectorString                                                       = tlVectorString.VectorString
-	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
-	VectorTrueBoxed                                                    = tlVectorTrueBoxed.VectorTrueBoxed
+	DictionaryAnyFieldDoubleInt                                        = internal.DictionaryAnyFieldDoubleInt
+	DictionaryAnyFieldIntInt                                           = internal.DictionaryAnyFieldIntInt
+	DictionaryAnyIntInt                                                = internal.DictionaryAnyIntInt
+	DictionaryAnyIntIntBytes                                           = internal.DictionaryAnyIntIntBytes
+	DictionaryFieldInt                                                 = internal.DictionaryFieldInt
+	DictionaryFieldIntBytes                                            = internal.DictionaryFieldIntBytes
+	DictionaryFieldString                                              = internal.DictionaryFieldString
+	DictionaryFieldStringBytes                                         = internal.DictionaryFieldStringBytes
+	DictionaryInt                                                      = internal.DictionaryInt
+	DictionaryIntBytes                                                 = internal.DictionaryIntBytes
+	DictionaryString                                                   = internal.DictionaryString
+	DictionaryStringBytes                                              = internal.DictionaryStringBytes
+	Int                                                                = internal.Int
+	IntMaybe                                                           = internal.IntMaybe
+	Long                                                               = internal.Long
+	PairTupleIntTupleInt                                               = internal.PairTupleIntTupleInt
+	PairTupleTupleInt2TupleTupleInt2                                   = internal.PairTupleTupleInt2TupleTupleInt2
+	PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2 = internal.PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2
+	String                                                             = internal.String
+	True                                                               = internal.True
+	TupleInt                                                           = internal.TupleInt
+	TupleInt2                                                          = internal.TupleInt2
+	TupleInt4                                                          = internal.TupleInt4
+	TuplePairTupleIntTupleInt2                                         = internal.TuplePairTupleIntTupleInt2
+	TupleString4                                                       = internal.TupleString4
+	TupleString4Bytes                                                  = internal.TupleString4Bytes
+	TupleTupleInt2                                                     = internal.TupleTupleInt2
+	TupleTuplePairTupleIntTupleInt2                                    = internal.TupleTuplePairTupleIntTupleInt2
+	VectorBool                                                         = internal.VectorBool
+	VectorDictionaryAnyFieldDoubleInt                                  = internal.VectorDictionaryAnyFieldDoubleInt
+	VectorInt                                                          = internal.VectorInt
+	VectorString                                                       = internal.VectorString
+	VectorStringBytes                                                  = internal.VectorStringBytes
+	VectorTrueBoxed                                                    = internal.VectorTrueBoxed
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return tlBool.BoolReadBoxed(w, v)
+	return internal.BoolReadBoxed(w, v)
 }
 func BoolWriteBoxed(w []byte, v bool) []byte {
-	return tlBool.BoolWriteBoxed(w, v)
+	return internal.BoolWriteBoxed(w, v)
 }

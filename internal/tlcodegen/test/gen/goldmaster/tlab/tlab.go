@@ -8,8 +8,6 @@
 package tlab
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_4a924d2e3c79aa77f775dccf98b0eec6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
@@ -23,7 +21,9 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall8"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCounterChangeRequestPeriods"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbMyType"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
@@ -36,7 +36,7 @@ import (
 )
 
 type (
-	Alias                           = cycle_b62dd5050d0a18c7485fd980c087f32c.AbAlias
+	Alias                           = tlAbResponse.AbAlias
 	Call1                           = tlAbCall1.AbCall1
 	Call10                          = tlAbCall10.AbCall10
 	Call11                          = tlAbCall11.AbCall11
@@ -48,16 +48,16 @@ type (
 	Call7                           = tlAbCall7.AbCall7
 	Call8                           = tlAbCall8.AbCall8
 	Call9                           = tlAbCall9.AbCall9
-	Code                            = cycle_b62dd5050d0a18c7485fd980c087f32c.AbCode
-	CounterChangeRequestPeriods     = cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriods
-	CounterChangeRequestPeriodsMany = cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsMany
-	CounterChangeRequestPeriodsOne  = cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsOne
-	Empty                           = cycle_b62dd5050d0a18c7485fd980c087f32c.AbEmpty
+	Code                            = tlAbResponse.AbCode
+	CounterChangeRequestPeriods     = tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriods
+	CounterChangeRequestPeriodsMany = tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsMany
+	CounterChangeRequestPeriodsOne  = tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsOne
+	Empty                           = tlAbResponse.AbEmpty
 	MyType                          = tlAbMyType.AbMyType
 	MyTypeBoxedMaybe                = tlAbMyTypeBoxedMaybe.AbMyTypeBoxedMaybe
 	MyTypeMaybe                     = tlAbMyTypeMaybe.AbMyTypeMaybe
-	Response                        = cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
-	ResponseBytes                   = cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponseBytes
+	Response                        = tlAbResponse.AbResponse
+	ResponseBytes                   = tlAbResponse.AbResponseBytes
 	TestMaybe                       = tlAbTestMaybe.AbTestMaybe
 	TopLevel1                       = tlAbTopLevel1.AbTopLevel1
 	TopLevel2                       = tlAbTopLevel2.AbTopLevel2

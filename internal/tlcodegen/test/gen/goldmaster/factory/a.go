@@ -8,9 +8,7 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_463e8ce0a74f5ec3e904ecdc85b1b857"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_4a924d2e3c79aa77f775dccf98b0eec6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyUnion"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall10"
@@ -23,7 +21,9 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall8"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCounterChangeRequestPeriods"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbMyType"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
@@ -44,8 +44,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForEnumElement("a.myTrue")
 	meta.SetGlobalFactoryCreateForEnumElement("a.red")
 	meta.SetGlobalFactoryCreateForObject("a.top2", func() meta.Object { return new(tlATop2.ATop2) })
-	meta.SetGlobalFactoryCreateForObject("a.uNionA", func() meta.Object { return new(cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AUNionA) })
-	meta.SetGlobalFactoryCreateForObject("ab.alias", func() meta.Object { return new(cycle_b62dd5050d0a18c7485fd980c087f32c.AbAlias) })
+	meta.SetGlobalFactoryCreateForObject("a.uNionA", func() meta.Object { return new(tlAMyUnion.AUNionA) })
+	meta.SetGlobalFactoryCreateForObject("ab.alias", func() meta.Object { return new(tlAbResponse.AbAlias) })
 	meta.SetGlobalFactoryCreateForFunction("ab.call1", func() meta.Function { return new(tlAbCall1.AbCall1) }, nil)
 	meta.SetGlobalFactoryCreateForFunction("ab.call10", func() meta.Function { return new(tlAbCall10.AbCall10) }, nil)
 	meta.SetGlobalFactoryCreateForFunction("ab.call11", func() meta.Function { return new(tlAbCall11.AbCall11) }, nil)
@@ -57,14 +57,10 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunction("ab.call7", func() meta.Function { return new(tlAbCall7.AbCall7) }, nil)
 	meta.SetGlobalFactoryCreateForFunction("ab.call8", func() meta.Function { return new(tlAbCall8.AbCall8) }, nil)
 	meta.SetGlobalFactoryCreateForFunction("ab.call9", func() meta.Function { return new(tlAbCall9.AbCall9) }, nil)
-	meta.SetGlobalFactoryCreateForObject("ab.code", func() meta.Object { return new(cycle_b62dd5050d0a18c7485fd980c087f32c.AbCode) })
-	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsMany", func() meta.Object {
-		return new(cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsMany)
-	})
-	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsOne", func() meta.Object {
-		return new(cycle_4a924d2e3c79aa77f775dccf98b0eec6.AbCounterChangeRequestPeriodsOne)
-	})
-	meta.SetGlobalFactoryCreateForObject("ab.empty", func() meta.Object { return new(cycle_b62dd5050d0a18c7485fd980c087f32c.AbEmpty) })
+	meta.SetGlobalFactoryCreateForObject("ab.code", func() meta.Object { return new(tlAbResponse.AbCode) })
+	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsMany", func() meta.Object { return new(tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsMany) })
+	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsOne", func() meta.Object { return new(tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsOne) })
+	meta.SetGlobalFactoryCreateForObject("ab.empty", func() meta.Object { return new(tlAbResponse.AbEmpty) })
 	meta.SetGlobalFactoryCreateForObject("ab.myType", func() meta.Object { return new(tlAbMyType.AbMyType) })
 	meta.SetGlobalFactoryCreateForObject("ab.testMaybe", func() meta.Object { return new(tlAbTestMaybe.AbTestMaybe) })
 	meta.SetGlobalFactoryCreateForObject("ab.topLevel1", func() meta.Object { return new(tlAbTopLevel1.AbTopLevel1) })
@@ -75,5 +71,5 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("ab.typeD", func() meta.Object { return new(tlAbTypeD.AbTypeD) })
 	meta.SetGlobalFactoryCreateForObject("ab.useCycle", func() meta.Object { return new(tlAbUseCycle.AbUseCycle) })
 	meta.SetGlobalFactoryCreateForObject("ab.useDictString", func() meta.Object { return new(tlAbUseDictString.AbUseDictString) })
-	meta.SetGlobalFactoryCreateForObject("au.nionA", func() meta.Object { return new(cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AuNionA) })
+	meta.SetGlobalFactoryCreateForObject("au.nionA", func() meta.Object { return new(tlAMyUnion.AuNionA) })
 }

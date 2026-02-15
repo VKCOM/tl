@@ -9,7 +9,7 @@ package tlListService5Output
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,15 +18,15 @@ var _ = internal.ErrorInvalidEnumTag
 
 type ListService5Output struct {
 	Flag     uint32
-	Head     cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output // Conditional: item.Flag.0
-	Tail     *ListService5Output                                   // Conditional: item.Flag.0
+	Head     tlService5Output.Service5Output // Conditional: item.Flag.0
+	Tail     *ListService5Output             // Conditional: item.Flag.0
 	tl2mask0 byte
 }
 
 func (ListService5Output) TLName() string { return "list" }
 func (ListService5Output) TLTag() uint32  { return 0x02d80cdd }
 
-func (item *ListService5Output) SetHead(v cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) {
+func (item *ListService5Output) SetHead(v tlService5Output.Service5Output) {
 	item.Head = v
 	item.Flag |= 1 << 0
 	item.tl2mask0 |= 1

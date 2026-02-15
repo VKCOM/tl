@@ -8,6 +8,7 @@
 package factory_bytes
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
 )
 
@@ -44,4 +45,10 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testArray", func() meta.Object { return new(internal.CasesBytesTestArrayBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testDictInt", func() meta.Object { return new(internal.CasesBytesTestDictIntBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testDictString", func() meta.Object { return new(internal.CasesBytesTestDictStringBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testDictStringString", func() meta.Object { return new(internal.CasesBytesTestDictStringStringBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testTuple", func() meta.Object { return new(internal.CasesBytesTestTupleBytes) })
+	meta.SetGlobalFactoryCreateForObjectBytes("cases_bytes.testVector", func() meta.Object { return new(internal.CasesBytesTestVectorBytes) })
 }
