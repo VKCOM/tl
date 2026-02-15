@@ -147,11 +147,7 @@ func init() {
 			continue
 		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			if wr.unionParent != nil && wr.unionParent.IsEnum {
-				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
-				qw422016.N().Q(wr.tlName.String())
-				qw422016.N().S(`)
-`)
+			if wr.unionParent != nil {
 				continue
 			}
 			qw422016.N().S(`    `)
