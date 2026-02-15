@@ -332,18 +332,6 @@ var _ = basictl.NatWrite
 		} else if gen.options.Verbose {
 			log.Printf("basictl code not written, expected to be available at %q", gen.options.Go.BasicPackageNameFull)
 		}
-		for _, bytesVersion := range []bool{false, true} {
-			directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-			var sortedNames []string
-			_ = gen.generateFactory(sortedNames, directImports, bytesVersion)
-			for im := range directImports.ns { // Imports of this file.
-				sortedNames = append(sortedNames, im.SubPath)
-			}
-			slices.Sort(sortedNames)
-			if err := outdir.AddCodeFile(filepath.Join(addBytesLower(FactoryGoPackageName, bytesVersion), addBytesLower(FactoryGoPackageName, bytesVersion)+".go"), gen.options.CopyrightText+gen.generateFactory(sortedNames, directImports, bytesVersion)); err != nil {
-				return err
-			}
-		}
 		startsWithAnyLetter := func(ns string) bool {
 			for letter := byte('a'); letter <= 'z'; letter++ {
 				if len(ns) != 0 && ns[0] == letter {
@@ -351,6 +339,37 @@ var _ = basictl.NatWrite
 				}
 			}
 			return false
+		}
+		for _, bytesVersion := range []bool{false, true} {
+			genFac := func(fileName string, addHeader bool, forNamespace func(ns string) bool) error {
+				hasCode := false
+				directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+				var sortedNames []string
+				_ = gen.generateFactory(sortedNames, directImports, bytesVersion,
+					addHeader, forNamespace, &hasCode)
+				if !hasCode {
+					return nil
+				}
+				for im := range directImports.ns { // Imports of this file.
+					sortedNames = append(sortedNames, im.SubPath)
+				}
+				slices.Sort(sortedNames)
+				factoryCode := gen.generateFactory(sortedNames, directImports, bytesVersion,
+					addHeader, forNamespace, &hasCode)
+				return outdir.AddCodeFile(filepath.Join(addBytesLower(FactoryGoPackageName, bytesVersion), fileName), gen.options.CopyrightText+factoryCode)
+			}
+			if err := genFac(FactoryGoPackageName+".go", true, func(ns string) bool {
+				return !gen.options.Go.SplitInternal || !startsWithAnyLetter(ns)
+			}); err != nil {
+				return err
+			}
+			for letter := byte('a'); letter <= 'z'; letter++ {
+				if err := genFac(string(letter)+".go", false, func(ns string) bool {
+					return gen.options.Go.SplitInternal && len(ns) != 0 && ns[0] == letter
+				}); err != nil {
+					return err
+				}
+			}
 		}
 		metaCode := gen.generateMeta(utils.AppVersion())
 		metaCode += gen.generateMetaInit(false, func(ns string) bool {
@@ -360,16 +379,14 @@ var _ = basictl.NatWrite
 		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.options.CopyrightText+metaCode); err != nil {
 			return err
 		}
-		if gen.options.Go.SplitInternal {
-			for letter := byte('a'); letter <= 'z'; letter++ {
-				hasTypes := false
-				metaCode := gen.generateMetaInit(true, func(ns string) bool {
-					return len(ns) != 0 && ns[0] == letter
-				}, &hasTypes)
-				if hasTypes {
-					if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, string(letter)+".go"), gen.options.CopyrightText+metaCode); err != nil {
-						return err
-					}
+		for letter := byte('a'); letter <= 'z'; letter++ {
+			hasTypes := false
+			metaCode := gen.generateMetaInit(true, func(ns string) bool {
+				return gen.options.Go.SplitInternal && len(ns) != 0 && ns[0] == letter
+			}, &hasTypes)
+			if hasTypes {
+				if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, string(letter)+".go"), gen.options.CopyrightText+metaCode); err != nil {
+					return err
 				}
 			}
 		}

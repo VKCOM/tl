@@ -8,10 +8,7 @@
 package factory_bytes
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
@@ -48,8 +45,5 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	meta.SetGlobalFactoryCreateForObjectBytes("ab.topLevel2", func() meta.Object { var ret tlAbTopLevel2.AbTopLevel2Bytes; return &ret })
-	meta.SetGlobalFactoryCreateForObjectBytes("ab.useDictString", func() meta.Object { var ret tlAbUseDictString.AbUseDictStringBytes; return &ret })
-	meta.SetGlobalFactoryCreateForObjectBytes("cd.response", func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponseBytes; return &ret })
-	meta.SetGlobalFactoryCreateForObjectBytes("useStr", func() meta.Object { var ret tlUseStr.UseStrBytes; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes("useStr", func() meta.Object { return new(tlUseStr.UseStrBytes) })
 }
