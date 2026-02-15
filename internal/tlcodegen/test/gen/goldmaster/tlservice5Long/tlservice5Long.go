@@ -8,13 +8,13 @@
 package tlservice5Long
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_98d4570147919cfd6f6ebfc47c3e10a0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
 )
 
 type (
-	EmptyOutput  = cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongEmptyOutput
+	EmptyOutput  = tlService5LongOutput.Service5LongEmptyOutput
 	Insert       = tlService5LongInsert.Service5LongInsert
-	Output       = cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
-	StringOutput = cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongStringOutput
+	Output       = tlService5LongOutput.Service5LongOutput
+	StringOutput = tlService5LongOutput.Service5LongStringOutput
 )

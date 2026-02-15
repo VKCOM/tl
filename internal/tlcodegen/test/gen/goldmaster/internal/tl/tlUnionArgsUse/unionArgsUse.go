@@ -9,8 +9,8 @@ package tlUnionArgsUse
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_889acfd711efe40bcdfbaaa9f96e6fe0"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_9098331ade9441aefa220e9ffb7250c2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUnionArgsXXXInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUnionArgsXXXLong"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -20,8 +20,8 @@ var _ = internal.ErrorInvalidEnumTag
 type UnionArgsUse struct {
 	K uint32
 	N uint32
-	A cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXXInt
-	B cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXXLong
+	A tlUnionArgsXXXInt.UnionArgsXXXInt
+	B tlUnionArgsXXXLong.UnionArgsXXXLong
 }
 
 func (UnionArgsUse) TLName() string { return "unionArgsUse" }

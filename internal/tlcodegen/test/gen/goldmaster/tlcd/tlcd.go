@@ -8,8 +8,8 @@
 package tlcd
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCdMyTypeMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdMyType"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTopLevel3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeA"
@@ -22,8 +22,8 @@ import (
 type (
 	MyType        = tlCdMyType.CdMyType
 	MyTypeMaybe   = tlCdMyTypeMaybe.CdMyTypeMaybe
-	Response      = cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponse
-	ResponseBytes = cycle_b62dd5050d0a18c7485fd980c087f32c.CdResponseBytes
+	Response      = tlAbResponse.CdResponse
+	ResponseBytes = tlAbResponse.CdResponseBytes
 	TopLevel3     = tlCdTopLevel3.CdTopLevel3
 	TypeA         = tlCdTypeA.CdTypeA
 	TypeB         = tlCdTypeB.CdTypeB

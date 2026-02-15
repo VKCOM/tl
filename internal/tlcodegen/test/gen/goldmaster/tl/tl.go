@@ -8,11 +8,7 @@
 package tl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_1cc29369792b96d4551962ce180c8b39"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_38a9bf76d71419ee85afa2cdeb3445c4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_730fc36a9abee714fd77cf74c905e6e2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_889acfd711efe40bcdfbaaa9f96e6fe0"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_9098331ade9441aefa220e9ffb7250c2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b51088a4226835d54f08524a36f8aa77"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall1"
@@ -51,6 +47,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt64"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNativeWrappers"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNoStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
@@ -88,6 +86,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTypeC"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTypeD"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUnionArgsUse"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUnionArgsXXXInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUnionArgsXXXLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseDictUgly"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
@@ -139,12 +139,12 @@ type (
 	MyInt32                            = tlMyInt32.MyInt32
 	MyInt64                            = tlMyInt64.MyInt64
 	MyNat                              = tlMyNat.MyNat
-	MyNat2                             = cycle_1cc29369792b96d4551962ce180c8b39.MyNat2
-	MyNat3                             = cycle_730fc36a9abee714fd77cf74c905e6e2.MyNat3
-	MyPlus                             = cycle_1cc29369792b96d4551962ce180c8b39.MyPlus
-	MyPlus3                            = cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3
-	MyZero                             = cycle_1cc29369792b96d4551962ce180c8b39.MyZero
-	MyZero3                            = cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3
+	MyNat2                             = tlMyNat2.MyNat2
+	MyNat3                             = tlMyNat3.MyNat3
+	MyPlus                             = tlMyNat2.MyPlus
+	MyPlus3                            = tlMyNat3.MyPlus3
+	MyZero                             = tlMyNat2.MyZero
+	MyZero3                            = tlMyNat3.MyZero3
 	NativeWrappers                     = tlNativeWrappers.NativeWrappers
 	NoStr                              = tlNoStr.NoStr
 	PairIntInt                         = tlPairIntInt.PairIntInt
@@ -182,12 +182,12 @@ type (
 	TypeC                              = tlTypeC.TypeC
 	TypeD                              = tlTypeD.TypeD
 	UnionArgsUse                       = tlUnionArgsUse.UnionArgsUse
-	UnionArgsXXX1Int                   = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX1Int
-	UnionArgsXXX1Long                  = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX1Long
-	UnionArgsXXX2Int                   = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXX2Int
-	UnionArgsXXX2Long                  = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXX2Long
-	UnionArgsXXXInt                    = cycle_9098331ade9441aefa220e9ffb7250c2.UnionArgsXXXInt
-	UnionArgsXXXLong                   = cycle_889acfd711efe40bcdfbaaa9f96e6fe0.UnionArgsXXXLong
+	UnionArgsXXX1Int                   = tlUnionArgsXXXInt.UnionArgsXXX1Int
+	UnionArgsXXX1Long                  = tlUnionArgsXXXLong.UnionArgsXXX1Long
+	UnionArgsXXX2Int                   = tlUnionArgsXXXInt.UnionArgsXXX2Int
+	UnionArgsXXX2Long                  = tlUnionArgsXXXLong.UnionArgsXXX2Long
+	UnionArgsXXXInt                    = tlUnionArgsXXXInt.UnionArgsXXXInt
+	UnionArgsXXXLong                   = tlUnionArgsXXXLong.UnionArgsXXXLong
 	UseDictUgly                        = tlUseDictUgly.UseDictUgly
 	UseResponse                        = tlUseResponse.UseResponse
 	UseStr                             = tlUseStr.UseStr

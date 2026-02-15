@@ -8,13 +8,13 @@
 package tlcurl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_6773d270c7798864aaf892b26109e9a4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
 )
 
 type (
 	Request       = tlCurlRequest.CurlRequest
-	Response      = cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
-	ResponseError = cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseError
-	ResponseOk    = cycle_6773d270c7798864aaf892b26109e9a4.CurlResponseOk
+	Response      = tlCurlResponse.CurlResponse
+	ResponseError = tlCurlResponse.CurlResponseError
+	ResponseOk    = tlCurlResponse.CurlResponseOk
 )

@@ -9,8 +9,8 @@ package tlUseResponse
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTupleAbResponse"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -19,7 +19,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 type UseResponse struct {
 	N uint32
-	X []cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
+	X []tlAbResponse.AbResponse
 }
 
 func (UseResponse) TLName() string { return "useResponse" }

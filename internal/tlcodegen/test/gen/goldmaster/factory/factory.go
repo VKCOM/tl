@@ -8,9 +8,7 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_1cc29369792b96d4551962ce180c8b39"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_38a9bf76d71419ee85afa2cdeb3445c4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_730fc36a9abee714fd77cf74c905e6e2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b51088a4226835d54f08524a36f8aa77"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall2"
@@ -31,6 +29,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt64"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyNat3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNativeWrappers"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNoStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace"
@@ -109,10 +109,10 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("myInt32", func() meta.Object { return new(tlMyInt32.MyInt32) })
 	meta.SetGlobalFactoryCreateForObject("myInt64", func() meta.Object { return new(tlMyInt64.MyInt64) })
 	meta.SetGlobalFactoryCreateForObject("myNat", func() meta.Object { return new(tlMyNat.MyNat) })
-	meta.SetGlobalFactoryCreateForObject("myPlus", func() meta.Object { return new(cycle_1cc29369792b96d4551962ce180c8b39.MyPlus) })
-	meta.SetGlobalFactoryCreateForObject("myPlus3", func() meta.Object { return new(cycle_730fc36a9abee714fd77cf74c905e6e2.MyPlus3) })
-	meta.SetGlobalFactoryCreateForObject("myZero", func() meta.Object { return new(cycle_1cc29369792b96d4551962ce180c8b39.MyZero) })
-	meta.SetGlobalFactoryCreateForObject("myZero3", func() meta.Object { return new(cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3) })
+	meta.SetGlobalFactoryCreateForObject("myPlus", func() meta.Object { return new(tlMyNat2.MyPlus) })
+	meta.SetGlobalFactoryCreateForObject("myPlus3", func() meta.Object { return new(tlMyNat3.MyPlus3) })
+	meta.SetGlobalFactoryCreateForObject("myZero", func() meta.Object { return new(tlMyNat2.MyZero) })
+	meta.SetGlobalFactoryCreateForObject("myZero3", func() meta.Object { return new(tlMyNat3.MyZero3) })
 	meta.SetGlobalFactoryCreateForObject("nativeWrappers", func() meta.Object { return new(tlNativeWrappers.NativeWrappers) })
 	meta.SetGlobalFactoryCreateForObject("noStr", func() meta.Object { return new(tlNoStr.NoStr) })
 	meta.SetGlobalFactoryCreateForObject("replace", func() meta.Object { return new(tlReplace.Replace) })

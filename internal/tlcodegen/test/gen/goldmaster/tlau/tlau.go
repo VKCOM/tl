@@ -8,9 +8,9 @@
 package tlau
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_463e8ce0a74f5ec3e904ecdc85b1b857"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyUnion"
 )
 
 type (
-	NionA = cycle_463e8ce0a74f5ec3e904ecdc85b1b857.AuNionA
+	NionA = tlAMyUnion.AuNionA
 )

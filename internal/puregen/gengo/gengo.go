@@ -193,6 +193,18 @@ func (gen *genGo) generateCodeGolang() error {
 				ins.SubPath = "internal/tl" + t.Namespace() + "/" + ins.Name
 				continue
 			}
+			var typesWithoutUnionElements []*TypeRWWrapper
+			for _, t := range ins.Types {
+				if t.unionParent == nil {
+					typesWithoutUnionElements = append(typesWithoutUnionElements, t)
+				}
+			}
+			if len(typesWithoutUnionElements) == 1 {
+				t := typesWithoutUnionElements[0]
+				ins.Name = "tl" + t.goGlobalName
+				ins.SubPath = "internal/tl" + t.Namespace() + "/" + ins.Name
+				continue
+			}
 			sha := sha1.Sum([]byte(strings.Join(ins.sortedElements(), ":")))
 			ins.Name = "cycle_" + hex.EncodeToString(sha[:16])
 			ins.SubPath = "internal/" + ins.Name

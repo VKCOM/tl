@@ -9,7 +9,7 @@ package tlService5LongInsert
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_98d4570147919cfd6f6ebfc47c3e10a0"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -88,16 +88,16 @@ func (item *Service5LongInsert) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service5LongInsert) ReadResult(w []byte, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) ReadResult(w []byte, ret *tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *Service5LongInsert) WriteResult(w []byte, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) WriteResult(w []byte, ret tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *Service5LongInsert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -137,7 +137,7 @@ func (item *Service5LongInsert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadCont
 	return r, nil
 }
 
-func (item *Service5LongInsert) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) ([]int, int) {
+func (item *Service5LongInsert) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret tlService5LongOutput.Service5LongOutput) ([]int, int) {
 	sizes = append(sizes, 2096325307)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -163,7 +163,7 @@ func (item *Service5LongInsert) calculateLayoutResult(sizes []int, optimizeEmpty
 	return sizes, currentSize
 }
 
-func (item *Service5LongInsert) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) ([]byte, []int, int) {
+func (item *Service5LongInsert) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret tlService5LongOutput.Service5LongOutput) ([]byte, []int, int) {
 	if sizes[0] != 2096325307 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -196,7 +196,7 @@ func (item *Service5LongInsert) writeResultTL2(w []byte, sizes []int, optimizeEm
 	return w, sizes, currentSize
 }
 
-func (item *Service5LongInsert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -212,7 +212,7 @@ func (item *Service5LongInsert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteCo
 	return w, nil
 }
 
-func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) error {
+func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService5LongOutput.Service5LongOutput) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -220,24 +220,24 @@ func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl
 	return nil
 }
 
-func (item *Service5LongInsert) WriteResultJSON(w []byte, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) WriteResultJSON(w []byte, ret tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service5LongInsert) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+func (item *Service5LongInsert) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService5LongOutput.Service5LongOutput) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *Service5LongInsert) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	ret.FillRandom(rg)
 	return item.WriteResult(w, ret)
 }
 
 func (item *Service5LongInsert) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -246,7 +246,7 @@ func (item *Service5LongInsert) ReadResultWriteResultJSON(tctx *basictl.JSONWrit
 }
 
 func (item *Service5LongInsert) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
@@ -255,7 +255,7 @@ func (item *Service5LongInsert) ReadResultJSONWriteResult(r []byte, w []byte) (_
 }
 
 func (item *Service5LongInsert) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -264,7 +264,7 @@ func (item *Service5LongInsert) ReadResultWriteResultTL2(tctx *basictl.TL2WriteC
 }
 
 func (item *Service5LongInsert) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
@@ -273,7 +273,7 @@ func (item *Service5LongInsert) ReadResultTL2WriteResult(tctx *basictl.TL2ReadCo
 }
 
 func (item *Service5LongInsert) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
@@ -282,7 +282,7 @@ func (item *Service5LongInsert) ReadResultTL2WriteResultJSON(tctx *basictl.TL2Re
 }
 
 func (item *Service5LongInsert) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput
+	var ret tlService5LongOutput.Service5LongOutput
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}

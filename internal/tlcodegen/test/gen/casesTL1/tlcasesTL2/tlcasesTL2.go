@@ -8,47 +8,28 @@
 package tlcasesTL2
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestArrayFixedBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestArrayFlexibleBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFixedParam"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep5"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep7"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObject"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObjectWithMuiltiParams"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObjectWithMuiltiParams2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObjectWithMuiltiParams3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObjectWithMuiltiParams41"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestObjectWithParam4"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestParamsGeneration"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcasesTL2/tlCasesTL2TestVectorBool"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
 )
 
 type (
-	TestArrayFixedBool           = tlCasesTL2TestArrayFixedBool.CasesTL2TestArrayFixedBool
-	TestArrayFlexibleBool        = tlCasesTL2TestArrayFlexibleBool.CasesTL2TestArrayFlexibleBool
-	TestFixedParam               = tlCasesTL2TestFixedParam.CasesTL2TestFixedParam
-	TestFunctionNoDep1           = tlCasesTL2TestFunctionNoDep1.CasesTL2TestFunctionNoDep1
-	TestFunctionNoDep2           = tlCasesTL2TestFunctionNoDep2.CasesTL2TestFunctionNoDep2
-	TestFunctionNoDep3           = tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3
-	TestFunctionNoDep4           = tlCasesTL2TestFunctionNoDep4.CasesTL2TestFunctionNoDep4
-	TestFunctionNoDep5           = tlCasesTL2TestFunctionNoDep5.CasesTL2TestFunctionNoDep5
-	TestFunctionNoDep6           = tlCasesTL2TestFunctionNoDep6.CasesTL2TestFunctionNoDep6
-	TestFunctionNoDep7           = tlCasesTL2TestFunctionNoDep7.CasesTL2TestFunctionNoDep7
-	TestFunctionWithDep1         = tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1
-	TestFunctionWithDep2         = tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2
-	TestObject                   = tlCasesTL2TestObject.CasesTL2TestObject
-	TestObjectWithMuiltiParams   = tlCasesTL2TestObjectWithMuiltiParams.CasesTL2TestObjectWithMuiltiParams
-	TestObjectWithMuiltiParams2  = tlCasesTL2TestObjectWithMuiltiParams2.CasesTL2TestObjectWithMuiltiParams2
-	TestObjectWithMuiltiParams3  = tlCasesTL2TestObjectWithMuiltiParams3.CasesTL2TestObjectWithMuiltiParams3
-	TestObjectWithMuiltiParams41 = tlCasesTL2TestObjectWithMuiltiParams41.CasesTL2TestObjectWithMuiltiParams41
-	TestObjectWithParam4         = tlCasesTL2TestObjectWithParam4.CasesTL2TestObjectWithParam4
-	TestParamsGeneration         = tlCasesTL2TestParamsGeneration.CasesTL2TestParamsGeneration
-	TestVectorBool               = tlCasesTL2TestVectorBool.CasesTL2TestVectorBool
+	TestArrayFixedBool           = internal.CasesTL2TestArrayFixedBool
+	TestArrayFlexibleBool        = internal.CasesTL2TestArrayFlexibleBool
+	TestFixedParam               = internal.CasesTL2TestFixedParam
+	TestFunctionNoDep1           = internal.CasesTL2TestFunctionNoDep1
+	TestFunctionNoDep2           = internal.CasesTL2TestFunctionNoDep2
+	TestFunctionNoDep3           = internal.CasesTL2TestFunctionNoDep3
+	TestFunctionNoDep4           = internal.CasesTL2TestFunctionNoDep4
+	TestFunctionNoDep5           = internal.CasesTL2TestFunctionNoDep5
+	TestFunctionNoDep6           = internal.CasesTL2TestFunctionNoDep6
+	TestFunctionNoDep7           = internal.CasesTL2TestFunctionNoDep7
+	TestFunctionWithDep1         = internal.CasesTL2TestFunctionWithDep1
+	TestFunctionWithDep2         = internal.CasesTL2TestFunctionWithDep2
+	TestObject                   = internal.CasesTL2TestObject
+	TestObjectWithMuiltiParams   = internal.CasesTL2TestObjectWithMuiltiParams
+	TestObjectWithMuiltiParams2  = internal.CasesTL2TestObjectWithMuiltiParams2
+	TestObjectWithMuiltiParams3  = internal.CasesTL2TestObjectWithMuiltiParams3
+	TestObjectWithMuiltiParams41 = internal.CasesTL2TestObjectWithMuiltiParams41
+	TestObjectWithParam4         = internal.CasesTL2TestObjectWithParam4
+	TestParamsGeneration         = internal.CasesTL2TestParamsGeneration
+	TestVectorBool               = internal.CasesTL2TestVectorBool
 )

@@ -8,76 +8,46 @@
 package tlcases
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_44515dca4b2e76ca676b13645e716786"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_6f3c12bfb54febd97334ae12d94a605f"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace1Int"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace1PairTupleIntTupleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace2Int"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace2PairTupleIntTupleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace3TupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace3TuplePairTupleIntTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestAllDicts"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestAllPossibleFieldConfigs"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestAllPossibleFieldConfigsContainer"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestArray"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestBeforeReadBitValidation"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestDictAny"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestDictInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestDictString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestEnum"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestEnum1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestEnum2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestEnum3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestEnumContainer"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestInplaceStructArgs"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestInplaceStructArgs2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestLocalFieldmask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestOutFieldMask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestOutFieldMaskContainer"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestRecursiveFieldmask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestTuple"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestUnionContainer"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesTestVector"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
 )
 
 type (
-	Inplace1Int                          = tlCasesInplace1Int.CasesInplace1Int
-	Inplace1PairTupleIntTupleInt         = tlCasesInplace1PairTupleIntTupleInt.CasesInplace1PairTupleIntTupleInt
-	Inplace2Int                          = tlCasesInplace2Int.CasesInplace2Int
-	Inplace2PairTupleIntTupleInt         = tlCasesInplace2PairTupleIntTupleInt.CasesInplace2PairTupleIntTupleInt
-	Inplace3TupleInt2                    = tlCasesInplace3TupleInt2.CasesInplace3TupleInt2
-	Inplace3TuplePairTupleIntTupleInt2   = tlCasesInplace3TuplePairTupleIntTupleInt2.CasesInplace3TuplePairTupleIntTupleInt2
-	MyCycle1                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle1
-	MyCycle2                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle2
-	MyCycle3                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle3
-	TestAllDicts                         = tlCasesTestAllDicts.CasesTestAllDicts
-	TestAllPossibleFieldConfigs          = tlCasesTestAllPossibleFieldConfigs.CasesTestAllPossibleFieldConfigs
-	TestAllPossibleFieldConfigsContainer = tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer
-	TestArray                            = tlCasesTestArray.CasesTestArray
-	TestBeforeReadBitValidation          = tlCasesTestBeforeReadBitValidation.CasesTestBeforeReadBitValidation
-	TestDictAny                          = tlCasesTestDictAny.CasesTestDictAny
-	TestDictInt                          = tlCasesTestDictInt.CasesTestDictInt
-	TestDictString                       = tlCasesTestDictString.CasesTestDictString
-	TestEnum                             = tlCasesTestEnum.CasesTestEnum
-	TestEnumContainer                    = tlCasesTestEnumContainer.CasesTestEnumContainer
-	TestInplaceStructArgs                = tlCasesTestInplaceStructArgs.CasesTestInplaceStructArgs
-	TestInplaceStructArgs2               = tlCasesTestInplaceStructArgs2.CasesTestInplaceStructArgs2
-	TestLocalFieldmask                   = tlCasesTestLocalFieldmask.CasesTestLocalFieldmask
-	TestMaybe                            = tlCasesTestMaybe.CasesTestMaybe
-	TestOutFieldMask                     = tlCasesTestOutFieldMask.CasesTestOutFieldMask
-	TestOutFieldMaskContainer            = tlCasesTestOutFieldMaskContainer.CasesTestOutFieldMaskContainer
-	TestRecursiveFieldmask               = tlCasesTestRecursiveFieldmask.CasesTestRecursiveFieldmask
-	TestTuple                            = tlCasesTestTuple.CasesTestTuple
-	TestUnion                            = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion
-	TestUnion1                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion1
-	TestUnion2                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion2
-	TestUnion3                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion3
-	TestUnion4                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion4
-	TestUnionContainer                   = tlCasesTestUnionContainer.CasesTestUnionContainer
-	TestVector                           = tlCasesTestVector.CasesTestVector
+	Inplace1Int                          = internal.CasesInplace1Int
+	Inplace1PairTupleIntTupleInt         = internal.CasesInplace1PairTupleIntTupleInt
+	Inplace2Int                          = internal.CasesInplace2Int
+	Inplace2PairTupleIntTupleInt         = internal.CasesInplace2PairTupleIntTupleInt
+	Inplace3TupleInt2                    = internal.CasesInplace3TupleInt2
+	Inplace3TuplePairTupleIntTupleInt2   = internal.CasesInplace3TuplePairTupleIntTupleInt2
+	MyCycle1                             = internal.CasesMyCycle1
+	MyCycle2                             = internal.CasesMyCycle2
+	MyCycle3                             = internal.CasesMyCycle3
+	TestAllDicts                         = internal.CasesTestAllDicts
+	TestAllPossibleFieldConfigs          = internal.CasesTestAllPossibleFieldConfigs
+	TestAllPossibleFieldConfigsContainer = internal.CasesTestAllPossibleFieldConfigsContainer
+	TestArray                            = internal.CasesTestArray
+	TestBeforeReadBitValidation          = internal.CasesTestBeforeReadBitValidation
+	TestDictAny                          = internal.CasesTestDictAny
+	TestDictInt                          = internal.CasesTestDictInt
+	TestDictString                       = internal.CasesTestDictString
+	TestEnum                             = internal.CasesTestEnum
+	TestEnumContainer                    = internal.CasesTestEnumContainer
+	TestInplaceStructArgs                = internal.CasesTestInplaceStructArgs
+	TestInplaceStructArgs2               = internal.CasesTestInplaceStructArgs2
+	TestLocalFieldmask                   = internal.CasesTestLocalFieldmask
+	TestMaybe                            = internal.CasesTestMaybe
+	TestOutFieldMask                     = internal.CasesTestOutFieldMask
+	TestOutFieldMaskContainer            = internal.CasesTestOutFieldMaskContainer
+	TestRecursiveFieldmask               = internal.CasesTestRecursiveFieldmask
+	TestTuple                            = internal.CasesTestTuple
+	TestUnion                            = internal.CasesTestUnion
+	TestUnion1                           = internal.CasesTestUnion1
+	TestUnion2                           = internal.CasesTestUnion2
+	TestUnion3                           = internal.CasesTestUnion3
+	TestUnion4                           = internal.CasesTestUnion4
+	TestUnionContainer                   = internal.CasesTestUnionContainer
+	TestVector                           = internal.CasesTestVector
 )
 
-func TestEnum1() TestEnum { return tlCasesTestEnum1.CasesTestEnum1() }
-func TestEnum2() TestEnum { return tlCasesTestEnum2.CasesTestEnum2() }
-func TestEnum3() TestEnum { return tlCasesTestEnum3.CasesTestEnum3() }
+func TestEnum1() TestEnum { return internal.CasesTestEnum1() }
+func TestEnum2() TestEnum { return internal.CasesTestEnum2() }
+func TestEnum3() TestEnum { return internal.CasesTestEnum3() }

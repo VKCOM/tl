@@ -9,8 +9,8 @@ package tlCurlRequest
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_6773d270c7798864aaf892b26109e9a4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinVectorDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -520,16 +520,16 @@ func (item *CurlRequest) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CurlRequest) ReadResult(w []byte, ret *cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) ReadResult(w []byte, ret *tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *CurlRequest) WriteResult(w []byte, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) WriteResult(w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *CurlRequest) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -569,7 +569,7 @@ func (item *CurlRequest) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, re
 	return r, nil
 }
 
-func (item *CurlRequest) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) ([]int, int) {
+func (item *CurlRequest) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret tlCurlResponse.CurlResponse) ([]int, int) {
 	sizes = append(sizes, 1062880849)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -595,7 +595,7 @@ func (item *CurlRequest) calculateLayoutResult(sizes []int, optimizeEmpty bool, 
 	return sizes, currentSize
 }
 
-func (item *CurlRequest) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) ([]byte, []int, int) {
+func (item *CurlRequest) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret tlCurlResponse.CurlResponse) ([]byte, []int, int) {
 	if sizes[0] != 1062880849 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -628,7 +628,7 @@ func (item *CurlRequest) writeResultTL2(w []byte, sizes []int, optimizeEmpty boo
 	return w, sizes, currentSize
 }
 
-func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -644,7 +644,7 @@ func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, 
 	return w, nil
 }
 
-func (item *CurlRequest) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) error {
+func (item *CurlRequest) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCurlResponse.CurlResponse) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -652,24 +652,24 @@ func (item *CurlRequest) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLe
 	return nil
 }
 
-func (item *CurlRequest) WriteResultJSON(w []byte, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) WriteResultJSON(w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *CurlRequest) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *CurlRequest) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	ret.FillRandom(rg)
 	return item.WriteResult(w, ret)
 }
 
 func (item *CurlRequest) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -678,7 +678,7 @@ func (item *CurlRequest) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContex
 }
 
 func (item *CurlRequest) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
@@ -687,7 +687,7 @@ func (item *CurlRequest) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte
 }
 
 func (item *CurlRequest) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -696,7 +696,7 @@ func (item *CurlRequest) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext,
 }
 
 func (item *CurlRequest) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
@@ -705,7 +705,7 @@ func (item *CurlRequest) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, 
 }
 
 func (item *CurlRequest) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
@@ -714,7 +714,7 @@ func (item *CurlRequest) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadConte
 }
 
 func (item *CurlRequest) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6773d270c7798864aaf892b26109e9a4.CurlResponse
+	var ret tlCurlResponse.CurlResponse
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}

@@ -8,38 +8,27 @@
 package tlcases_bytes
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestArray"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestDictAny"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestDictInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestDictString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestDictStringString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestEnum"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestEnum1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestEnum2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestEnum3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestEnumContainer"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestTuple"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases_bytes/tlCasesBytesTestVector"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
 )
 
 type (
-	TestArray                 = tlCasesBytesTestArray.CasesBytesTestArray
-	TestArrayBytes            = tlCasesBytesTestArray.CasesBytesTestArrayBytes
-	TestDictAny               = tlCasesBytesTestDictAny.CasesBytesTestDictAny
-	TestDictInt               = tlCasesBytesTestDictInt.CasesBytesTestDictInt
-	TestDictIntBytes          = tlCasesBytesTestDictInt.CasesBytesTestDictIntBytes
-	TestDictString            = tlCasesBytesTestDictString.CasesBytesTestDictString
-	TestDictStringBytes       = tlCasesBytesTestDictString.CasesBytesTestDictStringBytes
-	TestDictStringString      = tlCasesBytesTestDictStringString.CasesBytesTestDictStringString
-	TestDictStringStringBytes = tlCasesBytesTestDictStringString.CasesBytesTestDictStringStringBytes
-	TestEnum                  = tlCasesBytesTestEnum.CasesBytesTestEnum
-	TestEnumContainer         = tlCasesBytesTestEnumContainer.CasesBytesTestEnumContainer
-	TestTuple                 = tlCasesBytesTestTuple.CasesBytesTestTuple
-	TestTupleBytes            = tlCasesBytesTestTuple.CasesBytesTestTupleBytes
-	TestVector                = tlCasesBytesTestVector.CasesBytesTestVector
-	TestVectorBytes           = tlCasesBytesTestVector.CasesBytesTestVectorBytes
+	TestArray                 = internal.CasesBytesTestArray
+	TestArrayBytes            = internal.CasesBytesTestArrayBytes
+	TestDictAny               = internal.CasesBytesTestDictAny
+	TestDictInt               = internal.CasesBytesTestDictInt
+	TestDictIntBytes          = internal.CasesBytesTestDictIntBytes
+	TestDictString            = internal.CasesBytesTestDictString
+	TestDictStringBytes       = internal.CasesBytesTestDictStringBytes
+	TestDictStringString      = internal.CasesBytesTestDictStringString
+	TestDictStringStringBytes = internal.CasesBytesTestDictStringStringBytes
+	TestEnum                  = internal.CasesBytesTestEnum
+	TestEnumContainer         = internal.CasesBytesTestEnumContainer
+	TestTuple                 = internal.CasesBytesTestTuple
+	TestTupleBytes            = internal.CasesBytesTestTupleBytes
+	TestVector                = internal.CasesBytesTestVector
+	TestVectorBytes           = internal.CasesBytesTestVectorBytes
 )
 
-func TestEnum1() TestEnum { return tlCasesBytesTestEnum1.CasesBytesTestEnum1() }
-func TestEnum2() TestEnum { return tlCasesBytesTestEnum2.CasesBytesTestEnum2() }
-func TestEnum3() TestEnum { return tlCasesBytesTestEnum3.CasesBytesTestEnum3() }
+func TestEnum1() TestEnum { return internal.CasesBytesTestEnum1() }
+func TestEnum2() TestEnum { return internal.CasesBytesTestEnum2() }
+func TestEnum3() TestEnum { return internal.CasesBytesTestEnum3() }
