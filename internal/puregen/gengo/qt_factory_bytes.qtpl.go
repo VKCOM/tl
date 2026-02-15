@@ -3,8 +3,6 @@
 
 package gengo
 
-import "fmt"
-
 import (
 	qtio422016 "io"
 
@@ -38,22 +36,36 @@ import (
 	}
 	qw422016.N().S(`)
 
-func CreateFunctionBytes(tag uint32) meta.Function {
-    return meta.CreateFunctionBytes(tag)
+func CreateFunction(tag uint32) meta.Function {
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunctionBytes()
 }
 
-func CreateObjectBytes(tag uint32) meta.Object {
-    return meta.CreateObjectBytes(tag)
+func CreateObject(tag uint32) meta.Object {
+    item := meta.FactoryItemByTLTag(tag)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObjectBytes()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateFunctionFromNameBytes(name string) meta.Function {
-    return meta.CreateFunctionFromNameBytes(name)
+func CreateFunctionFromName(name string) meta.Function {
+    item := meta.FactoryItemByTLName(name)
+    if item == nil || !item.IsFunction() {
+        return nil
+    }
+    return item.CreateFunctionBytes()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateObjectFromNameBytes(name string) meta.Object {
-    return meta.CreateObjectFromNameBytes(name)
+func CreateObjectFromName(name string) meta.Object {
+    item := meta.FactoryItemByTLName(name)
+    if item == nil {
+        return nil
+    }
+    return item.CreateObjectBytes()
 }
 
 func init() {
@@ -68,11 +80,9 @@ func init() {
 		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
 
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
-
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElementBytes(`)
-				qw422016.E().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`)
 `)
 				continue
@@ -80,11 +90,8 @@ func init() {
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunctionBytes(`)
-				qw422016.N().S(tlTag)
-				qw422016.N().S(`,func() meta.Object { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(hasBytes, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(hasBytes, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)
@@ -98,7 +105,7 @@ func init() {
 				}
 			} else {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectBytes(`)
-				qw422016.N().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,func() meta.Object { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(hasBytes, directImports, nil, false, true))
@@ -117,11 +124,9 @@ func init() {
 		hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion
 
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
-
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElementBytes(`)
-				qw422016.E().S(tlTag)
+				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`)
 `)
 				continue
@@ -129,11 +134,8 @@ func init() {
 			qw422016.N().S(`    `)
 			if fun.ResultType != nil {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunctionBytes(`)
-				qw422016.N().S(tlTag)
-				qw422016.N().S(`,func() meta.Object { var ret`)
-				qw422016.N().S(` `)
-				qw422016.N().S(wr.TypeString2(hasBytes, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Function { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(hasBytes, directImports, nil, false, true))
 				qw422016.N().S(`; return &ret },`)

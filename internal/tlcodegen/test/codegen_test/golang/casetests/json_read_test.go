@@ -199,7 +199,7 @@ func TestGeneralCases(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testObject := factory.CreateObjectFromName(testValues.TestingType)
 			if testValues.UseBytes {
-				testObject = factory_bytes.CreateObjectFromNameBytes(testValues.TestingType)
+				testObject = factory_bytes.CreateObjectFromName(testValues.TestingType)
 			}
 			if testObject == nil {
 				t.Fatalf("No testing object for test \"%s\"", testName)
