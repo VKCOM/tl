@@ -387,87 +387,6 @@ func fillFunction(item *TLItem)  {
 	item.createFunction = pleaseImportFactoryFunction
 }
 
-func init() {
-`)
-	tl1Wrappers, tl2Wrappers := gen.ExtractTopLevelTypes()
-
-	if len(tl1Wrappers) != 0 {
-		qw422016.N().S(`// TL
-`)
-	}
-	for _, wr := range tl1Wrappers {
-		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			resultTypeContainsUnionTypes := false
-			argumentsTypesContainUnionTypes := false
-
-			if fun.ResultType != nil {
-				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
-				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
-
-				qw422016.N().S(`fillFunction(`)
-			} else {
-				qw422016.N().S(`fillObject(`)
-			}
-			qw422016.N().S(`&TLItem{tag:`)
-			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
-			qw422016.N().S(`, annotations:`)
-			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
-			qw422016.N().S(`, tlName: "`)
-			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", hasTL1:true, hasTL2:`)
-			qw422016.N().V(wr.wantsTL2)
-			qw422016.N().S(`, resultTypeContainsUnionTypes:`)
-			qw422016.N().V(resultTypeContainsUnionTypes)
-			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
-			qw422016.N().V(argumentsTypesContainUnionTypes)
-			qw422016.N().S(`})`)
-		}
-		qw422016.N().S(`
-`)
-	}
-	if len(tl2Wrappers) != 0 {
-		qw422016.N().S(`// TL2
-`)
-	}
-	for _, wr := range tl2Wrappers {
-		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			resultTypeContainsUnionTypes := false
-			argumentsTypesContainUnionTypes := false
-
-			if fun.ResultType != nil {
-				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
-				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
-
-				qw422016.N().S(`fillFunction(`)
-			} else {
-				qw422016.N().S(`fillObject(`)
-			}
-			qw422016.N().S(`&TLItem{tag:`)
-			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
-			qw422016.N().S(`, annotations:`)
-			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
-			qw422016.N().S(`, tlName: "`)
-			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", hasTL1: false, hasTL2: true, resultTypeContainsUnionTypes:`)
-			qw422016.N().V(resultTypeContainsUnionTypes)
-			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
-			qw422016.N().V(argumentsTypesContainUnionTypes)
-			qw422016.N().S(`})`)
-		}
-		if _, ok := wr.trw.(*TypeRWUnion); ok {
-			qw422016.N().S(`fillObject(&TLItem{tag:`)
-			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
-			qw422016.N().S(`, annotations:`)
-			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
-			qw422016.N().S(`, tlName: "`)
-			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", hasTL1: false, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})`)
-		}
-		qw422016.N().S(`
-`)
-	}
-	qw422016.N().S(`}
-
 `)
 }
 
@@ -480,6 +399,75 @@ func (gen *genGo) writegenerateMeta(qq422016 qtio422016.Writer, tlgenVersion str
 func (gen *genGo) generateMeta(tlgenVersion string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
 	gen.writegenerateMeta(qb422016, tlgenVersion)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
+func (gen *genGo) streamgenerateMetaInit(qw422016 *qt422016.Writer, addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) {
+	if addHeader {
+		qw422016.N().S(`    `)
+		qw422016.N().S(HeaderComment)
+		qw422016.N().S(`
+    package `)
+		qw422016.E().S(MetaGoPackageName)
+		qw422016.N().S(`
+`)
+	}
+	qw422016.N().S(`
+func init() {
+`)
+	for _, wr := range gen.generatedTypesList {
+		if !forNamespace(wr.tlName.Namespace) {
+			continue
+		}
+		if !wr.pureType.Common().IsTopLevel() {
+			continue
+		}
+		if fun, ok := wr.trw.(*TypeRWStruct); ok {
+			resultTypeContainsUnionTypes := false
+			argumentsTypesContainUnionTypes := false
+			if hasTypes != nil {
+				*hasTypes = true
+			}
+
+			if fun.ResultType != nil {
+				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
+				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
+
+				qw422016.N().S(`        fillFunction(`)
+			} else {
+				qw422016.N().S(`fillObject(`)
+			}
+			qw422016.N().S(`        &TLItem{tag: `)
+			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			qw422016.N().S(`, annotations: `)
+			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
+			qw422016.N().S(`, tlName: "`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`", hasTL1:true, hasTL2:`)
+			qw422016.N().V(wr.wantsTL2)
+			qw422016.N().S(`, resultTypeContainsUnionTypes: `)
+			qw422016.N().V(resultTypeContainsUnionTypes)
+			qw422016.N().S(`, argumentsTypesContainUnionTypes: `)
+			qw422016.N().V(argumentsTypesContainUnionTypes)
+			qw422016.N().S(`})
+`)
+		}
+	}
+	qw422016.N().S(`}
+`)
+}
+
+func (gen *genGo) writegenerateMetaInit(qq422016 qtio422016.Writer, addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	gen.streamgenerateMetaInit(qw422016, addHeader, forNamespace, hasTypes)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (gen *genGo) generateMetaInit(addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	gen.writegenerateMetaInit(qb422016, addHeader, forNamespace, hasTypes)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

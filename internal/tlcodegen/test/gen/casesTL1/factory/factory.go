@@ -96,7 +96,6 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	// TL
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vruhash", func() meta.Object { var ret tlBenchmarksVruHash.BenchmarksVruHash; return &ret })
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vruposition", func() meta.Object { var ret tlBenchmarksVruPosition.BenchmarksVruPosition; return &ret })
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vrutoyTopLevelContainer", func() meta.Object {

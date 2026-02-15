@@ -109,9 +109,6 @@ func runMain(opt *puregen.Options) error {
 			return err
 		}
 	}
-	if opt.Language == "tl2migration" || opt.Language == "tljson.html" {
-		opt.Kernel.NewDicts = true // TODO - remove after this option is default
-	}
 
 	if err := kernel.Compile(); err != nil {
 		return err

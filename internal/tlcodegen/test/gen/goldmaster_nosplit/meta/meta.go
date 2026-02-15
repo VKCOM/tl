@@ -304,7 +304,6 @@ func fillFunction(item *TLItem) {
 }
 
 func init() {
-	// TL
 	fillObject(&TLItem{tag: 0x623360f3, annotations: 0x0, tlName: "a.blue", hasTL1: true, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject(&TLItem{tag: 0xf35d7a69, annotations: 0x0, tlName: "a.color", hasTL1: true, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject(&TLItem{tag: 0x6127e7b8, annotations: 0x0, tlName: "a.green", hasTL1: true, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

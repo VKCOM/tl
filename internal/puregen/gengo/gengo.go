@@ -344,8 +344,34 @@ var _ = basictl.NatWrite
 				return err
 			}
 		}
-		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.options.CopyrightText+gen.generateMeta(utils.AppVersion())); err != nil {
+		startsWithAnyLetter := func(ns string) bool {
+			for letter := byte('a'); letter <= 'z'; letter++ {
+				if len(ns) != 0 && ns[0] == letter {
+					return true
+				}
+			}
+			return false
+		}
+		metaCode := gen.generateMeta(utils.AppVersion())
+		metaCode += gen.generateMetaInit(false, func(ns string) bool {
+			return !gen.options.Go.SplitInternal || !startsWithAnyLetter(ns)
+		}, nil)
+
+		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.options.CopyrightText+metaCode); err != nil {
 			return err
+		}
+		if gen.options.Go.SplitInternal {
+			for letter := byte('a'); letter <= 'z'; letter++ {
+				hasTypes := false
+				metaCode := gen.generateMetaInit(true, func(ns string) bool {
+					return len(ns) != 0 && ns[0] == letter
+				}, &hasTypes)
+				if hasTypes {
+					if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, string(letter)+".go"), gen.options.CopyrightText+metaCode); err != nil {
+						return err
+					}
+				}
+			}
 		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
 		code = fmt.Sprintf(InternalTLCodeHeader, HeaderComment, "internal") + InternalTLCodeBody
@@ -388,27 +414,4 @@ func (gen *genGo) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
 		return nil, fmt.Errorf("internal error: type %q not found", t.CanonicalName())
 	}
 	return result, nil
-}
-
-func (gen *genGo) ExtractTopLevelTypes() (tl1Wrappers []*TypeRWWrapper, tl2Wrappers []*TypeRWWrapper) {
-	typeWrappers := gen.generatedTypesList
-	for _, wr := range typeWrappers {
-		if wr.pureType.Common().IsTopLevel() {
-			tl1Wrappers = append(tl1Wrappers, wr)
-		}
-		//if wr.IsTopLevel() && len(wr.NatParams) == 0 {
-		//	_, isStruct := wr.trw.(*TypeRWStruct)
-		//	_, isUnion := wr.trw.(*TypeRWUnion)
-		//	if wr.originateFromTL2 {
-		//		if isStruct || isUnion {
-		//			tl2Wrappers = append(tl2Wrappers, wr)
-		//		}
-		//	} else {
-		//		if wr.tlTag != 0 {
-		//			tl1Wrappers = append(tl1Wrappers, wr)
-		//		}
-		//	}
-		//}
-	}
-	return
 }
