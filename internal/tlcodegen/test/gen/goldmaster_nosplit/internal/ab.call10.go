@@ -206,10 +206,9 @@ func (item *AbCall10) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, 
 	return r, w, err
 }
 
-func (item *AbCall10) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *AbCall10) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret AColor
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
@@ -231,6 +230,24 @@ func (item *AbCall10) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r [
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
+	return r, w, err
+}
+
+func (item *AbCall10) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret AColor
+	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.writeResultJSON(jctx, w, ret)
+	return r, w, err
+}
+
+func (item *AbCall10) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret AColor
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResultTL2(w, tctx, ret)
 	return r, w, err
 }
 

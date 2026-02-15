@@ -1863,12 +1863,11 @@ func (item *`)
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+	qw422016.N().S(`) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
-  err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-  if err != nil {
+  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
   w, err = item.WriteResult(w, ret)
@@ -1918,6 +1917,54 @@ func (item *`)
     return r, w, err
   }
   w, err = item.WriteResult(w, ret)
+  return r, w, err
+`)
+	}
+	qw422016.N().S(`}
+
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+	if !struct_.wr.wantsTL2 {
+		qw422016.N().S(`  return r, w, `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().S(`)
+`)
+	} else {
+		qw422016.N().S(`  var ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`
+  if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.writeResultJSON(jctx, w, ret)
+  return r, w, err
+`)
+	}
+	qw422016.N().S(`}
+
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+	if !struct_.wr.wantsTL2 {
+		qw422016.N().S(`  return r, w, `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().S(`)
+`)
+	} else {
+		qw422016.N().S(`  var ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`
+  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.WriteResultTL2(w, tctx, ret)
   return r, w, err
 `)
 	}

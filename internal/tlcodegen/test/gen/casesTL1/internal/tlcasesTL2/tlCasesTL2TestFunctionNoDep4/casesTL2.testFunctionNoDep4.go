@@ -101,10 +101,9 @@ func (item *CasesTL2TestFunctionNoDep4) ReadResultWriteResultJSON(tctx *basictl.
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionNoDep4) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *CasesTL2TestFunctionNoDep4) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
@@ -116,6 +115,14 @@ func (item *CasesTL2TestFunctionNoDep4) ReadResultWriteResultTL2(tctx *basictl.T
 }
 
 func (item *CasesTL2TestFunctionNoDep4) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep4")
+}
+
+func (item *CasesTL2TestFunctionNoDep4) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	return r, w, internal.ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep4")
+}
+
+func (item *CasesTL2TestFunctionNoDep4) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	return r, w, internal.ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep4")
 }
 
