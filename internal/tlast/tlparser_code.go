@@ -688,9 +688,9 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 		sectionStart = rest
 		commentStart = rest
 	}
-	if len(res) != 0 {
-		// will include trailing sections as well,
-		// this is completely marvelous for migration
+	if firstSectionAfterComb {
+		// will cut trailing sections as well,
+		// this is not perfect, but OK for migration
 		res[len(res)-1].AllPR.End = rest.front().pos
 	}
 	return res, nil

@@ -13,7 +13,7 @@ import (
 
 type (
 	Color                            = internal.AColor
-	ColorBoxedMaybe                  = internal.AColorBoxedMaybe
+	ColorMaybe                       = internal.AColorMaybe
 	Inner                            = internal.AInner
 	Inner3                           = internal.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = internal.AMiddlePairAInnerAInnerAInnerBoxed3

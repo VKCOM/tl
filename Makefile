@@ -207,7 +207,7 @@ lint:
 
 .PHONY: testpure
 testpure: build
-	@./target/bin/tlgen --language=go -v --split-internal \
+	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./cmd/tl2gen/genold \
@@ -219,7 +219,7 @@ testpure: build
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		./cmd/tl2client/test.tl
+		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
@@ -232,7 +232,7 @@ testpure: build
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		./cmd/tl2client/test.tl
+		./cmd/tl2client/test_migr.tl ./cmd/tl2client/test_migr.tl2
 	@echo "Checking that generated code actually compiles..."
 	time $(GO) build ./cmd/tl2gen/genold/...
 	time $(GO) build ./cmd/tl2gen/gennew/...

@@ -13,11 +13,11 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3BoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleBoxedInt3Maybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleBoxedIntBoxed0Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3Maybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed0BoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed3Maybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorBoxedIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -34,9 +34,9 @@ type MaybeTest1 struct {
 	E tlInnerMaybe.InnerMaybe
 	F tlInnerMaybe0.InnerMaybe0
 	G tlVectorIntMaybe.VectorIntMaybe
-	H tlVectorIntBoxedMaybe.VectorIntBoxedMaybe
-	I tlTupleInt3BoxedMaybe.TupleInt3BoxedMaybe
-	J tlTupleIntBoxed0BoxedMaybe.TupleIntBoxed0BoxedMaybe
+	H tlVectorBoxedIntMaybe.VectorBoxedIntMaybe
+	I tlTupleBoxedInt3Maybe.TupleBoxedInt3Maybe
+	J tlTupleBoxedIntBoxed0Maybe.TupleBoxedIntBoxed0Maybe
 }
 
 func (MaybeTest1) TLName() string { return "maybeTest1" }

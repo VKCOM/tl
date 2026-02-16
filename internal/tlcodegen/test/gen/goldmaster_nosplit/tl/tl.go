@@ -76,16 +76,16 @@ type (
 	TestMaybe                          = internal.TestMaybe
 	TestMaybe2                         = internal.TestMaybe2
 	True                               = internal.True
+	TupleBoxedInt3Maybe                = internal.TupleBoxedInt3Maybe
+	TupleBoxedIntBoxed0Maybe           = internal.TupleBoxedIntBoxed0Maybe
 	TupleCycleTuple                    = internal.TupleCycleTuple
 	TupleCycleTuple2                   = internal.TupleCycleTuple2
 	TupleInt                           = internal.TupleInt
 	TupleInt0                          = internal.TupleInt0
 	TupleInt0Maybe                     = internal.TupleInt0Maybe
 	TupleInt3                          = internal.TupleInt3
-	TupleInt3BoxedMaybe                = internal.TupleInt3BoxedMaybe
 	TupleInt3Maybe                     = internal.TupleInt3Maybe
 	TupleIntBoxed0                     = internal.TupleIntBoxed0
-	TupleIntBoxed0BoxedMaybe           = internal.TupleIntBoxed0BoxedMaybe
 	TupleIntBoxed3                     = internal.TupleIntBoxed3
 	TupleIntBoxed3Maybe                = internal.TupleIntBoxed3Maybe
 	TupleIntMaybe                      = internal.TupleIntMaybe
@@ -107,8 +107,8 @@ type (
 	UseStr                             = internal.UseStr
 	UseStrBytes                        = internal.UseStrBytes
 	UseTrue                            = internal.UseTrue
+	VectorBoxedIntMaybe                = internal.VectorBoxedIntMaybe
 	VectorInt                          = internal.VectorInt
-	VectorIntBoxedMaybe                = internal.VectorIntBoxedMaybe
 	VectorIntMaybe                     = internal.VectorIntMaybe
 )
 

@@ -274,15 +274,15 @@ func (item *AColor) UnmarshalJSON(b []byte) error {
 
 func AColor0() AColor { return AColor__MakeEnum(0) }
 
-type AColorBoxedMaybe struct {
+type AColorMaybe struct {
 	Value AColor // not deterministic if !Ok
 	Ok    bool
 }
 
-func (item *AColorBoxedMaybe) Reset() {
+func (item *AColorMaybe) Reset() {
 	item.Ok = false
 }
-func (item *AColorBoxedMaybe) FillRandom(rg *basictl.RandGenerator) {
+func (item *AColorMaybe) FillRandom(rg *basictl.RandGenerator) {
 	if basictl.RandomUint(rg)&1 == 1 {
 		item.Ok = true
 		item.Value.FillRandom(rg)
@@ -291,7 +291,7 @@ func (item *AColorBoxedMaybe) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *AColorBoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *AColorMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
@@ -301,11 +301,11 @@ func (item *AColorBoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *AColorBoxedMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *AColorMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *AColorBoxedMaybe) WriteBoxed(w []byte) []byte {
+func (item *AColorMaybe) WriteBoxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		return item.Value.WriteBoxed(w)
@@ -313,7 +313,7 @@ func (item *AColorBoxedMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *AColorBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+func (item *AColorMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	if !item.Ok {
 		if optimizeEmpty {
 			return sizes, 0
@@ -344,7 +344,7 @@ func (item *AColorBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) (
 	return sizes, currentSize
 }
 
-func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+func (item *AColorMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if !item.Ok {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -374,7 +374,7 @@ func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 	return w, sizes, currentSize
 }
 
-func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
+func (item *AColorMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -419,7 +419,7 @@ func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *AColorBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AColorMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -439,15 +439,15 @@ func (item *AColorBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AColorBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *AColorMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *AColorBoxedMaybe) WriteJSON(w []byte) []byte {
+func (item *AColorMaybe) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AColorBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AColorMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
@@ -457,7 +457,7 @@ func (item *AColorBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	return append(w, '}')
 }
 
-func (item AColorBoxedMaybe) String() string {
+func (item AColorMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 

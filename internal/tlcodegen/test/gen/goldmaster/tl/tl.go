@@ -66,16 +66,16 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTrue"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleBoxedInt3Maybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleBoxedIntBoxed0Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleCycleTuple"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleCycleTuple2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt0Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3BoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed0"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed0BoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntBoxed3Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntMaybe"
@@ -92,8 +92,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseTrue"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorBoxedIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
 )
 
@@ -162,16 +162,16 @@ type (
 	TestMaybe                          = tlTestMaybe.TestMaybe
 	TestMaybe2                         = tlTestMaybe2.TestMaybe2
 	True                               = tlTrue.True
+	TupleBoxedInt3Maybe                = tlTupleBoxedInt3Maybe.TupleBoxedInt3Maybe
+	TupleBoxedIntBoxed0Maybe           = tlTupleBoxedIntBoxed0Maybe.TupleBoxedIntBoxed0Maybe
 	TupleCycleTuple                    = tlTupleCycleTuple.TupleCycleTuple
 	TupleCycleTuple2                   = tlTupleCycleTuple2.TupleCycleTuple2
 	TupleInt                           = tlTupleInt.TupleInt
 	TupleInt0                          = tlTupleInt0.TupleInt0
 	TupleInt0Maybe                     = tlTupleInt0Maybe.TupleInt0Maybe
 	TupleInt3                          = tlTupleInt3.TupleInt3
-	TupleInt3BoxedMaybe                = tlTupleInt3BoxedMaybe.TupleInt3BoxedMaybe
 	TupleInt3Maybe                     = tlTupleInt3Maybe.TupleInt3Maybe
 	TupleIntBoxed0                     = tlTupleIntBoxed0.TupleIntBoxed0
-	TupleIntBoxed0BoxedMaybe           = tlTupleIntBoxed0BoxedMaybe.TupleIntBoxed0BoxedMaybe
 	TupleIntBoxed3                     = tlTupleIntBoxed3.TupleIntBoxed3
 	TupleIntBoxed3Maybe                = tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
 	TupleIntMaybe                      = tlTupleIntMaybe.TupleIntMaybe
@@ -193,8 +193,8 @@ type (
 	UseStr                             = tlUseStr.UseStr
 	UseStrBytes                        = tlUseStr.UseStrBytes
 	UseTrue                            = tlUseTrue.UseTrue
+	VectorBoxedIntMaybe                = tlVectorBoxedIntMaybe.VectorBoxedIntMaybe
 	VectorInt                          = tlVectorInt.VectorInt
-	VectorIntBoxedMaybe                = tlVectorIntBoxedMaybe.VectorIntBoxedMaybe
 	VectorIntMaybe                     = tlVectorIntMaybe.VectorIntMaybe
 )
 

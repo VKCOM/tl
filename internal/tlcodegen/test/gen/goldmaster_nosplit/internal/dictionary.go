@@ -13,6 +13,195 @@ import (
 
 var _ = basictl.NatWrite
 
+type DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe struct {
+	Value map[string]UsefulServiceUserEntityPaymentItem // not deterministic if !Ok
+	Ok    bool
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Reset() {
+	item.Ok = false
+}
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
+	if basictl.RandomUint(rg)&1 == 1 {
+		item.Ok = true
+		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
+	} else {
+		item.Ok = false
+	}
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
+		return w, err
+	}
+	if item.Ok {
+		if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
+			return w, err
+		}
+		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
+	}
+	return w, nil
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_t), nil
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+	if item.Ok {
+		w = basictl.NatWrite(w, 0x3f9c8ef8)
+		w = basictl.NatWrite(w, 0x1f4c618f)
+		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
+	}
+	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
+	}
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
+	currentSize += basictl.TL2CalculateSize(1)
+	lastUsedByte = currentSize
+
+	if sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	currentSize += basictl.TL2CalculateSize(currentSize)
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
+	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	currentBlock |= 1
+	if w, sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+		currentBlock |= 2
+	}
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
+	}
+	return r, nil
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
+	if err != nil {
+		return err
+	}
+	item.Ok = _ok
+	if _ok {
+		var in2Pointer *basictl.JsonLexer
+		if _jvalue != nil {
+			in2 := basictl.JsonLexer{Data: _jvalue}
+			in2Pointer = &in2
+		}
+		if err := BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
+}
+
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
+}
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+	if !item.Ok {
+		return append(w, "{}"...)
+	}
+	w = append(w, `{"ok":true`...)
+	if len(item.Value) != 0 {
+		w = append(w, `,"value":`...)
+		w = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
+	}
+	return append(w, '}')
+}
+
 type DictionaryString map[string]string
 
 func (DictionaryString) TLName() string { return "dictionary" }
@@ -353,193 +542,4 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
-}
-
-type DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe struct {
-	Value map[string]UsefulServiceUserEntityPaymentItem // not deterministic if !Ok
-	Ok    bool
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Reset() {
-	item.Ok = false
-}
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
-	if basictl.RandomUint(rg)&1 == 1 {
-		item.Ok = true
-		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
-	} else {
-		item.Ok = false
-	}
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
-	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
-		return w, err
-	}
-	if item.Ok {
-		if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
-			return w, err
-		}
-		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
-	}
-	return w, nil
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t), nil
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
-	if item.Ok {
-		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		w = basictl.NatWrite(w, 0x1f4c618f)
-		return BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
-	}
-	return basictl.NatWrite(w, 0x27930a7b)
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok {
-		if optimizeEmpty {
-			return sizes, 0
-		}
-		return sizes, 1
-	}
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	currentSize += basictl.TL2CalculateSize(1)
-	lastUsedByte = currentSize
-
-	if sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	currentSize += basictl.TL2CalculateSize(currentSize)
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok {
-		if optimizeEmpty {
-			return w, sizes, 0
-		}
-		w = append(w, 0)
-		return w, sizes, 1
-	}
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-
-	w = basictl.TL2WriteSize(w, 1)
-	currentBlock |= 1
-	if w, sizes, sz = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
-		currentBlock |= 2
-	}
-	w[currentBlockPosition] = currentBlock
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, currentSize
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return r, err
-	}
-	var index int
-	if (block & 1) != 0 {
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return r, err
-		}
-	}
-	switch index {
-	case 0:
-		item.Ok = false
-		return r, nil
-	case 1:
-		item.Ok = true
-	default:
-		return r, ErrorInvalidUnionIndex("Maybe", index)
-	}
-
-	if block&2 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
-			return currentR, err
-		}
-	} else {
-		BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
-	}
-	return r, nil
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
-	if err != nil {
-		return err
-	}
-	item.Ok = _ok
-	if _ok {
-		var in2Pointer *basictl.JsonLexer
-		if _jvalue != nil {
-			in2 := basictl.JsonLexer{Data: _jvalue}
-			in2Pointer = &in2
-		}
-		if err := BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
-}
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
-	if !item.Ok {
-		return append(w, "{}"...)
-	}
-	w = append(w, `{"ok":true`...)
-	if len(item.Value) != 0 {
-		w = append(w, `,"value":`...)
-		w = BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
-	}
-	return append(w, '}')
 }

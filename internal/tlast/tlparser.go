@@ -141,7 +141,7 @@ type Combinator struct {
 	TemplateArgumentsPR PositionRange // especially useful when 0 arguments
 	PR                  PositionRange
 	SectionPR           PositionRange // section headers
-	AllPR               PositionRange // with all whitespace in file (except sections) accounted for
+	AllPR               PositionRange // with all whitespace in file (except sections and last section) accounted for
 
 	CommentBefore string // comment before combinator
 	CommentRight  string // comment to the right of combinator

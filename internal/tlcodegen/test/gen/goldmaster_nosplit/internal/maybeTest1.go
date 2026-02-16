@@ -22,9 +22,9 @@ type MaybeTest1 struct {
 	E InnerMaybe
 	F InnerMaybe0
 	G VectorIntMaybe
-	H VectorIntBoxedMaybe
-	I TupleInt3BoxedMaybe
-	J TupleIntBoxed0BoxedMaybe
+	H VectorBoxedIntMaybe
+	I TupleBoxedInt3Maybe
+	J TupleBoxedIntBoxed0Maybe
 }
 
 func (MaybeTest1) TLName() string { return "maybeTest1" }

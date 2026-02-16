@@ -8,7 +8,7 @@
 package tla
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAColorBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAColorMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairAInnerAInner"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairPairAInnerAInnerAInnerBoxed3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorAColor"
@@ -29,7 +29,7 @@ import (
 
 type (
 	Color                            = tlAColor.AColor
-	ColorBoxedMaybe                  = tlAColorBoxedMaybe.AColorBoxedMaybe
+	ColorMaybe                       = tlAColorMaybe.AColorMaybe
 	Inner                            = tlAInner.AInner
 	Inner3                           = tlAInner3.AInner3
 	MiddlePairInnerInnerInnerBoxed3  = tlAMiddlePairAInnerAInnerAInnerBoxed3.AMiddlePairAInnerAInnerAInnerBoxed3
