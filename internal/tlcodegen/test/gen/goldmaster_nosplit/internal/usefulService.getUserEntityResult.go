@@ -15,7 +15,7 @@ var _ = basictl.NatWrite
 
 type UsefulServiceGetUserEntityResult struct {
 	EntityId     string
-	PaymentItems DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
+	PaymentItems DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
 }
 
 func (UsefulServiceGetUserEntityResult) TLName() string { return "usefulService.getUserEntityResult" }

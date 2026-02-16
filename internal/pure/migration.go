@@ -35,9 +35,9 @@ func (k *Kernel) Migration() error {
 	for name, bb := range allFiles {
 		if k.opts.TL2MigrationDevMode {
 			if strings.HasSuffix(name, ".tl") {
-				name = strings.TrimSuffix(name, ".tl") + ".tl1m"
+				name = strings.TrimSuffix(name, ".tl") + "_migr.tl"
 			} else if strings.HasSuffix(name, ".tl2") {
-				name = strings.TrimSuffix(name, ".tl2") + ".tl2m"
+				name = strings.TrimSuffix(name, ".tl2") + "_migr.tl2"
 			}
 		}
 		was, err := os.ReadFile(name)
@@ -179,6 +179,7 @@ outer:
 				if len(comb.TemplateArguments) != 0 {
 					return nil, comb.Construct.NamePR.BeautifulError(errors.New("internal error: function with template arguments cannot be migrated"))
 				}
+				bb.WriteString(" ")
 				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
 					return nil, err
@@ -195,10 +196,10 @@ outer:
 				}
 				bb.WriteString(";")
 			} else {
-				// migrate struct
-				if comb.Construct.IDExplicit {
-					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
-				}
+				// migrate struct. we decided that migrating tags should be done manually, if ever needed
+				// if comb.Construct.IDExplicit {
+				//	_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
+				// }
 				if err := k.MigrationTemplateArguments(bb, tip, comb); err != nil {
 					return nil, err
 				}

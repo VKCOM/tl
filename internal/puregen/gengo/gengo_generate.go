@@ -138,7 +138,7 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive) error {
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	res := &TypeRWBool{
 		isBit: false,
@@ -160,14 +160,28 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		if err != nil {
 			return err
 		}
-
 		// Customizing maybe name was really stupid idea, actually.
-		suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
-		head, tail := fieldType.resolvedT2GoName("")
-		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
-		head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
-		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
+		head, tail := myWrapper.resolvedT2GoName("")
+		myWrapper.goGlobalName = gen.globalDec.deconflictName(tail + head)
+		head, tail = myWrapper.resolvedT2GoName(fieldType.tlName.Namespace) // myWrapper.ns.name
+		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(tail + head)
 
+		suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
+		head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
+		if head+tail+suffix != myWrapper.goLocalName {
+			fmt.Printf("boxed maybe replace: tl%s.%s with tl%s.%s\n", myWrapper.ns.name, head+tail+suffix, myWrapper.ns.name, myWrapper.goLocalName)
+		}
+		//head, tail := fieldType.resolvedT2GoName("")
+		//suffix := "Maybe"
+		//if head != "Bool" && !elementField.Bare() && !fieldType.pureType.BoxedOnly() {
+		//	suffix = "BoxedMaybe"
+		//}
+		//myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
+		//head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
+		//myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
+		//if oldSuffix != suffix {
+		//	fmt.Printf("boxed maybe replace tl%s.%s with %s\n", fieldType.tlName.Namespace, head+tail+oldSuffix, myWrapper.goLocalName)
+		//}
 		res := &TypeRWMaybe{
 			wr: myWrapper,
 			element: Field{

@@ -12,9 +12,9 @@ import (
 )
 
 type (
+	DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe = internal.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
 	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed      = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
 	DictionaryUsefulServiceUserEntityPaymentItemBoxed           = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
-	DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
 	GetUserEntity                                               = internal.UsefulServiceGetUserEntity
 	GetUserEntityResult                                         = internal.UsefulServiceGetUserEntityResult
 	GetUserEntityResultBoxedMaybe                               = internal.UsefulServiceGetUserEntityResultBoxedMaybe
