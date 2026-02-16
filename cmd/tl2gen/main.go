@@ -114,7 +114,10 @@ func runMain(opt *puregen.Options) error {
 		return err
 	}
 	if f, ok := languages[opt.Language]; ok {
-		return f(kernel, opt)
+		if err := f(kernel, opt); err != nil {
+			return err
+		}
+		return opt.ReplaceStringInDir()
 	}
 	var keys []string
 	for k := range languages {

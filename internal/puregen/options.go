@@ -10,7 +10,10 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
 )
@@ -39,6 +42,18 @@ type Options struct {
 
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
+
+	// sometimes we need to replace lots of names in vkgo repository, when we change generation.
+	// so it turned out, the fastest solution is simply use generator itself
+	ReplaceDir string
+	// this is not an option, but any generator can add names here to be replaced by common code
+	replaceStrings []replaceStringsItem
+}
+
+type replaceStringsItem struct {
+	FileSuffix string
+	Before     string
+	After      string
 }
 
 func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
@@ -66,6 +81,9 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 		"whether to generate methods for random filling structs")
 	f.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
+
+	f.StringVar(&opt.ReplaceDir, "replaceDir", "",
+		"path to main repository so generator can make replacement of legacy names")
 
 	opt.Kernel.Bind(f)
 	opt.Go.Bind(f)
@@ -96,4 +114,64 @@ func (opt *Options) Validate() error {
 		opt.CopyrightText = string(buf)
 	}
 	return nil
+}
+
+// Any generator can request replacing client code in main repository by calling this function.
+// User should run generator with --replaceDir=XXX for each repository to replace names in.
+func (opt *Options) ReplaceStrings(fileSuffix string, before string, after string) {
+	fmt.Printf("Replace name requested in %s: %s -> %s\n", fileSuffix, before, after)
+	opt.replaceStrings = append(opt.replaceStrings,
+		replaceStringsItem{FileSuffix: fileSuffix, Before: before, After: after})
+}
+
+func (opt *Options) ReplaceStringInDir() error {
+	if opt.ReplaceDir == "" || len(opt.replaceStrings) == 0 {
+		return nil
+	}
+	fmt.Printf("Replacing %d strings in %s\n", len(opt.replaceStrings), opt.ReplaceDir)
+	suffixes := map[string]struct{}{}
+	for _, r := range opt.replaceStrings {
+		suffixes[r.FileSuffix] = struct{}{}
+	}
+	err := filepath.Walk(opt.ReplaceDir, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.Mode().IsRegular() {
+			return nil
+		}
+		canonical := strings.ReplaceAll(path, string(os.PathSeparator), "/")
+		if strings.Contains(canonical, "/.") { // .git and similar
+			return nil
+		}
+		var originalContent string
+		var replacedContent string
+		for _, r := range opt.replaceStrings {
+			if !strings.HasSuffix(canonical, r.FileSuffix) {
+				continue
+			}
+			if originalContent == "" {
+				was, err := os.ReadFile(path)
+				if err != nil {
+					fmt.Printf("error reading file %s: %v\n", path, err)
+					return nil
+				}
+				if len(was) == 0 {
+					return nil
+				}
+				originalContent = string(was)
+				replacedContent = originalContent
+			}
+			replacedContent = strings.ReplaceAll(replacedContent, r.Before, r.After)
+		}
+		if replacedContent != originalContent {
+			if err := os.WriteFile(path, []byte(replacedContent), info.Mode()); err != nil {
+				fmt.Printf("error writing file %s: %v\n", path, err)
+			} else {
+				fmt.Printf("replaced strings in file %s\n", path)
+			}
+		}
+		return nil
+	})
+	return err
 }

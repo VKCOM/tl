@@ -169,7 +169,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		suffix := ifString(elementField.Bare(), "Maybe", "BoxedMaybe") // TODO - check element's BareBoxed()
 		head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
 		if head+tail+suffix != myWrapper.goLocalName {
-			fmt.Printf("boxed maybe replace: tl%s.%s with tl%s.%s\n", myWrapper.ns.name, head+tail+suffix, myWrapper.ns.name, myWrapper.goLocalName)
+			gen.options.ReplaceStrings(".go",
+				"tl"+myWrapper.ns.name+"."+head+tail+suffix,
+				"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
 		}
 		//head, tail := fieldType.resolvedT2GoName("")
 		//suffix := "Maybe"
