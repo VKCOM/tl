@@ -39,7 +39,7 @@ func (gen *genGo) compile() error {
 		case *pure.TypeInstanceArray:
 			head, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 			//tail := myWrapper.resolvedT2GoNameTail("")
 			//if pureType.IsTuple() {
@@ -65,7 +65,7 @@ func (gen *genGo) compile() error {
 		case *pure.TypeInstanceDict:
 			head, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-			head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+			head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 			if err := gen.GenerateTypeDict(myWrapper, pureType); err != nil {
 				return err

@@ -20,13 +20,13 @@ import (
 )
 
 type (
-	DictionaryBoxedUserEntityPaymentItemBoxedMaybe         = tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
-	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
-	DictionaryUsefulServiceUserEntityPaymentItemBoxed      = tlDictionaryUsefulServiceUserEntityPaymentItemBoxed.DictionaryUsefulServiceUserEntityPaymentItemBoxed
-	GetUserEntity                                          = tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity
-	GetUserEntityResult                                    = tlUsefulServiceGetUserEntityResult.UsefulServiceGetUserEntityResult
-	GetUserEntityResultBoxedMaybe                          = tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
-	UserEntityPaymentItem                                  = tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
-	UserEntityPaymentItemPromo                             = tlUsefulServiceUserEntityPaymentItemPromo.UsefulServiceUserEntityPaymentItemPromo
-	UserEntityPaymentItemPromoBoxedMaybe                   = tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
+	DictionaryBoxedUserEntityPaymentItemBoxedMaybe = tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
+	DictionaryFieldUserEntityPaymentItemBoxed      = tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUserEntityPaymentItemBoxed           = tlDictionaryUsefulServiceUserEntityPaymentItemBoxed.DictionaryUsefulServiceUserEntityPaymentItemBoxed
+	GetUserEntity                                  = tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity
+	GetUserEntityResult                            = tlUsefulServiceGetUserEntityResult.UsefulServiceGetUserEntityResult
+	GetUserEntityResultBoxedMaybe                  = tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
+	UserEntityPaymentItem                          = tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
+	UserEntityPaymentItemPromo                     = tlUsefulServiceUserEntityPaymentItemPromo.UsefulServiceUserEntityPaymentItemPromo
+	UserEntityPaymentItemPromoBoxedMaybe           = tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
 )

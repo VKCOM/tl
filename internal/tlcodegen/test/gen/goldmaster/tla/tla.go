@@ -28,18 +28,18 @@ import (
 )
 
 type (
-	Color                            = tlAColor.AColor
-	ColorMaybe                       = tlAColorMaybe.AColorMaybe
-	Inner                            = tlAInner.AInner
-	Inner3                           = tlAInner3.AInner3
-	MiddlePairInnerInnerInnerBoxed3  = tlAMiddlePairAInnerAInnerAInnerBoxed3.AMiddlePairAInnerAInnerAInnerBoxed3
-	MyBool                           = tlAMyBool.AMyBool
-	MyUnion                          = tlAMyUnion.AMyUnion
-	PairAInnerAInner                 = tlPairAInnerAInner.PairAInnerAInner
-	PairPairAInnerAInnerAInnerBoxed3 = tlPairPairAInnerAInnerAInnerBoxed3.PairPairAInnerAInnerAInnerBoxed3
-	Top2                             = tlATop2.ATop2
-	UNionA                           = tlAMyUnion.AUNionA
-	VectorAColor                     = tlVectorAColor.VectorAColor
+	Color                           = tlAColor.AColor
+	ColorMaybe                      = tlAColorMaybe.AColorMaybe
+	Inner                           = tlAInner.AInner
+	Inner3                          = tlAInner3.AInner3
+	MiddlePairInnerInnerInnerBoxed3 = tlAMiddlePairAInnerAInnerAInnerBoxed3.AMiddlePairAInnerAInnerAInnerBoxed3
+	MyBool                          = tlAMyBool.AMyBool
+	MyUnion                         = tlAMyUnion.AMyUnion
+	PairInnerInner                  = tlPairAInnerAInner.PairAInnerAInner
+	PairPairInnerInnerInnerBoxed3   = tlPairPairAInnerAInnerAInnerBoxed3.PairPairAInnerAInnerAInnerBoxed3
+	Top2                            = tlATop2.ATop2
+	UNionA                          = tlAMyUnion.AUNionA
+	VectorColor                     = tlVectorAColor.VectorAColor
 )
 
 func Blue() Color     { return tlABlue.ABlue() }

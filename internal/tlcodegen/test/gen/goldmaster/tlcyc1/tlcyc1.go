@@ -13,6 +13,6 @@ import (
 )
 
 type (
-	MyCycle           = cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle
-	VectorCyc1MyCycle = tlVectorCyc1MyCycle.VectorCyc1MyCycle
+	MyCycle       = cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle
+	VectorMyCycle = tlVectorCyc1MyCycle.VectorCyc1MyCycle
 )

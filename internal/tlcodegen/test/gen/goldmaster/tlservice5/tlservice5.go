@@ -15,10 +15,10 @@ import (
 )
 
 type (
-	EmptyOutput        = tlService5Output.Service5EmptyOutput
-	Insert             = tlService5Insert.Service5Insert
-	InsertList         = tlService5InsertList.Service5InsertList
-	ListService5Output = tlListService5Output.ListService5Output
-	Output             = tlService5Output.Service5Output
-	StringOutput       = tlService5Output.Service5StringOutput
+	EmptyOutput  = tlService5Output.Service5EmptyOutput
+	Insert       = tlService5Insert.Service5Insert
+	InsertList   = tlService5InsertList.Service5InsertList
+	ListOutput   = tlListService5Output.ListService5Output
+	Output       = tlService5Output.Service5Output
+	StringOutput = tlService5Output.Service5StringOutput
 )
