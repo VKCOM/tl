@@ -96,8 +96,16 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct) error {
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	if head+tail != myWrapper.goLocalName {
+		gen.options.ReplaceStrings(".go",
+			"tl"+myWrapper.ns.name+"."+head+tail,
+			"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
+	}
+
 	res := &TypeRWStruct{
 		wr:             myWrapper,
 		pureTypeStruct: pureType,
@@ -166,12 +174,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(tail + head)
 
-		head, tail = myWrapper.resolvedT2GoName(fieldType.tlName.Namespace)
-		if tail+head != myWrapper.goLocalName {
-			gen.options.ReplaceStrings(".go",
-				"tl"+myWrapper.ns.name+"."+tail+head,
-				"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
-		}
 		//head, tail := fieldType.resolvedT2GoName("")
 		//suffix := "Maybe"
 		//if head != "Bool" && !elementField.Bare() && !fieldType.pureType.BoxedOnly() {
@@ -199,8 +201,15 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	}
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+
+	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	if head+tail != myWrapper.goLocalName {
+		gen.options.ReplaceStrings(".go",
+			"tl"+myWrapper.ns.name+"."+head+tail,
+			"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
+	}
 
 	res := &TypeRWUnion{
 		wr:     myWrapper,

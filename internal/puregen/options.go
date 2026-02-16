@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/vkcom/tl/internal/pure"
 )
@@ -133,6 +134,8 @@ func (opt *Options) ReplaceStringInDir() error {
 	for _, r := range opt.replaceStrings {
 		suffixes[r.FileSuffix] = struct{}{}
 	}
+	total := 0
+	// sometimes replacing takes very long time, we need some progressbar
 	err := filepath.Walk(opt.ReplaceDir, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -143,6 +146,30 @@ func (opt *Options) ReplaceStringInDir() error {
 		canonical := strings.ReplaceAll(path, string(os.PathSeparator), "/")
 		if strings.Contains(canonical, "/.") { // .git and similar
 			return nil
+		}
+		total++
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	current := 0
+	now := time.Now()
+	err = filepath.Walk(opt.ReplaceDir, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.Mode().IsRegular() {
+			return nil
+		}
+		canonical := strings.ReplaceAll(path, string(os.PathSeparator), "/")
+		if strings.Contains(canonical, "/.") { // .git and similar
+			return nil
+		}
+		current++
+		if time.Since(now) > 10*time.Second {
+			now = time.Now()
+			fmt.Printf("replacement progress: %d/%d\n", current, total)
 		}
 		var originalContent string
 		var replacedContent string

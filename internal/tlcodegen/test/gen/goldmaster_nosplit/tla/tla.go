@@ -12,18 +12,18 @@ import (
 )
 
 type (
-	Color                            = internal.AColor
-	ColorMaybe                       = internal.AColorMaybe
-	Inner                            = internal.AInner
-	Inner3                           = internal.AInner3
-	MiddlePairInnerInnerInnerBoxed3  = internal.AMiddlePairAInnerAInnerAInnerBoxed3
-	MyBool                           = internal.AMyBool
-	MyUnion                          = internal.AMyUnion
-	PairAInnerAInner                 = internal.PairAInnerAInner
-	PairPairAInnerAInnerAInnerBoxed3 = internal.PairPairAInnerAInnerAInnerBoxed3
-	Top2                             = internal.ATop2
-	UNionA                           = internal.AUNionA
-	VectorAColor                     = internal.VectorAColor
+	Color                           = internal.AColor
+	ColorMaybe                      = internal.AColorMaybe
+	Inner                           = internal.AInner
+	Inner3                          = internal.AInner3
+	MiddlePairInnerInnerInnerBoxed3 = internal.AMiddlePairAInnerAInnerAInnerBoxed3
+	MyBool                          = internal.AMyBool
+	MyUnion                         = internal.AMyUnion
+	PairInnerInner                  = internal.PairAInnerAInner
+	PairPairInnerInnerInnerBoxed3   = internal.PairPairAInnerAInnerAInnerBoxed3
+	Top2                            = internal.ATop2
+	UNionA                          = internal.AUNionA
+	VectorColor                     = internal.VectorAColor
 )
 
 func Blue() Color     { return internal.ABlue() }

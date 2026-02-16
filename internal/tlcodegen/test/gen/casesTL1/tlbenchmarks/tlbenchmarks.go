@@ -12,8 +12,8 @@ import (
 )
 
 type (
-	VectorBenchmarksVruPosition           = internal.VectorBenchmarksVruPosition
-	VectorBenchmarksVrutoyTopLevelUnion   = internal.VectorBenchmarksVrutoyTopLevelUnion
+	VectorVruPosition                     = internal.VectorBenchmarksVruPosition
+	VectorVrutoyTopLevelUnion             = internal.VectorBenchmarksVrutoyTopLevelUnion
 	VruHash                               = internal.BenchmarksVruHash
 	VruPosition                           = internal.BenchmarksVruPosition
 	VrutoyPositions                       = internal.BenchmarksVrutoyPositions

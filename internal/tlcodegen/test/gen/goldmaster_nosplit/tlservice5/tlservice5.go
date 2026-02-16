@@ -12,10 +12,10 @@ import (
 )
 
 type (
-	EmptyOutput        = internal.Service5EmptyOutput
-	Insert             = internal.Service5Insert
-	InsertList         = internal.Service5InsertList
-	ListService5Output = internal.ListService5Output
-	Output             = internal.Service5Output
-	StringOutput       = internal.Service5StringOutput
+	EmptyOutput  = internal.Service5EmptyOutput
+	Insert       = internal.Service5Insert
+	InsertList   = internal.Service5InsertList
+	ListOutput   = internal.ListService5Output
+	Output       = internal.Service5Output
+	StringOutput = internal.Service5StringOutput
 )
