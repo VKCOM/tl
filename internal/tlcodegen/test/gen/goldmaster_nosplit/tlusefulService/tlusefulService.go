@@ -12,13 +12,13 @@ import (
 )
 
 type (
-	DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe = internal.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
-	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed      = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
-	DictionaryUsefulServiceUserEntityPaymentItemBoxed           = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
-	GetUserEntity                                               = internal.UsefulServiceGetUserEntity
-	GetUserEntityResult                                         = internal.UsefulServiceGetUserEntityResult
-	GetUserEntityResultBoxedMaybe                               = internal.UsefulServiceGetUserEntityResultBoxedMaybe
-	UserEntityPaymentItem                                       = internal.UsefulServiceUserEntityPaymentItem
-	UserEntityPaymentItemPromo                                  = internal.UsefulServiceUserEntityPaymentItemPromo
-	UserEntityPaymentItemPromoBoxedMaybe                        = internal.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
+	DictionaryBoxedUserEntityPaymentItemBoxedMaybe         = internal.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
+	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUsefulServiceUserEntityPaymentItemBoxed      = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
+	GetUserEntity                                          = internal.UsefulServiceGetUserEntity
+	GetUserEntityResult                                    = internal.UsefulServiceGetUserEntityResult
+	GetUserEntityResultBoxedMaybe                          = internal.UsefulServiceGetUserEntityResultBoxedMaybe
+	UserEntityPaymentItem                                  = internal.UsefulServiceUserEntityPaymentItem
+	UserEntityPaymentItemPromo                             = internal.UsefulServiceUserEntityPaymentItemPromo
+	UserEntityPaymentItemPromoBoxedMaybe                   = internal.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
 )
