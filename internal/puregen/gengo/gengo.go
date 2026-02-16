@@ -427,7 +427,7 @@ func (gen *genGo) InternalPrefix() string {
 func (gen *genGo) getNamespace(n string) *Namespace {
 	na, ok := gen.Namespaces[n]
 	if !ok {
-		na = &Namespace{}
+		na = &Namespace{name: n}
 		gen.Namespaces[n] = na
 		// TODO - ALL golang-specific names
 		na.decGo.deconflictName("Handler")

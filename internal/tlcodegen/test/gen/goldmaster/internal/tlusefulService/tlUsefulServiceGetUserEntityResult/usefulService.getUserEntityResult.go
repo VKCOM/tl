@@ -9,7 +9,7 @@ package tlUsefulServiceGetUserEntityResult
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 type UsefulServiceGetUserEntityResult struct {
 	EntityId     string
-	PaymentItems tlDictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe.DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
+	PaymentItems tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
 }
 
 func (UsefulServiceGetUserEntityResult) TLName() string { return "usefulService.getUserEntityResult" }

@@ -10,7 +10,7 @@ package tlCdUseCycle
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAColorBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAColorMaybe"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -19,7 +19,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 type CdUseCycle struct {
 	A cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc2MyCycle
-	B tlAColorBoxedMaybe.AColorBoxedMaybe
+	B tlAColorMaybe.AColorMaybe
 }
 
 func (CdUseCycle) TLName() string { return "cd.useCycle" }

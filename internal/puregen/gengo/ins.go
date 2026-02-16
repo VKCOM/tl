@@ -20,6 +20,7 @@ type DirectImports struct {
 }
 
 type Namespace struct {
+	name  string
 	types []*TypeRWWrapper
 	decGo Deconflicter
 }

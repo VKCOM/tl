@@ -15,7 +15,7 @@ var _ = basictl.NatWrite
 
 type CdUseCycle struct {
 	A Cyc2MyCycle
-	B AColorBoxedMaybe
+	B AColorMaybe
 }
 
 func (CdUseCycle) TLName() string { return "cd.useCycle" }

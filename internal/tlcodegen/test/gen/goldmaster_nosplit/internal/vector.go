@@ -133,6 +133,199 @@ func (item *VectorAColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []by
 	return item.InternalReadTL2(r)
 }
 
+type VectorBoxedIntMaybe struct {
+	Value []int32 // not deterministic if !Ok
+	Ok    bool
+}
+
+func (item *VectorBoxedIntMaybe) Reset() {
+	item.Ok = false
+}
+func (item *VectorBoxedIntMaybe) FillRandom(rg *basictl.RandGenerator) {
+	if basictl.RandomUint(rg)&1 == 1 {
+		item.Ok = true
+		BuiltinVectorIntFillRandom(rg, &item.Value)
+	} else {
+		item.Ok = false
+	}
+}
+
+func (item *VectorBoxedIntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
+		return w, err
+	}
+	if item.Ok {
+		if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+			return w, err
+		}
+		return BuiltinVectorIntRead(w, &item.Value)
+	}
+	return w, nil
+}
+
+func (item *VectorBoxedIntMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *VectorBoxedIntMaybe) WriteBoxed(w []byte) []byte {
+	if item.Ok {
+		w = basictl.NatWrite(w, 0x3f9c8ef8)
+		w = basictl.NatWrite(w, 0x1cb5c415)
+		return BuiltinVectorIntWrite(w, item.Value)
+	}
+	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *VectorBoxedIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	if !item.Ok {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
+	}
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
+	currentSize += basictl.TL2CalculateSize(1)
+	lastUsedByte = currentSize
+
+	if sizes, sz = BuiltinVectorIntCalculateLayout(sizes, true, &item.Value); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	currentSize += basictl.TL2CalculateSize(currentSize)
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func (item *VectorBoxedIntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if !item.Ok {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
+	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	currentBlock |= 1
+	if w, sizes, sz = BuiltinVectorIntInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+		currentBlock |= 2
+	}
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
+}
+
+func (item *VectorBoxedIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	var index int
+	if (block & 1) != 0 {
+		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+	switch index {
+	case 0:
+		item.Ok = false
+		return r, nil
+	case 1:
+		item.Ok = true
+	default:
+		return r, ErrorInvalidUnionIndex("Maybe", index)
+	}
+
+	if block&2 != 0 {
+		if currentR, err = BuiltinVectorIntInternalReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value = item.Value[:0]
+	}
+	return r, nil
+}
+
+func (item *VectorBoxedIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
+	if err != nil {
+		return err
+	}
+	item.Ok = _ok
+	if _ok {
+		var in2Pointer *basictl.JsonLexer
+		if _jvalue != nil {
+			in2 := basictl.JsonLexer{Data: _jvalue}
+			in2Pointer = &in2
+		}
+		if err := BuiltinVectorIntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorBoxedIntMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
+}
+
+func (item *VectorBoxedIntMaybe) WriteJSON(w []byte) []byte {
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
+}
+func (item *VectorBoxedIntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+	if !item.Ok {
+		return append(w, "{}"...)
+	}
+	w = append(w, `{"ok":true`...)
+	if len(item.Value) != 0 {
+		w = append(w, `,"value":`...)
+		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Value)
+	}
+	return append(w, '}')
+}
+
+func (item VectorBoxedIntMaybe) String() string {
+	return string(item.WriteJSON(nil))
+}
+
 type VectorCyc1MyCycle []Cyc1MyCycle
 
 func (VectorCyc1MyCycle) TLName() string { return "vector" }
@@ -371,199 +564,6 @@ func (item *VectorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 func (item *VectorInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
-}
-
-type VectorIntBoxedMaybe struct {
-	Value []int32 // not deterministic if !Ok
-	Ok    bool
-}
-
-func (item *VectorIntBoxedMaybe) Reset() {
-	item.Ok = false
-}
-func (item *VectorIntBoxedMaybe) FillRandom(rg *basictl.RandGenerator) {
-	if basictl.RandomUint(rg)&1 == 1 {
-		item.Ok = true
-		BuiltinVectorIntFillRandom(rg, &item.Value)
-	} else {
-		item.Ok = false
-	}
-}
-
-func (item *VectorIntBoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
-		return w, err
-	}
-	if item.Ok {
-		if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
-			return w, err
-		}
-		return BuiltinVectorIntRead(w, &item.Value)
-	}
-	return w, nil
-}
-
-func (item *VectorIntBoxedMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
-func (item *VectorIntBoxedMaybe) WriteBoxed(w []byte) []byte {
-	if item.Ok {
-		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		w = basictl.NatWrite(w, 0x1cb5c415)
-		return BuiltinVectorIntWrite(w, item.Value)
-	}
-	return basictl.NatWrite(w, 0x27930a7b)
-}
-
-func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	if !item.Ok {
-		if optimizeEmpty {
-			return sizes, 0
-		}
-		return sizes, 1
-	}
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-
-	currentSize += basictl.TL2CalculateSize(1)
-	lastUsedByte = currentSize
-
-	if sizes, sz = BuiltinVectorIntCalculateLayout(sizes, true, &item.Value); sz != 0 {
-		currentSize += sz
-		lastUsedByte = currentSize
-	}
-
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	currentSize += basictl.TL2CalculateSize(currentSize)
-	Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if !item.Ok {
-		if optimizeEmpty {
-			return w, sizes, 0
-		}
-		w = append(w, 0)
-		return w, sizes, 1
-	}
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-	w = basictl.TL2WriteSize(w, currentSize)
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-
-	w = basictl.TL2WriteSize(w, 1)
-	currentBlock |= 1
-	if w, sizes, sz = BuiltinVectorIntInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
-		currentBlock |= 2
-	}
-	w[currentBlockPosition] = currentBlock
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	Unused(sz)
-	return w, sizes, currentSize
-}
-
-func (item *VectorIntBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return r, err
-	}
-	var index int
-	if (block & 1) != 0 {
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return r, err
-		}
-	}
-	switch index {
-	case 0:
-		item.Ok = false
-		return r, nil
-	case 1:
-		item.Ok = true
-	default:
-		return r, ErrorInvalidUnionIndex("Maybe", index)
-	}
-
-	if block&2 != 0 {
-		if currentR, err = BuiltinVectorIntInternalReadTL2(currentR, &item.Value); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.Value = item.Value[:0]
-	}
-	return r, nil
-}
-
-func (item *VectorIntBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
-	if err != nil {
-		return err
-	}
-	item.Ok = _ok
-	if _ok {
-		var in2Pointer *basictl.JsonLexer
-		if _jvalue != nil {
-			in2 := basictl.JsonLexer{Data: _jvalue}
-			in2Pointer = &in2
-		}
-		if err := BuiltinVectorIntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// This method is general version of WriteJSON, use it instead!
-func (item *VectorIntBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
-}
-
-func (item *VectorIntBoxedMaybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
-}
-func (item *VectorIntBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	if !item.Ok {
-		return append(w, "{}"...)
-	}
-	w = append(w, `{"ok":true`...)
-	if len(item.Value) != 0 {
-		w = append(w, `,"value":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Value)
-	}
-	return append(w, '}')
-}
-
-func (item VectorIntBoxedMaybe) String() string {
-	return string(item.WriteJSON(nil))
 }
 
 type VectorIntMaybe struct {
