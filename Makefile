@@ -230,7 +230,8 @@ testpure: build
 
 .PHONY: testpure
 testpuremigr: build
-	@./target/bin/tl2gen --language=go -v --split-internal \
+	@./target/bin/tl2gen \
+		--language=go -v --split-internal \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./target/gennew \

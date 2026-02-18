@@ -294,13 +294,6 @@ func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
 }
 
 func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
-	// we must mark all usedAsNatConst, usedAsNatVariable, so
-	// will do some work before looking up and returning existing instance
-	tName := tr.Type.String()
-	kt, ok := k.tips[tName]
-	if !ok {
-		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
-	}
 	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
 	if err != nil {
 		return nil, false, err
@@ -312,6 +305,13 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceR
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
 	// log.Printf("creating an instance of type %s", canonicalName)
+	// we must mark all usedAsNatConst, usedAsNatVariable, so
+	// will do some work before looking up and returning existing instance
+	tName := tr.Type.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
+	}
 	if kt.originTL2 {
 		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
