@@ -563,6 +563,12 @@ class tl_switcher {
   /** @var int[] */
   public static $tl_namespaces_info = [];
 
+  /** @var string */
+  public static $tl_platform = "";
+
+  /** @var (callable(string, string, int, string, string): void) | null */
+  public static $tl_logger_function = null;
+
   /**
    * @param string $tl_namespace
    * @return int
@@ -572,6 +578,22 @@ class tl_switcher {
       return self::$tl_namespaces_info[$tl_namespace];
     }
     return 0;
+  }
+
+  /**
+   * @param string $tl_namespace
+   * @param string $tl_function
+   * @param int $tl_serialization_mode
+   * @param bool $is_fetch
+   */
+  public static function tl_log_call($tl_namespace, $tl_function, $tl_serialization_mode, $is_fetch) {
+    $operation = "store"
+    if ($is_fetch) {
+      $operation = "fetch"
+    }
+    if (!is_null(self::$tl_logger_function)) {
+      self::$tl_logger_function($tl_namespace, $tl_function, $tl_serialization_mode, self::$tl_platform, $operation);
+    }
   }
 }
 `
