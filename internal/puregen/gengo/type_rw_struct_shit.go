@@ -164,7 +164,7 @@ func visit(
 	case *TypeRWBrackets:
 		{
 			// tuple
-			if !i.vectorLike && !i.dictLike && i.dynamicSize && natIndex == 0 {
+			if !i.vectorLike && i.dynamicSize && natIndex == 0 {
 				*natProps |= FieldUsedAsSize
 			} else {
 				elementType := i.element.t

@@ -199,7 +199,7 @@ test:
 .PHONY: check
 check: build test lint
 	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 --version
-	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 ./... # update version together with github actions
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 ./cmd/..../internal/... ./pkg/... # update version together with github actions
 
 .PHONY: lint
 lint:
@@ -214,37 +214,37 @@ testpure: build
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
-		--outdir=./cmd/tl2gen/genold \
+		--outdir=./target/genold \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/genold/tl \
+		--pkgPath=github.com/vkcom/tl/target/gennew/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
-	# genold will not compile due to import statements with gennew
-	# @echo "Checking that generated code actually compiles..."
-	# time $(GO) build ./cmd/tl2gen/gennew/...
+		# genold will not compile due to import statements with gennew
+		# @echo "Checking that generated code actually compiles..."
+		# time $(GO) build ./target/genold/...
 
 .PHONY: testpure
 testpuremigr: build
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
-		--outdir=./cmd/tl2gen/gennew \
+		--outdir=./target/gennew \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/cmd/tl2gen/gennew/tl \
+		--pkgPath=github.com/vkcom/tl/target/gennew/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test_migr.tl ./cmd/tl2client/test_migr.tl2
 	@echo "Checking that generated code actually compiles..."
-	time $(GO) build ./cmd/tl2gen/gennew/...
+	time $(GO) build ./target/gennew/...
 
 # /home/user/go/src/gitlab.mvk.com/go/vkgo/pkg/vktl/combined.tl
 # ./cmd/tl2client/test.tl

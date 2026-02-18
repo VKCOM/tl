@@ -99,12 +99,12 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-	if head+tail != myWrapper.goLocalName {
-		gen.options.ReplaceStrings(".go",
-			"tl"+myWrapper.ns.name+"."+head+tail,
-			"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
-	}
+	//head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+	//if head+tail != myWrapper.goLocalName {
+	//	gen.options.ReplaceStrings(".go",
+	//		"tl"+myWrapper.ns.name+"."+head+tail,
+	//		"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
+	//}
 
 	res := &TypeRWStruct{
 		wr:             myWrapper,
@@ -174,17 +174,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(tail + head)
 
-		//head, tail := fieldType.resolvedT2GoName("")
-		//suffix := "Maybe"
-		//if head != "Bool" && !elementField.Bare() && !fieldType.pureType.BoxedOnly() {
-		//	suffix = "BoxedMaybe"
-		//}
-		//myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
-		//head, tail = fieldType.resolvedT2GoName(fieldType.tlName.Namespace)
-		//myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail + suffix)
-		//if oldSuffix != suffix {
-		//	fmt.Printf("boxed maybe replace tl%s.%s with %s\n", fieldType.tlName.Namespace, head+tail+oldSuffix, myWrapper.goLocalName)
-		//}
 		res := &TypeRWMaybe{
 			wr: myWrapper,
 			element: Field{
@@ -203,13 +192,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
-
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-	if head+tail != myWrapper.goLocalName {
-		gen.options.ReplaceStrings(".go",
-			"tl"+myWrapper.ns.name+"."+head+tail,
-			"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
-	}
 
 	res := &TypeRWUnion{
 		wr:     myWrapper,
@@ -299,10 +281,8 @@ func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.Type
 	if !ok || len(structElement.Fields) != 2 {
 		return fmt.Errorf("dict %s element is not struct with 2 fields", pureType.CanonicalName())
 	}
-	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()
-	if !ok {
-		return fmt.Errorf("dict %s element key is not dict safe", pureType.CanonicalName())
-	}
+	// TODO - better check?
+	isString := structElement.Fields[0].t.pureType.CanonicalName() == "string"
 	res := &TypeRWDict{
 		wr: myWrapper,
 		element: Field{

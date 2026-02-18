@@ -199,13 +199,6 @@ func (trw *TypeRWStruct) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
-func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
-	if trw.isTypeDef() {
-		return trw.Fields[0].t.trw.IsDictKeySafe()
-	}
-	return false, false
-}
-
 func (trw *TypeRWStruct) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeResettingCode(bytesVersion, directImports, ins, val, ref)

@@ -68,10 +68,6 @@ func (trw *TypeRWDict) BeforeCodeGenerationStep2() {
 func (trw *TypeRWDict) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWDict) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false
-}
-
 func (trw *TypeRWDict) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if !bytesVersion {

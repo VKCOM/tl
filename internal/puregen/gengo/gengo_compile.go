@@ -41,12 +41,6 @@ func (gen *genGo) compile() error {
 			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 			head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
-			//tail := myWrapper.resolvedT2GoNameTail("")
-			//if pureType.IsTuple() {
-			//	myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
-			//} else {
-			//	myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
-			//}
 			if err := gen.GenerateTypeArray(myWrapper, pureType); err != nil {
 				return err
 			}

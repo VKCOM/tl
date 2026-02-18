@@ -66,10 +66,6 @@ func (trw *TypeRWMaybe) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 	trw.element.t.FillRecursiveChildren(visitedNodes)
 }
 
-func (trw *TypeRWMaybe) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false
-}
-
 func (trw *TypeRWMaybe) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	return fmt.Sprintf("%s.Reset()", val)
 }

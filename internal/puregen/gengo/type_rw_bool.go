@@ -65,10 +65,6 @@ func (trw *TypeRWBool) BeforeCodeGenerationStep2() {
 func (trw *TypeRWBool) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWBool) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // TODO - low priority future
-}
-
 func (trw *TypeRWBool) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	return fmt.Sprintf("%s = false", addAsterisk(ref, val))
 }

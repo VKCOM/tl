@@ -8,7 +8,6 @@ package gengo
 
 import (
 	"fmt"
-	"strings"
 )
 
 // check that brackets cannot be function return type
@@ -29,11 +28,6 @@ type TypeRWBrackets struct {
 var _ TypeRW = &TypeRWBrackets{}
 
 func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if trw.dictLike && !bytesVersion {
-		return fmt.Sprintf("map[%s]%s",
-			trw.dictKeyField.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias),
-			trw.dictValueField.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias))
-	}
 	if trw.vectorLike || trw.dynamicSize {
 		return fmt.Sprintf("[]%s", trw.element.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias))
 	}
@@ -41,9 +35,6 @@ func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectI
 }
 
 func (trw *TypeRWBrackets) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if trw.dictLike {
-		return true
-	}
 	return trw.element.t.MarkHasBytesVersion(visitedNodes)
 }
 
@@ -66,21 +57,6 @@ func (trw *TypeRWBrackets) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 	trw.element.t.MarkWantsTL2(visitedNodes)
 }
 
-func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
-	// it is hard to mark Dictionary constructor as dictionary,
-	// because it is typedef to Vector or built-in brackets.
-	// TODO: FIX IT, because len(structElement.Fields) != 2 is true
-	structElement, ok := wr.trw.(*TypeRWStruct)
-	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.tlName.Name), "dictionary") {
-		return false, false, Field{}, Field{}
-	}
-	if structElement.Fields[0].fieldMask != nil { // Allowing this complicates json serialization, so no.
-		return false, false, Field{}, Field{}
-	}
-	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()
-	return ok, isString, structElement.Fields[0], structElement.Fields[1]
-}
-
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
@@ -89,14 +65,6 @@ func (trw *TypeRWBrackets) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) b
 }
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
-	if trw.vectorLike {
-		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {
-			trw.dictLike = true
-			trw.dictKeyString = isString
-			trw.dictKeyField = kf
-			trw.dictValueField = vf
-		}
-	}
 }
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep2() {
@@ -109,15 +77,8 @@ func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	trw.element.t.FillRecursiveChildren(visitedNodes)
 }
 
-func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false
-}
-
 func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	if trw.dictLike && !bytesVersion {
-		return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%[1]sReset(%s)", goGlobalName, addAsterisk(ref, val))
-	}
 	if trw.dynamicSize || trw.vectorLike {
 		if ref {
 			return fmt.Sprintf("*%[1]s = (*%[1]s)[:0]", val)
@@ -147,7 +108,7 @@ func (trw *TypeRWBrackets) typeReadingCode(bytesVersion bool, directImports *Dir
 }
 
 func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.dictLike || trw.vectorLike || trw.dynamicSize {
+	if trw.vectorLike || trw.dynamicSize {
 		return fmt.Sprintf("len(%s) != 0", addAsterisk(ref, val))
 	}
 	return ""
@@ -155,7 +116,7 @@ func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string,
 
 func (trw *TypeRWBrackets) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
 	refVal := addAmpersand(ref, val)
-	if (trw.dictLike && !bytesVersion) || trw.vectorLike || trw.dynamicSize {
+	if trw.vectorLike || trw.dynamicSize {
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
 	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)

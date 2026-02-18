@@ -107,10 +107,6 @@ func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 	//}
 }
 
-func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // trw.IsEnum - TODO - in the future?
-}
-
 func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	return fmt.Sprintf("%s.Reset()", val)
 }

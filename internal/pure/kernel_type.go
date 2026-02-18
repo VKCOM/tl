@@ -6,7 +6,11 @@
 
 package pure
 
-import "github.com/vkcom/tl/internal/tlast"
+import (
+	"fmt"
+
+	"github.com/vkcom/tl/internal/tlast"
+)
 
 type KernelTypeTarg struct {
 	// this is set during type resolution, so the information
@@ -87,6 +91,17 @@ func (t *KernelType) CanBeBare() bool {
 
 func (t *KernelType) CanBeBoxed() bool {
 	return t.tl1BoxedName != tlast.Name{}
+}
+
+func (t *KernelType) functionCanNotBeReferencedError(PR tlast.PositionRange) error {
+	e1 := PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", t.canonicalName))
+	var e2 *tlast.ParseError
+	if t.originTL2 {
+		e2 = t.combTL2.FuncDecl.PRName.BeautifulError(errSeeHere)
+	} else {
+		e2 = t.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+	}
+	return tlast.BeautifulError2(e1, e2)
 }
 
 // We do not want to give generators access to combinators directly.

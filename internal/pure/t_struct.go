@@ -195,7 +195,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 	}
 
 	for _, fieldDef := range constructorFields {
-		rt, err := k.resolveType(fieldDef.Type, leftArgs, actualArgs)
+		rt, err := k.resolveTypeTL2(fieldDef.Type, leftArgs, actualArgs)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
@@ -233,7 +233,7 @@ func (k *Kernel) createStructTL1FromTL2(canonicalName string,
 	//}
 	//
 	//for _, fieldDef := range constructorFields {
-	//	rt, err := k.resolveType(fieldDef., leftArgs, actualArgs)
+	//	rt, err := k.resolveTypeTL2(fieldDef., leftArgs, actualArgs)
 	//	if err != nil {
 	//		return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 	//	}
@@ -458,8 +458,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, err
 		}
-		// log.Printf("resolveType for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
+		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, err
 		}
@@ -540,8 +540,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
 		}
-		// log.Printf("resolveType for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
+		// log.Printf("resolveTypeTL2 for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}

@@ -7,15 +7,16 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-func (k *Kernel) resolveType(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
+func (k *Kernel) resolveTypeTL2(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
-	ac, err := k.resolveArgument(tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
+	ac, err := k.resolveArgumentTL2(tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
 	if err != nil {
 		return tr, err
 	}
@@ -25,19 +26,19 @@ func (k *Kernel) resolveType(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTempla
 	return ac.Type, nil
 }
 
-func (k *Kernel) resolveArgument(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+func (k *Kernel) resolveArgumentTL2(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	before := tr
 	was := before.Type.String()
-	tr, err := k.resolveArgumentImpl(tr, leftArgs, actualArgs)
+	tr, err := k.resolveArgumentTL2Impl(tr, leftArgs, actualArgs)
 	after := before.Type.String()
 	if was != after {
-		panic(fmt.Sprintf("tl2pure: internal error, resolveArgument destroyed %s original value %s due to golang aliasing", after, was))
+		panic(fmt.Sprintf("tl2pure: internal error, resolveArgumentTL2 destroyed %s original value %s due to golang aliasing", after, was))
 	}
 	return tr, err
 }
 
-func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
+func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeArgument, error) {
 	if tr.IsNumber {
 		return tr, nil
@@ -45,13 +46,13 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.
 	if tr.Type.IsBracket() {
 		bracketType := *tr.Type.BracketType
 		if bracketType.HasIndex {
-			ic, err := k.resolveArgument(bracketType.IndexType, leftArgs, actualArgs)
+			ic, err := k.resolveArgumentTL2(bracketType.IndexType, leftArgs, actualArgs)
 			if err != nil {
 				return tr, err
 			}
 			bracketType.IndexType = ic
 		}
-		ac, err := k.resolveType(bracketType.ArrayType, leftArgs, actualArgs)
+		ac, err := k.resolveTypeTL2(bracketType.ArrayType, leftArgs, actualArgs)
 		if err != nil {
 			return tr, err
 		}
@@ -64,21 +65,109 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, leftArgs []tlast.
 	if someType.Name.Namespace == "" {
 		for i, targ := range leftArgs {
 			if targ.Name == someType.Name.Name {
-				if len(someType.Arguments) != 0 {
-					return tr, fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name)
+				for _, arg := range someType.Arguments {
+					e1 := arg.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name))
+					e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
+					return tr, tlast.BeautifulError2(e1, e2)
 				}
 				return actualArgs[i], nil
 			}
 		}
 		// probably ref to global type or a typo
 	}
+	tName := someType.Name.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return tr, someType.PRName.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+	}
+	if kt.isFunction {
+		return tr, kt.functionCanNotBeReferencedError(someType.PRName)
+	}
+	if kt.canonicalName != tlast.Name(someType.Name) {
+		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must be to canonical name %s", kt.canonicalName))
+	}
 	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
-	for i, arg := range someType.Arguments {
-		rt, err := k.resolveArgument(arg, leftArgs, actualArgs)
-		if err != nil {
-			return tr, err
+	if kt.originTL2 {
+		td := kt.combTL2
+		if len(td.TypeDecl.TemplateArguments) > len(someType.Arguments) {
+			arg := td.TypeDecl.TemplateArguments[len(someType.Arguments)]
+			e1 := someType.PRArguments.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.Name))
+			e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
+			return tr, tlast.BeautifulError2(e1, e2)
 		}
-		someType.Arguments[i] = rt
+		if len(td.TypeDecl.TemplateArguments) < len(someType.Arguments) {
+			arg := someType.Arguments[len(td.TypeDecl.TemplateArguments)]
+			e1 := arg.PR.BeautifulError(errors.New("excess template argument here"))
+			// TODO - we use TemplateArgumentsPR in TL1, may be need to make one also
+			e2 := td.TypeDecl.PRName.CollapseToEnd().BeautifulError(fmt.Errorf("arguments declared here"))
+			return tr, tlast.BeautifulError2(e1, e2)
+		}
+		for i, arg := range someType.Arguments {
+			ta := td.TypeDecl.TemplateArguments[i]
+			rt, err := k.resolveArgumentTL2(arg, leftArgs, actualArgs)
+			if err != nil {
+				return tr, err
+			}
+			someType.Arguments[i] = rt
+
+			if ta.Category.IsNatValue && !rt.IsNumber {
+				e1 := arg.PR.BeautifulError(errors.New("template argument must be # here"))
+				e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
+				return tr, tlast.BeautifulError2(e1, e2)
+			}
+			if !ta.Category.IsNatValue && rt.IsNumber {
+				e1 := arg.PR.BeautifulError(errors.New("template argument must be Type here"))
+				e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
+				return tr, tlast.BeautifulError2(e1, e2)
+			}
+			if rt.IsNumber {
+				if kt.targs[i].usedAsNatConst == nil {
+					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
+				}
+				kt.targs[i].usedAsNatConst[rt.Number] = struct{}{}
+			}
+		}
+	} else {
+		td := kt.combTL1[0]
+		// checks below are redundant, but they catch type resolve errors early for beautiful errors
+		// if modifying this code, modify also code in func (k *Kernel) resolveArgumentTL1Impl()
+		if len(td.TemplateArguments) > len(someType.Arguments) {
+			arg := td.TemplateArguments[len(someType.Arguments)]
+			e1 := someType.PRArguments.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
+			e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
+			return tr, tlast.BeautifulError2(e1, e2)
+		}
+		if len(td.TemplateArguments) < len(someType.Arguments) {
+			arg := someType.Arguments[len(td.TemplateArguments)]
+			e1 := arg.PR.BeautifulError(errors.New("excess template argument here"))
+			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			return tr, tlast.BeautifulError2(e1, e2)
+		}
+		for i, arg := range someType.Arguments {
+			ta := td.TemplateArguments[i]
+			rt, err := k.resolveArgumentTL2(arg, leftArgs, actualArgs)
+			if err != nil {
+				return tr, err
+			}
+			someType.Arguments[i] = rt
+
+			if ta.IsNat && !rt.IsNumber {
+				e1 := arg.PR.BeautifulError(errors.New("template argument must be # here"))
+				e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
+				return tr, tlast.BeautifulError2(e1, e2)
+			}
+			if !ta.IsNat && rt.IsNumber {
+				e1 := arg.PR.BeautifulError(errors.New("template argument must be Type here"))
+				e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
+				return tr, tlast.BeautifulError2(e1, e2)
+			}
+			if rt.IsNumber {
+				if kt.targs[i].usedAsNatConst == nil {
+					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
+				}
+				kt.targs[i].usedAsNatConst[rt.Number] = struct{}{}
+			}
+		}
 	}
 	tr.Type.SomeType = someType
 	return tr, nil
