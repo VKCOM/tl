@@ -20,65 +20,72 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 //dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
 //dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
 
-true = True; // this can be used as void type and serialized to empty array in PHP
+// true = True; // this can be used as void type and serialized to empty array in PHP
 
 ---types---
 
+videoAdsService.usedType x:int = videoAdsService.UsedType;
 
-videoCommon.fullVideoID#b45b85e1
-    fields_mask:    #
-    video_id:       fields_mask.0?int
-    owner_id:       fields_mask.1?long
-= videoCommon.FullVideoID;
-
-videoUserInfo.info#78e87a2f
-    fields_mask:            #
-    user_id:                long
-    active_subscription:    fields_mask.0?true
-    child_mode_active:      fields_mask.1?true
-    is_child_account:       fields_mask.2?true
-    is_vk_edu:              fields_mask.3?true
-= videoUserInfo.Info;
-
-videoAdsService.checkParams#6742a1bb
-    fields_mask:              #
-    fields:                   fields_mask.0?videoAdsService.checkFields
-    full_video_id:            fields_mask.1?videoCommon.fullVideoID
-    user_id:                  fields_mask.2?long
-    = videoAdsService.CheckParams;
+videoAdsService.user
+    x:pair<vector<videoAdsService.usedType>, int>
+    y:Pair<Vector<videoAdsService.usedType>, int>
+   = videoAdsService.User;
 
 
-videoAdsService.checkFields#cf0cd638
-    fields_mask:                  #
-    can_show_banner:              fields_mask.0?true
-    ads_disabled:                 fields_mask.1?true
-    = videoAdsService.CheckFields;
+//videoCommon.fullVideoID#b45b85e1
+//    fields_mask:    #
+//    video_id:       fields_mask.0?int
+//    owner_id:       fields_mask.1?long
+//= videoCommon.FullVideoID;
+//
+//videoUserInfo.info#78e87a2f
+//    fields_mask:            #
+//    user_id:                long
+//    active_subscription:    fields_mask.0?true
+//    child_mode_active:      fields_mask.1?true
+//    is_child_account:       fields_mask.2?true
+//    is_vk_edu:              fields_mask.3?true
+//= videoUserInfo.Info;
+//
+//videoAdsService.checkParams#6742a1bb
+//    fields_mask:              #
+//    fields:                   fields_mask.0?videoAdsService.checkFields
+//    full_video_id:            fields_mask.1?videoCommon.fullVideoID
+//    user_id:                  fields_mask.2?long
+//    = videoAdsService.CheckParams;
+//
+//
+//videoAdsService.checkFields#cf0cd638
+//    fields_mask:                  #
+//    can_show_banner:              fields_mask.0?true
+//    ads_disabled:                 fields_mask.1?true
+//    = videoAdsService.CheckFields;
 
 
 //videoAdsService.snackbarEventTypeClosed#d5f13be8     = videoAdsService.SnackbarEventType;
 //videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarEventType;
 
 
-videoAdsService.checkResponseOk#87fad1f4
-    fields_mask:              #
-    can_show_banner:                  fields_mask.0?true
-    ads_disabled:                     fields_mask.1?true
-    = videoAdsService.CheckResponse;
-
-videoAdsService.checkResponseError#83eb9781
-    fields_mask:              #
-    error_code:               int
-    error:                    string
-    = videoAdsService.CheckResponse;
-
----functions---
-
-@read
-videoAdsService.checkMany#daf58753
-    fields_mask:              #
-    params:                   vector<videoAdsService.checkParams>
-    device_id:                fields_mask.0?string
-    platform:                 fields_mask.1?string
-    api_version:              fields_mask.2?int
-    user_info:                fields_mask.3?%videoUserInfo.info
-    = Vector videoAdsService.CheckResponse;
+//videoAdsService.checkResponseOk#87fad1f4
+//    fields_mask:              #
+//    can_show_banner:                  fields_mask.0?true
+//    ads_disabled:                     fields_mask.1?true
+//    = videoAdsService.CheckResponse;
+//
+//videoAdsService.checkResponseError#83eb9781
+//    fields_mask:              #
+//    error_code:               int
+//    error:                    string
+//    = videoAdsService.CheckResponse;
+//
+//---functions---
+//
+//@read
+//videoAdsService.checkMany#daf58753
+//    fields_mask:              #
+//    params:                   vector<videoAdsService.checkParams>
+//    device_id:                fields_mask.0?string
+//    platform:                 fields_mask.1?string
+//    api_version:              fields_mask.2?int
+//    user_info:                fields_mask.3?%videoUserInfo.info
+//    = Vector videoAdsService.CheckResponse;
