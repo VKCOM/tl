@@ -1975,6 +1975,8 @@ func (item *`)
 			continue
 		}
 		if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 {
+			// TODO - remove after moving affected fields into pure kernel
+			// fmt.Printf("AffectedBits: %s %d\n", goName, len(affectedBits) )
 			bits := make([]uint32, 0)
 			for i := range affectedBits {
 				bits = append(bits, i)

@@ -255,3 +255,10 @@ service5Long.stringOutput#dc170ff7 http_code:long response:string = service5Long
 @read ab.call11 x:a.Color => a.Color;
 
 // @write logs2.addIndex      type_id:int field:%String => Bool; // Test that %String is canonically resolved into primitive string
+
+// test affected fields
+// antispam.pattern#0b961cec {fields_mask:#} id:fields_mask.0?int flags:fields_mask.1?int = antispam.Pattern fields_mask;
+// antispam.patternFound#b7b7f3df ip:int uahash:int flags:int type:long text:string = antispam.PatternFull;
+// antispam.patternNotFound = antispam.PatternFull;
+
+// @read antispam.match#591edc92 mode:# ip:int uahash:int text:string limit:int type:mode.2?long => Vector (%(antispam.Pattern mode));
