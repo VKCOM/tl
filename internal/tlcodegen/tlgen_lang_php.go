@@ -416,28 +416,7 @@ func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
 func (gen *Gen2) phpCreateSwitcher() error {
 	var code strings.Builder
 
-	code.WriteString(fmt.Sprintf(`<?php
-
-%[1]snamespace VK\TL;
-
-use VK\TL;
-
-class tl_switcher {
-  /** @var int[] */
-  public static $tl_namespaces_info = [];
-
-  /**
-   * @param string $tl_namespace
-   * @return int
-   */
-  public static function tl_get_namespace_methods_mode($tl_namespace) {
-    if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
-      return self::$tl_namespaces_info[$tl_namespace];
-    }
-    return 0;
-  }
-}
-`, gen.copyrightText))
+	code.WriteString(fmt.Sprintf(TLSwitcherPHP, gen.copyrightText))
 
 	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_switcher.php"), code.String()); err != nil {
 		return err

@@ -552,3 +552,26 @@ const TL2SupportPHP = `class tl2_support {
   }
 }
 `
+
+const TLSwitcherPHP = `<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+class tl_switcher {
+  /** @var int[] */
+  public static $tl_namespaces_info = [];
+
+  /**
+   * @param string $tl_namespace
+   * @return int
+   */
+  public static function tl_get_namespace_methods_mode($tl_namespace) {
+    if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
+      return self::$tl_namespaces_info[$tl_namespace];
+    }
+    return 0;
+  }
+}
+`
