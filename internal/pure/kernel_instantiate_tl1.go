@@ -22,7 +22,7 @@ type LocalArg struct {
 }
 
 // top level types do not have bare/boxed in their names, instead bare is returned from function
-func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions bool) (_ string, bare bool, _ error) {
+func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare bool, _ error) {
 	var s strings.Builder
 
 	tName := tr.Type.String()
@@ -30,19 +30,9 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 	if !ok {
 		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
-	if kt.isFunction && !allowFunctions {
-		e1 := tr.PR.BeautifulError(fmt.Errorf("function %s cannot be referenced", tName))
-		if kt.originTL2 {
-			// TODO - beautiful
-			return "", false, e1
-		}
-		e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
-		return "", false, tlast.BeautifulError2(e1, e2)
+	if kt.originTL2 {
+		panic(fmt.Sprintf("internal error: reference from TL1 to TL2 type %s must be prevented by Kernel.resolveTypeTL1", tName))
 	}
-	// TODO - check TL1/TL2 references here
-	//if kt.originTL2 {
-	//	panic(fmt.Sprintf("canonical string tip %s not from TL1", tName))
-	//}
 	bare = tr.Bare
 	if tr.Type != kt.tl1BoxedName {
 		bare = true
@@ -83,7 +73,7 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool, allowFunctions b
 		} else if a.T.Type.String() == "*" {
 			s.WriteString("*")
 		} else {
-			str, _, err := k.canonicalStringTL1(a.T, false, false)
+			str, _, err := k.canonicalStringTL1(a.T, false)
 			if err != nil {
 				return "", false, err
 			}
@@ -129,7 +119,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		return tr, nil, nil
 	}
 	if tr.T.Type.String() == "*" {
-		return tr, nil, fmt.Errorf("internal error: resolving type more than once")
+		return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("internal error: resolving type more than once"))
 	}
 	// names found in local arguments have priority over global type names
 	if tr.T.Type.Namespace == "" {
@@ -169,6 +159,9 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if !ok {
 		return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
+	if kt.isFunction {
+		return tr, nil, kt.functionCanNotBeReferencedError(tr.T.PR)
+	}
 	if tr.T.Bare && kt.builtinWrappedCanonicalName != "" {
 		tName = kt.builtinWrappedCanonicalName
 		kt, ok = k.tips[tName]
@@ -180,10 +173,13 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	}
 
 	if kt.originTL2 {
-		return tr, nil, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.T.Type)
+		e1 := tr.T.PR.BeautifulError(fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.T.Type))
+		e2 := kt.combTL2.TypeDecl.PRName.BeautifulError(fmt.Errorf("declared here"))
+		return tr, nil, tlast.BeautifulError2(e1, e2)
 	}
 	td := kt.combTL1[0]
 	// checks below are redundant, but they catch type resolve errors early for beautiful errors
+	// if modifying this code, modify also code in func (k *Kernel) resolveArgumentTL2Impl()
 	if len(td.TemplateArguments) > len(tr.T.Args) {
 		arg := td.TemplateArguments[len(tr.T.Args)]
 		e1 := tr.T.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
@@ -214,6 +210,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	var natArgs []ActualNatArg
 	for i, arg := range tr.T.Args {
+		ta := td.TemplateArguments[i]
 		rt, natArgs2, err := k.resolveArgumentTL1(arg, leftArgs, actualArgs)
 		if err != nil {
 			return tr, nil, err
@@ -221,24 +218,23 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		tr.T.Args[i] = rt
 		natArgs = append(natArgs, natArgs2...)
 
-		ta := td.TemplateArguments[i]
 		argNat := rt.IsArith || rt.T.Type.String() == "*"
 		if ta.IsNat && !argNat {
 			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be # here"))
-			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
 			return tr, nil, tlast.BeautifulError2(e1, e2)
 		}
 		if !ta.IsNat && argNat {
 			e1 := arg.T.PR.BeautifulError(errors.New("template argument must be Type here"))
-			e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
+			e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
 			return tr, nil, tlast.BeautifulError2(e1, e2)
 		}
 		if ta.IsNat {
-			if arg.IsArith {
+			if rt.IsArith {
 				if kt.targs[i].usedAsNatConst == nil {
 					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
 				}
-				kt.targs[i].usedAsNatConst[arg.Arith.Res] = struct{}{}
+				kt.targs[i].usedAsNatConst[rt.Arith.Res] = struct{}{}
 			} else {
 				kt.targs[i].usedAsNatVariable = true
 			}
@@ -290,14 +286,14 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 }
 
 func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
-	ref, bare, err := k.getInstanceTL1(tr, false, true)
+	ref, bare, err := k.getInstanceTL1(tr, false)
 	if err != nil {
 		return nil, false, err
 	}
 	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bool) (_ *TypeInstanceRef, bare bool, _ error) {
+func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
 	// we must mark all usedAsNatConst, usedAsNatVariable, so
 	// will do some work before looking up and returning existing instance
 	tName := tr.Type.String()
@@ -305,7 +301,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool, allowFunctions bo
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
 	}
-	canonicalName, bare, err := k.canonicalStringTL1(tr, true, allowFunctions)
+	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
 	if err != nil {
 		return nil, false, err
 	}

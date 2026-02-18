@@ -375,7 +375,7 @@ func (k *Kernel) Compile() error {
 	for _, tip := range k.tipsTopLevel {
 		if !tip.originTL2 {
 			tr := tlast.TypeRef{Type: tip.canonicalName}
-			if _, _, err := k.getInstanceTL1(tr, true, true); err != nil {
+			if _, _, err := k.getInstanceTL1(tr, true); err != nil {
 				return err
 			}
 		}

@@ -92,8 +92,8 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of vector %s element: %w", canonicalName, err)
 	}
-	// log.Printf("resolveType of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	elemIns, elemBare, err := k.getInstanceTL1(rt, true, false)
+	// log.Printf("resolveTypeTL2 of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
+	elemIns, elemBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s element: %w", canonicalName, err)
 	}
@@ -127,8 +127,8 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of tuple %s element: %w", canonicalName, err)
 	}
-	// log.Printf("resolveType of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true, false)
+	// log.Printf("resolveTypeTL2 of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s element: %w", canonicalName, err)
 	}

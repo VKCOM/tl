@@ -47,7 +47,7 @@ func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) createAlias(canonicalName string, tip *KernelType, alias tlast.TL2TypeRef,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
-	rt, err := k.resolveType(alias, leftArgs, actualArgs)
+	rt, err := k.resolveTypeTL2(alias, leftArgs, actualArgs)
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}

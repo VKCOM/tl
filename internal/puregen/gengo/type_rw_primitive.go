@@ -77,10 +77,6 @@ func (trw *TypeRWPrimitive) BeforeCodeGenerationStep2() {
 func (trw *TypeRWPrimitive) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
-	return !trw.isFloat(), trw.tlType == "string"
-}
-
 func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	if bytesVersion {
 		if ref {

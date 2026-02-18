@@ -120,7 +120,7 @@ func (opt *Options) Validate() error {
 // Any generator can request replacing client code in main repository by calling this function.
 // User should run generator with --replaceDir=XXX for each repository to replace names in.
 func (opt *Options) ReplaceStrings(fileSuffix string, before string, after string) {
-	// fmt.Printf("Replace name requested in %s: %s -> %s\n", fileSuffix, before, after)
+	//fmt.Printf("Replace name requested in %s: %s -> %s\n", fileSuffix, before, after)
 	opt.replaceStrings = append(opt.replaceStrings,
 		replaceStringsItem{FileSuffix: fileSuffix, Before: before, After: after})
 }

@@ -402,7 +402,7 @@ func (k *Kernel) checkUnionElementsCompatibility(types []*tlast.Combinator) erro
 			baseArg := base.TemplateArguments[i]
 			// unionArgs1 {X:Type} {Y:#} a:X = UnionArgs X Y;
 			// unionArgs2 {A:Type} {B:Type} a:A = UnionArgs A B;
-			// We cannot support this, because resolveType replaces parameter names into names of first union field
+			// We cannot support this, because resolveTypeTL2 replaces parameter names into names of first union field
 			if baseArg.IsNat != typArg.IsNat || baseArg.FieldName != typArg.FieldName {
 				e1 := typArg.PR.BeautifulError(fmt.Errorf("union constructor %q has different argument name or type here %q", cur, typArg.FieldName))
 				e2 := baseArg.PR.BeautifulError(errSeeHere)
