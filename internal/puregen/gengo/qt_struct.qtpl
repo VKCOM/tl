@@ -1008,6 +1008,8 @@ func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteC
     {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
     {%- if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 -%}
         {%- code
+            // TODO - remove after moving affected fields into pure kernel
+            // fmt.Printf("AffectedBits: %s %d\n", goName, len(affectedBits) )
             bits := make([]uint32, 0)
             for i := range affectedBits {
                 bits = append(bits, i)
