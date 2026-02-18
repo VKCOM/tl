@@ -566,34 +566,27 @@ class tl_switcher {
   /** @var string */
   public static $tl_platform = "";
 
-  /** @var (callable(string, string, int, string, string): void) | null */
-  public static $tl_logger_function = null;
+  /** @var int */
+  private static $tl_last_serialization_mode = 0;
 
   /**
    * @param string $tl_namespace
    * @return int
    */
   public static function tl_get_namespace_methods_mode($tl_namespace) {
+    $mode = 0;
     if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
-      return self::$tl_namespaces_info[$tl_namespace];
+      $mode = self::$tl_namespaces_info[$tl_namespace];
     }
-    return 0;
+    self::$tl_last_serialization_mode = $mode;
+    return $mode;
   }
 
   /**
-   * @param string $tl_namespace
-   * @param string $tl_function
-   * @param int $tl_serialization_mode
-   * @param bool $is_fetch
+   * @return int
    */
-  public static function tl_log_call($tl_namespace, $tl_function, $tl_serialization_mode, $is_fetch) {
-    $operation = "store"
-    if ($is_fetch) {
-      $operation = "fetch"
-    }
-    if (!is_null(self::$tl_logger_function)) {
-      self::$tl_logger_function($tl_namespace, $tl_function, $tl_serialization_mode, self::$tl_platform, $operation);
-    }
+  public static function tl_get_last_serialization_mode() {
+    return self::$tl_last_serialization_mode;
   }
 }
 `
