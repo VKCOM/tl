@@ -45,8 +45,8 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	meta.SetGlobalFactoryCreateForObject("benchmarks.vruhash", func() meta.Object { return new(internal.BenchmarksVruHash) })
-	meta.SetGlobalFactoryCreateForObject("benchmarks.vruposition", func() meta.Object { return new(internal.BenchmarksVruPosition) })
+	meta.SetGlobalFactoryCreateForObject("benchmarks.vruhash", func() meta.Object { return new(internal.BenchmarksVruhash) })
+	meta.SetGlobalFactoryCreateForObject("benchmarks.vruposition", func() meta.Object { return new(internal.BenchmarksVruposition) })
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vrutoyTopLevelContainer", func() meta.Object { return new(internal.BenchmarksVrutoyTopLevelContainer) })
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vrutoyTopLevelContainerWithDependency", func() meta.Object { return new(internal.BenchmarksVrutoyTopLevelContainerWithDependency) })
 	meta.SetGlobalFactoryCreateForObject("benchmarks.vrutoytopLevelUnionBig", func() meta.Object { return new(internal.BenchmarksVrutoytopLevelUnionBig) })
@@ -97,7 +97,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("cases.testLocalFieldmask", func() meta.Object { return new(internal.CasesTestLocalFieldmask) })
 	meta.SetGlobalFactoryCreateForObject("cases.testMaybe", func() meta.Object { return new(internal.CasesTestMaybe) })
 	meta.SetGlobalFactoryCreateForObject("cases.testOutFieldMaskContainer", func() meta.Object { return new(internal.CasesTestOutFieldMaskContainer) })
-	meta.SetGlobalFactoryCreateForObject("cases.testRecursiveFieldMask", func() meta.Object { return new(internal.CasesTestRecursiveFieldmask) })
+	meta.SetGlobalFactoryCreateForObject("cases.testRecursiveFieldMask", func() meta.Object { return new(internal.CasesTestRecursiveFieldMask) })
 	meta.SetGlobalFactoryCreateForObject("cases.testTuple", func() meta.Object { return new(internal.CasesTestTuple) })
 	meta.SetGlobalFactoryCreateForObject("cases.testUnion1", func() meta.Object { return new(internal.CasesTestUnion1) })
 	meta.SetGlobalFactoryCreateForObject("cases.testUnion2", func() meta.Object { return new(internal.CasesTestUnion2) })

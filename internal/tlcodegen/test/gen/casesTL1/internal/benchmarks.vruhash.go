@@ -13,67 +13,67 @@ import (
 
 var _ = basictl.NatWrite
 
-type BenchmarksVruHash struct {
+type BenchmarksVruhash struct {
 	Low  int64
 	High int64
 }
 
-func (BenchmarksVruHash) TLName() string { return "benchmarks.vruhash" }
-func (BenchmarksVruHash) TLTag() uint32  { return 0xd31bd0fd }
+func (BenchmarksVruhash) TLName() string { return "benchmarks.vruhash" }
+func (BenchmarksVruhash) TLTag() uint32  { return 0xd31bd0fd }
 
-func (item *BenchmarksVruHash) Reset() {
+func (item *BenchmarksVruhash) Reset() {
 	item.Low = 0
 	item.High = 0
 }
 
-func (item *BenchmarksVruHash) FillRandom(rg *basictl.RandGenerator) {
+func (item *BenchmarksVruhash) FillRandom(rg *basictl.RandGenerator) {
 	item.Low = basictl.RandomLong(rg)
 	item.High = basictl.RandomLong(rg)
 }
 
-func (item *BenchmarksVruHash) Read(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Low); err != nil {
 		return w, err
 	}
 	return basictl.LongRead(w, &item.High)
 }
 
-func (item *BenchmarksVruHash) WriteGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
 
-func (item *BenchmarksVruHash) Write(w []byte) []byte {
+func (item *BenchmarksVruhash) Write(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Low)
 	w = basictl.LongWrite(w, item.High)
 	return w
 }
 
-func (item *BenchmarksVruHash) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd31bd0fd); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *BenchmarksVruHash) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *BenchmarksVruHash) WriteBoxed(w []byte) []byte {
+func (item *BenchmarksVruhash) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd31bd0fd)
 	return item.Write(w)
 }
 
-func (item BenchmarksVruHash) String() string {
+func (item BenchmarksVruhash) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruhash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
-func (item *BenchmarksVruHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruhash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLowPresented bool
 	var propHighPresented bool
 
@@ -122,15 +122,15 @@ func (item *BenchmarksVruHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVruHash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *BenchmarksVruHash) WriteJSON(w []byte) []byte {
+func (item *BenchmarksVruhash) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVruHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVruhash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexLow := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -149,11 +149,11 @@ func (item *BenchmarksVruHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	return append(w, '}')
 }
 
-func (item *BenchmarksVruHash) MarshalJSON() ([]byte, error) {
+func (item *BenchmarksVruhash) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil), nil
 }
 
-func (item *BenchmarksVruHash) UnmarshalJSON(b []byte) error {
+func (item *BenchmarksVruhash) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vruhash", err.Error())
 	}

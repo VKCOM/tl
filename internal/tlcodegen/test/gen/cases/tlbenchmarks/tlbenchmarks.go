@@ -12,10 +12,10 @@ import (
 )
 
 type (
-	VectorVruPosition                     = internal.VectorBenchmarksVruPosition
+	VectorVruposition                     = internal.VectorBenchmarksVruposition
 	VectorVrutoyTopLevelUnion             = internal.VectorBenchmarksVrutoyTopLevelUnion
-	VruHash                               = internal.BenchmarksVruHash
-	VruPosition                           = internal.BenchmarksVruPosition
+	Vruhash                               = internal.BenchmarksVruhash
+	Vruposition                           = internal.BenchmarksVruposition
 	VrutoyPositions                       = internal.BenchmarksVrutoyPositions
 	VrutoyTopLevelContainer               = internal.BenchmarksVrutoyTopLevelContainer
 	VrutoyTopLevelContainerWithDependency = internal.BenchmarksVrutoyTopLevelContainerWithDependency

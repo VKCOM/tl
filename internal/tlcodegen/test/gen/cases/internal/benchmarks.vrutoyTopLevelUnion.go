@@ -298,7 +298,7 @@ func (item BenchmarksVrutoytopLevelUnionBig) AsUnion() BenchmarksVrutoyTopLevelU
 }
 
 type BenchmarksVrutoytopLevelUnionBig struct {
-	NextPositions []BenchmarksVruPosition
+	NextPositions []BenchmarksVruposition
 }
 
 func (BenchmarksVrutoytopLevelUnionBig) TLName() string { return "benchmarks.vrutoytopLevelUnionBig" }
@@ -309,11 +309,11 @@ func (item *BenchmarksVrutoytopLevelUnionBig) Reset() {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinVectorBenchmarksVruPositionFillRandom(rg, &item.NextPositions)
+	BuiltinVectorBenchmarksVrupositionFillRandom(rg, &item.NextPositions)
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) Read(w []byte) (_ []byte, err error) {
-	return BuiltinVectorBenchmarksVruPositionRead(w, &item.NextPositions)
+	return BuiltinVectorBenchmarksVrupositionRead(w, &item.NextPositions)
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -321,7 +321,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) WriteGeneral(w []byte) (_ []byte, 
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) Write(w []byte) []byte {
-	w = BuiltinVectorBenchmarksVruPositionWrite(w, item.NextPositions)
+	w = BuiltinVectorBenchmarksVrupositionWrite(w, item.NextPositions)
 	return w
 }
 
@@ -366,7 +366,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSON
 				if propNextPositionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoytopLevelUnionBig", "next_positions")
 				}
-				if err := BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
+				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
 					return err
 				}
 				propNextPositionsPresented = true
@@ -400,7 +400,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONOpt(tctx *basictl.JSONWri
 	backupIndexNextPositions := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next_positions":`...)
-	w = BuiltinVectorBenchmarksVruPositionWriteJSONOpt(tctx, w, item.NextPositions)
+	w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx, w, item.NextPositions)
 	if (len(item.NextPositions) != 0) == false {
 		w = w[:backupIndexNextPositions]
 	}
@@ -427,7 +427,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int, optim
 	lastUsedByte := 0
 	var sz int
 
-	if sizes, sz = BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, true, &item.NextPositions); sz != 0 {
+	if sizes, sz = BuiltinVectorBenchmarksVrupositionCalculateLayout(sizes, true, &item.NextPositions); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -464,7 +464,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes [
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	if w, sizes, sz = BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, true, &item.NextPositions); sz != 0 {
+	if w, sizes, sz = BuiltinVectorBenchmarksVrupositionInternalWriteTL2(w, sizes, true, &item.NextPositions); sz != 0 {
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
@@ -496,7 +496,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, ctx *basictl.TL
 func (item *BenchmarksVrutoytopLevelUnionBig) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 	if block&2 != 0 {
-		if currentR, err = BuiltinVectorBenchmarksVruPositionInternalReadTL2(currentR, &item.NextPositions); err != nil {
+		if currentR, err = BuiltinVectorBenchmarksVrupositionInternalReadTL2(currentR, &item.NextPositions); err != nil {
 			return currentR, err
 		}
 	} else {

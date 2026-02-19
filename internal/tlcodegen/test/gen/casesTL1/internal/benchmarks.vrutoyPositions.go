@@ -14,7 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type BenchmarksVrutoyPositions struct {
-	NextPositions []BenchmarksVruPosition
+	NextPositions []BenchmarksVruposition
 }
 
 func (BenchmarksVrutoyPositions) TLName() string { return "benchmarks.vrutoyPositions" }
@@ -25,11 +25,11 @@ func (item *BenchmarksVrutoyPositions) Reset() {
 }
 
 func (item *BenchmarksVrutoyPositions) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
-	BuiltinTupleBenchmarksVruPositionFillRandom(rg, &item.NextPositions, nat_n)
+	BuiltinTupleBenchmarksVrupositionFillRandom(rg, &item.NextPositions, nat_n)
 }
 
 func (item *BenchmarksVrutoyPositions) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleBenchmarksVruPositionRead(w, &item.NextPositions, nat_n)
+	return BuiltinTupleBenchmarksVrupositionRead(w, &item.NextPositions, nat_n)
 }
 
 func (item *BenchmarksVrutoyPositions) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -37,7 +37,7 @@ func (item *BenchmarksVrutoyPositions) WriteGeneral(w []byte, nat_n uint32) (_ [
 }
 
 func (item *BenchmarksVrutoyPositions) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleBenchmarksVruPositionWrite(w, item.NextPositions, nat_n); err != nil {
+	if w, err = BuiltinTupleBenchmarksVrupositionWrite(w, item.NextPositions, nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -94,7 +94,7 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 	if rawNextPositions != nil {
 		inNextPositionsPointer = &inNextPositions
 	}
-	if err := BuiltinTupleBenchmarksVruPositionReadJSONGeneral(tctx, inNextPositionsPointer, &item.NextPositions, nat_n); err != nil {
+	if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx, inNextPositionsPointer, &item.NextPositions, nat_n); err != nil {
 		return err
 	}
 
@@ -115,7 +115,7 @@ func (item *BenchmarksVrutoyPositions) WriteJSONOpt(tctx *basictl.JSONWriteConte
 	backupIndexNextPositions := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next_positions":`...)
-	if w, err = BuiltinTupleBenchmarksVruPositionWriteJSONOpt(tctx, w, item.NextPositions, nat_n); err != nil {
+	if w, err = BuiltinTupleBenchmarksVrupositionWriteJSONOpt(tctx, w, item.NextPositions, nat_n); err != nil {
 		return w, err
 	}
 	if (len(item.NextPositions) != 0) == false {

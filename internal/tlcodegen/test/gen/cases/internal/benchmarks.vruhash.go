@@ -13,67 +13,67 @@ import (
 
 var _ = basictl.NatWrite
 
-type BenchmarksVruHash struct {
+type BenchmarksVruhash struct {
 	Low  int64
 	High int64
 }
 
-func (BenchmarksVruHash) TLName() string { return "benchmarks.vruhash" }
-func (BenchmarksVruHash) TLTag() uint32  { return 0xd31bd0fd }
+func (BenchmarksVruhash) TLName() string { return "benchmarks.vruhash" }
+func (BenchmarksVruhash) TLTag() uint32  { return 0xd31bd0fd }
 
-func (item *BenchmarksVruHash) Reset() {
+func (item *BenchmarksVruhash) Reset() {
 	item.Low = 0
 	item.High = 0
 }
 
-func (item *BenchmarksVruHash) FillRandom(rg *basictl.RandGenerator) {
+func (item *BenchmarksVruhash) FillRandom(rg *basictl.RandGenerator) {
 	item.Low = basictl.RandomLong(rg)
 	item.High = basictl.RandomLong(rg)
 }
 
-func (item *BenchmarksVruHash) Read(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Low); err != nil {
 		return w, err
 	}
 	return basictl.LongRead(w, &item.High)
 }
 
-func (item *BenchmarksVruHash) WriteGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
 
-func (item *BenchmarksVruHash) Write(w []byte) []byte {
+func (item *BenchmarksVruhash) Write(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Low)
 	w = basictl.LongWrite(w, item.High)
 	return w
 }
 
-func (item *BenchmarksVruHash) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd31bd0fd); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *BenchmarksVruHash) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *BenchmarksVruHash) WriteBoxed(w []byte) []byte {
+func (item *BenchmarksVruhash) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd31bd0fd)
 	return item.Write(w)
 }
 
-func (item BenchmarksVruHash) String() string {
+func (item BenchmarksVruhash) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruhash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
-func (item *BenchmarksVruHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruhash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLowPresented bool
 	var propHighPresented bool
 
@@ -122,15 +122,15 @@ func (item *BenchmarksVruHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVruHash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *BenchmarksVruHash) WriteJSON(w []byte) []byte {
+func (item *BenchmarksVruhash) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVruHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVruhash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexLow := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -149,18 +149,18 @@ func (item *BenchmarksVruHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	return append(w, '}')
 }
 
-func (item *BenchmarksVruHash) MarshalJSON() ([]byte, error) {
+func (item *BenchmarksVruhash) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil), nil
 }
 
-func (item *BenchmarksVruHash) UnmarshalJSON(b []byte) error {
+func (item *BenchmarksVruhash) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vruhash", err.Error())
 	}
 	return nil
 }
 
-func (item *BenchmarksVruHash) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+func (item *BenchmarksVruhash) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizes = append(sizes, 3541815549)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -192,7 +192,7 @@ func (item *BenchmarksVruHash) CalculateLayout(sizes []int, optimizeEmpty bool) 
 	return sizes, currentSize
 }
 
-func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+func (item *BenchmarksVruhash) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3541815549 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -228,7 +228,7 @@ func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int, optimizeE
 	return w, sizes, 1
 }
 
-func (item *BenchmarksVruHash) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *BenchmarksVruhash) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -244,7 +244,7 @@ func (item *BenchmarksVruHash) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 	return w
 }
 
-func (item *BenchmarksVruHash) InternalReadTL2(r []byte) (_ []byte, err error) {
+func (item *BenchmarksVruhash) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -292,6 +292,6 @@ func (item *BenchmarksVruHash) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *BenchmarksVruHash) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *BenchmarksVruhash) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
