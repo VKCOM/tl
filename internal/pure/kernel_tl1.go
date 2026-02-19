@@ -118,7 +118,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	return typ.Construct.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have constructor name %s equal to some built-in type", typ.Construct.Name.String()))
 }
 
-func (k *Kernel) CompileTL1() error {
+func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}
@@ -152,7 +152,13 @@ func (k *Kernel) CompileTL1() error {
 			return tlast.BeautifulError2(e1, e2)
 		}
 		allConstructors[conName] = typ
+		if _, ok := namespaceTL1SeeHere[typ.Construct.Name.Namespace]; !ok {
+			namespaceTL1SeeHere[typ.Construct.Name.Namespace] = typ.Construct.NamePR.BeautifulError(errSeeHere)
+		}
 		if !typ.IsFunction {
+			if _, ok := namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace]; !ok {
+				namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace] = typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
+			}
 			typeName := typ.TypeDecl.Name.String()
 			if len(typ.TemplateArguments) > len(typ.TypeDecl.Arguments) {
 				// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X; <- bad

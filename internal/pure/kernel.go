@@ -209,13 +209,19 @@ func (k *Kernel) AddFileTL2(file string) error {
 }
 
 func (k *Kernel) Compile() error {
-	if err := k.CompileTL1(); err != nil {
+	namespaceTL1SeeHere := map[string]*tlast.ParseError{}
+	if err := k.CompileTL1(namespaceTL1SeeHere); err != nil {
 		return err
 	}
 	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
 	// then add all TL2 declarations
 	for _, comb := range k.filesTL2 {
+		refName := comb.ReferenceName()
 		log.Printf("tl2pure: compiling %s", comb)
+		if e2, ok := namespaceTL1SeeHere[refName.Namespace]; ok && refName.Namespace != "" {
+			e1 := comb.ReferenceNamePR().BeautifulError(fmt.Errorf("namespace %s defined both in .tl or in .tl2 files", refName.Namespace))
+			return tlast.BeautifulError2(e1, e2)
+		}
 		kt := &KernelType{
 			originTL2:      true,
 			combTL2:        comb,
@@ -223,12 +229,12 @@ func (k *Kernel) Compile() error {
 			isFunction:     comb.IsFunction,
 			isTopLevel:     len(comb.TypeDecl.TemplateArguments) == 0,
 			canBeBare:      true,
-			canonicalName:  tlast.Name(comb.ReferenceName()),
-			historicalName: tlast.Name(comb.ReferenceName()),
+			canonicalName:  tlast.Name(refName),
+			historicalName: tlast.Name(refName),
 		}
 		if !comb.IsFunction {
-			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
-			kt.tl2Names = map[string]struct{}{comb.ReferenceName().String(): {}}
+			kt.tl1Names = map[string]struct{}{}
+			kt.tl2Names = map[string]struct{}{refName.String(): {}}
 			var nc NameCollision
 			for _, targ := range comb.TypeDecl.TemplateArguments {
 				if err := nc.AddUniqueName(targ.Name, targ.PR, "template argument"); err != nil {
@@ -236,8 +242,8 @@ func (k *Kernel) Compile() error {
 				}
 			}
 		}
-		if err := k.addTip(kt, comb.ReferenceName().String(), ""); err != nil {
-			return fmt.Errorf("error adding type %s: %w", comb.ReferenceName(), err)
+		if err := k.addTip(kt, refName.String(), ""); err != nil {
+			return fmt.Errorf("error adding type %s: %w", refName, err)
 		}
 	}
 	// type all declarations by comparing type ref with actual type definition
