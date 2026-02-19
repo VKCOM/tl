@@ -91,6 +91,7 @@ type TypeInstanceStruct struct {
 	// if function
 	resultType    TypeInstance
 	resultNatArgs []ActualNatArg // for TL1 only, empty for TL2
+	rpcPreferTL2  bool
 }
 
 func (ins *TypeInstanceStruct) Fields() []Field {
@@ -107,6 +108,10 @@ func (ins *TypeInstanceStruct) ResultType() TypeInstance {
 
 func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
 	return ins.resultNatArgs
+}
+
+func (ins *TypeInstanceStruct) RPCPreferTL2() bool {
+	return ins.rpcPreferTL2
 }
 
 // most generators will need to add !recursive
@@ -194,6 +199,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
+		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName(tlName),
 	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
@@ -522,6 +528,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 		ins.resultType = fieldIns.ins
 		ins.resultNatArgs = natArgs
+		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}
 	return ins, nil
 }
