@@ -37,7 +37,7 @@ type (
 	TestMaybe                            = internal.CasesTestMaybe
 	TestOutFieldMask                     = internal.CasesTestOutFieldMask
 	TestOutFieldMaskContainer            = internal.CasesTestOutFieldMaskContainer
-	TestRecursiveFieldmask               = internal.CasesTestRecursiveFieldmask
+	TestRecursiveFieldMask               = internal.CasesTestRecursiveFieldMask
 	TestTuple                            = internal.CasesTestTuple
 	TestUnion                            = internal.CasesTestUnion
 	TestUnion1                           = internal.CasesTestUnion1

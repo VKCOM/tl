@@ -13,7 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
-type BenchmarksVruPosition struct {
+type BenchmarksVruposition struct {
 	FieldsMask uint32
 	// CommitBit (TrueType) // Conditional: item.FieldsMask.0
 	// MetaBlock (TrueType) // Conditional: item.FieldsMask.1
@@ -22,16 +22,16 @@ type BenchmarksVruPosition struct {
 	// CanonicalHash (TrueType) // Conditional: item.FieldsMask.15
 	PayloadOffset int64
 	BlockTimeNano int64
-	Hash          BenchmarksVruHash
+	Hash          BenchmarksVruhash
 	FileOffset    int64
 	SeqNumber     int64 // Conditional: item.FieldsMask.14
 	tl2mask0      byte
 }
 
-func (BenchmarksVruPosition) TLName() string { return "benchmarks.vruposition" }
-func (BenchmarksVruPosition) TLTag() uint32  { return 0x32792c04 }
+func (BenchmarksVruposition) TLName() string { return "benchmarks.vruposition" }
+func (BenchmarksVruposition) TLTag() uint32  { return 0x32792c04 }
 
-func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
+func (item *BenchmarksVruposition) SetCommitBit(v bool) {
 	if v {
 		item.FieldsMask |= 1 << 0
 	} else {
@@ -43,9 +43,9 @@ func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
 		item.tl2mask0 &^= 1
 	}
 }
-func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.tl2mask0&1 != 0 }
+func (item *BenchmarksVruposition) IsSetCommitBit() bool { return item.tl2mask0&1 != 0 }
 
-func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
+func (item *BenchmarksVruposition) SetMetaBlock(v bool) {
 	if v {
 		item.FieldsMask |= 1 << 1
 	} else {
@@ -57,9 +57,9 @@ func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 		item.tl2mask0 &^= 2
 	}
 }
-func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.tl2mask0&2 != 0 }
+func (item *BenchmarksVruposition) IsSetMetaBlock() bool { return item.tl2mask0&2 != 0 }
 
-func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
+func (item *BenchmarksVruposition) SetSplitPayload(v bool) {
 	if v {
 		item.FieldsMask |= 1 << 3
 	} else {
@@ -71,9 +71,9 @@ func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 		item.tl2mask0 &^= 4
 	}
 }
-func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.tl2mask0&4 != 0 }
+func (item *BenchmarksVruposition) IsSetSplitPayload() bool { return item.tl2mask0&4 != 0 }
 
-func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
+func (item *BenchmarksVruposition) SetRotationBlock(v bool) {
 	if v {
 		item.FieldsMask |= 1 << 5
 	} else {
@@ -85,9 +85,9 @@ func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 		item.tl2mask0 &^= 8
 	}
 }
-func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.tl2mask0&8 != 0 }
+func (item *BenchmarksVruposition) IsSetRotationBlock() bool { return item.tl2mask0&8 != 0 }
 
-func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
+func (item *BenchmarksVruposition) SetCanonicalHash(v bool) {
 	if v {
 		item.FieldsMask |= 1 << 15
 	} else {
@@ -99,21 +99,21 @@ func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 		item.tl2mask0 &^= 16
 	}
 }
-func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.tl2mask0&16 != 0 }
+func (item *BenchmarksVruposition) IsSetCanonicalHash() bool { return item.tl2mask0&16 != 0 }
 
-func (item *BenchmarksVruPosition) SetSeqNumber(v int64) {
+func (item *BenchmarksVruposition) SetSeqNumber(v int64) {
 	item.SeqNumber = v
 	item.FieldsMask |= 1 << 14
 	item.tl2mask0 |= 32
 }
-func (item *BenchmarksVruPosition) ClearSeqNumber() {
+func (item *BenchmarksVruposition) ClearSeqNumber() {
 	item.SeqNumber = 0
 	item.FieldsMask &^= 1 << 14
 	item.tl2mask0 &^= 32
 }
-func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.tl2mask0&32 != 0 }
+func (item *BenchmarksVruposition) IsSetSeqNumber() bool { return item.tl2mask0&32 != 0 }
 
-func (item *BenchmarksVruPosition) Reset() {
+func (item *BenchmarksVruposition) Reset() {
 	item.FieldsMask = 0
 	item.PayloadOffset = 0
 	item.BlockTimeNano = 0
@@ -123,7 +123,7 @@ func (item *BenchmarksVruPosition) Reset() {
 	item.tl2mask0 = 0
 }
 
-func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
+func (item *BenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1100000000101011)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -153,7 +153,7 @@ func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -196,11 +196,11 @@ func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *BenchmarksVruPosition) WriteGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
 
-func (item *BenchmarksVruPosition) Write(w []byte) []byte {
+func (item *BenchmarksVruposition) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = basictl.LongWrite(w, item.PayloadOffset)
 	w = basictl.LongWrite(w, item.BlockTimeNano)
@@ -212,32 +212,32 @@ func (item *BenchmarksVruPosition) Write(w []byte) []byte {
 	return w
 }
 
-func (item *BenchmarksVruPosition) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x32792c04); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *BenchmarksVruPosition) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *BenchmarksVruPosition) WriteBoxed(w []byte) []byte {
+func (item *BenchmarksVruposition) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x32792c04)
 	return item.Write(w)
 }
 
-func (item BenchmarksVruPosition) String() string {
+func (item BenchmarksVruposition) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruposition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
-func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var trueTypeCommitBitPresented bool
 	var trueTypeCommitBitValue bool
@@ -450,15 +450,15 @@ func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVruPosition) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *BenchmarksVruPosition) WriteJSON(w []byte) []byte {
+func (item *BenchmarksVruposition) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVruPosition) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVruposition) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -519,18 +519,18 @@ func (item *BenchmarksVruPosition) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	return append(w, '}')
 }
 
-func (item *BenchmarksVruPosition) MarshalJSON() ([]byte, error) {
+func (item *BenchmarksVruposition) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil), nil
 }
 
-func (item *BenchmarksVruPosition) UnmarshalJSON(b []byte) error {
+func (item *BenchmarksVruposition) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vruposition", err.Error())
 	}
 	return nil
 }
 
-func (item *BenchmarksVruPosition) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+func (item *BenchmarksVruposition) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizes = append(sizes, 846801924)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -594,7 +594,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int, optimizeEmpty bo
 	return sizes, currentSize
 }
 
-func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+func (item *BenchmarksVruposition) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 846801924 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -669,7 +669,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int, optim
 	return w, sizes, 1
 }
 
-func (item *BenchmarksVruPosition) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *BenchmarksVruposition) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -685,7 +685,7 @@ func (item *BenchmarksVruPosition) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 	return w
 }
 
-func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err error) {
+func (item *BenchmarksVruposition) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -786,22 +786,22 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	return r, nil
 }
 
-func (item *BenchmarksVruPosition) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *BenchmarksVruposition) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
-func BuiltinTupleBenchmarksVruPositionFillRandom(rg *basictl.RandGenerator, vec *[]BenchmarksVruPosition, nat_n uint32) {
+func BuiltinTupleBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec *[]BenchmarksVruposition, nat_n uint32) {
 	rg.IncreaseDepth()
-	*vec = make([]BenchmarksVruPosition, nat_n)
+	*vec = make([]BenchmarksVruposition, nat_n)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
 	}
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleBenchmarksVruPositionRead(w []byte, vec *[]BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]BenchmarksVruPosition, nat_n)
+		*vec = make([]BenchmarksVruposition, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
@@ -813,9 +813,9 @@ func BuiltinTupleBenchmarksVruPositionRead(w []byte, vec *[]BenchmarksVruPositio
 	return w, nil
 }
 
-func BuiltinTupleBenchmarksVruPositionWrite(w []byte, vec []BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionWrite(w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
-		return w, ErrorWrongSequenceLength("[]BenchmarksVruPosition", len(vec), nat_n)
+		return w, ErrorWrongSequenceLength("[]BenchmarksVruposition", len(vec), nat_n)
 	}
 	for _, elem := range vec {
 		w = elem.Write(w)
@@ -823,7 +823,7 @@ func BuiltinTupleBenchmarksVruPositionWrite(w []byte, vec []BenchmarksVruPositio
 	return w, nil
 }
 
-func BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruPosition) ([]int, int) {
+func BuiltinTupleBenchmarksVrupositionCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruposition) ([]int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -847,7 +847,7 @@ func BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes []int, optimizeEmpty
 	return sizes, currentSize
 }
 
-func BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruPosition) ([]byte, []int, int) {
+func BuiltinTupleBenchmarksVrupositionInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruposition) ([]byte, []int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -875,7 +875,7 @@ func BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, op
 	return w, sizes, currentSize
 }
 
-func BuiltinTupleBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]BenchmarksVruPosition) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionInternalReadTL2(r []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -898,7 +898,7 @@ func BuiltinTupleBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]Benchmark
 	}
 
 	if cap(*vec) < elementCount {
-		*vec = make([]BenchmarksVruPosition, elementCount)
+		*vec = make([]BenchmarksVruposition, elementCount)
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
@@ -908,13 +908,13 @@ func BuiltinTupleBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]Benchmark
 	}
 	return r, nil
 }
-func BuiltinTupleBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruPosition, nat_n uint32) error {
+func BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition, nat_n uint32) error {
 	isTL2 := tctx != nil && tctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
 	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]BenchmarksVruPosition, nat_n)
+		*vec = make([]BenchmarksVruposition, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
@@ -922,17 +922,17 @@ func BuiltinTupleBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadCont
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[]BenchmarksVruPosition", "expected json array")
+			return ErrorInvalidJSON("[]BenchmarksVruposition", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
 				if isTL2 {
-					var newValue BenchmarksVruPosition
+					var newValue BenchmarksVruposition
 					*vec = append(*vec, newValue)
 					*vec = (*vec)[:cap(*vec)]
 					nat_n = uint32(len(*vec))
 				} else {
-					return ErrorInvalidJSON("[]BenchmarksVruPosition", "array is longer than expected")
+					return ErrorInvalidJSON("[]BenchmarksVruposition", "array is longer than expected")
 				}
 			}
 			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
@@ -942,29 +942,29 @@ func BuiltinTupleBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadCont
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[]BenchmarksVruPosition", "expected json array's end")
+			return ErrorInvalidJSON("[]BenchmarksVruposition", "expected json array's end")
 		}
 	}
 	if isTL2 {
 		*vec = (*vec)[:index]
 	} else {
 		if uint32(index) != nat_n {
-			return ErrorWrongSequenceLength("[]BenchmarksVruPosition", index, nat_n)
+			return ErrorWrongSequenceLength("[]BenchmarksVruposition", index, nat_n)
 		}
 	}
 	return nil
 }
 
-func BuiltinTupleBenchmarksVruPositionWriteJSON(w []byte, vec []BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionWriteJSON(w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleBenchmarksVruPositionWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleBenchmarksVrupositionWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTupleBenchmarksVruPositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if tctx != nil && tctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
-		return w, ErrorWrongSequenceLength("[]BenchmarksVruPosition", len(vec), nat_n)
+		return w, ErrorWrongSequenceLength("[]BenchmarksVruposition", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
@@ -974,22 +974,22 @@ func BuiltinTupleBenchmarksVruPositionWriteJSONOpt(tctx *basictl.JSONWriteContex
 	return append(w, ']'), nil
 }
 
-func BuiltinVectorBenchmarksVruPositionFillRandom(rg *basictl.RandGenerator, vec *[]BenchmarksVruPosition) {
+func BuiltinVectorBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec *[]BenchmarksVruposition) {
 	rg.IncreaseDepth()
 	l := basictl.RandomSize(rg)
-	*vec = make([]BenchmarksVruPosition, l)
+	*vec = make([]BenchmarksVruposition, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorBenchmarksVruPositionRead(w []byte, vec *[]BenchmarksVruPosition) (_ []byte, err error) {
+func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {
-		*vec = make([]BenchmarksVruPosition, l)
+		*vec = make([]BenchmarksVruposition, l)
 	} else {
 		*vec = (*vec)[:l]
 	}
@@ -1001,7 +1001,7 @@ func BuiltinVectorBenchmarksVruPositionRead(w []byte, vec *[]BenchmarksVruPositi
 	return w, nil
 }
 
-func BuiltinVectorBenchmarksVruPositionWrite(w []byte, vec []BenchmarksVruPosition) []byte {
+func BuiltinVectorBenchmarksVrupositionWrite(w []byte, vec []BenchmarksVruposition) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = elem.Write(w)
@@ -1009,7 +1009,7 @@ func BuiltinVectorBenchmarksVruPositionWrite(w []byte, vec []BenchmarksVruPositi
 	return w
 }
 
-func BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruPosition) ([]int, int) {
+func BuiltinVectorBenchmarksVrupositionCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruposition) ([]int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return sizes, 0
@@ -1033,7 +1033,7 @@ func BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes []int, optimizeEmpt
 	return sizes, currentSize
 }
 
-func BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruPosition) ([]byte, []int, int) {
+func BuiltinVectorBenchmarksVrupositionInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]BenchmarksVruposition) ([]byte, []int, int) {
 	if len(*vec) == 0 {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -1061,7 +1061,7 @@ func BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, o
 	return w, sizes, currentSize
 }
 
-func BuiltinVectorBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]BenchmarksVruPosition) (_ []byte, err error) {
+func BuiltinVectorBenchmarksVrupositionInternalReadTL2(r []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1084,7 +1084,7 @@ func BuiltinVectorBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]Benchmar
 	}
 
 	if cap(*vec) < elementCount {
-		*vec = make([]BenchmarksVruPosition, elementCount)
+		*vec = make([]BenchmarksVruposition, elementCount)
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
@@ -1095,17 +1095,17 @@ func BuiltinVectorBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]Benchmar
 	return r, nil
 }
 
-func BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruPosition) error {
+func BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[]BenchmarksVruPosition", "expected json array")
+			return ErrorInvalidJSON("[]BenchmarksVruposition", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if len(*vec) <= index {
-				var newValue BenchmarksVruPosition
+				var newValue BenchmarksVruposition
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
@@ -1116,18 +1116,18 @@ func BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadCon
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return ErrorInvalidJSON("[]BenchmarksVruPosition", "expected json array's end")
+			return ErrorInvalidJSON("[]BenchmarksVruposition", "expected json array's end")
 		}
 	}
 	*vec = (*vec)[:index]
 	return nil
 }
 
-func BuiltinVectorBenchmarksVruPositionWriteJSON(w []byte, vec []BenchmarksVruPosition) []byte {
+func BuiltinVectorBenchmarksVrupositionWriteJSON(w []byte, vec []BenchmarksVruposition) []byte {
 	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorBenchmarksVruPositionWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorBenchmarksVrupositionWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorBenchmarksVruPositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruPosition) []byte {
+func BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

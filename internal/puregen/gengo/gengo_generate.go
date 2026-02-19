@@ -99,6 +99,16 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 
+	if pureType.ResultType() == nil && myWrapper.unionParent == nil && len(myWrapper.pureType.KernelType().TL1()) != 0 {
+		// nowName := canonicalGoName(myWrapper.goCanonicalName, myWrapper.ns.name)
+		wasName := canonicalGoName(myWrapper.pureType.KernelType().TL1()[0].TypeDecl.Name, myWrapper.ns.name)
+		if head+tail != wasName+tail {
+			gen.options.ReplaceStrings(".go",
+				"tl"+myWrapper.ns.name+"."+wasName+tail,
+				"tl"+myWrapper.ns.name+"."+myWrapper.goLocalName)
+		}
+	}
+
 	//head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
 	//if head+tail != myWrapper.goLocalName {
 	//	gen.options.ReplaceStrings(".go",

@@ -13,7 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
-type CasesTestRecursiveFieldmask struct {
+type CasesTestRecursiveFieldMask struct {
 	F0 uint32
 	F1 uint32 // Conditional: item.F0.0
 	F2 uint32 // Conditional: item.F1.1
@@ -22,63 +22,63 @@ type CasesTestRecursiveFieldmask struct {
 	// T3 (TrueType) // Conditional: item.F2.2
 }
 
-func (CasesTestRecursiveFieldmask) TLName() string { return "cases.testRecursiveFieldMask" }
-func (CasesTestRecursiveFieldmask) TLTag() uint32  { return 0xc58cf85e }
+func (CasesTestRecursiveFieldMask) TLName() string { return "cases.testRecursiveFieldMask" }
+func (CasesTestRecursiveFieldMask) TLTag() uint32  { return 0xc58cf85e }
 
-func (item *CasesTestRecursiveFieldmask) SetF1(v uint32) {
+func (item *CasesTestRecursiveFieldMask) SetF1(v uint32) {
 	item.F1 = v
 	item.F0 |= 1 << 0
 }
-func (item *CasesTestRecursiveFieldmask) ClearF1() {
+func (item *CasesTestRecursiveFieldMask) ClearF1() {
 	item.F1 = 0
 	item.F0 &^= 1 << 0
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldMask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
 
-func (item *CasesTestRecursiveFieldmask) SetF2(v uint32) {
+func (item *CasesTestRecursiveFieldMask) SetF2(v uint32) {
 	item.F2 = v
 	item.F1 |= 1 << 1
 }
-func (item *CasesTestRecursiveFieldmask) ClearF2() {
+func (item *CasesTestRecursiveFieldMask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 1
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldMask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
 
-func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
+func (item *CasesTestRecursiveFieldMask) SetT1(v bool) {
 	if v {
 		item.F0 |= 1 << 0
 	} else {
 		item.F0 &^= 1 << 0
 	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldMask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
 
-func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
+func (item *CasesTestRecursiveFieldMask) SetT2(v bool) {
 	if v {
 		item.F1 |= 1 << 1
 	} else {
 		item.F1 &^= 1 << 1
 	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldMask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
 
-func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
+func (item *CasesTestRecursiveFieldMask) SetT3(v bool) {
 	if v {
 		item.F2 |= 1 << 2
 	} else {
 		item.F2 &^= 1 << 2
 	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
+func (item *CasesTestRecursiveFieldMask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
 
-func (item *CasesTestRecursiveFieldmask) Reset() {
+func (item *CasesTestRecursiveFieldMask) Reset() {
 	item.F0 = 0
 	item.F1 = 0
 	item.F2 = 0
 }
 
-func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
+func (item *CasesTestRecursiveFieldMask) FillRandom(rg *basictl.RandGenerator) {
 	item.F0 = basictl.RandomFieldMask(rg, 0b1)
 	if item.F0&(1<<0) != 0 {
 		item.F1 = basictl.RandomFieldMask(rg, 0b10)
@@ -92,7 +92,7 @@ func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *CasesTestRecursiveFieldmask) Read(w []byte) (_ []byte, err error) {
+func (item *CasesTestRecursiveFieldMask) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.F0); err != nil {
 		return w, err
 	}
@@ -113,11 +113,11 @@ func (item *CasesTestRecursiveFieldmask) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *CasesTestRecursiveFieldmask) WriteGeneral(w []byte) (_ []byte, err error) {
+func (item *CasesTestRecursiveFieldMask) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
 
-func (item *CasesTestRecursiveFieldmask) Write(w []byte) []byte {
+func (item *CasesTestRecursiveFieldMask) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.F0)
 	if item.F0&(1<<0) != 0 {
 		w = basictl.NatWrite(w, item.F1)
@@ -128,32 +128,32 @@ func (item *CasesTestRecursiveFieldmask) Write(w []byte) []byte {
 	return w
 }
 
-func (item *CasesTestRecursiveFieldmask) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *CasesTestRecursiveFieldMask) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc58cf85e); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *CasesTestRecursiveFieldmask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *CasesTestRecursiveFieldMask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item *CasesTestRecursiveFieldmask) WriteBoxed(w []byte) []byte {
+func (item *CasesTestRecursiveFieldMask) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xc58cf85e)
 	return item.Write(w)
 }
 
-func (item CasesTestRecursiveFieldmask) String() string {
+func (item CasesTestRecursiveFieldMask) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *CasesTestRecursiveFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *CasesTestRecursiveFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
-func (item *CasesTestRecursiveFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propF0Presented bool
 	var propF1Presented bool
 	var propF2Presented bool
@@ -281,15 +281,15 @@ func (item *CasesTestRecursiveFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadC
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestRecursiveFieldmask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesTestRecursiveFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *CasesTestRecursiveFieldmask) WriteJSON(w []byte) []byte {
+func (item *CasesTestRecursiveFieldMask) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestRecursiveFieldmask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestRecursiveFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexF0 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -323,11 +323,11 @@ func (item *CasesTestRecursiveFieldmask) WriteJSONOpt(tctx *basictl.JSONWriteCon
 	return append(w, '}')
 }
 
-func (item *CasesTestRecursiveFieldmask) MarshalJSON() ([]byte, error) {
+func (item *CasesTestRecursiveFieldMask) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil), nil
 }
 
-func (item *CasesTestRecursiveFieldmask) UnmarshalJSON(b []byte) error {
+func (item *CasesTestRecursiveFieldMask) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testRecursiveFieldMask", err.Error())
 	}
