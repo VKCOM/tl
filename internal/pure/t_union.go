@@ -74,13 +74,18 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL2UnionType,
+func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
+	def tlast.TL2UnionType,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tlName:        tip.canonicalName,
+			tlTag:         0,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
+			rt:            trTL1,
+			argNamespace:  k.getArgNamespace(trTL1),
 		},
 		isEnum:                   true,
 		variantNames:             make([]string, len(def.Variants)),
@@ -88,7 +93,8 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, def tlast.TL
 		variantTypes:             make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
-		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip,
+		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
+			tlast.Name{}, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)

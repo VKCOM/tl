@@ -45,13 +45,14 @@ func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
 	return ins.fieldType.ins.SkipTL2(r)
 }
 
-func (k *Kernel) createAlias(canonicalName string, tip *KernelType, alias tlast.TL2TypeRef,
+func (k *Kernel) createAlias(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
+	alias tlast.TL2TypeRef,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 	rt, err := k.resolveTypeTL2(alias, leftArgs, actualArgs)
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}
-	fieldType, err := k.GetInstance(rt)
+	fieldType, err := k.getInstanceTL2(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate alias %s to %s: %w", canonicalName, alias, err)
 	}
@@ -60,6 +61,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, alias tlast.
 			canonicalName: canonicalName,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
+			rt:            trTL1,
 		},
 		fieldType: fieldType,
 	}

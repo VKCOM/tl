@@ -86,6 +86,10 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 	if kt.canonicalName != tlast.Name(someType.Name) {
 		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must be to canonical name %s", kt.canonicalName))
 	}
+	if kt.builtinWrappedCanonicalName != "" {
+		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must be to built-in canonical name %s", kt.builtinWrappedCanonicalName))
+	}
+
 	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
 	if kt.originTL2 {
 		td := kt.combTL2
@@ -173,18 +177,115 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 	return tr, nil
 }
 
-func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
-	canonicalName := tr.String()
+// TODO - we can decide later to convert TL1 type refs to TL2, should weight pro and cons
+func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, error) {
+	if tr.IsBracket() {
+		elemType, err := k.convertTL2TypeRefToTL1(tr.BracketType.ArrayType)
+		if err != nil {
+			return tlast.TypeRef{}, err
+		}
+		if tr.BracketType.HasIndex {
+			if tr.BracketType.IndexType.IsNumber {
+				// tuple
+				rt := tlast.TypeRef{
+					Type:   tlast.Name{Name: "__tuple"},
+					Args:   nil,
+					Bare:   false,
+					PR:     tr.BracketType.PR,
+					PRArgs: tr.BracketType.PR, // TODO
+					// OriginalArgumentName: , TODO
+				}
+				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+					IsArith: true,
+					Arith:   tlast.Arithmetic{Res: tr.BracketType.IndexType.Number},
+					T:       tlast.TypeRef{PR: tr.BracketType.IndexType.PR},
+					// SourceField: tlast.CombinatorField{}, // TODO
+				})
+				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+					IsArith: false,
+					T:       elemType,
+					// SourceField: tlast.CombinatorField{}, // TODO
+				})
+				return rt, nil
+			}
+			// dict
+			panic("TODO - dict")
+		}
+		// vector
+		rt := tlast.TypeRef{
+			Type:   tlast.Name{Name: "__vector"},
+			Args:   nil,
+			Bare:   false,
+			PR:     tr.BracketType.PR,
+			PRArgs: tr.BracketType.PR, // TODO
+			// OriginalArgumentName: , TODO
+		}
+		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+			IsArith: false,
+			T:       elemType,
+			// SourceField: tlast.CombinatorField{}, // TODO
+		})
+		return rt, nil
+	}
+	someType := tr.SomeType
+	tName := someType.Name.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return tlast.TypeRef{}, someType.PRName.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+	}
+	rt := tlast.TypeRef{
+		Type:   tlast.Name(someType.Name),
+		Args:   nil,
+		Bare:   kt.canBeBare,
+		PR:     someType.PR,
+		PRArgs: someType.PR, // TODO
+		// OriginalArgumentName: , TODO
+	}
+	for _, arg := range someType.Arguments {
+		if arg.IsNumber {
+			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+				IsArith: true,
+				Arith:   tlast.Arithmetic{Res: arg.Number},
+				T:       tlast.TypeRef{PR: arg.PR},
+				// SourceField: tlast.CombinatorField{}, // TODO
+			})
+			continue
+		}
+		argType, err := k.convertTL2TypeRefToTL1(arg.Type)
+		if err != nil {
+			return tlast.TypeRef{}, err
+		}
+		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+			IsArith: false,
+			T:       argType,
+			// SourceField: tlast.CombinatorField{}, // TODO
+		})
+	}
+	return rt, nil
+}
+
+func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstanceRef, error) {
+	trTL1, err := k.convertTL2TypeRefToTL1(tr)
+	if err != nil {
+		return nil, err
+	}
+	canonicalName, _, err := k.canonicalStringTL1(trTL1, true)
+	if err != nil {
+		return nil, err
+	}
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, nil
 	}
+	if !create {
+		return nil, fmt.Errorf("internal error: instance %s must exist", canonicalName)
+	}
 	if tr.IsBracket() {
 		log.Printf("creating a bracket instance of type %s", canonicalName)
-		// must store pointer before children GetInstance() terminates recursion
+		// must store pointer before children GetInstanceTL2() terminates recursion
 		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 		ref := k.addInstance(canonicalName, k.brackets)
 
-		elemInstance, err := k.GetInstance(tr.BracketType.ArrayType)
+		elemInstance, err := k.getInstanceTL2(tr.BracketType.ArrayType, true)
 		if err != nil {
 			return nil, err
 		}
@@ -195,7 +296,7 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 				return ref, nil
 			}
 			// dict
-			keyInstance, err := k.GetInstance(tr.BracketType.IndexType.Type)
+			keyInstance, err := k.getInstanceTL2(tr.BracketType.IndexType.Type, true)
 			if err != nil {
 				return nil, err
 			}
@@ -210,24 +311,23 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		return ref, nil
 	}
 	// log.Printf("creating an instance of type %s", canonicalName)
-	// must store pointer before children GetInstance() terminates recursion
+	// must store pointer before children GetInstanceTL2() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
 	someType := tr.SomeType
 	kt, ok := k.tips[someType.Name.String()]
 	if !ok {
-		return nil, fmt.Errorf("type %s does not exist", someType.Name)
+		return nil, someType.PRName.BeautifulError(fmt.Errorf("type %s does not exist", someType.Name))
 	}
-	// must store pointer before children GetInstance() terminates recursion
-	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-	ref := k.addInstance(canonicalName, kt)
-
-	var err error
 	if kt.originTL2 {
+		// must store pointer before children GetInstanceTL2() terminates recursion
+		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+		ref := k.addInstance(canonicalName, kt)
 		if !kt.combTL2.IsFunction {
 			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
 				return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 			}
-			ref.ins, err = k.createOrdinaryType(canonicalName, kt, kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
+			ref.ins, err = k.createOrdinaryType(canonicalName, kt, trTL1, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
+				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
 			if err != nil {
 				return nil, err
 			}
@@ -235,11 +335,13 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		}
 		// TODO - should we check template arguments, as above?
 		funcDecl := kt.combTL2.FuncDecl
-		resultType, err := k.createOrdinaryType(canonicalName, kt, funcDecl.ReturnType, nil, nil)
+		resultTlName := kt.canonicalName
+		resultTlName.Name += "__Result"
+		resultType, err := k.createOrdinaryType(canonicalName, kt, trTL1, resultTlName, 0, funcDecl.ReturnType, nil, nil)
 		if err != nil {
 			return nil, err
 		}
-		ref.ins, err = k.createStruct(canonicalName, kt, true,
+		ref.ins, err = k.createStruct(canonicalName, kt, trTL1, kt.canonicalName, funcDecl.Magic, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
 			resultType)
 		if err != nil {
@@ -247,31 +349,24 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		}
 		return ref, nil
 	}
-	comb := kt.combTL1[0]
-	if !comb.IsFunction {
-		if len(comb.TemplateArguments) != len(someType.Arguments) {
-			return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(comb.TemplateArguments), len(someType.Arguments))
-		}
-		ref.ins, err = k.createOrdinaryTypeTL1FromTL2(canonicalName, kt.combTL1, comb.TemplateArguments, someType.Arguments)
-		if err != nil {
-			return nil, err
-		}
-		return ref, nil
-	}
-	return nil, fmt.Errorf("TODO - function from TL1 not yet supported")
+	ref, _, err := k.getInstanceTL1(trTL1, create)
+	return ref, err
 }
 
 // alias || fields || union
-func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, definition tlast.TL2TypeDefinition,
+func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
+	tlName tlast.Name, tlTag uint32,
+	definition tlast.TL2TypeDefinition,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
 	switch {
 	case definition.IsAlias():
-		return k.createAlias(canonicalName, tip, definition.TypeAlias, leftArgs, actualArgs)
+		return k.createAlias(canonicalName, tip, trTL1, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.StructType.IsUnionType:
-		return k.createUnion(canonicalName, tip, definition.StructType.UnionType, leftArgs, actualArgs)
+		return k.createUnion(canonicalName, tip, trTL1, definition.StructType.UnionType, leftArgs, actualArgs)
 	default:
-		return k.createStruct(canonicalName, tip,
+		return k.createStruct(canonicalName, tip, trTL1,
+			tlName, tlTag,
 			true, definition.TypeAlias, definition.StructType.ConstructorFields,
 			leftArgs, actualArgs,
 			false, 0, nil)

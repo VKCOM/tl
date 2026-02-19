@@ -215,17 +215,18 @@ func (k *Kernel) Compile() error {
 	for _, comb := range k.filesTL2 {
 		log.Printf("tl2pure: compiling %s", comb)
 		kt := &KernelType{
-			originTL2:  true,
-			combTL2:    comb,
-			instances:  map[string]*TypeInstanceRef{},
-			isFunction: comb.IsFunction,
-			isTopLevel: len(comb.TypeDecl.TemplateArguments) == 0,
-			canBeBare:  true,
+			originTL2:      true,
+			combTL2:        comb,
+			instances:      map[string]*TypeInstanceRef{},
+			isFunction:     comb.IsFunction,
+			isTopLevel:     len(comb.TypeDecl.TemplateArguments) == 0,
+			canBeBare:      true,
+			canonicalName:  tlast.Name(comb.ReferenceName()),
+			historicalName: tlast.Name(comb.ReferenceName()),
 		}
 		if !comb.IsFunction {
 			kt.tl1Names = map[string]struct{}{comb.ReferenceName().String(): {}}
 			kt.tl2Names = map[string]struct{}{comb.ReferenceName().String(): {}}
-			kt.canonicalName = tlast.Name(comb.ReferenceName())
 			var nc NameCollision
 			for _, targ := range comb.TypeDecl.TemplateArguments {
 				if err := nc.AddUniqueName(targ.Name, targ.PR, "template argument"); err != nil {
@@ -357,7 +358,7 @@ func (k *Kernel) Compile() error {
 		if tip.originTL2 {
 			if tip.combTL2.IsFunction {
 				tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.combTL2.FuncDecl.Name}}
-				if _, err := k.GetInstance(tr); err != nil {
+				if _, err := k.getInstanceTL2(tr, true); err != nil {
 					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
 				}
 				continue
@@ -367,7 +368,7 @@ func (k *Kernel) Compile() error {
 				continue // instantiate templates on demand only
 			}
 			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
-			if _, err := k.GetInstance(tr); err != nil {
+			if _, err := k.getInstanceTL2(tr, true); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		}
