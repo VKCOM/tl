@@ -52,7 +52,7 @@ func (item CasesBytesTestEnum) Is3() bool { return item.index == 2 }
 func (item *CasesBytesTestEnum) Set3()    { item.index = 2 }
 
 func (item *CasesBytesTestEnum) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -76,7 +76,7 @@ func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesBytesTestEnum) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

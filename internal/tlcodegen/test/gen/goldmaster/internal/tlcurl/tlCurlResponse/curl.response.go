@@ -81,7 +81,7 @@ func (item *CurlResponse) SetError(value CurlResponseError) {
 }
 
 func (item *CurlResponse) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *CurlResponse) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -102,7 +102,7 @@ func (item *CurlResponse) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *CurlResponse) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *CurlResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

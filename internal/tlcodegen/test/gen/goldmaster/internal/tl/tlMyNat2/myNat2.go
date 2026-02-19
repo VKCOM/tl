@@ -82,7 +82,7 @@ func (item *MyNat2) SetMyPlus(value MyPlus) {
 }
 
 func (item *MyNat2) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *MyNat2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -107,7 +107,7 @@ func (item *MyNat2) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyNat2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *MyNat2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

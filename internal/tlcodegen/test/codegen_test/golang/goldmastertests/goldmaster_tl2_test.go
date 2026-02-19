@@ -75,7 +75,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 			case "useDictUgly":
 				return
 			}
-			dst := factory.CreateObject(item.TLTag())
+			dst := factory.CreateObjectFromName(item.TLName())
 			if dst == nil {
 				t.Fatalf("can't init %s", item.TLName())
 			}
@@ -88,7 +88,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 				}
 				t.Run(fmt.Sprintf("TL[%s]", utils.SprintHexDump(data)), func(t *testing.T) {
 					writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
-					newDst := factory.CreateObject(item.TLTag())
+					newDst := factory.CreateObjectFromName(item.TLName())
 					_, err = newDst.ReadTL2(writeBuffer, nil)
 					if err != nil {
 						fmt.Printf("%d %s %x\n", seed, item.TLName(), writeBuffer)
@@ -104,7 +104,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 						t.Fatalf("can't write %d-th object", i)
 					}
 					if !assert.Equal(t, utils.SprintHexDump(data), utils.SprintHexDump(newData)) {
-						newDst2 := factory.CreateObject(item.TLTag())
+						newDst2 := factory.CreateObjectFromName(item.TLName())
 						_, _ = newDst2.ReadTL2(writeBuffer, nil)
 						t.Fatalf("write tl2 unexpected result")
 					}

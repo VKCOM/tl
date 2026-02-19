@@ -66,7 +66,7 @@ func (item AColor) IsBlue() bool { return item.index == 4 }
 func (item *AColor) SetBlue()    { item.index = 4 }
 
 func (item *AColor) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -96,7 +96,7 @@ func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *AColor) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

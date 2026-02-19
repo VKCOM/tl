@@ -48,7 +48,7 @@ func (item AMyBool) IsMyFalse() bool { return item.index == 1 }
 func (item *AMyBool) SetMyFalse()    { item.index = 1 }
 
 func (item *AMyBool) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *AMyBool) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -69,7 +69,7 @@ func (item *AMyBool) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *AMyBool) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *AMyBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

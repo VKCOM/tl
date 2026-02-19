@@ -13,8 +13,8 @@ func init() {
 	fillFunction(&TLItem{tlName: "service5.insertList", tag: 0x7cf362bc, hasTL1: true, hasTL2: true, annotations: 0x10, resultTypeContainsUnionTypes: true})
 	fillObject(&TLItem{tlName: "service5Long.emptyOutput", tag: 0xff8f7db9, hasTL1: true, hasTL2: true})
 	fillFunction(&TLItem{tlName: "service5Long.insert", tag: 0x7cf362bb, hasTL1: true, hasTL2: true, annotations: 0x10, resultTypeContainsUnionTypes: true})
-	fillObject(&TLItem{tlName: "service5Long.Output", hasTL2: true})
+	fillObject(&TLItem{tlName: "service5Long.Output", hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "service5Long.stringOutput", tag: 0xdc170ff7, hasTL1: true, hasTL2: true})
-	fillObject(&TLItem{tlName: "service5.Output", hasTL2: true})
+	fillObject(&TLItem{tlName: "service5.Output", hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "service5.stringOutput", tag: 0xdc170ff4, hasTL1: true, hasTL2: true})
 }

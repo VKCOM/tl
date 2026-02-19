@@ -229,7 +229,7 @@ func (item *Service5Output) SetString(value Service5StringOutput) {
 }
 
 func (item *Service5Output) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -250,7 +250,7 @@ func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service5Output) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *Service5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

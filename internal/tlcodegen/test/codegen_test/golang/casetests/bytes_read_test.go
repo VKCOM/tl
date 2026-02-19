@@ -92,7 +92,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 
 			var objects []meta.Object
 			for i := 0; i < RepeatNumber; i++ {
-				obj := factory.CreateObject(tlItem.TLTag())
+				obj := factory.CreateObjectFromName(tlItem.TLName())
 				obj.FillRandom(basictl.NewRandGenerator(rnd))
 				objects = append(objects, obj)
 			}
