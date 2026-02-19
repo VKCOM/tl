@@ -180,6 +180,9 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 // TODO - we can decide later to convert TL1 type refs to TL2, should weight pro and cons
 func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, error) {
 	if tr.IsBracket() {
+		// TODO - replace references to wrapper types tuple and vector
+		// to built-in types __tuple and __vector in both TL1 and TL2 kernels
+		// so the diff before and after migration is minimal
 		elemType, err := k.convertTL2TypeRefToTL1(tr.BracketType.ArrayType)
 		if err != nil {
 			return tlast.TypeRef{}, err
@@ -188,7 +191,7 @@ func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, err
 			if tr.BracketType.IndexType.IsNumber {
 				// tuple
 				rt := tlast.TypeRef{
-					Type:   tlast.Name{Name: "__tuple"},
+					Type:   tlast.Name{Name: "tuple"},
 					Args:   nil,
 					Bare:   false,
 					PR:     tr.BracketType.PR,
@@ -196,14 +199,14 @@ func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, err
 					// OriginalArgumentName: , TODO
 				}
 				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-					IsArith: true,
-					Arith:   tlast.Arithmetic{Res: tr.BracketType.IndexType.Number},
-					T:       tlast.TypeRef{PR: tr.BracketType.IndexType.PR},
+					IsArith: false,
+					T:       elemType,
 					// SourceField: tlast.CombinatorField{}, // TODO
 				})
 				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-					IsArith: false,
-					T:       elemType,
+					IsArith: true,
+					Arith:   tlast.Arithmetic{Res: tr.BracketType.IndexType.Number},
+					T:       tlast.TypeRef{PR: tr.BracketType.IndexType.PR},
 					// SourceField: tlast.CombinatorField{}, // TODO
 				})
 				return rt, nil
@@ -213,7 +216,7 @@ func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, err
 		}
 		// vector
 		rt := tlast.TypeRef{
-			Type:   tlast.Name{Name: "__vector"},
+			Type:   tlast.Name{Name: "vector"},
 			Args:   nil,
 			Bare:   false,
 			PR:     tr.BracketType.PR,

@@ -112,22 +112,6 @@ func (item *CasesTL2TestFunctionNoDep5) ReadResultJSONWriteResult(r []byte, w []
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionNoDep5) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep5")
-}
-
-func (item *CasesTL2TestFunctionNoDep5) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep5")
-}
-
-func (item *CasesTL2TestFunctionNoDep5) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep5")
-}
-
-func (item *CasesTL2TestFunctionNoDep5) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, ErrorTL2SerializersNotGenerated("casesTL2.testFunctionNoDep5")
-}
-
 func (item CasesTL2TestFunctionNoDep5) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
