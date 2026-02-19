@@ -198,8 +198,8 @@ test:
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
 check: build test lint
-	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 --version
-	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.6.1 ./cmd/..../internal/... ./pkg/... # update version together with github actions
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.7.0 --version
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.7.0 ./cmd/... ./internal/... ./pkg/... # update version together with github actions
 
 .PHONY: lint
 lint:

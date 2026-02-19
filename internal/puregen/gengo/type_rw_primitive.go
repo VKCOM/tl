@@ -30,10 +30,6 @@ type TypeRWPrimitive struct {
 
 var _ TypeRW = &TypeRWPrimitive{}
 
-func (trw *TypeRWPrimitive) isFloat() bool {
-	return trw.tlType == "float" || trw.tlType == "double"
-}
-
 func (trw *TypeRWPrimitive) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
 		return addBytes(trw.goType, bytesVersion)
