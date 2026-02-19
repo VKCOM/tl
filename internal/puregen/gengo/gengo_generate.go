@@ -222,28 +222,19 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			tlName:           typ.TLName(),
 			unionParent:      res,
 			unionIndex:       i,
+			ns:               myWrapper.ns,
 		}
+		if myWrapper.tlName.Namespace != variantWrapper.tlName.Namespace {
+			variantWrapper.ns = gen.getNamespace(variantWrapper.tlName.Namespace)
+		}
+		variantWrapper.ns.types = append(variantWrapper.ns.types, variantWrapper)
+
 		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
 
 		variantWrapper.goCanonicalName = variantWrapper.tlName
 		variantWrapper.fileNameOverride = myWrapper
 
-		// namespace := myWrapper.ns
-		if variantWrapper.tlName.Namespace == "" {
-			//left {X:Type} {Y:Type} value:X = Either X Y;
-			//right {X:Type} {Y:Type} value:Y = Either X Y;
-			// fn => Vector (Either %audiofp.Error %(Vector audiofp.findResultRow));
-			namespace := myWrapper.ns
-			namespace.types = append(namespace.types, variantWrapper)
-			variantWrapper.ns = namespace
-		} else {
-			//messages.oneUser#a6a042bd user_id:messages.userId = messages.ChatUsers;
-			//messagesLong.oneUser#5fb6003f user_id:messagesLong.userId = messages.ChatUsers;
-			namespace := gen.getNamespace(variantWrapper.tlName.Namespace)
-			namespace.types = append(namespace.types, variantWrapper)
-			variantWrapper.ns = namespace
-		}
 		if err := gen.generateTypeStruct(variantWrapper, typ); err != nil {
 			return err
 		}

@@ -31,6 +31,9 @@ videoAdsService.user
     y:Pair<Vector<videoAdsService.usedType>, int>
    = videoAdsService.User;
 
+videoAdsService.snackbarEventTypeClosed#d5f13be8     = videoAdsService.SnackbarEventType;
+videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarEventType;
+
 
 //videoCommon.fullVideoID#b45b85e1
 //    fields_mask:    #
@@ -60,11 +63,6 @@ videoAdsService.user
 //    can_show_banner:              fields_mask.0?true
 //    ads_disabled:                 fields_mask.1?true
 //    = videoAdsService.CheckFields;
-
-
-//videoAdsService.snackbarEventTypeClosed#d5f13be8     = videoAdsService.SnackbarEventType;
-//videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarEventType;
-
 
 //videoAdsService.checkResponseOk#87fad1f4
 //    fields_mask:              #
