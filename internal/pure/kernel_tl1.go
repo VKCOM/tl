@@ -285,9 +285,20 @@ func (k *Kernel) CompileTL1() error {
 			for _, m := range comb.Modifiers {
 				kt.annotations = append(kt.annotations, m.Name)
 			}
+			//if tName.String() == "Vector" || tName.String() == "Tuple" {
+			//	kt.canonicalName = tName
+			//	kt.historicalName = tName
+			//	kt.tl1Names = map[string]struct{}{tName.String(): {}}
+			//	kt.tl2Names = map[string]struct{}{}
+			//	kt.builtinWrappedCanonicalName = cName.String()
+			//	if err := k.addTip(kt, tName.String(), ""); err != nil {
+			//		return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+			//	}
+			//} else {
 			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
 				return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
 			}
+			//}
 			continue
 		}
 		if err := k.checkUnionElementsCompatibility(typ); err != nil {
