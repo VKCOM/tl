@@ -162,6 +162,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if kt.isFunction {
 		return tr, nil, kt.functionCanNotBeReferencedError(tr.T.PR)
 	}
+	//tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	if tr.T.Bare && kt.builtinWrappedCanonicalName != "" {
 		tName = kt.builtinWrappedCanonicalName
 		kt, ok = k.tips[tName]
@@ -170,6 +171,9 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 		}
 		tr.T.Type = tlast.Name{Name: tName}
 		tr.T.Bare = false // not required
+		//if tName == "tuple" {
+		//	tr.T.Args[0], tr.T.Args[1] = tr.T.Args[1], tr.T.Args[0]
+		//}
 	}
 
 	if kt.originTL2 {
