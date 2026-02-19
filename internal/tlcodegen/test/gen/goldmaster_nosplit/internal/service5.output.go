@@ -228,6 +228,10 @@ func (item *Service5Output) SetString(value Service5StringOutput) {
 	item.valueString = value
 }
 
+func (item *Service5Output) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -243,6 +247,10 @@ func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("service5.Output", tag)
 	}
+}
+
+func (item *Service5Output) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *Service5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

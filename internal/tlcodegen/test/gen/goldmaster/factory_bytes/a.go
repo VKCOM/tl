@@ -8,12 +8,14 @@
 package factory_bytes
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 )
 
 func init() {
+	meta.SetGlobalFactoryCreateForObjectBytes("ab.Response", func() meta.Object { return new(tlAbResponse.AbResponseBytes) })
 	meta.SetGlobalFactoryCreateForObjectBytes("ab.topLevel2", func() meta.Object { return new(tlAbTopLevel2.AbTopLevel2Bytes) })
 	meta.SetGlobalFactoryCreateForObjectBytes("ab.useDictString", func() meta.Object { return new(tlAbUseDictString.AbUseDictStringBytes) })
 }

@@ -8,5 +8,5 @@
 package meta
 
 func init() {
-	fillObject(&TLItem{tag: 0xa9471844, annotations: 0x0, tlName: "b.red", hasTL1: true, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tlName: "b.red", tag: 0xa9471844, hasTL1: true, hasTL2: true})
 }

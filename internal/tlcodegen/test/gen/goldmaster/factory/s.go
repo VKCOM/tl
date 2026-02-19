@@ -22,6 +22,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunction("service5.insertList", func() meta.Function { return new(tlService5InsertList.Service5InsertList) }, nil)
 	meta.SetGlobalFactoryCreateForObject("service5Long.emptyOutput", func() meta.Object { return new(tlService5LongOutput.Service5LongEmptyOutput) })
 	meta.SetGlobalFactoryCreateForFunction("service5Long.insert", func() meta.Function { return new(tlService5LongInsert.Service5LongInsert) }, nil)
+	meta.SetGlobalFactoryCreateForObject("service5Long.Output", func() meta.Object { return new(tlService5LongOutput.Service5LongOutput) })
 	meta.SetGlobalFactoryCreateForObject("service5Long.stringOutput", func() meta.Object { return new(tlService5LongOutput.Service5LongStringOutput) })
+	meta.SetGlobalFactoryCreateForObject("service5.Output", func() meta.Object { return new(tlService5Output.Service5Output) })
 	meta.SetGlobalFactoryCreateForObject("service5.stringOutput", func() meta.Object { return new(tlService5Output.Service5StringOutput) })
 }

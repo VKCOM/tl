@@ -109,6 +109,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("myInt32", func() meta.Object { return new(tlMyInt32.MyInt32) })
 	meta.SetGlobalFactoryCreateForObject("myInt64", func() meta.Object { return new(tlMyInt64.MyInt64) })
 	meta.SetGlobalFactoryCreateForObject("myNat", func() meta.Object { return new(tlMyNat.MyNat) })
+	meta.SetGlobalFactoryCreateForObject("MyNat2", func() meta.Object { return new(tlMyNat2.MyNat2) })
+	meta.SetGlobalFactoryCreateForObject("MyNat3", func() meta.Object { return new(tlMyNat3.MyNat3) })
 	meta.SetGlobalFactoryCreateForObject("myPlus", func() meta.Object { return new(tlMyNat2.MyPlus) })
 	meta.SetGlobalFactoryCreateForObject("myPlus3", func() meta.Object { return new(tlMyNat3.MyPlus3) })
 	meta.SetGlobalFactoryCreateForObject("myZero", func() meta.Object { return new(tlMyNat2.MyZero) })

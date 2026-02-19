@@ -77,6 +77,10 @@ func (item *AMyUnion) SetNionA(value AuNionA) {
 	item.valueNionA = value
 }
 
+func (item *AMyUnion) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -92,6 +96,10 @@ func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("a.MyUnion", tag)
 	}
+}
+
+func (item *AMyUnion) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *AMyUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

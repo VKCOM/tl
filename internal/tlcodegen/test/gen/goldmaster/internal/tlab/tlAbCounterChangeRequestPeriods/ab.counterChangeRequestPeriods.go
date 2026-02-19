@@ -84,6 +84,10 @@ func (item *AbCounterChangeRequestPeriods) SetOne(value AbCounterChangeRequestPe
 	item.valueOne = value
 }
 
+func (item *AbCounterChangeRequestPeriods) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -99,6 +103,10 @@ func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err er
 	default:
 		return w, internal.ErrorInvalidUnionTag("ab.CounterChangeRequestPeriods", tag)
 	}
+}
+
+func (item *AbCounterChangeRequestPeriods) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *AbCounterChangeRequestPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

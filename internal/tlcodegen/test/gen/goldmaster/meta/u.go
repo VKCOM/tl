@@ -8,5 +8,5 @@
 package meta
 
 func init() {
-	fillFunction(&TLItem{tag: 0x3c857e52, annotations: 0x10, tlName: "usefulService.getUserEntity", hasTL1: true, hasTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction(&TLItem{tlName: "usefulService.getUserEntity", tag: 0x3c857e52, hasTL1: true, hasTL2: true, annotations: 0x10})
 }

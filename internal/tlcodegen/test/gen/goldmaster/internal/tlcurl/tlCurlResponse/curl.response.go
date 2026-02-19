@@ -80,6 +80,10 @@ func (item *CurlResponse) SetError(value CurlResponseError) {
 	item.valueError = value
 }
 
+func (item *CurlResponse) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *CurlResponse) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -95,6 +99,10 @@ func (item *CurlResponse) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, internal.ErrorInvalidUnionTag("curl.Response", tag)
 	}
+}
+
+func (item *CurlResponse) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CurlResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

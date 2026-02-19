@@ -424,33 +424,72 @@ func init() {
 		if !wr.pureType.Common().IsTopLevel() {
 			continue
 		}
+		argumentsTypesContainUnionTypes := wr.DoArgumentsContainUnionTypes()
+
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			resultTypeContainsUnionTypes := false
-			argumentsTypesContainUnionTypes := false
 			if hasTypes != nil {
 				*hasTypes = true
 			}
+			resultTypeContainsUnionTypes := false
 
 			if fun.ResultType != nil {
 				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
-				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
 
 				qw422016.N().S(`        fillFunction(`)
 			} else {
 				qw422016.N().S(`fillObject(`)
 			}
-			qw422016.N().S(`        &TLItem{tag: `)
-			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
-			qw422016.N().S(`, annotations: `)
-			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
-			qw422016.N().S(`, tlName: "`)
+			qw422016.N().S(`        &TLItem{tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", hasTL1:true, hasTL2:`)
-			qw422016.N().V(wr.wantsTL2)
-			qw422016.N().S(`, resultTypeContainsUnionTypes: `)
-			qw422016.N().V(resultTypeContainsUnionTypes)
-			qw422016.N().S(`, argumentsTypesContainUnionTypes: `)
-			qw422016.N().V(argumentsTypesContainUnionTypes)
+			qw422016.N().S(`"`)
+
+			if wr.tlTag != 0 {
+				qw422016.N().S(`, tag: `)
+				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			}
+			if !wr.originateFromTL2 {
+				qw422016.N().S(`, hasTL1:true`)
+			}
+			if wr.wantsTL2 {
+				qw422016.N().S(`, hasTL2:true`)
+			}
+			if wr.AnnotationsMask() != 0 {
+				qw422016.N().S(`, annotations: `)
+				qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
+			}
+			if argumentsTypesContainUnionTypes {
+				qw422016.N().S(`, argumentsTypesContainUnionTypes:true`)
+			}
+			if resultTypeContainsUnionTypes {
+				qw422016.N().S(`, resultTypeContainsUnionTypes:true`)
+			}
+			qw422016.N().S(`})
+`)
+		}
+		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 {
+			if hasTypes != nil {
+				*hasTypes = true
+			}
+			// unions are not top level types, according to TL1 rules, so we set hasTL1:false for them, despite they could have TL1 serializers
+
+			qw422016.N().S(`        fillObject(&TLItem{tlName: "`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`"`)
+
+			if wr.tlTag != 0 {
+				qw422016.N().S(`, tag: `)
+				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			}
+			if wr.wantsTL2 {
+				qw422016.N().S(`, hasTL2:true`)
+			}
+			if wr.AnnotationsMask() != 0 {
+				qw422016.N().S(`, annotations: `)
+				qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
+			}
+			if argumentsTypesContainUnionTypes {
+				qw422016.N().S(`, argumentsTypesContainUnionTypes:true`)
+			}
 			qw422016.N().S(`})
 `)
 		}

@@ -71,13 +71,13 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
-	def tlast.TL2UnionType,
+	tlTag uint32, def tlast.TL2UnionType,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tlName:        tip.canonicalName,
-			tlTag:         0,
+			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
 			rt:            trTL1,
@@ -88,8 +88,10 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
+		tlName := tip.canonicalName
+		tlName.Name += "__" + variantDef.Name
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
-			tlast.Name{}, 0,
+			tlName, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
@@ -127,7 +129,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			tlTag:         0,
 			natParams:     natParams,
 			tip:           tip,
-			isTopLevel:    false, // in TL1, union variants are top level, not union itself
+			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
