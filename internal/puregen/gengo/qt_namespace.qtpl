@@ -160,28 +160,40 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         req.ReadOnly = true
     {%- endif -%}
     req.FunctionName = "{%s= tlName %}"
+{%- if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 -%}
+    preferTLVersion := 1
+{%- endif -%}
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
-{%- if fun.wr.wantsTL2 -%}
-		if extra.PreferTL2 {
-			req.BodyFormatTL2 = true
+{%- if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 -%}
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
 		}
 {%- endif -%}
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-{%- if fun.wr.wantsTL2 -%}
-	if req.BodyFormatTL2 {
-	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	    tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
-	} else {
-{%- endif -%}
+{%- if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 -%}
+    if preferTLVersion == 2 {
+        req.BodyFormatTL2 = true
+        req.Body = basictl.NatWrite(req.Body, args.TLTag())
+        tctx := basictl.TL2WriteContext{}
+        req.Body = args.WriteTL2(req.Body, &tctx)
+    } else {
         req.Body, err = args.WriteBoxedGeneral(req.Body)
         if err != nil {
             return internal.ErrorClientWrite("{%s= tlName %}", err)
         }
-{%- if fun.wr.wantsTL2 -%}
+    }
+{%- elseif fun.wr.wantsTL2 -%}
+    req.BodyFormatTL2 = true
+    req.Body = basictl.NatWrite(req.Body, args.TLTag())
+    tctx := basictl.TL2WriteContext{}
+    req.Body = args.WriteTL2(req.Body, &tctx)
+{%- else -%}
+    req.Body, err = args.WriteBoxedGeneral(req.Body)
+    if err != nil {
+        return internal.ErrorClientWrite("{%s= tlName %}", err)
     }
 {%- endif -%}
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
@@ -193,15 +205,18 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         return internal.ErrorClientDo("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
     }
     if ret != nil {
-{%- if fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 -%}
 		if resp.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
 		} else {
-{%- endif -%}
 			resp.Body, err = args.ReadResult(resp.Body, ret)
-{%- if fun.wr.wantsTL2 -%}
 		}
+{%- elseif fun.wr.wantsTL2 -%}
+            tctx := basictl.TL2ReadContext{}
+			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
+{%- else -%}
+			resp.Body, err = args.ReadResult(resp.Body, ret)
 {%- endif -%}
 		if err != nil {
             return internal.ErrorClientReadResult("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
