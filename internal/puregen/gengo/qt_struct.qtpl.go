@@ -380,175 +380,158 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
 		}
 
-		if !field.fieldMask.IsNumber() {
-			// Example
-			//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
-			//     @any notify.getScheduledNotifications#f53ad7bd  = notify.Notification 0;
-			// We skip generating Set and Clear altogether in this case, but still generate IsSet
-			setName := struct_.setNames[i]
-			if setName == "" {
-				setName = struct_.fieldsDec.deconflictName("Set" + utils.ToUpperFirst(field.goName))
-				struct_.setNames[i] = setName
-			}
-			getName := "G" + setName[1:]
+		// Example
+		//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
+		//     @any notify.getScheduledNotifications#f53ad7bd  = notify.Notification 0;
+		// We skip generating Set and Clear altogether in this case, but still generate IsSet
+		setName := struct_.setNames[i]
+		if setName == "" {
+			setName = struct_.fieldsDec.deconflictName("Set" + utils.ToUpperFirst(field.goName))
+			struct_.setNames[i] = setName
+		}
+		getName := "G" + setName[1:]
 
-			if struct_.wr.wantsTL2 && !field.IsBit() && field.fieldMask != nil && field.fieldMask == nil {
-				qw422016.N().S(`func (item *`)
-				qw422016.N().S(goName)
-				qw422016.N().S(`) `)
-				qw422016.N().S(getName)
-				qw422016.N().S(`() `)
-				qw422016.N().S(asterisk)
-				qw422016.N().S(isTrueType)
-				qw422016.N().S(` {
-    return item.`)
-				qw422016.N().S(field.goName)
+		if struct_.wr.wantsTL2 && !field.IsBit() && field.fieldMask != nil && field.fieldMask == nil {
+			qw422016.N().S(`            func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) `)
+			qw422016.N().S(getName)
+			qw422016.N().S(`() `)
+			qw422016.N().S(asterisk)
+			qw422016.N().S(isTrueType)
+			qw422016.N().S(` {
+                return item.`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`
+            }
+`)
+		}
+		qw422016.N().S(`        func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) `)
+		qw422016.N().S(setName)
+		qw422016.N().S(`(v `)
+		qw422016.N().S(isTrueType)
+		if maskFunArg {
+			qw422016.N().S(`, `)
+			qw422016.N().S(natArgUse)
+			qw422016.N().S(` *uint32`)
+		}
+		qw422016.N().S(`) {
+`)
+		if !field.IsBit() {
+			qw422016.N().S(`            `)
+			qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
+			qw422016.N().S(`            `)
+			qw422016.N().S(asterisk)
+			qw422016.N().S(`item.`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(` = v
+`)
+		}
+		if field.fieldMask != nil {
+			if maskFunArg {
+				qw422016.N().S(`                if `)
+				qw422016.N().S(natArgUse)
+				qw422016.N().S(` != nil {
+`)
+			}
+			if field.IsBit() {
+				qw422016.N().S(`                if v {
+                    `)
+				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+				qw422016.N().S(` |= 1 << `)
+				qw422016.E().V(field.BitNumber)
 				qw422016.N().S(`
-}
+                } else {
+                    `)
+				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+				qw422016.N().S(` &^= 1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`
+                }
+`)
+			} else {
+				qw422016.N().S(`                `)
+				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+				qw422016.N().S(` |= 1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`
 `)
 			}
 			if maskFunArg {
-				qw422016.N().S(`func (item *`)
-				qw422016.N().S(goName)
-				qw422016.N().S(`) `)
-				qw422016.N().S(setName)
-				qw422016.N().S(`(v `)
-				qw422016.N().S(isTrueType)
-				qw422016.N().S(`, `)
-				qw422016.N().S(natArgUse)
-				qw422016.N().S(` *uint32) {
+				qw422016.N().S(`                }
+`)
+			}
+		}
+		if field.MaskTL2Bit != nil {
+			if field.IsBit() {
+				qw422016.N().S(`                if v {
+                    item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+                } else {
+                    item.`)
+				qw422016.N().S(field.TL2MaskForOP("&^="))
+				qw422016.N().S(`
+                }
 `)
 			} else {
-				qw422016.N().S(`func (item *`)
-				qw422016.N().S(goName)
-				qw422016.N().S(`) `)
-				qw422016.N().S(setName)
-				qw422016.N().S(`(v `)
-				qw422016.N().S(isTrueType)
-				qw422016.N().S(`) {
+				qw422016.N().S(`                item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
 `)
 			}
-			if !field.IsBit() {
-				qw422016.N().S(`    `)
-				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-				qw422016.N().S(`    `)
-				qw422016.N().S(asterisk)
-				qw422016.N().S(`item.`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` = v
+		}
+		qw422016.N().S(`        }
 `)
+		if !field.IsBit() {
+			clearName := struct_.clearNames[i]
+			if clearName == "" {
+				clearName = struct_.fieldsDec.deconflictName("Clear" + utils.ToUpperFirst(field.goName))
+				struct_.clearNames[i] = clearName
 			}
+
+			qw422016.N().S(`            func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) `)
+			qw422016.N().S(clearName)
+			qw422016.N().S(`(`)
+			if maskFunArg {
+				qw422016.N().S(natArgUse)
+				qw422016.N().S(` *uint32`)
+			}
+			qw422016.N().S(`) {
+            `)
+			qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+			qw422016.N().S(`
+`)
 			if field.fieldMask != nil {
 				if maskFunArg {
-					qw422016.N().S(`    if `)
+					qw422016.N().S(`                    if `)
 					qw422016.N().S(natArgUse)
 					qw422016.N().S(` != nil {
 `)
 				}
-				if field.IsBit() {
-					qw422016.N().S(`        if v {
-            `)
-					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-					qw422016.N().S(` |= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-        } else {
-            `)
-					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-					qw422016.N().S(` &^= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-        }
+				qw422016.N().S(`                    `)
+				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+				qw422016.N().S(` &^= 1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`
 `)
-				} else {
-					qw422016.N().S(`        `)
-					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-					qw422016.N().S(` |= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-`)
-				}
 				if maskFunArg {
-					qw422016.N().S(`    }
+					qw422016.N().S(`                    }
 `)
 				}
 			}
 			if field.MaskTL2Bit != nil {
-				if field.IsBit() {
-					qw422016.N().S(`        if v {
-            item.`)
-					qw422016.N().S(field.TL2MaskForOP("|="))
-					qw422016.N().S(`
-        } else {
-            item.`)
-					qw422016.N().S(field.TL2MaskForOP("&^="))
-					qw422016.N().S(`
-        }
-`)
-				} else {
-					qw422016.N().S(`            item.`)
-					qw422016.N().S(field.TL2MaskForOP("|="))
-					qw422016.N().S(`
-`)
-				}
-			}
-			qw422016.N().S(`}
-`)
-			if !field.IsBit() {
-				clearName := struct_.clearNames[i]
-				if clearName == "" {
-					clearName = struct_.fieldsDec.deconflictName("Clear" + utils.ToUpperFirst(field.goName))
-					struct_.clearNames[i] = clearName
-				}
-
-				if maskFunArg {
-					qw422016.N().S(`func (item *`)
-					qw422016.N().S(goName)
-					qw422016.N().S(`) `)
-					qw422016.N().S(clearName)
-					qw422016.N().S(`(`)
-					qw422016.N().S(natArgUse)
-					qw422016.N().S(` *uint32) {
-`)
-				} else {
-					qw422016.N().S(`func (item *`)
-					qw422016.N().S(goName)
-					qw422016.N().S(`) `)
-					qw422016.N().S(clearName)
-					qw422016.N().S(`() {
-`)
-				}
-				qw422016.N().S(`            `)
-				qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+				qw422016.N().S(`                item.`)
+				qw422016.N().S(field.TL2MaskForOP("&^="))
 				qw422016.N().S(`
 `)
-				if field.fieldMask != nil {
-					if maskFunArg {
-						qw422016.N().S(`    if `)
-						qw422016.N().S(natArgUse)
-						qw422016.N().S(` != nil {
-`)
-					}
-					qw422016.N().S(`    `)
-					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-					qw422016.N().S(` &^= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-`)
-					if maskFunArg {
-						qw422016.N().S(`    }
-`)
-					}
-				}
-				if field.MaskTL2Bit != nil {
-					qw422016.N().S(`            item.`)
-					qw422016.N().S(field.TL2MaskForOP("&^="))
-					qw422016.N().S(`
-`)
-				}
-				qw422016.N().S(`}
-`)
 			}
+			qw422016.N().S(`            }
+`)
 		}
 		isSetName := struct_.isSetNames[i]
 		if isSetName == "" {
@@ -557,7 +540,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		}
 
 		if field.MaskTL2Bit != nil {
-			qw422016.N().S(`func (item *`)
+			qw422016.N().S(`            func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) `)
 			qw422016.N().S(isSetName)
@@ -566,34 +549,23 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			qw422016.N().S(` != 0 }
 `)
 		} else {
+			qw422016.N().S(`            func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) `)
+			qw422016.N().S(isSetName)
+			qw422016.N().S(`(`)
 			if maskFunArg {
-				qw422016.N().S(`func (item *`)
-				qw422016.N().S(goName)
-				qw422016.N().S(`) `)
-				qw422016.N().S(isSetName)
-				qw422016.N().S(`(`)
 				qw422016.N().S(natArgUse)
-				qw422016.N().S(` uint32) bool { return `)
-				qw422016.N().S(natArgUse)
-				qw422016.N().S(` & (1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 }
-`)
-			} else {
-				qw422016.N().S(`func (item *`)
-				qw422016.N().S(goName)
-				qw422016.N().S(`) `)
-				qw422016.N().S(isSetName)
-				qw422016.N().S(`() bool { return `)
-				qw422016.N().S(natArgUse)
-				qw422016.N().S(` & (1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 }
-`)
+				qw422016.N().S(` uint32`)
 			}
+			qw422016.N().S(`) bool { return `)
+			qw422016.N().S(natArgUse)
+			qw422016.N().S(` & (1 << `)
+			qw422016.E().V(field.BitNumber)
+			qw422016.N().S(`) != 0 }
+`)
 		}
 		qw422016.N().S(`
-
 `)
 	}
 }

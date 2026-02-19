@@ -20,9 +20,25 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 //dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
 //dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
 
-// true = True; // this can be used as void type and serialized to empty array in PHP
+true = True; // this can be used as void type and serialized to empty array in PHP
 
 ---types---
+
+
+videoCommon.fullVideoID#b45b85e1
+    fields_mask:    #
+    video_id:       fields_mask.0?int
+    owner_id:       fields_mask.1?long
+= videoCommon.FullVideoID;
+
+
+videoAdsService.checkParams#6742a1bb
+    fields_mask:              #
+//    fields:                   fields_mask.0?videoAdsService.checkFields
+    full_video_id:            fields_mask.1?videoCommon.fullVideoID
+    user_id:                  fields_mask.2?long
+    is_child_account:         fields_mask.3?true
+    = videoAdsService.CheckParams;
 
 videoAdsService.usedType x:int = videoAdsService.UsedType;
 
@@ -34,13 +50,6 @@ videoAdsService.user
 videoAdsService.snackbarEventTypeClosed#d5f13be8     = videoAdsService.SnackbarEventType;
 videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarEventType;
 
-
-//videoCommon.fullVideoID#b45b85e1
-//    fields_mask:    #
-//    video_id:       fields_mask.0?int
-//    owner_id:       fields_mask.1?long
-//= videoCommon.FullVideoID;
-//
 //videoUserInfo.info#78e87a2f
 //    fields_mask:            #
 //    user_id:                long
