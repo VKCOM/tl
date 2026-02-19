@@ -89,7 +89,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
         {%- if writeNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}
-    return w
+    panic(basictl.TL2Error("not implemented for tl2 type"))
         {%- endif -%}
     {%- else -%}
     w = basictl.NatWrite(w, {%s= tlTag %})
@@ -953,6 +953,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) (_ []b
   return r, w, err
 }
 
+{%- if struct_.wr.gen.options.GenerateTL2 -%}
 func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   {%- if !struct_.wr.wantsTL2 -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
@@ -1004,6 +1005,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteC
   return r, w, err
   {%- endif -%}
 }
+{%- endif -%}
 {%- for fieldId, field := range struct_.Fields -%}
     {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
     {%- if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 -%}
@@ -1154,7 +1156,7 @@ rg.DecreaseDepth()
         {%- if struct_.wr.hasErrorInWriteMethods -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}
-    return w
+    panic(basictl.TL2Error("not implemented for tl2 type"))
         {%- endif -%}
         {%- return -%}
     {%- endif -%}
@@ -1560,13 +1562,11 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
 }
 {%- endif -%}
 
-        {%- if !struct_.wr.wantsTL2 -%}
 func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    {%- if !struct_.wr.wantsTL2 -%}
         return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
-}
-        {%- else -%}
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-            {%- if struct_.wr.unionParent != nil -%}
+    {%- else -%}
+           {%- if struct_.wr.unionParent != nil -%}
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if currentSize == 0 {
@@ -1593,7 +1593,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
             {%- else -%}
     return item.InternalReadTL2(r)
             {%- endif -%}
+    {%- endif -%}
 }
-        {%- endif -%}
 {%- endif -%}
 {%- endfunc -%}
