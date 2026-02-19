@@ -153,13 +153,13 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	return nil
 }
 
-func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive) error {
+func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive, isBit bool) error {
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 	res := &TypeRWBool{
-		isBit: false,
+		isBit: isBit,
 		wr:    myWrapper,
 	}
 	if ok, falseTag, trueTag := pureType.IsTL1Bool(); ok {

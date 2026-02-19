@@ -204,7 +204,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
 	}
-
+	nextTL2MaskBit := 0
 	for _, fieldDef := range constructorFields {
 		rt, err := k.resolveTypeTL2(fieldDef.Type, leftArgs, actualArgs)
 		if err != nil {
@@ -214,17 +214,19 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
-		var fieldMask *ActualNatArg
-		if fieldDef.IsOptional {
-			fieldMask = &ActualNatArg{} // TODO - mark as TL2
-		}
-		ins.fields = append(ins.fields, Field{
-			name:          fieldDef.Name,
-			ins:           fieldIns,
-			fieldMask:     fieldMask,
+		newField := Field{
+			name: fieldDef.Name,
+			ins:  fieldIns,
+			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
-		})
+		}
+		if fieldDef.IsOptional {
+			maskBit := nextTL2MaskBit
+			newField.maskTL2Bit = &maskBit
+			nextTL2MaskBit++
+		}
+		ins.fields = append(ins.fields, newField)
 	}
 	return ins, nil
 }

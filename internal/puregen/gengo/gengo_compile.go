@@ -23,8 +23,8 @@ func (gen *genGo) compile() error {
 	for _, myWrapper := range gen.generatedTypesList {
 		switch pureType := myWrapper.pureType.(type) {
 		case *pure.TypeInstancePrimitive:
-			if pureType.CanonicalName() == "bool" {
-				if err := gen.generateTypeBool(myWrapper, pureType); err != nil {
+			if pureType.CanonicalName() == "bool" || pureType.CanonicalName() == "bit" {
+				if err := gen.generateTypeBool(myWrapper, pureType, pureType.CanonicalName() == "bit"); err != nil {
 					return err
 				}
 			} else {

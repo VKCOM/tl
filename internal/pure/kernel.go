@@ -219,7 +219,7 @@ func (k *Kernel) Compile() error {
 		refName := comb.ReferenceName()
 		log.Printf("tl2pure: compiling %s", comb)
 		if e2, ok := namespaceTL1SeeHere[refName.Namespace]; ok && refName.Namespace != "" {
-			e1 := comb.ReferenceNamePR().BeautifulError(fmt.Errorf("namespace %s defined both in .tl or in .tl2 files", refName.Namespace))
+			e1 := comb.ReferenceNamePR().BeautifulError(fmt.Errorf("namespace %s must be defined entirely in either .tl or in .tl2 file(s)", refName.Namespace))
 			return tlast.BeautifulError2(e1, e2)
 		}
 		kt := &KernelType{

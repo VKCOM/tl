@@ -261,19 +261,30 @@ var _ = basictl.NatWrite
 		if gen.options.Go.SplitInternal {
 			s.WriteString("var _ = internal.ErrorInvalidEnumTag\n")
 		}
+		hasCode := false
 		for _, typeRw := range types {
 			typesCounter++
 			s.WriteString("\n")
-			s.WriteString(typeRw.trw.GenerateCode(false, directImports))
+			code := typeRw.trw.GenerateCode(false, directImports)
+			if code != "" {
+				hasCode = true
+			}
+			s.WriteString(code)
 			if typeRw.wantsBytesVersion && typeRw.hasBytesVersion {
 				typesCounterBytes++
 				s.WriteString("\n")
-				s.WriteString(typeRw.trw.GenerateCode(true, directImports))
+				code = typeRw.trw.GenerateCode(true, directImports)
+				if code != "" {
+					hasCode = true
+				}
+				s.WriteString(code)
 			}
 		}
-		filepathName := filepath.Join(ff.ins.SubPath, ff.fileName+".go")
-		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+s.String()); err != nil {
-			return err
+		if hasCode {
+			filepathName := filepath.Join(ff.ins.SubPath, ff.fileName+".go")
+			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+s.String()); err != nil {
+				return err
+			}
 		}
 		s.Reset()
 	}
