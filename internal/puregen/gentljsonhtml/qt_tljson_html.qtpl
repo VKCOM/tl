@@ -207,7 +207,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
     {%- for i, field := range trw.VariantTypes() -%}
             {%- code
                 tag := fmt.Sprintf("%08x", field.TLTag())
-                originalName := trw.VariantTL1ConstructNames()[i]
+                originalName := field.TLName().String()
             -%}
             <tr>
             {%- if trw.IsEnum() -%}

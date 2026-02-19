@@ -16,17 +16,13 @@ import (
 
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
-	variantNames             []string
-	variantTL1ConstructNames []string // we keep them during migration to preserve legacy JSON format, if needed
-	variantTypes             []*TypeInstanceStruct
-	elementNatArgs           []ActualNatArg // empty for TL2
-	isEnum                   bool
+	variantNames   []string
+	variantTypes   []*TypeInstanceStruct
+	elementNatArgs []ActualNatArg // empty for TL2
+	isEnum         bool
 }
 
-func (ins *TypeInstanceUnion) VariantNames() []string { return ins.variantNames }
-func (ins *TypeInstanceUnion) VariantTL1ConstructNames() []string {
-	return ins.variantTL1ConstructNames
-}
+func (ins *TypeInstanceUnion) VariantNames() []string              { return ins.variantNames }
 func (ins *TypeInstanceUnion) VariantTypes() []*TypeInstanceStruct { return ins.variantTypes }
 func (ins *TypeInstanceUnion) ElementNatArgs() []ActualNatArg      { return ins.elementNatArgs }
 func (ins *TypeInstanceUnion) IsEnum() bool                        { return ins.isEnum }
@@ -87,10 +83,9 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 			rt:            trTL1,
 			argNamespace:  k.getArgNamespace(trTL1),
 		},
-		isEnum:                   true,
-		variantNames:             make([]string, len(def.Variants)),
-		variantTL1ConstructNames: make([]string, len(def.Variants)),
-		variantTypes:             make([]*TypeInstanceStruct, len(def.Variants)),
+		isEnum:       true,
+		variantNames: make([]string, len(def.Variants)),
+		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
@@ -101,7 +96,6 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		}
 		ins.variantTypes[i] = element
 		ins.variantNames[i] = variantDef.Name
-		ins.variantTL1ConstructNames[i] = variantDef.Name
 		if len(element.fields) != 0 {
 			ins.isEnum = false
 		}
@@ -137,11 +131,10 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		variantNames:             variantNames,
-		variantTL1ConstructNames: make([]string, len(definition)),
-		variantTypes:             make([]*TypeInstanceStruct, len(definition)),
-		elementNatArgs:           natArgs,
-		isEnum:                   true,
+		variantNames:   variantNames,
+		variantTypes:   make([]*TypeInstanceStruct, len(definition)),
+		elementNatArgs: natArgs,
+		isEnum:         true,
 	}
 
 	for i, variantDef := range definition {
@@ -161,7 +154,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
 		ins.variantTypes[i] = element
-		ins.variantTL1ConstructNames[i] = variantDef.Construct.Name.String()
 		if len(element.fields) != 0 {
 			ins.isEnum = false
 		}

@@ -211,7 +211,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	kt := pureType.KernelType()
 	for i, typ := range pureType.VariantTypes() {
 		variantName := pureType.VariantNames()[i]
-		variantOriginalName := pureType.VariantTL1ConstructNames()[i]
 
 		variantWrapper := &TypeRWWrapper{
 			gen:              gen,
@@ -222,6 +221,8 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			tlName:           typ.TLName(),
 			unionParent:      res,
 			unionIndex:       i,
+			fileNameOverride: myWrapper,
+			goCanonicalName:  typ.TLName(),
 			ns:               myWrapper.ns,
 		}
 		if myWrapper.tlName.Namespace != variantWrapper.tlName.Namespace {
@@ -232,20 +233,17 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
 
-		variantWrapper.goCanonicalName = variantWrapper.tlName
-		variantWrapper.fileNameOverride = myWrapper
-
 		if err := gen.generateTypeStruct(variantWrapper, typ); err != nil {
 			return err
 		}
 
 		fieldGoName := canonicalGoName(tlast.Name{Name: variantName}, "")
 		newField := Field{
-			originalName: variantOriginalName,
-			t:            variantWrapper,
-			bare:         true,
-			goName:       res.fieldsDec.deconflictName(fieldGoName),
-			natArgs:      pureType.ElementNatArgs(),
+			// originalName: , we do not use filed.originalName in unions generation
+			t:       variantWrapper,
+			bare:    true,
+			goName:  res.fieldsDec.deconflictName(fieldGoName),
+			natArgs: pureType.ElementNatArgs(),
 		}
 		res.Fields = append(res.Fields, newField)
 	}
