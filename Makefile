@@ -1,5 +1,7 @@
 GO = go
 
+BUILD_VCS ?= true
+
 TEST_PATH := internal/tlcodegen/test
 TLS_PATH := $(TEST_PATH)/tls
 GEN_PATH := $(TEST_PATH)/gen
@@ -12,9 +14,9 @@ all: build
 
 .PHONY: build
 build: # build static binary to run on many linux variants
-	CGO_ENABLED=0 $(GO) build -buildvcs=true -o target/bin/tlgen ./cmd/tlgen
-	CGO_ENABLED=0 $(GO) build -buildvcs=true -o target/bin/tl2gen ./cmd/tl2gen
-	CGO_ENABLED=0 $(GO) build -buildvcs=true -o target/bin/tl2client ./cmd/tl2client
+	CGO_ENABLED=0 $(GO) build -buildvcs=$(BUILD_VCS) -o target/bin/tlgen ./cmd/tlgen
+	CGO_ENABLED=0 $(GO) build -buildvcs=$(BUILD_VCS) -o target/bin/tl2gen ./cmd/tl2gen
+	CGO_ENABLED=0 $(GO) build -buildvcs=$(BUILD_VCS) -o target/bin/tl2client ./cmd/tl2client
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \

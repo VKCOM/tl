@@ -37,6 +37,7 @@ docker run --rm -u "$UID:$GID" -v "$PWD:/src" -w /src \
   -e BUILD_MACHINE="$(uname -n -m -r -s)" -e BUILD_TIME="$BUILD_TIME" -e BUILD_VERSION="$UPSTREAM" \
   -e BUILD_COMMIT="$(git log --format="%H" -n 1)" -e BUILD_COMMIT_TS="$(git log --format="%ct" -n 1)" \
   -e GOCACHE="/src/$GOCACHE" \
+  -e BUILD_VCS=false \
   "$GOLANG_IMAGE" make build
 
 # build debian package
