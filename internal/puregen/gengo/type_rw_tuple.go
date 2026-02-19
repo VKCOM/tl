@@ -18,11 +18,6 @@ type TypeRWBrackets struct {
 	dynamicSize bool   // with passed nat param
 	size        uint32 // if !dynamicSize
 	element     Field
-
-	dictLike       bool // for now, can be true only if vectorLike is true. But should work for dynamicSize tuples, so TODO
-	dictKeyString  bool
-	dictKeyField   Field
-	dictValueField Field
 }
 
 var _ TypeRW = &TypeRWBrackets{}
@@ -95,7 +90,7 @@ func (trw *TypeRWBrackets) typeRandomCode(bytesVersion bool, directImports *Dire
 
 func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	refVal := addAmpersand(ref, val)
-	if (trw.dictLike && !bytesVersion) || trw.vectorLike || trw.dynamicSize {
+	if trw.vectorLike || trw.dynamicSize {
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
 	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
