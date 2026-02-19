@@ -295,7 +295,13 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`"
 `)
 	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
-		qw422016.N().S(`    preferTLVersion := 1
+		qw422016.N().S(`    preferTLVersion :=`)
+		if fun.pureTypeStruct.RPCPreferTL2() {
+			qw422016.N().S(`2`)
+		} else {
+			qw422016.N().S(`1`)
+		}
+		qw422016.N().S(`
 `)
 	}
 	qw422016.N().S(`    if extra != nil {

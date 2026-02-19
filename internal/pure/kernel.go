@@ -21,7 +21,8 @@ import (
 // TODO - name collision checks
 
 type Kernel struct {
-	opts *OptionsKernel
+	opts                  *OptionsKernel
+	rpcPreferTL2WhiteList Whitelist
 	// each type can have up to 3 elements in this map, TL1 constructor, TL1 type and canonical primitive name
 	tips         map[string]*KernelType
 	tipsOrdered  []*KernelType
@@ -44,7 +45,8 @@ type Kernel struct {
 // Add builtin types
 func NewKernel(opts *OptionsKernel) *Kernel {
 	k := &Kernel{
-		opts: opts,
+		opts:                  opts,
+		rpcPreferTL2WhiteList: NewWhiteList(opts.RPCPreferTL2WhiteList),
 		brackets: &KernelType{
 			originTL2: true,
 			builtin:   true,

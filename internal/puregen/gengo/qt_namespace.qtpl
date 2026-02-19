@@ -161,7 +161,8 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     {%- endif -%}
     req.FunctionName = "{%s= tlName %}"
 {%- if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 -%}
-    preferTLVersion := 1
+    preferTLVersion := {%- if fun.pureTypeStruct.RPCPreferTL2() -%}2{%- else -%}1{%- endif -%}
+
 {%- endif -%}
     if extra != nil {
         req.Extra = extra.RequestExtra
