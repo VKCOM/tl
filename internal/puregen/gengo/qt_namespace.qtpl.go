@@ -293,36 +293,52 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`    req.FunctionName = "`)
 	qw422016.N().S(tlName)
 	qw422016.N().S(`"
-    if extra != nil {
+`)
+	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+		qw422016.N().S(`    preferTLVersion := 1
+`)
+	}
+	qw422016.N().S(`    if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
 `)
-	if fun.wr.wantsTL2 {
-		qw422016.N().S(`		if extra.PreferTL2 {
-			req.BodyFormatTL2 = true
+	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+		qw422016.N().S(`		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
 		}
 `)
 	}
 	qw422016.N().S(`    }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
-	if fun.wr.wantsTL2 {
-		qw422016.N().S(`	if req.BodyFormatTL2 {
-	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	    tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
-	} else {
-`)
-	}
-	qw422016.N().S(`        req.Body, err = args.WriteBoxedGeneral(req.Body)
+	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+		qw422016.N().S(`    if preferTLVersion == 2 {
+        req.BodyFormatTL2 = true
+        req.Body = basictl.NatWrite(req.Body, args.TLTag())
+        tctx := basictl.TL2WriteContext{}
+        req.Body = args.WriteTL2(req.Body, &tctx)
+    } else {
+        req.Body, err = args.WriteBoxedGeneral(req.Body)
         if err != nil {
             return internal.ErrorClientWrite("`)
-	qw422016.N().S(tlName)
-	qw422016.N().S(`", err)
+		qw422016.N().S(tlName)
+		qw422016.N().S(`", err)
         }
+    }
 `)
-	if fun.wr.wantsTL2 {
-		qw422016.N().S(`    }
+	} else if fun.wr.wantsTL2 {
+		qw422016.N().S(`    req.BodyFormatTL2 = true
+    req.Body = basictl.NatWrite(req.Body, args.TLTag())
+    tctx := basictl.TL2WriteContext{}
+    req.Body = args.WriteTL2(req.Body, &tctx)
+`)
+	} else {
+		qw422016.N().S(`    req.Body, err = args.WriteBoxedGeneral(req.Body)
+    if err != nil {
+        return internal.ErrorClientWrite("`)
+		qw422016.N().S(tlName)
+		qw422016.N().S(`", err)
+    }
 `)
 	}
 	qw422016.N().S(`    resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
@@ -337,17 +353,20 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     }
     if ret != nil {
 `)
-	if fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
 		} else {
+			resp.Body, err = args.ReadResult(resp.Body, ret)
+		}
 `)
-	}
-	qw422016.N().S(`			resp.Body, err = args.ReadResult(resp.Body, ret)
+	} else if fun.wr.wantsTL2 {
+		qw422016.N().S(`            tctx := basictl.TL2ReadContext{}
+			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
 `)
-	if fun.wr.wantsTL2 {
-		qw422016.N().S(`		}
+	} else {
+		qw422016.N().S(`			resp.Body, err = args.ReadResult(resp.Body, ret)
 `)
 	}
 	qw422016.N().S(`		if err != nil {
