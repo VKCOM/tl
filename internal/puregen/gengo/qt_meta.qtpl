@@ -373,10 +373,11 @@ func init() {
     {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 -%}
         {%- code
             if hasTypes != nil { *hasTypes = true }
-            // unions are not top level types, according to TL1 rules, so we set hasTL1:false for them, despite they could have TL1 serializers
+            // unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
         -%}
         fillObject(&TLItem{tlName: "{%= wr.tlName.String() %}" {%- code -%}
             {%- if wr.tlTag != 0 -%}, tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}{%- endif -%}
+            {%- if !wr.originateFromTL2 -%}, hasTL1:true{%- endif -%}
             {%- if wr.wantsTL2 -%}, hasTL2:true{%- endif -%}
             {%- if wr.AnnotationsMask() != 0 -%}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}{%- endif -%}
             {%- if argumentsTypesContainUnionTypes -%}, argumentsTypesContainUnionTypes:true{%- endif -%}})

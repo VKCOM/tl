@@ -49,9 +49,9 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
 {%= union.generateConstructorsBehavior(bytesVersion, directImports) %}
 
 {%- if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 -%}
-{%- code /* for interface requirements for TL2 Type */ -%}
+{%- code /* for interface requirements for TL2 Type, also for tests */ -%}
 func (item*{%s= goName %}) Read(w []byte) (_ []byte, err error) {
-    return w, basictl.TL2Error("not implemented for tl2 type")
+    return item.ReadBoxed(w)
 }
 {%- endif -%}
 
@@ -90,9 +90,9 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
 }
 
 {%- if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 -%}
-{%- code /* for interface requirements for TL2 Type */ -%}
+{%- code /* for interface requirements for TL2 Type, also for tests */ -%}
 func (item*{%s= goName %}) WriteGeneral(w []byte) (_ []byte, err error) {
-    return w, basictl.TL2Error("not implemented for tl2 type")
+    return item.WriteBoxedGeneral(w)
 }
 {%- endif -%}
 

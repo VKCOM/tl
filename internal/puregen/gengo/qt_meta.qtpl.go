@@ -470,7 +470,7 @@ func init() {
 			if hasTypes != nil {
 				*hasTypes = true
 			}
-			// unions are not top level types, according to TL1 rules, so we set hasTL1:false for them, despite they could have TL1 serializers
+			// unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
 
 			qw422016.N().S(`        fillObject(&TLItem{tlName: "`)
 			wr.tlName.StreamString(qw422016)
@@ -479,6 +479,9 @@ func init() {
 			if wr.tlTag != 0 {
 				qw422016.N().S(`, tag: `)
 				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			}
+			if !wr.originateFromTL2 {
+				qw422016.N().S(`, hasTL1:true`)
 			}
 			if wr.wantsTL2 {
 				qw422016.N().S(`, hasTL2:true`)

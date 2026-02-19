@@ -17,7 +17,7 @@ func init() {
 	fillObject(&TLItem{tlName: "cd.typeD", tag: 0xb5528285, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cd.useCycle", tag: 0x6ed67ca0, hasTL1: true, hasTL2: true})
 	fillFunction(&TLItem{tlName: "curl.request", tag: 0x3f5a4651, hasTL1: true, hasTL2: true, annotations: 0x4, resultTypeContainsUnionTypes: true})
-	fillObject(&TLItem{tlName: "curl.Response", hasTL2: true})
+	fillObject(&TLItem{tlName: "curl.Response", hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "curl.responseError", tag: 0xaf514651, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "curl.responseOk", tag: 0x57d7a33a, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cyc1.myCycle", tag: 0x136ecc9e, hasTL1: true, hasTL2: true})

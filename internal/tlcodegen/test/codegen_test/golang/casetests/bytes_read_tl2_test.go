@@ -90,8 +90,8 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 			continue
 		}
 		t.Run(item.TLName(), func(t *testing.T) {
-			dstFun := factory.CreateFunction(item.TLTag())
-			dst := factory.CreateObject(item.TLTag())
+			dstFun := factory.CreateFunctionFromName(item.TLName())
+			dst := factory.CreateObjectFromName(item.TLName())
 			if dst == nil {
 				t.Fatalf("can't init %s", item.TLName())
 			}
@@ -112,7 +112,7 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 
 				t.Run(fmt.Sprintf("TL[%s]", utils.SprintHexDump(data)), func(t *testing.T) {
 					writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
-					newDst := factory.CreateObject(item.TLTag())
+					newDst := factory.CreateObjectFromName(item.TLName())
 					_, err = newDst.ReadTL2(writeBuffer, nil)
 					if err != nil {
 						writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)

@@ -80,7 +80,7 @@ func (item *AMyUnion) SetNionA(value AuNionA) {
 }
 
 func (item *AMyUnion) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -101,7 +101,7 @@ func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *AMyUnion) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *AMyUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

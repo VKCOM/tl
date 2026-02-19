@@ -124,7 +124,7 @@ func (item *CasesTestUnion) Set4(value CasesTestUnion4) {
 }
 
 func (item *CasesTestUnion) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *CasesTestUnion) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -151,7 +151,7 @@ func (item *CasesTestUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestUnion) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *CasesTestUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

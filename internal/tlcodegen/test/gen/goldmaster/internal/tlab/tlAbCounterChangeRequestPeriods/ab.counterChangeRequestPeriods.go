@@ -85,7 +85,7 @@ func (item *AbCounterChangeRequestPeriods) SetOne(value AbCounterChangeRequestPe
 }
 
 func (item *AbCounterChangeRequestPeriods) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -106,7 +106,7 @@ func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err er
 }
 
 func (item *AbCounterChangeRequestPeriods) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *AbCounterChangeRequestPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

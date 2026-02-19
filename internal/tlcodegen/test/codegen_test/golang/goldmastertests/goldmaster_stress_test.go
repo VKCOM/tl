@@ -184,7 +184,7 @@ func createTestSamples(t *testing.T) {
 		testingData := testformat.MappingTestSamplesBytes{}
 		testingData.TestingType = item.TLName()
 
-		dst := factory.CreateObject(item.TLTag())
+		dst := factory.CreateObjectFromName(item.TLName())
 		if dst == nil {
 			t.Fatalf("can't init object")
 		}

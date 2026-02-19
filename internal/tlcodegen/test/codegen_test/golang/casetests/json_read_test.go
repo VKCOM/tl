@@ -134,7 +134,7 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 	var err error
 
 	for _, tlItem := range meta.GetAllTLItems() {
-		obj := factory.CreateObject(tlItem.TLTag())
+		obj := factory.CreateObjectFromName(tlItem.TLName())
 		for i := 0; i < RepeatNumber; i++ {
 			buf1 = buf1[:0]
 			buf2 = buf2[:0]

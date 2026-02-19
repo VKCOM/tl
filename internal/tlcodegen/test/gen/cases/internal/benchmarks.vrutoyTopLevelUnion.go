@@ -71,7 +71,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) ResetToEmpty() { item.index = 1 }
 func (item *BenchmarksVrutoyTopLevelUnion) SetEmpty()     { item.index = 1 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) Read(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadBoxed(w)
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -92,7 +92,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err er
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) WriteGeneral(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.WriteBoxedGeneral(w)
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
