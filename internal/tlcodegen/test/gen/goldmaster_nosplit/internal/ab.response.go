@@ -751,6 +751,10 @@ func (item *AbResponse) SetResponse(value CdResponse) {
 	item.valueResponse = value
 }
 
+func (item *AbResponse) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *AbResponse) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -772,6 +776,10 @@ func (item *AbResponse) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("ab.Response", tag)
 	}
+}
+
+func (item *AbResponse) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *AbResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
@@ -1150,6 +1158,10 @@ func (item *AbResponseBytes) SetResponse(value CdResponseBytes) {
 	item.valueResponse = value
 }
 
+func (item *AbResponseBytes) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *AbResponseBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -1171,6 +1183,10 @@ func (item *AbResponseBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("ab.Response", tag)
 	}
+}
+
+func (item *AbResponseBytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *AbResponseBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

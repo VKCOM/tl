@@ -68,60 +68,26 @@ func init() {
             meta.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
             {%- continue -%}
         {%- endif -%}
-    {% stripspace %}
         {%- code if hasCode != nil { *hasCode = true } -%}
         {%- if fun.ResultType != nil -%}
-            meta.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %},
-            func() meta.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) },
+            meta.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() meta.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }, {%- code -%}
             {%- if wr.WrLong != nil -%}
-                func() meta.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) },
+                func() meta.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
             {%- else -%}
-                nil,
+                nil)
             {%- endif -%}
         {%- else -%}
-            meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %},
-            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }
+            meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
         {%- endif -%}
-        ){% endstripspace %}
     {%- endif -%}
-{%- endfor -%}
-{%- comment %}
-{%- for _, wr := range tl2Wrappers  -%}
-    {%- if !forNamespace(wr.tlName.Namespace) -%}
-        {%- continue -%}
-    {%- endif -%}
-    {%- code hasBytes := wr.wantsBytesVersion && wr.hasBytesVersion -%}
-    {%- if bytesVersion && !hasBytes -%}
-        {%- continue -%}
-    {%- endif -%}
-    {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
-        {%- if wr.unionParent != nil -%}
-            {%- continue -%}
-        {%- endif -%}
-    {% stripspace %}
+    {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
-        {%- if fun.ResultType != nil -%}
-            meta.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %},
-            func() meta.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) },
-            {%- if wr.WrLong != nil -%}
-                func() meta.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) },
-            {%- else -%}
-                nil,
-            {%- endif -%}
-        {%- else -%}
-            meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %},
-            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }
-        {%- endif -%}
-        ){% endstripspace %}
-    {%- endif -%}
-    {%- if _, ok := wr.trw.(*TypeRWUnion); ok -%}
-    {% stripspace %}
-        meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %},
-        func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }
-        ){% endstripspace %}
+        meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
     {%- endif -%}
 {%- endfor -%}
-{% endcomment -%}
 }
 
 {%- endfunc -%}

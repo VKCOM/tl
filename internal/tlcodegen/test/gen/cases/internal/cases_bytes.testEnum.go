@@ -51,6 +51,10 @@ func (item *CasesBytesTestEnum) Set2()    { item.index = 1 }
 func (item CasesBytesTestEnum) Is3() bool { return item.index == 2 }
 func (item *CasesBytesTestEnum) Set3()    { item.index = 2 }
 
+func (item *CasesBytesTestEnum) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -69,6 +73,10 @@ func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("cases_bytes.TestEnum", tag)
 	}
+}
+
+func (item *CasesBytesTestEnum) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

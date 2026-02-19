@@ -117,37 +117,57 @@ func init() {
 `)
 				continue
 			}
-			qw422016.N().S(`    `)
 			if hasCode != nil {
 				*hasCode = true
 			}
 
 			if fun.ResultType != nil {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction`)
+				qw422016.N().S(`            meta.SetGlobalFactoryCreateForFunction`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
-				qw422016.N().S(`,func() meta.Function { return new(`)
+				qw422016.N().S(`,`)
+
+				qw422016.N().S(`            func() meta.Function { return new(`)
 				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`) },`)
+
 				if wr.WrLong != nil {
-					qw422016.N().S(`func() meta.Function { return new(`)
+					qw422016.N().S(`                func() meta.Function { return new(`)
 					qw422016.N().S(wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true))
-					qw422016.N().S(`) },`)
+					qw422016.N().S(`) })
+`)
 				} else {
-					qw422016.N().S(`nil,`)
+					qw422016.N().S(`                nil)
+`)
 				}
 			} else {
-				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject`)
+				qw422016.N().S(`            meta.SetGlobalFactoryCreateForObject`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
-				qw422016.N().S(`,func() meta.Object { return new(`)
+				qw422016.N().S(`,`)
+
+				qw422016.N().S(`            func() meta.Object { return new(`)
 				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
-				qw422016.N().S(`) }`)
+				qw422016.N().S(`) })
+`)
 			}
-			qw422016.N().S(`)`)
-			qw422016.N().S(`
+		}
+		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 {
+			if hasCode != nil {
+				*hasCode = true
+			}
+
+			qw422016.N().S(`        meta.SetGlobalFactoryCreateForObject`)
+			qw422016.N().S(bytesStr)
+			qw422016.N().S(`(`)
+			qw422016.N().Q(wr.tlName.String())
+			qw422016.N().S(`,`)
+
+			qw422016.N().S(`            func() meta.Object { return new(`)
+			qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
+			qw422016.N().S(`) })
 `)
 		}
 	}

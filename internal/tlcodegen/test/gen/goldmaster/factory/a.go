@@ -8,6 +8,8 @@
 package factory
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAColor"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyUnion"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
@@ -38,10 +40,13 @@ import (
 
 func init() {
 	meta.SetGlobalFactoryCreateForEnumElement("a.blue")
+	meta.SetGlobalFactoryCreateForObject("a.Color", func() meta.Object { return new(tlAColor.AColor) })
 	meta.SetGlobalFactoryCreateForEnumElement("a.color")
 	meta.SetGlobalFactoryCreateForEnumElement("a.green")
+	meta.SetGlobalFactoryCreateForObject("a.MyBool", func() meta.Object { return new(tlAMyBool.AMyBool) })
 	meta.SetGlobalFactoryCreateForEnumElement("a.myFalse")
 	meta.SetGlobalFactoryCreateForEnumElement("a.myTrue")
+	meta.SetGlobalFactoryCreateForObject("a.MyUnion", func() meta.Object { return new(tlAMyUnion.AMyUnion) })
 	meta.SetGlobalFactoryCreateForEnumElement("a.red")
 	meta.SetGlobalFactoryCreateForObject("a.top2", func() meta.Object { return new(tlATop2.ATop2) })
 	meta.SetGlobalFactoryCreateForObject("a.uNionA", func() meta.Object { return new(tlAMyUnion.AUNionA) })
@@ -58,10 +63,12 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunction("ab.call8", func() meta.Function { return new(tlAbCall8.AbCall8) }, nil)
 	meta.SetGlobalFactoryCreateForFunction("ab.call9", func() meta.Function { return new(tlAbCall9.AbCall9) }, nil)
 	meta.SetGlobalFactoryCreateForObject("ab.code", func() meta.Object { return new(tlAbResponse.AbCode) })
+	meta.SetGlobalFactoryCreateForObject("ab.CounterChangeRequestPeriods", func() meta.Object { return new(tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriods) })
 	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsMany", func() meta.Object { return new(tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsMany) })
 	meta.SetGlobalFactoryCreateForObject("ab.counterChangeRequestPeriodsOne", func() meta.Object { return new(tlAbCounterChangeRequestPeriods.AbCounterChangeRequestPeriodsOne) })
 	meta.SetGlobalFactoryCreateForObject("ab.empty", func() meta.Object { return new(tlAbResponse.AbEmpty) })
 	meta.SetGlobalFactoryCreateForObject("ab.myType", func() meta.Object { return new(tlAbMyType.AbMyType) })
+	meta.SetGlobalFactoryCreateForObject("ab.Response", func() meta.Object { return new(tlAbResponse.AbResponse) })
 	meta.SetGlobalFactoryCreateForObject("ab.testMaybe", func() meta.Object { return new(tlAbTestMaybe.AbTestMaybe) })
 	meta.SetGlobalFactoryCreateForObject("ab.topLevel1", func() meta.Object { return new(tlAbTopLevel1.AbTopLevel1) })
 	meta.SetGlobalFactoryCreateForObject("ab.topLevel2", func() meta.Object { return new(tlAbTopLevel2.AbTopLevel2) })

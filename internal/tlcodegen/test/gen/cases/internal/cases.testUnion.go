@@ -123,6 +123,10 @@ func (item *CasesTestUnion) Set4(value CasesTestUnion4) {
 	item.value4 = value
 }
 
+func (item *CasesTestUnion) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *CasesTestUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -144,6 +148,10 @@ func (item *CasesTestUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, ErrorInvalidUnionTag("cases.TestUnion", tag)
 	}
+}
+
+func (item *CasesTestUnion) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesTestUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

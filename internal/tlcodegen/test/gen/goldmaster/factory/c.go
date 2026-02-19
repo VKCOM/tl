@@ -32,6 +32,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject("cd.typeD", func() meta.Object { return new(tlCdTypeD.CdTypeD) })
 	meta.SetGlobalFactoryCreateForObject("cd.useCycle", func() meta.Object { return new(tlCdUseCycle.CdUseCycle) })
 	meta.SetGlobalFactoryCreateForFunction("curl.request", func() meta.Function { return new(tlCurlRequest.CurlRequest) }, nil)
+	meta.SetGlobalFactoryCreateForObject("curl.Response", func() meta.Object { return new(tlCurlResponse.CurlResponse) })
 	meta.SetGlobalFactoryCreateForObject("curl.responseError", func() meta.Object { return new(tlCurlResponse.CurlResponseError) })
 	meta.SetGlobalFactoryCreateForObject("curl.responseOk", func() meta.Object { return new(tlCurlResponse.CurlResponseOk) })
 	meta.SetGlobalFactoryCreateForObject("cyc1.myCycle", func() meta.Object { return new(cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle) })

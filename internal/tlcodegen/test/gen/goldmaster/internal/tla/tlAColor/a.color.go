@@ -65,6 +65,10 @@ func (item *AColor) SetBRed()    { item.index = 3 }
 func (item AColor) IsBlue() bool { return item.index == 4 }
 func (item *AColor) SetBlue()    { item.index = 4 }
 
+func (item *AColor) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -89,6 +93,10 @@ func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, internal.ErrorInvalidUnionTag("a.Color", tag)
 	}
+}
+
+func (item *AColor) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

@@ -114,9 +114,10 @@ func (item *`)
 	qw422016.N().S(`
 
 `)
-	if union.wr.originateFromTL2 && len(union.wr.NatParams) == 0 {
-		qw422016.N().S(`// For interface requirements for TL2 Type
-func (item*`)
+	if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 {
+		/* for interface requirements for TL2 Type */
+
+		qw422016.N().S(`func (item*`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) Read(w []byte) (_ []byte, err error) {
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -186,9 +187,10 @@ func (item*`)
 	qw422016.N().S(`}
 
 `)
-	if union.wr.originateFromTL2 && len(union.wr.NatParams) == 0 {
-		qw422016.N().S(`// For interface requirements for TL2 Type
-func (item*`)
+	if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 {
+		/* for interface requirements for TL2 Type */
+
+		qw422016.N().S(`func (item*`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteGeneral(w []byte) (_ []byte, err error) {
     return w, basictl.TL2Error("not implemented for tl2 type")

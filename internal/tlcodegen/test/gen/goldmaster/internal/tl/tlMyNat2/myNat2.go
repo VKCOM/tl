@@ -81,6 +81,10 @@ func (item *MyNat2) SetMyPlus(value MyPlus) {
 	}
 }
 
+func (item *MyNat2) Read(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
+}
+
 func (item *MyNat2) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -100,6 +104,10 @@ func (item *MyNat2) ReadBoxed(w []byte) (_ []byte, err error) {
 	default:
 		return w, internal.ErrorInvalidUnionTag("MyNat2", tag)
 	}
+}
+
+func (item *MyNat2) WriteGeneral(w []byte) (_ []byte, err error) {
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *MyNat2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {

@@ -366,7 +366,7 @@ func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, trTL1
 	case definition.IsAlias():
 		return k.createAlias(canonicalName, tip, trTL1, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.StructType.IsUnionType:
-		return k.createUnion(canonicalName, tip, trTL1, definition.StructType.UnionType, leftArgs, actualArgs)
+		return k.createUnion(canonicalName, tip, trTL1, tlTag, definition.StructType.UnionType, leftArgs, actualArgs)
 	default:
 		return k.createStruct(canonicalName, tip, trTL1,
 			tlName, tlTag,
