@@ -355,7 +355,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 `)
 		for i, field := range trw.VariantTypes() {
 			tag := fmt.Sprintf("%08x", field.TLTag())
-			originalName := trw.VariantTL1ConstructNames()[i]
+			originalName := field.TLName().String()
 
 			qw422016.N().S(`            <tr>
 `)

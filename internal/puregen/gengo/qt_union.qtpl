@@ -278,7 +278,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
     switch _jtype {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.originalName
+                name := field.t.tlName.String()
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
@@ -312,7 +312,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
     switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.originalName
+                name := field.t.tlName.String()
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
@@ -376,7 +376,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     switch _jtype {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.originalName
+                name := field.t.tlName.String()
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
@@ -416,7 +416,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.originalName
+                name := field.t.tlName.String()
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
@@ -493,9 +493,9 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
     switch item.index {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.originalName
-                nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
-                nameWithTagNew := field.originalName
+                name := field.t.tlName.String()
+                nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.tlTag)
+                nameWithTagNew := name
                 nameWithTagShort := nameWithTag
                 nameWithTagShortNew := nameWithTagNew
                 wrWithoutLong := field.t.WrWithoutLong

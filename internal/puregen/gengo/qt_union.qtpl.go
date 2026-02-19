@@ -501,7 +501,7 @@ func (item *`)
     switch _jtype {
 `)
 			for i, field := range union.Fields {
-				name := field.originalName
+				name := field.t.tlName.String()
 				tag := fmt.Sprintf("#%08x", field.t.tlTag)
 				nameWithTag := name + tag
 				wrWithoutLong := field.t.WrWithoutLong
@@ -579,7 +579,7 @@ func (item *`)
     switch _tag {
 `)
 			for i, field := range union.Fields {
-				name := field.originalName
+				name := field.t.tlName.String()
 				tag := fmt.Sprintf("#%08x", field.t.tlTag)
 				nameWithTag := name + tag
 				wrWithoutLong := field.t.WrWithoutLong
@@ -713,7 +713,7 @@ func (item *`)
     switch _jtype {
 `)
 		for i, field := range union.Fields {
-			name := field.originalName
+			name := field.t.tlName.String()
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
 			wrWithoutLong := field.t.WrWithoutLong
@@ -807,7 +807,7 @@ func (item *`)
     switch _tag {
 `)
 		for i, field := range union.Fields {
-			name := field.originalName
+			name := field.t.tlName.String()
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
 			wrWithoutLong := field.t.WrWithoutLong
@@ -982,9 +982,9 @@ func (item `)
 		qw422016.N().S(`    switch item.index {
 `)
 		for i, field := range union.Fields {
-			name := field.originalName
-			nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
-			nameWithTagNew := field.originalName
+			name := field.t.tlName.String()
+			nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.tlTag)
+			nameWithTagNew := name
 			nameWithTagShort := nameWithTag
 			nameWithTagShortNew := nameWithTagNew
 			wrWithoutLong := field.t.WrWithoutLong
