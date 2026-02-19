@@ -174,7 +174,8 @@ func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
 	return value
 }
 
-func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
+func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
+	tlName tlast.Name, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
 	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
@@ -182,8 +183,12 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
+			tlName:        tlName,
+			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
+			rt:            trTL1,
+			argNamespace:  k.getArgNamespace(trTL1),
 		},
 		isConstructorFields: isConstructorFields,
 		isUnionElement:      isUnionElement,
@@ -199,7 +204,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
-		fieldIns, err := k.GetInstance(rt)
+		fieldIns, err := k.getInstanceTL2(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
@@ -208,49 +213,14 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType,
 			fieldMask = &ActualNatArg{} // TODO - mark as TL2
 		}
 		ins.fields = append(ins.fields, Field{
-			name:      fieldDef.Name,
-			ins:       fieldIns,
-			fieldMask: fieldMask,
+			name:          fieldDef.Name,
+			ins:           fieldIns,
+			fieldMask:     fieldMask,
+			commentBefore: fieldDef.CommentBefore,
+			// commentRight:  fieldDef., CommentRight - TODO
 		})
 	}
 	return ins, nil
-}
-
-func (k *Kernel) createStructTL1FromTL2(canonicalName string,
-	constructorFields []tlast.Field,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.TL2TypeArgument,
-	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
-
-	return nil, fmt.Errorf("TODO - not implemented yet")
-	//ins := &TypeInstanceStruct{
-	//	TypeInstanceCommon: TypeInstanceCommon{
-	//		canonicalName: canonicalName,
-	//	},
-	//	isConstructorFields: false,
-	//	isUnionElement:      isUnionElement,
-	//	unionIndex:          unionIndex,
-	//	resultType:          resultType,
-	//}
-	//
-	//for _, fieldDef := range constructorFields {
-	//	rt, err := k.resolveTypeTL2(fieldDef., leftArgs, actualArgs)
-	//	if err != nil {
-	//		return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
-	//	}
-	//	fieldIns, err := k.GetInstance(rt)
-	//	if err != nil {
-	//		return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
-	//	}
-	//	var fieldMask *ActualNatArg
-	//	if fieldDef.IsOptional {
-	//		fieldMask = &ActualNatArg{} // TODO - mark as TL2
-	//	}
-	//	ins.fields = append(ins.fields, Field{
-	//		ins:       fieldIns,
-	//		fieldMask: fieldMask,
-	//	})
-	//}
-	//return ins, nil
 }
 
 // we want the same naming convention for nat params, as in old kernel,

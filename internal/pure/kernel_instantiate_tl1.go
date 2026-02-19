@@ -30,9 +30,9 @@ func (k *Kernel) canonicalStringTL1(tr tlast.TypeRef, top bool) (_ string, bare 
 	if !ok {
 		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
-	if kt.originTL2 {
-		panic(fmt.Sprintf("internal error: reference from TL1 to TL2 type %s must be prevented by Kernel.resolveTypeTL1", tName))
-	}
+	//if kt.originTL2 {
+	//	panic(fmt.Sprintf("internal error: reference from TL1 to TL2 type %s must be prevented by Kernel.resolveTypeTL1", tName))
+	//}
 	bare = tr.Bare
 	if tr.Type != kt.tl1BoxedName {
 		bare = true
@@ -316,7 +316,7 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceR
 		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
 	}
 	td := kt.combTL1[0]
-	// must store pointer before children GetInstance() terminates recursion
+	// must store pointer before children GetInstanceTL2() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 	switch {
@@ -366,23 +366,5 @@ func (k *Kernel) collectArgsNamespaces(rt tlast.ArithmeticOrType, argNamespaces 
 	}
 	for _, arg := range rt.T.Args {
 		k.collectArgsNamespaces(arg, argNamespaces)
-	}
-}
-
-func (k *Kernel) createOrdinaryTypeTL1FromTL2(canonicalName string, definition []*tlast.Combinator,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
-
-	switch {
-	//case len(definition) > 1:
-	//	return k.createUnion(canonicalName, definition.UnionType, leftArgs, actualArgs)
-	//case definition[0].IsAlias():
-	//	return k.createAlias(canonicalName, definition.TypeAlias, leftArgs, actualArgs)
-	case len(definition) == 1:
-		return k.createStructTL1FromTL2(canonicalName,
-			definition[0].Fields,
-			leftArgs, actualArgs,
-			false, 0, nil)
-	default:
-		return nil, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
 	}
 }
