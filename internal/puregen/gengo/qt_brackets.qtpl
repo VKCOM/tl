@@ -72,7 +72,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
     {%- endif -%}
     {%- endif -%}
 }
-{%- if tuple.wr.gen.options.GenerateTL2 -%}
+{%- if tuple.wr.gen.options.GenerateTL2() -%}
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
@@ -174,24 +174,6 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 }
 {%- endif -%}
 
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
-    l, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArray({%q= typeString %}, j)
-    if err != nil {
-        return err
-    }
-    if cap(*vec) < l {
-        *vec = make([]{%s= elementTypeString %}, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    for i := range *vec {
-        {%s= tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false ) %}
-    }
-    return nil
-}
-
-{%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     *vec = (*vec)[:cap(*vec)]
     index := 0
@@ -292,7 +274,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []
     return w, nil
     {%- endif -%}
 }
-{%- if tuple.wr.gen.options.GenerateTL2 -%}
+{%- if tuple.wr.gen.options.GenerateTL2() -%}
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
@@ -392,24 +374,6 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
     return r, nil
 {%- endif -%}
 }
-{%- endif -%}
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
-    _, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArrayFixedSize({%q= typeString %}, j, nat_n)
-    if err != nil {
-        return err
-    }
-    if uint32(cap(*vec)) < nat_n {
-        *vec = make([]{%s= elementTypeString %}, nat_n)
-    } else {
-        *vec = (*vec)[:nat_n]
-    }
-    for i := range *vec {
-        {%s= tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
-    }
-    return nil
-}
-
 {%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     isTL2 := tctx != nil && tctx.IsTL2
@@ -528,7 +492,7 @@ func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s=
     {%- endif -%}
     {%- endif -%}
 }
-{%- if tuple.wr.gen.options.GenerateTL2 -%}
+{%- if tuple.wr.gen.options.GenerateTL2() -%}
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
@@ -632,19 +596,6 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 }
 {%- endif -%}
 
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
-    _, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArrayFixedSize({%q= typeString %}, j, {%v tuple.size %})
-    if err != nil {
-        return err
-    }
-    for i := range *vec {
-        {%s= tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
-    }
-    return nil
-}
-
-{%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     index := 0
     if in != nil {

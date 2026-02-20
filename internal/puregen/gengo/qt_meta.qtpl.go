@@ -66,17 +66,12 @@ type Object interface {
 	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error
 	UnmarshalJSON([]byte) error // reads type's JSON representation
 
-`)
-	if gen.options.GenerateLegacyJsonRead {
-		qw422016.N().S(`    ReadJSONLegacy(legacyTypeNames bool, j interface{}) error
-`)
-	}
-	qw422016.N().S(`    ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
+    ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
     // like MarshalJSON, but appends to w and returns it
     // pass empty basictl.JSONWriteContext{} if you do not know which options you need
 	WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error)
 `)
-	if gen.options.GenerateTL2 {
+	if gen.options.GenerateTL2() {
 		qw422016.N().S(`
     ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error)
 	WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte
@@ -99,7 +94,7 @@ type Function interface {
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 
 `)
-	if gen.options.GenerateTL2 {
+	if gen.options.GenerateTL2() {
 		qw422016.N().S(`    ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
     ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
 
@@ -127,22 +122,7 @@ func GetTLName(tag uint32, notFoundName string) string {
 	return notFoundName
 }
 
-`)
-	if gen.options.GenerateLegacyJsonRead {
-		qw422016.N().S(`// legacy wrapper, will be removed soon
-func ReadJSONLegacy(item Object, legacyTypeNames bool, b []byte) error {
-	j, err := internal.JsonBytesToInterface(b)
-	if err != nil {
-		return internal.ErrorInvalidJSON(item.TLName(), err.Error())
-	}
-	if err = item.ReadJSONLegacy(legacyTypeNames, j); err != nil {
-		return internal.ErrorInvalidJSON(item.TLName(), err.Error())
-	}
-	return nil
-}
-`)
-	}
-	qw422016.N().S(`
+
 type TLItem struct {
     tag                uint32
     annotations        uint32
@@ -246,22 +226,7 @@ func (item *TLItem) WriteBoxed(w []byte) []byte { return basictl.NatWrite(w, ite
 func (item TLItem) String() string {
 	return string(item.WriteJSON(nil))
 }
-`)
-	if gen.options.GenerateLegacyJsonRead {
-		qw422016.N().S(`func (item *TLItem) ReadJSONLegacy(legacyTypeNames bool, j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return internal.ErrorInvalidJSON(item.tlName, "expected json object")
-	}
-	for k := range _jm {
-		return internal.ErrorInvalidJSONExcessElement(item.tlName, k)
-	}
-	return nil
-}
-
-`)
-	}
-	qw422016.N().S(`func (item *TLItem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *TLItem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	in.Delim('{')
 	if !in.Ok() {
 		return in.Error()
@@ -293,7 +258,7 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 	return nil
 }
 `)
-	if gen.options.GenerateTL2 {
+	if gen.options.GenerateTL2() {
 		qw422016.N().S(`
 func (item *TLItem) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
     return r, nil

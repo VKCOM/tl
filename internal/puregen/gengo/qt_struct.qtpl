@@ -152,7 +152,7 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
 }
     {%- endif -%}
 {%= struct_.generateJSONCode(bytesVersion, directImports) %}
-{%- if struct_.wr.gen.options.GenerateTL2 -%}
+{%- if struct_.wr.gen.options.GenerateTL2() -%}
 {%= struct_.generateTL2Code(bytesVersion, directImports) %}
 {%- endif -%}
 {%- endfunc -%}
@@ -319,14 +319,6 @@ type {%s= goName %} struct {
             field := struct_.Fields[0]
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
-        {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
-func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
-    ptr := (*{%s= fieldTypeString %})(item)
-    {%s= field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, "j", "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
-    return nil
-}
-
-        {%- endif -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
@@ -402,133 +394,6 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
         tlName := struct_.wr.tlName.String()
         natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
     -%}
-{%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
-
-func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
-    _jm, _ok := j.(map[string]interface{})
-    if j != nil && !_ok {
-        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected json object")
-    }
-    {%- code
-// first we read everything that could be field mask (primitives)
-// then we set explicit/check implicit field masks depending on which keys json object has
-// then we read the rest, passing the same field masks to every field reader
-    -%}
-    {%- for _, field := range struct_.Fields -%}
-        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
-        -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
-        {%- code
-            jsonField := fmt.Sprintf("_j%s", field.goName)
-            itemField := fmt.Sprintf("item.%s", field.goName)
-        -%}
-    {%s= jsonField %} := _jm[{%q= field.originalName %}]
-    delete(_jm,{%q= field.originalName %})
-        {%- if field.fieldMask != nil -%} {%- continue %} {%- endif -%}
-        {%- if _, isScalar := field.t.trw.(*TypeRWPrimitive); !isScalar -%}
-            {%- continue %}
-        {%- endif -%}
-    {%s= field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
-    {%- endfor -%}
-    for k := range _jm {
-        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= tlName %}, k)
-    }
-    {%- for _, field := range struct_.Fields -%}
-        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
-        -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
-        {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
-        {%- code
-             // If field depends on implicit field mask and set in json, but field mask bit not set, this is error
-             // Otherwise field will be silently ignored, to caller surprise
-             //
-             // If field depends on explicit field mask and set in json, we set the bit
-             // Setting field is convenient to set field mask bits. Also works for true-types
-             //
-             // We must first set all bits, only then read fields, so that all fields depend on te same set of bits
-
-            jsonField := fmt.Sprintf("_j%s", field.goName)
-        -%}
-        {%- if field.t.IsTrueType() -%}
-            {%- if !field.fieldMask.IsField() -%}
-    if {%s= jsonField %} != nil {
-        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "implicit true field '{%s= field.originalName %}' cannot be defined, set fieldmask instead")
-    }
-            {%- else -%}
-    if {%s= jsonField %} != nil {
-        _bit := false
-        if err := {%s= struct_.wr.gen.InternalPrefix()%}JsonReadBool({%s= jsonField %}, &_bit); err != nil {
-            return err
-        }
-        if _bit {
-            {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
-        } else {
-            {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} &^= 1 << {%v field.BitNumber %}
-        }
-    }
-            {%- endif -%}
-        {%- else -%}
-            {%- if !field.fieldMask.IsField() -%}
-    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) == 0 && {%s= jsonField %} != nil {
-        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "field '{%s= field.originalName %}' is defined, while corresponding implicit fieldmask bit is 0")
-    }
-            {%- else -%}
-    if {%s= jsonField %} != nil {
-        {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
-    }
-            {%- endif -%}
-        {%- endif -%}
-    {%- endfor -%}
-    {%- for _, field := range struct_.Fields -%}
-        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
-        -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
-        {%- code
-            jsonField := fmt.Sprintf("_j%s", field.goName)
-            itemField := fmt.Sprintf("item.%s", field.goName)
-        -%}
-        {%- if field.t.IsTrueType() -%}
-            {%- if field.fieldMask == nil -%}
-                {%- code
-                    tmpName := fmt.Sprintf("_%s", field.goName)
-                    readingCode := field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, tmpName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
-                -%}
-        {%- code fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) -%}
-    var {%s= tmpName %} {%s= fieldTypeString %}
-    {%s= readingCode %}
-            {%- endif -%}
-            {%- continue -%}
-        {%- endif -%}
-        {%- code
-            readingCode := field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
-            // TODO - for recursive field, add initialization
-        -%}
-        {%- if field.fieldMask != nil -%}
-            {%- if !field.fieldMask.IsField() -%}
-    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
-        {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%s= readingCode %}
-    } else {
-        {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
-    }
-            {%- else -%}
-    if {%s= jsonField %} != nil {
-        {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%s= readingCode %}
-    } else {
-        {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
-    }
-        {%- endif -%}
-        {%- else -%}
-            {%- if _, isScalar := field.t.trw.(*TypeRWPrimitive); !isScalar -%}
-    {%s= readingCode %}
-            {%- endif -%}
-        {%- endif -%}
-    {%- endfor -%}
-    return nil
-}
-
-{%- endif -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
@@ -1050,7 +915,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) (_ []b
   return r, w, err
 }
 
-{%- if struct_.wr.gen.options.GenerateTL2 -%}
+{%- if struct_.wr.gen.options.GenerateTL2() -%}
 func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   {%- if !struct_.wr.wantsTL2 -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})

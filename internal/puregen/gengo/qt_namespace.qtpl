@@ -288,14 +288,14 @@ case {%s= tlTag %}: // {%s= tlName %}
 {%- endif -%}
     if h.{%s= funcTypeString %} != nil {
         var args {%s= funcTypeString %}
-{%- if fun.wr.gen.options.GenerateTL2 -%}
+{%- if fun.wr.gen.options.GenerateTL2() -%}
         if hctx.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
    			_, err = args.ReadTL2(r, &tctx)
 		} else {
 {%- endif -%}
             _, err = args.Read(r)
-{%- if fun.wr.gen.options.GenerateTL2 -%}
+{%- if fun.wr.gen.options.GenerateTL2() -%}
         }
 {%- endif -%}
         if err != nil {

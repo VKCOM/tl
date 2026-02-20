@@ -506,7 +506,7 @@ switch tag {
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(`
 `)
-			if fun.wr.gen.options.GenerateTL2 {
+			if fun.wr.gen.options.GenerateTL2() {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
    			_, err = args.ReadTL2(r, &tctx)
@@ -515,7 +515,7 @@ switch tag {
 			}
 			qw422016.N().S(`            _, err = args.Read(r)
 `)
-			if fun.wr.gen.options.GenerateTL2 {
+			if fun.wr.gen.options.GenerateTL2() {
 				qw422016.N().S(`        }
 `)
 			}
