@@ -499,32 +499,21 @@ func (item *`)
 	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
-`)
-	// TODO - we lost compatibility between enums and unions here. We might wish to return compatibility
-	// by allowing union element to be read from string, and enum from object with tag
-
+    _tag,`)
 	if union.IsEnum {
-		qw422016.N().S(`    _tag := in.UnsafeString()
-    if !in.Ok() {
-        return `)
-		qw422016.N().S(union.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, "expected string")
-    }
-`)
+		qw422016.N().S(`_`)
 	} else {
-		qw422016.N().S(`    _tag, _value, err := `)
-		qw422016.N().S(union.wr.gen.InternalPrefix())
-		qw422016.N().S(`Json2ReadUnion(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, in)
+		qw422016.N().S(`_value`)
+	}
+	qw422016.N().S(`, err := `)
+	qw422016.N().S(union.wr.gen.InternalPrefix())
+	qw422016.N().S(`Json2ReadUnion(`)
+	qw422016.N().Q(tlName)
+	qw422016.N().S(`, in)
     if err != nil {
         return err
     }
-`)
-	}
-	qw422016.N().S(`    switch _tag {
+    switch _tag {
 `)
 	for i, field := range union.Fields {
 		name := field.t.tlName.String()

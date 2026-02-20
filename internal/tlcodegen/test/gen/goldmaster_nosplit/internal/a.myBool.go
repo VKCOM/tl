@@ -162,9 +162,9 @@ func (item *AMyBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_tag := in.UnsafeString()
-	if !in.Ok() {
-		return ErrorInvalidJSON("a.MyBool", "expected string")
+	_tag, _, err := Json2ReadUnion("a.MyBool", in)
+	if err != nil {
+		return err
 	}
 	switch _tag {
 	case "a.myTrue#00000001", "a.myTrue", "#00000001":

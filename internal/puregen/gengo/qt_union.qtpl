@@ -274,21 +274,10 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
-    {%- code
-        // TODO - we lost compatibility between enums and unions here. We might wish to return compatibility
-        // by allowing union element to be read from string, and enum from object with tag
-    -%}
-    {%- if union.IsEnum -%}
-    _tag := in.UnsafeString()
-    if !in.Ok() {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
-    }
-    {%- else -%}
-    _tag, _value, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= tlName %}, in)
+    _tag, {%- if union.IsEnum -%}_{%- else -%}_value{%- endif -%}, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= tlName %}, in)
     if err != nil {
         return err
     }
-    {%- endif -%}
     switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
