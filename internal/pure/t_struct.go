@@ -221,7 +221,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
 		}
-		if fieldDef.IsOptional {
+		if fieldDef.IsOptional || newField.IsBit() {
 			maskBit := nextTL2MaskBit
 			newField.maskTL2Bit = &maskBit
 			nextTL2MaskBit++
