@@ -320,7 +320,7 @@ func (item *PairTupleIntTupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w
 }
 
 func (item *PairTupleIntTupleInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 4027974879)
+	sizes = append(sizes, 2537168039)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -352,7 +352,7 @@ func (item *PairTupleIntTupleInt) CalculateLayout(sizes []int, optimizeEmpty boo
 }
 
 func (item *PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 4027974879 {
+	if sizes[0] != 2537168039 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -601,7 +601,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWri
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 4027974879)
+	sizes = append(sizes, 4267978628)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -633,7 +633,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, optim
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 4027974879 {
+	if sizes[0] != 4267978628 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -886,7 +886,7 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 4027974879)
+	sizes = append(sizes, 3560954332)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -918,7 +918,7 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 4027974879 {
+	if sizes[0] != 3560954332 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

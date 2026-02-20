@@ -134,7 +134,7 @@ func (item *UnionArgsXXX1Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 }
 
 func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3885468823)
+	sizes = append(sizes, 586115808)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -162,7 +162,7 @@ func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, optimizeEmpty bool) (
 }
 
 func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3885468823 {
+	if sizes[0] != 586115808 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -361,7 +361,7 @@ func (item *UnionArgsXXX2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 }
 
 func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1840174980)
+	sizes = append(sizes, 4001050399)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -392,7 +392,7 @@ func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int, optimizeEmpty bool) (
 }
 
 func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1840174980 {
+	if sizes[0] != 4001050399 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

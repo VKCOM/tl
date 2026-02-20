@@ -99,7 +99,7 @@ func (item *AbCall10) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *
 }
 
 func (item *AbCall10) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret AColor) ([]int, int) {
-	sizes = append(sizes, 2377295096)
+	sizes = append(sizes, 3622748936)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -125,7 +125,7 @@ func (item *AbCall10) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret
 }
 
 func (item *AbCall10) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret AColor) ([]byte, []int, int) {
-	if sizes[0] != 2377295096 {
+	if sizes[0] != 3622748936 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

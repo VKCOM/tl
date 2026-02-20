@@ -148,7 +148,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt
 }
 
 func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 597433186)
+	sizes = append(sizes, 2658636192)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -180,7 +180,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLay
 }
 
 func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 597433186 {
+	if sizes[0] != 2658636192 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

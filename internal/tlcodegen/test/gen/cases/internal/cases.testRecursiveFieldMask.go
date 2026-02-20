@@ -418,7 +418,7 @@ func (item *CasesTestRecursiveFieldMask) UnmarshalJSON(b []byte) error {
 }
 
 func (item *CasesTestRecursiveFieldMask) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3314350174)
+	sizes = append(sizes, 465899226)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -463,7 +463,7 @@ func (item *CasesTestRecursiveFieldMask) CalculateLayout(sizes []int, optimizeEm
 }
 
 func (item *CasesTestRecursiveFieldMask) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3314350174 {
+	if sizes[0] != 465899226 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

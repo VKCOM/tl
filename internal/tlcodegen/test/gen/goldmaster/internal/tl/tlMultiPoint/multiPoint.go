@@ -251,7 +251,7 @@ func (item *MultiPoint) UnmarshalJSON(b []byte) error {
 }
 
 func (item *MultiPoint) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 236644382)
+	sizes = append(sizes, 1122522858)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -299,7 +299,7 @@ func (item *MultiPoint) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 }
 
 func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 236644382 {
+	if sizes[0] != 1122522858 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

@@ -456,7 +456,7 @@ func (item *AbCounterChangeRequestPeriodsMany) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 346250624)
+	sizes = append(sizes, 159573200)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -484,7 +484,7 @@ func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int, opti
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 346250624 {
+	if sizes[0] != 159573200 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -703,7 +703,7 @@ func (item *AbCounterChangeRequestPeriodsOne) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3653463525)
+	sizes = append(sizes, 154102971)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -734,7 +734,7 @@ func (item *AbCounterChangeRequestPeriodsOne) CalculateLayout(sizes []int, optim
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3653463525 {
+	if sizes[0] != 154102971 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

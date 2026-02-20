@@ -157,7 +157,7 @@ func (item *AbTopLevel2) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbTopLevel2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3472438267)
+	sizes = append(sizes, 596347879)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -189,7 +189,7 @@ func (item *AbTopLevel2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 }
 
 func (item *AbTopLevel2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3472438267 {
+	if sizes[0] != 596347879 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -430,7 +430,7 @@ func (item *AbTopLevel2Bytes) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbTopLevel2Bytes) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3472438267)
+	sizes = append(sizes, 398029139)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -462,7 +462,7 @@ func (item *AbTopLevel2Bytes) CalculateLayout(sizes []int, optimizeEmpty bool) (
 }
 
 func (item *AbTopLevel2Bytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3472438267 {
+	if sizes[0] != 398029139 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

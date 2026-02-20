@@ -159,7 +159,7 @@ func (item *UsefulServiceGetUserEntity) ReadResultTL2(r []byte, ctx *basictl.TL2
 }
 
 func (item *UsefulServiceGetUserEntity) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) ([]int, int) {
-	sizes = append(sizes, 1015381586)
+	sizes = append(sizes, 3408460901)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -185,7 +185,7 @@ func (item *UsefulServiceGetUserEntity) calculateLayoutResult(sizes []int, optim
 }
 
 func (item *UsefulServiceGetUserEntity) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) ([]byte, []int, int) {
-	if sizes[0] != 1015381586 {
+	if sizes[0] != 3408460901 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -412,7 +412,7 @@ func (item *UsefulServiceGetUserEntity) UnmarshalJSON(b []byte) error {
 }
 
 func (item *UsefulServiceGetUserEntity) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1015381586)
+	sizes = append(sizes, 3408460901)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -444,7 +444,7 @@ func (item *UsefulServiceGetUserEntity) CalculateLayout(sizes []int, optimizeEmp
 }
 
 func (item *UsefulServiceGetUserEntity) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1015381586 {
+	if sizes[0] != 3408460901 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

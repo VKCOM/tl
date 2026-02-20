@@ -146,7 +146,7 @@ func (item *Service5LongInsert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadCont
 }
 
 func (item *Service5LongInsert) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret Service5LongOutput) ([]int, int) {
-	sizes = append(sizes, 2096325307)
+	sizes = append(sizes, 1622291339)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -172,7 +172,7 @@ func (item *Service5LongInsert) calculateLayoutResult(sizes []int, optimizeEmpty
 }
 
 func (item *Service5LongInsert) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret Service5LongOutput) ([]byte, []int, int) {
-	if sizes[0] != 2096325307 {
+	if sizes[0] != 1622291339 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -402,7 +402,7 @@ func (item *Service5LongInsert) UnmarshalJSON(b []byte) error {
 }
 
 func (item *Service5LongInsert) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 2096325307)
+	sizes = append(sizes, 1622291339)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -433,7 +433,7 @@ func (item *Service5LongInsert) CalculateLayout(sizes []int, optimizeEmpty bool)
 }
 
 func (item *Service5LongInsert) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 2096325307 {
+	if sizes[0] != 1622291339 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

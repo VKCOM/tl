@@ -7,6 +7,8 @@
 package gengo
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
 	"strconv"
 	"strings"
@@ -240,12 +242,16 @@ func ifString(value bool, t string, f string) string {
 	return f
 }
 
-func ToUpperFirst(str string) string {
-	return utils.ToUpperFirst(str)
+// must be deterministic.
+// we use it to mark sizes during TL2 serialization. tlTag does not work,
+// because it resets to 0 for most types during TL2 migration
+func someHash(str string) uint32 {
+	h := sha256.Sum256([]byte(str))
+	return binary.LittleEndian.Uint32(h[:])
 }
 
-func ToLowerFirst(str string) string {
-	return utils.ToLowerFirst(str)
+func ToUpperFirst(str string) string {
+	return utils.ToUpperFirst(str)
 }
 
 func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {

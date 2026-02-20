@@ -137,7 +137,7 @@ func (item *AbMyType) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbMyType) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3773394054)
+	sizes = append(sizes, 462678992)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -165,7 +165,7 @@ func (item *AbMyType) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, i
 }
 
 func (item *AbMyType) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3773394054 {
+	if sizes[0] != 462678992 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

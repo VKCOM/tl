@@ -131,7 +131,7 @@ func (item *CasesTestTuple) UnmarshalJSON(b []byte) error {
 }
 
 func (item *CasesTestTuple) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1268559759)
+	sizes = append(sizes, 2048911596)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -159,7 +159,7 @@ func (item *CasesTestTuple) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 }
 
 func (item *CasesTestTuple) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1268559759 {
+	if sizes[0] != 2048911596 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

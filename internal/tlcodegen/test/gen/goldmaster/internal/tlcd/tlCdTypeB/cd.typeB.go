@@ -134,7 +134,7 @@ func (item *CdTypeB) UnmarshalJSON(b []byte) error {
 }
 
 func (item *CdTypeB) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 930826646)
+	sizes = append(sizes, 106772978)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -162,7 +162,7 @@ func (item *CdTypeB) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 }
 
 func (item *CdTypeB) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 930826646 {
+	if sizes[0] != 106772978 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
