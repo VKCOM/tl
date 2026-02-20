@@ -1094,10 +1094,107 @@ func (item *`)
 	qw422016.N().S(`) error {
 `)
 	if struct_.wr.originateFromTL2 {
-		qw422016.N().S(`    // TODO - simple JSON reading code for TL2
+		for _, tl2mask := range struct_.AllNewTL2Masks() {
+			qw422016.N().S(`         item.`)
+			qw422016.N().S(tl2mask)
+			qw422016.N().S(` = 0
 `)
+		}
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() {
+				continue
+			}
+			qw422016.N().S(`        var prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented bool
+`)
+		}
+		qw422016.N().S(`    if in != nil {
+        in.Delim('{')
+        if !in.Ok() {
+            return in.Error()
+        }
+        for !in.IsDelim('}') {
+            key := in.UnsafeFieldName(true)
+            in.WantColon()
+            switch key {
+`)
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() {
+				continue
+			}
+			qw422016.N().S(`            case "`)
+			qw422016.N().S(field.originalName)
+			qw422016.N().S(`":
+                if prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented {
+                    return `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, `)
+			qw422016.N().Q(field.originalName)
+			qw422016.N().S(`)
+                }
+`)
+			if field.IsBit() {
+				qw422016.N().S(`                    var bitValue bool
+                    if err := `)
+				qw422016.N().S(struct_.wr.gen.InternalPrefix())
+				qw422016.N().S(`Json2ReadBool(in, &bitValue); err != nil {
+                        return err
+                    }
+                    if bitValue {
+                        item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+                    }
+`)
+			} else {
+				qw422016.N().S(`                    `)
+				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
+				qw422016.N().S(`                    `)
+				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
+				qw422016.N().S(`
+`)
+			}
+			qw422016.N().S(`                prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented = true
+`)
+		}
+		qw422016.N().S(`                default: return `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
+		qw422016.N().Q(tlName)
+		qw422016.N().S(`, key)
+            }
+            in.WantComma()
+        }
+        in.Delim('}')
+        if !in.Ok() {
+            return in.Error()
+        }
+    }
+`)
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() {
+				continue
+			}
+			if field.IsBit() {
+				continue
+			}
+			qw422016.N().S(`        if !prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented {
+            `)
+			qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+			qw422016.N().S(`
+        }
+`)
+		}
 	} else {
-		// init values for after read processing
 		needSomeRaw := false
 
 		for _, field := range struct_.Fields {
@@ -1809,7 +1906,7 @@ func (item *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) ([]int, int) {
     sizes = append(sizes, `)
-		qw422016.N().V(struct_.wr.tlTag)
+		qw422016.N().V(someHash(goName))
 		qw422016.N().S(`)
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1844,7 +1941,7 @@ func (item *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) ([]byte, []int, int) {
     if sizes[0] != `)
-		qw422016.N().V(struct_.wr.tlTag)
+		qw422016.N().V(someHash(goName))
 		qw422016.N().S(` {
         panic("tl2: tag mismatch between calculate and write")
     }
@@ -2707,7 +2804,7 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`    sizes = append(sizes, `)
-				qw422016.N().V(struct_.wr.tlTag)
+				qw422016.N().V(someHash(goName))
 				qw422016.N().S(`)
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -2805,7 +2902,7 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`    if sizes[0] != `)
-				qw422016.N().V(struct_.wr.tlTag)
+				qw422016.N().V(someHash(goName))
 				qw422016.N().S(` {
         panic("tl2: tag mismatch between calculate and write")
     }

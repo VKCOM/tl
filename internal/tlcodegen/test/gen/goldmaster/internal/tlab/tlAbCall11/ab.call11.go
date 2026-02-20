@@ -110,7 +110,7 @@ func (item *AbCall11) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *
 }
 
 func (item *AbCall11) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret tlAColor.AColor) ([]int, int) {
-	sizes = append(sizes, 3971130220)
+	sizes = append(sizes, 1607529090)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -136,7 +136,7 @@ func (item *AbCall11) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret
 }
 
 func (item *AbCall11) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret tlAColor.AColor) ([]byte, []int, int) {
-	if sizes[0] != 3971130220 {
+	if sizes[0] != 1607529090 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -336,7 +336,7 @@ func (item *AbCall11) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbCall11) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3971130220)
+	sizes = append(sizes, 1607529090)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -364,7 +364,7 @@ func (item *AbCall11) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, i
 }
 
 func (item *AbCall11) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3971130220 {
+	if sizes[0] != 1607529090 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

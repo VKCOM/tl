@@ -157,7 +157,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONOpt(tctx *basictl.JSON
 }
 
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 2942184212)
+	sizes = append(sizes, 652726538)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -189,7 +189,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, op
 }
 
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 2942184212 {
+	if sizes[0] != 652726538 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

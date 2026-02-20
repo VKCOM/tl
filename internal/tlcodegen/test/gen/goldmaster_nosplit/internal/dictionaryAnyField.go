@@ -847,7 +847,7 @@ func (item *DictionaryAnyFieldIntPairIntInt) UnmarshalJSON(b []byte) error {
 }
 
 func (item *DictionaryAnyFieldIntPairIntInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3831939911)
+	sizes = append(sizes, 3800877757)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -879,7 +879,7 @@ func (item *DictionaryAnyFieldIntPairIntInt) CalculateLayout(sizes []int, optimi
 }
 
 func (item *DictionaryAnyFieldIntPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3831939911 {
+	if sizes[0] != 3800877757 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -1125,7 +1125,7 @@ func (item *DictionaryAnyFieldLongPairIntInt) UnmarshalJSON(b []byte) error {
 }
 
 func (item *DictionaryAnyFieldLongPairIntInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3831939911)
+	sizes = append(sizes, 3983200672)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1157,7 +1157,7 @@ func (item *DictionaryAnyFieldLongPairIntInt) CalculateLayout(sizes []int, optim
 }
 
 func (item *DictionaryAnyFieldLongPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3831939911 {
+	if sizes[0] != 3983200672 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -1403,7 +1403,7 @@ func (item *DictionaryAnyFieldStringPairIntInt) UnmarshalJSON(b []byte) error {
 }
 
 func (item *DictionaryAnyFieldStringPairIntInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3831939911)
+	sizes = append(sizes, 10994150)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1435,7 +1435,7 @@ func (item *DictionaryAnyFieldStringPairIntInt) CalculateLayout(sizes []int, opt
 }
 
 func (item *DictionaryAnyFieldStringPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3831939911 {
+	if sizes[0] != 10994150 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

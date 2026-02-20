@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 // create parallel hierarchy of wrappers, suitable for go generator
@@ -89,7 +90,7 @@ func (gen *genGo) addTypeWrappers() error {
 
 		// TODO - we'd like to change this to fileName = goCanonicalName
 		fileName := myWrapper.tlName
-		fileName.Name = ToLowerFirst(fileName.Name)
+		fileName.Name = utils.ToLowerFirst(fileName.Name)
 		myWrapper.fileName = fileName.String()
 
 		namespace := gen.getNamespace(pureType.Common().ArgNamespace())

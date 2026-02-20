@@ -256,7 +256,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONW
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1984188258)
+	sizes = append(sizes, 2579162343)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -290,7 +290,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int, opt
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1984188258 {
+	if sizes[0] != 2579162343 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -609,7 +609,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(tctx *basictl.JSON
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1984188258)
+	sizes = append(sizes, 122687954)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -643,7 +643,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) CalculateLayout(sizes []int, op
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1984188258 {
+	if sizes[0] != 122687954 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -962,7 +962,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(tctx *basictl.JSON
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1984188258)
+	sizes = append(sizes, 3424293157)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -996,7 +996,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int, op
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1984188258 {
+	if sizes[0] != 3424293157 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -1305,7 +1305,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) UnmarshalJSON(b []byte) error 
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 1984188258)
+	sizes = append(sizes, 2730784782)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1339,7 +1339,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int, o
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 1984188258 {
+	if sizes[0] != 2730784782 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

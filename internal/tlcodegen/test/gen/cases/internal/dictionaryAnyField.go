@@ -734,7 +734,7 @@ func (item *DictionaryAnyFieldDoubleInt) UnmarshalJSON(b []byte) error {
 }
 
 func (item *DictionaryAnyFieldDoubleInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3831939911)
+	sizes = append(sizes, 1553698254)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -766,7 +766,7 @@ func (item *DictionaryAnyFieldDoubleInt) CalculateLayout(sizes []int, optimizeEm
 }
 
 func (item *DictionaryAnyFieldDoubleInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3831939911 {
+	if sizes[0] != 1553698254 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -1017,7 +1017,7 @@ func (item *DictionaryAnyFieldIntInt) UnmarshalJSON(b []byte) error {
 }
 
 func (item *DictionaryAnyFieldIntInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3831939911)
+	sizes = append(sizes, 4037871806)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -1049,7 +1049,7 @@ func (item *DictionaryAnyFieldIntInt) CalculateLayout(sizes []int, optimizeEmpty
 }
 
 func (item *DictionaryAnyFieldIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3831939911 {
+	if sizes[0] != 4037871806 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

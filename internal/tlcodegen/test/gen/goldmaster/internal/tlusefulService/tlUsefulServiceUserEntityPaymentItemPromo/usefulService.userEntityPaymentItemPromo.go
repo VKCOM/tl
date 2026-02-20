@@ -119,7 +119,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONOpt(tctx *basictl.
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 617082015)
+	sizes = append(sizes, 3559418337)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -147,7 +147,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 617082015 {
+	if sizes[0] != 3559418337 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

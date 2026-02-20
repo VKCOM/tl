@@ -542,12 +542,60 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
 {%- if struct_.wr.originateFromTL2 -%}
-    // TODO - simple JSON reading code for TL2
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        var prop{%s= field.goName %}Presented bool
+    {%- endfor -%}
+    if in != nil {
+        in.Delim('{')
+        if !in.Ok() {
+            return in.Error()
+        }
+        for !in.IsDelim('}') {
+            key := in.UnsafeFieldName(true)
+            in.WantColon()
+            switch key {
+        {%- for _, field := range struct_.Fields -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            case "{%s= field.originalName %}":
+                if prop{%s= field.goName %}Presented {
+                    return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.originalName %})
+                }
+                {%- if field.IsBit() -%}
+                    var bitValue bool
+                    if err := {%s= struct_.wr.gen.InternalPrefix()%}Json2ReadBool(in, &bitValue); err != nil {
+                        return err
+                    }
+                    if bitValue {
+                        item.{%s= field.TL2MaskForOP("|=") %}
+                    }
+                {%- else -%}
+                    {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
+                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
+                {%- endif -%}
+                prop{%s= field.goName %}Presented = true
+        {%- endfor -%}
+                default: return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= tlName %}, key)
+            }
+            in.WantComma()
+        }
+        in.Delim('}')
+        if !in.Ok() {
+            return in.Error()
+        }
+    }
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsBit() -%} {%- continue -%} {%- endif -%}
+        if !prop{%s= field.goName %}Presented {
+            {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
+        }
+    {%- endfor -%}
 {%- else -%}
-    {%-
-        code // init values for after read processing
-        needSomeRaw := false
-    -%}
+    {%- code needSomeRaw := false -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() -%}
@@ -884,7 +932,7 @@ func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
 }
 
 func (item *{%s= goName %}) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret {%s= retArg %}) ([]int, int) {
-    sizes = append(sizes, {%v= struct_.wr.tlTag %})
+    sizes = append(sizes, {%v= someHash(goName) %})
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -909,7 +957,7 @@ func (item *{%s= goName %}) calculateLayoutResult(sizes []int, optimizeEmpty boo
 }
 
 func (item *{%s= goName %}) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret {%s= retArg %}) ([]byte, []int, int) {
-    if sizes[0] != {%v= struct_.wr.tlTag %} {
+    if sizes[0] != {%v= someHash(goName) %} {
         panic("tl2: tag mismatch between calculate and write")
     }
     currentSize := sizes[1]
@@ -1385,7 +1433,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
-    sizes = append(sizes, {%v= struct_.wr.tlTag %})
+    sizes = append(sizes, {%v= someHash(goName) %})
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -1453,7 +1501,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
-    if sizes[0] != {%v= struct_.wr.tlTag %} {
+    if sizes[0] != {%v= someHash(goName) %} {
         panic("tl2: tag mismatch between calculate and write")
     }
     currentSize := sizes[1]

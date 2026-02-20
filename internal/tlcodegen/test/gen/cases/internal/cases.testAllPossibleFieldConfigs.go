@@ -738,7 +738,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 4217910995)
+	sizes = append(sizes, 3226650991)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -816,7 +816,7 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, optim
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 4217910995 {
+	if sizes[0] != 3226650991 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

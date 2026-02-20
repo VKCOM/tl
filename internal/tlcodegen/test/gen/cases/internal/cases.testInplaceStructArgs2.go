@@ -223,7 +223,7 @@ func (item *CasesTestInplaceStructArgs2) UnmarshalJSON(b []byte) error {
 }
 
 func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 2862556288)
+	sizes = append(sizes, 967488886)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -263,7 +263,7 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int, optimizeEm
 }
 
 func (item *CasesTestInplaceStructArgs2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 2862556288 {
+	if sizes[0] != 967488886 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

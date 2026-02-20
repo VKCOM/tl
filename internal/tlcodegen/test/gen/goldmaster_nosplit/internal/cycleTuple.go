@@ -717,7 +717,7 @@ func (item *CycleTuple) UnmarshalJSON(b []byte) error {
 }
 
 func (item *CycleTuple) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 3362257635)
+	sizes = append(sizes, 1327731029)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -759,7 +759,7 @@ func (item *CycleTuple) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 }
 
 func (item *CycleTuple) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 3362257635 {
+	if sizes[0] != 1327731029 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

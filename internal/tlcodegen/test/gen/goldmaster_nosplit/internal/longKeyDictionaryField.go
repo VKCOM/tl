@@ -392,7 +392,7 @@ func (item *LongKeyDictionaryFieldTupleString) WriteJSONOpt(tctx *basictl.JSONWr
 }
 
 func (item *LongKeyDictionaryFieldTupleString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 426778123)
+	sizes = append(sizes, 1522055934)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -424,7 +424,7 @@ func (item *LongKeyDictionaryFieldTupleString) CalculateLayout(sizes []int, opti
 }
 
 func (item *LongKeyDictionaryFieldTupleString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 426778123 {
+	if sizes[0] != 1522055934 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

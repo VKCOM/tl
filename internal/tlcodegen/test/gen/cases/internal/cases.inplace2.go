@@ -121,7 +121,7 @@ func (item *CasesInplace2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 }
 
 func (item *CasesInplace2Int) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 2258620405)
+	sizes = append(sizes, 3489394663)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -149,7 +149,7 @@ func (item *CasesInplace2Int) CalculateLayout(sizes []int, optimizeEmpty bool) (
 }
 
 func (item *CasesInplace2Int) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 2258620405 {
+	if sizes[0] != 3489394663 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
@@ -348,7 +348,7 @@ func (item *CasesInplace2PairTupleIntTupleInt) WriteJSONOpt(tctx *basictl.JSONWr
 }
 
 func (item *CasesInplace2PairTupleIntTupleInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 2258620405)
+	sizes = append(sizes, 1783544129)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -376,7 +376,7 @@ func (item *CasesInplace2PairTupleIntTupleInt) CalculateLayout(sizes []int, opti
 }
 
 func (item *CasesInplace2PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 2258620405 {
+	if sizes[0] != 1783544129 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

@@ -128,7 +128,7 @@ func (item *InnerMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, n
 }
 
 func (item *InnerMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 175979422)
+	sizes = append(sizes, 3515702573)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -156,7 +156,7 @@ func (item *InnerMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 }
 
 func (item *InnerMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 175979422 {
+	if sizes[0] != 3515702573 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]

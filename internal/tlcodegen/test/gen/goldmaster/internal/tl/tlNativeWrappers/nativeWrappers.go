@@ -273,7 +273,7 @@ func (item *NativeWrappers) UnmarshalJSON(b []byte) error {
 }
 
 func (item *NativeWrappers) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	sizes = append(sizes, 877518672)
+	sizes = append(sizes, 1340460053)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -321,7 +321,7 @@ func (item *NativeWrappers) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 }
 
 func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	if sizes[0] != 877518672 {
+	if sizes[0] != 1340460053 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
