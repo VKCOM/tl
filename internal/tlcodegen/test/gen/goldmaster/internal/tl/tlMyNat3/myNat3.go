@@ -37,10 +37,9 @@ func (item *MyNat3) FillRandom(rg *basictl.RandGenerator) {
 	case 1:
 		item.index = 1
 		if item.valueMyPlus3 == nil {
-			var value MyPlus3
-			value.FillRandom(rg)
-			item.valueMyPlus3 = &value
+			item.valueMyPlus3 = new(MyPlus3)
 		}
+		item.valueMyPlus3.FillRandom(rg)
 	default:
 	}
 }
@@ -65,20 +64,17 @@ func (item *MyNat3) AsMyPlus3() (*MyPlus3, bool) {
 func (item *MyNat3) ResetToMyPlus3() *MyPlus3 {
 	item.index = 1
 	if item.valueMyPlus3 == nil {
-		var value MyPlus3
-		item.valueMyPlus3 = &value
-	} else {
-		item.valueMyPlus3.Reset()
+		item.valueMyPlus3 = new(MyPlus3)
 	}
+	item.valueMyPlus3.Reset()
 	return item.valueMyPlus3
 }
 func (item *MyNat3) SetMyPlus3(value MyPlus3) {
 	item.index = 1
 	if item.valueMyPlus3 == nil {
-		item.valueMyPlus3 = &value
-	} else {
-		*item.valueMyPlus3 = value
+		item.valueMyPlus3 = new(MyPlus3)
 	}
+	*item.valueMyPlus3 = value
 }
 
 func (item *MyNat3) Read(w []byte) (_ []byte, err error) {
@@ -97,8 +93,7 @@ func (item *MyNat3) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0x692c291b:
 		item.index = 1
 		if item.valueMyPlus3 == nil {
-			var value MyPlus3
-			item.valueMyPlus3 = &value
+			item.valueMyPlus3 = new(MyPlus3)
 		}
 		return item.valueMyPlus3.Read(w)
 	default:
@@ -192,8 +187,7 @@ func (item *MyNat3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	switch item.index {
 	case 1:
 		if item.valueMyPlus3 == nil {
-			var newValue MyPlus3
-			item.valueMyPlus3 = &newValue
+			item.valueMyPlus3 = new(MyPlus3)
 		}
 		if currentR, err = item.valueMyPlus3.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -250,13 +244,11 @@ func (item *MyNat3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 		}
 		item.index = 1
 		if item.valueMyPlus3 == nil {
-			var value MyPlus3
-			item.valueMyPlus3 = &value
+			item.valueMyPlus3 = new(MyPlus3)
 		}
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueMyPlus3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err

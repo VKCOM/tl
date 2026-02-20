@@ -259,8 +259,16 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 		return ""
 	}
 	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	// new(X) does not work for some types IIRC
 	return fmt.Sprintf(`	if item.%s == nil { item.%s = new(%s) }
+`, f.goName, f.goName, myType)
+}
+
+func (f *Field) EnsureRecursiveUnion(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
+	if !f.recursive {
+		return ""
+	}
+	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	return fmt.Sprintf(`	if item.value%s == nil { item.value%s = new(%s) }
 `, f.goName, f.goName, myType)
 }
 

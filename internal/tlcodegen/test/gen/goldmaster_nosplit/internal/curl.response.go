@@ -246,8 +246,7 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueOk.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -262,8 +261,7 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueError.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err

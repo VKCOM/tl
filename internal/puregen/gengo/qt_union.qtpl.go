@@ -80,30 +80,13 @@ func (item *`)
 			if field.t.IsTrueType() {
 				continue
 			}
-			fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
-
-			if field.recursive {
-				qw422016.N().S(`        if item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` == nil {
-            var value `)
-				qw422016.N().S(fieldTypeString)
-				qw422016.N().S(`
-            `)
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, "value", formatNatArgs(nil, field.natArgs), field.recursive))
-				qw422016.N().S(`
-            item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` = &value
-        }
+			qw422016.N().S(`        `)
+			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+			qw422016.N().S(`        `)
+			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+				formatNatArgs(nil, field.natArgs), field.recursive))
+			qw422016.N().S(`
 `)
-			} else {
-				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-					formatNatArgs(nil, field.natArgs), field.recursive))
-				qw422016.N().S(`
-`)
-			}
 		}
 		qw422016.N().S(`    default:
     }
@@ -201,21 +184,8 @@ func (item*`)
 `)
 				continue
 			}
-			fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
-
-			if field.recursive {
-				qw422016.N().S(`        if item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` == nil {
-            var value `)
-				qw422016.N().S(fieldTypeString)
-				qw422016.N().S(`
-            item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` = &value
-        }
-`)
-			}
+			qw422016.N().S(`        `)
+			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
 			qw422016.N().S(`        `)
 			qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
 				formatNatArgs(nil, field.natArgs), field.recursive, true))
@@ -442,20 +412,8 @@ func (item *`)
 						qw422016.N().S(`    case `)
 						qw422016.N().D(i)
 						qw422016.N().S(`:
-`)
-						if field.recursive {
-							qw422016.N().S(`        if `)
-							qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
-							qw422016.N().S(` == nil {
-            var newValue `)
-							qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
-							qw422016.N().S(`
-            `)
-							qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
-							qw422016.N().S(` = &newValue
-        }
-`)
-						}
+        `)
+						qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
 						qw422016.N().S(`        `)
 						qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive))
 						qw422016.N().S(`
@@ -685,19 +643,8 @@ func (item *`)
 				if field.t.IsTrueType() {
 					continue
 				}
-				if field.recursive {
-					qw422016.N().S(`            if item.value`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` == nil {
-                var value `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
-					qw422016.N().S(`
-                item.value`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` = &value
-            }
-`)
-				}
+				qw422016.N().S(`            `)
+				qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
 				qw422016.N().S(`            `)
 				qw422016.N().S(field.t.TypeJSONReadingCode(bytesVersion, directImports, union.wr.ins, "jvalue", fmt.Sprintf("item.value%s", field.goName),
 					formatNatArgs(nil, field.natArgs), field.recursive))
@@ -930,23 +877,11 @@ func (item *`)
 			if field.t.IsTrueType() {
 				continue
 			}
-			if field.recursive {
-				qw422016.N().S(`            if item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` == nil {
-                var value `)
-				qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
-				qw422016.N().S(`
-                item.value`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` = &value
-            }
-`)
-			}
+			qw422016.N().S(`            `)
+			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
 			qw422016.N().S(`            var in2Pointer *basictl.JsonLexer
             if _value != nil {
-                in2 := basictl.JsonLexer{Data: _value}
-                in2Pointer = &in2
+                in2Pointer = &basictl.JsonLexer{Data: _value}
             }
             `)
 			qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
@@ -1354,30 +1289,12 @@ func (item *`)
     item.index = `)
 		qw422016.N().D(i)
 		qw422016.N().S(`
-`)
-		if field.recursive {
-			qw422016.N().S(`    if item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` == nil {
-        var value `)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`
-        item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = &value
-    } else {
-        `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, true))
-			qw422016.N().S(`
-    }
-`)
-		} else {
-			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false))
-			qw422016.N().S(`
-`)
-		}
-		qw422016.N().S(`    return `)
+    `)
+		qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+		qw422016.N().S(`    `)
+		qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false))
+		qw422016.N().S(`
+    return `)
 		qw422016.N().S(ampersand)
 		qw422016.N().S(`item.value`)
 		qw422016.N().S(field.goName)
@@ -1393,27 +1310,14 @@ func (item *`)
     item.index = `)
 		qw422016.N().D(i)
 		qw422016.N().S(`
-`)
-		if field.recursive {
-			qw422016.N().S(`    if item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` == nil {
-        item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = &value
-    } else {
-        *item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = value
-    }
-`)
-		} else {
-			qw422016.N().S(`    item.value`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = value
-`)
-		}
-		qw422016.N().S(`}
+    `)
+		qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+		qw422016.N().S(`    `)
+		qw422016.N().S(ifString(field.recursive, "*", ""))
+		qw422016.N().S(`item.value`)
+		qw422016.N().S(field.goName)
+		qw422016.N().S(` = value
+}
 
 `)
 	}

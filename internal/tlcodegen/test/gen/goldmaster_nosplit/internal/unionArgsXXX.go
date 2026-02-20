@@ -1170,8 +1170,7 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
@@ -1186,8 +1185,7 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
@@ -1457,8 +1455,7 @@ func (item *UnionArgsXXXLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
@@ -1473,8 +1470,7 @@ func (item *UnionArgsXXXLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err

@@ -390,8 +390,7 @@ func (item *Service5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueString.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
