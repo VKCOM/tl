@@ -31,6 +31,11 @@ func (item *Cyc3MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorCyc1MyCycleFillRandom(rg, &item.A)
 }
 
+func (item Cyc3MyCycle) RepairMasks() Cyc3MyCycle {
+	BuiltinVectorCyc1MyCycleRepairMasks(&item.A)
+	return item
+}
+
 func (item *Cyc3MyCycle) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -310,6 +315,10 @@ func (item *Cyc3MyCycleMaybe) FillRandom(rg *basictl.RandGenerator) {
 	} else {
 		item.Ok = false
 	}
+}
+func (item Cyc3MyCycleMaybe) RepairMasks() Cyc3MyCycleMaybe {
+	item.Value = item.Value.RepairMasks()
+	return item
 }
 
 func (item *Cyc3MyCycleMaybe) ReadBoxed(w []byte) (_ []byte, err error) {

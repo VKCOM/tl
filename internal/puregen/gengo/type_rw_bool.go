@@ -36,6 +36,10 @@ func (trw *TypeRWBool) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	return false
 }
 
+func (trw *TypeRWBool) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	return false
+}
+
 func (trw *TypeRWBool) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }
@@ -70,6 +74,10 @@ func (trw *TypeRWBool) typeResettingCode(bytesVersion bool, directImports *Direc
 
 func (trw *TypeRWBool) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	return fmt.Sprintf("%s = basictl.RandomUint(rg) & 1 == 1", addAsterisk(ref, val))
+}
+
+func (trw *TypeRWBool) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	return ""
 }
 
 func (trw *TypeRWBool) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

@@ -8,6 +8,7 @@ package gengo
 
 import (
 	"fmt"
+	"strings"
 )
 
 type TypeRWUnion struct {
@@ -31,6 +32,14 @@ func (trw *TypeRWUnion) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool
 	result := false
 	for _, f := range trw.Fields {
 		result = result || f.t.MarkHasBytesVersion(visitedNodes)
+	}
+	return result
+}
+
+func (trw *TypeRWUnion) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	result := false
+	for _, f := range trw.Fields {
+		result = result || f.t.MarkHasRepairMasks(visitedNodes)
 	}
 	return result
 }
@@ -113,6 +122,10 @@ func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *Dire
 
 func (trw *TypeRWUnion) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	return fmt.Sprintf("%s.FillRandom(rg%s)", val, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWUnion) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	return fmt.Sprintf("%s = %s.RepairMasks(%s)", addAsterisk(ref, val), val, strings.Join(natArgs, ","))
 }
 
 func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

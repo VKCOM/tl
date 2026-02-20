@@ -72,6 +72,17 @@ func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerat
 	}
 }
 
+func (item CasesTestBeforeReadBitValidation) RepairMasks() CasesTestBeforeReadBitValidation {
+	item.tl2mask0 = 0
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
+}
+
 func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {

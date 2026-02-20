@@ -90,6 +90,20 @@ func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item ListService5Output) RepairMasks() ListService5Output {
+	item.tl2mask0 = 0
+	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.Tail != nil {
+		*item.Tail = item.Tail.RepairMasks()
+	}
+	return item
+}
+
 func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flag); err != nil {

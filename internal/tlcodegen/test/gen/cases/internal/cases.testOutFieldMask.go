@@ -75,6 +75,17 @@ func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f u
 	BuiltinTupleIntFillRandom(rg, &item.F3, nat_f)
 }
 
+func (item CasesTestOutFieldMask) RepairMasks(nat_f uint32) CasesTestOutFieldMask {
+	item.tl2mask0 = 0
+	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if nat_f&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
+}
+
 func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {

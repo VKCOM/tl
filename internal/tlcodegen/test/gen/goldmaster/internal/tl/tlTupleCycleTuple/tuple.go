@@ -31,6 +31,12 @@ func (item *TupleCycleTuple) FillRandom(rg *basictl.RandGenerator, nat_n uint32)
 	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleFillRandom(rg, ptr, nat_n)
 }
 
+func (item TupleCycleTuple) RepairMasks(nat_n uint32) TupleCycleTuple {
+	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(&item)
+	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRepairMasks(ptr, nat_n)
+	return item
+}
+
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
 	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRead(w, ptr, nat_n)

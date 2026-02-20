@@ -1,4 +1,5 @@
 {%- import "fmt" -%}
+{%- import "strings" -%}
 
 {%- func (maybe *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
@@ -29,6 +30,12 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
     }
 }
     {%- endif -%}
+        {%- if maybe.wr.hasRepairMasks -%}
+func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+    {%s= maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.natArgs), false) %}
+    return item
+}
+        {%- endif -%}
 
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if maybe.wr.originateFromTL2 -%}

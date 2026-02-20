@@ -6,6 +6,7 @@
         typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
+        repairCode := tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false)
     -%}
     {%- switch -%}
         {%- case tuple.vectorLike -%}
@@ -18,6 +19,13 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
     rg.DecreaseDepth()
+}
+            {%- endif -%}
+            {%- if tuple.wr.hasRepairMasks -%}
+func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
+    for i := range *vec {
+        {%s= repairCode %}
+    }
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
@@ -236,6 +244,13 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
     rg.DecreaseDepth()
+}
+            {%- endif -%}
+            {%- if tuple.wr.hasRepairMasks -%}
+func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
+    for i := range *vec {
+        {%s= repairCode %}
+    }
 }
             {%- endif -%}
 
@@ -474,6 +489,13 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
     rg.DecreaseDepth()
+}
+            {%- endif -%}
+            {%- if tuple.wr.hasRepairMasks -%}
+func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
+    for i := range *vec {
+        {%s= repairCode %}
+    }
 }
             {%- endif -%}
 

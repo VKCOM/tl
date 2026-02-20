@@ -36,6 +36,11 @@ func (item *AbUseCycle) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinVectorAColor.BuiltinVectorAColorFillRandom(rg, &item.B)
 }
 
+func (item AbUseCycle) RepairMasks() AbUseCycle {
+	item.A = item.A.RepairMasks()
+	return item
+}
+
 func (item *AbUseCycle) Read(w []byte) (_ []byte, err error) {
 	if w, err = item.A.Read(w); err != nil {
 		return w, err

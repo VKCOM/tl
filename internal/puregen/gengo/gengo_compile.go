@@ -173,6 +173,8 @@ func (gen *genGo) prepareGeneration() error {
 		v.hasBytesVersion = v.MarkHasBytesVersion(visitedNodes)
 		visitedNodes = map[*TypeRWWrapper]bool{}
 		v.hasErrorInWriteMethods = v.MarkWriteHasError(visitedNodes)
+		visitedNodes = map[*TypeRWWrapper]bool{}
+		v.hasRepairMasks = v.MarkHasRepairMasks(visitedNodes)
 	}
 
 	// detect recursion loops first

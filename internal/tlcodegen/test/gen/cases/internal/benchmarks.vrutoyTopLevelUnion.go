@@ -42,6 +42,10 @@ func (item *BenchmarksVrutoyTopLevelUnion) FillRandom(rg *basictl.RandGenerator)
 	default:
 	}
 }
+func (item BenchmarksVrutoyTopLevelUnion) RepairMasks() BenchmarksVrutoyTopLevelUnion {
+	item.valueBig = item.valueBig.RepairMasks()
+	return item
+}
 
 func (item *BenchmarksVrutoyTopLevelUnion) IsBig() bool { return item.index == 0 }
 
@@ -318,6 +322,11 @@ func (item *BenchmarksVrutoytopLevelUnionBig) Reset() {
 
 func (item *BenchmarksVrutoytopLevelUnionBig) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorBenchmarksVrupositionFillRandom(rg, &item.NextPositions)
+}
+
+func (item BenchmarksVrutoytopLevelUnionBig) RepairMasks() BenchmarksVrutoytopLevelUnionBig {
+	BuiltinVectorBenchmarksVrupositionRepairMasks(&item.NextPositions)
+	return item
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) Read(w []byte) (_ []byte, err error) {
@@ -761,6 +770,11 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg *basictl.RandGenera
 		(*vec)[i].FillRandom(rg)
 	}
 	rg.DecreaseDepth()
+}
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionRepairMasks(vec *[]BenchmarksVrutoyTopLevelUnion) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
 }
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(w []byte, vec *[]BenchmarksVrutoyTopLevelUnion) (_ []byte, err error) {
 	var l uint32

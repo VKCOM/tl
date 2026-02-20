@@ -51,6 +51,15 @@ func (item *CasesMyCycle2) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item CasesMyCycle2) RepairMasks() CasesMyCycle2 {
+	item.tl2mask0 = 0
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	item.A = item.A.RepairMasks()
+	return item
+}
+
 func (item *CasesMyCycle2) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {

@@ -32,6 +32,11 @@ func (item *CasesTestOutFieldMaskContainer) FillRandom(rg *basictl.RandGenerator
 	item.Inner.FillRandom(rg, item.F)
 }
 
+func (item CasesTestOutFieldMaskContainer) RepairMasks() CasesTestOutFieldMaskContainer {
+	item.Inner = item.Inner.RepairMasks(item.F)
+	return item
+}
+
 func (item *CasesTestOutFieldMaskContainer) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.F); err != nil {
 		return w, err

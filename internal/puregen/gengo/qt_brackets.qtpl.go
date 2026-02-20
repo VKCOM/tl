@@ -21,6 +21,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
+	repairCode := tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false)
 
 	switch {
 	case tuple.vectorLike:
@@ -43,6 +44,22 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
+}
+`)
+		}
+		if tuple.wr.hasRepairMasks {
+			qw422016.N().S(`func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`RepairMasks(vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) {
+    for i := range *vec {
+        `)
+			qw422016.N().S(repairCode)
+			qw422016.N().S(`
+    }
 }
 `)
 		}
@@ -413,6 +430,22 @@ func `)
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
+}
+`)
+		}
+		if tuple.wr.hasRepairMasks {
+			qw422016.N().S(`func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`RepairMasks(vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) {
+    for i := range *vec {
+        `)
+			qw422016.N().S(repairCode)
+			qw422016.N().S(`
+    }
 }
 `)
 		}
@@ -813,6 +846,22 @@ func `)
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
+}
+`)
+		}
+		if tuple.wr.hasRepairMasks {
+			qw422016.N().S(`func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`RepairMasks(vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) {
+    for i := range *vec {
+        `)
+			qw422016.N().S(repairCode)
+			qw422016.N().S(`
+    }
 }
 `)
 		}

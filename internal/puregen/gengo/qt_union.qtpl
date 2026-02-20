@@ -1,4 +1,5 @@
 {%- import "fmt" -%}
+{%- import "strings" -%}
 
 {%- func (union *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
@@ -45,6 +46,27 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
     }
 }
     {%- endif -%}
+        {%- if union.wr.hasRepairMasks -%}
+func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+    {%- for _, field := range union.Fields -%}
+        {%- code
+            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+                formatNatArgs(nil, field.natArgs), field.recursive)
+        -%}
+        {%- if field.t.IsTrueType() || !field.t.hasRepairMasks -%}
+            {%- continue -%}
+        {%- endif -%}
+        {%- if field.recursive -%}
+            if item.value{%s field.goName %} != nil {
+                {%s= repairCode %}
+            }
+        {%- else -%}
+            {%s= repairCode %}
+        {%- endif -%}
+    {%- endfor -%}
+    return item
+}
+        {%- endif -%}
 
 {%= union.generateConstructorsBehavior(bytesVersion, directImports) %}
 

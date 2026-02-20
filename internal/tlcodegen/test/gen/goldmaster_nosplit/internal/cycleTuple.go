@@ -26,6 +26,11 @@ func BuiltinTuple2CycleTupleFillRandom(rg *basictl.RandGenerator, vec *[2]CycleT
 	}
 	rg.DecreaseDepth()
 }
+func BuiltinTuple2CycleTupleRepairMasks(vec *[2]CycleTuple) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
+}
 
 func BuiltinTuple2CycleTupleRead(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
 	for i := range *vec {
@@ -179,6 +184,11 @@ func BuiltinTupleCycleTupleFillRandom(rg *basictl.RandGenerator, vec *[]CycleTup
 		(*vec)[i].FillRandom(rg)
 	}
 	rg.DecreaseDepth()
+}
+func BuiltinTupleCycleTupleRepairMasks(vec *[]CycleTuple, nat_n uint32) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
 }
 
 func BuiltinTupleCycleTupleRead(w []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
@@ -439,6 +449,21 @@ func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
 	} else {
 		BuiltinTuple3IntReset(&item.C)
 	}
+}
+
+func (item CycleTuple) RepairMasks() CycleTuple {
+	item.tl2mask0 = 0
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.A != nil {
+		BuiltinTuple2CycleTupleRepairMasks(item.A)
+	}
+	BuiltinTupleCycleTupleRepairMasks(&item.B, item.N)
+	if item.N&(1<<2) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
 }
 
 func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {

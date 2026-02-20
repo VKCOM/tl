@@ -33,6 +33,11 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) FillRandom(rg *basi
 	item.Value.FillRandom(rg, item.N)
 }
 
+func (item BenchmarksVrutoyTopLevelContainerWithDependency) RepairMasks() BenchmarksVrutoyTopLevelContainerWithDependency {
+	item.Value = item.Value.RepairMasks(item.N)
+	return item
+}
+
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err

@@ -28,6 +28,12 @@ func (item *VectorBenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorBenchmarksVrupositionFillRandom(rg, ptr)
 }
 
+func (item VectorBenchmarksVruposition) RepairMasks() VectorBenchmarksVruposition {
+	ptr := (*[]BenchmarksVruposition)(&item)
+	BuiltinVectorBenchmarksVrupositionRepairMasks(ptr)
+	return item
+}
+
 func (item *VectorBenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
 	ptr := (*[]BenchmarksVruposition)(item)
 	return BuiltinVectorBenchmarksVrupositionRead(w, ptr)
@@ -146,6 +152,12 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) Reset() {
 func (item *VectorBenchmarksVrutoyTopLevelUnion) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
 	BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg, ptr)
+}
+
+func (item VectorBenchmarksVrutoyTopLevelUnion) RepairMasks() VectorBenchmarksVrutoyTopLevelUnion {
+	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(&item)
+	BuiltinVectorBenchmarksVrutoyTopLevelUnionRepairMasks(ptr)
+	return item
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) Read(w []byte) (_ []byte, err error) {

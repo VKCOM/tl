@@ -49,6 +49,14 @@ func (item *Service5LongInsert) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item Service5LongInsert) RepairMasks() Service5LongInsert {
+	item.tl2mask0 = 0
+	if item.Flags&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	return item
+}
+
 func (item *Service5LongInsert) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flags); err != nil {
