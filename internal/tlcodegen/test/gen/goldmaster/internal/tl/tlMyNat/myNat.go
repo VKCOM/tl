@@ -26,8 +26,7 @@ func (MyNat) TLTag() uint32  { return 0xc60c1b41 }
 
 func (item *MyNat) SetA(v MyNat) {
 	if item.A == nil {
-		var value MyNat
-		item.A = &value
+		item.A = new(MyNat)
 	}
 	*item.A = v
 	item.FieldsMask |= 1 << 0
@@ -57,8 +56,7 @@ func (item *MyNat) FillRandom(rg *basictl.RandGenerator) {
 		item.tl2mask0 |= 1
 		rg.IncreaseDepth()
 		if item.A == nil {
-			var value MyNat
-			item.A = &value
+			item.A = new(MyNat)
 		}
 		item.A.FillRandom(rg)
 		rg.DecreaseDepth()
@@ -91,8 +89,7 @@ func (item *MyNat) Read(w []byte) (_ []byte, err error) {
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		if item.A == nil {
-			var value MyNat
-			item.A = &value
+			item.A = new(MyNat)
 		}
 		if w, err = item.A.Read(w); err != nil {
 			return w, err
@@ -173,8 +170,7 @@ func (item *MyNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myNat", "a")
 				}
 				if item.A == nil {
-					var value MyNat
-					item.A = &value
+					item.A = new(MyNat)
 				}
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
@@ -370,8 +366,7 @@ func (item *MyNat) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if block&4 != 0 {
 		item.tl2mask0 |= 1
 		if item.A == nil {
-			var value MyNat
-			item.A = &value
+			item.A = new(MyNat)
 		}
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err

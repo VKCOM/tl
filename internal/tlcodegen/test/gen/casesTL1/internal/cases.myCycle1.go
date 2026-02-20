@@ -23,8 +23,7 @@ func (CasesMyCycle1) TLTag() uint32  { return 0xd3ca919d }
 
 func (item *CasesMyCycle1) SetA(v CasesMyCycle2) {
 	if item.A == nil {
-		var value CasesMyCycle2
-		item.A = &value
+		item.A = new(CasesMyCycle2)
 	}
 	*item.A = v
 	item.FieldsMask |= 1 << 0
@@ -49,8 +48,7 @@ func (item *CasesMyCycle1) FillRandom(rg *basictl.RandGenerator) {
 	if item.FieldsMask&(1<<0) != 0 {
 		rg.IncreaseDepth()
 		if item.A == nil {
-			var value CasesMyCycle2
-			item.A = &value
+			item.A = new(CasesMyCycle2)
 		}
 		item.A.FillRandom(rg)
 		rg.DecreaseDepth()
@@ -67,8 +65,7 @@ func (item *CasesMyCycle1) Read(w []byte) (_ []byte, err error) {
 	}
 	if item.FieldsMask&(1<<0) != 0 {
 		if item.A == nil {
-			var value CasesMyCycle2
-			item.A = &value
+			item.A = new(CasesMyCycle2)
 		}
 		if w, err = item.A.Read(w); err != nil {
 			return w, err
@@ -149,8 +146,7 @@ func (item *CasesMyCycle1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.myCycle1", "a")
 				}
 				if item.A == nil {
-					var value CasesMyCycle2
-					item.A = &value
+					item.A = new(CasesMyCycle2)
 				}
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err

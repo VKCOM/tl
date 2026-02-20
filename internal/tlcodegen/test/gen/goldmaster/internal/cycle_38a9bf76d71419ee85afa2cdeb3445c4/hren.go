@@ -31,8 +31,7 @@ func (item *Hren) Reset() {
 func (item *Hren) FillRandom(rg *basictl.RandGenerator) {
 	rg.IncreaseDepth()
 	if item.Next == nil {
-		var value HrenMaybe
-		item.Next = &value
+		item.Next = new(HrenMaybe)
 	}
 	item.Next.FillRandom(rg)
 	rg.DecreaseDepth()
@@ -40,8 +39,7 @@ func (item *Hren) FillRandom(rg *basictl.RandGenerator) {
 
 func (item *Hren) Read(w []byte) (_ []byte, err error) {
 	if item.Next == nil {
-		var value HrenMaybe
-		item.Next = &value
+		item.Next = new(HrenMaybe)
 	}
 	return item.Next.ReadBoxed(w)
 }
@@ -102,8 +100,7 @@ func (item *Hren) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Jso
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("hren", "next")
 				}
 				if item.Next == nil {
-					var value HrenMaybe
-					item.Next = &value
+					item.Next = new(HrenMaybe)
 				}
 				if err := item.Next.ReadJSONGeneral(tctx, in); err != nil {
 					return err
@@ -169,8 +166,7 @@ func (item *Hren) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) 
 	var sz int
 
 	if item.Next == nil {
-		var value HrenMaybe
-		item.Next = &value
+		item.Next = new(HrenMaybe)
 	}
 	if sizes, sz = (*item.Next).CalculateLayout(sizes, true); sz != 0 {
 		currentSize += sz
@@ -210,8 +206,7 @@ func (item *Hren) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	if item.Next == nil {
-		var value HrenMaybe
-		item.Next = &value
+		item.Next = new(HrenMaybe)
 	}
 	if w, sizes, sz = item.Next.InternalWriteTL2(w, sizes, true); sz != 0 {
 		currentBlock |= 2
@@ -274,8 +269,7 @@ func (item *Hren) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	if block&2 != 0 {
 		if item.Next == nil {
-			var value HrenMaybe
-			item.Next = &value
+			item.Next = new(HrenMaybe)
 		}
 		if currentR, err = (*item.Next).InternalReadTL2(currentR); err != nil {
 			return currentR, err

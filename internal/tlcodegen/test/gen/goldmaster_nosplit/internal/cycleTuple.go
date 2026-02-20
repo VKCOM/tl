@@ -386,8 +386,7 @@ func (CycleTuple) TLTag() uint32  { return 0xc867fae3 }
 
 func (item *CycleTuple) SetA(v [2]CycleTuple) {
 	if item.A == nil {
-		var value [2]CycleTuple
-		item.A = &value
+		item.A = new([2]CycleTuple)
 	}
 	*item.A = v
 	item.N |= 1 << 0
@@ -432,8 +431,7 @@ func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
 		item.tl2mask0 |= 1
 		rg.IncreaseDepth()
 		if item.A == nil {
-			var value [2]CycleTuple
-			item.A = &value
+			item.A = new([2]CycleTuple)
 		}
 		BuiltinTuple2CycleTupleFillRandom(rg, item.A)
 		rg.DecreaseDepth()
@@ -477,8 +475,7 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		if item.A == nil {
-			var value [2]CycleTuple
-			item.A = &value
+			item.A = new([2]CycleTuple)
 		}
 		if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 			return w, err
@@ -595,8 +592,7 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "a")
 				}
 				if item.A == nil {
-					var value [2]CycleTuple
-					item.A = &value
+					item.A = new([2]CycleTuple)
 				}
 				if err := BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, item.A); err != nil {
 					return err
@@ -858,8 +854,7 @@ func (item *CycleTuple) InternalReadTL2(r []byte) (_ []byte, err error) {
 	if block&4 != 0 {
 		item.tl2mask0 |= 1
 		if item.A == nil {
-			var value [2]CycleTuple
-			item.A = &value
+			item.A = new([2]CycleTuple)
 		}
 		if currentR, err = BuiltinTuple2CycleTupleInternalReadTL2(currentR, item.A); err != nil {
 			return currentR, err

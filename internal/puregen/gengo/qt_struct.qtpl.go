@@ -404,8 +404,6 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 `)
 	}
 	if struct_.wr.wantsTL2 {
-		/* fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) */
-
 		for _, tl2mask := range struct_.AllNewTL2Masks() {
 			qw422016.N().S(`             `)
 			qw422016.N().S(tl2mask)
