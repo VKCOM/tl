@@ -171,40 +171,40 @@ func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_jtype := in.UnsafeString()
+	_tag := in.UnsafeString()
 	if !in.Ok() {
 		return ErrorInvalidJSON("cases_bytes.TestEnum", "expected string")
 	}
-	switch _jtype {
+	switch _tag {
 	case "cases_bytes.testEnum1#58aad3f5", "cases_bytes.testEnum1", "#58aad3f5":
-		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum1" {
-			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases_bytes.testEnum1" {
+			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum1#58aad3f5" {
+		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum1#58aad3f5" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum1#58aad3f5")
 		}
 		item.index = 0
 		return nil
 	case "cases_bytes.testEnum2#00b47add", "cases_bytes.testEnum2", "#00b47add":
-		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum2" {
-			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases_bytes.testEnum2" {
+			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum2#00b47add" {
+		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum2#00b47add" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum2#00b47add")
 		}
 		item.index = 1
 		return nil
 	case "cases_bytes.testEnum3#81911ffa", "cases_bytes.testEnum3", "#81911ffa":
-		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum3" {
-			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases_bytes.testEnum3" {
+			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum3#81911ffa" {
+		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum3#81911ffa" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum3#81911ffa")
 		}
 		item.index = 2
 		return nil
 	default:
-		return ErrorInvalidEnumTagJSON("cases_bytes.TestEnum", _jtype)
+		return ErrorInvalidUnionTagJSON("cases_bytes.TestEnum", _tag)
 	}
 }
 

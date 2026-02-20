@@ -171,40 +171,40 @@ func (item *CasesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_jtype := in.UnsafeString()
+	_tag := in.UnsafeString()
 	if !in.Ok() {
 		return ErrorInvalidJSON("cases.TestEnum", "expected string")
 	}
-	switch _jtype {
+	switch _tag {
 	case "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
-		if tctx.IsTL2 && _jtype != "cases.testEnum1" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases.testEnum1" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum1#6c6c55ac" {
+		if !tctx.LegacyTypeNames && _tag == "cases.testEnum1#6c6c55ac" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum1#6c6c55ac")
 		}
 		item.index = 0
 		return nil
 	case "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
-		if tctx.IsTL2 && _jtype != "cases.testEnum2" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases.testEnum2" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum2#86ea88ce" {
+		if !tctx.LegacyTypeNames && _tag == "cases.testEnum2#86ea88ce" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum2#86ea88ce")
 		}
 		item.index = 1
 		return nil
 	case "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
-		if tctx.IsTL2 && _jtype != "cases.testEnum3" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		if tctx.IsTL2 && _tag != "cases.testEnum3" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum3#69b83e2f" {
+		if !tctx.LegacyTypeNames && _tag == "cases.testEnum3#69b83e2f" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum3#69b83e2f")
 		}
 		item.index = 2
 		return nil
 	default:
-		return ErrorInvalidEnumTagJSON("cases.TestEnum", _jtype)
+		return ErrorInvalidUnionTagJSON("cases.TestEnum", _tag)
 	}
 }
 
