@@ -1015,87 +1015,115 @@ func (item *`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
-	// init values for after read processing
-	needSomeRaw := false
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    // TODO - simple JSON reading code for TL2
+`)
+	} else {
+		// init values for after read processing
+		needSomeRaw := false
 
-	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if field.IsBit() {
-			if field.fieldMask.IsField() {
-				qw422016.N().S(`    var trueType`)
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
+			}
+			if field.IsBit() {
+				if field.fieldMask.IsField() {
+					qw422016.N().S(`    var trueType`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`Presented bool
+    var trueType`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`Value     bool
+`)
+				}
+			} else if !field.HasNatArguments() {
+				/* TODO: can be optimized to read with only external nats */
+
+				qw422016.N().S(`    var prop`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`Presented bool
-    var trueType`)
+`)
+			} else {
+				qw422016.N().S(`    var raw`)
 				qw422016.N().S(field.goName)
-				qw422016.N().S(`Value     bool
+				qw422016.N().S(` []byte
 `)
 			}
-		} else if !field.HasNatArguments() {
-			/* TODO: can be optimized to read with only external nats */
+			needSomeRaw = true
 
-			qw422016.N().S(`    var prop`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(`Presented bool
-`)
-		} else {
-			qw422016.N().S(`    var raw`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` []byte
+		}
+		if needSomeRaw {
+			qw422016.N().S(`
 `)
 		}
-		needSomeRaw = true
+		/* BLOCK: main read */
 
-	}
-	if needSomeRaw {
-		qw422016.N().S(`
-`)
-	}
-	/* BLOCK: main read */
-
-	qw422016.N().S(`    if in != nil {
+		qw422016.N().S(`    if in != nil {
         in.Delim('{')
         if !in.Ok() {
             return in.Error()
         }
         for !in.IsDelim('}') {
 `)
-	if len(struct_.Fields) == 0 {
-		qw422016.N().S(`            return `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, "this object can't have properties")
+		if len(struct_.Fields) == 0 {
+			qw422016.N().S(`            return `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidJSON(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, "this object can't have properties")
 `)
-	} else {
-		qw422016.N().S(`            key := in.UnsafeFieldName(true)
+		} else {
+			qw422016.N().S(`            key := in.UnsafeFieldName(true)
             in.WantColon()
             switch key {
 `)
-		for _, field := range struct_.Fields {
-			if field.IsTL2Omitted() || field.originalName == "" {
-				continue
-			}
-			qw422016.N().S(`                case "`)
-			qw422016.N().S(field.originalName)
-			qw422016.N().S(`":
+			for _, field := range struct_.Fields {
+				if field.IsTL2Omitted() || field.originalName == "" {
+					continue
+				}
+				qw422016.N().S(`                case "`)
+				qw422016.N().S(field.originalName)
+				qw422016.N().S(`":
 `)
-			reader := "in"
-			itemField := fmt.Sprintf("item.%s", field.goName)
+				reader := "in"
+				itemField := fmt.Sprintf("item.%s", field.goName)
 
-			if field.IsBit() {
-				if !field.fieldMask.IsField() {
-					qw422016.N().S(`                    return `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(tlName)
-					qw422016.N().S(`, "implicit true field '`)
-					qw422016.N().S(field.originalName)
-					qw422016.N().S(`' cannot be defined, set fieldmask instead")
+				if field.IsBit() {
+					if !field.fieldMask.IsField() {
+						qw422016.N().S(`                    return `)
+						qw422016.N().S(struct_.wr.gen.InternalPrefix())
+						qw422016.N().S(`ErrorInvalidJSON(`)
+						qw422016.N().Q(tlName)
+						qw422016.N().S(`, "implicit true field '`)
+						qw422016.N().S(field.originalName)
+						qw422016.N().S(`' cannot be defined, set fieldmask instead")
 `)
-				} else {
-					qw422016.N().S(`                    if trueType`)
+					} else {
+						qw422016.N().S(`                    if trueType`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`Presented {
+                        return `)
+						qw422016.N().S(struct_.wr.gen.InternalPrefix())
+						qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
+						qw422016.N().Q(tlName)
+						qw422016.N().S(`, `)
+						qw422016.N().Q(field.originalName)
+						qw422016.N().S(`)
+                    }
+                    if err := `)
+						qw422016.N().S(struct_.wr.gen.InternalPrefix())
+						qw422016.N().S(`Json2ReadBool(in, &trueType`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`Value); err != nil {
+                        return err
+                    }
+                    trueType`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`Presented = true
+`)
+					}
+				} else if !field.HasNatArguments() {
+					qw422016.N().S(`                    if prop`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(`Presented {
                         return `)
@@ -1106,267 +1134,244 @@ func (item *`)
 					qw422016.N().Q(field.originalName)
 					qw422016.N().S(`)
                     }
-                    if err := `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`Json2ReadBool(in, &trueType`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`Value); err != nil {
-                        return err
+`)
+					if field.IsAffectedByExternalFieldMask() {
+						qw422016.N().S(`                    if `)
+						qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+						qw422016.N().S(` & (1 << `)
+						qw422016.E().V(field.BitNumber)
+						qw422016.N().S(`) == 0 {
+                        return `)
+						qw422016.N().S(struct_.wr.gen.InternalPrefix())
+						qw422016.N().S(`ErrorInvalidJSON(`)
+						qw422016.N().Q(tlName)
+						qw422016.N().S(`, "field '`)
+						qw422016.N().S(field.originalName)
+						qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
                     }
-                    trueType`)
+`)
+					}
+					qw422016.N().S(`                    `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
+					qw422016.N().S(`                    `)
+					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
+					qw422016.N().S(`
+                    prop`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(`Presented = true
 `)
-				}
-			} else if !field.HasNatArguments() {
-				qw422016.N().S(`                    if prop`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`Presented {
-                        return `)
-				qw422016.N().S(struct_.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-				qw422016.N().Q(tlName)
-				qw422016.N().S(`, `)
-				qw422016.N().Q(field.originalName)
-				qw422016.N().S(`)
-                    }
-`)
-				if field.IsAffectedByExternalFieldMask() {
-					qw422016.N().S(`                    if `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` & (1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`) == 0 {
+				} else {
+					qw422016.N().S(`                    if raw`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` != nil {
                         return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSON(`)
+					qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
 					qw422016.N().Q(tlName)
-					qw422016.N().S(`, "field '`)
-					qw422016.N().S(field.originalName)
-					qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
-                    }
-`)
-				}
-				qw422016.N().S(`                    `)
-				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-				qw422016.N().S(`                    `)
-				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
-				qw422016.N().S(`
-                    prop`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`Presented = true
-`)
-			} else {
-				qw422016.N().S(`                    if raw`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` != nil {
-                        return `)
-				qw422016.N().S(struct_.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-				qw422016.N().Q(tlName)
-				qw422016.N().S(`, `)
-				qw422016.N().Q(field.originalName)
-				qw422016.N().S(`)
+					qw422016.N().S(`, `)
+					qw422016.N().Q(field.originalName)
+					qw422016.N().S(`)
                     }
                     raw`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` = in.Raw()
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` = in.Raw()
                     if !in.Ok() {
                         return in.Error()
                     }
 `)
+				}
 			}
-		}
-		qw422016.N().S(`                default: return `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, key)
+			qw422016.N().S(`                default: return `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, key)
             }
             in.WantComma()
 `)
-	}
-	qw422016.N().S(`        }
+		}
+		qw422016.N().S(`        }
         in.Delim('}')
         if !in.Ok() {
             return in.Error()
         }
     }
 `)
-	/* BLOCK: reset independent props with they are absent */
+		/* BLOCK: reset independent props with they are absent */
 
-	for _, field := range struct_.Fields {
-		/* TODO: skip anonymous names */
+		for _, field := range struct_.Fields {
+			/* TODO: skip anonymous names */
 
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if field.IsBit() {
-			continue
-		}
-		if !field.HasNatArguments() {
-			qw422016.N().S(`    if !prop`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(`Presented {
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
+			}
+			if field.IsBit() {
+				continue
+			}
+			if !field.HasNatArguments() {
+				qw422016.N().S(`    if !prop`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Presented {
             `)
-			qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
-			qw422016.N().S(`
+				qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+				qw422016.N().S(`
     }
 `)
-		}
-	}
-	/* BLOCK: bit fix */
-
-	for _, field := range struct_.Fields {
-		/* TODO: skip anonymous names */
-
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if field.IsAffectingLocalFieldMasks() {
-			presentCondition := "true"
-			if field.IsBit() {
-				presentCondition = "trueType" + field.goName + "Presented"
-			} else if !field.HasNatArguments() {
-				presentCondition = "prop" + field.goName + "Presented"
-			} else {
-				presentCondition = "raw" + field.goName + " != nil"
 			}
-			affectedFields, bits := struct_.AllAffectedFieldMasks(field)
+		}
+		/* BLOCK: bit fix */
 
-			qw422016.N().S(`    if `)
-			qw422016.N().S(presentCondition)
-			qw422016.N().S(` {
-`)
-			firstAffectedNat := 0
+		for _, field := range struct_.Fields {
+			/* TODO: skip anonymous names */
 
-			if field.IsBit() {
-				/* COMMENT: if trueType value is false bit sets to zero */
-				firstAffectedNat = 1
-
-				qw422016.N().S(`        if trueType`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`Value {
-            `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`
-        }
-`)
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
 			}
-			for i := firstAffectedNat; i < len(affectedFields); i++ {
-				qw422016.N().S(`            item.`)
-				qw422016.N().S(affectedFields[i].goName)
-				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(bits[i])
-				qw422016.N().S(`
-`)
-			}
-			qw422016.N().S(`    }
-`)
-		}
-	}
-	/* BLOCK: read rest fields */
+			if field.IsAffectingLocalFieldMasks() {
+				presentCondition := "true"
+				if field.IsBit() {
+					presentCondition = "trueType" + field.goName + "Presented"
+				} else if !field.HasNatArguments() {
+					presentCondition = "prop" + field.goName + "Presented"
+				} else {
+					presentCondition = "raw" + field.goName + " != nil"
+				}
+				affectedFields, bits := struct_.AllAffectedFieldMasks(field)
 
-	for _, field := range struct_.Fields {
-		/* TODO: skip anonymous names */
-
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if field.IsBit() || !field.HasNatArguments() {
-			continue
-		}
-		presentCondition := "raw" + field.goName + " != nil"
-
-		if field.fieldMask != nil {
-			qw422016.N().S(`        if `)
-			qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-			qw422016.N().S(` & (1 << `)
-			qw422016.E().V(field.BitNumber)
-			qw422016.N().S(`) == 0 {
-`)
-			if field.IsAffectedByExternalFieldMask() {
-				qw422016.N().S(`            if `)
+				qw422016.N().S(`    if `)
 				qw422016.N().S(presentCondition)
 				qw422016.N().S(` {
+`)
+				firstAffectedNat := 0
+
+				if field.IsBit() {
+					/* COMMENT: if trueType value is false bit sets to zero */
+					firstAffectedNat = 1
+
+					qw422016.N().S(`        if trueType`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`Value {
+            `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`
+        }
+`)
+				}
+				for i := firstAffectedNat; i < len(affectedFields); i++ {
+					qw422016.N().S(`            item.`)
+					qw422016.N().S(affectedFields[i].goName)
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(bits[i])
+					qw422016.N().S(`
+`)
+				}
+				qw422016.N().S(`    }
+`)
+			}
+		}
+		/* BLOCK: read rest fields */
+
+		for _, field := range struct_.Fields {
+			/* TODO: skip anonymous names */
+
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
+			}
+			if field.IsBit() || !field.HasNatArguments() {
+				continue
+			}
+			presentCondition := "raw" + field.goName + " != nil"
+
+			if field.fieldMask != nil {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) == 0 {
+`)
+				if field.IsAffectedByExternalFieldMask() {
+					qw422016.N().S(`            if `)
+					qw422016.N().S(presentCondition)
+					qw422016.N().S(` {
                 return `)
-				qw422016.N().S(struct_.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidJSON(`)
-				qw422016.N().Q(tlName)
-				qw422016.N().S(`, "field '`)
-				qw422016.N().S(field.originalName)
-				qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
+					qw422016.N().S(struct_.wr.gen.InternalPrefix())
+					qw422016.N().S(`ErrorInvalidJSON(`)
+					qw422016.N().Q(tlName)
+					qw422016.N().S(`, "field '`)
+					qw422016.N().S(field.originalName)
+					qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
+            }
+`)
+				}
+				qw422016.N().S(`            `)
+				qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+				qw422016.N().S(`
+        } else {
+            `)
+				struct_.streamreadJsonWithResetForRaw(qw422016, field, bytesVersion, directImports)
+				qw422016.N().S(`
+        }
+`)
+			} else {
+				qw422016.N().S(`        `)
+				struct_.streamreadJsonWithResetForRaw(qw422016, field, bytesVersion, directImports)
+				qw422016.N().S(`
+`)
+			}
+		}
+		/* BLOCK: trueType with false values validation */
+
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
+			}
+			if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.IsField() {
+				continue
+			}
+			bit := int(field.BitNumber)
+
+			qw422016.N().S(`        // tries to set bit to zero if it is 1
+        if trueType`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented && !trueType`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Value && (`)
+			qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+			qw422016.N().S(` & (1 << `)
+			qw422016.E().V(bit)
+			qw422016.N().S(`) != 0) {
+            return `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidJSON(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, "fieldmask bit `)
+			qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+			qw422016.N().S(`.`)
+			qw422016.N().D(bit)
+			qw422016.N().S(` is indefinite because of the contradictions in values")
+        }
+`)
+		}
+		/* BLOCK: set tl2 masks */
+
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() || field.originalName == "" {
+				continue
+			}
+			if field.fieldMask != nil && field.MaskTL2Bit != nil {
+				qw422016.N().S(`            if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1<<`)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+                item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
             }
 `)
 			}
-			qw422016.N().S(`            `)
-			qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
-			qw422016.N().S(`
-        } else {
-            `)
-			struct_.streamreadJsonWithResetForRaw(qw422016, field, bytesVersion, directImports)
-			qw422016.N().S(`
-        }
-`)
-		} else {
-			qw422016.N().S(`        `)
-			struct_.streamreadJsonWithResetForRaw(qw422016, field, bytesVersion, directImports)
-			qw422016.N().S(`
-`)
-		}
-	}
-	/* BLOCK: trueType with false values validation */
-
-	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.IsField() {
-			continue
-		}
-		bit := int(field.BitNumber)
-
-		qw422016.N().S(`        // tries to set bit to zero if it is 1
-        if trueType`)
-		qw422016.N().S(field.goName)
-		qw422016.N().S(`Presented && !trueType`)
-		qw422016.N().S(field.goName)
-		qw422016.N().S(`Value && (`)
-		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-		qw422016.N().S(` & (1 << `)
-		qw422016.E().V(bit)
-		qw422016.N().S(`) != 0) {
-            return `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, "fieldmask bit `)
-		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-		qw422016.N().S(`.`)
-		qw422016.N().D(bit)
-		qw422016.N().S(` is indefinite because of the contradictions in values")
-        }
-`)
-	}
-	/* BLOCK: set tl2 masks */
-
-	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() || field.originalName == "" {
-			continue
-		}
-		if field.fieldMask != nil && field.MaskTL2Bit != nil {
-			qw422016.N().S(`            if `)
-			qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-			qw422016.N().S(` & (1<<`)
-			qw422016.E().V(field.BitNumber)
-			qw422016.N().S(`) != 0 {
-                item.`)
-			qw422016.N().S(field.TL2MaskForOP("|="))
-			qw422016.N().S(`
-            }
-`)
 		}
 	}
 	qw422016.N().S(`    return nil
@@ -1486,71 +1491,126 @@ func (item *`)
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		// field names will be mandatory soon, except for typedefs which are processed separately
+		if struct_.wr.originateFromTL2 {
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`            if item.`)
+				qw422016.N().S(field.TL2MaskForOP("&"))
+				qw422016.N().S(` != 0 {
+                w = basictl.JSONAddCommaIfNeeded(w)
+`)
+				if field.IsBit() {
+					qw422016.N().S(`                    w = append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().Q(field.originalName)
+					qw422016.N().S(`:true`)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+`)
+				} else {
+					qw422016.N().S(`                    w = append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().S(`"`)
+					qw422016.E().S(field.originalName)
+					qw422016.N().S(`":`)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+                    `)
+					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods))
+					qw422016.N().S(`
+`)
+				}
+				qw422016.N().S(`            }
+`)
+			} else {
+				/* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */
 
-		if field.originalName == "" {
-			continue
-		}
-		if field.t.IsTrueType() {
-			if field.fieldMask != nil && (field.fieldMask.IsField() || field.fieldMask.IsNumber()) {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` & (1<<`)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 {
-        w = basictl.JSONAddCommaIfNeeded(w)
-        w = append(w, `)
+				qw422016.N().S(`            `)
+				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
+				if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+					qw422016.N().S(`                if (`)
+					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
+					qw422016.N().S(`) {
+`)
+				}
+				qw422016.N().S(`                    w = basictl.JSONAddCommaIfNeeded(w)
+                    w = append(w, `)
 				qw422016.N().S("`")
-				qw422016.N().Q(field.originalName)
-				qw422016.N().S(`:true`)
+				qw422016.N().S(`"`)
+				qw422016.E().S(field.originalName)
+				qw422016.N().S(`":`)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
-    }
+                    `)
+				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods))
+				qw422016.N().S(`
 `)
+				if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+					qw422016.N().S(`                }
+`)
+				}
 			}
 		} else {
-			if field.fieldMask != nil {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` & (1<<`)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 {
+			if field.t.IsTrueType() {
+				if field.fieldMask != nil && (field.fieldMask.IsField() || field.fieldMask.IsNumber()) {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1<<`)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
+        w = basictl.JSONAddCommaIfNeeded(w)
+        w = append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().Q(field.originalName)
+					qw422016.N().S(`:true`)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+    }
 `)
-			}
-			if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
-				qw422016.N().S(`                backupIndex`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` := len(w)
+				}
+			} else {
+				if field.fieldMask != nil {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1<<`)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
 `)
-			}
-			qw422016.N().S(`                w = basictl.JSONAddCommaIfNeeded(w)
+				}
+				if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+					qw422016.N().S(`                backupIndex`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` := len(w)
+`)
+				}
+				qw422016.N().S(`                w = basictl.JSONAddCommaIfNeeded(w)
                 w = append(w, `)
-			qw422016.N().S("`")
-			qw422016.N().S(`"`)
-			qw422016.E().S(field.originalName)
-			qw422016.N().S(`":`)
-			qw422016.N().S("`")
-			qw422016.N().S(`...)
+				qw422016.N().S("`")
+				qw422016.N().S(`"`)
+				qw422016.E().S(field.originalName)
+				qw422016.N().S(`":`)
+				qw422016.N().S("`")
+				qw422016.N().S(`...)
         `)
-			qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods))
-			qw422016.N().S(`
+				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods))
+				qw422016.N().S(`
 `)
-			if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
-				qw422016.N().S(`                if (`)
-				qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
-				qw422016.N().S(`) == false {
+				if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+					qw422016.N().S(`                if (`)
+					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
+					qw422016.N().S(`) == false {
                         w = w[:backupIndex`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`]
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`]
                 }
 `)
-			}
-			if field.fieldMask != nil {
-				qw422016.N().S(`    }
+				}
+				if field.fieldMask != nil {
+					qw422016.N().S(`    }
 `)
+				}
 			}
 		}
 	}
@@ -2061,10 +2121,9 @@ func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesV
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.t.IsTrueType() {
+		if field.t.IsTrueType() || field.IsBit() {
 			continue
 		}
-
 		qw422016.N().S(`        `)
 		qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
 		qw422016.N().S(`
@@ -2110,6 +2169,46 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(tl2mask)
 		qw422016.N().S(` = 0
 `)
+	}
+	if struct_.wr.originateFromTL2 {
+		for _, field := range struct_.Fields {
+			if field.IsTL2Omitted() {
+				continue
+			}
+			if field.recursive {
+				qw422016.N().S(`                  rg.IncreaseDepth()
+`)
+			}
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`                if basictl.RandomInt(rg) & 1 != 0 {
+                    item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+`)
+				if !field.IsBit() {
+					qw422016.N().S(`                            `)
+					qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
+					qw422016.N().S(`
+                        }else{
+                            `)
+					qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
+					qw422016.N().S(`
+`)
+				}
+				qw422016.N().S(`                }
+`)
+			} else {
+				qw422016.N().S(`                    `)
+				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
+				qw422016.N().S(`
+`)
+			}
+			if field.recursive {
+				qw422016.N().S(`                  rg.DecreaseDepth()
+`)
+			}
+		}
+		return
 	}
 	for fieldId, field := range struct_.Fields {
 		if field.IsTL2Omitted() {

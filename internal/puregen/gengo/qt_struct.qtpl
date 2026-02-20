@@ -503,6 +503,9 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+{%- if struct_.wr.originateFromTL2 -%}
+    // TODO - simple JSON reading code for TL2
+{%- else -%}
     {%-
         code // init values for after read processing
         needSomeRaw := false
@@ -675,6 +678,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             }
         {%- endif -%}
     {%- endfor -%}
+{%- endif -%}
     return nil
 }
 
@@ -716,10 +720,32 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
-        -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- if field.MaskTL2Bit != nil -%}
+            if item.{%s= field.TL2MaskForOP("&") %} != 0 {
+                w = basictl.JSONAddCommaIfNeeded(w)
+                {%- if field.IsBit() -%}
+                    w = append(w, `{%q= field.originalName %}:true`...)
+                {%- else -%}
+                    w = append(w, `"{%s field.originalName %}":`...)
+                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods) %}
+                {%- endif -%}
+            }
+        {%- else -%}
+            {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
+            {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
+            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
+                if ({%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) %}) {
+            {%- endif -%}
+                    w = basictl.JSONAddCommaIfNeeded(w)
+                    w = append(w, `"{%s field.originalName %}":`...)
+                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, field.t.hasErrorInWriteMethods) %}
+            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
+                }
+            {%- endif -%}
+        {%- endif -%}
+    {%- else -%}
         {%- if field.t.IsTrueType() -%}
             {%- if field.fieldMask != nil && (field.fieldMask.IsField() || field.fieldMask.IsNumber()) -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
@@ -753,6 +779,7 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
     }
             {%- endif -%}
         {%- endif -%}
+    {%- endif -%}
     {%- endfor -%}
     {%- if writeNeedsError -%}
     return append(w, '}'), nil
@@ -1063,7 +1090,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.IsBit() -%}{%- continue -%}{%- endif -%}
+        {%- if field.t.IsTrueType() || field.IsBit() -%}{%- continue -%}{%- endif -%}
         {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
     {%- endfor -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
@@ -1081,6 +1108,30 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- for _, field := range struct_.Fields -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            {%- if field.recursive -%}
+                  rg.IncreaseDepth()
+            {%- endif -%}
+            {%- if field.MaskTL2Bit != nil -%}
+                if basictl.RandomInt(rg) & 1 != 0 {
+                    item.{%s= field.TL2MaskForOP("|=") %}
+                    {%- if !field.IsBit() -%}
+                            {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
+                        }else{
+                            {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
+                    {%- endif -%}
+                }
+            {%- else -%}
+                    {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
+            {%- endif -%}
+            {%- if field.recursive -%}
+                  rg.DecreaseDepth()
+            {%- endif -%}
+        {%- endfor -%}
+        {%- return -%}
+    {%- endif -%}
     {%- for fieldId, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() -%}
