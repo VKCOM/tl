@@ -283,46 +283,12 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     if !in.Ok() {
         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
     }
-    switch _tag {
-        {%- for i, field := range union.Fields -%}
-            {%- code
-                name := field.t.tlName.String()
-                tag := fmt.Sprintf("#%08x", field.t.tlTag)
-                nameWithTag := name + tag
-                wrWithoutLong := field.t.WrWithoutLong
-            -%}
-            {%- if union.wr.originateFromTL2 -%}
-        case {%q= name %}:
-            {%- else -%}
-        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}{%- if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) -%},
-            {%- code
-                name2 := wrWithoutLong.tlName.String()
-                tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
-                nameWithTag2 := name2 + tag2
-            -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
-            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
-            }
-            {%- else -%}:{%- endif -%}
-            if tctx.IsTL2 && _tag != {%q= name %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, _tag)
-            }
-            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
-            }
-            {%- endif -%}
-            item.index = {%d i %}
-            return nil
-        {%- endfor -%}
-        default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= tlName %}, _tag)
-    }
-}
     {%- else -%}
     _tag, _value, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= tlName %}, in)
     if err != nil {
         return err
     }
+    {%- endif -%}
     switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
@@ -352,21 +318,21 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             }
             {%- endif -%}
             item.index = {%d i %}
-            {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
-            {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
-            var in2Pointer *basictl.JsonLexer
-            if _value != nil {
-                in2Pointer = &basictl.JsonLexer{Data: _value}
-            }
-            {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
-                formatNatArgs(nil, field.natArgs), field.recursive) %}
+            {%- if !field.t.IsTrueType()-%}
+                {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+                var in2Pointer *basictl.JsonLexer
+                if _value != nil {
+                    in2Pointer = &basictl.JsonLexer{Data: _value}
+                }
+                {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
+                    formatNatArgs(nil, field.natArgs), field.recursive) %}
+            {%-endif-%}
         {%- endfor -%}
         default:
             return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= tlName %}, _tag)
     }
     return nil
 }
-    {%- endif -%}
 
 // This method is general version of WriteJSON, use it instead!
 func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) ([]byte, error) {

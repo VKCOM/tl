@@ -99,7 +99,6 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum1#58aad3f5")
 		}
 		item.index = 0
-		return nil
 	case "cases_bytes.testEnum2#00b47add", "cases_bytes.testEnum2", "#00b47add":
 		if tctx.IsTL2 && _tag != "cases_bytes.testEnum2" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _tag)
@@ -108,7 +107,6 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum2#00b47add")
 		}
 		item.index = 1
-		return nil
 	case "cases_bytes.testEnum3#81911ffa", "cases_bytes.testEnum3", "#81911ffa":
 		if tctx.IsTL2 && _tag != "cases_bytes.testEnum3" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _tag)
@@ -117,10 +115,10 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum3#81911ffa")
 		}
 		item.index = 2
-		return nil
 	default:
 		return ErrorInvalidUnionTagJSON("cases_bytes.TestEnum", _tag)
 	}
+	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!

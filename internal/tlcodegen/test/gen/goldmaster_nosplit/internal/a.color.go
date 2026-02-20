@@ -204,7 +204,6 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.color#f35d7a69")
 		}
 		item.index = 0
-		return nil
 	case "a.red#b83a723d", "a.red", "#b83a723d":
 		if tctx.IsTL2 && _tag != "a.red" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
@@ -213,7 +212,6 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.red#b83a723d")
 		}
 		item.index = 1
-		return nil
 	case "a.green#6127e7b8", "a.green", "#6127e7b8":
 		if tctx.IsTL2 && _tag != "a.green" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
@@ -222,7 +220,6 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.green#6127e7b8")
 		}
 		item.index = 2
-		return nil
 	case "b.red#a9471844", "b.red", "#a9471844":
 		if tctx.IsTL2 && _tag != "b.red" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
@@ -231,7 +228,6 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "b.red#a9471844")
 		}
 		item.index = 3
-		return nil
 	case "a.blue#623360f3", "a.blue", "#623360f3":
 		if tctx.IsTL2 && _tag != "a.blue" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
@@ -240,10 +236,10 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.blue#623360f3")
 		}
 		item.index = 4
-		return nil
 	default:
 		return ErrorInvalidUnionTagJSON("a.Color", _tag)
 	}
+	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!

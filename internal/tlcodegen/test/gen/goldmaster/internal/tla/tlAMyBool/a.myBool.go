@@ -177,7 +177,6 @@ func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myTrue#00000001")
 		}
 		item.index = 0
-		return nil
 	case "a.myFalse#00000002", "a.myFalse", "#00000002":
 		if tctx.IsTL2 && _tag != "a.myFalse" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyBool", _tag)
@@ -186,10 +185,10 @@ func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myFalse#00000002")
 		}
 		item.index = 1
-		return nil
 	default:
 		return internal.ErrorInvalidUnionTagJSON("a.MyBool", _tag)
 	}
+	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
