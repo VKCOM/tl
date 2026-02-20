@@ -12,6 +12,7 @@ package gengo
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/vkcom/tl/internal/pure"
 )
@@ -61,6 +62,15 @@ func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]boo
 	if trw.ResultType != nil {
 		result = result || trw.ResultType.MarkHasBytesVersion(visitedNodes)
 	}
+	return result
+}
+
+func (trw *TypeRWStruct) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	result := len(trw.AllNewTL2Masks()) != 0 && !trw.wr.originateFromTL2
+	for _, f := range trw.Fields {
+		result = result || f.t.MarkHasRepairMasks(visitedNodes)
+	}
+	// result type does not affect this
 	return result
 }
 
@@ -211,6 +221,13 @@ func (trw *TypeRWStruct) typeRandomCode(bytesVersion bool, directImports *Direct
 		return trw.Fields[0].t.TypeRandomCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
 	}
 	return fmt.Sprintf("%s.FillRandom(rg %s)", val, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWStruct) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.TypeRepairMasksCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
+	}
+	return fmt.Sprintf("%s = %s.RepairMasks(%s)", addAsterisk(ref, val), val, strings.Join(natArgs, ","))
 }
 
 func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

@@ -105,6 +105,75 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`
+`)
+	if struct_.wr.hasRepairMasks {
+		qw422016.N().S(`func (item `)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
+		qw422016.N().S(`) `)
+		qw422016.N().S(goName)
+		qw422016.N().S(` {
+`)
+		if struct_.isTypeDef() {
+			field := struct_.Fields[0]
+
+			qw422016.N().S(`ptr := (*`)
+			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+			qw422016.N().S(`)(&item)
+`)
+			qw422016.N().S(field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true))
+			qw422016.N().S(`
+`)
+		} else {
+			for _, tl2mask := range struct_.AllNewTL2Masks() {
+				qw422016.N().S(`         item.`)
+				qw422016.N().S(tl2mask)
+				qw422016.N().S(` = 0
+`)
+			}
+			for _, field := range struct_.Fields {
+				if field.IsTL2Omitted() {
+					continue
+				}
+				if field.MaskTL2Bit != nil && field.fieldMask != nil {
+					qw422016.N().S(`            if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1<<`)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
+                item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
+					qw422016.N().S(`
+            }
+`)
+				}
+				repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
+
+				if !field.IsBit() && field.t.hasRepairMasks {
+					if field.recursive {
+						qw422016.N().S(`                if item.`)
+						qw422016.E().S(field.goName)
+						qw422016.N().S(` != nil {
+                    `)
+						qw422016.N().S(repairCode)
+						qw422016.N().S(`
+                }
+`)
+					} else {
+						qw422016.N().S(`                `)
+						qw422016.N().S(repairCode)
+						qw422016.N().S(`
+`)
+					}
+				}
+			}
+		}
+		qw422016.N().S(`    return item
+}
+`)
+	}
+	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) Read(w []byte`)

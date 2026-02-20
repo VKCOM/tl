@@ -22,6 +22,11 @@ func BuiltinVectorCyc1MyCycleFillRandom(rg *basictl.RandGenerator, vec *[]Cyc1My
 	}
 	rg.DecreaseDepth()
 }
+func BuiltinVectorCyc1MyCycleRepairMasks(vec *[]Cyc1MyCycle) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
+}
 func BuiltinVectorCyc1MyCycleRead(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
@@ -214,6 +219,15 @@ func (item *Cyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	} else {
 		item.A.Reset()
 	}
+}
+
+func (item Cyc1MyCycle) RepairMasks() Cyc1MyCycle {
+	item.tl2mask0 = 0
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	item.A = item.A.RepairMasks()
+	return item
 }
 
 func (item *Cyc1MyCycle) Read(w []byte) (_ []byte, err error) {

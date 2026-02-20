@@ -30,6 +30,13 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
 }
 
                 {%- endif -%}
+            {%- if tuple.wr.hasRepairMasks -%}
+func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
+    for i := range *vec {
+        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+    }
+}
+            {%- endif -%}
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     {%- if tuple.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -335,6 +342,15 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeStri
         (*m)[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
     rg.DecreaseDepth()
+}
+            {%- endif -%}
+            {%- if tuple.wr.hasRepairMasks -%}
+func {%s= goName %}RepairMasks(m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {
+    for key, val := range *m {
+        elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:val}
+        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        (*m)[key] = elem.{%s= valueFieldName %}
+    }
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {

@@ -54,6 +54,22 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
 
 `)
 		}
+		if tuple.wr.hasRepairMasks {
+			qw422016.N().S(`func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`RepairMasks(vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) {
+    for i := range *vec {
+        `)
+			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(`
+    }
+}
+`)
+		}
 		qw422016.N().S(`func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`Read(w []byte, vec *`)
@@ -597,6 +613,34 @@ func `)
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
+}
+`)
+		}
+		if tuple.wr.hasRepairMasks {
+			qw422016.N().S(`func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`RepairMasks(m *map[`)
+			qw422016.N().S(keyTypeString)
+			qw422016.N().S(`]`)
+			qw422016.N().S(valueTypeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) {
+    for key, val := range *m {
+        elem := `)
+			qw422016.N().S(elementTypeString)
+			qw422016.N().S(`{`)
+			qw422016.N().S(keyFieldName)
+			qw422016.N().S(`:key, `)
+			qw422016.N().S(valueFieldName)
+			qw422016.N().S(`:val}
+        `)
+			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(`
+        (*m)[key] = elem.`)
+			qw422016.N().S(valueFieldName)
+			qw422016.N().S(`
+    }
 }
 `)
 		}

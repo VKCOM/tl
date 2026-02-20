@@ -5,6 +5,8 @@ package gengo
 
 import "fmt"
 
+import "strings"
+
 import (
 	qtio422016 "io"
 
@@ -105,6 +107,42 @@ func (item *`)
 		}
 		qw422016.N().S(`    default:
     }
+}
+`)
+	}
+	if union.wr.hasRepairMasks {
+		qw422016.N().S(`func (item `)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
+		qw422016.N().S(`) `)
+		qw422016.N().S(goName)
+		qw422016.N().S(` {
+`)
+		for _, field := range union.Fields {
+			repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+				formatNatArgs(nil, field.natArgs), field.recursive)
+
+			if field.t.IsTrueType() || !field.t.hasRepairMasks {
+				continue
+			}
+			if field.recursive {
+				qw422016.N().S(`            if item.value`)
+				qw422016.E().S(field.goName)
+				qw422016.N().S(` != nil {
+                `)
+				qw422016.N().S(repairCode)
+				qw422016.N().S(`
+            }
+`)
+			} else {
+				qw422016.N().S(`            `)
+				qw422016.N().S(repairCode)
+				qw422016.N().S(`
+`)
+			}
+		}
+		qw422016.N().S(`    return item
 }
 `)
 	}

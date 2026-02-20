@@ -91,6 +91,20 @@ func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item UseTrue) RepairMasks() UseTrue {
+	item.tl2mask0 = 0
+	if item.Fm&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Fm&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.Fm&(1<<2) != 0 {
+		item.tl2mask0 |= 4
+	}
+	return item
+}
+
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {

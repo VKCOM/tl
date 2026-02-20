@@ -40,6 +40,10 @@ func (item *CurlResponse) FillRandom(rg *basictl.RandGenerator) {
 	default:
 	}
 }
+func (item CurlResponse) RepairMasks() CurlResponse {
+	item.valueOk = item.valueOk.RepairMasks()
+	return item
+}
 
 func (item *CurlResponse) IsOk() bool { return item.index == 0 }
 
@@ -708,6 +712,14 @@ func (item *CurlResponseOk) FillRandom(rg *basictl.RandGenerator) {
 	} else {
 		item.HttpBody = ""
 	}
+}
+
+func (item CurlResponseOk) RepairMasks() CurlResponseOk {
+	item.tl2mask0 = 0
+	if item.FieldMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	return item
 }
 
 func (item *CurlResponseOk) Read(w []byte) (_ []byte, err error) {

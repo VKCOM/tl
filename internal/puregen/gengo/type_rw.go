@@ -24,6 +24,10 @@ type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	markWantsTL2(visitedNodes map[*TypeRWWrapper]bool)
+	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
+	markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool
+	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
+
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
@@ -32,13 +36,11 @@ type TypeRW interface {
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
 
-	// methods below depend on target language
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
-	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
-	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
 	typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string
 	typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string
+	typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string
 	typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string
 	typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string
 	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string

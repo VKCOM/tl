@@ -34,6 +34,11 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) FillRandom(rg *basictl.Ra
 	item.Value.FillRandom(rg, item.Outer)
 }
 
+func (item CasesTestAllPossibleFieldConfigsContainer) RepairMasks() CasesTestAllPossibleFieldConfigsContainer {
+	item.Value = item.Value.RepairMasks(item.Outer)
+	return item
+}
+
 func (item *CasesTestAllPossibleFieldConfigsContainer) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Outer); err != nil {
 		return w, err

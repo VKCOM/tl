@@ -36,6 +36,10 @@ func (trw *TypeRWDict) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	return true
 }
 
+func (trw *TypeRWDict) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	return trw.element.t.MarkHasRepairMasks(visitedNodes)
+}
+
 func (trw *TypeRWDict) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.MarkWriteHasError(visitedNodes)
 }
@@ -82,6 +86,11 @@ func (trw *TypeRWDict) typeResettingCode(bytesVersion bool, directImports *Direc
 func (trw *TypeRWDict) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%sFillRandom(rg, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWDict) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%sRepairMasks(%s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWDict) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

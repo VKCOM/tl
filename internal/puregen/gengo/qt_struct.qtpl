@@ -44,6 +44,41 @@ func (item *{%s= goName %}) Reset() { {%= struct_.resetFields(bytesVersion, dire
 func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl %}) { {%= struct_.randomFields(bytesVersion, directImports) %} }
         {%- endif -%}
 
+        {%- if struct_.wr.hasRepairMasks -%}
+func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+    {%- if struct_.isTypeDef() -%}
+        {%- code field := struct_.Fields[0] -%}
+ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(&item)
+{%s= field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
+    {%- else -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.MaskTL2Bit != nil && field.fieldMask != nil -%}
+            if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                item.{%s= field.TL2MaskForOP("|=") %}
+            }
+        {%- endif -%}
+        {%- code
+            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
+        -%}
+        {%- if !field.IsBit() && field.t.hasRepairMasks -%}
+            {%- if field.recursive -%}
+                if item.{%s field.goName %} != nil {
+                    {%s= repairCode %}
+                }
+            {%- else -%}
+                {%s= repairCode %}
+            {%- endif -%}
+        {%- endif -%}
+    {%- endfor -%}
+    {%- endif -%}
+    return item
+}
+        {%- endif -%}
+
 func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
 
 func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {

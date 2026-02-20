@@ -410,6 +410,12 @@ func (item *TupleCycleTuple) FillRandom(rg *basictl.RandGenerator, nat_n uint32)
 	BuiltinTupleCycleTupleFillRandom(rg, ptr, nat_n)
 }
 
+func (item TupleCycleTuple) RepairMasks(nat_n uint32) TupleCycleTuple {
+	ptr := (*[]CycleTuple)(&item)
+	BuiltinTupleCycleTupleRepairMasks(ptr, nat_n)
+	return item
+}
+
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]CycleTuple)(item)
 	return BuiltinTupleCycleTupleRead(w, ptr, nat_n)
@@ -512,6 +518,12 @@ func (item *TupleCycleTuple2) Reset() {
 func (item *TupleCycleTuple2) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*[2]CycleTuple)(item)
 	BuiltinTuple2CycleTupleFillRandom(rg, ptr)
+}
+
+func (item TupleCycleTuple2) RepairMasks() TupleCycleTuple2 {
+	ptr := (*[2]CycleTuple)(&item)
+	BuiltinTuple2CycleTupleRepairMasks(ptr)
+	return item
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {

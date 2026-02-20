@@ -8,6 +8,7 @@ package gengo
 
 import (
 	"fmt"
+	strings "strings"
 )
 
 type TypeRWMaybe struct {
@@ -29,6 +30,10 @@ func (trw *TypeRWMaybe) typeString2(bytesVersion bool, directImports *DirectImpo
 
 func (trw *TypeRWMaybe) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.MarkHasBytesVersion(visitedNodes)
+}
+
+func (trw *TypeRWMaybe) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	return trw.element.t.MarkHasRepairMasks(visitedNodes)
 }
 
 func (trw *TypeRWMaybe) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -72,6 +77,10 @@ func (trw *TypeRWMaybe) typeResettingCode(bytesVersion bool, directImports *Dire
 
 func (trw *TypeRWMaybe) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	return fmt.Sprintf("%s.FillRandom(rg %s)", val, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWMaybe) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	return fmt.Sprintf("%s = ", addAsterisk(ref, val)) + fmt.Sprintf("%s.RepairMasks(%s)", val, strings.Join(natArgs, ","))
 }
 
 func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

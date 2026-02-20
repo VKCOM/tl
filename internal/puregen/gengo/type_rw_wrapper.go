@@ -66,6 +66,7 @@ type TypeRWWrapper struct {
 
 	wantsBytesVersion bool
 	wantsTL2          bool
+	hasRepairMasks    bool
 	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
 	hasBytesVersion        bool
@@ -328,6 +329,14 @@ func (w *TypeRWWrapper) MarkHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool
 	return w.trw.markHasBytesVersion(visitedNodes)
 }
 
+func (w *TypeRWWrapper) MarkHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
+	if visitedNodes[w] {
+		return false // We OR results of fields, so if we visited field, and it returned true, this true is already recorded
+	}
+	visitedNodes[w] = true
+	return w.trw.markHasRepairMasks(visitedNodes)
+}
+
 func (w *TypeRWWrapper) MarkWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
 	if visitedNodes[w] {
 		return false // We OR results of fields, so if we visited field, and it returned true, this true is already recorded
@@ -381,6 +390,10 @@ func (w *TypeRWWrapper) TypeResettingCode(bytesVersion bool, directImports *Dire
 func (w *TypeRWWrapper) TypeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeRandomCode(bytesVersion, directImports, ins, val, natArgs, ref)
+}
+func (w *TypeRWWrapper) TypeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+	bytesVersion = bytesVersion && w.hasBytesVersion
+	return w.trw.typeRepairMasksCode(bytesVersion, directImports, ins, val, natArgs, ref)
 }
 func (w *TypeRWWrapper) TypeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion

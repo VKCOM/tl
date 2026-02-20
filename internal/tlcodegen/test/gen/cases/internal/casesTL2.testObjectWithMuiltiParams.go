@@ -78,6 +78,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams) FillRandom(rg *basictl.RandGener
 	}
 }
 
+func (item CasesTL2TestObjectWithMuiltiParams) RepairMasks(nat_n uint32, nat_m uint32) CasesTL2TestObjectWithMuiltiParams {
+	item.tl2mask0 = 0
+	if nat_n&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if nat_m&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
+}
+
 func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
@@ -431,6 +442,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) FillRandom(rg *basictl.RandGene
 	}
 }
 
+func (item CasesTL2TestObjectWithMuiltiParams2) RepairMasks(nat_n uint32) CasesTL2TestObjectWithMuiltiParams2 {
+	item.tl2mask0 = 0
+	if nat_n&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if 2&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
+}
+
 func (item *CasesTL2TestObjectWithMuiltiParams2) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
@@ -770,6 +792,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) FillRandom(rg *basictl.RandGene
 	}
 }
 
+func (item CasesTL2TestObjectWithMuiltiParams3) RepairMasks(nat_m uint32) CasesTL2TestObjectWithMuiltiParams3 {
+	item.tl2mask0 = 0
+	if 3&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if nat_m&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
+}
+
 func (item *CasesTL2TestObjectWithMuiltiParams3) Read(w []byte, nat_m uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 3&(1<<0) != 0 {
@@ -1091,6 +1124,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 	} else {
 		BuiltinTuple1IntReset(&item.F2)
 	}
+}
+
+func (item CasesTL2TestObjectWithMuiltiParams41) RepairMasks() CasesTL2TestObjectWithMuiltiParams41 {
+	item.tl2mask0 = 0
+	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if 1&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
+	return item
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {

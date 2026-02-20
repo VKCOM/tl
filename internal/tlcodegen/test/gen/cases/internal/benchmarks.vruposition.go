@@ -153,6 +153,29 @@ func (item *BenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item BenchmarksVruposition) RepairMasks() BenchmarksVruposition {
+	item.tl2mask0 = 0
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.FieldsMask&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.FieldsMask&(1<<3) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.FieldsMask&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.FieldsMask&(1<<15) != 0 {
+		item.tl2mask0 |= 16
+	}
+	if item.FieldsMask&(1<<14) != 0 {
+		item.tl2mask0 |= 32
+	}
+	return item
+}
+
 func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
@@ -798,6 +821,11 @@ func BuiltinTupleBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec 
 	}
 	rg.DecreaseDepth()
 }
+func BuiltinTupleBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition, nat_n uint32) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
+}
 
 func BuiltinTupleBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
@@ -982,6 +1010,11 @@ func BuiltinVectorBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec
 		(*vec)[i].FillRandom(rg)
 	}
 	rg.DecreaseDepth()
+}
+func BuiltinVectorBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i].RepairMasks()
+	}
 }
 func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
 	var l uint32

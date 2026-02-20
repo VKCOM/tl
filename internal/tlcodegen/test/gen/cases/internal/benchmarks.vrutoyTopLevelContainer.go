@@ -28,6 +28,11 @@ func (item *BenchmarksVrutoyTopLevelContainer) FillRandom(rg *basictl.RandGenera
 	item.Value.FillRandom(rg)
 }
 
+func (item BenchmarksVrutoyTopLevelContainer) RepairMasks() BenchmarksVrutoyTopLevelContainer {
+	item.Value = item.Value.RepairMasks()
+	return item
+}
+
 func (item *BenchmarksVrutoyTopLevelContainer) Read(w []byte) (_ []byte, err error) {
 	return item.Value.ReadBoxed(w)
 }

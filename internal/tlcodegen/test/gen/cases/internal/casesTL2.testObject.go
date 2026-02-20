@@ -102,6 +102,22 @@ func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
+func (item CasesTL2TestObject) RepairMasks() CasesTL2TestObject {
+	item.tl2mask0 = 0
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	item.F4 = item.F4.RepairMasks(item.N)
+	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	BuiltinVectorBenchmarksVrutoyTopLevelUnionRepairMasks(&item.F6)
+	if item.N&(1<<14) != 0 {
+		item.tl2mask0 |= 4
+	}
+	return item
+}
+
 func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
