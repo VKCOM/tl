@@ -279,11 +279,11 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         // by allowing union element to be read from string, and enum from object with tag
     -%}
     {%- if union.IsEnum -%}
-    _jtype := in.UnsafeString()
+    _tag := in.UnsafeString()
     if !in.Ok() {
         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
     }
-    switch _jtype {
+    switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
                 name := field.t.tlName.String()
@@ -300,14 +300,14 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
                 nameWithTag2 := name2 + tag2
             -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
-            if !tctx.LegacyTypeNames && _jtype == {%q= nameWithTag2 %} {
+            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
                 return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
             }
             {%- else -%}:{%- endif -%}
-            if tctx.IsTL2 && _jtype != {%q= name %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, _jtype)
+            if tctx.IsTL2 && _tag != {%q= name %} {
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, _tag)
             }
-            if !tctx.LegacyTypeNames && _jtype == {%q= nameWithTag %} {
+            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
                 return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
             }
             {%- endif -%}
@@ -315,7 +315,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             return nil
         {%- endfor -%}
         default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= tlName %}, _jtype)
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= tlName %}, _tag)
     }
 }
     {%- else -%}

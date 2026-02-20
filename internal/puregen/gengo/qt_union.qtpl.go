@@ -504,7 +504,7 @@ func (item *`)
 	// by allowing union element to be read from string, and enum from object with tag
 
 	if union.IsEnum {
-		qw422016.N().S(`    _jtype := in.UnsafeString()
+		qw422016.N().S(`    _tag := in.UnsafeString()
     if !in.Ok() {
         return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
@@ -512,7 +512,7 @@ func (item *`)
 		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "expected string")
     }
-    switch _jtype {
+    switch _tag {
 `)
 		for i, field := range union.Fields {
 			name := field.t.tlName.String()
@@ -545,7 +545,7 @@ func (item *`)
 					qw422016.N().S(`, `)
 					qw422016.N().Q(tag2)
 					qw422016.N().S(`:
-            if !tctx.LegacyTypeNames && _jtype == `)
+            if !tctx.LegacyTypeNames && _tag == `)
 					qw422016.N().Q(nameWithTag2)
 					qw422016.N().S(` {
                 return `)
@@ -560,16 +560,16 @@ func (item *`)
 				} else {
 					qw422016.N().S(`:`)
 				}
-				qw422016.N().S(`            if tctx.IsTL2 && _jtype != `)
+				qw422016.N().S(`            if tctx.IsTL2 && _tag != `)
 				qw422016.N().Q(name)
 				qw422016.N().S(` {
                 return `)
 				qw422016.N().S(union.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
 				qw422016.N().Q(tlName)
-				qw422016.N().S(`, _jtype)
+				qw422016.N().S(`, _tag)
             }
-            if !tctx.LegacyTypeNames && _jtype == `)
+            if !tctx.LegacyTypeNames && _tag == `)
 				qw422016.N().Q(nameWithTag)
 				qw422016.N().S(` {
                 return `)
@@ -591,9 +591,9 @@ func (item *`)
 		qw422016.N().S(`        default:
             return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidEnumTagJSON(`)
+		qw422016.N().S(`ErrorInvalidUnionTagJSON(`)
 		qw422016.N().Q(tlName)
-		qw422016.N().S(`, _jtype)
+		qw422016.N().S(`, _tag)
     }
 }
 `)

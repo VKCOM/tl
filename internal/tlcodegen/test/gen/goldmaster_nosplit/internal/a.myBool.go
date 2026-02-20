@@ -162,31 +162,31 @@ func (item *AMyBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_jtype := in.UnsafeString()
+	_tag := in.UnsafeString()
 	if !in.Ok() {
 		return ErrorInvalidJSON("a.MyBool", "expected string")
 	}
-	switch _jtype {
+	switch _tag {
 	case "a.myTrue#00000001", "a.myTrue", "#00000001":
-		if tctx.IsTL2 && _jtype != "a.myTrue" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _jtype)
+		if tctx.IsTL2 && _tag != "a.myTrue" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.myTrue#00000001" {
+		if !tctx.LegacyTypeNames && _tag == "a.myTrue#00000001" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myTrue#00000001")
 		}
 		item.index = 0
 		return nil
 	case "a.myFalse#00000002", "a.myFalse", "#00000002":
-		if tctx.IsTL2 && _jtype != "a.myFalse" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _jtype)
+		if tctx.IsTL2 && _tag != "a.myFalse" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.myFalse#00000002" {
+		if !tctx.LegacyTypeNames && _tag == "a.myFalse#00000002" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myFalse#00000002")
 		}
 		item.index = 1
 		return nil
 	default:
-		return ErrorInvalidEnumTagJSON("a.MyBool", _jtype)
+		return ErrorInvalidUnionTagJSON("a.MyBool", _tag)
 	}
 }
 

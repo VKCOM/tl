@@ -191,58 +191,58 @@ func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_jtype := in.UnsafeString()
+	_tag := in.UnsafeString()
 	if !in.Ok() {
 		return internal.ErrorInvalidJSON("a.Color", "expected string")
 	}
-	switch _jtype {
+	switch _tag {
 	case "a.color#f35d7a69", "a.color", "#f35d7a69":
-		if tctx.IsTL2 && _jtype != "a.color" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		if tctx.IsTL2 && _tag != "a.color" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.color#f35d7a69" {
+		if !tctx.LegacyTypeNames && _tag == "a.color#f35d7a69" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.color#f35d7a69")
 		}
 		item.index = 0
 		return nil
 	case "a.red#b83a723d", "a.red", "#b83a723d":
-		if tctx.IsTL2 && _jtype != "a.red" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		if tctx.IsTL2 && _tag != "a.red" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.red#b83a723d" {
+		if !tctx.LegacyTypeNames && _tag == "a.red#b83a723d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.red#b83a723d")
 		}
 		item.index = 1
 		return nil
 	case "a.green#6127e7b8", "a.green", "#6127e7b8":
-		if tctx.IsTL2 && _jtype != "a.green" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		if tctx.IsTL2 && _tag != "a.green" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.green#6127e7b8" {
+		if !tctx.LegacyTypeNames && _tag == "a.green#6127e7b8" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.green#6127e7b8")
 		}
 		item.index = 2
 		return nil
 	case "b.red#a9471844", "b.red", "#a9471844":
-		if tctx.IsTL2 && _jtype != "b.red" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		if tctx.IsTL2 && _tag != "b.red" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "b.red#a9471844" {
+		if !tctx.LegacyTypeNames && _tag == "b.red#a9471844" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "b.red#a9471844")
 		}
 		item.index = 3
 		return nil
 	case "a.blue#623360f3", "a.blue", "#623360f3":
-		if tctx.IsTL2 && _jtype != "a.blue" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		if tctx.IsTL2 && _tag != "a.blue" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _tag)
 		}
-		if !tctx.LegacyTypeNames && _jtype == "a.blue#623360f3" {
+		if !tctx.LegacyTypeNames && _tag == "a.blue#623360f3" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.blue#623360f3")
 		}
 		item.index = 4
 		return nil
 	default:
-		return internal.ErrorInvalidEnumTagJSON("a.Color", _jtype)
+		return internal.ErrorInvalidUnionTagJSON("a.Color", _tag)
 	}
 }
 
