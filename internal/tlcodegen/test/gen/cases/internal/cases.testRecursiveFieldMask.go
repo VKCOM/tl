@@ -125,7 +125,11 @@ func (item *CasesTestRecursiveFieldMask) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesTestRecursiveFieldMask) RepairMasks() CasesTestRecursiveFieldMask {
+func (item CasesTestRecursiveFieldMask) RepairMasksValue() CasesTestRecursiveFieldMask {
+	item.RepairMasks()
+	return item
+}
+func (item *CasesTestRecursiveFieldMask) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.F0&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -142,7 +146,6 @@ func (item CasesTestRecursiveFieldMask) RepairMasks() CasesTestRecursiveFieldMas
 	if item.F2&(1<<2) != 0 {
 		item.tl2mask0 |= 16
 	}
-	return item
 }
 
 func (item *CasesTestRecursiveFieldMask) Read(w []byte) (_ []byte, err error) {

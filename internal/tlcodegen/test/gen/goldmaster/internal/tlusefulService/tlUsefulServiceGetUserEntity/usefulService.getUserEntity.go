@@ -54,12 +54,15 @@ func (item *UsefulServiceGetUserEntity) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item UsefulServiceGetUserEntity) RepairMasks() UsefulServiceGetUserEntity {
+func (item UsefulServiceGetUserEntity) RepairMasksValue() UsefulServiceGetUserEntity {
+	item.RepairMasks()
+	return item
+}
+func (item *UsefulServiceGetUserEntity) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	return item
 }
 
 func (item *UsefulServiceGetUserEntity) Read(w []byte) (_ []byte, err error) {

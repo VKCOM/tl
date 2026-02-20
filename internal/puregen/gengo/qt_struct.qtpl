@@ -45,10 +45,14 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
         {%- endif -%}
 
         {%- if struct_.wr.hasRepairMasks -%}
-func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+func (item {%s= goName %}) RepairMasksValue({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+    item.RepairMasks({%s= strings.TrimPrefix(natArgsCall, ",") %})
+    return item
+}
+func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {
     {%- if struct_.isTypeDef() -%}
         {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(&item)
+ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
     {%- else -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
@@ -75,7 +79,6 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- endif -%}
     {%- endfor -%}
     {%- endif -%}
-    return item
 }
         {%- endif -%}
 

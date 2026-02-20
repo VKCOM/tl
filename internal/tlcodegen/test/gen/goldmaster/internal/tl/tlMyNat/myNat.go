@@ -69,15 +69,18 @@ func (item *MyNat) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item MyNat) RepairMasks() MyNat {
+func (item MyNat) RepairMasksValue() MyNat {
+	item.RepairMasks()
+	return item
+}
+func (item *MyNat) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
 	if item.A != nil {
-		*item.A = item.A.RepairMasks()
+		item.A.RepairMasks()
 	}
-	return item
 }
 
 func (item *MyNat) Read(w []byte) (_ []byte, err error) {

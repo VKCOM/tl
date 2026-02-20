@@ -320,7 +320,11 @@ func (item *CurlRequest) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CurlRequest) RepairMasks() CurlRequest {
+func (item CurlRequest) RepairMasksValue() CurlRequest {
+	item.RepairMasks()
+	return item
+}
+func (item *CurlRequest) RepairMasks() {
 	item.tl2mask0 = 0
 	item.tl2mask1 = 0
 	if item.FieldMask&(1<<0) != 0 {
@@ -365,7 +369,6 @@ func (item CurlRequest) RepairMasks() CurlRequest {
 	if item.FieldMask&(1<<13) != 0 {
 		item.tl2mask1 |= 32
 	}
-	return item
 }
 
 func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {

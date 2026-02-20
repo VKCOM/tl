@@ -28,9 +28,12 @@ func (item *BenchmarksVrutoyTopLevelContainer) FillRandom(rg *basictl.RandGenera
 	item.Value.FillRandom(rg)
 }
 
-func (item BenchmarksVrutoyTopLevelContainer) RepairMasks() BenchmarksVrutoyTopLevelContainer {
-	item.Value = item.Value.RepairMasks()
+func (item BenchmarksVrutoyTopLevelContainer) RepairMasksValue() BenchmarksVrutoyTopLevelContainer {
+	item.RepairMasks()
 	return item
+}
+func (item *BenchmarksVrutoyTopLevelContainer) RepairMasks() {
+	item.Value.RepairMasks()
 }
 
 func (item *BenchmarksVrutoyTopLevelContainer) Read(w []byte) (_ []byte, err error) {

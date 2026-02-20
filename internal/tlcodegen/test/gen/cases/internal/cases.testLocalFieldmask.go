@@ -87,7 +87,11 @@ func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesTestLocalFieldmask) RepairMasks() CasesTestLocalFieldmask {
+func (item CasesTestLocalFieldmask) RepairMasksValue() CasesTestLocalFieldmask {
+	item.RepairMasks()
+	return item
+}
+func (item *CasesTestLocalFieldmask) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.F1&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -98,7 +102,6 @@ func (item CasesTestLocalFieldmask) RepairMasks() CasesTestLocalFieldmask {
 	if item.F2&(1<<1) != 0 {
 		item.tl2mask0 |= 4
 	}
-	return item
 }
 
 func (item *CasesTestLocalFieldmask) Read(w []byte) (_ []byte, err error) {

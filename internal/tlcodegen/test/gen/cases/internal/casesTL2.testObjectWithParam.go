@@ -39,12 +39,15 @@ func (item *CasesTL2TestObjectWithParam4) FillRandom(rg *basictl.RandGenerator) 
 	BuiltinTuple4IntFillRandom(rg, &item.Y)
 }
 
-func (item CasesTL2TestObjectWithParam4) RepairMasks() CasesTL2TestObjectWithParam4 {
+func (item CasesTL2TestObjectWithParam4) RepairMasksValue() CasesTL2TestObjectWithParam4 {
+	item.RepairMasks()
+	return item
+}
+func (item *CasesTL2TestObjectWithParam4) RepairMasks() {
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	return item
 }
 
 func (item *CasesTL2TestObjectWithParam4) Read(w []byte) (_ []byte, err error) {

@@ -227,7 +227,7 @@ func (trw *TypeRWStruct) typeRepairMasksCode(bytesVersion bool, directImports *D
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeRepairMasksCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("%s = %s.RepairMasks(%s)", addAsterisk(ref, val), val, strings.Join(natArgs, ","))
+	return fmt.Sprintf("%s.RepairMasks(%s)", val, strings.Join(natArgs, ","))
 }
 
 func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

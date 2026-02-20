@@ -125,7 +125,7 @@ func (trw *TypeRWUnion) typeRandomCode(bytesVersion bool, directImports *DirectI
 }
 
 func (trw *TypeRWUnion) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("%s = %s.RepairMasks(%s)", addAsterisk(ref, val), val, strings.Join(natArgs, ","))
+	return fmt.Sprintf("%s.RepairMasks(%s)", val, strings.Join(natArgs, ","))
 }
 
 func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {

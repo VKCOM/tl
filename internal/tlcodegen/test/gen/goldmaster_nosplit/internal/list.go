@@ -87,7 +87,11 @@ func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item ListService5Output) RepairMasks() ListService5Output {
+func (item ListService5Output) RepairMasksValue() ListService5Output {
+	item.RepairMasks()
+	return item
+}
+func (item *ListService5Output) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.Flag&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -96,9 +100,8 @@ func (item ListService5Output) RepairMasks() ListService5Output {
 		item.tl2mask0 |= 2
 	}
 	if item.Tail != nil {
-		*item.Tail = item.Tail.RepairMasks()
+		item.Tail.RepairMasks()
 	}
-	return item
 }
 
 func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {

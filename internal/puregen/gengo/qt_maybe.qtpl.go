@@ -63,15 +63,24 @@ func (item *`)
 	if maybe.wr.hasRepairMasks {
 		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(`) RepairMasksValue(`)
 		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
 		qw422016.N().S(`) `)
 		qw422016.N().S(goName)
 		qw422016.N().S(` {
+    item.RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsCall, ","))
+		qw422016.N().S(`)
+    return item
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
+		qw422016.N().S(`) {
     `)
 		qw422016.N().S(maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.natArgs), false))
 		qw422016.N().S(`
-    return item
 }
 `)
 	}

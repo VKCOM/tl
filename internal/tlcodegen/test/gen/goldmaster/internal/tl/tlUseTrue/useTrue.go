@@ -95,7 +95,11 @@ func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item UseTrue) RepairMasks() UseTrue {
+func (item UseTrue) RepairMasksValue() UseTrue {
+	item.RepairMasks()
+	return item
+}
+func (item *UseTrue) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.Fm&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -106,7 +110,6 @@ func (item UseTrue) RepairMasks() UseTrue {
 	if item.Fm&(1<<2) != 0 {
 		item.tl2mask0 |= 4
 	}
-	return item
 }
 
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
