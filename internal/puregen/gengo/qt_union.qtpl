@@ -28,19 +28,9 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
         {%- if field.t.IsTrueType() -%}
             {%- continue -%}
         {%- endif -%}
-        {%- code
-            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
-        -%}
-        {%- if field.recursive -%}
-        if item.value{%s= field.goName %} == nil {
-            var value {%s= fieldTypeString %}
-            {%s= field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, "value", formatNatArgs(nil, field.natArgs), field.recursive) %}
-            item.value{%s= field.goName %} = &value
-        }
-        {%- else -%}
+        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
             formatNatArgs(nil, field.natArgs), field.recursive) %}
-        {%- endif -%}
         {%- endfor -%}
     default:
     }
@@ -96,15 +86,7 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
         return w, nil
             {%- continue -%}
         {%- endif -%}
-        {%- code
-            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
-        -%}
-        {%- if field.recursive -%}
-        if item.value{%s= field.goName %} == nil {
-            var value {%s= fieldTypeString %}
-            item.value{%s= field.goName %} = &value
-        }
-        {%- endif -%}
+        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
             formatNatArgs(nil, field.natArgs), field.recursive, true) %}
         {%- endfor -%}
@@ -242,12 +224,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- for i, field := range union.Fields -%}
         {%- if !field.t.IsTrueType() -%}
     case {%d i %}:
-        {%- if field.recursive -%}
-        if {%s= fmt.Sprintf("item.value%s", field.goName) %} == nil {
-            var newValue {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
-            {%s= fmt.Sprintf("item.value%s", field.goName) %} = &newValue
-        }
-        {%- endif -%}
+        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive) %}
         {%- endif -%}
     {%- endfor -%}
@@ -357,12 +334,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
             }
             item.index = {%d i %}
             {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
-                {%- if field.recursive -%}
-            if item.value{%s= field.goName %} == nil {
-                var value {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
-                item.value{%s= field.goName %} = &value
-            }
-                {%- endif -%}
+            {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
             {%s= field.t.TypeJSONReadingCode(bytesVersion, directImports, union.wr.ins, "jvalue", fmt.Sprintf("item.value%s", field.goName),
                 formatNatArgs(nil, field.natArgs), field.recursive) %}
             delete(_jm, "value")
@@ -468,16 +440,10 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             {%- endif -%}
             item.index = {%d i %}
             {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
-                {%- if field.recursive -%}
-            if item.value{%s= field.goName %} == nil {
-                var value {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
-                item.value{%s= field.goName %} = &value
-            }
-                {%- endif -%}
+            {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
             var in2Pointer *basictl.JsonLexer
             if _value != nil {
-                in2 := basictl.JsonLexer{Data: _value}
-                in2Pointer = &in2
+                in2Pointer = &basictl.JsonLexer{Data: _value}
             }
             {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
                 formatNatArgs(nil, field.natArgs), field.recursive) %}
@@ -658,29 +624,14 @@ func (item *{%s= goGlobalName %}) As{%s= field.goName %}() (*{%s= fieldTypeStrin
 }
 func (item *{%s= goGlobalName %}) ResetTo{%s= field.goName %}() *{%s= fieldTypeString %} {
     item.index = {%d i %}
-        {%- if field.recursive -%}
-    if item.value{%s= field.goName %} == nil {
-        var value {%s= fieldTypeString %}
-        item.value{%s= field.goName %} = &value
-    } else {
-        {%s= field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, true) %}
-    }
-        {%- else -%}
+    {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
     {%s= field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false) %}
-        {%- endif -%}
     return {%s= ampersand %}item.value{%s= field.goName %}
 }
 func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeString %}) {
     item.index = {%d i %}
-        {%- if field.recursive -%}
-    if item.value{%s= field.goName %} == nil {
-        item.value{%s= field.goName %} = &value
-    } else {
-        *item.value{%s= field.goName %} = value
-    }
-        {%- else -%}
-    item.value{%s= field.goName %} = value
-        {%- endif -%}
+    {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+    {%s= ifString(field.recursive, "*", "") %}item.value{%s= field.goName %} = value
 }
 
     {%- endfor -%}

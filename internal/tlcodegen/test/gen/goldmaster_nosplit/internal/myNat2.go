@@ -35,10 +35,9 @@ func (item *MyNat2) FillRandom(rg *basictl.RandGenerator) {
 	case 1:
 		item.index = 1
 		if item.valueMyPlus == nil {
-			var value MyPlus
-			value.FillRandom(rg)
-			item.valueMyPlus = &value
+			item.valueMyPlus = new(MyPlus)
 		}
+		item.valueMyPlus.FillRandom(rg)
 	default:
 	}
 }
@@ -63,20 +62,17 @@ func (item *MyNat2) AsMyPlus() (*MyPlus, bool) {
 func (item *MyNat2) ResetToMyPlus() *MyPlus {
 	item.index = 1
 	if item.valueMyPlus == nil {
-		var value MyPlus
-		item.valueMyPlus = &value
-	} else {
-		item.valueMyPlus.Reset()
+		item.valueMyPlus = new(MyPlus)
 	}
+	item.valueMyPlus.Reset()
 	return item.valueMyPlus
 }
 func (item *MyNat2) SetMyPlus(value MyPlus) {
 	item.index = 1
 	if item.valueMyPlus == nil {
-		item.valueMyPlus = &value
-	} else {
-		*item.valueMyPlus = value
+		item.valueMyPlus = new(MyPlus)
 	}
+	*item.valueMyPlus = value
 }
 
 func (item *MyNat2) Read(w []byte) (_ []byte, err error) {
@@ -95,8 +91,7 @@ func (item *MyNat2) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0x79e0c6df:
 		item.index = 1
 		if item.valueMyPlus == nil {
-			var value MyPlus
-			item.valueMyPlus = &value
+			item.valueMyPlus = new(MyPlus)
 		}
 		return item.valueMyPlus.Read(w)
 	default:
@@ -190,8 +185,7 @@ func (item *MyNat2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	switch item.index {
 	case 1:
 		if item.valueMyPlus == nil {
-			var newValue MyPlus
-			item.valueMyPlus = &newValue
+			item.valueMyPlus = new(MyPlus)
 		}
 		if currentR, err = item.valueMyPlus.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -248,13 +242,11 @@ func (item *MyNat2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 		}
 		item.index = 1
 		if item.valueMyPlus == nil {
-			var value MyPlus
-			item.valueMyPlus = &value
+			item.valueMyPlus = new(MyPlus)
 		}
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueMyPlus.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err

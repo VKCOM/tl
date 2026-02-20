@@ -241,8 +241,7 @@ func (item *AMyUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueUNionA.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -257,8 +256,7 @@ func (item *AMyUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueNionA.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err

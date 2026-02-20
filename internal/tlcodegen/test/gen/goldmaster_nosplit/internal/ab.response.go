@@ -939,8 +939,7 @@ func (item *AbResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueCode.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -955,8 +954,7 @@ func (item *AbResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		item.index = 2
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueAlias.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -971,8 +969,7 @@ func (item *AbResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		item.index = 3
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueResponse.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -1346,8 +1343,7 @@ func (item *AbResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueCode.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -1362,8 +1358,7 @@ func (item *AbResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.index = 2
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueAlias.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -1378,8 +1373,7 @@ func (item *AbResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.index = 3
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueResponse.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
