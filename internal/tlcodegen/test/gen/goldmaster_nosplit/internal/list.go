@@ -37,8 +37,7 @@ func (item *ListService5Output) IsSetHead() bool { return item.tl2mask0&1 != 0 }
 
 func (item *ListService5Output) SetTail(v ListService5Output) {
 	if item.Tail == nil {
-		var value ListService5Output
-		item.Tail = &value
+		item.Tail = new(ListService5Output)
 	}
 	*item.Tail = v
 	item.Flag |= 1 << 0
@@ -75,8 +74,7 @@ func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
 		item.tl2mask0 |= 2
 		rg.IncreaseDepth()
 		if item.Tail == nil {
-			var value ListService5Output
-			item.Tail = &value
+			item.Tail = new(ListService5Output)
 		}
 		item.Tail.FillRandom(rg)
 		rg.DecreaseDepth()
@@ -120,8 +118,7 @@ func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 	if item.Flag&(1<<0) != 0 {
 		item.tl2mask0 |= 2
 		if item.Tail == nil {
-			var value ListService5Output
-			item.Tail = &value
+			item.Tail = new(ListService5Output)
 		}
 		if w, err = item.Tail.Read(w); err != nil {
 			return w, err
@@ -214,8 +211,7 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "tail")
 				}
 				if item.Tail == nil {
-					var value ListService5Output
-					item.Tail = &value
+					item.Tail = new(ListService5Output)
 				}
 				if err := item.Tail.ReadJSONGeneral(tctx, in); err != nil {
 					return err
@@ -442,8 +438,7 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 	if block&8 != 0 {
 		item.tl2mask0 |= 2
 		if item.Tail == nil {
-			var value ListService5Output
-			item.Tail = &value
+			item.Tail = new(ListService5Output)
 		}
 		if currentR, err = item.Tail.InternalReadTL2(currentR); err != nil {
 			return currentR, err

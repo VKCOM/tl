@@ -260,11 +260,8 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 	}
 	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
 	// new(X) does not work for some types IIRC
-	return fmt.Sprintf(`	if item.%s == nil {
-		var value %s
-		item.%s = &value
-	}
-`, f.goName, myType, f.goName)
+	return fmt.Sprintf(`	if item.%s == nil { item.%s = new(%s) }
+`, f.goName, f.goName, myType)
 }
 
 func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {

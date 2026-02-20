@@ -188,7 +188,6 @@ type {%s= goName %} struct {
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
     {%- if struct_.wr.wantsTL2 -%}
-        {%- code /* fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) */ -%}
         {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
              {%s= tl2mask %} byte
         {%- endfor -%}
