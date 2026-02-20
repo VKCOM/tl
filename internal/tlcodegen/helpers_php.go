@@ -588,6 +588,13 @@ class tl_switcher {
   public static function tl_get_last_serialization_mode() {
     return self::$tl_last_serialization_mode;
   }
+
+  /**
+   * @return string
+   */
+  public static function tl_get_platform() {
+    return self::$tl_platform;
+  }
 }
 `
 
