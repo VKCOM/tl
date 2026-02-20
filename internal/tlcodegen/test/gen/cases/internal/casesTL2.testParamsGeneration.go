@@ -45,12 +45,15 @@ func (item *CasesTL2TestParamsGeneration) FillRandom(rg *basictl.RandGenerator) 
 	item.X4.FillRandom(rg, item.N1, item.N2)
 }
 
-func (item CasesTL2TestParamsGeneration) RepairMasks() CasesTL2TestParamsGeneration {
-	item.X1 = item.X1.RepairMasks()
-	item.X2 = item.X2.RepairMasks(item.N1)
-	item.X3 = item.X3.RepairMasks(item.N2)
-	item.X4 = item.X4.RepairMasks(item.N1, item.N2)
+func (item CasesTL2TestParamsGeneration) RepairMasksValue() CasesTL2TestParamsGeneration {
+	item.RepairMasks()
 	return item
+}
+func (item *CasesTL2TestParamsGeneration) RepairMasks() {
+	item.X1.RepairMasks()
+	item.X2.RepairMasks(item.N1)
+	item.X3.RepairMasks(item.N2)
+	item.X4.RepairMasks(item.N1, item.N2)
 }
 
 func (item *CasesTL2TestParamsGeneration) Read(w []byte) (_ []byte, err error) {

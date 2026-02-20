@@ -26,7 +26,7 @@ func BuiltinVectorCyc1MyCycleFillRandom(rg *basictl.RandGenerator, vec *[]Cyc1My
 }
 func BuiltinVectorCyc1MyCycleRepairMasks(vec *[]Cyc1MyCycle) {
 	for i := range *vec {
-		(*vec)[i] = (*vec)[i].RepairMasks()
+		(*vec)[i].RepairMasks()
 	}
 }
 func BuiltinVectorCyc1MyCycleRead(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err error) {
@@ -220,13 +220,16 @@ func (item *Cyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item Cyc1MyCycle) RepairMasks() Cyc1MyCycle {
+func (item Cyc1MyCycle) RepairMasksValue() Cyc1MyCycle {
+	item.RepairMasks()
+	return item
+}
+func (item *Cyc1MyCycle) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	item.A = item.A.RepairMasks()
-	return item
+	item.A.RepairMasks()
 }
 
 func (item *Cyc1MyCycle) Read(w []byte) (_ []byte, err error) {

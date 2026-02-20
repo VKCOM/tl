@@ -47,7 +47,11 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
 }
     {%- endif -%}
         {%- if union.wr.hasRepairMasks -%}
-func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+func (item {%s= goName %}) RepairMasksValue({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {%s= goName %} {
+    item.RepairMasks({%s= strings.TrimPrefix(natArgsCall, ",") %})
+    return item
+}
+func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {
     {%- for _, field := range union.Fields -%}
         {%- code
             repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
@@ -64,7 +68,6 @@ func (item {%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",")
             {%s= repairCode %}
         {%- endif -%}
     {%- endfor -%}
-    return item
 }
         {%- endif -%}
 

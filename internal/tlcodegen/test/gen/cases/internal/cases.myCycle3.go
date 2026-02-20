@@ -51,13 +51,16 @@ func (item *CasesMyCycle3) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesMyCycle3) RepairMasks() CasesMyCycle3 {
+func (item CasesMyCycle3) RepairMasksValue() CasesMyCycle3 {
+	item.RepairMasks()
+	return item
+}
+func (item *CasesMyCycle3) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	item.A = item.A.RepairMasks()
-	return item
+	item.A.RepairMasks()
 }
 
 func (item *CasesMyCycle3) Read(w []byte) (_ []byte, err error) {

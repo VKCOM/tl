@@ -109,18 +109,28 @@ func (item *`)
 	if struct_.wr.hasRepairMasks {
 		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(`) RepairMasksValue(`)
 		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
 		qw422016.N().S(`) `)
 		qw422016.N().S(goName)
 		qw422016.N().S(` {
+    item.RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsCall, ","))
+		qw422016.N().S(`)
+    return item
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
+		qw422016.N().S(`) {
 `)
 		if struct_.isTypeDef() {
 			field := struct_.Fields[0]
 
 			qw422016.N().S(`ptr := (*`)
 			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`)(&item)
+			qw422016.N().S(`)(item)
 `)
 			qw422016.N().S(field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true))
 			qw422016.N().S(`
@@ -169,8 +179,7 @@ func (item *`)
 				}
 			}
 		}
-		qw422016.N().S(`    return item
-}
+		qw422016.N().S(`}
 `)
 	}
 	qw422016.N().S(`

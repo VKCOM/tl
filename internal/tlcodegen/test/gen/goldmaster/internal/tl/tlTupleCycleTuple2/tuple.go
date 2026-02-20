@@ -31,10 +31,13 @@ func (item *TupleCycleTuple2) FillRandom(rg *basictl.RandGenerator) {
 	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleFillRandom(rg, ptr)
 }
 
-func (item TupleCycleTuple2) RepairMasks() TupleCycleTuple2 {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(&item)
-	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleRepairMasks(ptr)
+func (item TupleCycleTuple2) RepairMasksValue() TupleCycleTuple2 {
+	item.RepairMasks()
 	return item
+}
+func (item *TupleCycleTuple2) RepairMasks() {
+	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleRepairMasks(ptr)
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {

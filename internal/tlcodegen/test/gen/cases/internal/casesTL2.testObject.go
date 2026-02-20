@@ -102,12 +102,16 @@ func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesTL2TestObject) RepairMasks() CasesTL2TestObject {
+func (item CasesTL2TestObject) RepairMasksValue() CasesTL2TestObject {
+	item.RepairMasks()
+	return item
+}
+func (item *CasesTL2TestObject) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	item.F4 = item.F4.RepairMasks(item.N)
+	item.F4.RepairMasks(item.N)
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
@@ -115,7 +119,6 @@ func (item CasesTL2TestObject) RepairMasks() CasesTL2TestObject {
 	if item.N&(1<<14) != 0 {
 		item.tl2mask0 |= 4
 	}
-	return item
 }
 
 func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {

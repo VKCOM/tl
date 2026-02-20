@@ -28,9 +28,12 @@ func (item *CasesTL2TestFixedParam) FillRandom(rg *basictl.RandGenerator) {
 	item.X.FillRandom(rg)
 }
 
-func (item CasesTL2TestFixedParam) RepairMasks() CasesTL2TestFixedParam {
-	item.X = item.X.RepairMasks()
+func (item CasesTL2TestFixedParam) RepairMasksValue() CasesTL2TestFixedParam {
+	item.RepairMasks()
 	return item
+}
+func (item *CasesTL2TestFixedParam) RepairMasks() {
+	item.X.RepairMasks()
 }
 
 func (item *CasesTL2TestFixedParam) Read(w []byte) (_ []byte, err error) {

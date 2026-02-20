@@ -31,9 +31,12 @@ func (item *Cyc3MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorCyc1MyCycleFillRandom(rg, &item.A)
 }
 
-func (item Cyc3MyCycle) RepairMasks() Cyc3MyCycle {
-	BuiltinVectorCyc1MyCycleRepairMasks(&item.A)
+func (item Cyc3MyCycle) RepairMasksValue() Cyc3MyCycle {
+	item.RepairMasks()
 	return item
+}
+func (item *Cyc3MyCycle) RepairMasks() {
+	BuiltinVectorCyc1MyCycleRepairMasks(&item.A)
 }
 
 func (item *Cyc3MyCycle) Read(w []byte) (_ []byte, err error) {
@@ -316,9 +319,12 @@ func (item *Cyc3MyCycleMaybe) FillRandom(rg *basictl.RandGenerator) {
 		item.Ok = false
 	}
 }
-func (item Cyc3MyCycleMaybe) RepairMasks() Cyc3MyCycleMaybe {
-	item.Value = item.Value.RepairMasks()
+func (item Cyc3MyCycleMaybe) RepairMasksValue() Cyc3MyCycleMaybe {
+	item.RepairMasks()
 	return item
+}
+func (item *Cyc3MyCycleMaybe) RepairMasks() {
+	item.Value.RepairMasks()
 }
 
 func (item *Cyc3MyCycleMaybe) ReadBoxed(w []byte) (_ []byte, err error) {

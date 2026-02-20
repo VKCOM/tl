@@ -43,9 +43,12 @@ func (item *CurlResponse) FillRandom(rg *basictl.RandGenerator) {
 	default:
 	}
 }
-func (item CurlResponse) RepairMasks() CurlResponse {
-	item.valueOk = item.valueOk.RepairMasks()
+func (item CurlResponse) RepairMasksValue() CurlResponse {
+	item.RepairMasks()
 	return item
+}
+func (item *CurlResponse) RepairMasks() {
+	item.valueOk.RepairMasks()
 }
 
 func (item *CurlResponse) IsOk() bool { return item.index == 0 }
@@ -717,12 +720,15 @@ func (item *CurlResponseOk) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CurlResponseOk) RepairMasks() CurlResponseOk {
+func (item CurlResponseOk) RepairMasksValue() CurlResponseOk {
+	item.RepairMasks()
+	return item
+}
+func (item *CurlResponseOk) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	return item
 }
 
 func (item *CurlResponseOk) Read(w []byte) (_ []byte, err error) {

@@ -34,9 +34,12 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) FillRandom(rg *basictl.Ra
 	item.Value.FillRandom(rg, item.Outer)
 }
 
-func (item CasesTestAllPossibleFieldConfigsContainer) RepairMasks() CasesTestAllPossibleFieldConfigsContainer {
-	item.Value = item.Value.RepairMasks(item.Outer)
+func (item CasesTestAllPossibleFieldConfigsContainer) RepairMasksValue() CasesTestAllPossibleFieldConfigsContainer {
+	item.RepairMasks()
 	return item
+}
+func (item *CasesTestAllPossibleFieldConfigsContainer) RepairMasks() {
+	item.Value.RepairMasks(item.Outer)
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) Read(w []byte) (_ []byte, err error) {

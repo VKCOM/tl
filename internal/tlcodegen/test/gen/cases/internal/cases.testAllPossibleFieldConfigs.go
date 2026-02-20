@@ -213,7 +213,11 @@ func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerat
 	}
 }
 
-func (item CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32) CasesTestAllPossibleFieldConfigs {
+func (item CasesTestAllPossibleFieldConfigs) RepairMasksValue(nat_outer uint32) CasesTestAllPossibleFieldConfigs {
+	item.RepairMasks(nat_outer)
+	return item
+}
+func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32) {
 	item.tl2mask0 = 0
 	if item.Local&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -239,7 +243,6 @@ func (item CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32) Cases
 	if nat_outer&(1<<3) != 0 {
 		item.tl2mask0 |= 128
 	}
-	return item
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (_ []byte, err error) {

@@ -113,11 +113,21 @@ func (item *`)
 	if union.wr.hasRepairMasks {
 		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(`) RepairMasksValue(`)
 		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
 		qw422016.N().S(`) `)
 		qw422016.N().S(goName)
 		qw422016.N().S(` {
+    item.RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsCall, ","))
+		qw422016.N().S(`)
+    return item
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) RepairMasks(`)
+		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
+		qw422016.N().S(`) {
 `)
 		for _, field := range union.Fields {
 			repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
@@ -142,8 +152,7 @@ func (item *`)
 `)
 			}
 		}
-		qw422016.N().S(`    return item
-}
+		qw422016.N().S(`}
 `)
 	}
 	qw422016.N().S(`

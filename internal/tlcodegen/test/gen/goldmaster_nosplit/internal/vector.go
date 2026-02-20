@@ -341,10 +341,13 @@ func (item *VectorCyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorCyc1MyCycleFillRandom(rg, ptr)
 }
 
-func (item VectorCyc1MyCycle) RepairMasks() VectorCyc1MyCycle {
-	ptr := (*[]Cyc1MyCycle)(&item)
-	BuiltinVectorCyc1MyCycleRepairMasks(ptr)
+func (item VectorCyc1MyCycle) RepairMasksValue() VectorCyc1MyCycle {
+	item.RepairMasks()
 	return item
+}
+func (item *VectorCyc1MyCycle) RepairMasks() {
+	ptr := (*[]Cyc1MyCycle)(item)
+	BuiltinVectorCyc1MyCycleRepairMasks(ptr)
 }
 
 func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {

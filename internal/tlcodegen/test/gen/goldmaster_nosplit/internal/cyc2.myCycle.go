@@ -34,9 +34,12 @@ func (item *Cyc2MyCycle) FillRandom(rg *basictl.RandGenerator) {
 	item.B.FillRandom(rg)
 }
 
-func (item Cyc2MyCycle) RepairMasks() Cyc2MyCycle {
-	item.A = item.A.RepairMasks()
+func (item Cyc2MyCycle) RepairMasksValue() Cyc2MyCycle {
+	item.RepairMasks()
 	return item
+}
+func (item *Cyc2MyCycle) RepairMasks() {
+	item.A.RepairMasks()
 }
 
 func (item *Cyc2MyCycle) Read(w []byte) (_ []byte, err error) {

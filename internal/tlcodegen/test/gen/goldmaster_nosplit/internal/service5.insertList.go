@@ -49,12 +49,15 @@ func (item *Service5InsertList) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item Service5InsertList) RepairMasks() Service5InsertList {
+func (item Service5InsertList) RepairMasksValue() Service5InsertList {
+	item.RepairMasks()
+	return item
+}
+func (item *Service5InsertList) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.Flags&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	return item
 }
 
 func (item *Service5InsertList) Read(w []byte) (_ []byte, err error) {

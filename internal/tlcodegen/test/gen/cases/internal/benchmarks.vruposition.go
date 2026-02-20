@@ -153,7 +153,11 @@ func (item *BenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item BenchmarksVruposition) RepairMasks() BenchmarksVruposition {
+func (item BenchmarksVruposition) RepairMasksValue() BenchmarksVruposition {
+	item.RepairMasks()
+	return item
+}
+func (item *BenchmarksVruposition) RepairMasks() {
 	item.tl2mask0 = 0
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -173,7 +177,6 @@ func (item BenchmarksVruposition) RepairMasks() BenchmarksVruposition {
 	if item.FieldsMask&(1<<14) != 0 {
 		item.tl2mask0 |= 32
 	}
-	return item
 }
 
 func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
@@ -823,7 +826,7 @@ func BuiltinTupleBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec 
 }
 func BuiltinTupleBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition, nat_n uint32) {
 	for i := range *vec {
-		(*vec)[i] = (*vec)[i].RepairMasks()
+		(*vec)[i].RepairMasks()
 	}
 }
 
@@ -1013,7 +1016,7 @@ func BuiltinVectorBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec
 }
 func BuiltinVectorBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition) {
 	for i := range *vec {
-		(*vec)[i] = (*vec)[i].RepairMasks()
+		(*vec)[i].RepairMasks()
 	}
 }
 func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {

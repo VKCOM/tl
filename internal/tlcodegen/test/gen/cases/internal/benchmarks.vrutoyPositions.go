@@ -28,9 +28,12 @@ func (item *BenchmarksVrutoyPositions) FillRandom(rg *basictl.RandGenerator, nat
 	BuiltinTupleBenchmarksVrupositionFillRandom(rg, &item.NextPositions, nat_n)
 }
 
-func (item BenchmarksVrutoyPositions) RepairMasks(nat_n uint32) BenchmarksVrutoyPositions {
-	BuiltinTupleBenchmarksVrupositionRepairMasks(&item.NextPositions, nat_n)
+func (item BenchmarksVrutoyPositions) RepairMasksValue(nat_n uint32) BenchmarksVrutoyPositions {
+	item.RepairMasks(nat_n)
 	return item
+}
+func (item *BenchmarksVrutoyPositions) RepairMasks(nat_n uint32) {
+	BuiltinTupleBenchmarksVrupositionRepairMasks(&item.NextPositions, nat_n)
 }
 
 func (item *BenchmarksVrutoyPositions) Read(w []byte, nat_n uint32) (_ []byte, err error) {

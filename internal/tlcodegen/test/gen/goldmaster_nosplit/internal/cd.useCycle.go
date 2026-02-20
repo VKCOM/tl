@@ -31,9 +31,12 @@ func (item *CdUseCycle) FillRandom(rg *basictl.RandGenerator) {
 	item.B.FillRandom(rg)
 }
 
-func (item CdUseCycle) RepairMasks() CdUseCycle {
-	item.A = item.A.RepairMasks()
+func (item CdUseCycle) RepairMasksValue() CdUseCycle {
+	item.RepairMasks()
 	return item
+}
+func (item *CdUseCycle) RepairMasks() {
+	item.A.RepairMasks()
 }
 
 func (item *CdUseCycle) Read(w []byte) (_ []byte, err error) {

@@ -28,10 +28,13 @@ func (item *VectorBenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorBenchmarksVrupositionFillRandom(rg, ptr)
 }
 
-func (item VectorBenchmarksVruposition) RepairMasks() VectorBenchmarksVruposition {
-	ptr := (*[]BenchmarksVruposition)(&item)
-	BuiltinVectorBenchmarksVrupositionRepairMasks(ptr)
+func (item VectorBenchmarksVruposition) RepairMasksValue() VectorBenchmarksVruposition {
+	item.RepairMasks()
 	return item
+}
+func (item *VectorBenchmarksVruposition) RepairMasks() {
+	ptr := (*[]BenchmarksVruposition)(item)
+	BuiltinVectorBenchmarksVrupositionRepairMasks(ptr)
 }
 
 func (item *VectorBenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
@@ -154,10 +157,13 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) FillRandom(rg *basictl.RandGene
 	BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg, ptr)
 }
 
-func (item VectorBenchmarksVrutoyTopLevelUnion) RepairMasks() VectorBenchmarksVrutoyTopLevelUnion {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(&item)
-	BuiltinVectorBenchmarksVrutoyTopLevelUnionRepairMasks(ptr)
+func (item VectorBenchmarksVrutoyTopLevelUnion) RepairMasksValue() VectorBenchmarksVrutoyTopLevelUnion {
+	item.RepairMasks()
 	return item
+}
+func (item *VectorBenchmarksVrutoyTopLevelUnion) RepairMasks() {
+	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
+	BuiltinVectorBenchmarksVrutoyTopLevelUnionRepairMasks(ptr)
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) Read(w []byte) (_ []byte, err error) {

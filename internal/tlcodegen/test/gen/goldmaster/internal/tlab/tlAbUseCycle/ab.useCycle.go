@@ -36,9 +36,12 @@ func (item *AbUseCycle) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinVectorAColor.BuiltinVectorAColorFillRandom(rg, &item.B)
 }
 
-func (item AbUseCycle) RepairMasks() AbUseCycle {
-	item.A = item.A.RepairMasks()
+func (item AbUseCycle) RepairMasksValue() AbUseCycle {
+	item.RepairMasks()
 	return item
+}
+func (item *AbUseCycle) RepairMasks() {
+	item.A.RepairMasks()
 }
 
 func (item *AbUseCycle) Read(w []byte) (_ []byte, err error) {
