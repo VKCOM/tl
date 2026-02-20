@@ -191,9 +191,9 @@ func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_tag := in.UnsafeString()
-	if !in.Ok() {
-		return internal.ErrorInvalidJSON("a.Color", "expected string")
+	_tag, _, err := internal.Json2ReadUnion("a.Color", in)
+	if err != nil {
+		return err
 	}
 	switch _tag {
 	case "a.color#f35d7a69", "a.color", "#f35d7a69":

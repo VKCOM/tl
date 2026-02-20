@@ -171,9 +171,9 @@ func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	_tag := in.UnsafeString()
-	if !in.Ok() {
-		return ErrorInvalidJSON("cases_bytes.TestEnum", "expected string")
+	_tag, _, err := Json2ReadUnion("cases_bytes.TestEnum", in)
+	if err != nil {
+		return err
 	}
 	switch _tag {
 	case "cases_bytes.testEnum1#58aad3f5", "cases_bytes.testEnum1", "#58aad3f5":
