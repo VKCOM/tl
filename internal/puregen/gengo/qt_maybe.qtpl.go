@@ -170,7 +170,7 @@ func (item *`)
 	}
 	qw422016.N().S(`
 `)
-	if maybe.wr.gen.options.GenerateTL2 {
+	if maybe.wr.gen.options.GenerateTL2() {
 		if maybe.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -313,31 +313,6 @@ func (item *`)
 `)
 		}
 		qw422016.N().S(`}
-
-`)
-	}
-	if maybe.wr.gen.options.GenerateLegacyJsonRead {
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadJSONLegacy(legacyTypeNames bool, j interface{}`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) error {
-  _ok, _jvalue, err := `)
-		qw422016.N().S(maybe.wr.gen.InternalPrefix())
-		qw422016.N().S(`JsonReadMaybe(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, j)
-  if err != nil {
-    return err
-  }
-  item.Ok = _ok
-  if _ok {
-    `)
-		qw422016.N().S(maybe.element.t.TypeJSONReadingCode(bytesVersion, directImports, maybe.wr.ins, "_jvalue", "item.Value", formatNatArgs(nil, maybe.element.natArgs), false))
-		qw422016.N().S(`
-  }
-  return nil
-}
 
 `)
 	}

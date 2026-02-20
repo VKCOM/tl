@@ -38,9 +38,6 @@ type Options struct {
 	GenerateRandomCode bool
 	BytesWhiteList     string
 
-	GenerateTL2            bool // TODO - change into method
-	GenerateLegacyJsonRead bool // always false, TODO - remove after kernel refactor
-
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
 
@@ -55,6 +52,10 @@ type replaceStringsItem struct {
 	FileSuffix string
 	Before     string
 	After      string
+}
+
+func (opt *Options) GenerateTL2() bool {
+	return opt.Kernel.TL2WhiteList != ""
 }
 
 func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
@@ -92,7 +93,6 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 
 func (opt *Options) Validate() error {
 	opt.Kernel.ErrorWriter = opt.ErrorWriter
-	opt.GenerateTL2 = opt.Kernel.TL2WhiteList != ""
 
 	// historically, there were some defaults for different languages, we keep them for now
 	switch opt.Language {

@@ -80,7 +80,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 }
 {%- endif -%}
 
-{%- if maybe.wr.gen.options.GenerateTL2 -%}
+{%- if maybe.wr.gen.options.GenerateTL2() -%}
 {%- if maybe.wr.wantsTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
     if !item.Ok {
@@ -188,20 +188,6 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     }
     return r, nil
 {%- endif -%}
-}
-
-{%- endif -%}
-{%- if maybe.wr.gen.options.GenerateLegacyJsonRead -%}
-func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
-  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe({%q= tlName %}, j)
-  if err != nil {
-    return err
-  }
-  item.Ok = _ok
-  if _ok {
-    {%s= maybe.element.t.TypeJSONReadingCode(bytesVersion, directImports, maybe.wr.ins, "_jvalue", "item.Value", formatNatArgs(nil, maybe.element.natArgs), false, ) %}
-  }
-  return nil
 }
 
 {%- endif -%}

@@ -146,7 +146,7 @@ func `)
 		}
 		qw422016.N().S(`}
 `)
-		if tuple.wr.gen.options.GenerateTL2 {
+		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
 			if tuple.wr.wantsTL2 {
@@ -271,52 +271,6 @@ func `)
 		qw422016.N().S(`
 `)
 		if tuple.dictKeyString {
-			if tuple.wr.gen.options.GenerateLegacyJsonRead {
-				qw422016.N().S(`func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *`)
-				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(valueNatArgsDecl)
-				qw422016.N().S(`) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return `)
-				qw422016.N().S(tuple.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidJSON(`)
-				qw422016.N().Q(typeString)
-				qw422016.N().S(`, "expected json object")
-        }
-    }
-      l := len(_map)
-    if cap(*vec) < l {
-        *vec = make([]`)
-				qw422016.N().S(elementTypeString)
-				qw422016.N().S(`, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    i := 0
-    arr := *vec
-    for key, _jvalue := range _map {
-        arr[i].`)
-				qw422016.N().S(tuple.dictKeyField.goName)
-				qw422016.N().S(` = append(arr[i].`)
-				qw422016.N().S(tuple.dictKeyField.goName)
-				qw422016.N().S(`[:0], key...)
-        `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
-				qw422016.N().S(`
-        i++
-    }
-    return nil
-}
-
-`)
-			}
 			qw422016.N().S(`func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
@@ -410,50 +364,6 @@ func `)
 			qw422016.N().S(`}
 `)
 		} else {
-			if tuple.wr.gen.options.GenerateLegacyJsonRead {
-				qw422016.N().S(`func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *`)
-				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(valueNatArgsDecl)
-				qw422016.N().S(`) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return `)
-				qw422016.N().S(tuple.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidJSON(`)
-				qw422016.N().Q(typeString)
-				qw422016.N().S(`, "expected json object")
-        }
-    }
-      l := len(_map)
-    if cap(*vec) < l {
-        *vec = make([]`)
-				qw422016.N().S(elementTypeString)
-				qw422016.N().S(`, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    i := 0
-    arr := *vec
-    for _jkey, _jvalue := range _map {
-        `)
-				qw422016.N().S(tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "arr[i]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
-				qw422016.N().S(`
-        `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
-				qw422016.N().S(`
-        i++
-    }
-    return nil
-}
-
-`)
-			}
 			qw422016.N().S(`func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
@@ -773,7 +683,7 @@ func `)
 		}
 		qw422016.N().S(`}
 `)
-		if tuple.wr.gen.options.GenerateTL2 {
+		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
 			if tuple.wr.wantsTL2 {
@@ -968,74 +878,7 @@ func `)
 `)
 		}
 		qw422016.N().S(`
-`)
-		if tuple.wr.gen.options.GenerateLegacyJsonRead {
-			qw422016.N().S(`func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, m *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(valueNatArgsDecl)
-			qw422016.N().S(`) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return `)
-			qw422016.N().S(tuple.wr.gen.InternalPrefix())
-			qw422016.N().S(`ErrorInvalidJSON(`)
-			qw422016.N().Q(typeString)
-			qw422016.N().S(`, "expected json object")
-        }
-    }
-    l := len(_map)
-    clear(*m)
-    if l == 0 {
-        return nil
-    }
-    if *m == nil {
-        *m = make(map[`)
-			qw422016.N().S(keyTypeString)
-			qw422016.N().S(`]`)
-			qw422016.N().S(valueTypeString)
-			qw422016.N().S(`, l)
-    }
-    data := *m
-
-    for _jkey, _jvalue := range _map {
-`)
-			if tuple.dictKeyString {
-			} else {
-				qw422016.N().S(`        var key `)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`
-        `)
-				qw422016.N().S(tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
-				qw422016.N().S(`
-`)
-			}
-			qw422016.N().S(`        var value `)
-			qw422016.N().S(valueTypeString)
-			qw422016.N().S(`
-        `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
-			qw422016.N().S(`
-`)
-			if tuple.dictKeyString {
-				qw422016.N().S(`        data[_jkey] = value
-`)
-			} else {
-				qw422016.N().S(`        data[key] = value
-`)
-			}
-			qw422016.N().S(`    }
-    return nil
-}
-
-`)
-		}
-		qw422016.N().S(`func `)
+func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *`)
 		qw422016.N().S(typeString)

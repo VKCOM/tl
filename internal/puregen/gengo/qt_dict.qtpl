@@ -81,7 +81,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
     {%- endif -%}
     {%- endif -%}
 }
-{%- if tuple.wr.gen.options.GenerateTL2 -%}
+{%- if tuple.wr.gen.options.GenerateTL2() -%}
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= typeString %}) ([]int, int) {
@@ -171,33 +171,6 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 {%- endif -%}
 
                 {%- if tuple.dictKeyString -%}
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
-        }
-    }
-      l := len(_map)
-    if cap(*vec) < l {
-        *vec = make([]{%s= elementTypeString %}, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    i := 0
-    arr := *vec
-    for key, _jvalue := range _map {
-        arr[i].{%s= tuple.dictKeyField.goName %} = append(arr[i].{%s= tuple.dictKeyField.goName %}[:0], key...)
-        {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, ) %}
-        i++
-    }
-    return nil
-}
-
-{%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
@@ -245,33 +218,6 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%
     {%- endif -%}
 }
                 {%- else -%}
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
-        }
-    }
-      l := len(_map)
-    if cap(*vec) < l {
-        *vec = make([]{%s= elementTypeString %}, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    i := 0
-    arr := *vec
-    for _jkey, _jvalue := range _map {
-        {%s= tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "arr[i]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
-        {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
-        i++
-    }
-    return nil
-}
-
-{%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
@@ -425,7 +371,7 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
     {%- endif -%}
     {%- endif -%}
 }
-{%- if tuple.wr.gen.options.GenerateTL2 -%}
+{%- if tuple.wr.gen.options.GenerateTL2() -%}
 
 {%- if tuple.wr.wantsTL2 -%}
 func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) ([]int, int) {
@@ -548,44 +494,6 @@ func {%s= goName %}InternalReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= v
 }
 {%- endif -%}
 
-{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
-func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
-    var _map map[string]interface{}
-    var _mapok bool
-    if j != nil {
-        _map, _mapok = j.(map[string]interface{})
-        if !_mapok {
-            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
-        }
-    }
-    l := len(_map)
-    clear(*m)
-    if l == 0 {
-        return nil
-    }
-    if *m == nil {
-        *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, l)
-    }
-    data := *m
-
-    for _jkey, _jvalue := range _map {
-                {%- if tuple.dictKeyString -%}
-                {%- else -%}
-        var key {%s= keyTypeString %}
-        {%s= tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
-                {%- endif -%}
-        var value {%s= valueTypeString %}
-        {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
-                {%- if tuple.dictKeyString -%}
-        data[_jkey] = value
-                {%- else -%}
-        data[key] = value
-                {%- endif -%}
-    }
-    return nil
-}
-
-{%- endif -%}
 func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
     clear(*m)
 	if *m == nil {

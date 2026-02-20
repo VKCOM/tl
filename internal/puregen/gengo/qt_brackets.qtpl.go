@@ -139,7 +139,7 @@ func `)
 		}
 		qw422016.N().S(`}
 `)
-		if tuple.wr.gen.options.GenerateTL2 {
+		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
 			if tuple.wr.wantsTL2 {
@@ -290,41 +290,7 @@ func `)
 `)
 		}
 		qw422016.N().S(`
-`)
-		if tuple.wr.gen.options.GenerateLegacyJsonRead {
-			qw422016.N().S(`func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) error {
-    l, _arr, err := `)
-			qw422016.N().S(tuple.wr.gen.InternalPrefix())
-			qw422016.N().S(`JsonReadArray(`)
-			qw422016.N().Q(typeString)
-			qw422016.N().S(`, j)
-    if err != nil {
-        return err
-    }
-    if cap(*vec) < l {
-        *vec = make([]`)
-			qw422016.N().S(elementTypeString)
-			qw422016.N().S(`, l)
-    } else {
-        *vec = (*vec)[:l]
-    }
-    for i := range *vec {
-        `)
-			qw422016.N().S(tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
-			qw422016.N().S(`
-    }
-    return nil
-}
-
-`)
-		}
-		qw422016.N().S(`func `)
+func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
 		qw422016.N().S(typeString)
@@ -519,7 +485,7 @@ func `)
 		}
 		qw422016.N().S(`}
 `)
-		if tuple.wr.gen.options.GenerateTL2 {
+		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
 			if tuple.wr.wantsTL2 {
@@ -667,39 +633,6 @@ func `)
 `)
 			}
 			qw422016.N().S(`}
-`)
-		}
-		if tuple.wr.gen.options.GenerateLegacyJsonRead {
-			qw422016.N().S(`func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) error {
-    _, _arr, err := `)
-			qw422016.N().S(tuple.wr.gen.InternalPrefix())
-			qw422016.N().S(`JsonReadArrayFixedSize(`)
-			qw422016.N().Q(typeString)
-			qw422016.N().S(`, j, nat_n)
-    if err != nil {
-        return err
-    }
-    if uint32(cap(*vec)) < nat_n {
-        *vec = make([]`)
-			qw422016.N().S(elementTypeString)
-			qw422016.N().S(`, nat_n)
-    } else {
-        *vec = (*vec)[:nat_n]
-    }
-    for i := range *vec {
-        `)
-			qw422016.N().S(tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
-			qw422016.N().S(`
-    }
-    return nil
-}
-
 `)
 		}
 		qw422016.N().S(`func `)
@@ -923,7 +856,7 @@ func `)
 		}
 		qw422016.N().S(`}
 `)
-		if tuple.wr.gen.options.GenerateTL2 {
+		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
 			if tuple.wr.wantsTL2 {
@@ -1090,36 +1023,7 @@ func `)
 `)
 		}
 		qw422016.N().S(`
-`)
-		if tuple.wr.gen.options.GenerateLegacyJsonRead {
-			qw422016.N().S(`func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) error {
-    _, _arr, err := `)
-			qw422016.N().S(tuple.wr.gen.InternalPrefix())
-			qw422016.N().S(`JsonReadArrayFixedSize(`)
-			qw422016.N().Q(typeString)
-			qw422016.N().S(`, j, `)
-			qw422016.E().V(tuple.size)
-			qw422016.N().S(`)
-    if err != nil {
-        return err
-    }
-    for i := range *vec {
-        `)
-			qw422016.N().S(tuple.element.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_arr[i]", "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
-			qw422016.N().S(`
-    }
-    return nil
-}
-
-`)
-		}
-		qw422016.N().S(`func `)
+func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
 		qw422016.N().S(typeString)

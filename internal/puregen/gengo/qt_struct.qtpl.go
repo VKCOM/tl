@@ -334,7 +334,7 @@ func (item `)
 	struct_.streamgenerateJSONCode(qw422016, bytesVersion, directImports)
 	qw422016.N().S(`
 `)
-	if struct_.wr.gen.options.GenerateTL2 {
+	if struct_.wr.gen.options.GenerateTL2() {
 		struct_.streamgenerateTL2Code(qw422016, bytesVersion, directImports)
 		qw422016.N().S(`
 `)
@@ -671,23 +671,6 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		if struct_.wr.gen.options.GenerateLegacyJsonRead {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) ReadJSONLegacy(legacyTypeNames bool, j interface{}`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) error {
-    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
-    `)
-			qw422016.N().S(field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, "j", "ptr", formatNatArgs(struct_.Fields, field.natArgs), true))
-			qw422016.N().S(`
-    return nil
-}
-
-`)
-		}
 		if len(struct_.wr.NatParams) == 0 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -841,235 +824,6 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 	tlName := struct_.wr.tlName.String()
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 
-	if struct_.wr.gen.options.GenerateLegacyJsonRead {
-		qw422016.N().S(`
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadJSONLegacy(legacyTypeNames bool, j interface{}`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) error {
-    _jm, _ok := j.(map[string]interface{})
-    if j != nil && !_ok {
-        return `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, "expected json object")
-    }
-`)
-		// first we read everything that could be field mask (primitives)
-		// then we set explicit/check implicit field masks depending on which keys json object has
-		// then we read the rest, passing the same field masks to every field reader
-
-		for _, field := range struct_.Fields {
-			// field names will be mandatory soon, except for typedefs which are processed separately
-
-			if field.originalName == "" {
-				continue
-			}
-			jsonField := fmt.Sprintf("_j%s", field.goName)
-			itemField := fmt.Sprintf("item.%s", field.goName)
-
-			qw422016.N().S(`    `)
-			qw422016.N().S(jsonField)
-			qw422016.N().S(` := _jm[`)
-			qw422016.N().Q(field.originalName)
-			qw422016.N().S(`]
-    delete(_jm,`)
-			qw422016.N().Q(field.originalName)
-			qw422016.N().S(`)
-`)
-			if field.fieldMask != nil {
-				continue
-			}
-			if _, isScalar := field.t.trw.(*TypeRWPrimitive); !isScalar {
-				continue
-			}
-			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
-			qw422016.N().S(`
-`)
-		}
-		qw422016.N().S(`    for k := range _jm {
-        return `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
-		qw422016.N().Q(tlName)
-		qw422016.N().S(`, k)
-    }
-`)
-		for _, field := range struct_.Fields {
-			// field names will be mandatory soon, except for typedefs which are processed separately
-
-			if field.originalName == "" {
-				continue
-			}
-			if field.fieldMask == nil {
-				continue
-			}
-			// If field depends on implicit field mask and set in json, but field mask bit not set, this is error
-			// Otherwise field will be silently ignored, to caller surprise
-			//
-			// If field depends on explicit field mask and set in json, we set the bit
-			// Setting field is convenient to set field mask bits. Also works for true-types
-			//
-			// We must first set all bits, only then read fields, so that all fields depend on te same set of bits
-
-			jsonField := fmt.Sprintf("_j%s", field.goName)
-
-			if field.t.IsTrueType() {
-				if !field.fieldMask.IsField() {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(` != nil {
-        return `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(tlName)
-					qw422016.N().S(`, "implicit true field '`)
-					qw422016.N().S(field.originalName)
-					qw422016.N().S(`' cannot be defined, set fieldmask instead")
-    }
-`)
-				} else {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(` != nil {
-        _bit := false
-        if err := `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`JsonReadBool(`)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(`, &_bit); err != nil {
-            return err
-        }
-        if _bit {
-            `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` |= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-        } else {
-            `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` &^= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-        }
-    }
-`)
-				}
-			} else {
-				if !field.fieldMask.IsField() {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` & (1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`) == 0 && `)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(` != nil {
-        return `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(tlName)
-					qw422016.N().S(`, "field '`)
-					qw422016.N().S(field.originalName)
-					qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
-    }
-`)
-				} else {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(` != nil {
-        `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` |= 1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`
-    }
-`)
-				}
-			}
-		}
-		for _, field := range struct_.Fields {
-			// field names will be mandatory soon, except for typedefs which are processed separately
-
-			if field.originalName == "" {
-				continue
-			}
-			jsonField := fmt.Sprintf("_j%s", field.goName)
-			itemField := fmt.Sprintf("item.%s", field.goName)
-
-			if field.t.IsTrueType() {
-				if field.fieldMask == nil {
-					tmpName := fmt.Sprintf("_%s", field.goName)
-					readingCode := field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, tmpName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
-
-					fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
-
-					qw422016.N().S(`    var `)
-					qw422016.N().S(tmpName)
-					qw422016.N().S(` `)
-					qw422016.N().S(fieldTypeString)
-					qw422016.N().S(`
-    `)
-					qw422016.N().S(readingCode)
-					qw422016.N().S(`
-`)
-				}
-				continue
-			}
-			readingCode := field.t.TypeJSONReadingCode(bytesVersion, directImports, struct_.wr.ins, jsonField, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
-			// TODO - for recursive field, add initialization
-
-			if field.fieldMask != nil {
-				if !field.fieldMask.IsField() {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` & (1 << `)
-					qw422016.E().V(field.BitNumber)
-					qw422016.N().S(`) != 0 {
-        `)
-					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-					qw422016.N().S(`        `)
-					qw422016.N().S(readingCode)
-					qw422016.N().S(`
-    } else {
-        `)
-					qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
-					qw422016.N().S(`
-    }
-`)
-				} else {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(jsonField)
-					qw422016.N().S(` != nil {
-        `)
-					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-					qw422016.N().S(`        `)
-					qw422016.N().S(readingCode)
-					qw422016.N().S(`
-    } else {
-        `)
-					qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
-					qw422016.N().S(`
-    }
-`)
-				}
-			} else {
-				if _, isScalar := field.t.trw.(*TypeRWPrimitive); !isScalar {
-					qw422016.N().S(`    `)
-					qw422016.N().S(readingCode)
-					qw422016.N().S(`
-`)
-				}
-			}
-		}
-		qw422016.N().S(`    return nil
-}
-
-`)
-	}
 	if len(struct_.wr.NatParams) == 0 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
@@ -2080,7 +1834,7 @@ func (item *`)
 }
 
 `)
-	if struct_.wr.gen.options.GenerateTL2 {
+	if struct_.wr.gen.options.GenerateTL2() {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
