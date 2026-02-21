@@ -9,14 +9,36 @@ package gengo
 import (
 	"fmt"
 	"strings"
+
+	"github.com/vkcom/tl/internal/pure"
 )
 
+type Variant struct {
+	t         *TypeRWWrapper
+	goName    string
+	recursive bool
+}
+
+func (f *Variant) EnsureRecursive(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
+	if !f.recursive {
+		return ""
+	}
+	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	return fmt.Sprintf(`	if item.value%s == nil { item.value%s = new(%s) }
+`, f.goName, f.goName, myType)
+}
+
 type TypeRWUnion struct {
-	wr     *TypeRWWrapper
-	Fields []Field
-	IsEnum bool
+	wr       *TypeRWWrapper
+	pureType *pure.TypeInstanceUnion
+	Fields   []Variant
+	IsEnum   bool
 
 	fieldsDec Deconflicter // TODO - add all generated methods here
+}
+
+func (trw *TypeRWUnion) ElementNatArgs() []pure.ActualNatArg {
+	return trw.pureType.ElementNatArgs()
 }
 
 var _ TypeRW = &TypeRWUnion{}

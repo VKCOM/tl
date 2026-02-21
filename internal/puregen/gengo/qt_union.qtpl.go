@@ -81,10 +81,10 @@ func (item *`)
 				continue
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+			qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 			qw422016.N().S(`        `)
 			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-				formatNatArgs(nil, field.NatArgs()), field.recursive))
+				formatNatArgs(nil, union.ElementNatArgs()), field.recursive))
 			qw422016.N().S(`
 `)
 		}
@@ -114,7 +114,7 @@ func (item *`)
 `)
 		for _, field := range union.Fields {
 			repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-				formatNatArgs(nil, field.NatArgs()), field.recursive)
+				formatNatArgs(nil, union.ElementNatArgs()), field.recursive)
 
 			if field.t.IsTrueType() || !field.t.hasRepairMasks {
 				continue
@@ -185,10 +185,10 @@ func (item*`)
 				continue
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+			qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 			qw422016.N().S(`        `)
 			qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
-				formatNatArgs(nil, field.NatArgs()), field.recursive, true))
+				formatNatArgs(nil, union.ElementNatArgs()), field.recursive, true))
 			qw422016.N().S(`
 `)
 		}
@@ -279,7 +279,7 @@ func (item *`)
 				} else {
 					qw422016.N().S(`        `)
 					qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
-						formatNatArgs(nil, field.NatArgs()), false, false, field.t.hasErrorInWriteMethods))
+						formatNatArgs(nil, union.ElementNatArgs()), false, false, field.t.hasErrorInWriteMethods))
 					qw422016.N().S(`
 `)
 				}
@@ -413,7 +413,7 @@ func (item *`)
 						qw422016.N().D(i)
 						qw422016.N().S(`:
         `)
-						qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+						qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 						qw422016.N().S(`        `)
 						qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive))
 						qw422016.N().S(`
@@ -589,14 +589,14 @@ func (item *`)
 `)
 		if !field.t.IsTrueType() {
 			qw422016.N().S(`                `)
-			qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+			qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 			qw422016.N().S(`                var in2Pointer *basictl.JsonLexer
                 if _value != nil {
                     in2Pointer = &basictl.JsonLexer{Data: _value}
                 }
                 `)
 			qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
-				formatNatArgs(nil, field.NatArgs()), field.recursive))
+				formatNatArgs(nil, union.ElementNatArgs()), field.recursive))
 			qw422016.N().S(`
 `)
 		}
@@ -774,7 +774,7 @@ func (item `)
 				qw422016.N().S(`...)
         `)
 				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-					formatNatArgs(nil, field.NatArgs()), false, field.t.hasErrorInWriteMethods))
+					formatNatArgs(nil, union.ElementNatArgs()), false, field.t.hasErrorInWriteMethods))
 				qw422016.N().S(`
 `)
 				if emptyCondition != "" {
@@ -1000,7 +1000,7 @@ func (item *`)
 		qw422016.N().D(i)
 		qw422016.N().S(`
     `)
-		qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 		qw422016.N().S(`    `)
 		qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false))
 		qw422016.N().S(`
@@ -1021,7 +1021,7 @@ func (item *`)
 		qw422016.N().D(i)
 		qw422016.N().S(`
     `)
-		qw422016.N().S(field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins))
+		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, union.wr.ins))
 		qw422016.N().S(`    `)
 		qw422016.N().S(ifString(field.recursive, "*", ""))
 		qw422016.N().S(`item.value`)

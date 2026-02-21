@@ -201,8 +201,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
 
 	res := &TypeRWUnion{
-		wr:     myWrapper,
-		IsEnum: pureType.IsEnum(),
+		pureType: pureType,
+		wr:       myWrapper,
+		IsEnum:   pureType.IsEnum(),
 	}
 	myWrapper.trw = res
 	kt := pureType.KernelType()
@@ -235,12 +236,10 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		}
 
 		fieldGoName := canonicalGoName(tlast.Name{Name: variantName}, "")
-		newField := Field{
+		newField := Variant{
 			// originalName: , we do not use filed.originalName in unions generation
-			t:       variantWrapper,
-			bare:    true,
-			goName:  res.fieldsDec.deconflictName(fieldGoName),
-			natArgs: pureType.ElementNatArgs(),
+			t:      variantWrapper,
+			goName: res.fieldsDec.deconflictName(fieldGoName),
 		}
 		res.Fields = append(res.Fields, newField)
 	}
