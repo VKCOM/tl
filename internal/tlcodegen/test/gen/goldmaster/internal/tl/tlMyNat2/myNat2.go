@@ -227,20 +227,20 @@ func (item *MyNat2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 		return err
 	}
 	switch _tag {
-	case "myZero#8d868379", "myZero", "#8d868379":
-		if tctx.IsTL2 && _tag != "myZero" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", _tag)
-		}
+	case "myZero", "myZero#8d868379", "#8d868379":
 		if !tctx.LegacyTypeNames && _tag == "myZero#8d868379" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "myZero#8d868379")
 		}
-		item.index = 0
-	case "myPlus#79e0c6df", "myPlus", "#79e0c6df":
-		if tctx.IsTL2 && _tag != "myPlus" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", _tag)
+		if !tctx.LegacyTypeNames && _tag == "#8d868379" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "#8d868379")
 		}
+		item.index = 0
+	case "myPlus", "myPlus#79e0c6df", "#79e0c6df":
 		if !tctx.LegacyTypeNames && _tag == "myPlus#79e0c6df" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "myPlus#79e0c6df")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#79e0c6df" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "#79e0c6df")
 		}
 		item.index = 1
 		if item.valueMyPlus == nil {

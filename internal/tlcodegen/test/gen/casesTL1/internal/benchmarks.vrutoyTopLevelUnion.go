@@ -114,11 +114,11 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 	}
 	switch _tag {
 	case "benchmarks.vrutoytopLevelUnionBig#ef556bee", "benchmarks.vrutoytopLevelUnionBig", "#ef556bee":
-		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionBig" {
-			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionBig#ef556bee")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#ef556bee" {
+			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ef556bee")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -129,11 +129,11 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 			return err
 		}
 	case "benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "benchmarks.vrutoytopLevelUnionEmpty", "#ce27c770":
-		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionEmpty" {
-			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#ce27c770" {
+			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ce27c770")
 		}
 		item.index = 1
 	default:
@@ -154,27 +154,19 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
 func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
-			} else {
-				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
-			}
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueBig.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
-			} else {
-				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
-			}
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above

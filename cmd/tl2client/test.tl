@@ -73,18 +73,18 @@ videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarE
 //    ads_disabled:                 fields_mask.1?true
 //    = videoAdsService.CheckFields;
 
-//videoAdsService.checkResponseOk#87fad1f4
-//    fields_mask:              #
-//    can_show_banner:                  fields_mask.0?true
-//    ads_disabled:                     fields_mask.1?true
-//    = videoAdsService.CheckResponse;
-//
-//videoAdsService.checkResponseError#83eb9781
-//    fields_mask:              #
-//    error_code:               int
-//    error:                    string
-//    = videoAdsService.CheckResponse;
-//
+videoAdsService.checkResponseOk#87fad1f4
+    fields_mask:              #
+    can_show_banner:                  fields_mask.0?true
+    ads_disabled:                     fields_mask.1?true
+    = videoAdsService.CheckResponse;
+
+videoAdsService.checkResponseError#83eb9781
+    fields_mask:              #
+    error_code:               int
+    error:                    string
+    = videoAdsService.CheckResponse;
+
 //---functions---
 //
 //@read

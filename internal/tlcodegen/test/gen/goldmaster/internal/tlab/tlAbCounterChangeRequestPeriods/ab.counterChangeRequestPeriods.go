@@ -236,12 +236,12 @@ func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONRea
 		return err
 	}
 	switch _tag {
-	case "ab.counterChangeRequestPeriodsMany#14a35d80", "ab.counterChangeRequestPeriodsMany", "#14a35d80":
-		if tctx.IsTL2 && _tag != "ab.counterChangeRequestPeriodsMany" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", _tag)
-		}
+	case "Many", "ab.counterChangeRequestPeriodsMany#14a35d80", "ab.counterChangeRequestPeriodsMany", "#14a35d80":
 		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsMany#14a35d80" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsMany#14a35d80")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#14a35d80" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "#14a35d80")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -251,12 +251,12 @@ func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONRea
 		if err := item.valueMany.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "ab.counterChangeRequestPeriodsOne#d9c36de5", "ab.counterChangeRequestPeriodsOne", "#d9c36de5":
-		if tctx.IsTL2 && _tag != "ab.counterChangeRequestPeriodsOne" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", _tag)
-		}
+	case "One", "ab.counterChangeRequestPeriodsOne#d9c36de5", "ab.counterChangeRequestPeriodsOne", "#d9c36de5":
 		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsOne#d9c36de5" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsOne#d9c36de5")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#d9c36de5" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "#d9c36de5")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -285,7 +285,7 @@ func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(tctx *basictl.JSONWriteC
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
+			w = append(w, `{"type":"Many"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany#14a35d80"`...)
@@ -298,7 +298,7 @@ func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(tctx *basictl.JSONWriteC
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
+			w = append(w, `{"type":"One"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne#d9c36de5"`...)

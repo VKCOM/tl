@@ -372,28 +372,20 @@ func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		return err
 	}
 	switch _tag {
-	case "service5Long.emptyOutput#ff8f7db9", "service5Long.emptyOutput", "#ff8f7db9",
-		"service5.emptyOutput#ff8f7db8", "service5.emptyOutput", "#ff8f7db8":
-		if !tctx.LegacyTypeNames && _tag == "service5.emptyOutput#ff8f7db8" {
-			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5.emptyOutput#ff8f7db8")
-		}
-		if tctx.IsTL2 && _tag != "service5Long.emptyOutput" {
-			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", _tag)
-		}
+	case "empty", "service5Long.emptyOutput#ff8f7db9", "service5Long.emptyOutput", "#ff8f7db9":
 		if !tctx.LegacyTypeNames && _tag == "service5Long.emptyOutput#ff8f7db9" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.emptyOutput#ff8f7db9")
 		}
+		if !tctx.LegacyTypeNames && _tag == "#ff8f7db9" {
+			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "#ff8f7db9")
+		}
 		item.index = 0
-	case "service5Long.stringOutput#dc170ff7", "service5Long.stringOutput", "#dc170ff7",
-		"service5.stringOutput#dc170ff4", "service5.stringOutput", "#dc170ff4":
-		if !tctx.LegacyTypeNames && _tag == "service5.stringOutput#dc170ff4" {
-			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5.stringOutput#dc170ff4")
-		}
-		if tctx.IsTL2 && _tag != "service5Long.stringOutput" {
-			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", _tag)
-		}
+	case "string", "service5Long.stringOutput#dc170ff7", "service5Long.stringOutput", "#dc170ff7":
 		if !tctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff7" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.stringOutput#dc170ff7")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#dc170ff7" {
+			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "#dc170ff7")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -422,7 +414,7 @@ func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"service5Long.emptyOutput"`...)
+			w = append(w, `{"type":"empty"`...)
 		} else {
 			if tctx.Short {
 				if tctx.LegacyTypeNames {
@@ -441,7 +433,7 @@ func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"service5Long.stringOutput"`...)
+			w = append(w, `{"type":"string"`...)
 		} else {
 			if tctx.Short {
 				if tctx.LegacyTypeNames {

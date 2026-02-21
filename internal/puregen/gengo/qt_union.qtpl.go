@@ -484,12 +484,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-`)
-		if union.wr.originateFromTL2 {
-			qw422016.N().S(`    tctx.IsTL2 = true
-`)
-		}
-		qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
+    return item.ReadJSONGeneral(&tctx, in)
 }
 
 `)
@@ -517,70 +512,95 @@ func (item *`)
 `)
 	for i, field := range union.Fields {
 		name := field.t.tlName.String()
+		// we detect variants that were not migrated and give them variantName only
+		hasOldName := !strings.Contains(name, "__")
+		// also we prevent collision of variant name and tlName below which can happen in default namespace
+		if union.wr.HasTL2() && field.variantName == name {
+			hasOldName = false
+		}
 		tag := fmt.Sprintf("#%08x", field.t.tlTag)
 		nameWithTag := name + tag
 		wrWithoutLong := field.t.WrWithoutLong
+		var cases []string
+		// hopefully we get at least single case)
+		if union.wr.HasTL2() {
+			cases = append(cases, fmt.Sprintf("%q", field.variantName))
+		}
+		if !union.wr.originateFromTL2 {
+			cases = append(cases, fmt.Sprintf("%q", nameWithTag))
+		}
+		if hasOldName {
+			cases = append(cases, fmt.Sprintf("%q", name))
+		}
+		if !union.wr.originateFromTL2 {
+			cases = append(cases, fmt.Sprintf("%q", tag))
+		}
+		// this mess is because there was not clear variant name in so annoying TL1
 
-		if union.wr.originateFromTL2 {
-			qw422016.N().S(`        case `)
-			qw422016.N().Q(name)
+		qw422016.N().S(`        case `)
+		qw422016.N().S(strings.Join(cases, ","))
+
+		if wrWithoutLong != nil && !hasOldName && !union.wr.originateFromTL2 && !union.HasShortFieldCollision(wrWithoutLong) {
+			name2 := wrWithoutLong.tlName.String()
+			tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+			nameWithTag2 := name2 + tag2
+
+			qw422016.N().S(`,`)
+			qw422016.N().Q(nameWithTag2)
+			qw422016.N().S(`,`)
+			qw422016.N().Q(name2)
+			qw422016.N().S(`,`)
+			qw422016.N().Q(tag2)
 			qw422016.N().S(`:
-`)
-		} else {
-			qw422016.N().S(`        case `)
-			qw422016.N().Q(nameWithTag)
-			qw422016.N().S(`, `)
-			qw422016.N().Q(name)
-			qw422016.N().S(`, `)
-			qw422016.N().Q(tag)
-			if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) {
-				qw422016.N().S(`,
-`)
-				name2 := wrWithoutLong.tlName.String()
-				tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
-				nameWithTag2 := name2 + tag2
-
-				qw422016.N().Q(nameWithTag2)
-				qw422016.N().S(`, `)
-				qw422016.N().Q(name2)
-				qw422016.N().S(`, `)
-				qw422016.N().Q(tag2)
-				qw422016.N().S(`:
-            if !tctx.LegacyTypeNames && _tag == `)
-				qw422016.N().Q(nameWithTag2)
-				qw422016.N().S(` {
-                return `)
-				qw422016.N().S(union.wr.gen.InternalPrefix())
-				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-				qw422016.N().Q(tlName)
-				qw422016.N().S(`, `)
-				qw422016.N().Q(nameWithTag2)
-				qw422016.N().S(`)
-            }
-`)
-			} else {
-				qw422016.N().S(`:`)
-			}
-			qw422016.N().S(`            if tctx.IsTL2 && _tag != `)
-			qw422016.N().Q(name)
+                    if !tctx.LegacyTypeNames && _tag == `)
+			qw422016.N().Q(nameWithTag2)
 			qw422016.N().S(` {
-                return `)
+                        return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
 			qw422016.N().Q(tlName)
-			qw422016.N().S(`, _tag)
-            }
-            if !tctx.LegacyTypeNames && _tag == `)
+			qw422016.N().S(`, `)
+			qw422016.N().Q(nameWithTag2)
+			qw422016.N().S(`)
+                    }
+                    if !tctx.LegacyTypeNames && _tag == `)
+			qw422016.N().Q(tag2)
+			qw422016.N().S(` {
+                        return `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, `)
+			qw422016.N().Q(tag2)
+			qw422016.N().S(`)
+                    }
+`)
+		} else {
+			qw422016.N().S(`:`)
+		}
+		if !union.wr.originateFromTL2 {
+			qw422016.N().S(`                if !tctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(` {
-                return `)
+                    return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
 			qw422016.N().Q(tlName)
 			qw422016.N().S(`, `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(`)
-            }
+                }
+                if !tctx.LegacyTypeNames && _tag == `)
+			qw422016.N().Q(tag)
+			qw422016.N().S(` {
+                    return `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, `)
+			qw422016.N().Q(tag)
+			qw422016.N().S(`)
+                }
 `)
 		}
 		qw422016.N().S(`            item.index = `)
@@ -641,12 +661,7 @@ func (item `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-`)
-	if union.wr.originateFromTL2 {
-		qw422016.N().S(`    tctx.IsTL2 = true
-`)
-	}
-	qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
+    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
@@ -659,7 +674,9 @@ func (item `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
 `)
-	if union.IsEnum {
+	if union.IsEnum && !union.wr.HasTL2() {
+		// keep old code without changes fro now
+
 		qw422016.N().S(`        w = append(w, '"')
         if tctx.LegacyTypeNames {
             w = append(w, _`)
@@ -689,76 +706,83 @@ func (item `)
 
 			emptyCondition := field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false)
 
+			// we detect variants that were not migrated and give them variantName only
+			hasOldName := !strings.Contains(name, "__")
+
 			qw422016.N().S(`        case `)
 			qw422016.N().D(i)
 			qw422016.N().S(`:
 `)
-			if union.wr.originateFromTL2 {
-				qw422016.N().S(`        w = append(w, `)
+			if !hasOldName {
+				qw422016.N().S(`            w = append(w, `)
 				qw422016.N().S("`")
 				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(name)
+				qw422016.N().Q(field.variantName)
 				qw422016.N().S(``)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
 `)
 			} else {
-				qw422016.N().S(`        if tctx.IsTL2 {
-        w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(name)
-				qw422016.N().S(``)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
-        } else {
+				if union.wr.HasTL2() {
+					qw422016.N().S(`                if tctx.IsTL2 {
+                    w = append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().S(`{"type":`)
+					qw422016.N().Q(field.variantName)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+                } else {
 `)
+				}
 				if wrWithoutLong != nil {
-					qw422016.N().S(`        if tctx.Short {
-            if tctx.LegacyTypeNames {
-                w = append(w, `)
+					qw422016.N().S(`                    if tctx.Short {
+                        if tctx.LegacyTypeNames {
+                            w = append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().S(`{"type":`)
 					qw422016.N().Q(nameWithTagShort)
 					qw422016.N().S(``)
 					qw422016.N().S("`")
 					qw422016.N().S(`...)
-            } else {
-                w = append(w, `)
+                        } else {
+                            w = append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().S(`{"type":`)
 					qw422016.N().Q(nameWithTagShortNew)
 					qw422016.N().S(``)
 					qw422016.N().S("`")
 					qw422016.N().S(`...)
-            }
-        } else {
+                        }
+                    } else {
 `)
 				}
-				qw422016.N().S(`            if tctx.LegacyTypeNames {
-                w = append(w, `)
+				qw422016.N().S(`                    if tctx.LegacyTypeNames {
+                        w = append(w, `)
 				qw422016.N().S("`")
 				qw422016.N().S(`{"type":`)
 				qw422016.N().Q(nameWithTag)
 				qw422016.N().S(``)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
-            } else {
-                w = append(w, `)
+                    } else {
+                        w = append(w, `)
 				qw422016.N().S("`")
 				qw422016.N().S(`{"type":`)
 				qw422016.N().Q(nameWithTagNew)
 				qw422016.N().S(``)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
-            }
+                    }
 `)
 				if wrWithoutLong != nil {
-					qw422016.N().S(`        }
+					qw422016.N().S(`                    }
 `)
 				}
-				qw422016.N().S(`        }
+				if union.wr.HasTL2() {
+					qw422016.N().S(`                }
 `)
+				}
 			}
 			if !field.t.IsTrueType() {
 				if emptyCondition != "" {

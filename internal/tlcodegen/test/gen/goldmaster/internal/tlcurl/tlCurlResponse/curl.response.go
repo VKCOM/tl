@@ -239,12 +239,12 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		return err
 	}
 	switch _tag {
-	case "curl.responseOk#57d7a33a", "curl.responseOk", "#57d7a33a":
-		if tctx.IsTL2 && _tag != "curl.responseOk" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", _tag)
-		}
+	case "Ok", "curl.responseOk#57d7a33a", "curl.responseOk", "#57d7a33a":
 		if !tctx.LegacyTypeNames && _tag == "curl.responseOk#57d7a33a" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "curl.responseOk#57d7a33a")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#57d7a33a" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "#57d7a33a")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -254,12 +254,12 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		if err := item.valueOk.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "curl.responseError#af514651", "curl.responseError", "#af514651":
-		if tctx.IsTL2 && _tag != "curl.responseError" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", _tag)
-		}
+	case "Error", "curl.responseError#af514651", "curl.responseError", "#af514651":
 		if !tctx.LegacyTypeNames && _tag == "curl.responseError#af514651" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "curl.responseError#af514651")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#af514651" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "#af514651")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -288,7 +288,7 @@ func (item *CurlResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte)
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"curl.responseOk"`...)
+			w = append(w, `{"type":"Ok"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"curl.responseOk#57d7a33a"`...)
@@ -301,7 +301,7 @@ func (item *CurlResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte)
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"curl.responseError"`...)
+			w = append(w, `{"type":"Error"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"curl.responseError#af514651"`...)

@@ -92,27 +92,27 @@ func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 	}
 	switch _tag {
 	case "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
-		if tctx.IsTL2 && _tag != "cases.testEnum1" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum1#6c6c55ac" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum1#6c6c55ac")
 		}
+		if !tctx.LegacyTypeNames && _tag == "#6c6c55ac" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#6c6c55ac")
+		}
 		item.index = 0
 	case "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
-		if tctx.IsTL2 && _tag != "cases.testEnum2" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum2#86ea88ce" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum2#86ea88ce")
 		}
+		if !tctx.LegacyTypeNames && _tag == "#86ea88ce" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#86ea88ce")
+		}
 		item.index = 1
 	case "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
-		if tctx.IsTL2 && _tag != "cases.testEnum3" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum3#69b83e2f" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum3#69b83e2f")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#69b83e2f" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#69b83e2f")
 		}
 		item.index = 2
 	default:

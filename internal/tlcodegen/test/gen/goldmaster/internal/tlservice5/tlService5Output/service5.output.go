@@ -374,20 +374,20 @@ func (item *Service5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		return err
 	}
 	switch _tag {
-	case "service5.emptyOutput#ff8f7db8", "service5.emptyOutput", "#ff8f7db8":
-		if tctx.IsTL2 && _tag != "service5.emptyOutput" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", _tag)
-		}
+	case "empty", "service5.emptyOutput#ff8f7db8", "service5.emptyOutput", "#ff8f7db8":
 		if !tctx.LegacyTypeNames && _tag == "service5.emptyOutput#ff8f7db8" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", "service5.emptyOutput#ff8f7db8")
 		}
-		item.index = 0
-	case "service5.stringOutput#dc170ff4", "service5.stringOutput", "#dc170ff4":
-		if tctx.IsTL2 && _tag != "service5.stringOutput" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", _tag)
+		if !tctx.LegacyTypeNames && _tag == "#ff8f7db8" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", "#ff8f7db8")
 		}
+		item.index = 0
+	case "string", "service5.stringOutput#dc170ff4", "service5.stringOutput", "#dc170ff4":
 		if !tctx.LegacyTypeNames && _tag == "service5.stringOutput#dc170ff4" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", "service5.stringOutput#dc170ff4")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#dc170ff4" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("service5.Output", "#dc170ff4")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -416,7 +416,7 @@ func (item *Service5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"service5.emptyOutput"`...)
+			w = append(w, `{"type":"empty"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
@@ -427,7 +427,7 @@ func (item *Service5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"service5.stringOutput"`...)
+			w = append(w, `{"type":"string"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)

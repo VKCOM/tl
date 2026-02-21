@@ -167,20 +167,20 @@ func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 		return err
 	}
 	switch _tag {
-	case "a.myTrue#00000001", "a.myTrue", "#00000001":
-		if tctx.IsTL2 && _tag != "a.myTrue" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _tag)
-		}
+	case "myTrue", "a.myTrue#00000001", "a.myTrue", "#00000001":
 		if !tctx.LegacyTypeNames && _tag == "a.myTrue#00000001" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myTrue#00000001")
 		}
-		item.index = 0
-	case "a.myFalse#00000002", "a.myFalse", "#00000002":
-		if tctx.IsTL2 && _tag != "a.myFalse" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", _tag)
+		if !tctx.LegacyTypeNames && _tag == "#00000001" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "#00000001")
 		}
+		item.index = 0
+	case "myFalse", "a.myFalse#00000002", "a.myFalse", "#00000002":
 		if !tctx.LegacyTypeNames && _tag == "a.myFalse#00000002" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myFalse#00000002")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#00000002" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "#00000002")
 		}
 		item.index = 1
 	default:
@@ -199,13 +199,32 @@ func (item AMyBool) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(&tctx, w)
 }
 func (item AMyBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '"')
-	if tctx.LegacyTypeNames {
-		w = append(w, _AMyBool[item.index].TLString...)
-	} else {
-		w = append(w, _AMyBool[item.index].TLName...)
+	switch item.index {
+	case 0:
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"myTrue"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"a.myTrue#00000001"`...)
+			} else {
+				w = append(w, `{"type":"a.myTrue"`...)
+			}
+		}
+		return append(w, '}')
+	case 1:
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"myFalse"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"a.myFalse#00000002"`...)
+			} else {
+				w = append(w, `{"type":"a.myFalse"`...)
+			}
+		}
+		return append(w, '}')
+	default: // Impossible due to panic above
+		return w
 	}
-	return append(w, '"')
 }
 
 func (item AMyBool) String() string {
