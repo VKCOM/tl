@@ -82,15 +82,15 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 {%= printJSONHelpType2(kernel, trw.FieldType().Fields()[1].TypeInstance(), trw.FieldType().Fields()[1].Bare(), fields, trw.FieldType().Common().TransformNatArgsToChild(elementNatArgs, trw.FieldType().Fields()[1].NatArgs())) %}{%s "}"%}
   {%- case *pure.TypeInstanceArray -%}
     {%- code
-    elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.ElemNatArgs())
+    elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.Field().NatArgs())
     -%}
     {%- switch -%}
     {%- case !trw.IsTuple() -%}
-{%s "[" %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s ", ...]" %}
+{%s "[" %}{%= printJSONHelpType2(kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs) %}{%s ", ...]" %}
     {%- case trw.DynamicSize() -%}
-{%s "[" %}{%s JSONHelpNatArg(trww, fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s "]"%}
+{%s "[" %}{%s JSONHelpNatArg(trww, fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs) %}{%s "]"%}
     {%- default -%}
-{%s "[" %}{%v trw.Count() %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs) %}{%s "]"%}
+{%s "[" %}{%v trw.Count() %}{%s " × " %}{%= printJSONHelpType2(kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs) %}{%s "]"%}
     {%- endswitch -%}
   {%- endswitch -%}
 {%- endstripspace -%}

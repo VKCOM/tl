@@ -131,8 +131,6 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 		newField := Field{
 			pureField: field,
 			t:         fieldType,
-			bare:      field.Bare(),
-			natArgs:   field.NatArgs(),
 		}
 		if field.Name() != "" { // empty only for typedef single field
 			newField.goName = res.fieldsDec.deconflictName(utils.CNameToCamelName(field.Name()))
@@ -186,8 +184,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			element: Field{
 				pureField: elementField,
 				t:         fieldType,
-				bare:      elementField.Bare(),
-				natArgs:   pureType.ElementNatArgs(),
 			},
 			emptyTag: pureType.VariantTypes()[0].TLTag(),
 			okTag:    pureType.VariantTypes()[1].TLTag(),
@@ -248,7 +244,8 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 }
 
 func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
-	fieldType, err := gen.getType(pureType.ElemType())
+	field := pureType.Field()
+	fieldType, err := gen.getType(field.TypeInstance())
 	if err != nil {
 		return err
 	}
@@ -258,9 +255,8 @@ func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		dynamicSize: pureType.DynamicSize(),
 		size:        pureType.Count(),
 		element: Field{
-			t:       fieldType,
-			bare:    pureType.ElemBare(),
-			natArgs: pureType.ElemNatArgs(),
+			pureField: field,
+			t:         fieldType,
 		},
 	}
 	myWrapper.trw = res
@@ -269,7 +265,8 @@ func (gen *genGo) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.Typ
 }
 
 func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceDict) error {
-	fieldType, err := gen.getType(pureType.FieldType())
+	field := pureType.Field()
+	fieldType, err := gen.getType(field.TypeInstance())
 	if err != nil {
 		return err
 	}
@@ -282,9 +279,8 @@ func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.Type
 	res := &TypeRWDict{
 		wr: myWrapper,
 		element: Field{
-			t:       fieldType,
-			bare:    pureType.Field().Bare(),
-			natArgs: pureType.Field().NatArgs(),
+			pureField: field,
+			t:         fieldType,
 		},
 		dictKeyString:  isString,
 		dictKeyField:   structElement.Fields[0],

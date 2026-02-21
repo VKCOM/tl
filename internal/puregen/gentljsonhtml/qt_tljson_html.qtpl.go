@@ -142,24 +142,24 @@ func streamprintJSONHelpType2(qw422016 *qt422016.Writer, kernel *pure.Kernel, tr
 		streamprintJSONHelpType2(qw422016, kernel, trw.FieldType().Fields()[1].TypeInstance(), trw.FieldType().Fields()[1].Bare(), fields, trw.FieldType().Common().TransformNatArgsToChild(elementNatArgs, trw.FieldType().Fields()[1].NatArgs()))
 		qw422016.E().S("}")
 	case *pure.TypeInstanceArray:
-		elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.ElemNatArgs())
+		elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.Field().NatArgs())
 
 		switch {
 		case !trw.IsTuple():
 			qw422016.E().S("[")
-			streamprintJSONHelpType2(qw422016, kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs)
+			streamprintJSONHelpType2(qw422016, kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs)
 			qw422016.E().S(", ...]")
 		case trw.DynamicSize():
 			qw422016.E().S("[")
 			qw422016.E().S(JSONHelpNatArg(trww, fields, natArgs[len(natArgs)-1]))
 			qw422016.E().S(" × ")
-			streamprintJSONHelpType2(qw422016, kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs)
+			streamprintJSONHelpType2(qw422016, kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs)
 			qw422016.E().S("]")
 		default:
 			qw422016.E().S("[")
 			qw422016.E().V(trw.Count())
 			qw422016.E().S(" × ")
-			streamprintJSONHelpType2(qw422016, kernel, trw.ElemType(), trw.ElemBare(), fields, elementNatArgs)
+			streamprintJSONHelpType2(qw422016, kernel, trw.Field().TypeInstance(), trw.Field().Bare(), fields, elementNatArgs)
 			qw422016.E().S("]")
 		}
 	}
