@@ -24,7 +24,7 @@ func (item *{%s= goName %}) Reset() {
 func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl %}) {
     if basictl.RandomUint(rg) & 1 == 1 {
         item.Ok = true
-        {%s= maybe.element.t.TypeRandomCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false) %}
+        {%s= maybe.element.t.TypeRandomCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.ElementNatArgs()), false) %}
     } else {
         item.Ok = false
     }
@@ -36,7 +36,7 @@ func (item {%s= goName %}) RepairMasksValue({%s= strings.TrimPrefix(natArgsDecl,
     return item
 }
 func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {
-    {%s= maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false) %}
+    {%s= maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.ElementNatArgs()), false) %}
 }
         {%- endif -%}
 
@@ -48,7 +48,7 @@ func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, er
         return w, err
     }
     if item.Ok {
-        {%s= maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.NatArgs()), false, true) %}
+        {%s= maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.ElementNatArgs()), false, true) %}
     }
     return w, nil
     {%- endif -%}
@@ -70,7 +70,7 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if item.Ok {
         w = basictl.NatWrite(w, {%s= okTag %})
-        {%s= maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.NatArgs()), false, true, writeElementNeedsError) %}
+        {%s= maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.ElementNatArgs()), false, true, writeElementNeedsError) %}
     }
     {%- if writeElementNeedsError -%}
     return basictl.NatWrite(w, {%s= emptyTag %}), nil
@@ -203,7 +203,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         in2 := basictl.JsonLexer{Data: _jvalue}
         in2Pointer = &in2
     }
-    {%s= maybe.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, maybe.wr.ins, "in2Pointer", "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false, ) %}
+    {%s= maybe.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, maybe.wr.ins, "in2Pointer", "item.Value", formatNatArgs(nil, maybe.ElementNatArgs()), false, ) %}
   }
   return nil
 }
@@ -237,7 +237,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
     if {%s= emptyCondition %} {
     {%- endif -%}
     w = append(w, `,"value":`...)
-    {%s= maybe.element.t.TypeJSONWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false, writeElementNeedsError) %}
+    {%s= maybe.element.t.TypeJSONWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.ElementNatArgs()), false, writeElementNeedsError) %}
     {%- if emptyCondition != "" -%}
     }
     {%- endif -%}

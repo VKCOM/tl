@@ -9,6 +9,8 @@ package gengo
 import (
 	"fmt"
 	strings "strings"
+
+	"github.com/vkcom/tl/internal/pure"
 )
 
 type TypeRWMaybe struct {
@@ -17,6 +19,10 @@ type TypeRWMaybe struct {
 
 	emptyTag uint32
 	okTag    uint32
+}
+
+func (trw *TypeRWMaybe) ElementNatArgs() []pure.ActualNatArg {
+	return trw.element.NatArgs()
 }
 
 var _ TypeRW = &TypeRWMaybe{}
