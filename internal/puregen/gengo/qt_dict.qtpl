@@ -24,7 +24,7 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
     l := basictl.RandomSize(rg)
     *vec = make([]{%s= elementTypeString %}, l)
     for i := range *vec {
-        {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false) %}
     }
     rg.DecreaseDepth()
 }
@@ -33,7 +33,7 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
             {%- if tuple.wr.hasRepairMasks -%}
 func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
     for i := range *vec {
-        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false) %}
     }
 }
             {%- endif -%}
@@ -56,7 +56,7 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
         *vec = (*vec)[:l]
     }
     for i := range *vec {
-        {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
+        {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false ) %}
     }
     return w, nil
     {%- endif -%}
@@ -72,7 +72,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
     {%- else -%}
     w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError) %}
     }
     {%- if writeElementNeedsError -%}
     return w, nil
@@ -187,7 +187,7 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
             }
             (*vec)[index].Key = append((*vec)[index].Key[:0], in.UnsafeFieldName(true)...)
             in.WantColon()
-            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false ) %}
             in.WantComma()
         }
         in.Delim('}')
@@ -209,7 +209,7 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%
         w = basictl.JSONAddCommaIfNeeded(w)
         w = basictl.JSONWriteStringBytes(w, elem.{%s= tuple.dictKeyField.goName %})
         w = append(w, ':')
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, writeElementNeedsError) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, writeElementNeedsError) %}
     }
     {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
@@ -237,9 +237,9 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
                 return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected correct json value in key")
             }
             in2 := basictl.JsonLexer{Data: keyBytes}
-            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false ) %}
             in.WantColon()
-            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false ) %}
             in.WantComma()
         }
         in.Delim('}')
@@ -261,9 +261,9 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%
         key := elem.{%s= keyFieldName %}
         w = basictl.JSONAddCommaIfNeeded(w)
         w = append(w, `"`...)
-        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
+        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
         w = append(w, `":`...)
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
     {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
@@ -284,7 +284,7 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeStri
     *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, l)
     for i := 0; i < int(l); i++ {
         var elem {%s= elementTypeString %}
-        {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false) %}
         (*m)[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
     rg.DecreaseDepth()
@@ -294,7 +294,7 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeStri
 func {%s= goName %}RepairMasks(m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {
     for key, val := range *m {
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:val}
-        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        {%s= tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false) %}
         (*m)[key] = elem.{%s= valueFieldName %}
     }
 }
@@ -322,7 +322,7 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
     data := *m
     for i := 0; i < int(l); i++ {
         var elem {%s= elementTypeString %}
-        {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
+        {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false ) %}
          data[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
     return w, nil
@@ -362,7 +362,7 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
     for _, key := range keys {
         val := m[key]
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:val}
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError) %}
     }
     {%- if writeElementNeedsError -%}
     return w, nil
@@ -511,7 +511,7 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
             key := in.UnsafeFieldName(true)
             in.WantColon()
             var value {%s= valueTypeString %}
-            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false ) %}
             data[key] = value
         {%- else -%}
             keyBytes := []byte(in.UnsafeFieldName(false))
@@ -521,9 +521,9 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
             }
             in2 := basictl.JsonLexer{Data: keyBytes}
             var key {%s= keyTypeString %}
-            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false ) %}
             var value {%s= valueTypeString %}
-            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false ) %}
             data[key] = value
         {%- endif -%}
             in.WantComma()
@@ -556,7 +556,7 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s=
         w = basictl.JSONAddCommaIfNeeded(w)
         w = basictl.JSONWriteString(w, key)
         w = append(w, ':')
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
     {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
@@ -581,9 +581,9 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s=
         value := m[key]
         w = basictl.JSONAddCommaIfNeeded(w)
         w = append(w, `"`...)
-        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
+        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
         w = append(w, `":`...)
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
     {%- if writeElementNeedsError -%}
     return append(w, '}'), nil

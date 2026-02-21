@@ -94,26 +94,9 @@ func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
 		f.t.trw.fillRecursiveChildren(visitedNodes)
 		trw.Fields[i].recursive = visitedNodes[trw.wr]
 	}
-	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-	//	var nf []Field
-	//	for _, f := range trw.Fields {
-	//		if !f.recursive {
-	//			nf = append(nf, f)
-	//			panic("recursive field in union " + trw.wr.tlName.String())
-	//}
-	//}
-	//trw.Fields = nf
-	//}
 }
 
 func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-	//	for _, f := range trw.Fields {
-	//		if !f.recursive {
-	//			f.t.FillRecursiveChildren(visitedNodes)
-	//		}
-	//	}
-	//}
 }
 
 func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
@@ -166,6 +149,7 @@ func (trw *TypeRWUnion) typeJSON2ReadingRequiresContext() bool {
 	return true
 }
 
+// TODO - remove with long adapters
 func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	//messages.peerId peer_id:int = messages.ChatId;
 	//messagesLong.peerId peer_id:long = messages.ChatId;

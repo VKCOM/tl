@@ -46,7 +46,7 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
 			qw422016.N().S(`, l)
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
@@ -64,7 +64,7 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
 			qw422016.N().S(`) {
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
     }
 }
@@ -102,7 +102,7 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
     }
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false))
 			qw422016.N().S(`
     }
     return w, nil
@@ -132,7 +132,7 @@ func `)
 			qw422016.N().S(`    w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
 			qw422016.N().S(`
     }
 `)
@@ -300,7 +300,7 @@ func `)
             (*vec)[index].Key = append((*vec)[index].Key[:0], in.UnsafeFieldName(true)...)
             in.WantColon()
             `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false))
 			qw422016.N().S(`
             in.WantComma()
         }
@@ -350,7 +350,7 @@ func `)
 			qw422016.N().S(`)
         w = append(w, ':')
         `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, writeElementNeedsError))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, writeElementNeedsError))
 			qw422016.N().S(`
     }
 `)
@@ -400,11 +400,11 @@ func `)
             }
             in2 := basictl.JsonLexer{Data: keyBytes}
             `)
-			qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
+			qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false))
 			qw422016.N().S(`
             in.WantColon()
             `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false))
 			qw422016.N().S(`
             in.WantComma()
         }
@@ -458,7 +458,7 @@ func `)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)
         `)
-			qw422016.N().S(tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods))
+			qw422016.N().S(tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false, tuple.dictKeyField.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
         w = append(w, `)
 			qw422016.N().S("`")
@@ -466,7 +466,7 @@ func `)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)
         `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
     }
 `)
@@ -514,7 +514,7 @@ func `)
 			qw422016.N().S(elementTypeString)
 			qw422016.N().S(`
         `)
-			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
         (*m)[elem.`)
 			qw422016.N().S(keyFieldName)
@@ -545,7 +545,7 @@ func `)
 			qw422016.N().S(valueFieldName)
 			qw422016.N().S(`:val}
         `)
-			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false))
+			qw422016.N().S(tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
         (*m)[key] = elem.`)
 			qw422016.N().S(valueFieldName)
@@ -596,7 +596,7 @@ func `)
 			qw422016.N().S(elementTypeString)
 			qw422016.N().S(`
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false))
 			qw422016.N().S(`
          data[elem.`)
 			qw422016.N().S(keyFieldName)
@@ -669,7 +669,7 @@ func `)
 			qw422016.N().S(valueFieldName)
 			qw422016.N().S(`:val}
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
 			qw422016.N().S(`
     }
 `)
@@ -913,7 +913,7 @@ func `)
 			qw422016.N().S(valueTypeString)
 			qw422016.N().S(`
             `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false))
 			qw422016.N().S(`
             data[key] = value
 `)
@@ -932,13 +932,13 @@ func `)
 			qw422016.N().S(keyTypeString)
 			qw422016.N().S(`
             `)
-			qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
+			qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false))
 			qw422016.N().S(`
             var value `)
 			qw422016.N().S(valueTypeString)
 			qw422016.N().S(`
             `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false))
 			qw422016.N().S(`
             data[key] = value
 `)
@@ -1001,7 +1001,7 @@ func `)
         w = basictl.JSONWriteString(w, key)
         w = append(w, ':')
         `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
     }
 `)
@@ -1046,7 +1046,7 @@ func `)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)
         `)
-			qw422016.N().S(tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods))
+			qw422016.N().S(tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.NatArgs()), false, tuple.dictKeyField.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
         w = append(w, `)
 			qw422016.N().S("`")
@@ -1054,7 +1054,7 @@ func `)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)
         `)
-			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods))
+			qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.NatArgs()), false, tuple.dictValueField.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
     }
 `)

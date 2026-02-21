@@ -49,18 +49,18 @@ func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct, 
 			if i == fieldId {
 				continue
 			}
-			if f.fieldMask != nil &&
-				f.fieldMask.IsField() &&
-				f.fieldMask.FieldIndex() == fieldId {
-				if _, hasBit := affectedIndexes[f.BitNumber]; !hasBit {
-					affectedIndexes[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+			if f.FieldMask() != nil &&
+				f.FieldMask().IsField() &&
+				f.FieldMask().FieldIndex() == fieldId {
+				if _, hasBit := affectedIndexes[f.BitNumber()]; !hasBit {
+					affectedIndexes[f.BitNumber()] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
 				}
-				affectedIndexes[f.BitNumber].AffectedFields[trw] = append(affectedIndexes[f.BitNumber].AffectedFields[trw], i)
+				affectedIndexes[f.BitNumber()].AffectedFields[trw] = append(affectedIndexes[f.BitNumber()].AffectedFields[trw], i)
 
 				result |= FieldUsedAsFieldMask
 			}
 			natIndexes := make([]int, 0)
-			for j, natArg := range f.natArgs {
+			for j, natArg := range f.NatArgs() {
 				if natArg.IsField() && natArg.FieldIndex() == fieldId {
 					natIndexes = append(natIndexes, j)
 				}
@@ -120,19 +120,19 @@ func visit(
 	case *TypeRWStruct:
 		{
 			for fId, f := range i.Fields {
-				if f.fieldMask != nil &&
-					!f.fieldMask.IsField() &&
-					!f.fieldMask.IsNumber() &&
-					natParamName == f.fieldMask.Name() {
+				if f.FieldMask() != nil &&
+					!f.FieldMask().IsField() &&
+					!f.FieldMask().IsNumber() &&
+					natParamName == f.FieldMask().Name() {
 					*natProps |= FieldUsedAsFieldMask
-					if _, hasBit := (*affectedIndexes)[f.BitNumber]; !hasBit {
-						(*affectedIndexes)[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+					if _, hasBit := (*affectedIndexes)[f.BitNumber()]; !hasBit {
+						(*affectedIndexes)[f.BitNumber()] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
 					}
-					(*affectedIndexes)[f.BitNumber].AffectedFields[i] = append((*affectedIndexes)[f.BitNumber].AffectedFields[i], fId)
+					(*affectedIndexes)[f.BitNumber()].AffectedFields[i] = append((*affectedIndexes)[f.BitNumber()].AffectedFields[i], fId)
 					(*visitResults)[key] = VisitSuccess
 				}
 				natIndexes := make([]int, 0)
-				for i, natParam := range f.natArgs {
+				for i, natParam := range f.NatArgs() {
 					if natParam.Name() == natParamName {
 						natIndexes = append(natIndexes, i)
 					}
@@ -169,7 +169,7 @@ func visit(
 			} else {
 				elementType := i.element.t
 				natIndexes := make([]int, 0)
-				for i, natParam := range i.element.natArgs {
+				for i, natParam := range i.element.NatArgs() {
 					if !natParam.IsNumber() && natParam.Name() == natParamName {
 						natIndexes = append(natIndexes, i)
 					}
@@ -186,7 +186,7 @@ func visit(
 		{
 			elementType := i.element.t
 			natIndexes := make([]int, 0)
-			for i, natParam := range i.element.natArgs {
+			for i, natParam := range i.element.NatArgs() {
 				if !natParam.IsNumber() && natParam.Name() == natParamName {
 					natIndexes = append(natIndexes, i)
 				}

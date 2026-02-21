@@ -129,13 +129,10 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			return err
 		}
 		newField := Field{
-			originalName: field.Name(),
-			t:            fieldType,
-			bare:         field.Bare(),
-			fieldMask:    field.FieldMask(),
-			BitNumber:    field.BitNumber(),
-			MaskTL2Bit:   field.MaskTL2Bit(),
-			natArgs:      field.NatArgs(),
+			pureField: field,
+			t:         fieldType,
+			bare:      field.Bare(),
+			natArgs:   field.NatArgs(),
 		}
 		if field.Name() != "" { // empty only for typedef single field
 			newField.goName = res.fieldsDec.deconflictName(utils.CNameToCamelName(field.Name()))
