@@ -59,11 +59,8 @@ type Field struct {
 	pureField pure.Field
 	// TODO - store pure.Field for properties
 	t         *TypeRWWrapper
-	bare      bool
 	goName    string
 	recursive bool
-
-	natArgs []pure.ActualNatArg
 
 	removeMask2Bit bool // TODO - move into pure kernel
 }
@@ -73,7 +70,7 @@ func (f *Field) OriginalName() string {
 }
 
 func (f *Field) Bare() bool {
-	return f.bare
+	return f.pureField.Bare()
 }
 
 func (f *Field) FieldMask() *pure.ActualNatArg {
@@ -92,7 +89,7 @@ func (f *Field) MaskTL2Bit() *int {
 }
 
 func (f *Field) NatArgs() []pure.ActualNatArg {
-	return f.natArgs
+	return f.pureField.NatArgs()
 }
 
 func (f *Field) IsAffectingLocalFieldMasks() bool {

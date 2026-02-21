@@ -24,7 +24,7 @@ var _ KernelValue = &KernelValueArray{}
 func (v *KernelValueArray) resize(count int) {
 	v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
-		v.elements = append(v.elements, v.instance.elemType.ins.CreateValue())
+		v.elements = append(v.elements, v.instance.field.ins.ins.CreateValue())
 	}
 	if len(v.elements) > count {
 		v.elements = v.elements[:count]
@@ -230,7 +230,7 @@ func (v *KernelValueArray) UIStartEdit(level int, model *UIModel, createMode int
 		if createMode == 0 { // require Enter or Rune to insert element
 			return
 		}
-		v.elements = append(v.elements, v.instance.elemType.ins.CreateValue())
+		v.elements = append(v.elements, v.instance.field.ins.ins.CreateValue())
 		if createMode == 1 {
 			createMode = 0
 		}

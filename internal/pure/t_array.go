@@ -15,21 +15,17 @@ import (
 
 type TypeInstanceArray struct {
 	TypeInstanceCommon
-	isTuple  bool
-	count    uint32
-	elemType *TypeInstanceRef
+	isTuple     bool
+	count       uint32
+	dynamicSize bool // for TL1 only, false for TL2
 
-	elemBare    bool           // for TL1 only, false for TL2
-	elemNatArgs []ActualNatArg // for TL1 only, empty for TL2
-	dynamicSize bool           // for TL1 only, false for TL2
+	field Field
 }
 
-func (ins *TypeInstanceArray) IsTuple() bool               { return ins.isTuple }
-func (ins *TypeInstanceArray) ElemType() TypeInstance      { return ins.elemType.ins }
-func (ins *TypeInstanceArray) ElemBare() bool              { return ins.elemBare }
-func (ins *TypeInstanceArray) ElemNatArgs() []ActualNatArg { return ins.elemNatArgs }
-func (ins *TypeInstanceArray) DynamicSize() bool           { return ins.dynamicSize }
-func (ins *TypeInstanceArray) Count() uint32               { return ins.count }
+func (ins *TypeInstanceArray) IsTuple() bool     { return ins.isTuple }
+func (ins *TypeInstanceArray) Count() uint32     { return ins.count }
+func (ins *TypeInstanceArray) DynamicSize() bool { return ins.dynamicSize }
+func (ins *TypeInstanceArray) Field() Field      { return ins.field }
 
 func (ins *TypeInstanceArray) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
@@ -37,7 +33,7 @@ func (ins *TypeInstanceArray) FindCycle(c *cycleFinder) {
 	}
 	defer c.pop(ins)
 	if ins.isTuple {
-		ins.elemType.ins.FindCycle(c)
+		ins.field.ins.ins.FindCycle(c)
 	}
 }
 
@@ -55,8 +51,8 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, elemType *TypeInstanceRef) TypeInstance {
-	if elemType.ins.IsBit() {
+func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
+	if fieldType.ins.IsBit() {
 		ins := &TypeInstanceArrayBit{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName,
@@ -72,9 +68,12 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, e
 			canonicalName: canonicalName,
 			tip:           nil, // TODO - arrays have no corresponding type
 		},
-		isTuple:  isTuple,
-		count:    count,
-		elemType: elemType,
+		isTuple: isTuple,
+		count:   count,
+		field: Field{
+			ins:  fieldType,
+			bare: true,
+		},
 	}
 	return ins
 }
@@ -86,16 +85,16 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	// log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
+	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
-	rt, elemNatArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
+	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
 	if err != nil {
-		return nil, fmt.Errorf("fail to resolve type of vector %s element: %w", canonicalName, err)
+		return nil, fmt.Errorf("fail to resolve type of vector %s field: %w", canonicalName, err)
 	}
-	// log.Printf("resolveTypeTL2 of vector for %s element: %s -> %s", canonicalName, elementT, rt.String())
-	elemIns, elemBare, err := k.getInstanceTL1(rt, true)
+	// log.Printf("resolveTypeTL2 of vector for %s field: %s -> %s", canonicalName, fieldT, rt.String())
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
-		return nil, fmt.Errorf("fail to instantiate type of vector %s element: %w", canonicalName, err)
+		return nil, fmt.Errorf("fail to instantiate type of vector %s field: %w", canonicalName, err)
 	}
 
 	ins := &TypeInstanceArray{
@@ -106,10 +105,12 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		isTuple:     false,
-		elemType:    elemIns,
-		elemBare:    elemBare,
-		elemNatArgs: elemNatArgs,
+		isTuple: false,
+		field: Field{
+			ins:     fieldIns,
+			bare:    fieldBare,
+			natArgs: fieldNatArgs,
+		},
 	}
 	return ins, nil
 }
@@ -121,16 +122,16 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
 
-	elementT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
+	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
-	rt, natArgs, err := k.resolveTypeTL1(elementT, leftArgs, localArgs)
+	rt, natArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
 	if err != nil {
-		return nil, fmt.Errorf("fail to resolve type of tuple %s element: %w", canonicalName, err)
+		return nil, fmt.Errorf("fail to resolve type of tuple %s field: %w", canonicalName, err)
 	}
-	// log.Printf("resolveTypeTL2 of tuple for %s element: %s -> %s", canonicalName, elementT, rt.String())
+	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 	if err != nil {
-		return nil, fmt.Errorf("fail to instantiate type of tuple %s element: %w", canonicalName, err)
+		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
 	}
 
 	ins := &TypeInstanceArray{
@@ -142,11 +143,13 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple:     true,
-		elemType:    fieldIns,
-		elemBare:    fieldBare,
-		elemNatArgs: natArgs,
-		dynamicSize: !actualArgs[0].IsArith,
 		count:       actualArgs[0].Arith.Res,
+		dynamicSize: !actualArgs[0].IsArith,
+		field: Field{
+			ins:     fieldIns,
+			bare:    fieldBare,
+			natArgs: natArgs,
+		},
 	}
 	return ins, nil
 }
