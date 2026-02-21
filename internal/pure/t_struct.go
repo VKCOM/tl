@@ -63,17 +63,17 @@ type Field struct {
 	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
 }
 
-func (f *Field) Bare() bool                 { return f.bare }
-func (f *Field) Name() string               { return f.name }
-func (f *Field) CommentBefore() string      { return f.commentBefore }
-func (f *Field) CommentRight() string       { return f.commentRight }
-func (f *Field) TypeInstance() TypeInstance { return f.ins.ins }
-func (f *Field) FieldMask() *ActualNatArg   { return f.fieldMask }
-func (f *Field) BitNumber() uint32          { return f.bitNumber }
-func (f *Field) MaskTL2Bit() *int           { return f.maskTL2Bit }
-func (f *Field) NatArgs() []ActualNatArg    { return f.natArgs }
+func (f Field) Bare() bool                 { return f.bare }
+func (f Field) Name() string               { return f.name }
+func (f Field) CommentBefore() string      { return f.commentBefore }
+func (f Field) CommentRight() string       { return f.commentRight }
+func (f Field) TypeInstance() TypeInstance { return f.ins.ins }
+func (f Field) FieldMask() *ActualNatArg   { return f.fieldMask }
+func (f Field) BitNumber() uint32          { return f.bitNumber }
+func (f Field) MaskTL2Bit() *int           { return f.maskTL2Bit }
+func (f Field) NatArgs() []ActualNatArg    { return f.natArgs }
 
-func (f *Field) IsBit() bool {
+func (f Field) IsBit() bool {
 	if f.ins.ins.IsBit() {
 		return true
 	}

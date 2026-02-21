@@ -134,7 +134,7 @@ func streamprintJSONHelpType2(qw422016 *qt422016.Writer, kernel *pure.Kernel, tr
 	case *pure.TypeInstanceUnion:
 		streammakeRef(qw422016, trw.CanonicalName(), JSONHelpFullType(kernel, trww, bare, fields, natArgs))
 	case *pure.TypeInstanceDict:
-		elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.FieldNatArgs())
+		elementNatArgs := trww.Common().TransformNatArgsToChild(natArgs, trw.Field().NatArgs())
 
 		qw422016.E().S("{")
 		streamprintJSONHelpType2(qw422016, kernel, trw.FieldType().Fields()[0].TypeInstance(), trw.FieldType().Fields()[0].Bare(), fields, trw.FieldType().Common().TransformNatArgsToChild(elementNatArgs, trw.FieldType().Fields()[0].NatArgs()))
