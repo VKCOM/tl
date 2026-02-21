@@ -283,15 +283,6 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 `, f.goName, f.goName, myType)
 }
 
-func (f *Field) EnsureRecursiveUnion(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
-	if !f.recursive {
-		return ""
-	}
-	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	return fmt.Sprintf(`	if item.value%s == nil { item.value%s = new(%s) }
-`, f.goName, f.goName, myType)
-}
-
 func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
 	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, ins, fmt.Sprintf("item.%s", f.goName), f.recursive)
 	if f.recursive {

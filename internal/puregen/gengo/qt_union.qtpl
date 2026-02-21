@@ -28,9 +28,9 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
         {%- if field.t.IsTrueType() -%}
             {%- continue -%}
         {%- endif -%}
-        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+        {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-            formatNatArgs(nil, field.NatArgs()), field.recursive) %}
+            formatNatArgs(nil, union.ElementNatArgs()), field.recursive) %}
         {%- endfor -%}
     default:
     }
@@ -45,7 +45,7 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
     {%- for _, field := range union.Fields -%}
         {%- code
             repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-                formatNatArgs(nil, field.NatArgs()), field.recursive)
+                formatNatArgs(nil, union.ElementNatArgs()), field.recursive)
         -%}
         {%- if field.t.IsTrueType() || !field.t.hasRepairMasks -%}
             {%- continue -%}
@@ -86,9 +86,9 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
         return w, nil
             {%- continue -%}
         {%- endif -%}
-        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+        {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
-            formatNatArgs(nil, field.NatArgs()), field.recursive, true) %}
+            formatNatArgs(nil, union.ElementNatArgs()), field.recursive, true) %}
         {%- endfor -%}
     default:
         return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= tlName %}, tag)
@@ -136,7 +136,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
                 {%- endif -%}
             {%- else -%}
         {%s= field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf( "item.value%s", field.goName), true,
-                formatNatArgs(nil, field.NatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
+                formatNatArgs(nil, union.ElementNatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
             {%- endif -%}
         {%- endfor -%}
     }
@@ -224,7 +224,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- for i, field := range union.Fields -%}
         {%- if !field.t.IsTrueType() -%}
     case {%d i %}:
-        {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+        {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
         {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive) %}
         {%- endif -%}
     {%- endfor -%}
@@ -308,13 +308,13 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             {%- endif -%}
             item.index = {%d i %}
             {%- if !field.t.IsTrueType()-%}
-                {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+                {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
                 var in2Pointer *basictl.JsonLexer
                 if _value != nil {
                     in2Pointer = &basictl.JsonLexer{Data: _value}
                 }
                 {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, union.wr.ins, "in2Pointer", fmt.Sprintf("item.value%s", field.goName),
-                    formatNatArgs(nil, field.NatArgs()), field.recursive) %}
+                    formatNatArgs(nil, union.ElementNatArgs()), field.recursive) %}
             {%-endif-%}
         {%- endfor -%}
         default:
@@ -397,7 +397,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
     {%- endif -%}
         w = append(w, `,"value":`...)
         {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-            formatNatArgs(nil, field.NatArgs()), false, field.t.hasErrorInWriteMethods) %}
+            formatNatArgs(nil, union.ElementNatArgs()), false, field.t.hasErrorInWriteMethods) %}
     {%- if emptyCondition != "" -%}
     }
     {%- endif -%}
@@ -492,13 +492,13 @@ func (item *{%s= goGlobalName %}) As{%s= field.goName %}() (*{%s= fieldTypeStrin
 }
 func (item *{%s= goGlobalName %}) ResetTo{%s= field.goName %}() *{%s= fieldTypeString %} {
     item.index = {%d i %}
-    {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+    {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
     {%s= field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false) %}
     return {%s= ampersand %}item.value{%s= field.goName %}
 }
 func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeString %}) {
     item.index = {%d i %}
-    {%s= field.EnsureRecursiveUnion(bytesVersion, directImports, union.wr.ins) -%}
+    {%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
     {%s= ifString(field.recursive, "*", "") %}item.value{%s= field.goName %} = value
 }
 
