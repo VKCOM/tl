@@ -85,7 +85,9 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			return nil
 		}
 	}
-	// this wrapper will crash if accessed. TODO - better idea
+	// this wrapper will crash if accessed.
+	// TODO - add missing types (uint64, byte, bit) aboveб error below
+	// TODO - bit type might simplify generators by generating no code in TypeWriting methods
 	myWrapper.trw = &TypeRWPrimitive{
 		tlType: pureType.CanonicalName(),
 		goType: pureType.CanonicalName(),
@@ -234,7 +236,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 
 		fieldGoName := canonicalGoName(tlast.Name{Name: variantName}, "")
 		newField := Variant{
-			// originalName: , we do not use filed.originalName in unions generation
 			t:      variantWrapper,
 			goName: res.fieldsDec.deconflictName(fieldGoName),
 		}
