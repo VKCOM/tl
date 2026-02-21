@@ -184,9 +184,10 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		res := &TypeRWMaybe{
 			wr: myWrapper,
 			element: Field{
-				t:       fieldType,
-				bare:    elementField.Bare(),
-				natArgs: pureType.ElementNatArgs(),
+				pureField: elementField,
+				t:         fieldType,
+				bare:      elementField.Bare(),
+				natArgs:   pureType.ElementNatArgs(),
 			},
 			emptyTag: pureType.VariantTypes()[0].TLTag(),
 			okTag:    pureType.VariantTypes()[1].TLTag(),

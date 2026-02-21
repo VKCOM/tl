@@ -15,6 +15,7 @@ import (
 
 type Variant struct {
 	t         *TypeRWWrapper
+	bare      bool
 	goName    string
 	recursive bool
 }
