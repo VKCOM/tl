@@ -283,8 +283,8 @@ func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.Type
 		wr: myWrapper,
 		element: Field{
 			t:       fieldType,
-			bare:    pureType.FieldBare(),
-			natArgs: pureType.FieldNatArgs(),
+			bare:    pureType.Field().Bare(),
+			natArgs: pureType.Field().NatArgs(),
 		},
 		dictKeyString:  isString,
 		dictKeyField:   structElement.Fields[0],

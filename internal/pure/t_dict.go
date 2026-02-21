@@ -16,15 +16,12 @@ import (
 type TypeInstanceDict struct {
 	TypeInstanceCommon
 
-	fieldType *TypeInstanceStruct
-
-	fieldBare    bool           // for TL1 only, false for TL2
-	fieldNatArgs []ActualNatArg // for TL1 only, empty for TL2
+	field     Field
+	fieldType *TypeInstanceStruct // same as field.ins, but better typed
 }
 
+func (ins *TypeInstanceDict) Field() Field                   { return ins.field }
 func (ins *TypeInstanceDict) FieldType() *TypeInstanceStruct { return ins.fieldType }
-func (ins *TypeInstanceDict) FieldBare() bool                { return ins.fieldBare }
-func (ins *TypeInstanceDict) FieldNatArgs() []ActualNatArg   { return ins.fieldNatArgs }
 
 func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
 }
@@ -101,9 +98,12 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		fieldType:    fieldInsStruct,
-		fieldBare:    fieldBare,
-		fieldNatArgs: fieldNatArgs,
+		field: Field{
+			ins:     fieldIns,
+			bare:    fieldBare,
+			natArgs: fieldNatArgs,
+		},
+		fieldType: fieldInsStruct,
 	}
 	return ins, nil
 }
