@@ -16,6 +16,7 @@ type TypeInstance interface {
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
 	FindCycle(c *cycleFinder)
+	GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance
 	BoxedOnly() bool
 
 	CreateValue() KernelValue
@@ -37,6 +38,8 @@ type TypeInstanceCommon struct {
 	isTopLevel    bool
 	rt            tlast.TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
+
+	hasTL2 bool
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
@@ -71,6 +74,10 @@ func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {
 	return ins.argNamespace
+}
+
+func (ins *TypeInstanceCommon) HasTL2() bool {
+	return ins.hasTL2
 }
 
 func (ins *TypeInstanceCommon) BoxedOnly() bool {

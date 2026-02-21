@@ -26,6 +26,10 @@ func (ins *TypeInstanceDict) FieldType() *TypeInstanceStruct { return ins.fieldT
 func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
 }
 
+func (ins *TypeInstanceDict) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	return append(children, ins.field.ins.ins)
+}
+
 func (ins *TypeInstanceDict) CreateValue() KernelValue {
 	value := &KernelValueDict{
 		instance: ins,
@@ -98,12 +102,13 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
-		field: Field{
-			ins:     fieldIns,
-			bare:    fieldBare,
-			natArgs: fieldNatArgs,
-		},
 		fieldType: fieldInsStruct,
+	}
+	ins.field = Field{
+		owner:   ins,
+		ins:     fieldIns,
+		bare:    fieldBare,
+		natArgs: fieldNatArgs,
 	}
 	return ins, nil
 }

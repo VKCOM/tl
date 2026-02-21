@@ -45,8 +45,9 @@ func (arg *ActualNatArg) Name() string {
 }
 
 type Field struct {
-	name string
-	ins  *TypeInstanceRef
+	owner TypeInstance
+	name  string
+	ins   *TypeInstanceRef
 
 	commentBefore string
 	commentRight  string
@@ -63,6 +64,8 @@ type Field struct {
 	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
 }
 
+func (f Field) OwnerTypeInstance() TypeInstance { return f.owner }
+
 func (f Field) Bare() bool                 { return f.bare }
 func (f Field) Name() string               { return f.name }
 func (f Field) CommentBefore() string      { return f.commentBefore }
@@ -70,8 +73,16 @@ func (f Field) CommentRight() string       { return f.commentRight }
 func (f Field) TypeInstance() TypeInstance { return f.ins.ins }
 func (f Field) FieldMask() *ActualNatArg   { return f.fieldMask }
 func (f Field) BitNumber() uint32          { return f.bitNumber }
-func (f Field) MaskTL2Bit() *int           { return f.maskTL2Bit }
 func (f Field) NatArgs() []ActualNatArg    { return f.natArgs }
+
+// we do not know if this object is used by some other TL2 object when we generate this,
+// so we return nil if owner does not marked as one needing TL2
+func (f Field) MaskTL2Bit() *int {
+	if !f.owner.Common().HasTL2() {
+		return nil
+	}
+	return f.maskTL2Bit
+}
 
 func (f Field) IsBit() bool {
 	if f.ins.ins.IsBit() {
@@ -157,6 +168,16 @@ func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {
 	}
 }
 
+func (ins *TypeInstanceStruct) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	for _, ft := range ins.fields {
+		children = append(children, ft.ins.ins)
+	}
+	if withReturnType && ins.resultType != nil {
+		children = append(children, ins.resultType)
+	}
+	return children
+}
+
 func (ins *TypeInstanceStruct) CreateValue() KernelValue {
 	v := ins.CreateValueObject()
 	return &v
@@ -215,8 +236,9 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
 		newField := Field{
-			name: fieldDef.Name,
-			ins:  fieldIns,
+			owner: ins,
+			name:  fieldDef.Name,
+			ins:   fieldIns,
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
@@ -442,6 +464,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		newField := Field{
+			owner:         ins,
 			name:          fieldDef.FieldName,
 			commentBefore: fieldDef.CommentBefore,
 			commentRight:  fieldDef.CommentRight,

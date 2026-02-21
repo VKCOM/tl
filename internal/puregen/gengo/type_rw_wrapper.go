@@ -65,7 +65,6 @@ type TypeRWWrapper struct {
 	goLocalName  string
 
 	wantsBytesVersion bool
-	wantsTL2          bool
 	hasRepairMasks    bool
 	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
@@ -95,6 +94,10 @@ type TypeRWWrapper struct {
 	//tl2Origin            *tlast.TL2Combinator
 	//tl2IsResult          bool
 	//tl2IsBuiltinBrackets bool
+}
+
+func (wr *TypeRWWrapper) HasTL2() bool {
+	return wr.pureType.Common().HasTL2()
 }
 
 func (wr *TypeRWWrapper) FileName() string {
@@ -368,15 +371,6 @@ func (w *TypeRWWrapper) MarkWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	w.wantsBytesVersion = true
 	visitedNodes[w] = true
 	w.trw.markWantsBytesVersion(visitedNodes)
-}
-
-func (w *TypeRWWrapper) MarkWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
-	}
-	w.wantsTL2 = true
-	visitedNodes[w] = true
-	w.trw.markWantsTL2(visitedNodes)
 }
 
 func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {

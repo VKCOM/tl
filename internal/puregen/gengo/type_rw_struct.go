@@ -101,15 +101,6 @@ func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
-func (trw *TypeRWStruct) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsTL2(visitedNodes)
-	}
-	if trw.ResultType != nil {
-		trw.ResultType.MarkWantsTL2(visitedNodes)
-	}
-}
-
 func (trw *TypeRWStruct) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	for _, f := range trw.Fields {
 		if f.t.containsUnion(visitedNodes) {

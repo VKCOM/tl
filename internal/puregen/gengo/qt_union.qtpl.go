@@ -144,7 +144,7 @@ func (item *`)
 	qw422016.N().S(`
 
 `)
-	if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 {
+	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
 		/* for interface requirements for TL2 Type, also for tests */
 
 		qw422016.N().S(`func (item*`)
@@ -204,7 +204,7 @@ func (item*`)
 	qw422016.N().S(`}
 
 `)
-	if union.wr.wantsTL2 && len(union.wr.NatParams) == 0 {
+	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
 		/* for interface requirements for TL2 Type, also for tests */
 
 		qw422016.N().S(`func (item*`)
@@ -300,7 +300,7 @@ func (item *`)
 	if union.wr.gen.options.GenerateTL2() {
 		qw422016.N().S(`
 `)
-		if union.wr.wantsTL2 {
+		if union.wr.HasTL2() {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
@@ -434,7 +434,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
-		if !union.wr.wantsTL2 {
+		if !union.wr.HasTL2() {
 			qw422016.N().S(`    panic(`)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
@@ -463,7 +463,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
 `)
-		if !union.wr.wantsTL2 {
+		if !union.wr.HasTL2() {
 			qw422016.N().S(`    return r, `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)

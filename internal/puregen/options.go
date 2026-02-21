@@ -26,7 +26,6 @@ type Options struct {
 	CopyrightFilePath string
 	CopyrightText     string // set to content of CopyrightFilePath
 
-	Verbose     bool
 	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 
 	SchemaURL       string
@@ -67,8 +66,6 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 		`where to write generated file`)
 	f.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
-	f.BoolVar(&opt.Verbose, "v", false,
-		"verbose mode that prints debug info")
 
 	f.StringVar(&opt.SchemaURL, "schemaURL", "",
 		"url of schema (for documentation)")

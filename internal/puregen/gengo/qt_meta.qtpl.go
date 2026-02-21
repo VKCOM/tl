@@ -415,7 +415,7 @@ func init() {
 			if !wr.originateFromTL2 {
 				qw422016.N().S(`, hasTL1:true`)
 			}
-			if wr.wantsTL2 {
+			if wr.HasTL2() {
 				qw422016.N().S(`, hasTL2:true`)
 			}
 			if wr.AnnotationsMask() != 0 {
@@ -431,7 +431,7 @@ func init() {
 			qw422016.N().S(`})
 `)
 		}
-		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 {
+		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.HasTL2() {
 			if hasTypes != nil {
 				*hasTypes = true
 			}
@@ -448,7 +448,7 @@ func init() {
 			if !wr.originateFromTL2 {
 				qw422016.N().S(`, hasTL1:true`)
 			}
-			if wr.wantsTL2 {
+			if wr.HasTL2() {
 				qw422016.N().S(`, hasTL2:true`)
 			}
 			if wr.AnnotationsMask() != 0 {

@@ -19,6 +19,10 @@ type TypeInstanceArrayBit struct {
 func (ins *TypeInstanceArrayBit) FindCycle(c *cycleFinder) {
 }
 
+func (ins *TypeInstanceArrayBit) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	return children
+}
+
 func (ins *TypeInstanceArrayBit) CreateValue() KernelValue {
 	value := &KernelValueArrayBit{
 		instance: ins,

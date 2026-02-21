@@ -294,7 +294,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(tlName)
 	qw422016.N().S(`"
 `)
-	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`    preferTLVersion :=`)
 		if fun.pureTypeStruct.RPCPreferTL2() {
 			qw422016.N().S(`2`)
@@ -308,7 +308,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
 `)
-	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`		if extra.PreferTLVersion != 0 {
 			preferTLVersion = extra.PreferTLVersion
 		}
@@ -317,7 +317,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`    }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
-	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`    if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -332,7 +332,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
         }
     }
 `)
-	} else if fun.wr.wantsTL2 {
+	} else if fun.wr.HasTL2() {
 		qw422016.N().S(`    req.BodyFormatTL2 = true
     req.Body = basictl.NatWrite(req.Body, args.TLTag())
     tctx := basictl.TL2WriteContext{}
@@ -359,7 +359,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     }
     if ret != nil {
 `)
-	if fun.wr.wantsTL2 && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
@@ -367,7 +367,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 			resp.Body, err = args.ReadResult(resp.Body, ret)
 		}
 `)
-	} else if fun.wr.wantsTL2 {
+	} else if fun.wr.HasTL2() {
 		qw422016.N().S(`            tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
 `)
@@ -537,7 +537,7 @@ switch tag {
 			qw422016.N().S(`", err)
         }
 `)
-			if fun.wr.wantsTL2 {
+			if fun.wr.HasTL2() {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
             tctx := basictl.TL2WriteContext{}
             hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
@@ -546,7 +546,7 @@ switch tag {
 			}
 			qw422016.N().S(`            hctx.Response, err = args.WriteResult(hctx.Response, ret)
 `)
-			if fun.wr.wantsTL2 {
+			if fun.wr.HasTL2() {
 				qw422016.N().S(`        }
 `)
 			}

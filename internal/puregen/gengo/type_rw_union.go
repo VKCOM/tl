@@ -15,7 +15,6 @@ import (
 
 type Variant struct {
 	t         *TypeRWWrapper
-	bare      bool
 	goName    string
 	recursive bool
 }
@@ -81,12 +80,6 @@ func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool
 func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 	for _, f := range trw.Fields {
 		f.t.MarkWantsBytesVersion(visitedNodes)
-	}
-}
-
-func (trw *TypeRWUnion) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsTL2(visitedNodes)
 	}
 }
 

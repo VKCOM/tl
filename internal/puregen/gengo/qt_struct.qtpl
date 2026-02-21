@@ -187,7 +187,7 @@ type {%s= goName %} struct {
         -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
-    {%- if struct_.wr.wantsTL2 -%}
+    {%- if struct_.wr.HasTL2() -%}
         {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
              {%s= tl2mask %} byte
         {%- endfor -%}
@@ -228,7 +228,7 @@ type {%s= goName %} struct {
             }
             getName := "G" + setName[1:]
         -%}
-        {%- if struct_.wr.wantsTL2 && !field.IsBit() && field.FieldMask() != nil && field.FieldMask() == nil -%}
+        {%- if struct_.wr.HasTL2() && !field.IsBit() && field.FieldMask() != nil && field.FieldMask() == nil -%}
             func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
                 return item.{%s= field.goName %}
             }
@@ -762,7 +762,7 @@ func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte,
     {%- endif -%}
 }
 
-{%- if struct_.wr.wantsTL2 -%}
+{%- if struct_.wr.HasTL2() -%}
 func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *{%s= retArg %}) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -917,7 +917,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) (_ []b
 
 {%- if struct_.wr.gen.options.GenerateTL2() -%}
 func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  {%- if !struct_.wr.wantsTL2 -%}
+  {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
@@ -930,7 +930,7 @@ func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteConte
 }
 
 func (item *{%s= goName %}) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  {%- if !struct_.wr.wantsTL2 -%}
+  {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
@@ -943,7 +943,7 @@ func (item *{%s= goName %}) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContex
 }
 
 func (item *{%s= goName %}) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  {%- if !struct_.wr.wantsTL2 -%}
+  {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
@@ -956,7 +956,7 @@ func (item *{%s= goName %}) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadCo
 }
 
 func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  {%- if !struct_.wr.wantsTL2 -%}
+  {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
@@ -1248,7 +1248,7 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
         -%}
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-{%- if !struct_.wr.wantsTL2 -%}
+{%- if !struct_.wr.HasTL2() -%}
     panic({%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
 {%- else -%}
     var sizes []int
@@ -1272,7 +1272,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
 }
 
 func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
-    {%- if !struct_.wr.wantsTL2 -%}
+    {%- if !struct_.wr.HasTL2() -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
     ptr := (*{%s= fieldTypeString %})(item)
@@ -1286,7 +1286,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 }
 {%- else -%}
 
-{%- if struct_.wr.wantsTL2 -%}
+{%- if struct_.wr.HasTL2() -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
     {%- if len(struct_.Fields) == 0 && (struct_.wr.unionParent == nil || struct_.wr.unionIndex == 0) -%}
         if optimizeEmpty {
@@ -1436,7 +1436,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 {%- endif -%}
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-        {%- if !struct_.wr.wantsTL2 -%}
+        {%- if !struct_.wr.HasTL2() -%}
         panic({%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
         {%- else -%}
     var sizes, sizes2 []int
@@ -1455,7 +1455,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
         {%- endif -%}
 }
 
-{%- if struct_.wr.wantsTL2 -%}
+{%- if struct_.wr.HasTL2() -%}
     {%- if struct_.wr.unionParent == nil -%}
 func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
@@ -1545,7 +1545,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
 {%- endif -%}
 
 func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-    {%- if !struct_.wr.wantsTL2 -%}
+    {%- if !struct_.wr.HasTL2() -%}
         return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
            {%- if struct_.wr.unionParent != nil -%}

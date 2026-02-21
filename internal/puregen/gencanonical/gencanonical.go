@@ -18,7 +18,7 @@ import (
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
-	if options.Verbose {
+	if options.Kernel.Verbose {
 		log.Print("generating file with combinators in canonical form...")
 	}
 	if options.Outfile == "" {

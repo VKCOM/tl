@@ -19,7 +19,7 @@ import (
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
-	if options.Verbose {
+	if options.Kernel.Verbose {
 		log.Print("generating TLO file...")
 	}
 	if options.Outfile == "" {

@@ -154,7 +154,7 @@ func init() {
 `)
 			}
 		}
-		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 {
+		if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.HasTL2() {
 			if hasCode != nil {
 				*hasCode = true
 			}
