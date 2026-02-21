@@ -82,7 +82,7 @@ func init() {
             func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
         {%- endif -%}
     {%- endif -%}
-    {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.wantsTL2 -%}
+    {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.HasTL2() -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
         meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
             func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })

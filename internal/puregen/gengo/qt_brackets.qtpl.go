@@ -142,7 +142,7 @@ func `)
 		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
-			if tuple.wr.wantsTL2 {
+			if tuple.wr.HasTL2() {
 				qw422016.N().S(`func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
@@ -233,7 +233,7 @@ func `)
 			qw422016.N().S(typeString)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
-			if !tuple.wr.wantsTL2 {
+			if !tuple.wr.HasTL2() {
 				qw422016.N().S(`    return r, `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
@@ -488,7 +488,7 @@ func `)
 		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
-			if tuple.wr.wantsTL2 {
+			if tuple.wr.HasTL2() {
 				qw422016.N().S(`func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
@@ -579,7 +579,7 @@ func `)
 			qw422016.N().S(typeString)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
-			if !tuple.wr.wantsTL2 {
+			if !tuple.wr.HasTL2() {
 				qw422016.N().S(`    return r, `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
@@ -859,7 +859,7 @@ func `)
 		if tuple.wr.gen.options.GenerateTL2() {
 			qw422016.N().S(`
 `)
-			if tuple.wr.wantsTL2 {
+			if tuple.wr.HasTL2() {
 				qw422016.N().S(`func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, optimizeEmpty bool, vec *`)
@@ -961,7 +961,7 @@ func `)
 			qw422016.N().S(typeString)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
-			if !tuple.wr.wantsTL2 {
+			if !tuple.wr.HasTL2() {
 				qw422016.N().S(`    return r, `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)

@@ -58,9 +58,6 @@ func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]
 func (trw *TypeRWPrimitive) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
 func (trw *TypeRWPrimitive) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }

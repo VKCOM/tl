@@ -37,6 +37,10 @@ func (ins *TypeInstanceArray) FindCycle(c *cycleFinder) {
 	}
 }
 
+func (ins *TypeInstanceArray) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	return append(children, ins.field.ins.ins)
+}
+
 func (ins *TypeInstanceArray) CreateValue() KernelValue {
 	value := &KernelValueArray{
 		instance: ins,
@@ -70,10 +74,11 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 		},
 		isTuple: isTuple,
 		count:   count,
-		field: Field{
-			ins:  fieldType,
-			bare: true,
-		},
+	}
+	ins.field = Field{
+		owner: ins,
+		ins:   fieldType,
+		bare:  true,
 	}
 	return ins
 }
@@ -106,11 +111,12 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple: false,
-		field: Field{
-			ins:     fieldIns,
-			bare:    fieldBare,
-			natArgs: fieldNatArgs,
-		},
+	}
+	ins.field = Field{
+		owner:   ins,
+		ins:     fieldIns,
+		bare:    fieldBare,
+		natArgs: fieldNatArgs,
 	}
 	return ins, nil
 }
@@ -145,11 +151,12 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 		isTuple:     true,
 		count:       actualArgs[0].Arith.Res,
 		dynamicSize: !actualArgs[0].IsArith,
-		field: Field{
-			ins:     fieldIns,
-			bare:    fieldBare,
-			natArgs: natArgs,
-		},
+	}
+	ins.field = Field{
+		owner:   ins,
+		ins:     fieldIns,
+		bare:    fieldBare,
+		natArgs: natArgs,
 	}
 	return ins, nil
 }

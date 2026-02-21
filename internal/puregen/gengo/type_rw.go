@@ -25,7 +25,6 @@ import (
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
-	markWantsTL2(visitedNodes map[*TypeRWWrapper]bool)
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
@@ -57,12 +56,9 @@ type TypeRW interface {
 
 type Field struct {
 	pureField pure.Field
-	// TODO - store pure.Field for properties
 	t         *TypeRWWrapper
 	goName    string
 	recursive bool
-
-	removeMask2Bit bool // TODO - move into pure kernel
 }
 
 func (f *Field) OriginalName() string {
@@ -82,9 +78,6 @@ func (f *Field) BitNumber() uint32 {
 }
 
 func (f *Field) MaskTL2Bit() *int {
-	if f.removeMask2Bit {
-		return nil
-	}
 	return f.pureField.MaskTL2Bit()
 }
 
@@ -111,10 +104,6 @@ func (f *Field) IsTypeDependsFromLocalFields() bool {
 
 func (f *Field) HasNatArguments() bool {
 	return len(f.NatArgs()) != 0
-}
-
-func (f *Field) IsLocalIndependent() bool {
-	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
 }
 
 // do not generate fields, but affect block position and skip during reading
@@ -172,18 +161,6 @@ func formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
 	}
 	return result
 }
-
-////for tl2 to tl1 bridge
-////in case of formatNatArgs(struct_.Fields, field.natArgs)
-//func (f *Field) formatNatArgsOrReturnRandoms(fields []Field, rgName string) []string {
-//	result := formatNatArgs(fields, f.natArgs)
-//	if len(f.t.NatParams) != len(result) {
-//		for i := 0; i < len(f.t.NatParams); i++ {
-//			result = append(result, fmt.Sprintf(", basictl.RandomUint(%s)", rgName))
-//		}
-//	}
-//	return result
-//}
 
 func formatNatArgsDecl(natArgs []string) string {
 	var s strings.Builder

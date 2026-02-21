@@ -30,6 +30,10 @@ func (ins *TypeInstancePrimitive) IsBit() bool {
 func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder) {
 }
 
+func (ins *TypeInstancePrimitive) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	return children
+}
+
 func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
 	return ins.clone.Clone()
 }

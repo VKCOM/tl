@@ -398,6 +398,18 @@ func (k *Kernel) Compile() error {
 			return fmt.Errorf("found recursive cycle %s", res)
 		}
 	}
+	tl2WhiteList := NewWhiteList(k.opts.TL2WhiteList)
+	tl2Children := map[TypeInstance]struct{}{}
+	typesCounterMarkTL2 := 0
+	for _, v := range k.instancesOrdered {
+		if tl2WhiteList.HasName(v.ins.Common().tlName) {
+			k.markWantsTL2(v.ins, tl2Children)
+			typesCounterMarkTL2++
+		}
+	}
+	if k.opts.Verbose && !tl2WhiteList.Empty() {
+		log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, k.opts.TL2WhiteList)
+	}
 	return nil
 }
 
@@ -465,4 +477,17 @@ func (k *Kernel) checkNamespaceCollisions() error {
 		}
 	}
 	return nil
+}
+
+func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]struct{}) {
+	if _, ok := visitedNodes[node]; ok {
+		return
+	}
+	node.Common().hasTL2 = true
+	visitedNodes[node] = struct{}{}
+	children := make([]TypeInstance, 0, 4) // avoids the majority of heap allocations
+	children = node.GetChildren(children, true)
+	for _, child := range children {
+		k.markWantsTL2(child, visitedNodes)
+	}
 }

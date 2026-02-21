@@ -52,10 +52,6 @@ func (trw *TypeRWBrackets) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper
 	trw.element.t.MarkWantsBytesVersion(visitedNodes)
 }
 
-func (trw *TypeRWBrackets) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsTL2(visitedNodes)
-}
-
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 

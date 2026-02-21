@@ -13,6 +13,7 @@ import (
 
 type OptionsKernel struct {
 	WarningsAreErrors bool
+	Verbose           bool
 
 	TypesWhiteList string
 	TL2WhiteList   string // if !empty, will generate also TL2 factory, meta, etc.
@@ -30,6 +31,8 @@ type OptionsKernel struct {
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 	f.BoolVar(&opt.WarningsAreErrors, "Werror", false,
 		"treat all warnings as errors")
+	f.BoolVar(&opt.Verbose, "v", false,
+		"verbose mode that prints debug info")
 	f.StringVar(&opt.TypesWhiteList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
 	f.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",

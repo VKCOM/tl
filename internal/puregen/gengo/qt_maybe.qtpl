@@ -81,7 +81,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 {%- endif -%}
 
 {%- if maybe.wr.gen.options.GenerateTL2() -%}
-{%- if maybe.wr.wantsTL2 -%}
+{%- if maybe.wr.HasTL2() -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
     if !item.Ok {
         if optimizeEmpty {
@@ -144,7 +144,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 {%- endif -%}
 
 func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
-{%- if !maybe.wr.wantsTL2 -%}
+{%- if !maybe.wr.HasTL2() -%}
     return r, {%s= maybe.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
 {%- else -%}
     currentSize := 0

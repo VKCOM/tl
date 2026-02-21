@@ -47,10 +47,6 @@ func (trw *TypeRWMaybe) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	trw.element.t.MarkWantsBytesVersion(visitedNodes)
 }
 
-func (trw *TypeRWMaybe) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsTL2(visitedNodes)
-}
-
 func (trw *TypeRWMaybe) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.containsUnion(visitedNodes)
 }

@@ -171,7 +171,7 @@ func (item *`)
 	qw422016.N().S(`
 `)
 	if maybe.wr.gen.options.GenerateTL2() {
-		if maybe.wr.wantsTL2 {
+		if maybe.wr.HasTL2() {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
@@ -250,7 +250,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
 `)
-		if !maybe.wr.wantsTL2 {
+		if !maybe.wr.HasTL2() {
 			qw422016.N().S(`    return r, `)
 			qw422016.N().S(maybe.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)

@@ -54,6 +54,13 @@ func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
 	}
 }
 
+func (ins *TypeInstanceUnion) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	for _, variant := range ins.variantTypes {
+		children = append(children, variant)
+	}
+	return children
+}
+
 func (ins *TypeInstanceUnion) CreateValue() KernelValue {
 	value := &KernelValueUnion{
 		instance: ins,

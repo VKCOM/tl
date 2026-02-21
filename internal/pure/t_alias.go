@@ -33,6 +33,10 @@ func (ins *TypeInstanceAlias) FindCycle(c *cycleFinder) {
 	ins.fieldType.ins.FindCycle(c)
 }
 
+func (ins *TypeInstanceAlias) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
+	return append(children, ins.fieldType.ins)
+}
+
 func (ins *TypeInstanceAlias) CreateValue() KernelValue {
 	value := &KernelValueAlias{
 		instance: ins,

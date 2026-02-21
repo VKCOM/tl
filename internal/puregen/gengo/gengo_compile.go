@@ -104,7 +104,6 @@ func (gen *genGo) prepareGeneration() error {
 	options := gen.options
 
 	bytesWhiteList := pure.NewWhiteList(options.BytesWhiteList)
-	tl2WhiteList := pure.NewWhiteList(options.Kernel.TL2WhiteList)
 	gen.rawHandlerWhileList = pure.NewWhiteList(options.Go.RawHandlerWhileList)
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
@@ -113,21 +112,6 @@ func (gen *genGo) prepareGeneration() error {
 		if bytesWhiteList.HasName(v.tlName) {
 			v.MarkWantsBytesVersion(bytesChildren)
 			typesCounterMarkBytes++
-		}
-	}
-	typesCounterMarkTL2 := 0
-	tl2Children := map[*TypeRWWrapper]bool{}
-	for _, v := range gen.generatedTypesList {
-		if tl2WhiteList.HasName(v.tlName) {
-			v.MarkWantsTL2(tl2Children)
-			typesCounterMarkTL2++
-		}
-	}
-	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
-		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
-			for i := range str.Fields {
-				str.Fields[i].removeMask2Bit = true
-			}
 		}
 	}
 	slices.SortStableFunc(gen.generatedTypesList, func(a, b *TypeRWWrapper) int { //  TODO - better idea?
@@ -178,16 +162,12 @@ func (gen *genGo) prepareGeneration() error {
 		v.hasRepairMasks = v.MarkHasRepairMasks(visitedNodes)
 	}
 
-	// detect recursion loops first
-	if options.Verbose {
+	if options.Kernel.Verbose {
 		//if skippedDueToWhitelist != 0 {
 		//	log.Printf("skipped %d object roots by the whitelist filter: %s", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
 		//}
 		if !bytesWhiteList.Empty() {
 			log.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s", typesCounterMarkBytes, options.BytesWhiteList)
-		}
-		if !tl2WhiteList.Empty() {
-			log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, options.Kernel.TL2WhiteList)
 		}
 	}
 	return nil
