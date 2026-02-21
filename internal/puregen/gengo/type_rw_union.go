@@ -14,9 +14,10 @@ import (
 )
 
 type Variant struct {
-	t         *TypeRWWrapper
-	goName    string
-	recursive bool
+	t           *TypeRWWrapper
+	variantName string
+	goName      string
+	recursive   bool
 }
 
 func (f *Variant) EnsureRecursive(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {

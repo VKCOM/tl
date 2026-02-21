@@ -221,12 +221,12 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 		return err
 	}
 	switch _tag {
-	case "benchmarks.vrutoytopLevelUnionBig#ef556bee", "benchmarks.vrutoytopLevelUnionBig", "#ef556bee":
-		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionBig" {
-			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
-		}
+	case "Big", "benchmarks.vrutoytopLevelUnionBig#ef556bee", "benchmarks.vrutoytopLevelUnionBig", "#ef556bee":
 		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionBig#ef556bee")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#ef556bee" {
+			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ef556bee")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -236,12 +236,12 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 		if err := item.valueBig.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "benchmarks.vrutoytopLevelUnionEmpty", "#ce27c770":
-		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionEmpty" {
-			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
-		}
+	case "Empty", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "benchmarks.vrutoytopLevelUnionEmpty", "#ce27c770":
 		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#ce27c770" {
+			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ce27c770")
 		}
 		item.index = 1
 	default:
@@ -263,7 +263,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteC
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
+			w = append(w, `{"type":"Big"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
@@ -276,7 +276,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteC
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
+			w = append(w, `{"type":"Empty"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -97,6 +98,13 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 	for i, variantDef := range def.Variants {
 		tlName := tip.canonicalName
 		tlName.Name += "__" + variantDef.Name
+		found, comment := utils.ExtractTLGenTag(variantDef.CommentBefore, "tlgen:tl1name")
+		if found {
+			tlName = tlast.Name{Name: comment}
+			if ind := strings.Index(comment, "."); ind >= 0 {
+				tlName = tlast.Name{Namespace: comment[:ind], Name: comment[ind+1:]}
+			}
+		}
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
 			tlName, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil)

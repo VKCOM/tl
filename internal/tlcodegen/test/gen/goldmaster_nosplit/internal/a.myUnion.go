@@ -229,12 +229,12 @@ func (item *AMyUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 		return err
 	}
 	switch _tag {
-	case "a.uNionA#a7662843", "a.uNionA", "#a7662843":
-		if tctx.IsTL2 && _tag != "a.uNionA" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", _tag)
-		}
+	case "uNionA", "a.uNionA#a7662843", "a.uNionA", "#a7662843":
 		if !tctx.LegacyTypeNames && _tag == "a.uNionA#a7662843" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "a.uNionA#a7662843")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#a7662843" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "#a7662843")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -244,12 +244,12 @@ func (item *AMyUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 		if err := item.valueUNionA.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "au.nionA#df61f632", "au.nionA", "#df61f632":
-		if tctx.IsTL2 && _tag != "au.nionA" {
-			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", _tag)
-		}
+	case "nionA", "au.nionA#df61f632", "au.nionA", "#df61f632":
 		if !tctx.LegacyTypeNames && _tag == "au.nionA#df61f632" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "au.nionA#df61f632")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#df61f632" {
+			return ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "#df61f632")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -278,7 +278,7 @@ func (item *AMyUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []b
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"a.uNionA"`...)
+			w = append(w, `{"type":"uNionA"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"a.uNionA#a7662843"`...)
@@ -291,7 +291,7 @@ func (item *AMyUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []b
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"au.nionA"`...)
+			w = append(w, `{"type":"nionA"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"au.nionA#df61f632"`...)

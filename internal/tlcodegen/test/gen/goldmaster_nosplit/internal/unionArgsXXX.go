@@ -1160,12 +1160,12 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		return err
 	}
 	switch _tag {
-	case "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
-		if tctx.IsTL2 && _tag != "unionArgsXXX1" {
-			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
-		}
+	case "1", "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX1#e7978c97")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#e7978c97" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "#e7978c97")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -1175,12 +1175,12 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
-	case "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
-		if tctx.IsTL2 && _tag != "unionArgsXXX2" {
-			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
-		}
+	case "2", "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX2#6daed784")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#6daed784" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "#6daed784")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -1209,7 +1209,7 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"unionArgsXXX1"`...)
+			w = append(w, `{"type":"1"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
@@ -1224,7 +1224,7 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 		return append(w, '}'), nil
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"unionArgsXXX2"`...)
+			w = append(w, `{"type":"2"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
@@ -1445,12 +1445,12 @@ func (item *UnionArgsXXXLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		return err
 	}
 	switch _tag {
-	case "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
-		if tctx.IsTL2 && _tag != "unionArgsXXX1" {
-			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
-		}
+	case "1", "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX1#e7978c97")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#e7978c97" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "#e7978c97")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
@@ -1460,12 +1460,12 @@ func (item *UnionArgsXXXLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
-	case "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
-		if tctx.IsTL2 && _tag != "unionArgsXXX2" {
-			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
-		}
+	case "2", "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX2#6daed784")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#6daed784" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "#6daed784")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -1494,7 +1494,7 @@ func (item *UnionArgsXXXLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"unionArgsXXX1"`...)
+			w = append(w, `{"type":"1"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
@@ -1509,7 +1509,7 @@ func (item *UnionArgsXXXLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 		return append(w, '}'), nil
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"unionArgsXXX2"`...)
+			w = append(w, `{"type":"2"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)

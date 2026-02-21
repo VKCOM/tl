@@ -266,9 +266,6 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]by
 {%- if len(union.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    {%- if union.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -282,29 +279,52 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         {%- for i, field := range union.Fields -%}
             {%- code
                 name := field.t.tlName.String()
+                // we detect variants that were not migrated and give them variantName only
+                hasOldName := !strings.Contains(name, "__")
+                // also we prevent collision of variant name and tlName below which can happen in default namespace
+                if union.wr.HasTL2() && field.variantName == name {
+                    hasOldName = false
+                }
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
+                var cases []string
+                // hopefully we get at least single case)
+                if union.wr.HasTL2() {
+                    cases = append(cases, fmt.Sprintf("%q", field.variantName))
+                }
+                if !union.wr.originateFromTL2 {
+                    cases = append(cases, fmt.Sprintf("%q", nameWithTag))
+                }
+                if hasOldName {
+                    cases = append(cases, fmt.Sprintf("%q", name))
+                }
+                if !union.wr.originateFromTL2 {
+                    cases = append(cases, fmt.Sprintf("%q", tag))
+                }
+                // this mess is because there was not clear variant name in so annoying TL1
             -%}
-            {%- if union.wr.originateFromTL2 -%}
-        case {%q= name %}:
-            {%- else -%}
-        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}{%- if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) -%},
-            {%- code
-                name2 := wrWithoutLong.tlName.String()
-                tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
-                nameWithTag2 := name2 + tag2
-            -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
-            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
-            }
+        case {%s= strings.Join(cases, ",") %} {%- code -%}
+            {%- if wrWithoutLong != nil && !hasOldName && !union.wr.originateFromTL2 && !union.HasShortFieldCollision(wrWithoutLong) -%}
+                {%- code
+                    name2 := wrWithoutLong.tlName.String()
+                    tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+                    nameWithTag2 := name2 + tag2
+                -%},{%q= nameWithTag2 %},{%q= name2 %},{%q= tag2 %}:
+                    if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
+                        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
+                    }
+                    if !tctx.LegacyTypeNames && _tag == {%q= tag2 %} {
+                        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= tag2 %})
+                    }
             {%- else -%}:{%- endif -%}
-            if tctx.IsTL2 && _tag != {%q= name %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, _tag)
-            }
-            if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
-            }
+            {%- if !union.wr.originateFromTL2 -%}
+                if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
+                    return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
+                }
+                if !tctx.LegacyTypeNames && _tag == {%q= tag %} {
+                    return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= tag %})
+                }
             {%- endif -%}
             item.index = {%d i %}
             {%- if !field.t.IsTrueType()-%}
@@ -334,13 +354,11 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWr
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
-    {%- if union.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    {%- if union.IsEnum -%}
+    {%- if union.IsEnum && !union.wr.HasTL2() -%}
+        {%- code // keep old code without changes fro now -%}
         w = append(w, '"')
         if tctx.LegacyTypeNames {
             w = append(w, _{%s= goName %}[item.index].TLString...)
@@ -364,32 +382,39 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
                 }
 
                 emptyCondition := field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, )
+
+                // we detect variants that were not migrated and give them variantName only
+                hasOldName := !strings.Contains(name, "__")
             -%}
         case {%d i %}:
-        {%- if union.wr.originateFromTL2 -%}
-        w = append(w, `{"type":{%q= name %}`...)
+        {%- if !hasOldName -%}
+            w = append(w, `{"type":{%q= field.variantName %}`...)
         {%- else -%}
-        if tctx.IsTL2 {
-        w = append(w, `{"type":{%q= name %}`...)
-        } else {
-        {%- if wrWithoutLong != nil -%}
-        if tctx.Short {
-            if tctx.LegacyTypeNames {
-                w = append(w, `{"type":{%q= nameWithTagShort %}`...)
-            } else {
-                w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
-            }
-        } else {
-        {%- endif -%}
-            if tctx.LegacyTypeNames {
-                w = append(w, `{"type":{%q= nameWithTag %}`...)
-            } else {
-                w = append(w, `{"type":{%q= nameWithTagNew %}`...)
-            }
-        {%- if wrWithoutLong != nil -%}
-        }
-        {%- endif -%}
-        }
+            {%- if union.wr.HasTL2() -%}
+                if tctx.IsTL2 {
+                    w = append(w, `{"type":{%q= field.variantName %}`...)
+                } else {
+            {%- endif -%}
+                {%- if wrWithoutLong != nil -%}
+                    if tctx.Short {
+                        if tctx.LegacyTypeNames {
+                            w = append(w, `{"type":{%q= nameWithTagShort %}`...)
+                        } else {
+                            w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
+                        }
+                    } else {
+                {%- endif -%}
+                    if tctx.LegacyTypeNames {
+                        w = append(w, `{"type":{%q= nameWithTag %}`...)
+                    } else {
+                        w = append(w, `{"type":{%q= nameWithTagNew %}`...)
+                    }
+                {%- if wrWithoutLong != nil -%}
+                    }
+                {%- endif -%}
+            {%- if union.wr.HasTL2() -%}
+                }
+            {%- endif -%}
         {%- endif -%}
             {%- if !field.t.IsTrueType() -%}
     {%- if emptyCondition != "" -%}

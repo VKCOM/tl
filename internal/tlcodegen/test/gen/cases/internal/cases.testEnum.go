@@ -176,28 +176,28 @@ func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 		return err
 	}
 	switch _tag {
-	case "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
-		if tctx.IsTL2 && _tag != "cases.testEnum1" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
-		}
+	case "1", "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum1#6c6c55ac" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum1#6c6c55ac")
 		}
-		item.index = 0
-	case "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
-		if tctx.IsTL2 && _tag != "cases.testEnum2" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
+		if !tctx.LegacyTypeNames && _tag == "#6c6c55ac" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#6c6c55ac")
 		}
+		item.index = 0
+	case "2", "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum2#86ea88ce" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum2#86ea88ce")
 		}
-		item.index = 1
-	case "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
-		if tctx.IsTL2 && _tag != "cases.testEnum3" {
-			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _tag)
+		if !tctx.LegacyTypeNames && _tag == "#86ea88ce" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#86ea88ce")
 		}
+		item.index = 1
+	case "3", "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
 		if !tctx.LegacyTypeNames && _tag == "cases.testEnum3#69b83e2f" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum3#69b83e2f")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#69b83e2f" {
+			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#69b83e2f")
 		}
 		item.index = 2
 	default:
@@ -216,13 +216,43 @@ func (item CasesTestEnum) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(&tctx, w)
 }
 func (item CasesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '"')
-	if tctx.LegacyTypeNames {
-		w = append(w, _CasesTestEnum[item.index].TLString...)
-	} else {
-		w = append(w, _CasesTestEnum[item.index].TLName...)
+	switch item.index {
+	case 0:
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"1"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cases.testEnum1#6c6c55ac"`...)
+			} else {
+				w = append(w, `{"type":"cases.testEnum1"`...)
+			}
+		}
+		return append(w, '}')
+	case 1:
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"2"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cases.testEnum2#86ea88ce"`...)
+			} else {
+				w = append(w, `{"type":"cases.testEnum2"`...)
+			}
+		}
+		return append(w, '}')
+	case 2:
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"3"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cases.testEnum3#69b83e2f"`...)
+			} else {
+				w = append(w, `{"type":"cases.testEnum3"`...)
+			}
+		}
+		return append(w, '}')
+	default: // Impossible due to panic above
+		return w
 	}
-	return append(w, '"')
 }
 
 func (item CasesTestEnum) String() string {

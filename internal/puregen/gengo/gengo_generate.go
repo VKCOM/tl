@@ -236,8 +236,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 
 		fieldGoName := canonicalGoName(tlast.Name{Name: variantName}, "")
 		newField := Variant{
-			t:      variantWrapper,
-			goName: res.fieldsDec.deconflictName(fieldGoName),
+			variantName: variantName,
+			t:           variantWrapper,
+			goName:      res.fieldsDec.deconflictName(fieldGoName),
 		}
 		res.Fields = append(res.Fields, newField)
 	}

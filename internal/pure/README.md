@@ -39,3 +39,8 @@ modifiers in new kernel
 
 ## Migration
 
+plan
+
+### fields masks - local, external
+
+### JSON format - simple types, unions
