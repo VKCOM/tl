@@ -44,9 +44,6 @@ func (trw *TypeRWBool) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) b
 	return false
 }
 
-func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
 func (trw *TypeRWBool) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 

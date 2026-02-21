@@ -29,8 +29,6 @@ type TypeRW interface {
 	markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
 
-	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
-
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 

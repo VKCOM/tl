@@ -121,23 +121,6 @@ func (gen *genGo) prepareGeneration() error {
 	// for _, st := range sortedTypes {
 	//	fmt.Printf("sorted type %q\n", st.localTypeArg.rt.String())
 	// }
-	for _, v := range sortedTypes {
-		// fmt.Printf("type %s names %s %s %d\n", v.CanonicalStringTop(), v.goGlobalName, v.tlName.String(), v.tlTag)
-		// if len(v.origTL) <= 1 {
-		//	fmt.Printf("     %s\n", v.CanonicalString(true))
-		// } else {
-		//	fmt.Printf("     %s\n", v.CanonicalString(false))
-		// }
-		// r # [r] = S;
-		visitedNodes := map[*TypeRWWrapper]bool{}
-		v.trw.fillRecursiveUnwrap(visitedNodes)
-		v.preventUnwrap = visitedNodes[v]
-		if v.preventUnwrap {
-			// TODO - we need at least test for this, cannot catch one in real life.
-			// May be this only affects C++ generator?
-			panic(fmt.Sprintf("prevented unwrap of %v\n", v.tlName))
-		}
-	}
 	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()

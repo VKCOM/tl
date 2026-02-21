@@ -348,14 +348,6 @@ func (w *TypeRWWrapper) MarkWriteHasError(visitedNodes map[*TypeRWWrapper]bool) 
 	return w.trw.markWriteHasError(visitedNodes)
 }
 
-func (w *TypeRWWrapper) FillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
-	}
-	visitedNodes[w] = true
-	w.trw.fillRecursiveUnwrap(visitedNodes)
-}
-
 func (w *TypeRWWrapper) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return
