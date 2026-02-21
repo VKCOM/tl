@@ -85,13 +85,6 @@ func (trw *TypeRWStruct) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool)
 	return result
 }
 
-func (trw *TypeRWStruct) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-	if !trw.isTypeDef() {
-		return
-	}
-	trw.Fields[0].t.FillRecursiveUnwrap(visitedNodes)
-}
-
 func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 	for _, f := range trw.Fields {
 		f.t.MarkWantsBytesVersion(visitedNodes)
