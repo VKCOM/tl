@@ -34,7 +34,7 @@ type TypeRWStruct struct {
 var _ TypeRW = &TypeRWStruct{}
 
 func (trw *TypeRWStruct) isTypeDef() bool {
-	return len(trw.Fields) == 1 && trw.Fields[0].originalName == "" && trw.Fields[0].fieldMask == nil && !trw.Fields[0].recursive
+	return len(trw.Fields) == 1 && trw.Fields[0].OriginalName() == "" && trw.Fields[0].FieldMask() == nil && !trw.Fields[0].recursive
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
@@ -144,7 +144,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedByTrueTypeFieldMasks() []Field {
 
 	for _, field := range trw.Fields {
 		if field.IsAffectingLocalFieldMasks() && field.t.IsTrueType() {
-			index := field.fieldMask.FieldIndex()
+			index := field.FieldMask().FieldIndex()
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
 				containingNats[index] = true
@@ -161,7 +161,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 
 	for _, field := range trw.Fields {
 		if field.IsAffectingLocalFieldMasks() {
-			index := field.fieldMask.FieldIndex()
+			index := field.FieldMask().FieldIndex()
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
 				containingNats[index] = true
@@ -176,12 +176,12 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
 	curField := f
 	for curField.IsAffectingLocalFieldMasks() {
-		if curField.fieldMask.FieldIndex() < 0 {
+		if curField.FieldMask().FieldIndex() < 0 {
 			return
 		}
-		ancestor := trw.Fields[curField.fieldMask.FieldIndex()]
+		ancestor := trw.Fields[curField.FieldMask().FieldIndex()]
 		nats = append(nats, ancestor)
-		bits = append(bits, curField.BitNumber)
+		bits = append(bits, curField.BitNumber())
 		curField = ancestor
 	}
 

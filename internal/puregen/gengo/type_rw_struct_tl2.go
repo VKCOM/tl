@@ -133,8 +133,8 @@ func (trw *TypeRWStruct) skipTL2Call(
 func (trw *TypeRWStruct) AllNewTL2Masks() []string {
 	var result []string
 	for _, field := range trw.Fields {
-		if field.MaskTL2Bit != nil && *field.MaskTL2Bit%8 == 0 {
-			result = append(result, fmt.Sprintf("tl2mask%d", *field.MaskTL2Bit/8))
+		if field.MaskTL2Bit() != nil && (*field.MaskTL2Bit())%8 == 0 {
+			result = append(result, fmt.Sprintf("tl2mask%d", *field.MaskTL2Bit()/8))
 		}
 	}
 	return result

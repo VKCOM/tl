@@ -56,35 +56,55 @@ type TypeRW interface {
 }
 
 type Field struct {
+	pureField pure.Field
 	// TODO - store pure.Field for properties
-	originalName string
-	t            *TypeRWWrapper
-	bare         bool
-	goName       string
-	recursive    bool
-
-	fieldMask *pure.ActualNatArg
-	BitNumber uint32 // only used when fieldMask != nil
-
-	MaskTL2Bit *int
+	t         *TypeRWWrapper
+	bare      bool
+	goName    string
+	recursive bool
 
 	natArgs []pure.ActualNatArg
+
+	removeMask2Bit bool // TODO - move into pure kernel
+}
+
+func (f *Field) OriginalName() string {
+	return f.pureField.Name()
 }
 
 func (f *Field) Bare() bool {
 	return f.bare
 }
 
+func (f *Field) FieldMask() *pure.ActualNatArg {
+	return f.pureField.FieldMask()
+}
+
+func (f *Field) BitNumber() uint32 {
+	return f.pureField.BitNumber()
+}
+
+func (f *Field) MaskTL2Bit() *int {
+	if f.removeMask2Bit {
+		return nil
+	}
+	return f.pureField.MaskTL2Bit()
+}
+
+func (f *Field) NatArgs() []pure.ActualNatArg {
+	return f.natArgs
+}
+
 func (f *Field) IsAffectingLocalFieldMasks() bool {
-	return f.fieldMask != nil && f.fieldMask.IsField()
+	return f.FieldMask() != nil && f.FieldMask().IsField()
 }
 
 func (f *Field) IsAffectedByExternalFieldMask() bool {
-	return f.fieldMask != nil && !f.fieldMask.IsField()
+	return f.FieldMask() != nil && !f.FieldMask().IsField()
 }
 
 func (f *Field) IsTypeDependsFromLocalFields() bool {
-	for _, natArg := range f.natArgs {
+	for _, natArg := range f.NatArgs() {
 		if natArg.IsField() {
 			return true
 		}
@@ -93,7 +113,7 @@ func (f *Field) IsTypeDependsFromLocalFields() bool {
 }
 
 func (f *Field) HasNatArguments() bool {
-	return len(f.natArgs) != 0
+	return len(f.NatArgs()) != 0
 }
 
 func (f *Field) IsLocalIndependent() bool {
@@ -104,7 +124,7 @@ func (f *Field) IsLocalIndependent() bool {
 // TL1: never
 // TL2: _:X
 func (f *Field) IsTL2Omitted() bool {
-	return f.originalName == "_"
+	return strings.HasPrefix(f.OriginalName(), "_")
 }
 
 // generate Set/IsSet with external (TL1) or internal (TL1 & TL2) mask/
@@ -115,11 +135,11 @@ func (f *Field) IsBit() bool {
 	if b, ok := f.t.trw.(*TypeRWBool); ok {
 		return b.isBit
 	}
-	return f.fieldMask != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
+	return f.FieldMask() != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
 }
 
 func (f *Field) TL2MaskForOP(op string) string {
-	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
+	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit()/8, op, 1<<(*f.MaskTL2Bit()%8))
 }
 
 func wrapWithError(wrap bool, wrappedType string) string {

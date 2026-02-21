@@ -126,7 +126,7 @@ func (gen *genGo) prepareGeneration() error {
 	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
 		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
 			for i := range str.Fields {
-				str.Fields[i].MaskTL2Bit = nil
+				str.Fields[i].removeMask2Bit = true
 			}
 		}
 	}
