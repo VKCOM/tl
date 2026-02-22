@@ -220,7 +220,7 @@ testpure: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/target/gennew/tl \
+		--pkgPath=github.com/vkcom/tl/target/genold/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \

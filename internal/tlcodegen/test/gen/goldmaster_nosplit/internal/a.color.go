@@ -255,59 +255,44 @@ func (item AColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"color"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.color#f35d7a69"`...)
-			} else {
-				w = append(w, `{"type":"a.color"`...)
-			}
+			return append(w, `"color"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.color#f35d7a69"`...)
+		}
+		return append(w, `"a.color"`...)
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"red"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.red#b83a723d"`...)
-			} else {
-				w = append(w, `{"type":"a.red"`...)
-			}
+			return append(w, `"red"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.red#b83a723d"`...)
+		}
+		return append(w, `"a.red"`...)
 	case 2:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"green"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.green#6127e7b8"`...)
-			} else {
-				w = append(w, `{"type":"a.green"`...)
-			}
+			return append(w, `"green"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.green#6127e7b8"`...)
+		}
+		return append(w, `"a.green"`...)
 	case 3:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"b_red"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"b.red#a9471844"`...)
-			} else {
-				w = append(w, `{"type":"b.red"`...)
-			}
+			return append(w, `"b_red"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"b.red#a9471844"`...)
+		}
+		return append(w, `"b.red"`...)
 	case 4:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"blue"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.blue#623360f3"`...)
-			} else {
-				w = append(w, `{"type":"a.blue"`...)
-			}
+			return append(w, `"blue"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.blue#623360f3"`...)
+		}
+		return append(w, `"a.blue"`...)
 	default: // Impossible due to panic above
 		return w
 	}
