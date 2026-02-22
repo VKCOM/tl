@@ -736,15 +736,18 @@ func (item `)
                 }
 `)
 					}
-					qw422016.N().S(`                if tctx.LegacyTypeNames {
+					if !union.wr.originateFromTL2 {
+						qw422016.N().S(`                if tctx.LegacyTypeNames {
                     return append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().Q(nameWithTag)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
+						qw422016.N().S("`")
+						qw422016.N().Q(nameWithTag)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
                 }
-                return append(w, `)
+`)
+					}
+					qw422016.N().S(`                return append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().Q(nameWithTagNew)
 					qw422016.N().S(``)
@@ -777,11 +780,45 @@ func (item `)
 					}
 					if wrWithoutLong != nil {
 						qw422016.N().S(`                    if tctx.Short {
-                        if tctx.LegacyTypeNames {
+`)
+						if !union.wr.originateFromTL2 {
+							qw422016.N().S(`                            if tctx.LegacyTypeNames {
+                                w = append(w, `)
+							qw422016.N().S("`")
+							qw422016.N().S(`{"type":`)
+							qw422016.N().Q(nameWithTagShort)
+							qw422016.N().S(``)
+							qw422016.N().S("`")
+							qw422016.N().S(`...)
+                            } else {
+                                w = append(w, `)
+							qw422016.N().S("`")
+							qw422016.N().S(`{"type":`)
+							qw422016.N().Q(nameWithTagShortNew)
+							qw422016.N().S(``)
+							qw422016.N().S("`")
+							qw422016.N().S(`...)
+                            }
+`)
+						} else {
+							qw422016.N().S(`                            w = append(w, `)
+							qw422016.N().S("`")
+							qw422016.N().S(`{"type":`)
+							qw422016.N().Q(nameWithTagShortNew)
+							qw422016.N().S(``)
+							qw422016.N().S("`")
+							qw422016.N().S(`...)
+`)
+						}
+						qw422016.N().S(`                    } else {
+`)
+					}
+					if !union.wr.originateFromTL2 {
+						qw422016.N().S(`                        if tctx.LegacyTypeNames {
                             w = append(w, `)
 						qw422016.N().S("`")
 						qw422016.N().S(`{"type":`)
-						qw422016.N().Q(nameWithTagShort)
+						qw422016.N().Q(nameWithTag)
 						qw422016.N().S(``)
 						qw422016.N().S("`")
 						qw422016.N().S(`...)
@@ -789,32 +826,22 @@ func (item `)
                             w = append(w, `)
 						qw422016.N().S("`")
 						qw422016.N().S(`{"type":`)
-						qw422016.N().Q(nameWithTagShortNew)
+						qw422016.N().Q(nameWithTagNew)
 						qw422016.N().S(``)
 						qw422016.N().S("`")
 						qw422016.N().S(`...)
                         }
-                    } else {
+`)
+					} else {
+						qw422016.N().S(`                        w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTagNew)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
 `)
 					}
-					qw422016.N().S(`                    if tctx.LegacyTypeNames {
-                        w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTag)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
-                    } else {
-                        w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTagNew)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
-                    }
-`)
 					if wrWithoutLong != nil {
 						qw422016.N().S(`                    }
 `)

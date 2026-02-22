@@ -397,9 +397,11 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
                     return append(w, `{%q= field.variantName %}`...)
                 }
             {%- endif -%}
+            {%- if !union.wr.originateFromTL2 -%}
                 if tctx.LegacyTypeNames {
                     return append(w, `{%q= nameWithTag %}`...)
                 }
+            {%- endif -%}
                 return append(w, `{%q= nameWithTagNew %}`...)
         {%- endif -%}
     {%- else -%}
@@ -413,18 +415,26 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
             {%- endif -%}
                 {%- if wrWithoutLong != nil -%}
                     if tctx.Short {
-                        if tctx.LegacyTypeNames {
-                            w = append(w, `{"type":{%q= nameWithTagShort %}`...)
-                        } else {
+                        {%- if !union.wr.originateFromTL2 -%}
+                            if tctx.LegacyTypeNames {
+                                w = append(w, `{"type":{%q= nameWithTagShort %}`...)
+                            } else {
+                                w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
+                            }
+                        {%- else -%}
                             w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
-                        }
+                        {%- endif -%}
                     } else {
                 {%- endif -%}
-                    if tctx.LegacyTypeNames {
-                        w = append(w, `{"type":{%q= nameWithTag %}`...)
-                    } else {
+                    {%- if !union.wr.originateFromTL2 -%}
+                        if tctx.LegacyTypeNames {
+                            w = append(w, `{"type":{%q= nameWithTag %}`...)
+                        } else {
+                            w = append(w, `{"type":{%q= nameWithTagNew %}`...)
+                        }
+                    {%- else -%}
                         w = append(w, `{"type":{%q= nameWithTagNew %}`...)
-                    }
+                    {%- endif -%}
                 {%- if wrWithoutLong != nil -%}
                     }
                 {%- endif -%}
