@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func (item UnionArgsXXX1Int) AsUnion() UnionArgsXXXInt {
 	var ret UnionArgsXXXInt
-	ret.Set1(item)
+	ret.SetV1(item)
 	return ret
 }
 
@@ -255,7 +255,7 @@ func (item *UnionArgsXXX1Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ 
 
 func (item UnionArgsXXX2Int) AsUnion() UnionArgsXXXInt {
 	var ret UnionArgsXXXInt
-	ret.Set2(item)
+	ret.SetV2(item)
 	return ret
 }
 
@@ -493,62 +493,62 @@ var _UnionArgsXXXInt = [2]internal.UnionElement{
 }
 
 type UnionArgsXXXInt struct {
-	value1 UnionArgsXXX1Int
-	value2 UnionArgsXXX2Int
-	index  int
+	valueV1 UnionArgsXXX1Int
+	valueV2 UnionArgsXXX2Int
+	index   int
 }
 
 func (item UnionArgsXXXInt) TLName() string { return _UnionArgsXXXInt[item.index].TLName }
 func (item UnionArgsXXXInt) TLTag() uint32  { return _UnionArgsXXXInt[item.index].TLTag }
 
-func (item *UnionArgsXXXInt) Reset() { item.ResetTo1() }
+func (item *UnionArgsXXXInt) Reset() { item.ResetToV1() }
 func (item *UnionArgsXXXInt) FillRandom(rg *basictl.RandGenerator, nat_Y uint32) {
 	index := basictl.RandomUint(rg) % 2
 	switch index {
 	case 0:
 		item.index = 0
-		item.value1.FillRandom(rg, nat_Y)
+		item.valueV1.FillRandom(rg, nat_Y)
 	case 1:
 		item.index = 1
-		item.value2.FillRandom(rg, nat_Y)
+		item.valueV2.FillRandom(rg, nat_Y)
 	default:
 	}
 }
 
-func (item *UnionArgsXXXInt) Is1() bool { return item.index == 0 }
+func (item *UnionArgsXXXInt) IsV1() bool { return item.index == 0 }
 
-func (item *UnionArgsXXXInt) As1() (*UnionArgsXXX1Int, bool) {
+func (item *UnionArgsXXXInt) AsV1() (*UnionArgsXXX1Int, bool) {
 	if item.index != 0 {
 		return nil, false
 	}
-	return &item.value1, true
+	return &item.valueV1, true
 }
-func (item *UnionArgsXXXInt) ResetTo1() *UnionArgsXXX1Int {
+func (item *UnionArgsXXXInt) ResetToV1() *UnionArgsXXX1Int {
 	item.index = 0
-	item.value1.Reset()
-	return &item.value1
+	item.valueV1.Reset()
+	return &item.valueV1
 }
-func (item *UnionArgsXXXInt) Set1(value UnionArgsXXX1Int) {
+func (item *UnionArgsXXXInt) SetV1(value UnionArgsXXX1Int) {
 	item.index = 0
-	item.value1 = value
+	item.valueV1 = value
 }
 
-func (item *UnionArgsXXXInt) Is2() bool { return item.index == 1 }
+func (item *UnionArgsXXXInt) IsV2() bool { return item.index == 1 }
 
-func (item *UnionArgsXXXInt) As2() (*UnionArgsXXX2Int, bool) {
+func (item *UnionArgsXXXInt) AsV2() (*UnionArgsXXX2Int, bool) {
 	if item.index != 1 {
 		return nil, false
 	}
-	return &item.value2, true
+	return &item.valueV2, true
 }
-func (item *UnionArgsXXXInt) ResetTo2() *UnionArgsXXX2Int {
+func (item *UnionArgsXXXInt) ResetToV2() *UnionArgsXXX2Int {
 	item.index = 1
-	item.value2.Reset()
-	return &item.value2
+	item.valueV2.Reset()
+	return &item.valueV2
 }
-func (item *UnionArgsXXXInt) Set2(value UnionArgsXXX2Int) {
+func (item *UnionArgsXXXInt) SetV2(value UnionArgsXXX2Int) {
 	item.index = 1
-	item.value2 = value
+	item.valueV2 = value
 }
 
 func (item *UnionArgsXXXInt) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
@@ -559,10 +559,10 @@ func (item *UnionArgsXXXInt) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err er
 	switch tag {
 	case 0xe7978c97:
 		item.index = 0
-		return item.value1.Read(w, nat_Y)
+		return item.valueV1.Read(w, nat_Y)
 	case 0x6daed784:
 		item.index = 1
-		return item.value2.Read(w, nat_Y)
+		return item.valueV2.Read(w, nat_Y)
 	default:
 		return w, internal.ErrorInvalidUnionTag("UnionArgsXXX", tag)
 	}
@@ -576,11 +576,11 @@ func (item *UnionArgsXXXInt) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 	w = basictl.NatWrite(w, _UnionArgsXXXInt[item.index].TLTag)
 	switch item.index {
 	case 0:
-		if w, err = item.value1.Write(w, nat_Y); err != nil {
+		if w, err = item.valueV1.Write(w, nat_Y); err != nil {
 			return w, err
 		}
 	case 1:
-		w = item.value2.Write(w, nat_Y)
+		w = item.valueV2.Write(w, nat_Y)
 	}
 	return w, nil
 }
@@ -589,9 +589,9 @@ func (item *UnionArgsXXXInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 
 	switch item.index {
 	case 0:
-		return item.value1.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV1.CalculateLayout(sizes, optimizeEmpty)
 	case 1:
-		return item.value2.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV2.CalculateLayout(sizes, optimizeEmpty)
 	}
 	if item.index == 0 {
 		if optimizeEmpty {
@@ -607,9 +607,9 @@ func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 
 	switch item.index {
 	case 0:
-		return item.value1.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV1.InternalWriteTL2(w, sizes, optimizeEmpty)
 	case 1:
-		return item.value2.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV2.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
 	if item.index == 0 {
 		if optimizeEmpty {
@@ -655,11 +655,11 @@ func (item *UnionArgsXXXInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	switch item.index {
 	case 0:
-		if currentR, err = item.value1.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV1.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 1:
-		if currentR, err = item.value2.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV2.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	}
@@ -692,7 +692,7 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		return err
 	}
 	switch _tag {
-	case "1", "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
+	case "v1", "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX1#e7978c97")
 		}
@@ -704,10 +704,10 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
+		if err := item.valueV1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
-	case "2", "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
+	case "v2", "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
 		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX2#6daed784")
 		}
@@ -719,7 +719,7 @@ func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
+		if err := item.valueV2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
 	default:
@@ -741,7 +741,7 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"1"`...)
+			w = append(w, `{"type":"v1"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
@@ -750,13 +750,13 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 			}
 		}
 		w = append(w, `,"value":`...)
-		if w, err = item.value1.WriteJSONOpt(tctx, w, nat_Y); err != nil {
+		if w, err = item.valueV1.WriteJSONOpt(tctx, w, nat_Y); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"2"`...)
+			w = append(w, `{"type":"v2"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
@@ -765,7 +765,7 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.value2.WriteJSONOpt(tctx, w, nat_Y)
+		w = item.valueV2.WriteJSONOpt(tctx, w, nat_Y)
 		return append(w, '}'), nil
 	default: // Impossible due to panic above
 		return w, nil

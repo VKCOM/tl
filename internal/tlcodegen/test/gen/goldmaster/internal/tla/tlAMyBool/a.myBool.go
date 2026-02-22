@@ -204,26 +204,20 @@ func (item AMyBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byt
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"myTrue"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.myTrue#00000001"`...)
-			} else {
-				w = append(w, `{"type":"a.myTrue"`...)
-			}
+			return append(w, `"myTrue"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.myTrue#00000001"`...)
+		}
+		return append(w, `"a.myTrue"`...)
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"myFalse"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"a.myFalse#00000002"`...)
-			} else {
-				w = append(w, `{"type":"a.myFalse"`...)
-			}
+			return append(w, `"myFalse"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"a.myFalse#00000002"`...)
+		}
+		return append(w, `"a.myFalse"`...)
 	default: // Impossible due to panic above
 		return w
 	}

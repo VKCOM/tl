@@ -42,14 +42,14 @@ func (item *CasesTestEnum) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesTestEnum) Is1() bool { return item.index == 0 }
-func (item *CasesTestEnum) Set1()    { item.index = 0 }
+func (item CasesTestEnum) IsV1() bool { return item.index == 0 }
+func (item *CasesTestEnum) SetV1()    { item.index = 0 }
 
-func (item CasesTestEnum) Is2() bool { return item.index == 1 }
-func (item *CasesTestEnum) Set2()    { item.index = 1 }
+func (item CasesTestEnum) IsV2() bool { return item.index == 1 }
+func (item *CasesTestEnum) SetV2()    { item.index = 1 }
 
-func (item CasesTestEnum) Is3() bool { return item.index == 2 }
-func (item *CasesTestEnum) Set3()    { item.index = 2 }
+func (item CasesTestEnum) IsV3() bool { return item.index == 2 }
+func (item *CasesTestEnum) SetV3()    { item.index = 2 }
 
 func (item *CasesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32

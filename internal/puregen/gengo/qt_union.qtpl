@@ -302,7 +302,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 if !union.wr.originateFromTL2 {
                     cases = append(cases, fmt.Sprintf("%q", tag))
                 }
-                // this mess is because there was not clear variant name in so annoying TL1
+                // this mess is because there was no clear variant names in TL1
             -%}
         case {%s= strings.Join(cases, ",") %} {%- code -%}
             {%- if wrWithoutLong != nil && !hasOldName && !union.wr.originateFromTL2 && !union.HasShortFieldCollision(wrWithoutLong) -%}
@@ -387,6 +387,22 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
                 hasOldName := !strings.Contains(name, "__")
             -%}
         case {%d i %}:
+            {%- code // this mess is because there was no clear variant names in TL1 -%}
+    {%- if union.IsEnum -%}
+        {%- if !hasOldName -%}
+            return append(w, `{%q= field.variantName %}`...)
+        {%- else -%}
+            {%- if union.wr.HasTL2() -%}
+                if tctx.IsTL2 {
+                    return append(w, `{%q= field.variantName %}`...)
+                }
+            {%- endif -%}
+                if tctx.LegacyTypeNames {
+                    return append(w, `{%q= nameWithTag %}`...)
+                }
+                return append(w, `{%q= nameWithTagNew %}`...)
+        {%- endif -%}
+    {%- else -%}
         {%- if !hasOldName -%}
             w = append(w, `{"type":{%q= field.variantName %}`...)
         {%- else -%}
@@ -432,6 +448,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
             {%- else -%}
         return append(w, '}')
             {%- endif -%}
+    {%- endif -%}
         {%- endfor -%}
         default: // Impossible due to panic above
         {%- if writeNeedsError -%}

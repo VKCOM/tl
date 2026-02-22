@@ -42,14 +42,14 @@ func (item *CasesBytesTestEnum) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item CasesBytesTestEnum) Is1() bool { return item.index == 0 }
-func (item *CasesBytesTestEnum) Set1()    { item.index = 0 }
+func (item CasesBytesTestEnum) IsV1() bool { return item.index == 0 }
+func (item *CasesBytesTestEnum) SetV1()    { item.index = 0 }
 
-func (item CasesBytesTestEnum) Is2() bool { return item.index == 1 }
-func (item *CasesBytesTestEnum) Set2()    { item.index = 1 }
+func (item CasesBytesTestEnum) IsV2() bool { return item.index == 1 }
+func (item *CasesBytesTestEnum) SetV2()    { item.index = 1 }
 
-func (item CasesBytesTestEnum) Is3() bool { return item.index == 2 }
-func (item *CasesBytesTestEnum) Set3()    { item.index = 2 }
+func (item CasesBytesTestEnum) IsV3() bool { return item.index == 2 }
+func (item *CasesBytesTestEnum) SetV3()    { item.index = 2 }
 
 func (item *CasesBytesTestEnum) Read(w []byte) (_ []byte, err error) {
 	return item.ReadBoxed(w)
@@ -176,7 +176,7 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		return err
 	}
 	switch _tag {
-	case "1", "cases_bytes.testEnum1#58aad3f5", "cases_bytes.testEnum1", "#58aad3f5":
+	case "v1", "cases_bytes.testEnum1#58aad3f5", "cases_bytes.testEnum1", "#58aad3f5":
 		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum1#58aad3f5" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum1#58aad3f5")
 		}
@@ -184,7 +184,7 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "#58aad3f5")
 		}
 		item.index = 0
-	case "2", "cases_bytes.testEnum2#00b47add", "cases_bytes.testEnum2", "#00b47add":
+	case "v2", "cases_bytes.testEnum2#00b47add", "cases_bytes.testEnum2", "#00b47add":
 		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum2#00b47add" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum2#00b47add")
 		}
@@ -192,7 +192,7 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "#00b47add")
 		}
 		item.index = 1
-	case "3", "cases_bytes.testEnum3#81911ffa", "cases_bytes.testEnum3", "#81911ffa":
+	case "v3", "cases_bytes.testEnum3#81911ffa", "cases_bytes.testEnum3", "#81911ffa":
 		if !tctx.LegacyTypeNames && _tag == "cases_bytes.testEnum3#81911ffa" {
 			return ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum3#81911ffa")
 		}
@@ -219,37 +219,28 @@ func (item CasesBytesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"1"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"cases_bytes.testEnum1#58aad3f5"`...)
-			} else {
-				w = append(w, `{"type":"cases_bytes.testEnum1"`...)
-			}
+			return append(w, `"v1"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases_bytes.testEnum1#58aad3f5"`...)
+		}
+		return append(w, `"cases_bytes.testEnum1"`...)
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"2"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"cases_bytes.testEnum2#00b47add"`...)
-			} else {
-				w = append(w, `{"type":"cases_bytes.testEnum2"`...)
-			}
+			return append(w, `"v2"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases_bytes.testEnum2#00b47add"`...)
+		}
+		return append(w, `"cases_bytes.testEnum2"`...)
 	case 2:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"3"`...)
-		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"cases_bytes.testEnum3#81911ffa"`...)
-			} else {
-				w = append(w, `{"type":"cases_bytes.testEnum3"`...)
-			}
+			return append(w, `"v3"`...)
 		}
-		return append(w, '}')
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases_bytes.testEnum3#81911ffa"`...)
+		}
+		return append(w, `"cases_bytes.testEnum3"`...)
 	default: // Impossible due to panic above
 		return w
 	}

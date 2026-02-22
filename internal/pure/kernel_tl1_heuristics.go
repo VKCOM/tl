@@ -44,6 +44,7 @@ func (k *Kernel) IsDict(kt *KernelType) (bool, *KernelType) {
 }
 
 func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]string, error) {
+	// this mess is because there was no clear variant names in TL1
 	// Removing prefix/suffix common with union name.
 	// We allow relaxed case match. To use strict match, we could remove all strings.ToLower() calls below
 	typePrefix := strings.ToLower(utils.ToLowerFirst(definition[0].TypeDecl.Name.Name))
@@ -68,6 +69,12 @@ func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]string, error) 
 			variantName = variantName[len(typePrefix):]
 		} else if typeSuffix != "" && len(typeSuffix) < len(variantName) {
 			variantName = variantName[:len(variantName)-len(typeSuffix)]
+		}
+		for len(variantName) != 0 && variantName[0] == '_' {
+			variantName = variantName[1:]
+		}
+		if !utils.IsFirstBasicLatin(variantName) { // digit
+			variantName = "v" + variantName
 		}
 		// check against already defined fields
 		for _, usedName := range variantNames {

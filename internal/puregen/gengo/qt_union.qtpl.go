@@ -535,7 +535,7 @@ func (item *`)
 		if !union.wr.originateFromTL2 {
 			cases = append(cases, fmt.Sprintf("%q", tag))
 		}
-		// this mess is because there was not clear variant name in so annoying TL1
+		// this mess is because there was no clear variant names in TL1
 
 		qw422016.N().S(`        case `)
 		qw422016.N().S(strings.Join(cases, ","))
@@ -713,105 +713,146 @@ func (item `)
 			qw422016.N().D(i)
 			qw422016.N().S(`:
 `)
-			if !hasOldName {
-				qw422016.N().S(`            w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(field.variantName)
-				qw422016.N().S(``)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
+			// this mess is because there was no clear variant names in TL1
+
+			if union.IsEnum {
+				if !hasOldName {
+					qw422016.N().S(`            return append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().Q(field.variantName)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
 `)
+				} else {
+					if union.wr.HasTL2() {
+						qw422016.N().S(`                if tctx.IsTL2 {
+                    return append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().Q(field.variantName)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+                }
+`)
+					}
+					qw422016.N().S(`                if tctx.LegacyTypeNames {
+                    return append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().Q(nameWithTag)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+                }
+                return append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().Q(nameWithTagNew)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
+`)
+				}
 			} else {
-				if union.wr.HasTL2() {
-					qw422016.N().S(`                if tctx.IsTL2 {
-                    w = append(w, `)
+				if !hasOldName {
+					qw422016.N().S(`            w = append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().S(`{"type":`)
 					qw422016.N().Q(field.variantName)
 					qw422016.N().S(``)
 					qw422016.N().S("`")
 					qw422016.N().S(`...)
+`)
+				} else {
+					if union.wr.HasTL2() {
+						qw422016.N().S(`                if tctx.IsTL2 {
+                    w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(field.variantName)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
                 } else {
 `)
-				}
-				if wrWithoutLong != nil {
-					qw422016.N().S(`                    if tctx.Short {
+					}
+					if wrWithoutLong != nil {
+						qw422016.N().S(`                    if tctx.Short {
                         if tctx.LegacyTypeNames {
                             w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTagShort)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTagShort)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
                         } else {
                             w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTagShortNew)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTagShortNew)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
                         }
                     } else {
 `)
-				}
-				qw422016.N().S(`                    if tctx.LegacyTypeNames {
+					}
+					qw422016.N().S(`                    if tctx.LegacyTypeNames {
                         w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(nameWithTag)
-				qw422016.N().S(``)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
+					qw422016.N().S("`")
+					qw422016.N().S(`{"type":`)
+					qw422016.N().Q(nameWithTag)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
                     } else {
                         w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(nameWithTagNew)
-				qw422016.N().S(``)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
+					qw422016.N().S("`")
+					qw422016.N().S(`{"type":`)
+					qw422016.N().Q(nameWithTagNew)
+					qw422016.N().S(``)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
                     }
 `)
-				if wrWithoutLong != nil {
-					qw422016.N().S(`                    }
+					if wrWithoutLong != nil {
+						qw422016.N().S(`                    }
 `)
-				}
-				if union.wr.HasTL2() {
-					qw422016.N().S(`                }
+					}
+					if union.wr.HasTL2() {
+						qw422016.N().S(`                }
 `)
+					}
 				}
-			}
-			if !field.t.IsTrueType() {
-				if emptyCondition != "" {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(emptyCondition)
-					qw422016.N().S(` {
+				if !field.t.IsTrueType() {
+					if emptyCondition != "" {
+						qw422016.N().S(`    if `)
+						qw422016.N().S(emptyCondition)
+						qw422016.N().S(` {
 `)
-				}
-				qw422016.N().S(`        w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`,"value":`)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
+					}
+					qw422016.N().S(`        w = append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().S(`,"value":`)
+					qw422016.N().S("`")
+					qw422016.N().S(`...)
         `)
-				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
-					formatNatArgs(nil, union.ElementNatArgs()), false, field.t.hasErrorInWriteMethods))
-				qw422016.N().S(`
+					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+						formatNatArgs(nil, union.ElementNatArgs()), false, field.t.hasErrorInWriteMethods))
+					qw422016.N().S(`
 `)
-				if emptyCondition != "" {
-					qw422016.N().S(`    }
+					if emptyCondition != "" {
+						qw422016.N().S(`    }
+`)
+					}
+				}
+				if writeNeedsError {
+					qw422016.N().S(`        return append(w, '}'), nil
+`)
+				} else {
+					qw422016.N().S(`        return append(w, '}')
 `)
 				}
-			}
-			if writeNeedsError {
-				qw422016.N().S(`        return append(w, '}'), nil
-`)
-			} else {
-				qw422016.N().S(`        return append(w, '}')
-`)
 			}
 		}
 		qw422016.N().S(`        default: // Impossible due to panic above

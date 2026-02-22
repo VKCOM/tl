@@ -21,106 +21,106 @@ var _CasesTestUnion = [4]UnionElement{
 }
 
 type CasesTestUnion struct {
-	value1 CasesTestUnion1
-	value2 CasesTestUnion2
-	value3 CasesTestUnion3
-	value4 CasesTestUnion4
-	index  int
+	valueV1 CasesTestUnion1
+	valueV2 CasesTestUnion2
+	valueV3 CasesTestUnion3
+	valueV4 CasesTestUnion4
+	index   int
 }
 
 func (item CasesTestUnion) TLName() string { return _CasesTestUnion[item.index].TLName }
 func (item CasesTestUnion) TLTag() uint32  { return _CasesTestUnion[item.index].TLTag }
 
-func (item *CasesTestUnion) Reset() { item.ResetTo1() }
+func (item *CasesTestUnion) Reset() { item.ResetToV1() }
 func (item *CasesTestUnion) FillRandom(rg *basictl.RandGenerator) {
 	index := basictl.RandomUint(rg) % 4
 	switch index {
 	case 0:
 		item.index = 0
-		item.value1.FillRandom(rg)
+		item.valueV1.FillRandom(rg)
 	case 1:
 		item.index = 1
-		item.value2.FillRandom(rg)
+		item.valueV2.FillRandom(rg)
 	case 2:
 		item.index = 2
-		item.value3.FillRandom(rg)
+		item.valueV3.FillRandom(rg)
 	case 3:
 		item.index = 3
-		item.value4.FillRandom(rg)
+		item.valueV4.FillRandom(rg)
 	default:
 	}
 }
 
-func (item *CasesTestUnion) Is1() bool { return item.index == 0 }
+func (item *CasesTestUnion) IsV1() bool { return item.index == 0 }
 
-func (item *CasesTestUnion) As1() (*CasesTestUnion1, bool) {
+func (item *CasesTestUnion) AsV1() (*CasesTestUnion1, bool) {
 	if item.index != 0 {
 		return nil, false
 	}
-	return &item.value1, true
+	return &item.valueV1, true
 }
-func (item *CasesTestUnion) ResetTo1() *CasesTestUnion1 {
+func (item *CasesTestUnion) ResetToV1() *CasesTestUnion1 {
 	item.index = 0
-	item.value1.Reset()
-	return &item.value1
+	item.valueV1.Reset()
+	return &item.valueV1
 }
-func (item *CasesTestUnion) Set1(value CasesTestUnion1) {
+func (item *CasesTestUnion) SetV1(value CasesTestUnion1) {
 	item.index = 0
-	item.value1 = value
+	item.valueV1 = value
 }
 
-func (item *CasesTestUnion) Is2() bool { return item.index == 1 }
+func (item *CasesTestUnion) IsV2() bool { return item.index == 1 }
 
-func (item *CasesTestUnion) As2() (*CasesTestUnion2, bool) {
+func (item *CasesTestUnion) AsV2() (*CasesTestUnion2, bool) {
 	if item.index != 1 {
 		return nil, false
 	}
-	return &item.value2, true
+	return &item.valueV2, true
 }
-func (item *CasesTestUnion) ResetTo2() *CasesTestUnion2 {
+func (item *CasesTestUnion) ResetToV2() *CasesTestUnion2 {
 	item.index = 1
-	item.value2.Reset()
-	return &item.value2
+	item.valueV2.Reset()
+	return &item.valueV2
 }
-func (item *CasesTestUnion) Set2(value CasesTestUnion2) {
+func (item *CasesTestUnion) SetV2(value CasesTestUnion2) {
 	item.index = 1
-	item.value2 = value
+	item.valueV2 = value
 }
 
-func (item *CasesTestUnion) Is3() bool { return item.index == 2 }
+func (item *CasesTestUnion) IsV3() bool { return item.index == 2 }
 
-func (item *CasesTestUnion) As3() (*CasesTestUnion3, bool) {
+func (item *CasesTestUnion) AsV3() (*CasesTestUnion3, bool) {
 	if item.index != 2 {
 		return nil, false
 	}
-	return &item.value3, true
+	return &item.valueV3, true
 }
-func (item *CasesTestUnion) ResetTo3() *CasesTestUnion3 {
+func (item *CasesTestUnion) ResetToV3() *CasesTestUnion3 {
 	item.index = 2
-	item.value3.Reset()
-	return &item.value3
+	item.valueV3.Reset()
+	return &item.valueV3
 }
-func (item *CasesTestUnion) Set3(value CasesTestUnion3) {
+func (item *CasesTestUnion) SetV3(value CasesTestUnion3) {
 	item.index = 2
-	item.value3 = value
+	item.valueV3 = value
 }
 
-func (item *CasesTestUnion) Is4() bool { return item.index == 3 }
+func (item *CasesTestUnion) IsV4() bool { return item.index == 3 }
 
-func (item *CasesTestUnion) As4() (*CasesTestUnion4, bool) {
+func (item *CasesTestUnion) AsV4() (*CasesTestUnion4, bool) {
 	if item.index != 3 {
 		return nil, false
 	}
-	return &item.value4, true
+	return &item.valueV4, true
 }
-func (item *CasesTestUnion) ResetTo4() *CasesTestUnion4 {
+func (item *CasesTestUnion) ResetToV4() *CasesTestUnion4 {
 	item.index = 3
-	item.value4.Reset()
-	return &item.value4
+	item.valueV4.Reset()
+	return &item.valueV4
 }
-func (item *CasesTestUnion) Set4(value CasesTestUnion4) {
+func (item *CasesTestUnion) SetV4(value CasesTestUnion4) {
 	item.index = 3
-	item.value4 = value
+	item.valueV4 = value
 }
 
 func (item *CasesTestUnion) Read(w []byte) (_ []byte, err error) {
@@ -135,16 +135,16 @@ func (item *CasesTestUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	switch tag {
 	case 0x4b4f09b1:
 		item.index = 0
-		return item.value1.Read(w)
+		return item.valueV1.Read(w)
 	case 0x464f96c4:
 		item.index = 1
-		return item.value2.Read(w)
+		return item.valueV2.Read(w)
 	case 0x9b8c9e4c:
 		item.index = 2
-		return item.value3.Read(w)
+		return item.valueV3.Read(w)
 	case 0xd6e28ad9:
 		item.index = 3
-		return item.value4.Read(w)
+		return item.valueV4.Read(w)
 	default:
 		return w, ErrorInvalidUnionTag("cases.TestUnion", tag)
 	}
@@ -162,13 +162,13 @@ func (item *CasesTestUnion) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _CasesTestUnion[item.index].TLTag)
 	switch item.index {
 	case 0:
-		w = item.value1.Write(w)
+		w = item.valueV1.Write(w)
 	case 1:
-		w = item.value2.Write(w)
+		w = item.valueV2.Write(w)
 	case 2:
-		w = item.value3.Write(w)
+		w = item.valueV3.Write(w)
 	case 3:
-		w = item.value4.Write(w)
+		w = item.valueV4.Write(w)
 	}
 	return w
 }
@@ -177,13 +177,13 @@ func (item *CasesTestUnion) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 
 	switch item.index {
 	case 0:
-		return item.value1.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV1.CalculateLayout(sizes, optimizeEmpty)
 	case 1:
-		return item.value2.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV2.CalculateLayout(sizes, optimizeEmpty)
 	case 2:
-		return item.value3.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV3.CalculateLayout(sizes, optimizeEmpty)
 	case 3:
-		return item.value4.CalculateLayout(sizes, optimizeEmpty)
+		return item.valueV4.CalculateLayout(sizes, optimizeEmpty)
 	}
 	if item.index == 0 {
 		if optimizeEmpty {
@@ -199,13 +199,13 @@ func (item *CasesTestUnion) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 
 	switch item.index {
 	case 0:
-		return item.value1.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV1.InternalWriteTL2(w, sizes, optimizeEmpty)
 	case 1:
-		return item.value2.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV2.InternalWriteTL2(w, sizes, optimizeEmpty)
 	case 2:
-		return item.value3.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV3.InternalWriteTL2(w, sizes, optimizeEmpty)
 	case 3:
-		return item.value4.InternalWriteTL2(w, sizes, optimizeEmpty)
+		return item.valueV4.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
 	if item.index == 0 {
 		if optimizeEmpty {
@@ -251,19 +251,19 @@ func (item *CasesTestUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	switch item.index {
 	case 0:
-		if currentR, err = item.value1.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV1.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 1:
-		if currentR, err = item.value2.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV2.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 2:
-		if currentR, err = item.value3.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV3.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 3:
-		if currentR, err = item.value4.InternalReadTL2(currentR, block); err != nil {
+		if currentR, err = item.valueV4.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	}
@@ -301,7 +301,7 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		return err
 	}
 	switch _tag {
-	case "1", "cases.testUnion1#4b4f09b1", "cases.testUnion1", "#4b4f09b1":
+	case "v1", "cases.testUnion1#4b4f09b1", "cases.testUnion1", "#4b4f09b1":
 		if !tctx.LegacyTypeNames && _tag == "cases.testUnion1#4b4f09b1" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion1#4b4f09b1")
 		}
@@ -313,10 +313,10 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV1.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "2", "cases.testUnion2#464f96c4", "cases.testUnion2", "#464f96c4":
+	case "v2", "cases.testUnion2#464f96c4", "cases.testUnion2", "#464f96c4":
 		if !tctx.LegacyTypeNames && _tag == "cases.testUnion2#464f96c4" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion2#464f96c4")
 		}
@@ -328,10 +328,10 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV2.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "3", "cases.testUnion3#9b8c9e4c", "cases.testUnion3", "#9b8c9e4c":
+	case "v3", "cases.testUnion3#9b8c9e4c", "cases.testUnion3", "#9b8c9e4c":
 		if !tctx.LegacyTypeNames && _tag == "cases.testUnion3#9b8c9e4c" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion3#9b8c9e4c")
 		}
@@ -343,10 +343,10 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
-	case "4", "cases.testUnion4#d6e28ad9", "cases.testUnion4", "#d6e28ad9":
+	case "v4", "cases.testUnion4#d6e28ad9", "cases.testUnion4", "#d6e28ad9":
 		if !tctx.LegacyTypeNames && _tag == "cases.testUnion4#d6e28ad9" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion4#d6e28ad9")
 		}
@@ -358,7 +358,7 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.value4.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV4.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -380,7 +380,7 @@ func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	switch item.index {
 	case 0:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"1"`...)
+			w = append(w, `{"type":"v1"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"cases.testUnion1#4b4f09b1"`...)
@@ -389,11 +389,11 @@ func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.value1.WriteJSONOpt(tctx, w)
+		w = item.valueV1.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"2"`...)
+			w = append(w, `{"type":"v2"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"cases.testUnion2#464f96c4"`...)
@@ -402,11 +402,11 @@ func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.value2.WriteJSONOpt(tctx, w)
+		w = item.valueV2.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 2:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"3"`...)
+			w = append(w, `{"type":"v3"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"cases.testUnion3#9b8c9e4c"`...)
@@ -414,14 +414,14 @@ func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 				w = append(w, `{"type":"cases.testUnion3"`...)
 			}
 		}
-		if item.value3 != 0 {
+		if item.valueV3 != 0 {
 			w = append(w, `,"value":`...)
-			w = item.value3.WriteJSONOpt(tctx, w)
+			w = item.valueV3.WriteJSONOpt(tctx, w)
 		}
 		return append(w, '}')
 	case 3:
 		if tctx.IsTL2 {
-			w = append(w, `{"type":"4"`...)
+			w = append(w, `{"type":"v4"`...)
 		} else {
 			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"cases.testUnion4#d6e28ad9"`...)
@@ -429,9 +429,9 @@ func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 				w = append(w, `{"type":"cases.testUnion4"`...)
 			}
 		}
-		if len(item.value4) != 0 {
+		if len(item.valueV4) != 0 {
 			w = append(w, `,"value":`...)
-			w = item.value4.WriteJSONOpt(tctx, w)
+			w = item.valueV4.WriteJSONOpt(tctx, w)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -456,7 +456,7 @@ func (item *CasesTestUnion) UnmarshalJSON(b []byte) error {
 
 func (item CasesTestUnion1) AsUnion() CasesTestUnion {
 	var ret CasesTestUnion
-	ret.Set1(item)
+	ret.SetV1(item)
 	return ret
 }
 
@@ -704,7 +704,7 @@ func (item *CasesTestUnion1) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 func (item CasesTestUnion2) AsUnion() CasesTestUnion {
 	var ret CasesTestUnion
-	ret.Set2(item)
+	ret.SetV2(item)
 	return ret
 }
 
@@ -958,7 +958,7 @@ func (item *CasesTestUnion2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 func (item CasesTestUnion3) AsUnion() CasesTestUnion {
 	var ret CasesTestUnion
-	ret.Set3(item)
+	ret.SetV3(item)
 	return ret
 }
 
@@ -1181,7 +1181,7 @@ func (item *CasesTestUnion3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 func (item CasesTestUnion4) AsUnion() CasesTestUnion {
 	var ret CasesTestUnion
-	ret.Set4(item)
+	ret.SetV4(item)
 	return ret
 }
 
