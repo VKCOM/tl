@@ -322,9 +322,6 @@ type {%s= goName %} struct {
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    {%- if struct_.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -346,9 +343,6 @@ func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w [
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
-    {%- if struct_.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 
@@ -397,9 +391,6 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    {%- if struct_.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -662,9 +653,6 @@ func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w [
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
-    {%- if struct_.wr.originateFromTL2 -%}
-    tctx.IsTL2 = true
-    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {

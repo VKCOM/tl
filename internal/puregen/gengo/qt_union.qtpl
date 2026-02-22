@@ -357,16 +357,6 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    {%- if union.IsEnum && !union.wr.HasTL2() -%}
-        {%- code // keep old code without changes fro now -%}
-        w = append(w, '"')
-        if tctx.LegacyTypeNames {
-            w = append(w, _{%s= goName %}[item.index].TLString...)
-        } else {
-            w = append(w, _{%s= goName %}[item.index].TLName...)
-        }
-        return append(w, '"')
-    {%- else -%}
     switch item.index {
         {%- for i, field := range union.Fields -%}
             {%- code
@@ -467,7 +457,6 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
             return w
         {%- endif -%}
     }
-    {%- endif -%}
 }
 
 {%- if len(union.wr.NatParams) == 0 -%}
@@ -565,6 +554,9 @@ func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeSt
         {%- code
             tlTag := fmt.Sprintf("0x%08x", x.t.tlTag )
             tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
+            if x.t.tlTag == 0 {
+                tlString = ""
+            }
             tlName := x.t.tlName.String()
         -%}
         {TLTag:{%s= tlTag %}, TLName:{%q= tlName %}, TLString:{%q= tlString %}},
