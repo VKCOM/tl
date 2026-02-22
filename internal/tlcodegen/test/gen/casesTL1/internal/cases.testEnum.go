@@ -131,13 +131,25 @@ func (item CasesTestEnum) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(&tctx, w)
 }
 func (item CasesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = append(w, '"')
-	if tctx.LegacyTypeNames {
-		w = append(w, _CasesTestEnum[item.index].TLString...)
-	} else {
-		w = append(w, _CasesTestEnum[item.index].TLName...)
+	switch item.index {
+	case 0:
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases.testEnum1#6c6c55ac"`...)
+		}
+		return append(w, `"cases.testEnum1"`...)
+	case 1:
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases.testEnum2#86ea88ce"`...)
+		}
+		return append(w, `"cases.testEnum2"`...)
+	case 2:
+		if tctx.LegacyTypeNames {
+			return append(w, `"cases.testEnum3#69b83e2f"`...)
+		}
+		return append(w, `"cases.testEnum3"`...)
+	default: // Impossible due to panic above
+		return w
 	}
-	return append(w, '"')
 }
 
 func (item CasesTestEnum) String() string {
