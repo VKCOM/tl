@@ -15,7 +15,6 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 // Overwrites all files given to kernel.
@@ -259,16 +258,7 @@ outer:
 				_, _ = fmt.Fprintf(bb, "\n    // tlgen:tl1name:%q", comb.Construct.Name.String())
 				//}
 				bb.WriteString("\n    | ")
-				variantName := variantNames[i]
-				for strings.HasPrefix(variantName, "_") {
-					variantName = strings.TrimPrefix(variantName, "_")
-				}
-				if !utils.IsFirstBasicLatin(variantName) {
-					variantName = fmt.Sprintf("variant%d", i)
-					e1 := comb.Construct.NamePR.BeautifulError(fmt.Errorf("variant name %q violated TL2 rules and was changed to %q, please edit manually after migration", variantNames[i], variantName))
-					e1.PrintWarning(k.opts.ErrorWriter, e1)
-				}
-				bb.WriteString(variantName)
+				bb.WriteString(variantNames[i])
 				bb.WriteString(" ")
 				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
