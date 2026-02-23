@@ -29,7 +29,7 @@ package `)
 `)
 	var sortedConstructors []*tlast.Combinator
 	for _, c := range gen.kernel.TL1() {
-		if c.Crc32() == 0 {
+		if c.Crc32() == 0 || c.Construct.Name.String() == "_" { // TODO - remove second check after ReqResult removed from combined.tl
 			continue
 		}
 		sortedConstructors = append(sortedConstructors, c)

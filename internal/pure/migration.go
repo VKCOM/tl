@@ -85,6 +85,17 @@ outer:
 		}
 		migrate := false
 		for _, comb := range tip.combTL1 {
+			if tl2WhiteList.HasName(comb.Construct.Name) {
+				migrate = true
+			}
+			if !comb.IsFunction && tl2WhiteList.HasName(comb.TypeDecl.Name) {
+				migrate = true
+			}
+		}
+		if !migrate {
+			continue
+		}
+		for _, comb := range tip.combTL1 {
 			if comb.Builtin {
 				// skip warning here
 				continue outer
@@ -103,15 +114,6 @@ outer:
 					continue outer
 				}
 			}
-			if tl2WhiteList.HasName(comb.Construct.Name) {
-				migrate = true
-			}
-			if !comb.IsFunction && tl2WhiteList.HasName(comb.TypeDecl.Name) {
-				migrate = true
-			}
-		}
-		if !migrate {
-			continue
 		}
 		migrateTips[tip] = struct{}{}
 		for _, comb := range tip.combTL1 {
