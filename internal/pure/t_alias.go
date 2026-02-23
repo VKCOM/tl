@@ -15,6 +15,7 @@ import (
 type TypeInstanceAlias struct {
 	TypeInstanceCommon
 	fieldType *TypeInstanceRef
+	fieldBare bool // TODO - actually use it
 }
 
 func (ins *TypeInstanceAlias) GoodForMapKey() bool {
@@ -56,7 +57,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, trTL1 tlast.
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}
-	fieldType, err := k.getInstanceTL2(rt, true)
+	fieldType, fieldBare, err := k.getInstanceTL2(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate alias %s to %s: %w", canonicalName, alias, err)
 	}
@@ -68,6 +69,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, trTL1 tlast.
 			rt:            trTL1,
 		},
 		fieldType: fieldType,
+		fieldBare: fieldBare,
 	}
 	return ins, nil
 }

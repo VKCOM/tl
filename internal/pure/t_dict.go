@@ -41,7 +41,7 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fieldType *TypeInstanceRef) TypeInstance {
+func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fieldType *TypeInstanceRef, fieldBare bool) TypeInstance {
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -59,6 +59,7 @@ func (k *Kernel) createDict(canonicalName string, keyType *TypeInstanceRef, fiel
 			}, {
 				name: "v",
 				ins:  fieldType,
+				bare: fieldBare,
 			}},
 		},
 	}

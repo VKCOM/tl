@@ -217,7 +217,7 @@ func (k *Kernel) Compile() error {
 	// then add all TL2 declarations
 	for _, comb := range k.filesTL2 {
 		refName := comb.ReferenceName()
-		log.Printf("tl2pure: compiling %s", comb)
+		// log.Printf("tl2pure: compiling %s", comb)
 		if e2, ok := namespaceTL1SeeHere[refName.Namespace]; ok && refName.Namespace != "" {
 			e1 := comb.ReferenceNamePR().BeautifulError(fmt.Errorf("namespace %s must be defined entirely in either .tl or in .tl2 file(s)", refName.Namespace))
 			return tlast.BeautifulError2(e1, e2)
@@ -364,19 +364,12 @@ func (k *Kernel) Compile() error {
 	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
 		if tip.originTL2 {
-			if tip.combTL2.IsFunction {
-				tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.combTL2.FuncDecl.Name}}
-				if _, err := k.getInstanceTL2(tr, true); err != nil {
-					return fmt.Errorf("error adding function %s: %w", tr.String(), err)
-				}
-				continue
-			}
-			typeDecl := tip.combTL2.TypeDecl
-			if len(typeDecl.TemplateArguments) != 0 {
+			refName := tip.combTL2.ReferenceName()
+			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: refName}}
+			if !tip.combTL2.IsFunction && len(tip.combTL2.TypeDecl.TemplateArguments) != 0 {
 				continue // instantiate templates on demand only
 			}
-			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: typeDecl.Name}}
-			if _, err := k.getInstanceTL2(tr, true); err != nil {
+			if _, _, err := k.getInstanceTL2(tr, true); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
 			}
 		}

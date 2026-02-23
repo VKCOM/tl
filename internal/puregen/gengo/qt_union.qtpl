@@ -115,39 +115,45 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
     {%- endif -%}
 }
 
-{%- if !union.wr.originateFromTL2 -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
-    w = basictl.NatWrite(w, _{%s= addBytes(union.wr.goGlobalName, false) %}[item.index].TLTag)
-    {%- if union.IsEnum -%}
+    {%- if union.wr.originateFromTL2 -%}
         {%- if writeNeedsError -%}
-        return w, nil
+            return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}
-        return w
+            panic(basictl.TL2Error("not implemented for tl2 type"))
         {%- endif -%}
     {%- else -%}
-    switch item.index {
-        {%- for i, field := range union.Fields -%}
-        case {%d i %}:
-            {%- if field.t.IsTrueType() -%}
-                {%- if writeNeedsError -%}
+        w = basictl.NatWrite(w, _{%s= addBytes(union.wr.goGlobalName, false) %}[item.index].TLTag)
+        {%- if union.IsEnum -%}
+            {%- if writeNeedsError -%}
             return w, nil
-                {%- else -%}
-            return w
-                {%- endif -%}
             {%- else -%}
-        {%s= field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf( "item.value%s", field.goName), true,
-                formatNatArgs(nil, union.ElementNatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
+            return w
             {%- endif -%}
-        {%- endfor -%}
-    }
-        {%- if writeNeedsError -%}
-    return w, nil
         {%- else -%}
-    return w
+        switch item.index {
+            {%- for i, field := range union.Fields -%}
+            case {%d i %}:
+                {%- if field.t.IsTrueType() -%}
+                    {%- if writeNeedsError -%}
+                return w, nil
+                    {%- else -%}
+                return w
+                    {%- endif -%}
+                {%- else -%}
+            {%s= field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf( "item.value%s", field.goName), true,
+                    formatNatArgs(nil, union.ElementNatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
+                {%- endif -%}
+            {%- endfor -%}
+        }
+            {%- if writeNeedsError -%}
+        return w, nil
+            {%- else -%}
+        return w
+            {%- endif -%}
         {%- endif -%}
     {%- endif -%}
 }
-{%- endif -%}
 {%- if union.wr.gen.options.GenerateTL2() -%}
 
 {%- if union.wr.HasTL2() -%}

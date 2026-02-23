@@ -126,17 +126,17 @@ func (trw *TypeRWUnion) typeRepairMasksCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	if bare {
-		panic("trying to write bare union, please report TL which caused this")
+	if bare && !trw.wr.originateFromTL2 {
+		panic(fmt.Errorf("trying to write bare union %s, please report TL which caused this", trw.wr.goCanonicalName))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(false), joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWUnion) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	if bare {
-		panic("trying to write bare union, please report TL which caused this")
+	if bare && !trw.wr.originateFromTL2 {
+		panic(fmt.Errorf("trying to read bare union %s, please report TL which caused this", trw.wr.goCanonicalName))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(false), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

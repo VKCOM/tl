@@ -52,8 +52,9 @@ type Field struct {
 	commentBefore string
 	commentRight  string
 
-	bare bool // for TL1 only, false for TL2
-	//recursive bool
+	// though all TL2 types are bare, we still set Boxed for unions, because we want
+	// vector<Union> and []Union to reference the same generated type
+	bare bool
 
 	fieldMask *ActualNatArg
 	bitNumber uint32 // only used when fieldMask != nil
@@ -231,7 +232,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
-		fieldIns, err := k.getInstanceTL2(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL2(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
 		}
@@ -239,6 +240,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			owner: ins,
 			name:  fieldDef.Name,
 			ins:   fieldIns,
+			bare:  fieldBare,
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
