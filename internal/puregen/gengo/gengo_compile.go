@@ -90,6 +90,9 @@ func (gen *genGo) addTypeWrappers() error {
 
 		// TODO - we'd like to change this to fileName = goCanonicalName
 		fileName := myWrapper.tlName
+		for len(fileName.Name) != 0 && fileName.Name[0] == '_' {
+			fileName.Name = fileName.Name[1:]
+		}
 		fileName.Name = utils.ToLowerFirst(fileName.Name)
 		myWrapper.fileName = fileName.String()
 
