@@ -675,7 +675,7 @@ func (item *CurlRequest) writeResultTL2(w []byte, sizes []int, optimizeEmpty boo
 	return w, sizes, currentSize
 }
 
-func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CurlResponse) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -688,7 +688,7 @@ func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, 
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
-	return w, nil
+	return w
 }
 
 func (item *CurlRequest) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *CurlResponse) error {
@@ -738,8 +738,7 @@ func (item *CurlRequest) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext,
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item *CurlRequest) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
@@ -765,8 +764,7 @@ func (item *CurlRequest) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteCont
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item CurlRequest) String() string {

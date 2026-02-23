@@ -752,6 +752,9 @@ func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte,
 
 {%- if struct_.wr.HasTL2() -%}
 func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *{%s= retArg %}) (_ []byte, err error) {
+{%- if struct_.pureTypeStruct.IsResultAlias() -%}
+    return ret.ReadTL2(r, ctx)
+{%- else -%}
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if currentSize == 0 {
@@ -781,8 +784,10 @@ func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
         {%s= struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true) %}
     }
     return r, nil
+{%- endif -%}
 }
 
+{%- if !struct_.pureTypeStruct.IsResultAlias() -%}
 func (item *{%s= goName %}) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret {%s= retArg %}) ([]int, int) {
     sizes = append(sizes, {%v= someHash(goName) %})
     sizePosition := len(sizes)
@@ -840,8 +845,12 @@ func (item *{%s= goName %}) writeResultTL2(w []byte, sizes []int, optimizeEmpty 
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, currentSize
 }
+{%- endif -%}
 
-func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret {%s= retArg %}) (_ []byte, err error) {
+func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret {%s= retArg %}) []byte {
+{%- if struct_.pureTypeStruct.IsResultAlias() -%}
+    return ret.WriteTL2(w, ctx)
+{%- else -%}
     var sizes, sizes2 []int
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
@@ -854,7 +863,8 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
-    return w, nil
+    return w
+{%- endif -%}
 }
 
 {%- endif -%}
@@ -912,8 +922,7 @@ func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteConte
   if r, err = item.ReadResult(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultTL2(w, tctx, ret)
-  return r, w, err
+  return r, item.WriteResultTL2(w, tctx, ret), nil
   {%- endif -%}
 }
 
@@ -951,8 +960,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteC
   if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultTL2(w, tctx, ret)
-  return r, w, err
+  return r, item.WriteResultTL2(w, tctx, ret), nil
   {%- endif -%}
 }
 {%- endif -%}

@@ -338,7 +338,7 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		ref := k.addInstance(canonicalName, kt)
 		if !kt.combTL2.IsFunction {
 			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
-				return nil, false, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+				return nil, false, fmt.Errorf("internal error - typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 			}
 			ref.ins, err = k.createOrdinaryType(canonicalName, kt, trTL1, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
 				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
@@ -347,17 +347,36 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 			}
 			return ref, bare, nil
 		}
-		// TODO - should we check template arguments, as above?
 		funcDecl := kt.combTL2.FuncDecl
-		resultTlName := kt.canonicalName
-		resultTlName.Name += "__Result"
-		resultType, err := k.createOrdinaryType(canonicalName, kt, trTL1, resultTlName, 0, funcDecl.ReturnType, nil, nil)
-		if err != nil {
-			return nil, false, err
+		var resultType TypeInstance
+		resultAlias := false
+		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
+			resultAlias = true
+			ins, _, err := k.getInstanceTL2(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = ins.ins // function cannot be referenced so no recursion
+		} else if funcDecl.ReturnType.IsTypeAlias {
+			resultAlias = true
+			ins, _, err := k.getInstanceTL2(funcDecl.ReturnType.TypeAlias, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = ins.ins // function cannot be referenced so no recursion
+		} else {
+			fieldReturnType := funcDecl.ReturnType.StructType.ConstructorFields[0].Type
+			// this is special case because we want no diff during migration to TL2,
+			// and all TL1 functions return exactly this kind of result
+			ins, _, err := k.getInstanceTL2(fieldReturnType, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = ins.ins // function cannotbe referenced so no recursion
 		}
 		ref.ins, err = k.createStruct(canonicalName, kt, trTL1, kt.canonicalName, funcDecl.Magic, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
-			resultType)
+			resultType, resultAlias)
 		if err != nil {
 			return nil, false, err
 		}
@@ -382,6 +401,6 @@ func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, trTL1
 			tlName, tlTag,
 			true, definition.TypeAlias, definition.StructType.ConstructorFields,
 			leftArgs, actualArgs,
-			false, 0, nil)
+			false, 0, nil, false)
 	}
 }

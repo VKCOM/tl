@@ -1595,12 +1595,17 @@ func (item *`)
 		qw422016.N().S(`) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
-    currentSize := 0
+`)
+		if struct_.pureTypeStruct.IsResultAlias() {
+			qw422016.N().S(`    return ret.ReadTL2(r, ctx)
+`)
+		} else {
+			qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if currentSize == 0 {
         `)
-		qw422016.N().S(struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true))
-		qw422016.N().S(`
+			qw422016.N().S(struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true))
+			qw422016.N().S(`
         return r, nil
     }
     if len(r) < currentSize {
@@ -1622,24 +1627,28 @@ func (item *`)
 
     if block & 2 != 0 {
         `)
-		qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true))
-		qw422016.N().S(`
+			qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true))
+			qw422016.N().S(`
     } else {
         `)
-		qw422016.N().S(struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true))
-		qw422016.N().S(`
+			qw422016.N().S(struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true))
+			qw422016.N().S(`
     }
     return r, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret `)
-		qw422016.N().S(retArg)
-		qw422016.N().S(`) ([]int, int) {
+`)
+		if !struct_.pureTypeStruct.IsResultAlias() {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret `)
+			qw422016.N().S(retArg)
+			qw422016.N().S(`) ([]int, int) {
     sizes = append(sizes, `)
-		qw422016.N().V(someHash(goName))
-		qw422016.N().S(`)
+			qw422016.N().V(someHash(goName))
+			qw422016.N().S(`)
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -1647,8 +1656,8 @@ func (item *`)
     lastUsedByte := 0
     var sz int
     `)
-		qw422016.N().S(struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false))
-		qw422016.N().S(`
+			qw422016.N().S(struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false))
+			qw422016.N().S(`
         lastUsedByte = currentSize
     }
     if lastUsedByte < currentSize {
@@ -1662,28 +1671,28 @@ func (item *`)
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`Unused(sz)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(sz)
     return sizes, currentSize
 }
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret `)
-		qw422016.N().S(retArg)
-		qw422016.N().S(`) ([]byte, []int, int) {
+			qw422016.N().S(goName)
+			qw422016.N().S(`) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret `)
+			qw422016.N().S(retArg)
+			qw422016.N().S(`) ([]byte, []int, int) {
     if sizes[0] != `)
-		qw422016.N().V(someHash(goName))
-		qw422016.N().S(` {
+			qw422016.N().V(someHash(goName))
+			qw422016.N().S(` {
         panic("tl2: tag mismatch between calculate and write")
     }
     currentSize := sizes[1]
     sizes = sizes[2:]
 
     if optimizeEmpty && currentSize == 0 {`)
-		/* CalculateLayout was called with optimizeEmpty and object turned out empty */
+			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-		qw422016.N().S(`        return w, sizes, 0
+			qw422016.N().S(`        return w, sizes, 0
     }
     w = basictl.TL2WriteSize(w, currentSize)
     if currentSize == 0 {
@@ -1696,8 +1705,8 @@ func (item *`)
     w = append(w, 0)
 
     `)
-		qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false))
-		qw422016.N().S(`
+			qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false))
+			qw422016.N().S(`
         currentBlock |= 2
     }
     if currentBlockPosition < len(w) {
@@ -1707,17 +1716,24 @@ func (item *`)
         panic("tl2: mismatch between calculate and write")
     }
     `)
-		qw422016.N().S(struct_.wr.gen.InternalPrefix())
-		qw422016.N().S(`Unused(sz)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(sz)
     return w, sizes, currentSize
 }
-
+`)
+		}
+		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret `)
 		qw422016.N().S(retArg)
-		qw422016.N().S(`) (_ []byte, err error) {
-    var sizes, sizes2 []int
+		qw422016.N().S(`) []byte {
+`)
+		if struct_.pureTypeStruct.IsResultAlias() {
+			qw422016.N().S(`    return ret.WriteTL2(w, ctx)
+`)
+		} else {
+			qw422016.N().S(`    var sizes, sizes2 []int
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
@@ -1729,8 +1745,10 @@ func (item *`)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
-    return w, nil
-}
+    return w
+`)
+		}
+		qw422016.N().S(`}
 
 `)
 	}
@@ -1833,8 +1851,7 @@ func (item *`)
   if r, err = item.ReadResult(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultTL2(w, tctx, ret)
-  return r, w, err
+  return r, item.WriteResultTL2(w, tctx, ret), nil
 `)
 		}
 		qw422016.N().S(`}
@@ -1905,8 +1922,7 @@ func (item *`)
   if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultTL2(w, tctx, ret)
-  return r, w, err
+  return r, item.WriteResultTL2(w, tctx, ret), nil
 `)
 		}
 		qw422016.N().S(`}
