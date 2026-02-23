@@ -55,12 +55,15 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, fieldType *TypeInstanceRef) TypeInstance {
+func (k *Kernel) createArray(canonicalName string, tip *KernelType, resolvedType tlast.TypeRef,
+	isTuple bool, count uint32, fieldType *TypeInstanceRef, fieldBare bool) TypeInstance {
 	if fieldType.ins.IsBit() {
 		ins := &TypeInstanceArrayBit{
 			TypeInstanceCommon: TypeInstanceCommon{
 				canonicalName: canonicalName,
-				tip:           nil, // TODO - arrays have no corresponding type
+				tip:           tip,
+				rt:            resolvedType,
+				argNamespace:  "", // k.getArgNamespace(resolvedType), // should be empty
 			},
 			isTuple: isTuple,
 			count:   int(count),
@@ -70,7 +73,9 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			tip:           nil, // TODO - arrays have no corresponding type
+			tip:           tip,
+			rt:            resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple: isTuple,
 		count:   count,
@@ -78,7 +83,7 @@ func (k *Kernel) createArray(canonicalName string, isTuple bool, count uint32, f
 	ins.field = Field{
 		owner: ins,
 		ins:   fieldType,
-		bare:  true,
+		bare:  fieldBare,
 	}
 	return ins
 }

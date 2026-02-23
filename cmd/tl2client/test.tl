@@ -85,28 +85,14 @@ videoAdsService.checkResponseError#83eb9781
     error:                    string
     = videoAdsService.CheckResponse;
 
-//---functions---
-//
-//@read
-//videoAdsService.checkMany#daf58753
-//    fields_mask:              #
-//    params:                   vector<videoAdsService.checkParams>
-//    device_id:                fields_mask.0?string
-//    platform:                 fields_mask.1?string
-//    api_version:              fields_mask.2?int
+---functions---
+
+@read
+videoAdsService.checkMany#daf58753
+    fields_mask:              #
+    params:                   vector<videoAdsService.checkParams>
+    device_id:                fields_mask.0?string
+    platform:                 fields_mask.1?string
+    api_version:              fields_mask.2?int
 //    user_info:                fields_mask.3?%videoUserInfo.info
-//    = Vector videoAdsService.CheckResponse;
-
-
-benchmarks.vruposition#32792c04 fields_mask:#
-    commit_bit:         fields_mask.0?true // we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
-    file_offset:        long
-    seq_number:         fields_mask.14?long // incremented after each block.
-= benchmarks.VruPosition;
-
-benchmarks.vrutoytopLevelUnionBig
-    next_positions:(vector benchmarks.vruposition)
-= benchmarks.VrutoyTopLevelUnion;
-
-benchmarks.vrutoytopLevelUnionEmpty
-= benchmarks.VrutoyTopLevelUnion;
+    = Vector videoAdsService.CheckResponse;

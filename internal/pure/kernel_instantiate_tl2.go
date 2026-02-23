@@ -267,20 +267,20 @@ func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, err
 	return rt, nil
 }
 
-func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstanceRef, error) {
+func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstanceRef, bool, error) {
 	trTL1, err := k.convertTL2TypeRefToTL1(tr)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
-	canonicalName, _, err := k.canonicalStringTL1(trTL1, true)
+	canonicalName, bare, err := k.canonicalStringTL1(trTL1, true)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	if ref, ok := k.instances[canonicalName]; ok {
-		return ref, nil
+		return ref, bare, nil
 	}
 	if !create {
-		return nil, fmt.Errorf("internal error: instance %s must exist", canonicalName)
+		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
 	if tr.IsBracket() {
 		log.Printf("creating a bracket instance of type %s", canonicalName)
@@ -288,30 +288,41 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 		ref := k.addInstance(canonicalName, k.brackets)
 
-		elemInstance, err := k.getInstanceTL2(tr.BracketType.ArrayType, true)
+		fieldInstance, fieldBare, err := k.getInstanceTL2(tr.BracketType.ArrayType, true)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 		if tr.BracketType.HasIndex {
 			if tr.BracketType.IndexType.IsNumber {
 				// tuple
-				ref.ins = k.createArray(canonicalName, true, tr.BracketType.IndexType.Number, elemInstance)
-				return ref, nil
+				kt, ok := k.tips["__tuple"]
+				if !ok {
+					return ref, false, fmt.Errorf("internal error - built in tuple type not found")
+				}
+				ref.ins = k.createArray(canonicalName, kt, trTL1, true, tr.BracketType.IndexType.Number, fieldInstance, fieldBare)
+				return ref, bare, nil
 			}
 			// dict
-			keyInstance, err := k.getInstanceTL2(tr.BracketType.IndexType.Type, true)
+			keyInstance, keyBare, err := k.getInstanceTL2(tr.BracketType.IndexType.Type, true)
 			if err != nil {
-				return nil, err
+				return nil, false, err
+			}
+			if !keyBare {
+				return nil, false, fmt.Errorf("internal error dict %s key type is not bare", canonicalName)
 			}
 			if !keyInstance.ins.GoodForMapKey() {
-				return nil, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
+				return nil, false, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
 			}
-			ref.ins = k.createDict(canonicalName, keyInstance, elemInstance)
-			return ref, nil
+			ref.ins = k.createDict(canonicalName, keyInstance, fieldInstance, fieldBare)
+			return ref, bare, nil
 		}
 		// vector
-		ref.ins = k.createArray(canonicalName, false, 0, elemInstance)
-		return ref, nil
+		kt, ok := k.tips["__vector"]
+		if !ok {
+			return ref, false, fmt.Errorf("internal error - built in vector type not found")
+		}
+		ref.ins = k.createArray(canonicalName, kt, trTL1, false, 0, fieldInstance, fieldBare)
+		return ref, bare, nil
 	}
 	// log.Printf("creating an instance of type %s", canonicalName)
 	// must store pointer before children GetInstanceTL2() terminates recursion
@@ -319,7 +330,7 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 	someType := tr.SomeType
 	kt, ok := k.tips[someType.Name.String()]
 	if !ok {
-		return nil, someType.PRName.BeautifulError(fmt.Errorf("type %s does not exist", someType.Name))
+		return nil, false, someType.PRName.BeautifulError(fmt.Errorf("type %s does not exist", someType.Name))
 	}
 	if kt.originTL2 {
 		// must store pointer before children GetInstanceTL2() terminates recursion
@@ -327,14 +338,14 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		ref := k.addInstance(canonicalName, kt)
 		if !kt.combTL2.IsFunction {
 			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
-				return nil, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+				return nil, false, fmt.Errorf("typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 			}
 			ref.ins, err = k.createOrdinaryType(canonicalName, kt, trTL1, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
 				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
 			if err != nil {
-				return nil, err
+				return nil, false, err
 			}
-			return ref, nil
+			return ref, bare, nil
 		}
 		// TODO - should we check template arguments, as above?
 		funcDecl := kt.combTL2.FuncDecl
@@ -342,18 +353,17 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		resultTlName.Name += "__Result"
 		resultType, err := k.createOrdinaryType(canonicalName, kt, trTL1, resultTlName, 0, funcDecl.ReturnType, nil, nil)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 		ref.ins, err = k.createStruct(canonicalName, kt, trTL1, kt.canonicalName, funcDecl.Magic, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
 			resultType)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
-		return ref, nil
+		return ref, bare, nil
 	}
-	ref, _, err := k.getInstanceTL1(trTL1, create)
-	return ref, err
+	return k.getInstanceTL1(trTL1, create)
 }
 
 // alias || fields || union
