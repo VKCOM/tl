@@ -217,7 +217,29 @@ func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, err
 				return rt, nil
 			}
 			// dict
-			panic("TODO - dict")
+			keyType, err := k.convertTL2TypeRefToTL1(tr.BracketType.IndexType.Type)
+			if err != nil {
+				return tlast.TypeRef{}, err
+			}
+			rt := tlast.TypeRef{
+				Type:   tlast.Name{Name: "__dict2"},
+				Args:   nil,
+				Bare:   false,
+				PR:     tr.BracketType.PR,
+				PRArgs: tr.BracketType.PR, // TODO
+				// OriginalArgumentName: , TODO
+			}
+			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+				IsArith: false,
+				T:       keyType,
+				// SourceField: tlast.CombinatorField{}, // TODO
+			})
+			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+				IsArith: false,
+				T:       elemType,
+				// SourceField: tlast.CombinatorField{}, // TODO
+			})
+			return rt, nil
 		}
 		// vector
 		rt := tlast.TypeRef{
@@ -308,6 +330,10 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 				return ref, bare, nil
 			}
 			// dict
+			kt, ok := k.tips["__dict2"]
+			if !ok {
+				return ref, false, fmt.Errorf("internal error - built in dict2 type not found")
+			}
 			keyInstance, keyBare, err := k.getInstanceTL2(tr.BracketType.IndexType.Type, true)
 			if err != nil {
 				return nil, false, err
@@ -318,7 +344,10 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 			if !keyInstance.ins.GoodForMapKey() {
 				return nil, false, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
 			}
-			ref.ins = k.createDict(canonicalName, keyInstance, fieldInstance, fieldBare)
+			ref.ins, err = k.createDict(canonicalName, kt, trTL1, kt.combTL1[0].TemplateArguments, trTL1.Args, keyInstance, fieldInstance)
+			if err != nil {
+				return nil, false, err
+			}
 			return ref, bare, nil
 		}
 		// vector
