@@ -22,91 +22,48 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
 true = True; // this can be used as void type and serialized to empty array in PHP
 
-videoCommon.fullVideoID#b45b85e1
-    fields_mask:    #
-    video_id:       fields_mask.0?int
-    owner_id:       fields_mask.1?long
-= videoCommon.FullVideoID;
+map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
 
-videoAdsService.checkParams#6742a1bb
-    fields_mask:              #
-//    fields:                   fields_mask.0?videoAdsService.checkFields
-    full_video_id:            fields_mask.1?videoCommon.fullVideoID
-    user_id:                  fields_mask.2?long
-    is_child_account:         fields_mask.3?true
-    = videoAdsService.CheckParams;
+statshouseApi.seriesMeta#5c2bf286 {query_fields_mask:#} fields_mask:#
+    time_shift: long
+    tags: %(Dictionary string)
+    // what: fields_mask.1?statshouseApi.Function
+    name: query_fields_mask.4?string
+    color: query_fields_mask.5?string
+    total: query_fields_mask.6?int
+    max_hosts: query_fields_mask.7?%(Vector string)
+    = statshouseApi.SeriesMeta query_fields_mask;
 
-videoAdsService.usedType x:int = videoAdsService.UsedType;
-
-videoAdsService.user
-    x:pair<vector<videoAdsService.usedType>, int>
-    y:Pair<Vector<videoAdsService.usedType>, int>
-   = videoAdsService.User;
-
-videoAdsService.snackbarEventTypeClosed#d5f13be8     = videoAdsService.SnackbarEventType;
-videoAdsService.snackbarEventTypeSubscribed#052dccb0 = videoAdsService.SnackbarEventType;
-
-//videoUserInfo.info#78e87a2f
-//    fields_mask:            #
-//    user_id:                long
-//    active_subscription:    fields_mask.0?true
-//    child_mode_active:      fields_mask.1?true
-//    is_child_account:       fields_mask.2?true
-//    is_vk_edu:              fields_mask.3?true
-//= videoUserInfo.Info;
-//
-//videoAdsService.checkParams#6742a1bb
-//    fields_mask:              #
-//    fields:                   fields_mask.0?videoAdsService.checkFields
-//    full_video_id:            fields_mask.1?videoCommon.fullVideoID
-//    user_id:                  fields_mask.2?long
-//    = videoAdsService.CheckParams;
-//
-//
-//videoAdsService.checkFields#cf0cd638
-//    fields_mask:                  #
-//    can_show_banner:              fields_mask.0?true
-//    ads_disabled:                 fields_mask.1?true
-//    = videoAdsService.CheckFields;
-
-videoAdsService.checkResponseOk#87fad1f4
-    fields_mask:              #
-    can_show_banner:                  fields_mask.0?true
-    ads_disabled:                     fields_mask.1?true
-    = videoAdsService.CheckResponse;
-
-videoAdsService.checkResponseError#83eb9781
-    fields_mask:              #
-    error_code:               int
-    error:                    string
-    = videoAdsService.CheckResponse;
-
-videoAdsService.adsParams#173aa2ee
-    fields_mask:              #
-    // post:                     fields_mask.0?videoAdsService.fullPostID
-    is_embed:                 fields_mask.1?true
-    promo_post_hash:          fields_mask.2?string
-    trach_code:               fields_mask.3?string
-    device_id:                fields_mask.4?string
-    query_params:             fields_mask.5?dictionary<string>
-    = videoAdsService.AdsParams;
+statshouseApi.queryResponse#4487e49a {query_fields_mask:#}
+    fields_mask:#
+    //series: %(statshouseApi.Series)
+    series_meta: %(Vector %(statshouseApi.SeriesMeta query_fields_mask))
+    chunk_ids: %(Vector int)
+    total_time_points: int
+    response_id: long
+    excess_point_left: fields_mask.0?true
+    excess_point_right: fields_mask.1?true
+    = statshouseApi.GetQueryResponse query_fields_mask;
 
 ---functions---
 
-@read
-videoAdsService.checkMany#daf58753
-    fields_mask:              #
-    params:                   vector<videoAdsService.checkParams>
-    device_id:                fields_mask.0?string
-    platform:                 fields_mask.1?string
-    api_version:              fields_mask.2?int
-//    user_info:                fields_mask.3?%videoUserInfo.info
-    = Vector videoAdsService.CheckResponse;
+@kphp
+coreEmployees.checkRights#6f40742f
+    fields_mask:#
+    right_keys: (Vector string)
+    user_id: long
+    ip_address: fields_mask.0?string
+    api_id: fields_mask.1?long
+    is_api: fields_mask.2?true
+    is_internal_app: fields_mask.3?true
+    is_from_cron: fields_mask.4?true
+    performer_id: fields_mask.5?long
+  = Vector (Map string Bool);
+
 
 @readwrite
-videoAdsService.getByIds#cf03372f
-    fields_mask:  #
-//    model_params: fields_mask.0?%videoApi.GetByIdsParams
-    ads:          fields_mask.1?%videoAdsService.AdsParams
-    = Int;
+statshouseApi.getQuery#0c7349bb fields_mask:#
+    access_token: string
+    // query: %statshouseApi.Query
+    = statshouseApi.GetQueryResponse fields_mask;

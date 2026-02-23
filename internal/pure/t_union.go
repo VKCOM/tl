@@ -90,6 +90,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 			isTopLevel:    tip.isTopLevel,
 			rt:            trTL1,
 			argNamespace:  k.getArgNamespace(trTL1),
+			hasTL2:        true,
 		},
 		isEnum:       true,
 		variantNames: make([]string, len(def.Variants)),
@@ -147,6 +148,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
+			hasTL2:        false, // could be marked later
 		},
 		variantNames:   variantNames,
 		variantTypes:   make([]*TypeInstanceStruct, len(definition)),

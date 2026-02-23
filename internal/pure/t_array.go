@@ -55,38 +55,38 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createArray(canonicalName string, tip *KernelType, resolvedType tlast.TypeRef,
-	isTuple bool, count uint32, fieldType *TypeInstanceRef, fieldBare bool) TypeInstance {
-	if fieldType.ins.IsBit() {
-		ins := &TypeInstanceArrayBit{
-			TypeInstanceCommon: TypeInstanceCommon{
-				canonicalName: canonicalName,
-				tip:           tip,
-				rt:            resolvedType,
-				argNamespace:  "", // k.getArgNamespace(resolvedType), // should be empty
-			},
-			isTuple: isTuple,
-			count:   int(count),
-		}
-		return ins
-	}
-	ins := &TypeInstanceArray{
-		TypeInstanceCommon: TypeInstanceCommon{
-			canonicalName: canonicalName,
-			tip:           tip,
-			rt:            resolvedType,
-			argNamespace:  k.getArgNamespace(resolvedType),
-		},
-		isTuple: isTuple,
-		count:   count,
-	}
-	ins.field = Field{
-		owner: ins,
-		ins:   fieldType,
-		bare:  fieldBare,
-	}
-	return ins
-}
+//func (k *Kernel) createArray(canonicalName string, tip *KernelType, resolvedType tlast.TypeRef,
+//	isTuple bool, count uint32, fieldType *TypeInstanceRef, fieldBare bool) TypeInstance {
+//	if fieldType.ins.IsBit() {
+//		ins := &TypeInstanceArrayBit{
+//			TypeInstanceCommon: TypeInstanceCommon{
+//				canonicalName: canonicalName,
+//				tip:           tip,
+//				rt:            resolvedType,
+//				argNamespace:  "", // k.getArgNamespace(resolvedType), // should be empty
+//			},
+//			isTuple: isTuple,
+//			count:   int(count),
+//		}
+//		return ins
+//	}
+//	ins := &TypeInstanceArray{
+//		TypeInstanceCommon: TypeInstanceCommon{
+//			canonicalName: canonicalName,
+//			tip:           tip,
+//			rt:            resolvedType,
+//			argNamespace:  k.getArgNamespace(resolvedType),
+//		},
+//		isTuple: isTuple,
+//		count:   count,
+//	}
+//	ins.field = Field{
+//		owner: ins,
+//		ins:   fieldType,
+//		bare:  fieldBare,
+//	}
+//	return ins
+//}
 
 func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef,

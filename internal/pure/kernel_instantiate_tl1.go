@@ -337,6 +337,10 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceR
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
+	case tName == "__dict2":
+		// log.Printf("creating an instance of dictionary type %s", canonicalName)
+		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments, tr.Args, nil, nil)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1,
 			td.TemplateArguments, tr.Args)

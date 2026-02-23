@@ -361,15 +361,13 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 `)
 	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
-            tctx := basictl.TL2ReadContext{}
-			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 		} else {
 			resp.Body, err = args.ReadResult(resp.Body, ret)
 		}
 `)
 	} else if fun.wr.HasTL2() {
-		qw422016.N().S(`            tctx := basictl.TL2ReadContext{}
-			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
+		qw422016.N().S(`			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 `)
 	} else {
 		qw422016.N().S(`			resp.Body, err = args.ReadResult(resp.Body, ret)
