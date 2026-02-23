@@ -54,12 +54,15 @@ func (k *Kernel) typeCheckAliasFields(isTypeAlias bool, typeAlias tlast.TL2TypeR
 
 func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate) error {
 	if tr.IsBracket() {
-		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{Type: tr.BracketType.ArrayType}, leftArgs)
+		cat, err := k.typeCheckArgument(tlast.TL2TypeArgument{
+			Type: tr.BracketType.ArrayType,
+			PR:   tr.BracketType.PR,
+		}, leftArgs)
 		if err != nil {
 			return err
 		}
 		if !cat.IsType() {
-			return fmt.Errorf("bracket element type cannot be number")
+			return tr.BracketType.ArrayType.PR.BeautifulError(fmt.Errorf("array or dict element type cannot be constant number"))
 		}
 		if tr.BracketType.HasIndex {
 			_, err = k.typeCheckArgument(tr.BracketType.IndexType, leftArgs)
@@ -73,14 +76,14 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 	someType := tr.SomeType
 	kt, ok := k.tips[someType.Name.String()]
 	if !ok {
-		return fmt.Errorf("type %s does not exist", someType.Name)
+		return tr.SomeType.PRName.BeautifulError(fmt.Errorf("type %s does not exist", someType.Name))
 	}
 	if kt.originTL2 {
 		if kt.combTL2.IsFunction {
-			return fmt.Errorf("cannot reference function %s", someType.Name)
+			return tr.SomeType.PRName.BeautifulError(fmt.Errorf("cannot reference function %s", someType.Name))
 		}
 		if len(someType.Arguments) != len(kt.combTL2.TypeDecl.TemplateArguments) {
-			return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
+			return tr.PR.BeautifulError(fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments)))
 		}
 		for i, targ := range kt.combTL2.TypeDecl.TemplateArguments {
 			cat, err := k.typeCheckArgument(someType.Arguments[i], leftArgs)
@@ -88,24 +91,25 @@ func (k *Kernel) typeCheckTypeRef(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeT
 				return err
 			}
 			if targ.Category != cat {
-				return fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category)
+				return targ.PRCategory.BeautifulError(fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.Name, targ.Category))
 			}
 		}
 		return nil
 	}
 	if kt.combTL1[0].IsFunction {
-		return fmt.Errorf("cannot reference function %s", someType.Name)
+		return tr.SomeType.PRName.BeautifulError(fmt.Errorf("cannot reference function %s", someType.Name))
 	}
 	if len(someType.Arguments) != len(kt.combTL1[0].TemplateArguments) {
-		return fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL1[0].TemplateArguments), len(someType.Arguments))
+		return tr.PR.BeautifulError(fmt.Errorf("typeref %s must have %d template arguments, has %d", someType.String(), len(kt.combTL1[0].TemplateArguments), len(someType.Arguments)))
 	}
 	for i, targ := range kt.combTL1[0].TemplateArguments {
 		cat, err := k.typeCheckArgument(someType.Arguments[i], leftArgs)
 		if err != nil {
 			return err
 		}
-		if targ.IsNat != cat.IsNat() {
-			return fmt.Errorf("typeref %s argument %s wrong isNat, must be %v", someType.String(), targ.FieldName, targ.IsNat)
+		targCat := tlast.TL2TypeCategory{IsNatValue: targ.IsNat}
+		if targCat != cat {
+			return targ.PR.BeautifulError(fmt.Errorf("typeref %s argument %s wrong category, must be %s", someType.String(), targ.FieldName, targCat))
 		}
 	}
 	return nil

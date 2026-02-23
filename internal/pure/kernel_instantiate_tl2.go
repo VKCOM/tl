@@ -84,10 +84,15 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 		return tr, kt.functionCanNotBeReferencedError(someType.PRName)
 	}
 	if kt.canonicalName != tlast.Name(someType.Name) {
-		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must be to canonical name %s", kt.canonicalName))
+		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must use canonical name %s", kt.canonicalName))
 	}
 	if kt.builtinWrappedCanonicalName != "" {
-		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must be to built-in canonical name %s", kt.builtinWrappedCanonicalName))
+		// Int requires 2 hops to reach canonical name)
+		kt, ok = k.tips[kt.builtinWrappedCanonicalName]
+		if !ok {
+			return tr, someType.PRName.BeautifulError(fmt.Errorf("internal error: built-in wrapped type %s not found", kt.builtinWrappedCanonicalName))
+		}
+		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must use built-in canonical name %s", kt.canonicalName))
 	}
 
 	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original

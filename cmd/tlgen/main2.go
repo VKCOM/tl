@@ -282,6 +282,9 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 	}
 
+	//if opt.Language == "go" {
+	//	return fmt.Errorf("plesae run tl2gen, tlgen does not support go generation and will be deleted soon.")
+	//}
 	if opt.Language == "php" &&
 		opt.CreateTLSplitedFilesForEachNamespace &&
 		opt.CreateTLSplitedFilesForEachNamespaceFolder != "" {
