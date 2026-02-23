@@ -7,6 +7,7 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -236,11 +237,11 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 	for _, fieldDef := range constructorFields {
 		rt, err := k.resolveTypeTL2(fieldDef.Type, leftArgs, actualArgs)
 		if err != nil {
-			return nil, fmt.Errorf("fail to resolve type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
+			return nil, err
 		}
 		fieldIns, fieldBare, err := k.getInstanceTL2(rt, true)
 		if err != nil {
-			return nil, fmt.Errorf("fail to instantiate type of object %s field %s: %w", canonicalName, fieldDef.Name, err)
+			return nil, err
 		}
 		newField := Field{
 			owner: ins,
@@ -250,6 +251,11 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
+		}
+		if fieldDef.IsOptional && newField.ins.ins.IsBit() {
+			// we allow optional bit through aliases or template arguments,
+			// but we warn if used directly
+			return nil, fieldDef.PR.BeautifulError(errors.New("bit field cannot be explicitly marked optional (despite being optional void internally)"))
 		}
 		if fieldDef.IsOptional || newField.IsBit() {
 			maskBit := nextTL2MaskBit

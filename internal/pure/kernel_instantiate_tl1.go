@@ -162,6 +162,12 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 	if kt.isFunction {
 		return tr, nil, kt.functionCanNotBeReferencedError(tr.T.PR)
 	}
+	if _, ok := kt.tl1Names[tName]; !ok {
+		for good := range kt.tl1Names {
+			return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific, in TL1 please use %s instead", tName, good))
+		}
+		return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific and cannot be used from TL1", tName))
+	}
 	//tr.T.Args = append([]tlast.ArithmeticOrType{}, tr.T.Args...) // preserve original
 	if tr.T.Bare && kt.builtinWrappedCanonicalName != "" {
 		tName = kt.builtinWrappedCanonicalName
@@ -170,7 +176,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 			return tr, nil, tr.T.PR.BeautifulError(fmt.Errorf("internal error: built-in wrapped type %s not found", tName))
 		}
 		tr.T.Type = tlast.Name{Name: tName}
-		tr.T.Bare = false // not required
+		tr.T.Bare = false // not required and should not change canonical type
 		//if tName == "tuple" {
 		//	tr.T.Args[0], tr.T.Args[1] = tr.T.Args[1], tr.T.Args[0]
 		//}

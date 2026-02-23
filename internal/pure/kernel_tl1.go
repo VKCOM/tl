@@ -243,7 +243,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				kt.annotations = append(kt.annotations, m.Name)
 			}
 			if err := k.addTip(kt, cName.String(), ""); err != nil {
-				return fmt.Errorf("error adding function %s: %w", cName.String(), err)
+				return err
 			}
 			continue
 		}
@@ -302,7 +302,8 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			//	}
 			//} else {
 			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
-				return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+				//return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+				return err
 			}
 			//}
 			continue

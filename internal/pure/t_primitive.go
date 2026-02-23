@@ -90,7 +90,7 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 	}
 	kt.tl2Names[name] = struct{}{}
 	if tl1name != "" {
-		kt.tl1Names[name] = struct{}{}
+		kt.tl1Names[tl1name] = struct{}{}
 	}
 	ins.tip = kt
 	if _, ok := k.instances[name]; ok {

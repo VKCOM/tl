@@ -281,7 +281,7 @@ func (k *Kernel) Compile() error {
 			}
 		}
 		if err := k.addTip(kt, refName.String(), ""); err != nil {
-			return fmt.Errorf("error adding type %s: %w", refName, err)
+			return err
 		}
 	}
 	// type all declarations by comparing type ref with actual type definition
@@ -408,7 +408,7 @@ func (k *Kernel) Compile() error {
 				continue // instantiate templates on demand only
 			}
 			if _, _, err := k.getInstanceTL2(tr, true); err != nil {
-				return fmt.Errorf("error adding type %s: %w", tr.String(), err)
+				return err
 			}
 		}
 	}
