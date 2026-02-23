@@ -906,6 +906,60 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 
 					assert.Equal(t, `// StrValue`, comb.TypeDecl.Type.StructType.UnionType.Variants[1].CommentBefore)
 				})
+
+				t.Run("multi union before comments", func(t *testing.T) {
+					it, _ := setupIterator(`test.union = 
+    // tlgen:tl1name:"test.unionClosed"
+    | Closed 
+    // tlgen:tl1name:"test.unionSubscribed"
+    | Subscribed ;`)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.Nil(t, err)
+					assert.True(t, newIt.expect(eof))
+					assert.True(t, comb.TypeDecl.Type.StructType.IsUnionType)
+					assert.Equal(t, 2, len(comb.TypeDecl.Type.StructType.UnionType.Variants))
+
+					variants := comb.TypeDecl.Type.StructType.UnionType.Variants
+
+					assert.Equal(t, variants[0].CommentBefore, `// tlgen:tl1name:"test.unionClosed"`)
+					assert.Equal(t, variants[1].CommentBefore, `// tlgen:tl1name:"test.unionSubscribed"`)
+				})
+
+				t.Run("multi union before comments (variant has fields)", func(t *testing.T) {
+					it, _ := setupIterator(`test.union = 
+    // tlgen:tl1name:"test.unionClosed"
+    | Closed x:int y:int
+    // tlgen:tl1name:"test.unionSubscribed"
+    | Subscribed ;`)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.Nil(t, err)
+					assert.True(t, newIt.expect(eof))
+					assert.True(t, comb.TypeDecl.Type.StructType.IsUnionType)
+					assert.Equal(t, 2, len(comb.TypeDecl.Type.StructType.UnionType.Variants))
+
+					variants := comb.TypeDecl.Type.StructType.UnionType.Variants
+
+					assert.Equal(t, variants[0].CommentBefore, `// tlgen:tl1name:"test.unionClosed"`)
+					assert.Equal(t, variants[1].CommentBefore, `// tlgen:tl1name:"test.unionSubscribed"`)
+				})
+
+				t.Run("multi union before comments (variant is alias)", func(t *testing.T) {
+					it, _ := setupIterator(`test.union = 
+    // tlgen:tl1name:"test.unionClosed"
+    | Closed int
+    // tlgen:tl1name:"test.unionSubscribed"
+    | Subscribed ;`)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.Nil(t, err)
+					assert.True(t, newIt.expect(eof))
+					assert.True(t, comb.TypeDecl.Type.StructType.IsUnionType)
+					assert.Equal(t, 2, len(comb.TypeDecl.Type.StructType.UnionType.Variants))
+
+					variants := comb.TypeDecl.Type.StructType.UnionType.Variants
+
+					assert.Equal(t, variants[0].CommentBefore, `// tlgen:tl1name:"test.unionClosed"`)
+					assert.Equal(t, variants[1].CommentBefore, `// tlgen:tl1name:"test.unionSubscribed"`)
+				})
 			})
 		})
 	})

@@ -501,7 +501,6 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 		// upper element out
 		copyRestTokens := restTokens
 		if copyRestTokens.checkToken(semiColon) || copyRestTokens.checkToken(verticalBar) {
-			restTokens = copyRestTokens
 			result.IsTypeAlias = false
 		} else {
 			var savedRestTokens = restTokens
