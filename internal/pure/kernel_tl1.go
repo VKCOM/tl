@@ -118,6 +118,34 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 	return typ.Construct.NamePR.BeautifulError(fmt.Errorf("built-in wrapper must have constructor name %s equal to some built-in type", typ.Construct.Name.String()))
 }
 
+// exclamation marker is not actually a template at all, "!X" is simply reference to interface RpcFunction,
+// so we remove template argument from the list
+// @any rpcProxy.diagonal {X:Type} query:!X = Vector (Maybe X);
+func (k *Kernel) checkExclamationWrapper(typ *tlast.Combinator) (bool, []tlast.TemplateArgument, error) {
+	exclPos := -1
+	for i, field := range typ.Fields {
+		if field.Excl {
+			if exclPos != -1 {
+				return false, nil, field.PR.BeautifulError(errors.New("!X field must be defined only once"))
+			}
+			if !purelegacy.EnableExclamation(typ.Construct.Name.String()) {
+				return false, nil, field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
+			}
+			if field.IsRepeated || field.Mask != nil {
+				return false, nil, field.PR.BeautifulError(errors.New("!X field must not be repeated or have fields mask"))
+			}
+			if len(typ.TemplateArguments) == 0 || field.FieldType.String() != typ.TemplateArguments[len(typ.TemplateArguments)-1].FieldName {
+				return false, nil, field.PR.BeautifulError(errors.New("!X field must reference last template argument"))
+			}
+			exclPos = i
+		}
+	}
+	if exclPos == -1 {
+		return false, typ.TemplateArguments, nil
+	}
+	return true, typ.TemplateArguments[:len(typ.TemplateArguments)-1], nil
+}
+
 func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) error {
 	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
@@ -138,11 +166,6 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			boolCombinators = append(boolCombinators, typ)
 			continue
 		}
-		for _, field := range typ.Fields {
-			if field.Excl && !purelegacy.EnableExclamation(typ.Construct.Name.String()) {
-				return field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
-			}
-		}
 		conName := typ.Construct.Name.String()
 		if col, ok := allConstructors[conName]; ok {
 			// typeA = TypeA;
@@ -155,23 +178,33 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 		if _, ok := namespaceTL1SeeHere[typ.Construct.Name.Namespace]; !ok {
 			namespaceTL1SeeHere[typ.Construct.Name.Namespace] = typ.Construct.NamePR.BeautifulError(errSeeHere)
 		}
+		_, targs, err := k.checkExclamationWrapper(typ)
+		if err != nil {
+			return err
+		}
 		if !typ.IsFunction {
 			if _, ok := namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace]; !ok {
 				namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace] = typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			}
 			typeName := typ.TypeDecl.Name.String()
-			if len(typ.TemplateArguments) > len(typ.TypeDecl.Arguments) {
+
+			// TODO - remove after ReqResult removed from combined.tl
+			if conName == "_" && typeName != "ReqResult" {
+				return typ.Construct.NamePR.BeautifulError(fmt.Errorf("constructor name _ is allowed only for legacy ReqResult wrapper, not for type %s", typeName))
+			}
+
+			if len(targs) > len(typ.TypeDecl.Arguments) {
 				// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X; <- bad
-				arg := typ.TemplateArguments[len(typ.TypeDecl.Arguments)]
+				arg := targs[len(typ.TypeDecl.Arguments)]
 				return typ.TypeDecl.PR.CollapseToEnd().BeautifulError(fmt.Errorf("type declaration %q is missing template argument %q here", typeName, arg.FieldName))
 			}
-			if len(typ.TemplateArguments) < len(typ.TypeDecl.Arguments) {
+			if len(targs) < len(typ.TypeDecl.Arguments) {
 				// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X Y Y; <- bad
-				arg := typ.TypeDecl.Arguments[len(typ.TemplateArguments)]
-				pr := typ.TypeDecl.ArgumentsPR[len(typ.TemplateArguments)]
+				arg := typ.TypeDecl.Arguments[len(targs)]
+				pr := typ.TypeDecl.ArgumentsPR[len(targs)]
 				return pr.BeautifulError(fmt.Errorf("type declaration %q has excess template argument %q here", typeName, arg))
 			}
-			for j, t := range typ.TemplateArguments {
+			for j, t := range targs {
 				if t.FieldName != typ.TypeDecl.Arguments[j] {
 					// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs Y X;   <- bad
 					pr := typ.TypeDecl.ArgumentsPR[j]
@@ -186,11 +219,11 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			}
 			typeDescriptors[typeName] = append(typeDescriptors[typeName], typ)
 		} else {
-			for _, t := range typ.TemplateArguments {
-				if t.IsNat {
-					// @read funWithArg {fields_mask: #} => True;
-					return t.PR.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
-				}
+			for _, t := range targs {
+				//if t.IsNat {
+				// @read funWithArg {fields_mask: #} => True;
+				return t.PR.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
+				//}
 				// TODO - sort out things with rpc wrapping later which has a form
 				// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
 			}
@@ -254,6 +287,10 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 		delete(typeDescriptors, comb.TypeDecl.Name.String())
 		tName := typ[0].TypeDecl.Name
 		cName := typ[0].Construct.Name
+		anyConstructorHasArgs := false // for !X wrappers not all of variants must have it
+		for _, t := range typ {
+			anyConstructorHasArgs = anyConstructorHasArgs || len(t.TemplateArguments) != 0
+		}
 		if len(typ) == 1 {
 			if typ[0].IsFunction {
 				return fmt.Errorf("internal error - function %q must not be in type descriptors", cName)
@@ -279,7 +316,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				originTL2:      false,
 				combTL1:        typ,
 				instances:      map[string]*TypeInstanceRef{},
-				isTopLevel:     len(typ[0].TemplateArguments) == 0,
+				isTopLevel:     !anyConstructorHasArgs,
 				tl1Names:       map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				tl2Names:       map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				canonicalName:  cName,
@@ -315,7 +352,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			originTL2:      false,
 			combTL1:        typ,
 			instances:      map[string]*TypeInstanceRef{},
-			isTopLevel:     len(typ[0].TemplateArguments) == 0,
+			isTopLevel:     !anyConstructorHasArgs,
 			tl1Names:       map[string]struct{}{tName.String(): {}},
 			tl2Names:       map[string]struct{}{tName.String(): {}},
 			canonicalName:  tName,
@@ -399,25 +436,29 @@ func (k *Kernel) checkUnionElementsCompatibility(types []*tlast.Combinator) erro
 	}
 	base := types[0]
 	for _, typ := range types[1:] {
+
+		_, baseTarg, _ := k.checkExclamationWrapper(base)
+		_, typTarg, _ := k.checkExclamationWrapper(base)
+
 		cur := typ.Construct.Name.String()
-		if len(typ.TemplateArguments) < len(base.TemplateArguments) {
-			baseArg := base.TemplateArguments[len(typ.TemplateArguments)]
+		if len(typTarg) < len(baseTarg) {
+			baseArg := baseTarg[len(typTarg)]
 			// unionArgs2 {A:Type} {B:#} a:A = UnionArgs A B;
 			// unionArgs1 {X:Type} a:X = UnionArgs X;
 			e1 := typ.TemplateArgumentsPR.CollapseToEnd().BeautifulError(fmt.Errorf("union constructor %q has missing argument %q here", cur, baseArg.FieldName))
 			e2 := baseArg.PR.BeautifulError(errSeeHere)
 			return tlast.BeautifulError2(e1, e2)
 		}
-		if len(typ.TemplateArguments) > len(base.TemplateArguments) {
-			typArg := typ.TemplateArguments[len(base.TemplateArguments)]
+		if len(typTarg) > len(baseTarg) {
+			typArg := typTarg[len(baseTarg)]
 			// unionArgs1 {X:Type} a:X = UnionArgs X;
 			// unionArgs2 {A:Type} {B:#} a:A = UnionArgs A B;
 			e1 := typArg.PR.BeautifulError(fmt.Errorf("union constructor %q has excess argument %q here", cur, typArg.FieldName))
 			e2 := base.TemplateArgumentsPR.CollapseToEnd().BeautifulError(errSeeHere)
 			return tlast.BeautifulError2(e1, e2)
 		}
-		for i, typArg := range typ.TemplateArguments {
-			baseArg := base.TemplateArguments[i]
+		for i, typArg := range typTarg {
+			baseArg := baseTarg[i]
 			// unionArgs1 {X:Type} {Y:#} a:X = UnionArgs X Y;
 			// unionArgs2 {A:Type} {B:Type} a:A = UnionArgs A B;
 			// We cannot support this, because resolveTypeTL2 replaces parameter names into names of first union field

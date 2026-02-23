@@ -54,6 +54,9 @@ func EnableExclamation(conFullName string) bool {
 	if conFullName == "rpcInvokeReq" {
 		return true
 	}
+	if conFullName == "engine.query" {
+		return true
+	}
 	if conFullName == "engine.sendResponseTo" {
 		return true
 	}
@@ -205,6 +208,9 @@ func EnableWarningsUnionNameExactSkip(conFullName string) bool {
 		return true
 	}
 	if conFullName == "rpcReqResult" {
+		return true
+	}
+	if conFullName == "engine.query" {
 		return true
 	}
 	if conFullName == "storage.fileContent" {
