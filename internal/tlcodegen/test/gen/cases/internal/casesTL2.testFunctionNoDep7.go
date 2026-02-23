@@ -165,7 +165,7 @@ func (item *CasesTL2TestFunctionNoDep7) writeResultTL2(w []byte, sizes []int, op
 	return w, sizes, currentSize
 }
 
-func (item *CasesTL2TestFunctionNoDep7) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CasesTestAllDicts) (_ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep7) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CasesTestAllDicts) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -178,7 +178,7 @@ func (item *CasesTL2TestFunctionNoDep7) WriteResultTL2(w []byte, ctx *basictl.TL
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
-	return w, nil
+	return w
 }
 
 func (item *CasesTL2TestFunctionNoDep7) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *CasesTestAllDicts) error {
@@ -228,8 +228,7 @@ func (item *CasesTL2TestFunctionNoDep7) ReadResultWriteResultTL2(tctx *basictl.T
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item *CasesTL2TestFunctionNoDep7) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
@@ -255,8 +254,7 @@ func (item *CasesTL2TestFunctionNoDep7) ReadResultJSONWriteResultTL2(tctx *basic
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item CasesTL2TestFunctionNoDep7) String() string {

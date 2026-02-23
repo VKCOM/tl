@@ -107,7 +107,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		}
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
 			tlName, 0,
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil)
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil, false)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}

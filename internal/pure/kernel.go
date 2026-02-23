@@ -208,6 +208,18 @@ func (k *Kernel) AddFileTL2(file string) error {
 	return nil
 }
 
+func (k *Kernel) functionNeedsGeneratedResultType(funcDecl tlast.TL2FuncDeclaration) (tlast.TL2TypeName, bool) {
+	if funcDecl.ReturnType.IsTypeAlias {
+		return tlast.TL2TypeName{}, false
+	}
+	resultTlName := funcDecl.Name
+	resultTlName.Name += "__Result"
+	return resultTlName, funcDecl.ReturnType.StructType.IsUnionType ||
+		len(funcDecl.ReturnType.StructType.ConstructorFields) != 1 ||
+		funcDecl.ReturnType.StructType.ConstructorFields[0].Name != "" ||
+		funcDecl.ReturnType.StructType.ConstructorFields[0].IsOptional
+}
+
 func (k *Kernel) Compile() error {
 	namespaceTL1SeeHere := map[string]*tlast.ParseError{}
 	if err := k.CompileTL1(namespaceTL1SeeHere); err != nil {
@@ -232,7 +244,33 @@ func (k *Kernel) Compile() error {
 			canonicalName:  tlast.Name(refName),
 			historicalName: tlast.Name(refName),
 		}
-		if !comb.IsFunction {
+		if comb.IsFunction {
+			if resultTlName, ok := k.functionNeedsGeneratedResultType(comb.FuncDecl); ok {
+				resultKt := &KernelType{
+					originTL2: true,
+					combTL2: tlast.TL2Combinator{
+						TypeDecl: tlast.TL2TypeDeclaration{
+							Name:   resultTlName,
+							PRName: comb.FuncDecl.PRName,
+							Type:   comb.FuncDecl.ReturnType,
+							PR:     comb.FuncDecl.ReturnType.PR,
+						},
+						IsFunction:    false,
+						PR:            tlast.PositionRange{},
+						CommentBefore: "",
+					},
+					instances:      map[string]*TypeInstanceRef{},
+					isFunction:     false,
+					isTopLevel:     true,
+					canBeBare:      true,
+					canonicalName:  tlast.Name(resultTlName),
+					historicalName: tlast.Name(resultTlName),
+				}
+				if err := k.addTip(resultKt, resultTlName.String(), ""); err != nil {
+					return fmt.Errorf("error adding function result type %s: %w", resultTlName, err)
+				}
+			}
+		} else {
 			kt.tl1Names = map[string]struct{}{}
 			kt.tl2Names = map[string]struct{}{refName.String(): {}}
 			var nc NameCollision

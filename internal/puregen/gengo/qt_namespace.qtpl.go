@@ -508,8 +508,7 @@ switch tag {
 `)
 			if fun.wr.gen.options.GenerateTL2() {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
-            tctx := basictl.TL2ReadContext{}
-   			_, err = args.ReadTL2(r, &tctx)
+   			_, err = args.ReadTL2(r, nil)
 		} else {
 `)
 			}
@@ -528,34 +527,42 @@ switch tag {
         ret, err := h.`)
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(`(ctx, args)
-        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err)  {
-            return err
-        }
         if err != nil {
             return internal.ErrorServerHandle("`)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`", err)
         }
-`)
-			if fun.wr.HasTL2() {
-				qw422016.N().S(`        if hctx.BodyFormatTL2() {
-            tctx := basictl.TL2WriteContext{}
-            hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
-        } else {
-`)
-			}
-			qw422016.N().S(`            hctx.Response, err = args.WriteResult(hctx.Response, ret)
-`)
-			if fun.wr.HasTL2() {
-				qw422016.N().S(`        }
-`)
-			}
-			qw422016.N().S(`        if err != nil {
-            return internal.ErrorServerWriteResult("`)
-			qw422016.N().S(tlName)
-			qw422016.N().S(`", err)
+        if hctx.LongpollStarted() {
+            return nil
         }
-        return nil
+`)
+			// code below relies on returning "no serialization generated" error from Read/ReadTL2 above
+
+			if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+				qw422016.N().S(`        if hctx.BodyFormatTL2() {
+            hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+        } else {
+            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+            if err != nil {
+                return internal.ErrorServerWriteResult("`)
+				qw422016.N().S(tlName)
+				qw422016.N().S(`", err)
+            }
+        }
+`)
+			} else if fun.wr.HasTL2() {
+				qw422016.N().S(`        hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+`)
+			} else {
+				qw422016.N().S(`        hctx.Response, err = args.WriteResult(hctx.Response, ret)
+        if err != nil {
+            return internal.ErrorServerWriteResult("`)
+				qw422016.N().S(tlName)
+				qw422016.N().S(`", err)
+        }
+`)
+			}
+			qw422016.N().S(`        return nil
     }
 `)
 		}

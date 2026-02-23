@@ -290,8 +290,7 @@ case {%s= tlTag %}: // {%s= tlName %}
         var args {%s= funcTypeString %}
 {%- if fun.wr.gen.options.GenerateTL2() -%}
         if hctx.BodyFormatTL2() {
-            tctx := basictl.TL2ReadContext{}
-   			_, err = args.ReadTL2(r, &tctx)
+   			_, err = args.ReadTL2(r, nil)
 		} else {
 {%- endif -%}
             _, err = args.Read(r)
@@ -303,25 +302,30 @@ case {%s= tlTag %}: // {%s= tlName %}
         }
         ctx = hctx.WithContext(ctx)
         ret, err := h.{%s= funcTypeString %}(ctx, args)
-        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err)  {
-            return err
-        }
         if err != nil {
             return internal.ErrorServerHandle("{%s= tlName %}", err)
         }
-{%- if fun.wr.HasTL2() -%}
-        if hctx.BodyFormatTL2() {
-            tctx := basictl.TL2WriteContext{}
-            hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
-        } else {
-{%- endif -%}
-            hctx.Response, err = args.WriteResult(hctx.Response, ret)
-{%- if fun.wr.HasTL2() -%}
+        if hctx.LongpollStarted() {
+            return nil
         }
-{%- endif -%}
+        {%- code // code below relies on returning "no serialization generated" error from Read/ReadTL2 above -%}
+{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+        if hctx.BodyFormatTL2() {
+            hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+        } else {
+            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+            if err != nil {
+                return internal.ErrorServerWriteResult("{%s= tlName %}", err)
+            }
+        }
+{%- elseif fun.wr.HasTL2() -%}
+        hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+{%- else -%}
+        hctx.Response, err = args.WriteResult(hctx.Response, ret)
         if err != nil {
             return internal.ErrorServerWriteResult("{%s= tlName %}", err)
         }
+{%- endif -%}
         return nil
     }
         {%- endif -%}

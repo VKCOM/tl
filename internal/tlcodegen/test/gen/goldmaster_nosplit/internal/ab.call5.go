@@ -165,7 +165,7 @@ func (item *AbCall5) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, r
 	return w, sizes, currentSize
 }
 
-func (item *AbCall5) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CdTypeB) (_ []byte, err error) {
+func (item *AbCall5) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CdTypeB) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -178,7 +178,7 @@ func (item *AbCall5) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret 
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
-	return w, nil
+	return w
 }
 
 func (item *AbCall5) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *CdTypeB) error {
@@ -228,8 +228,7 @@ func (item *AbCall5) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r [
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item *AbCall5) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
@@ -255,8 +254,7 @@ func (item *AbCall5) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext,
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item AbCall5) String() string {

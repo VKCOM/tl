@@ -103,6 +103,7 @@ type TypeInstanceStruct struct {
 	// if function
 	resultType    TypeInstance
 	resultNatArgs []ActualNatArg // for TL1 only, empty for TL2
+	isResultAlias bool           // false for TL1 functions and TL2 functions with single unnamed field
 	rpcPreferTL2  bool
 }
 
@@ -120,6 +121,10 @@ func (ins *TypeInstanceStruct) ResultType() TypeInstance {
 
 func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
 	return ins.resultNatArgs
+}
+
+func (ins *TypeInstanceStruct) IsResultAlias() bool {
+	return ins.isResultAlias
 }
 
 func (ins *TypeInstanceStruct) RPCPreferTL2() bool {
@@ -205,7 +210,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 	tlName tlast.Name, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
-	isUnionElement bool, unionIndex int, resultType TypeInstance) (*TypeInstanceStruct, error) {
+	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
@@ -221,6 +226,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
+		isResultAlias:       resultAlias,
 		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName(tlName),
 	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1

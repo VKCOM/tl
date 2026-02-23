@@ -187,7 +187,7 @@ outer:
 				if err != nil {
 					return nil, err
 				}
-				bb.WriteString(" =>\n    ")
+				bb.WriteString("\n    => ")
 				if !k.IsTrueType(comb.FuncDecl) { // otherwise returns nothing
 					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, comb.FuncDecl, leftArgs); err != nil {
 						return nil, err

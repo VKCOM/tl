@@ -204,7 +204,7 @@ func (item *Service5InsertList) writeResultTL2(w []byte, sizes []int, optimizeEm
 	return w, sizes, currentSize
 }
 
-func (item *Service5InsertList) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret ListService5Output) (_ []byte, err error) {
+func (item *Service5InsertList) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret ListService5Output) []byte {
 	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
@@ -217,7 +217,7 @@ func (item *Service5InsertList) WriteResultTL2(w []byte, ctx *basictl.TL2WriteCo
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
-	return w, nil
+	return w
 }
 
 func (item *Service5InsertList) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *ListService5Output) error {
@@ -267,8 +267,7 @@ func (item *Service5InsertList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteC
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item *Service5InsertList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
@@ -294,8 +293,7 @@ func (item *Service5InsertList) ReadResultJSONWriteResultTL2(tctx *basictl.TL2Wr
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
+	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
 func (item Service5InsertList) String() string {
