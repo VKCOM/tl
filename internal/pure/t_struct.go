@@ -222,6 +222,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
 			rt:            trTL1,
 			argNamespace:  k.getArgNamespace(trTL1),
+			hasTL2:        true,
 		},
 		isConstructorFields: isConstructorFields,
 		isUnionElement:      isUnionElement,
@@ -424,6 +425,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			rt:            resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
+			hasTL2:        false, // could be marked later
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
@@ -438,9 +440,9 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	if tip.canonicalName.String() == "vector" || tip.canonicalName.String() == "tuple" {
 		ins.isUnwrap = true
 	}
-	if isDict, _ := k.IsDict(tip); isDict {
+	if isDict, dictFieldT := k.IsDict(tip); isDict {
 		fieldT := tlast.TypeRef{
-			Type: tlast.Name{Name: resolvedType.Type.String() + "Field"},
+			Type: dictFieldT.canonicalName,
 			Bare: true,
 		}
 		// TODO - I'm not sure if passing PR of actualArgs is correct
