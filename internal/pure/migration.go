@@ -148,6 +148,11 @@ outer:
 			continue
 		}
 	}
+	//for _, tip := range k.tipsOrdered {
+	//	if _, ok := migrateTips[tip]; !ok {
+	//		continue
+	//	}
+	//}
 	// we decide which #-arguments to keep
 	//for _, tip := range k.tipsOrdered {
 	//	if _, ok := migrateTips[tip]; !ok {
