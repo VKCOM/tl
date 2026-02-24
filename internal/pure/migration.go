@@ -17,6 +17,25 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
+type migrationTL1RefsTL2Errors struct {
+	totalErrors        int
+	errNamespaces      map[string]struct{} // error per namespace greatly helps during migration
+	migrationErrorList []*tlast.ParseError
+}
+
+func (m *migrationTL1RefsTL2Errors) addError(comb *tlast.Combinator, e1 *tlast.ParseError) {
+	m.totalErrors++
+	ns := comb.Construct.Name.Namespace // ignore types with 2 namespaces
+	if _, ok := m.errNamespaces[ns]; ok {
+		return
+	}
+	m.errNamespaces[ns] = struct{}{}
+	//too much clutter, decided simple error is better
+	//e2 := comb.Construct.NamePR.BeautifulError(errSeeHere)
+	//m.migrationErrorList = append(m.migrationErrorList, tlast.BeautifulError2(e1, e2))
+	m.migrationErrorList = append(m.migrationErrorList, e1)
+}
+
 // Overwrites all files given to kernel.
 // For each dir/file.tl containing combinator in a whitelist,
 // if dir/file.tl2 does not exist, it is created.
@@ -148,11 +167,45 @@ outer:
 			continue
 		}
 	}
-	//for _, tip := range k.tipsOrdered {
-	//	if _, ok := migrateTips[tip]; !ok {
-	//		continue
-	//	}
-	//}
+	// check there will be no references to TL2 combinators from TL1 combinators
+	// TODO - collect at least 1 Example per namespace
+	refErrList := migrationTL1RefsTL2Errors{errNamespaces: map[string]struct{}{}}
+	for _, tip := range k.tipsOrdered {
+		if _, ok := migrateTips[tip]; ok {
+			continue
+		}
+		if tip.originTL2 {
+			continue
+		}
+		// TL1 type and it is not migrating
+		for _, typ := range tip.combTL1 {
+			leftArgs := typ.TemplateArguments
+			for _, fieldDef := range typ.Fields {
+				if err := k.MigrationCheckTL2FromTL1Field(&refErrList, fieldDef, migrateTips, typ, leftArgs); err != nil {
+					return nil, err
+				}
+				if fieldDef.FieldName != "" {
+					leftArgs = append(leftArgs, tlast.TemplateArgument{
+						FieldName: fieldDef.FieldName,
+						IsNat:     true,
+						PR:        fieldDef.PR,
+					})
+				}
+			}
+			if typ.IsFunction {
+				if err := k.MigrationCheckTL2FromTL1Type(&refErrList, typ.FuncDecl, migrateTips, typ, leftArgs); err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+	for _, err := range refErrList.migrationErrorList {
+		err.PrintWarning(k.opts.ErrorWriter, nil)
+	}
+	if len(refErrList.migrationErrorList) != 0 { // do not need beautiful error here
+		return nil, fmt.Errorf("migration failed with %d would be TL1->TL2 references in %d namespaces",
+			refErrList.totalErrors, len(refErrList.errNamespaces))
+	}
 	// we decide which #-arguments to keep
 	//for _, tip := range k.tipsOrdered {
 	//	if _, ok := migrateTips[tip]; !ok {
@@ -506,4 +559,55 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 		result.Arguments = append(result.Arguments, indexType)
 	}
 	return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: result}}, false, nil
+}
+
+func (k *Kernel) MigrationCheckTL2FromTL1Field(refErrList *migrationTL1RefsTL2Errors, fieldDef tlast.Field, migrateTips map[*KernelType]struct{},
+	comb *tlast.Combinator, leftArgs []tlast.TemplateArgument) error {
+	if fieldDef.IsRepeated {
+		for _, rep := range fieldDef.ScaleRepeat.Rep {
+			if err := k.MigrationCheckTL2FromTL1Field(refErrList, rep, migrateTips, comb, leftArgs); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	return k.MigrationCheckTL2FromTL1Argument(refErrList, tlast.ArithmeticOrType{T: fieldDef.FieldType}, migrateTips, comb, leftArgs)
+}
+
+func (k *Kernel) MigrationCheckTL2FromTL1Type(refErrList *migrationTL1RefsTL2Errors, tr tlast.TypeRef, migrateTips map[*KernelType]struct{},
+	comb *tlast.Combinator, leftArgs []tlast.TemplateArgument) error {
+	return k.MigrationCheckTL2FromTL1Argument(refErrList, tlast.ArithmeticOrType{T: tr}, migrateTips, comb, leftArgs)
+}
+
+func (k *Kernel) MigrationCheckTL2FromTL1Argument(refErrList *migrationTL1RefsTL2Errors, tra tlast.ArithmeticOrType, migrateTips map[*KernelType]struct{},
+	comb *tlast.Combinator, leftArgs []tlast.TemplateArgument) error {
+	if tra.IsArith {
+		return nil
+	}
+	tr := tra.T
+
+	if tr.Type.Namespace == "" {
+		for _, targ := range leftArgs {
+			if targ.FieldName == tr.Type.Name {
+				return nil // no problem, reference to template argument
+			}
+		}
+	}
+	tName := tr.Type.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return fmt.Errorf("internal error - type %s does not exist", tr.Type)
+	}
+	if kt.originTL2 {
+		return tr.PR.BeautifulError(fmt.Errorf("internal error - existing reference from TL1 to TL2 type %s", tName))
+	}
+	if _, ok := migrateTips[kt]; ok {
+		refErrList.addError(comb, tr.PR.BeautifulError(fmt.Errorf("reference from TL1 prevents migration of type %s", tName)))
+	}
+	for _, arg := range tr.Args {
+		if err := k.MigrationCheckTL2FromTL1Argument(refErrList, arg, migrateTips, comb, leftArgs); err != nil {
+			return err
+		}
+	}
+	return nil
 }
