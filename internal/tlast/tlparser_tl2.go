@@ -32,6 +32,11 @@ type TL2TypeApplication struct {
 	PR          PositionRange
 	PRName      PositionRange
 	PRArguments PositionRange
+
+	// this is part of TL1 support. The hybrid kernel first converts all.
+	// type references to the same (TL2) format for type resolution purposes.
+	// this field is false for all TL2-originated type references.
+	Bare bool
 }
 
 // TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;

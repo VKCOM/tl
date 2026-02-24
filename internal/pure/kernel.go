@@ -506,3 +506,37 @@ func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]s
 		k.markWantsTL2(child, visitedNodes)
 	}
 }
+
+func (k *Kernel) convertTypeArgument(tra tlast.ArithmeticOrType) tlast.TL2TypeArgument {
+	if tra.IsArith {
+		return tlast.TL2TypeArgument{
+			Number:   tra.Arith.Res,
+			IsNumber: true,
+			PR:       tra.T.PR,
+		}
+	}
+	return tlast.TL2TypeArgument{
+		Type:   k.convertTypeRef(tra.T),
+		Number: tra.Arith.Res,
+		PR:     tra.T.PR,
+	}
+}
+
+func (k *Kernel) convertTypeRef(tr tlast.TypeRef) tlast.TL2TypeRef {
+	result := tlast.TL2TypeRef{
+		SomeType: tlast.TL2TypeApplication{
+			Name:        tlast.TL2TypeName(tr.Type),
+			Arguments:   nil,
+			PR:          tr.PR,
+			PRName:      tr.PR,
+			PRArguments: tr.PRArgs,
+			Bare:        tr.Bare,
+		},
+		PR: tr.PR,
+	}
+	for _, arg := range tr.Args {
+		result.SomeType.Arguments = append(result.SomeType.Arguments,
+			k.convertTypeArgument(arg))
+	}
+	return result
+}

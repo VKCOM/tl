@@ -327,6 +327,10 @@ func (t TL2TypeApplication) String() string {
 }
 
 func (t *TL2TypeApplication) Print(sb *strings.Builder) {
+	// for debug printing we add Bare field. It can never be printed for actual TL2 type reference
+	if t.Bare {
+		sb.WriteString("%")
+	}
 	sb.WriteString(t.Name.String())
 	if len(t.Arguments) > 0 {
 		sb.WriteString("<")
