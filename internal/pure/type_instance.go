@@ -32,11 +32,13 @@ type TypeInstanceRef struct {
 type TypeInstanceCommon struct {
 	canonicalName string
 	tlName        tlast.Name
+	tlName2       tlast.TL2TypeName
 	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	isTopLevel    bool
 	rt            tlast.TypeRef
+	rt2           tlast.TL2TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 
 	hasTL2 bool
@@ -48,6 +50,10 @@ func (ins *TypeInstanceCommon) CanonicalName() string {
 
 func (ins *TypeInstanceCommon) TLName() tlast.Name {
 	return ins.tlName
+}
+
+func (ins *TypeInstanceCommon) TLName2() tlast.TL2TypeName {
+	return ins.tlName2
 }
 
 // for TL1 union zero, for TL2 union as specified by user
@@ -70,6 +76,10 @@ func (ins *TypeInstanceCommon) IsTopLevel() bool {
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
 	return ins.rt
+}
+
+func (ins *TypeInstanceCommon) ResolvedType2() tlast.TL2TypeRef {
+	return ins.rt2
 }
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {

@@ -329,22 +329,31 @@ func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
 	return nil
 }
 
-func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []int, error) {
+func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tlast.TL2TypeRef, []int, error) {
 	var fieldsAfterReplace []tlast.Field
+	var typesAfterReplace []tlast.TL2TypeRef
 	var originalFieldIndices []int
 	for i := 0; i < len(def.Fields); i++ {
 		fieldDef := def.Fields[i]
+		var type2 tlast.TL2TypeRef
 		if fieldDef.FieldType.String() == "#" && fieldDef.FieldName == "" && i+1 < len(def.Fields) {
 			nextFieldDef := def.Fields[i+1]
 			if nextFieldDef.Mask != nil || !nextFieldDef.IsRepeated || nextFieldDef.ScaleRepeat.ExplicitScale {
-				return nil, nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
+				return nil, nil, nil, fieldDef.PR.BeautifulError(fmt.Errorf("anonymous # field must be followed by brackets with no fieldmask and no explicit scale repeat (# [...] or # a:[...])"))
 			}
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 			// we replace 2 fields with vector
 			// hren # a:[int] = Hren;
 			i++
+			type2 = tlast.TL2TypeRef{
+				BracketType: &tlast.TL2BracketType{
+					ArrayType: k.convertTypeRef(nextFieldDef.ScaleRepeat.Rep[0].FieldType),
+					PR:        nextFieldDef.PR,
+				},
+				PR: nextFieldDef.PR,
+			}
 			fieldDef = nextFieldDef
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
 				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
@@ -357,10 +366,30 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []int
 			if !a.IsNat {
 				e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
 				e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
-				return nil, nil, tlast.BeautifulError2(e1, e2)
+				return nil, nil, nil, tlast.BeautifulError2(e1, e2)
 			}
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
+			}
+			type2 = tlast.TL2TypeRef{
+				BracketType: &tlast.TL2BracketType{
+					HasIndex: true,
+					IndexType: tlast.TL2TypeArgument{
+						Type: tlast.TL2TypeRef{
+							SomeType: tlast.TL2TypeApplication{
+								Name:        tlast.TL2TypeName{Name: a.FieldName},
+								PR:          a.PR,
+								PRName:      a.PR,
+								PRArguments: a.PR.CollapseToEnd(),
+							},
+							PR: a.PR,
+						},
+						PR: a.PR,
+					},
+					ArrayType: k.convertTypeRef(fieldDef.ScaleRepeat.Rep[0].FieldType),
+					PR:        fieldDef.PR,
+				},
+				PR: fieldDef.PR,
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
 				{T: tlast.TypeRef{PR: a.PR, Type: tlast.Name{Name: a.FieldName}}},
@@ -370,18 +399,19 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []int
 			fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
 			if err := k.isGoodBrackets(fieldDef); err != nil {
-				return nil, nil, err
+				return nil, nil, nil, err
 			}
 			if !fieldDef.ScaleRepeat.ExplicitScale {
 				prevFieldDef := def.Fields[i-1] // never panics, due to checks above
 				if prevFieldDef.FieldType.String() != "#" {
 					e1 := fieldDef.FieldType.PR.CollapseToBegin().BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references previous field %q, which should have type #", prevFieldDef.FieldName))
 					e2 := prevFieldDef.PR.BeautifulError(fmt.Errorf("see here"))
-					return nil, nil, tlast.BeautifulError2(e1, e2)
+					return nil, nil, nil, tlast.BeautifulError2(e1, e2)
 				}
 				fieldDef.ScaleRepeat.Scale = tlast.ScaleFactor{
 					IsArith: false,
 					Scale:   prevFieldDef.FieldName,
+					PR:      prevFieldDef.PRName,
 				}
 			}
 			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
@@ -395,16 +425,48 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []int
 			} else {
 				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR, Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
 			}
+			type2 = tlast.TL2TypeRef{
+				BracketType: &tlast.TL2BracketType{
+					HasIndex: true,
+					// IndexType: set below
+					ArrayType: k.convertTypeRef(fieldDef.ScaleRepeat.Rep[0].FieldType),
+					PR:        fieldDef.PR,
+				},
+				PR: fieldDef.PR,
+			}
+			if fieldDef.ScaleRepeat.Scale.IsArith {
+				type2.BracketType.IndexType = tlast.TL2TypeArgument{
+					IsNumber: true,
+					Number:   fieldDef.ScaleRepeat.Scale.Arith.Res,
+					PR:       fieldDef.ScaleRepeat.Scale.PR,
+				}
+			} else {
+				type2.BracketType.IndexType = tlast.TL2TypeArgument{
+					Type: tlast.TL2TypeRef{
+						SomeType: tlast.TL2TypeApplication{
+							Name:        tlast.TL2TypeName{Name: fieldDef.ScaleRepeat.Scale.Scale},
+							PR:          fieldDef.ScaleRepeat.Scale.PR,
+							PRName:      fieldDef.ScaleRepeat.Scale.PR,
+							PRArguments: fieldDef.ScaleRepeat.Scale.PR.CollapseToEnd(),
+						},
+						PR: fieldDef.ScaleRepeat.Scale.PR,
+					},
+					PR: fieldDef.ScaleRepeat.Scale.PR,
+				}
+			}
+		} else {
+			type2 = k.convertTypeRef(fieldDef.FieldType)
 		}
 		fieldsAfterReplace = append(fieldsAfterReplace, fieldDef)
+		typesAfterReplace = append(typesAfterReplace, type2)
 		originalFieldIndices = append(originalFieldIndices, i)
 	}
 	for _, f := range fieldsAfterReplace {
 		if f.FieldName == "" && (len(fieldsAfterReplace) != 1 || f.Mask != nil) {
-			return nil, nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are only allowed when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
+			return nil, nil, nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are only allowed when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
 		}
 	}
-	return fieldsAfterReplace, originalFieldIndices, nil
+	return fieldsAfterReplace, typesAfterReplace, originalFieldIndices, nil
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
@@ -433,7 +495,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
 	nextTL2MaskBit := 0
-	fieldsAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
+	fieldsAfterReplace, _, originalFieldIndices, err := k.replaceTL1Brackets(def) // typesAfterReplace
 	if err != nil {
 		return nil, err
 	}
@@ -469,6 +531,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 
 	for i, fieldDef := range fieldsAfterReplace {
+		// fieldType := typesAfterReplace[i]
 		originalFieldIndex := originalFieldIndices[i]
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {

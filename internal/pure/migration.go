@@ -239,7 +239,7 @@ outer:
 					return nil, comb.Construct.NamePR.BeautifulError(errors.New("internal error: function with template arguments cannot be migrated"))
 				}
 				bb.WriteString(" ")
-				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
+				fieldsAfterReplace, _, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
 					return nil, err
 				}
@@ -262,7 +262,7 @@ outer:
 				if err := k.MigrationTemplateArguments(bb, tip, comb); err != nil {
 					return nil, err
 				}
-				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
+				fieldsAfterReplace, _, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
 					return nil, err
 				}
@@ -320,7 +320,7 @@ outer:
 				bb.WriteString("\n    | ")
 				bb.WriteString(variantNames[i])
 				bb.WriteString(" ")
-				fieldsAfterReplace, _, err := k.replaceTL1Brackets(comb)
+				fieldsAfterReplace, _, _, err := k.replaceTL1Brackets(comb)
 				if err != nil {
 					return nil, err
 				}

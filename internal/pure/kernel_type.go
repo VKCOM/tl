@@ -53,7 +53,8 @@ type KernelType struct {
 
 	// usage tracking for migration/compilcation.
 	// common for union types, so cannot be in combinator itself
-	targs []KernelTypeTarg
+	templateArguments []tlast.TL2TypeTemplate
+	targs             []KernelTypeTarg
 }
 
 func (t *KernelType) OriginTL2() bool {

@@ -175,16 +175,17 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
 	}
 	kt := &KernelType{
-		originTL2:      false,
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		instances:      map[string]*TypeInstanceRef{},
-		tl1Names:       map[string]struct{}{"__dict": {}},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: "__dict"},
-		historicalName: tlast.Name{Name: "BuiltinDict"},
-		canBeBare:      true,
-		targs:          make([]KernelTypeTarg, 1),
+		originTL2:         false,
+		builtin:           true,
+		combTL1:           []*tlast.Combinator{combTL1},
+		instances:         map[string]*TypeInstanceRef{},
+		tl1Names:          map[string]struct{}{"__dict": {}},
+		tl2Names:          map[string]struct{}{},
+		canonicalName:     tlast.Name{Name: "__dict"},
+		historicalName:    tlast.Name{Name: "BuiltinDict"},
+		canBeBare:         true,
+		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
+		targs:             make([]KernelTypeTarg, 1),
 	}
 	if err := k.addTip(kt, "__dict", ""); err != nil {
 		panic(fmt.Sprintf("error adding __dict: %v", err))
@@ -196,16 +197,17 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "k"}, {FieldName: "v"}},
 	}
 	kt = &KernelType{
-		originTL2:      false,
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		instances:      map[string]*TypeInstanceRef{},
-		tl1Names:       map[string]struct{}{"__dict2": {}},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: "__dict2"},
-		historicalName: tlast.Name{Name: "BuiltinDict2"},
-		canBeBare:      true,
-		targs:          make([]KernelTypeTarg, 1),
+		originTL2:         false,
+		builtin:           true,
+		combTL1:           []*tlast.Combinator{combTL1},
+		instances:         map[string]*TypeInstanceRef{},
+		tl1Names:          map[string]struct{}{"__dict2": {}},
+		tl2Names:          map[string]struct{}{},
+		canonicalName:     tlast.Name{Name: "__dict2"},
+		historicalName:    tlast.Name{Name: "BuiltinDict2"},
+		canBeBare:         true,
+		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
+		targs:             make([]KernelTypeTarg, 2),
 	}
 	if err := k.addTip(kt, "__dict2", ""); err != nil {
 		panic(fmt.Sprintf("error adding __dict2: %v", err))
@@ -224,16 +226,17 @@ func (k *Kernel) addTL1Brackets() {
 		}},
 	}
 	kt = &KernelType{
-		originTL2:      false,
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		instances:      map[string]*TypeInstanceRef{},
-		tl1Names:       map[string]struct{}{"__dict_field": {}},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: "__dict_field"},
-		historicalName: tlast.Name{Name: "DictField"},
-		canBeBare:      true,
-		targs:          make([]KernelTypeTarg, 2),
+		originTL2:         false,
+		builtin:           true,
+		combTL1:           []*tlast.Combinator{combTL1},
+		instances:         map[string]*TypeInstanceRef{},
+		tl1Names:          map[string]struct{}{"__dict_field": {}},
+		tl2Names:          map[string]struct{}{},
+		canonicalName:     tlast.Name{Name: "__dict_field"},
+		historicalName:    tlast.Name{Name: "DictField"},
+		canBeBare:         true,
+		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
+		targs:             make([]KernelTypeTarg, 2),
 	}
 	if err := k.addTip(kt, "__dict_field", ""); err != nil {
 		panic(fmt.Sprintf("error adding __dict_field: %v", err))
@@ -245,16 +248,17 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
 	}
 	kt = &KernelType{
-		originTL2:      false,
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		instances:      map[string]*TypeInstanceRef{},
-		tl1Names:       map[string]struct{}{"__vector": {}},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: "__vector"},
-		historicalName: tlast.Name{Name: "BuiltinVector"},
-		canBeBare:      true,
-		targs:          make([]KernelTypeTarg, 1),
+		originTL2:         false,
+		builtin:           true,
+		combTL1:           []*tlast.Combinator{combTL1},
+		instances:         map[string]*TypeInstanceRef{},
+		tl1Names:          map[string]struct{}{"__vector": {}},
+		tl2Names:          map[string]struct{}{},
+		canonicalName:     tlast.Name{Name: "__vector"},
+		historicalName:    tlast.Name{Name: "BuiltinVector"},
+		canBeBare:         true,
+		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
+		targs:             make([]KernelTypeTarg, 1),
 	}
 	if err := k.addTip(kt, "__vector", ""); err != nil {
 		panic(fmt.Sprintf("error adding __vector: %v", err))
@@ -266,16 +270,17 @@ func (k *Kernel) addTL1Brackets() {
 		TemplateArguments: []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}},
 	}
 	kt = &KernelType{
-		originTL2:      false,
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		instances:      map[string]*TypeInstanceRef{},
-		tl1Names:       map[string]struct{}{"__tuple": {}},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: "__tuple"},
-		historicalName: tlast.Name{Name: "BuiltinTuple"},
-		canBeBare:      true,
-		targs:          make([]KernelTypeTarg, 2),
+		originTL2:         false,
+		builtin:           true,
+		combTL1:           []*tlast.Combinator{combTL1},
+		instances:         map[string]*TypeInstanceRef{},
+		tl1Names:          map[string]struct{}{"__tuple": {}},
+		tl2Names:          map[string]struct{}{},
+		canonicalName:     tlast.Name{Name: "__tuple"},
+		historicalName:    tlast.Name{Name: "BuiltinTuple"},
+		canBeBare:         true,
+		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
+		targs:             make([]KernelTypeTarg, 2),
 	}
 	if err := k.addTip(kt, "__tuple", ""); err != nil {
 		panic(fmt.Sprintf("error adding __tuple: %v", err))
