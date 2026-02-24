@@ -22,6 +22,11 @@ type TL2TypeArgument struct {
 	IsNumber bool
 
 	PR PositionRange
+
+	// this is set during type resolution, so the information
+	// about argument references not erased from the type
+	// TODO - decide on moving into TL2TypeRef when working on C++ gen
+	OriginalArgumentName string
 }
 
 // TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts)?;
@@ -139,6 +144,7 @@ type TL2TypeDeclaration struct {
 	TemplateArguments []TL2TypeTemplate
 	Type              TL2TypeDefinition
 
+	// TODO -TemplateArgumentsPR
 	PR     PositionRange
 	PRName PositionRange
 	PRID   PositionRange

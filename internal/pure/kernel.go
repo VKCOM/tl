@@ -255,6 +255,7 @@ func (k *Kernel) Compile() error {
 				}
 			}
 		} else {
+			kt.templateArguments = comb.TypeDecl.TemplateArguments
 			kt.tl1Names = map[string]struct{}{}
 			kt.tl2Names = map[string]struct{}{refName.String(): {}}
 			var nc NameCollision
@@ -505,6 +506,20 @@ func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]s
 	for _, child := range children {
 		k.markWantsTL2(child, visitedNodes)
 	}
+}
+
+func (k *Kernel) convertTemplateArguments(args []tlast.TemplateArgument) []tlast.TL2TypeTemplate {
+	var result []tlast.TL2TypeTemplate
+	for _, arg := range args {
+		result = append(result, tlast.TL2TypeTemplate{
+			Name:       arg.FieldName,
+			Category:   tlast.TL2TypeCategory{IsNatValue: arg.IsNat},
+			PR:         arg.PR,
+			PRName:     arg.PR,
+			PRCategory: arg.PR,
+		})
+	}
+	return result
 }
 
 func (k *Kernel) convertTypeArgument(tra tlast.ArithmeticOrType) tlast.TL2TypeArgument {

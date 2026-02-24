@@ -313,17 +313,18 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
 			}
 			kt := &KernelType{
-				originTL2:      false,
-				combTL1:        typ,
-				instances:      map[string]*TypeInstanceRef{},
-				isTopLevel:     !anyConstructorHasArgs,
-				tl1Names:       map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				tl2Names:       map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				canonicalName:  cName,
-				historicalName: cName,
-				tl1BoxedName:   tName,
-				canBeBare:      true,
-				targs:          make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
+				originTL2:         false,
+				combTL1:           typ,
+				instances:         map[string]*TypeInstanceRef{},
+				isTopLevel:        !anyConstructorHasArgs,
+				tl1Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
+				tl2Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
+				canonicalName:     cName,
+				historicalName:    cName,
+				tl1BoxedName:      tName,
+				canBeBare:         true,
+				templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
+				targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 			}
 			for _, m := range comb.Modifiers {
 				kt.annotations = append(kt.annotations, m.Name)
@@ -349,16 +350,17 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			return err
 		}
 		kt := &KernelType{
-			originTL2:      false,
-			combTL1:        typ,
-			instances:      map[string]*TypeInstanceRef{},
-			isTopLevel:     !anyConstructorHasArgs,
-			tl1Names:       map[string]struct{}{tName.String(): {}},
-			tl2Names:       map[string]struct{}{tName.String(): {}},
-			canonicalName:  tName,
-			historicalName: tName,
-			tl1BoxedName:   tName,
-			targs:          make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
+			originTL2:         false,
+			combTL1:           typ,
+			instances:         map[string]*TypeInstanceRef{},
+			isTopLevel:        !anyConstructorHasArgs,
+			tl1Names:          map[string]struct{}{tName.String(): {}},
+			tl2Names:          map[string]struct{}{tName.String(): {}},
+			canonicalName:     tName,
+			historicalName:    tName,
+			tl1BoxedName:      tName,
+			templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
+			targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 		}
 		for _, m := range comb.Modifiers {
 			return m.PR.BeautifulError(fmt.Errorf("annotations in TL1 are not supported for union %s", tName))
