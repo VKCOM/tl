@@ -50,15 +50,15 @@ videoAdsService.legalPartnerAdsSettings#59ee3756
     = videoAdsService.LegalPartnerAdsSettings;
 
 
-nonMigrating.example
-    use:               vector<videoAdsService.legalPartnerAdsSettings>
-    use2:              videoAdsService.LegalPartnerAdsSettings
-    = nonMigrating.Example;
-
-nonMigrating2.example
-    use:               videoAdsService.LegalPartnerAdsSettings
-    use2:              vector<videoAdsService.legalPartnerAdsSettings>
-    = nonMigrating2.Example;
+//nonMigrating.example
+//    use:               vector<videoAdsService.legalPartnerAdsSettings>
+//    use2:              videoAdsService.LegalPartnerAdsSettings
+//    = nonMigrating.Example;
+//
+//nonMigrating2.example
+//    use:               videoAdsService.LegalPartnerAdsSettings
+//    use2:              vector<videoAdsService.legalPartnerAdsSettings>
+//    = nonMigrating2.Example;
 
 ---functions---
 
