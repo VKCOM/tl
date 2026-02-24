@@ -419,9 +419,7 @@ var _ = basictl.NatWrite
 			return err
 		}
 	}
-	if gen.options.Kernel.Verbose {
-		log.Printf("formating generated code...")
-	}
+
 	if err := outdir.Write(gen.options, markerFile); err != nil {
 		return err // Context is already in err
 	}

@@ -11,7 +11,10 @@ import (
 	"go/format"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/TwiN/go-color"
@@ -56,6 +59,11 @@ func (gen *OutDir) formatLint(opts *Options, code string, filename string) strin
 	return code
 }
 
+type filepathNameCode struct {
+	filepathName string
+	code         string
+}
+
 func (gen *OutDir) Write(opts *Options, markerFile string) error {
 	if opts.Outdir == "" {
 		return fmt.Errorf("--outdir should not be empty")
@@ -64,6 +72,7 @@ func (gen *OutDir) Write(opts *Options, markerFile string) error {
 		return fmt.Errorf("error creating outdir %q: %w", opts.Outdir, err)
 	}
 	// We do not want to touch files which did not change at all.
+	// this stage is very fast even single-threaded
 	relativeFiles := map[string]bool{}
 	var relativeDirs []string
 	if err := gen.collectRelativePaths(opts.Outdir, "", relativeFiles, &relativeDirs); err != nil {
@@ -80,35 +89,65 @@ func (gen *OutDir) Write(opts *Options, markerFile string) error {
 	if err := gen.AddCodeFile(markerFile, markerContent); err != nil {
 		return err
 	}
-	notTouched := 0
-	written := 0
-	deleted := 0
+	// multithreaded formatting+writing, was taking too much time
+	// reading/writing takes even more time than formatting, so we do both here
+	var mu sync.Mutex
+	var notTouched atomic.Uint64
+	var written atomic.Uint64
+	goFormatCode := func(opts *Options, ch <-chan filepathNameCode) error {
+		for item := range ch {
+			code := gen.formatLint(opts, item.code, item.filepathName)
+			d := filepath.Join(opts.Outdir, filepath.Dir(item.filepathName))
+			f := filepath.Join(opts.Outdir, item.filepathName)
+			if !strings.HasPrefix(item.filepathName, "..") {
+				// we allow relative paths outside gen folder for basictl*
+				if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
+					return fmt.Errorf("error creating dir %q: %w", d, err)
+				}
+			}
+			mu.Lock()
+			_, found := relativeFiles[item.filepathName]
+			delete(relativeFiles, item.filepathName)
+			mu.Unlock()
+			if found {
+				was, err := os.ReadFile(f)
+				if err != nil {
+					return fmt.Errorf("error reading previous file %q: %w", f, err)
+				}
+				if string(was) == code {
+					notTouched.Add(1)
+					continue
+				}
+			}
+			written.Add(1)
+			if err := os.WriteFile(f, []byte(code), 0644); err != nil {
+				return fmt.Errorf("error writing file %q: %w", f, err)
+			}
+		}
+		return nil
+	}
+	parallelism := runtime.NumCPU()
+	if opts.Kernel.Verbose {
+		fmt.Printf("writing generated code using %d CPUs...\n", parallelism)
+	}
+	errCh := make(chan error)
+	ch := make(chan filepathNameCode)
+	for i := 0; i < parallelism; i++ {
+		go func() {
+			errCh <- goFormatCode(opts, ch)
+		}()
+	}
 	for filepathName, code := range gen.Code {
-		code = gen.formatLint(opts, code, filepathName)
-		d := filepath.Join(opts.Outdir, filepath.Dir(filepathName))
-		f := filepath.Join(opts.Outdir, filepathName)
-		if !strings.HasPrefix(filepathName, "..") {
-			// we allow relative paths outside gen folder for basictl*
-			if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
-				return fmt.Errorf("error creating dir %q: %w", d, err)
-			}
-		}
-		if relativeFiles[filepathName] {
-			delete(relativeFiles, filepathName)
-			was, err := os.ReadFile(f)
-			if err != nil {
-				return fmt.Errorf("error reading previous file %q: %w", f, err)
-			}
-			if string(was) == code {
-				notTouched++
-				continue
-			}
-		}
-		written++
-		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
-			return fmt.Errorf("error writing file %q: %w", f, err)
+		ch <- filepathNameCode{filepathName: filepathName, code: code}
+	}
+	close(ch)
+	for i := 0; i < parallelism; i++ {
+		if err := <-errCh; err != nil {
+			return err
 		}
 	}
+	// this stage is very fast even single-threaded
+	deleted := 0
 	for filepathName := range relativeFiles {
 		f := filepath.Join(opts.Outdir, filepathName)
 		deleted++
@@ -121,7 +160,7 @@ func (gen *OutDir) Write(opts *Options, markerFile string) error {
 		_ = os.Remove(f) // non-empty dirs simply will not remove. This is good enough for us
 	}
 	// do not check Verbose
-	fmt.Printf("%d target files did not change so were not touched, %d written, %d deleted\n", notTouched, written, deleted)
+	fmt.Printf("%d target files did not change so were not touched, %d written, %d deleted\n", notTouched.Load(), written.Load(), deleted)
 	return nil
 }
 

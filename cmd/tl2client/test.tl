@@ -24,46 +24,36 @@ true = True; // this can be used as void type and serialized to empty array in P
 
 map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
+videoAdsService.getLegalPartnerAdsSettingsManyResponseOk#4db649d8
+    fields_mask:              #
+    settings:                 vector<videoAdsService.legalPartnerAdsSettings>
+    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
 
-statshouseApi.seriesMeta#5c2bf286 {query_fields_mask:#} fields_mask:#
-    time_shift: long
-    tags: %(Dictionary string)
-    // what: fields_mask.1?statshouseApi.Function
-    name: query_fields_mask.4?string
-    color: query_fields_mask.5?string
-    total: query_fields_mask.6?int
-    max_hosts: query_fields_mask.7?%(Vector string)
-    = statshouseApi.SeriesMeta query_fields_mask;
+videoAdsService.getLegalPartnerAdsSettingsManyResponseError#143f3aaa
+    fields_mask:              #
+    error_code:               int
+    error:                    string
+    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
 
-statshouseApi.queryResponse#4487e49a {query_fields_mask:#}
-    fields_mask:#
-    //series: %(statshouseApi.Series)
-    series_meta: %(Vector %(statshouseApi.SeriesMeta query_fields_mask))
-    chunk_ids: %(Vector int)
-    total_time_points: int
-    response_id: long
-    excess_point_left: fields_mask.0?true
-    excess_point_right: fields_mask.1?true
-    = statshouseApi.GetQueryResponse query_fields_mask;
+videoAdsService.legalPartnerAdsSettingsVideoRules#ee6ba4fa
+    fields_mask:              #
+    video_id:                 int
+    //rules:                    videoAdsService.legalPartnerAdsSettingsRules
+    = videoAdsService.LegalPartnerAdsSettingsVideoRules;
+
+
+videoAdsService.legalPartnerAdsSettings#59ee3756
+    fields_mask:              #
+    //common_rules:             fields_mask.0?videoAdsService.legalPartnerAdsSettingsRules
+    video_rules:              fields_mask.1?vector<videoAdsService.legalPartnerAdsSettingsVideoRules>
+    //playlist_rules:           fields_mask.2?vector<videoAdsService.legalPartnerAdsSettingsPlaylistRules>
+    = videoAdsService.LegalPartnerAdsSettings;
 
 ---functions---
 
-@kphp
-coreEmployees.checkRights#6f40742f
-    fields_mask:#
-    right_keys: (Vector string)
-    user_id: long
-    ip_address: fields_mask.0?string
-    api_id: fields_mask.1?long
-    is_api: fields_mask.2?true
-    is_internal_app: fields_mask.3?true
-    is_from_cron: fields_mask.4?true
-    performer_id: fields_mask.5?long
-  = Vector (Map string Bool);
-
-
-@readwrite
-statshouseApi.getQuery#0c7349bb fields_mask:#
-    access_token: string
-    // query: %statshouseApi.Query
-    = statshouseApi.GetQueryResponse fields_mask;
+@read
+videoAdsService.getLegalPartnerAdsSettingsMany#98505e85
+    fields_mask:              #
+//    requests:                 vector<videoAdsService.getLegalPartnerAdsSettingsRequest>
+    user_id:                  long
+    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
