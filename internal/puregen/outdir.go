@@ -7,6 +7,7 @@
 package puregen
 
 import (
+	"context"
 	"fmt"
 	"go/format"
 	"os"
@@ -19,6 +20,7 @@ import (
 
 	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/utils"
+	"golang.org/x/sync/errgroup"
 )
 
 const buildVersionFormat = `tlgen version: %s
@@ -130,21 +132,21 @@ func (gen *OutDir) Write(opts *Options, markerFile string) error {
 	if opts.Kernel.Verbose {
 		fmt.Printf("writing generated code using %d CPUs...\n", parallelism)
 	}
-	errCh := make(chan error)
+	eg, _ := errgroup.WithContext(context.Background())
+
 	ch := make(chan filepathNameCode)
 	for i := 0; i < parallelism; i++ {
-		go func() {
-			errCh <- goFormatCode(opts, ch)
-		}()
+		eg.Go(func() error {
+			return goFormatCode(opts, ch)
+		})
 	}
 	for filepathName, code := range gen.Code {
 		ch <- filepathNameCode{filepathName: filepathName, code: code}
 	}
 	close(ch)
-	for i := 0; i < parallelism; i++ {
-		if err := <-errCh; err != nil {
-			return err
-		}
+
+	if err := eg.Wait(); err != nil {
+		return err
 	}
 	// this stage is very fast even single-threaded
 	deleted := 0
