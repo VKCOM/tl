@@ -494,8 +494,14 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
+	if k.opts.NewBrackets {
+		resolvedType2 := k.convertTypeRef(resolvedType)
+		if ins.argNamespace != k.getArgNamespace2(resolvedType2) {
+			panic("internal error getArgNamespace2")
+		}
+	}
 	nextTL2MaskBit := 0
-	fieldsAfterReplace, _, originalFieldIndices, err := k.replaceTL1Brackets(def) // typesAfterReplace
+	fieldsAfterReplace, typesAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
 	if err != nil {
 		return nil, err
 	}
@@ -531,7 +537,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 
 	for i, fieldDef := range fieldsAfterReplace {
-		// fieldType := typesAfterReplace[i]
+		fieldType := typesAfterReplace[i]
 		originalFieldIndex := originalFieldIndices[i]
 		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
 		if err != nil {
@@ -541,6 +547,16 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, err
+		}
+		if k.opts.NewBrackets {
+			rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, nil) // TODO - localArgs
+			if err != nil {
+				return nil, err
+			}
+			rt22 := k.convertTypeRef(rt)
+			if rt2.String() != rt22.String() || len(natArgs) != len(natArgs2) {
+				panic("internal error of resolveTypeHybrid")
+			}
 		}
 		newField := Field{
 			owner:         ins,
