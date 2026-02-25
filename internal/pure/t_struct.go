@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
@@ -312,6 +313,61 @@ func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlas
 	return
 }
 
+// we want the same naming convention for nat params, as in old kernel,
+// though it has no difference to semantic and can be simplified to p0, p1, p2, etc.
+func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]string, prefix string) {
+	if rt.IsNumber {
+		return
+	}
+	if rt.Type.String() == "*" {
+		*natParams = append(*natParams, prefix)
+		return
+	}
+	if br := rt.Type.BracketType; br != nil {
+		if !br.HasIndex {
+			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+		}
+		if br.IndexType.IsNumber {
+			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"n")
+		} else {
+			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"f")
+		}
+		return
+	}
+	tName := rt.Type.SomeType.Name.String()
+	tip, ok := k.tips[tName]
+	if !ok {
+		panic("resolved type not found in global type map")
+	}
+	for i, arg := range rt.Type.SomeType.Arguments {
+		leftArg := tip.combTL1[0].TemplateArguments[i]
+		k.fillNatParamHybrid(arg, natParams, prefix+leftArg.FieldName)
+	}
+}
+
+func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (localArgs []LocalArgHybrid, natParams []string) {
+	for i, arg := range actualArgs {
+		leftArg := leftArgs[i]
+		var localNatParams []string
+		k.fillNatParamHybrid(arg, &localNatParams, leftArg.Name)
+		if len(localNatParams) == 1 {
+			localNatParams[0] = leftArg.Name
+		}
+		natParams = append(natParams, localNatParams...)
+		localArg := LocalArgHybrid{
+			wrongTypeErr: nil,
+			arg:          arg,
+		}
+		for _, param := range localNatParams {
+			localArg.natArgs = append(localArg.natArgs, ActualNatArg{
+				name: param,
+			})
+		}
+		localArgs = append(localArgs, localArg)
+	}
+	return
+}
+
 func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
 	if !fieldDef.IsRepeated {
 		return nil // always canonical
@@ -471,10 +527,16 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, def *tlast.Combinator,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
+	leftArgs []tlast.TemplateArgument,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	resolvedType2 := k.convertTypeRef(resolvedType)
+
+	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
+	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2.SomeType.Arguments)
+	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b {
+		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+	}
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
@@ -486,8 +548,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			rt:            resolvedType,
-			argNamespace:  k.getArgNamespace(resolvedType),
-			hasTL2:        false, // could be marked later
+			//rt2:           resolvedType2,
+			argNamespace: k.getArgNamespace(resolvedType),
+			//argNamespace2: k.getArgNamespace2(resolvedType2),
+			hasTL2: false, // could be marked later
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
@@ -518,20 +582,31 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
 				T: tlast.TypeRef{
 					Type: tlast.Name{Name: targ.FieldName},
-					PR:   actualArgs[i].T.PR,
+					PR:   resolvedType.Args[i].T.PR,
 				},
 			})
 		}
+		// TODO - PR below
 		ins.isUnwrap = true
 		fieldsAfterReplace = []tlast.Field{{
 			FieldName: "",
 			FieldType: tlast.TypeRef{
 				Type: tlast.Name{Name: "__dict"},
-				Bare: true,
+				Bare: true, // TODO - remove
 				Args: []tlast.ArithmeticOrType{{
 					T: fieldT,
 				}},
 			},
+		}}
+		typesAfterReplace = []tlast.TL2TypeRef{{
+			SomeType: tlast.TL2TypeApplication{
+				Name: tlast.TL2TypeName{Name: "__dict"},
+				Bare: true, // TODO - remove
+				Arguments: []tlast.TL2TypeArgument{{
+					Type: k.convertTypeRef(fieldT),
+				}},
+			},
+			PR: tlast.PositionRange{},
 		}}
 		originalFieldIndices = []int{0}
 	}
@@ -549,14 +624,15 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		if k.opts.NewBrackets {
-			rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, nil) // TODO - localArgs
+			if canonicalName == "a.middle<*,pair<a.inner<*>,a.inner<*>>,+a.inner<3>>" {
+				fmt.Print("aha")
+			}
+			rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
 			if err != nil {
 				return nil, err
 			}
-			rt22 := k.convertTypeRef(rt)
-			if rt2.String() != rt22.String() || len(natArgs) != len(natArgs2) {
-				panic("internal error of resolveTypeHybrid")
-			}
+			k.equalTypes(rt, rt2)
+			k.equalNatArgs(natArgs, natArgs2)
 		}
 		newField := Field{
 			owner:         ins,
@@ -616,11 +692,26 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
 				})
+				localArgs2 = append(localArgs2, LocalArgHybrid{
+					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
+				})
 			} else {
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
 					arg: tlast.ArithmeticOrType{
 						T:           tlast.TypeRef{Type: tlast.Name{Name: "*"}},
+						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
+					},
+					natArgs: []ActualNatArg{{
+						isField:    true,
+						fieldIndex: i, // not originalFieldIndex
+					}},
+				})
+				localArgs2 = append(localArgs2, LocalArgHybrid{
+					wrongTypeErr: nil,
+					arg: tlast.TL2TypeArgument{
+						Type:        tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
+						PR:          fieldDef.PR,
 						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
 					},
 					natArgs: []ActualNatArg{{

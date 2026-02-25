@@ -40,6 +40,7 @@ type TypeInstanceCommon struct {
 	rt            tlast.TypeRef
 	rt2           tlast.TL2TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
+	argNamespace2 string // so vector<memcache.Value> is generated in memcache namespace
 
 	hasTL2 bool
 }
@@ -84,6 +85,10 @@ func (ins *TypeInstanceCommon) ResolvedType2() tlast.TL2TypeRef {
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {
 	return ins.argNamespace
+}
+
+func (ins *TypeInstanceCommon) ArgNamespace2() string {
+	return ins.argNamespace2
 }
 
 func (ins *TypeInstanceCommon) HasTL2() bool {

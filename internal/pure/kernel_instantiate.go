@@ -76,7 +76,7 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 		natArgs = append(natArgs, natArgs2...)
 		return tr, natArgs, nil
 	}
-	someType := tr.Type.SomeType
+	someType := &tr.Type.SomeType
 	// names found in local arguments have priority over global type names
 	if someType.Name.Namespace == "" {
 		for i, targ := range leftArgs {
