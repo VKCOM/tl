@@ -11,10 +11,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
-	_ "net/http/pprof" // Import for side effects: registers pprof handlers
+	//"net/http"
+	//_ "net/http/pprof" // Import for side effects: registers pprof handlers
 	"os"
-	"runtime"
 	"sort"
 	"strings"
 
@@ -49,13 +48,13 @@ func languagesString() string {
 func main() {
 	log.Printf("tl2gen version: %s", utils.AppVersion())
 
-	runtime.SetMutexProfileFraction(1)
-	runtime.SetBlockProfileRate(1)
-	go func() {
-		if err := http.ListenAndServe(":8821", nil); err != nil { // Use nil for default ServeMux
-			fmt.Println(err)
-		}
-	}()
+	//runtime.SetMutexProfileFraction(1)
+	//runtime.SetBlockProfileRate(1)
+	//go func() {
+	//	if err := http.ListenAndServe(":8821", nil); err != nil { // Use nil for default ServeMux
+	//		fmt.Println(err)
+	//	}
+	//}()
 	log.SetFlags(0)
 
 	opt := puregen.Options{
