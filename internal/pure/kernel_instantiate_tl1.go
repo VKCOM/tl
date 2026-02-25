@@ -343,11 +343,11 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceR
 		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments, tr.Args, nil, nil)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1,
-			td.TemplateArguments, tr.Args)
+			td.TemplateArguments)
 	case len(kt.combTL1) == 1:
 		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr,
 			kt.combTL1[0],
-			td.TemplateArguments, tr.Args,
+			td.TemplateArguments,
 			false, 0)
 	default:
 		return nil, false, fmt.Errorf("wrong type classification, internal error %s", canonicalName)

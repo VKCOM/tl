@@ -27,6 +27,10 @@ type TL2TypeArgument struct {
 	// about argument references not erased from the type
 	// TODO - decide on moving into TL2TypeRef when working on C++ gen
 	OriginalArgumentName string
+
+	// this is set during type resolution, so the information
+	// about which field masks are used where
+	SourceField CombinatorField
 }
 
 // TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts)?;
