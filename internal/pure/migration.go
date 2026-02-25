@@ -11,7 +11,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"maps"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -26,9 +28,9 @@ type migrationTL1RefsTL2Errors struct {
 func (m *migrationTL1RefsTL2Errors) addError(comb *tlast.Combinator, e1 *tlast.ParseError) {
 	m.totalErrors++
 	ns := comb.Construct.Name.Namespace // ignore types with 2 namespaces
-	if _, ok := m.errNamespaces[ns]; ok {
-		return
-	}
+	//if _, ok := m.errNamespaces[ns]; ok {
+	//	return
+	//}
 	m.errNamespaces[ns] = struct{}{}
 	//too much clutter, decided simple error is better
 	//e2 := comb.Construct.NamePR.BeautifulError(errSeeHere)
@@ -168,7 +170,6 @@ outer:
 		}
 	}
 	// check there will be no references to TL2 combinators from TL1 combinators
-	// TODO - collect at least 1 Example per namespace
 	refErrList := migrationTL1RefsTL2Errors{errNamespaces: map[string]struct{}{}}
 	for _, tip := range k.tipsOrdered {
 		if _, ok := migrateTips[tip]; ok {
@@ -203,8 +204,10 @@ outer:
 		err.PrintWarning(k.opts.ErrorWriter, nil)
 	}
 	if len(refErrList.migrationErrorList) != 0 { // do not need beautiful error here
-		return nil, fmt.Errorf("migration failed with %d would be TL1->TL2 references in %d namespaces",
-			refErrList.totalErrors, len(refErrList.errNamespaces))
+		nss := slices.Sorted(maps.Keys(refErrList.errNamespaces))
+
+		return nil, fmt.Errorf("migration failed with %d would be TL1->TL2 references in %d namespaces %s",
+			refErrList.totalErrors, len(refErrList.errNamespaces), strings.Join(nss, ","))
 	}
 	// we decide which #-arguments to keep
 	//for _, tip := range k.tipsOrdered {
