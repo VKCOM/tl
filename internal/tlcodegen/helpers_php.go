@@ -566,9 +566,6 @@ class tl_switcher {
   /** @var string */
   public static $tl_platform = "";
 
-  /** @var int */
-  private static $tl_last_serialization_mode = 0;
-
   /**
    * @param string $tl_namespace
    * @return int
@@ -578,15 +575,27 @@ class tl_switcher {
     if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
       $mode = self::$tl_namespaces_info[$tl_namespace];
     }
-    self::$tl_last_serialization_mode = $mode;
     return $mode;
   }
 
   /**
+   * @param string $tl_query
    * @return int
    */
-  public static function tl_get_last_serialization_mode() {
-    return self::$tl_last_serialization_mode;
+  public static function tl_get_query_mode($tl_query) {
+    $tl_namespace = "_common";
+    $exploded = explode($tl_query, '.', 2);
+    if (is_array($exploded)) {
+      $tl_namespace = $exploded[0];
+    }
+    return self::tl_get_namespace_methods_mode($tl_namespace);
+  }
+
+  /**
+   * @return string
+   */
+  public static function tl_get_platform() {
+    return self::$tl_platform;
   }
 }
 `
