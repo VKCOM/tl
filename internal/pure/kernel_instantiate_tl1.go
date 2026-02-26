@@ -309,6 +309,10 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 	if err != nil {
 		return nil, false, err
 	}
+	canonicalName2, bare2, err2 := k.canonicalStringTL2(tr2, true)
+	if err2 != nil || canonicalName != canonicalName2 || bare != bare2 {
+		panic("getInstanceTL1")
+	}
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, bare, nil
 	}
