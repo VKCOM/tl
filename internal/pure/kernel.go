@@ -386,23 +386,12 @@ func (k *Kernel) Compile() error {
 	}
 	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
-		if tip.originTL2 {
-			refName := tip.combTL2.ReferenceName()
-			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: refName}}
-			if !tip.combTL2.IsFunction && len(tip.combTL2.TypeDecl.TemplateArguments) != 0 {
-				continue // instantiate templates on demand only
-			}
-			if _, _, err := k.getInstance(tr, true); err != nil {
-				return err
-			}
+		if !tip.isTopLevel {
+			continue
 		}
-	}
-	for _, tip := range k.tipsTopLevel {
-		if !tip.originTL2 {
-			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
-			if _, _, err := k.getInstance(tr, true); err != nil {
-				return err
-			}
+		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
+		if _, _, err := k.getInstance(tr, true); err != nil {
+			return err
 		}
 	}
 	var cf cycleFinder

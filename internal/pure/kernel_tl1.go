@@ -265,7 +265,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				combTL1:    []*tlast.Combinator{comb},
 				instances:  map[string]*TypeInstanceRef{},
 				isFunction: true,
-				isTopLevel: true,
+				isTopLevel: len(comb.TemplateArguments) == 0,
 				// functions have no canonical name, because there is no references to functions
 				// also they have no TL1 names or TL2 names set.
 				canonicalName:  tlast.TL2TypeName(cName),
