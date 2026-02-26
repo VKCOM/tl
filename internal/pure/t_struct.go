@@ -348,6 +348,26 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	}
 }
 
+func (k *Kernel) getTL1ArgHybrid(arg tlast.TL2TypeArgument, targName string) (localArgs []LocalArgHybrid, natParams []string) {
+	var localNatParams []string
+	k.fillNatParamHybrid(arg, &localNatParams, targName)
+	if len(localNatParams) == 1 {
+		localNatParams[0] = targName
+	}
+	natParams = append(natParams, localNatParams...)
+	localArg := LocalArgHybrid{
+		wrongTypeErr: nil,
+		arg:          arg,
+	}
+	for _, param := range localNatParams {
+		localArg.natArgs = append(localArg.natArgs, ActualNatArg{
+			name: param,
+		})
+	}
+	localArgs = append(localArgs, localArg)
+	return
+}
+
 func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType2 tlast.TL2TypeRef) (localArgs []LocalArgHybrid, natParams []string) {
 	actualArgs := resolvedType2.SomeType.Arguments // empty if brackets
 	if br := resolvedType2.BracketType; br != nil {
@@ -358,22 +378,9 @@ func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType
 	}
 	for i, arg := range actualArgs {
 		leftArg := leftArgs[i]
-		var localNatParams []string
-		k.fillNatParamHybrid(arg, &localNatParams, leftArg.Name)
-		if len(localNatParams) == 1 {
-			localNatParams[0] = leftArg.Name
-		}
-		natParams = append(natParams, localNatParams...)
-		localArg := LocalArgHybrid{
-			wrongTypeErr: nil,
-			arg:          arg,
-		}
-		for _, param := range localNatParams {
-			localArg.natArgs = append(localArg.natArgs, ActualNatArg{
-				name: param,
-			})
-		}
-		localArgs = append(localArgs, localArg)
+		args, params := k.getTL1ArgHybrid(arg, leftArg.Name)
+		natParams = append(natParams, params...)
+		localArgs = append(localArgs, args...)
 	}
 	return
 }

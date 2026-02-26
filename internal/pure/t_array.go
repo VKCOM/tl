@@ -93,8 +93,10 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
+	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
@@ -114,7 +116,7 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
 
 	var fieldNatArgs3 []ActualNatArg
-	for _, param := range natParams2 {
+	for _, param := range natParams3 {
 		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
 			name: param,
 		})
@@ -156,15 +158,17 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
+	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
 	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
-	if len(natParams) != 0 {
-		fmt.Printf("vector natparams %s\n", strings.Join(natParams, ","))
-	}
+	//if len(natParams) != 0 {
+	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
+	//}
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
 	if err != nil {
@@ -176,10 +180,28 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	}
 	k.equalTypes(rt, rt2)
 	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
+
+	var fieldNatArgs3 []ActualNatArg
+	for _, param := range natParams3 {
+		//if i == 0 && !resolvedType2.BracketType.IndexType.IsNumber {
+		//	continue
+		//}
+		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
+			name: param,
+		})
+	}
+	k.equalTypes(rt, resolvedType2.BracketType.ArrayType)
+	k.equalNatArgs(fieldNatArgs, fieldNatArgs3)
+
 	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
+	}
+
+	if resolvedType2.BracketType.IndexType.IsNumber != actualArgs[0].IsArith ||
+		resolvedType2.BracketType.IndexType.Number != actualArgs[0].Arith.Res {
+		panic("tuple properties differ")
 	}
 
 	ins := &TypeInstanceArray{
