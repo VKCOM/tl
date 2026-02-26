@@ -9,9 +9,123 @@ package pure
 import (
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
+
+// TODO - make this simple formatiing, do not look up here, look up only in resolveType
+// top level types do not have bare/boxed in their names, instead bare is returned from function
+func (k *Kernel) canonicalStringTL2(tr tlast.TL2TypeRef, top bool) (_ string, bare bool, _ error) {
+	var s strings.Builder
+
+	if br := tr.BracketType; br != nil {
+		if br.HasIndex {
+			if br.IndexType.IsNumber {
+				s.WriteString("__tuple<")
+				s.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
+				s.WriteString(",")
+			} else if br.IndexType.Type.String() == "*" {
+				s.WriteString("__tuple<*,")
+			} else {
+				s.WriteString("__dict2<")
+				str, _, err := k.canonicalStringTL2(br.IndexType.Type, false)
+				if err != nil {
+					return "", false, err
+				}
+				s.WriteString(str)
+				s.WriteString(",")
+			}
+		} else {
+			s.WriteString("__vector<")
+		}
+		str, _, err := k.canonicalStringTL2(br.ArrayType, false)
+		if err != nil {
+			return "", false, err
+		}
+		s.WriteString(str)
+		s.WriteString(">")
+		// TODO - switch to TL2-style
+		//s.WriteString("[")
+		//if br.HasIndex {
+		//	if br.IndexType.IsNumber {
+		//		s.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
+		//	} else {
+		//		str, _, err := k.canonicalStringTL2(br.IndexType.Type, false)
+		//		if err != nil {
+		//			return "", false, err
+		//		}
+		//		s.WriteString(str)
+		//	}
+		//}
+		//s.WriteString("]")
+		//str, _, err := k.canonicalStringTL2(br.ArrayType, false)
+		//if err != nil {
+		//	return "", false, err
+		//}
+		//s.WriteString(str)
+		return s.String(), true, nil
+	}
+	someType := tr.SomeType
+	tName := someType.Name.String()
+	kt, ok := k.tips[tName]
+	if !ok {
+		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+	}
+	//if kt.originTL2 {
+	//	panic(fmt.Sprintf("internal error: reference from TL1 to TL2 type %s must be prevented by Kernel.resolveTypeTL1", tName))
+	//}
+	bare = someType.Bare
+	if someType.Name != tlast.TL2TypeName(kt.tl1BoxedName) {
+		bare = true
+	}
+	if bare && !kt.CanBeBare() {
+		// TODO - we could simply treat % as "bare if possible", which would allow writing it basically everywhere
+		e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be bare", tName))
+		if kt.originTL2 {
+			// TODO - beautiful
+			return "", false, e1
+		}
+		e2 := kt.combTL1[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
+		return "", false, tlast.BeautifulError2(e1, e2)
+	}
+	if !bare && !kt.CanBeBoxed() { // TODO - impossible?
+		e1 := tr.PR.BeautifulError(fmt.Errorf("type reference to %s cannot be boxed", tName))
+		if kt.originTL2 {
+			// TODO - beautiful
+			return "", false, e1
+		}
+		e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
+		return "", false, tlast.BeautifulError2(e1, e2)
+	}
+	if !top && !bare && kt.CanBeBare() {
+		s.WriteString("+")
+	}
+	s.WriteString(kt.canonicalName.String())
+	if len(someType.Arguments) == 0 {
+		return s.String(), bare, nil
+	}
+	s.WriteByte('<')
+	for i, a := range someType.Arguments {
+		if i != 0 {
+			s.WriteByte(',')
+		}
+		if a.IsNumber {
+			s.WriteString(strconv.FormatUint(uint64(a.Number), 10))
+		} else if a.Type.String() == "*" {
+			s.WriteString("*")
+		} else {
+			str, _, err := k.canonicalStringTL2(a.Type, false)
+			if err != nil {
+				return "", false, err
+			}
+			s.WriteString(str)
+		}
+	}
+	s.WriteByte('>')
+	return s.String(), bare, nil
+}
 
 func (k *Kernel) resolveTypeTL2(tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []tlast.TL2TypeArgument) (tlast.TL2TypeRef, error) {
@@ -301,6 +415,10 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 	canonicalName, bare, err := k.canonicalStringTL1(trTL1, true)
 	if err != nil {
 		return nil, false, err
+	}
+	canonicalName2, bare2, err2 := k.canonicalStringTL2(tr, true)
+	if err2 != nil || canonicalName != canonicalName2 || bare != bare2 {
+		panic("getInstanceTL1")
 	}
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, bare, nil
