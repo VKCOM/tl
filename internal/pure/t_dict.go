@@ -48,7 +48,7 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 	panic("TODO - rewrite this branch")
 
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
+	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{
 		Type: tlast.Name{Name: "__dict_field"},
@@ -58,11 +58,11 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			T: tlast.TypeRef{Type: tlast.Name{Name: "v"}},
 		}},
 	}
-	rt, fieldNatArgs, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
 	if err != nil {
 		return nil, err
 	}
-	////log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
+	////fmt.Printf("resolveTypeTL2 of dict for %s element: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
@@ -86,7 +86,7 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			natParams:     natParams2,
 			tip:           tip,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}
@@ -126,16 +126,16 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
 
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
+	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
-	rt, fieldNatArgs2, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	rt, fieldNatArgs2, err := k.resolveType(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
 	if err != nil {
 		return nil, err
 	}
 
-	//log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
+	//fmt.Printf("resolveTypeTL2 of dict for %s element: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
@@ -157,7 +157,7 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 			natParams:     natParams2,
 			tip:           tip,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}

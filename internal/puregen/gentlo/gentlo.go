@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/vkcom/tl/internal/pure"
@@ -20,7 +19,7 @@ import (
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if options.Kernel.Verbose {
-		log.Print("generating TLO file...")
+		fmt.Print("generating TLO file...\n")
 	}
 	if options.Outfile == "" {
 		return fmt.Errorf("--outfile should not be empty")

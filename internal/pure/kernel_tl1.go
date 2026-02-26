@@ -9,7 +9,6 @@ package pure
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
@@ -147,7 +146,7 @@ func (k *Kernel) checkExclamationWrapper(typ *tlast.Combinator) (bool, []tlast.T
 }
 
 func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) error {
-	log.Printf("tl2pure: compiling %d TL1 combinators", len(k.filesTL1))
+	fmt.Printf("tl2pure: compiling %d TL1 combinators\n", len(k.filesTL1))
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}
 	typeDescriptors := map[string][]*tlast.Combinator{}
@@ -370,7 +369,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 		}
 	}
 	//for _, comb := range k.filesTL1 {
-	//	log.Printf("tl2pure: compiling %s", comb)
+	//	fmt.Printf("tl2pure: compiling %s\n", comb)
 	//	kt := &KernelType{
 	//		originTL2: false,
 	//		combTL1:   comb,

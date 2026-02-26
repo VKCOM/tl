@@ -9,7 +9,6 @@ package gentljsonhtml
 import (
 	"cmp"
 	"fmt"
-	"log"
 	"os"
 	"slices"
 	"strconv"
@@ -22,7 +21,7 @@ import (
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if options.Kernel.Verbose {
-		log.Print("generating tljson.html documentation...")
+		fmt.Printf("generating tljson.html documentation...\n")
 	}
 	if options.Outfile == "" {
 		return fmt.Errorf("--outfile should not be empty")
@@ -40,9 +39,6 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 }
 
 func JSONHelpString(kernel *pure.Kernel, ins pure.TypeInstance) string {
-	if ins.CanonicalName() == "Maybe<+ab.myType>" {
-		fmt.Print("aha")
-	}
 	if ins.KernelType() == nil {
 		return ins.CanonicalName()
 	}
@@ -68,7 +64,7 @@ func JSONHelpString(kernel *pure.Kernel, ins pure.TypeInstance) string {
 		} else if a.Type.String() == "*" {
 			s.WriteString("#") // TODO - write fieldName here if special argument to function is set
 		} else {
-			ref, _, err := kernel.GetInstanceTL1(a.Type)
+			ref, _, err := kernel.GetInstance(a.Type)
 			if err != nil {
 				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.Type, err))
 			}
@@ -146,7 +142,7 @@ func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields [
 				s.WriteString(natArg.Name())
 			}
 		} else {
-			ref, fieldBare, err := kernel.GetInstanceTL1(a.Type)
+			ref, fieldBare, err := kernel.GetInstance(a.Type)
 			if err != nil {
 				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.Type, err))
 			}

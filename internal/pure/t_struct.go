@@ -219,7 +219,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
-			argNamespace:  k.getArgNamespace2(tr),
+			argNamespace:  k.getArgNamespace(tr),
 			hasTL2:        true,
 		},
 		isConstructorFields: isConstructorFields,
@@ -501,7 +501,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	leftArgs := def.TemplateArguments
 
 	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
@@ -512,7 +512,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 			hasTL2:        false, // could be marked later
 		},
 		isConstructorFields: true,
@@ -570,11 +570,11 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	for i, fieldDef := range fieldsAfterReplace {
 		fieldType := typesAfterReplace[i]
 		originalFieldIndex := originalFieldIndices[i]
-		rt, natArgs, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs)
+		rt, natArgs, err := k.resolveType(false, fieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
 		}
-		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
+		// fmt.Printf("resolveTypeTL2 for %s field %s: %s -> %s\n", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
 			return nil, err
@@ -655,11 +655,11 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 	if def.IsFunction {
 		fieldType := k.convertTypeRef(def.FuncDecl)
-		rt, natArgs, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs)
+		rt, natArgs, err := k.resolveType(false, fieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
 		}
-		// log.Printf("resolveTypeTL2 for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
+		// fmt.Printf("resolveTypeTL2 for function %s result type: %s -> %s\n", canonicalName, def.FuncDecl.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)

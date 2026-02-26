@@ -55,7 +55,9 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 	return ActualNatArg{}, mask.PRName.BeautifulError(errors.New("fieldMask reference not found"))
 }
 
-func (k *Kernel) GetInstanceTL1(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
+// we do not allow creating additional instances externally for now
+// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types are first converted into TL2 style
+func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
 	ref, bare, err := k.getInstance(tr, false)
 	if err != nil {
 		return nil, false, err
@@ -63,7 +65,7 @@ func (k *Kernel) GetInstanceTL1(tr tlast.TL2TypeRef) (TypeInstance, bool, error)
 	return ref.ins, bare, nil
 }
 
-// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types first converted into TL2 style
+// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types are first converted into TL2 style
 func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
 	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
 	if err != nil {
@@ -75,10 +77,11 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	if !create {
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
+	// fmt.Printf("creating an instance of type %s\n", canonicalName)
 	if br := tr.BracketType; br != nil {
-		ref := k.addInstance(canonicalName, k.brackets)
 		// must store pointer before children GetInstanceTL2() terminates recursion
 		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+		ref := k.addInstance(canonicalName, k.brackets)
 		if br.HasIndex {
 			if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
 				ref.ins, err = k.createTupleTL1(canonicalName, tr)
@@ -93,9 +96,6 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 		}
 		return ref, bare, nil
 	}
-	// log.Printf("creating an instance of type %s", canonicalName)
-	// we must mark all usedAsNatConst, usedAsNatVariable, so
-	// will do some work before looking up and returning existing instance
 	tName := tr.SomeType.Name.String()
 	kt, ok := k.tips[tName]
 	if !ok {
@@ -104,7 +104,6 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	// must store pointer before children GetInstanceTL2() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
-	// TODO - instantiate TL2 combinators here
 	if kt.originTL2 {
 		if !kt.combTL2.IsFunction {
 			ref.ins, err = k.createOrdinaryType(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
@@ -115,8 +114,8 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 			return ref, bare, nil
 		}
 		funcDecl := kt.combTL2.FuncDecl
-		var resultType TypeInstance
 		resultAlias := false
+		var resultType TypeInstance
 		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
 			resultAlias = true
 			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
@@ -150,13 +149,12 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 		return ref, bare, nil
 	}
 	td := kt.combTL1[0]
-
 	switch {
 	case tName == "__dict":
-		// log.Printf("creating an instance of dictionary type %s", canonicalName)
+		fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments)
 	case tName == "__dict2":
-		// log.Printf("creating an instance of dictionary type %s", canonicalName)
+		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
 		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
 		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments)
 	case len(kt.combTL1) > 1:

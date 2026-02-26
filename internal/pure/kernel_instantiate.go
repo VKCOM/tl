@@ -19,15 +19,15 @@ type LocalArgHybrid struct {
 	natArgs      []ActualNatArg
 }
 
-func (k *Kernel) resolveTypeHybrid(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TemplateArgument,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeRef, []ActualNatArg, error) {
-	ac, natArgs, err := k.resolveArgumentHybrid(ctxTL2, tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
+	ac, natArgs, err := k.resolveArgument(ctxTL2, tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
 	if err != nil {
 		return tr, nil, err
 	}
 	if ac.IsNumber {
 		// TODO - beautiful test case,
-		return tr, nil, fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Number)
+		return tr, nil, tr.PR.BeautifulError(fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Number))
 	}
 	if ac.Type.String() == "*" {
 		// TODO - beautiful test case,
@@ -36,11 +36,11 @@ func (k *Kernel) resolveTypeHybrid(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []
 	return ac.Type, natArgs, nil
 }
 
-func (k *Kernel) resolveArgumentHybrid(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	before := tr
 	was := before.String()
-	tr, natArgs, err := k.resolveArgumentHybridImpl(ctxTL2, tr, leftArgs, actualArgs)
+	tr, natArgs, err := k.resolveArgumentImpl(ctxTL2, tr, leftArgs, actualArgs)
 	after := before.String()
 	if was != after {
 		panic(fmt.Sprintf("tl2pure: internal error, resolveArgumentTL1 destroyed %s original value %s due to golang aliasing", after, was))
@@ -48,7 +48,7 @@ func (k *Kernel) resolveArgumentHybrid(ctxTL2 bool, tr tlast.TL2TypeArgument, le
 	return tr, natArgs, err
 }
 
-func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	if tr.IsNumber {
 		return tr, nil, nil
@@ -60,13 +60,14 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 		var natArgs []ActualNatArg
 		bracketType := *tr.Type.BracketType
 		if bracketType.HasIndex {
-			ic, natArgs2, err := k.resolveArgumentHybrid(ctxTL2, bracketType.IndexType, leftArgs, actualArgs)
+			ic, natArgs2, err := k.resolveArgument(ctxTL2, bracketType.IndexType, leftArgs, actualArgs)
 			if err != nil {
 				return tr, nil, err
 			}
 			bracketType.IndexType = ic
 			natArgs = append(natArgs, natArgs2...)
 
+			//TODO - uncomment as soon as code to regenerated tests exists again
 			//if sf := ic.SourceField; sf != (tlast.CombinatorField{}) {
 			//	field := &sf.Comb.Fields[sf.FieldIndex]
 			//	if field.UsedAsMask {
@@ -80,7 +81,7 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 			//	field.UsedAsSizePR = ic.PR
 			//}
 		}
-		ac, natArgs2, err := k.resolveTypeHybrid(ctxTL2, bracketType.ArrayType, leftArgs, actualArgs)
+		ac, natArgs2, err := k.resolveType(ctxTL2, bracketType.ArrayType, leftArgs, actualArgs)
 		if err != nil {
 			return tr, nil, err
 		}
@@ -146,17 +147,14 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 		}
 		someType.Name = tlast.TL2TypeName{Name: tName}
 		someType.Bare = false // not required and should not change canonical type
-		//if tName == "tuple" {
-		//	tr.T.Args[0], tr.T.Args[1] = tr.T.Args[1], tr.T.Args[0]
-		//}
 	}
 
 	if kt.originTL2 && !ctxTL2 {
+		// TODO - this is wrong, add hasTL1, hasTL2 properties instead
 		e1 := someType.PR.BeautifulError(fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", someType.Name))
 		e2 := kt.combTL2.TypeDecl.PRName.BeautifulError(fmt.Errorf("declared here"))
 		return tr, nil, tlast.BeautifulError2(e1, e2)
 	}
-	//td := kt.combTL1[0]
 	// checks below are redundant, but they catch type resolve errors early for beautiful errors
 	// if modifying this code, modify also code in func (k *Kernel) resolveArgumentTL2Impl()
 	if len(kt.templateArguments) > len(someType.Arguments) {
@@ -177,7 +175,7 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 	var natArgs []ActualNatArg
 	for i, arg := range someType.Arguments {
 		ta := kt.templateArguments[i]
-		rt, natArgs2, err := k.resolveArgumentHybrid(ctxTL2, arg, leftArgs, actualArgs)
+		rt, natArgs2, err := k.resolveArgument(ctxTL2, arg, leftArgs, actualArgs)
 		if err != nil {
 			return tr, nil, err
 		}
@@ -209,9 +207,9 @@ func (k *Kernel) resolveArgumentHybridImpl(ctxTL2 bool, tr tlast.TL2TypeArgument
 	return tr, natArgs, nil
 }
 
-func (k *Kernel) getArgNamespace2(rt tlast.TL2TypeRef) string {
+func (k *Kernel) getArgNamespace(rt tlast.TL2TypeRef) string {
 	argNamespaces := map[string]struct{}{}
-	k.collectArgsNamespaces2(tlast.TL2TypeArgument{Type: rt}, argNamespaces)
+	k.collectArgsNamespaces(tlast.TL2TypeArgument{Type: rt}, argNamespaces)
 	if len(argNamespaces) == 1 {
 		for ns := range argNamespaces {
 			return ns
@@ -223,16 +221,16 @@ func (k *Kernel) getArgNamespace2(rt tlast.TL2TypeRef) string {
 	return rt.SomeType.Name.Namespace
 }
 
-func (k *Kernel) collectArgsNamespaces2(rt tlast.TL2TypeArgument, argNamespaces map[string]struct{}) {
+func (k *Kernel) collectArgsNamespaces(rt tlast.TL2TypeArgument, argNamespaces map[string]struct{}) {
 	// This is policy. You can adjust it, so more or less templates instantiations
 	// are moved into namespace of arguments. Code should compile anyway.
 	if rt.IsNumber || rt.Type.String() == "*" {
 		return
 	}
 	if br := rt.Type.BracketType; br != nil {
-		k.collectArgsNamespaces2(tlast.TL2TypeArgument{Type: br.ArrayType}, argNamespaces)
+		k.collectArgsNamespaces(tlast.TL2TypeArgument{Type: br.ArrayType}, argNamespaces)
 		if br.HasIndex {
-			k.collectArgsNamespaces2(br.IndexType, argNamespaces)
+			k.collectArgsNamespaces(br.IndexType, argNamespaces)
 		}
 	} else {
 		someType := rt.Type.SomeType
@@ -240,7 +238,7 @@ func (k *Kernel) collectArgsNamespaces2(rt tlast.TL2TypeArgument, argNamespaces 
 			argNamespaces[someType.Name.Namespace] = struct{}{}
 		}
 		for _, arg := range someType.Arguments {
-			k.collectArgsNamespaces2(arg, argNamespaces)
+			k.collectArgsNamespaces(arg, argNamespaces)
 		}
 	}
 }

@@ -287,9 +287,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 			w.resolvedT2GoNameArg(&b, arg, insideNamespace)
 		}
 	}
-	//if w.pureType.CanonicalName() == "Vector<uint32>" {
-	//	fmt.Printf("aga")
-	//}
 	tail = b.String()
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
