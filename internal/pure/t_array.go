@@ -98,7 +98,6 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
-
 	// log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
@@ -113,6 +112,15 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	}
 	k.equalTypes(rt, rt2)
 	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
+
+	var fieldNatArgs3 []ActualNatArg
+	for _, param := range natParams2 {
+		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
+			name: param,
+		})
+	}
+	k.equalTypes(rt, resolvedType2.BracketType.ArrayType)
+	k.equalNatArgs(fieldNatArgs, fieldNatArgs3)
 
 	// log.Printf("resolveTypeTL2 of vector for %s field: %s -> %s", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
@@ -154,7 +162,9 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
 	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
-
+	if len(natParams) != 0 {
+		fmt.Printf("vector natparams %s\n", strings.Join(natParams, ","))
+	}
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
 	if err != nil {
