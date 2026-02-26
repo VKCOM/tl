@@ -101,7 +101,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	}
 
 	// log.Printf("resolveTypeTL2 of vector for %s field: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(resolvedType2.BracketType.ArrayType, true)
+	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s field: %w", canonicalName, err)
 	}
@@ -147,7 +147,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2Typ
 	}
 
 	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(resolvedType2.BracketType.ArrayType, true)
+	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
 	}

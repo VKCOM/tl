@@ -63,7 +63,7 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 		return nil, err
 	}
 	////log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstance(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
 	}
@@ -136,7 +136,7 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	}
 
 	//log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstance(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
 	}

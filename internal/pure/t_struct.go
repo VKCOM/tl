@@ -238,7 +238,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL
 		if err != nil {
 			return nil, err
 		}
-		fieldIns, fieldBare, err := k.getInstanceTL2(rt, true)
+		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
 			return nil, err
 		}
@@ -575,7 +575,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
 			return nil, err
 		}
@@ -660,7 +660,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		// log.Printf("resolveTypeTL2 for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}

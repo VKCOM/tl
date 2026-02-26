@@ -21,50 +21,26 @@ func (k *Kernel) canonicalStringTL2(tr tlast.TL2TypeRef, top bool) (_ string, ba
 	var s strings.Builder
 
 	if br := tr.BracketType; br != nil {
+		s.WriteString("[")
 		if br.HasIndex {
 			if br.IndexType.IsNumber {
-				s.WriteString("__tuple<")
 				s.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
-				s.WriteString(",")
 			} else if br.IndexType.Type.String() == "*" {
-				s.WriteString("__tuple<*,")
+				s.WriteString("*")
 			} else {
-				s.WriteString("__dict2<")
 				str, _, err := k.canonicalStringTL2(br.IndexType.Type, false)
 				if err != nil {
 					return "", false, err
 				}
 				s.WriteString(str)
-				s.WriteString(",")
 			}
-		} else {
-			s.WriteString("__vector<")
 		}
+		s.WriteString("]")
 		str, _, err := k.canonicalStringTL2(br.ArrayType, false)
 		if err != nil {
 			return "", false, err
 		}
 		s.WriteString(str)
-		s.WriteString(">")
-		// TODO - switch to TL2-style
-		//s.WriteString("[")
-		//if br.HasIndex {
-		//	if br.IndexType.IsNumber {
-		//		s.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
-		//	} else {
-		//		str, _, err := k.canonicalStringTL2(br.IndexType.Type, false)
-		//		if err != nil {
-		//			return "", false, err
-		//		}
-		//		s.WriteString(str)
-		//	}
-		//}
-		//s.WriteString("]")
-		//str, _, err := k.canonicalStringTL2(br.ArrayType, false)
-		//if err != nil {
-		//	return "", false, err
-		//}
-		//s.WriteString(str)
 		return s.String(), true, nil
 	}
 	someType := tr.SomeType
@@ -77,7 +53,7 @@ func (k *Kernel) canonicalStringTL2(tr tlast.TL2TypeRef, top bool) (_ string, ba
 	//	panic(fmt.Sprintf("internal error: reference from TL1 to TL2 type %s must be prevented by Kernel.resolveTypeTL1", tName))
 	//}
 	bare = someType.Bare
-	if someType.Name != tlast.TL2TypeName(kt.tl1BoxedName) {
+	if someType.Name != kt.tl1BoxedName {
 		bare = true
 	}
 	if bare && !kt.CanBeBare() {
@@ -295,193 +271,114 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 	return tr, nil
 }
 
-// TODO - we can decide later to convert TL1 type refs to TL2, should weight pro and cons
-func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, error) {
-	if tr.IsBracket() {
-		// so the diff before and after migration is minimal
-		elemType, err := k.convertTL2TypeRefToTL1(tr.BracketType.ArrayType)
-		if err != nil {
-			return tlast.TypeRef{}, err
-		}
-		if tr.BracketType.HasIndex {
-			if tr.BracketType.IndexType.IsNumber {
-				// tuple
-				rt := tlast.TypeRef{
-					Type:   tlast.Name{Name: "tuple"},
-					Args:   nil,
-					Bare:   false,
-					PR:     tr.BracketType.PR,
-					PRArgs: tr.BracketType.PR, // TODO
-					// OriginalArgumentName: , TODO
-				}
-				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-					IsArith: false,
-					T:       elemType,
-					// SourceField: tlast.CombinatorField{}, // TODO
-				})
-				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-					IsArith: true,
-					Arith:   tlast.Arithmetic{Res: tr.BracketType.IndexType.Number},
-					T:       tlast.TypeRef{PR: tr.BracketType.IndexType.PR},
-					// SourceField: tlast.CombinatorField{}, // TODO
-				})
-				return rt, nil
-			}
-			// dict
-			keyType, err := k.convertTL2TypeRefToTL1(tr.BracketType.IndexType.Type)
-			if err != nil {
-				return tlast.TypeRef{}, err
-			}
-			rt := tlast.TypeRef{
-				Type:   tlast.Name{Name: "__dict2"},
-				Args:   nil,
-				Bare:   false,
-				PR:     tr.BracketType.PR,
-				PRArgs: tr.BracketType.PR, // TODO
-				// OriginalArgumentName: , TODO
-			}
-			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-				IsArith: false,
-				T:       keyType,
-				// SourceField: tlast.CombinatorField{}, // TODO
-			})
-			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-				IsArith: false,
-				T:       elemType,
-				// SourceField: tlast.CombinatorField{}, // TODO
-			})
-			return rt, nil
-		}
-		// vector
-		rt := tlast.TypeRef{
-			Type:   tlast.Name{Name: "vector"},
-			Args:   nil,
-			Bare:   false,
-			PR:     tr.BracketType.PR,
-			PRArgs: tr.BracketType.PR, // TODO
-			// OriginalArgumentName: , TODO
-		}
-		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-			IsArith: false,
-			T:       elemType,
-			// SourceField: tlast.CombinatorField{}, // TODO
-		})
-		return rt, nil
-	}
-	someType := tr.SomeType
-	tName := someType.Name.String()
-	kt, ok := k.tips[tName]
-	if !ok {
-		return tlast.TypeRef{}, someType.PRName.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
-	}
-	rt := tlast.TypeRef{
-		Type:   tlast.Name(someType.Name),
-		Args:   nil,
-		Bare:   kt.canBeBare,
-		PR:     someType.PR,
-		PRArgs: someType.PR, // TODO
-		// OriginalArgumentName: , TODO
-	}
-	for _, arg := range someType.Arguments {
-		if arg.IsNumber {
-			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-				IsArith: true,
-				Arith:   tlast.Arithmetic{Res: arg.Number},
-				T:       tlast.TypeRef{PR: arg.PR},
-				// SourceField: tlast.CombinatorField{}, // TODO
-			})
-			continue
-		}
-		argType, err := k.convertTL2TypeRefToTL1(arg.Type)
-		if err != nil {
-			return tlast.TypeRef{}, err
-		}
-		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
-			IsArith: false,
-			T:       argType,
-			// SourceField: tlast.CombinatorField{}, // TODO
-		})
-	}
-	return rt, nil
-}
-
-func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstanceRef, bool, error) {
-	trTL1, err := k.convertTL2TypeRefToTL1(tr)
-	if err != nil {
-		return nil, false, err
-	}
-	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
-	if err != nil {
-		return nil, false, err
-	}
-	if ref, ok := k.instances[canonicalName]; ok {
-		return ref, bare, nil
-	}
-	if !create {
-		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
-	}
-	// log.Printf("creating an instance of type %s", canonicalName)
-	// must store pointer before children GetInstanceTL2() terminates recursion
-	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway
-	tName := trTL1.Type.String()
-	kt, ok := k.tips[tName]
-	if !ok {
-		return nil, false, trTL1.PR.BeautifulError(fmt.Errorf("type %s does not exist", tName))
-	}
-	if kt.originTL2 {
-		someType := tr.SomeType
-		// must store pointer before children GetInstanceTL2() terminates recursion
-		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-		ref := k.addInstance(canonicalName, kt)
-		if !kt.combTL2.IsFunction {
-			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
-				return nil, false, fmt.Errorf("internal error - typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
-			}
-			ref.ins, err = k.createOrdinaryType(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
-				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
-			if err != nil {
-				return nil, false, err
-			}
-			return ref, bare, nil
-		}
-		funcDecl := kt.combTL2.FuncDecl
-		var resultType TypeInstance
-		resultAlias := false
-		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
-			resultAlias = true
-			ins, _, err := k.getInstanceTL2(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = ins.ins // function cannot be referenced so no recursion
-		} else if funcDecl.ReturnType.IsTypeAlias {
-			resultAlias = true
-			ins, _, err := k.getInstanceTL2(funcDecl.ReturnType.TypeAlias, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = ins.ins // function cannot be referenced so no recursion
-		} else {
-			fieldReturnType := funcDecl.ReturnType.StructType.ConstructorFields[0].Type
-			// this is special case because we want no diff during migration to TL2,
-			// and all TL1 functions return exactly this kind of result
-			ins, _, err := k.getInstanceTL2(fieldReturnType, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = ins.ins // function cannotbe referenced so no recursion
-		}
-		ref.ins, err = k.createStruct(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
-			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
-			resultType, resultAlias)
-		if err != nil {
-			return nil, false, err
-		}
-		return ref, bare, nil
-	}
-	panic("TODO")
-	return k.getInstanceTL1(tr, create)
-}
+//func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, error) {
+//	if tr.IsBracket() {
+//		// so the diff before and after migration is minimal
+//		elemType, err := k.convertTL2TypeRefToTL1(tr.BracketType.ArrayType)
+//		if err != nil {
+//			return tlast.TypeRef{}, err
+//		}
+//		if tr.BracketType.HasIndex {
+//			if tr.BracketType.IndexType.IsNumber {
+//				// tuple
+//				rt := tlast.TypeRef{
+//					Type:   tlast.Name{Name: "tuple"},
+//					Args:   nil,
+//					Bare:   false,
+//					PR:     tr.BracketType.PR,
+//					PRArgs: tr.BracketType.PR, // TODO
+//					// OriginalArgumentName: , TODO
+//				}
+//				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//					IsArith: false,
+//					T:       elemType,
+//					// SourceField: tlast.CombinatorField{}, // TODO
+//				})
+//				rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//					IsArith: true,
+//					Arith:   tlast.Arithmetic{Res: tr.BracketType.IndexType.Number},
+//					T:       tlast.TypeRef{PR: tr.BracketType.IndexType.PR},
+//					// SourceField: tlast.CombinatorField{}, // TODO
+//				})
+//				return rt, nil
+//			}
+//			// dict
+//			keyType, err := k.convertTL2TypeRefToTL1(tr.BracketType.IndexType.Type)
+//			if err != nil {
+//				return tlast.TypeRef{}, err
+//			}
+//			rt := tlast.TypeRef{
+//				Type:   tlast.Name{Name: "__dict2"},
+//				Args:   nil,
+//				Bare:   false,
+//				PR:     tr.BracketType.PR,
+//				PRArgs: tr.BracketType.PR, // TODO
+//				// OriginalArgumentName: , TODO
+//			}
+//			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//				IsArith: false,
+//				T:       keyType,
+//				// SourceField: tlast.CombinatorField{}, // TODO
+//			})
+//			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//				IsArith: false,
+//				T:       elemType,
+//				// SourceField: tlast.CombinatorField{}, // TODO
+//			})
+//			return rt, nil
+//		}
+//		// vector
+//		rt := tlast.TypeRef{
+//			Type:   tlast.Name{Name: "vector"},
+//			Args:   nil,
+//			Bare:   false,
+//			PR:     tr.BracketType.PR,
+//			PRArgs: tr.BracketType.PR, // TODO
+//			// OriginalArgumentName: , TODO
+//		}
+//		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//			IsArith: false,
+//			T:       elemType,
+//			// SourceField: tlast.CombinatorField{}, // TODO
+//		})
+//		return rt, nil
+//	}
+//	someType := tr.SomeType
+//	tName := someType.Name.String()
+//	kt, ok := k.tips[tName]
+//	if !ok {
+//		return tlast.TypeRef{}, someType.PRName.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+//	}
+//	rt := tlast.TypeRef{
+//		Type:   tlast.Name(someType.Name),
+//		Args:   nil,
+//		Bare:   kt.canBeBare,
+//		PR:     someType.PR,
+//		PRArgs: someType.PR, // TODO
+//		// OriginalArgumentName: , TODO
+//	}
+//	for _, arg := range someType.Arguments {
+//		if arg.IsNumber {
+//			rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//				IsArith: true,
+//				Arith:   tlast.Arithmetic{Res: arg.Number},
+//				T:       tlast.TypeRef{PR: arg.PR},
+//				// SourceField: tlast.CombinatorField{}, // TODO
+//			})
+//			continue
+//		}
+//		argType, err := k.convertTL2TypeRefToTL1(arg.Type)
+//		if err != nil {
+//			return tlast.TypeRef{}, err
+//		}
+//		rt.Args = append(rt.Args, tlast.ArithmeticOrType{
+//			IsArith: false,
+//			T:       argType,
+//			// SourceField: tlast.CombinatorField{}, // TODO
+//		})
+//	}
+//	return rt, nil
+//}
 
 // alias || fields || union
 func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,

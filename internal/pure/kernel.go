@@ -392,7 +392,7 @@ func (k *Kernel) Compile() error {
 			if !tip.combTL2.IsFunction && len(tip.combTL2.TypeDecl.TemplateArguments) != 0 {
 				continue // instantiate templates on demand only
 			}
-			if _, _, err := k.getInstanceTL2(tr, true); err != nil {
+			if _, _, err := k.getInstance(tr, true); err != nil {
 				return err
 			}
 		}
@@ -400,7 +400,7 @@ func (k *Kernel) Compile() error {
 	for _, tip := range k.tipsTopLevel {
 		if !tip.originTL2 {
 			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
-			if _, _, err := k.getInstanceTL1(tr, true); err != nil {
+			if _, _, err := k.getInstance(tr, true); err != nil {
 				return err
 			}
 		}
