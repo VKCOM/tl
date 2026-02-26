@@ -42,9 +42,9 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (k *Kernel) createDict(canonicalName string, tip *KernelType,
-	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
+	resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
 	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{
@@ -55,7 +55,7 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			T: tlast.TypeRef{Type: tlast.Name{Name: "v"}},
 		}},
 	}
-	rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), tip.templateArguments, localArgs2)
+	rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), tip.templateArguments, localArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -80,10 +80,10 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams2,
+			natParams:     natParams,
 			tip:           tip,
-			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType2),
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		fieldType: fieldInsStruct,
 	}
@@ -118,9 +118,9 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 }
 
 func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
-	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
+	resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	localArgs2, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
 	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
@@ -149,10 +149,10 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceDict{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams2,
+			natParams:     natParams,
 			tip:           tip,
-			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType2),
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		fieldType: fieldInsStruct,
 	}

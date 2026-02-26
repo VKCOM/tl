@@ -506,11 +506,11 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType2 tlast.TL2TypeRef, def *tlast.Combinator,
+	resolvedType tlast.TL2TypeRef, def *tlast.Combinator,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 	leftArgs := append([]tlast.TL2TypeTemplate{}, tip.templateArguments...) // prevent golang aliasing
 
-	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
 	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
@@ -521,8 +521,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
-			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType2),
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        false, // could be marked later
 		},
 		isConstructorFields: true,
@@ -548,7 +548,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
 				T: tlast.TypeRef{
 					Type: tlast.Name{Name: targ.FieldName},
-					PR:   resolvedType2.SomeType.Arguments[i].PR,
+					PR:   resolvedType.SomeType.Arguments[i].PR,
 				},
 			})
 		}

@@ -89,19 +89,19 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 //}
 
 func (k *Kernel) createVectorTL1(canonicalName string,
-	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
+	resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
+	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
 	var fieldNatArgs3 []ActualNatArg
-	for _, param := range natParams3 {
+	for _, param := range natParams {
 		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
 			name: param,
 		})
 	}
 
 	// fmt.Printf("resolveTypeTL2 of vector for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
+	fieldIns, fieldBare, err := k.getInstance(resolvedType.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s field: %w", canonicalName, err)
 	}
@@ -109,10 +109,10 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams3,
+			natParams:     natParams,
 			tip:           nil, // TODO - try to live without brackets type at all
-			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType2),
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple: false,
 	}
@@ -126,28 +126,28 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 	return ins, nil
 }
 
-func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
+func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
+	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 	// fmt.Printf("natParams for tuple %s: %s\n", canonicalName, strings.Join(natParams, ","))
 	//if len(natParams) != 0 {
 	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
 	//}
 	var fieldNatArgs3 []ActualNatArg
-	for _, param := range natParams3 {
-		//if i == 0 && !resolvedType2.BracketType.IndexType.IsNumber {
+	for _, param := range natParams {
+		//if i == 0 && !resolvedType.BracketType.IndexType.IsNumber {
 		//	continue
 		//}
 		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
 			name: param,
 		})
 	}
-	if !resolvedType2.BracketType.IndexType.IsNumber {
-		natParams3 = append([]string{"n"}, natParams3...)
+	if !resolvedType.BracketType.IndexType.IsNumber {
+		natParams = append([]string{"n"}, natParams...)
 	}
 
 	// fmr.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
+	fieldIns, fieldBare, err := k.getInstance(resolvedType.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
 	}
@@ -155,14 +155,14 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2Typ
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams3,
+			natParams:     natParams,
 			tip:           nil, // TODO - try to live without brackets type at all
-			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType2),
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple:     true,
-		count:       resolvedType2.BracketType.IndexType.Number,
-		dynamicSize: !resolvedType2.BracketType.IndexType.IsNumber,
+		count:       resolvedType.BracketType.IndexType.Number,
+		dynamicSize: !resolvedType.BracketType.IndexType.IsNumber,
 	}
 	ins.field = Field{
 		owner:   ins,

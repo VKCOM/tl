@@ -379,6 +379,13 @@ func (k *Kernel) Compile() error {
 		}
 		sort.Strings(k.allAnnotations)
 	}
+	refErrList, err := k.findTL1toTL2References(nil)
+	if err != nil {
+		return err
+	}
+	for _, err := range refErrList.migrationErrorList {
+		return err // simply return the first error
+	}
 	for _, tip := range k.tipsOrdered {
 		if !tip.isTopLevel {
 			continue
