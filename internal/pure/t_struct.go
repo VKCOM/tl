@@ -527,9 +527,8 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, def *tlast.Combinator,
-	leftArgs []tlast.TemplateArgument,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
-
+	leftArgs := def.TemplateArguments
 	resolvedType2 := k.convertTypeRef(resolvedType)
 
 	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
@@ -624,9 +623,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			return nil, err
 		}
 		if k.opts.NewBrackets {
-			if canonicalName == "a.middle<*,pair<a.inner<*>,a.inner<*>>,+a.inner<3>>" {
-				fmt.Print("aha")
-			}
 			rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
 			if err != nil {
 				return nil, err

@@ -122,10 +122,9 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 }
 
 func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, definition []*tlast.Combinator,
-	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
+	resolvedType tlast.TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
+	localArgs, natParams := k.getTL1Args(definition[0].TemplateArguments, resolvedType.Args)
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
@@ -167,7 +166,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		element, err := k.createStructTL1FromTL1(variantCanonicalName, tip,
 			resolvedType,
 			variantDef,
-			leftArgs,
 			true, i)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
