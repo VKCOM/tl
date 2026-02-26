@@ -345,7 +345,14 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	}
 }
 
-func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (localArgs []LocalArgHybrid, natParams []string) {
+func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType2 tlast.TL2TypeRef) (localArgs []LocalArgHybrid, natParams []string) {
+	actualArgs := resolvedType2.SomeType.Arguments // empty if brackets
+	if br := resolvedType2.BracketType; br != nil {
+		if br.HasIndex {
+			actualArgs = append(actualArgs, br.IndexType)
+		}
+		actualArgs = append(actualArgs, tlast.TL2TypeArgument{Type: br.ArrayType})
+	}
 	for i, arg := range actualArgs {
 		leftArg := leftArgs[i]
 		var localNatParams []string
@@ -526,15 +533,17 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, def *tlast.Combinator,
+	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef, def *tlast.Combinator,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 	leftArgs := def.TemplateArguments
-	resolvedType2 := k.convertTypeRef(resolvedType)
+	// resolvedType2 := k.convertTypeRef(resolvedType)
 
 	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2.SomeType.Arguments)
-	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b {
-		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	if k.opts.NewBrackets {
+		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+		}
 	}
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
@@ -547,10 +556,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			rt:            resolvedType,
-			//rt2:           resolvedType2,
-			argNamespace: k.getArgNamespace(resolvedType),
-			//argNamespace2: k.getArgNamespace2(resolvedType2),
-			hasTL2: false, // could be marked later
+			rt2:           resolvedType2,
+			argNamespace:  k.getArgNamespace(resolvedType),
+			argNamespace2: k.getArgNamespace2(resolvedType2),
+			hasTL2:        false, // could be marked later
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,
@@ -617,18 +626,16 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, err
 		}
-		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
 		if err != nil {
 			return nil, err
 		}
-		if k.opts.NewBrackets {
-			rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
-			if err != nil {
-				return nil, err
-			}
-			k.equalTypes(rt, rt2)
-			k.equalNatArgs(natArgs, natArgs2)
+		k.equalTypes(rt, rt2)
+		k.equalNatArgs(natArgs, natArgs2)
+		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
+		if err != nil {
+			return nil, err
 		}
 		newField := Field{
 			owner:         ins,
@@ -723,8 +730,15 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
 		}
+		fieldType := k.convertTypeRef(def.FuncDecl)
+		rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
+		if err != nil {
+			return nil, err
+		}
+		k.equalTypes(rt, rt2)
+		k.equalNatArgs(natArgs, natArgs2)
 		// log.Printf("resolveTypeTL2 for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}
