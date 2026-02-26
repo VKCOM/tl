@@ -97,12 +97,11 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			tip:           tip,
 			rt:            resolvedType,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType),
-			argNamespace2: k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace2(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}
-	if ins.argNamespace != ins.argNamespace2 {
+	if ins.argNamespace != k.getArgNamespace(resolvedType) {
 		panic("internal error getArgNamespace2")
 	}
 	ins.field = Field{
@@ -183,12 +182,11 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			rt:            resolvedType,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType),
-			argNamespace2: k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace2(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}
-	if ins.argNamespace != ins.argNamespace2 {
+	if ins.argNamespace != k.getArgNamespace(resolvedType) {
 		panic("internal error getArgNamespace2")
 	}
 	ins.field = Field{
