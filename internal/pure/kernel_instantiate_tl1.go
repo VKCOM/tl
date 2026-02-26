@@ -56,14 +56,15 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 }
 
 func (k *Kernel) GetInstanceTL1(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
-	ref, bare, err := k.getInstanceTL1(tr, false)
+	ref, bare, err := k.getInstance(tr, false)
 	if err != nil {
 		return nil, false, err
 	}
 	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
+// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types first converted into TL2 style
+func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
 	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
 	if err != nil {
 		return nil, false, err
@@ -100,14 +101,56 @@ func (k *Kernel) getInstanceTL1(tr tlast.TL2TypeRef, create bool) (_ *TypeInstan
 	if !ok {
 		return nil, false, fmt.Errorf("type %s does not exist", tName)
 	}
-	// TODO - instantiate TL2 combinators here
-	if kt.originTL2 {
-		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tName)
-	}
-	td := kt.combTL1[0]
 	// must store pointer before children GetInstanceTL2() terminates recursion
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
+	// TODO - instantiate TL2 combinators here
+	if kt.originTL2 {
+		if !kt.combTL2.IsFunction {
+			ref.ins, err = k.createOrdinaryType(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
+				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, tr.SomeType.Arguments)
+			if err != nil {
+				return nil, false, err
+			}
+			return ref, bare, nil
+		}
+		funcDecl := kt.combTL2.FuncDecl
+		var resultType TypeInstance
+		resultAlias := false
+		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
+			resultAlias = true
+			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannot be referenced so no recursion
+		} else if funcDecl.ReturnType.IsTypeAlias {
+			resultAlias = true
+			resultIns, _, err := k.getInstance(funcDecl.ReturnType.TypeAlias, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannot be referenced so no recursion
+		} else {
+			fieldReturnType := funcDecl.ReturnType.StructType.ConstructorFields[0].Type
+			// this is special case because we want no diff during migration to TL2,
+			// and all TL1 functions return exactly this kind of result
+			resultIns, _, err := k.getInstance(fieldReturnType, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannotbe referenced so no recursion
+		}
+		ref.ins, err = k.createStruct(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
+			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
+			resultType, resultAlias)
+		if err != nil {
+			return nil, false, err
+		}
+		return ref, bare, nil
+	}
+	td := kt.combTL1[0]
+
 	switch {
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)

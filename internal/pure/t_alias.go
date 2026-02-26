@@ -57,7 +57,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, tr tlast.TL2
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}
-	fieldType, fieldBare, err := k.getInstanceTL2(rt, true)
+	fieldType, fieldBare, err := k.getInstance(rt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate alias %s to %s: %w", canonicalName, alias, err)
 	}
