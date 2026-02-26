@@ -107,7 +107,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	}
 	switch {
 	case tName == "__dict":
-		fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
+		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr)
 	case tName == "__dict2":
 		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
