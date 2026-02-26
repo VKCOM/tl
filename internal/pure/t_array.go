@@ -95,10 +95,8 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	if k.opts.NewBrackets {
-		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-		}
+	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
 
 	// log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
@@ -134,6 +132,9 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 		},
 		isTuple: false,
 	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
+	}
 	ins.field = Field{
 		owner:   ins,
 		ins:     fieldIns,
@@ -149,10 +150,8 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	if k.opts.NewBrackets {
-		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-		}
+	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
 	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
 
@@ -186,6 +185,9 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 		isTuple:     true,
 		count:       actualArgs[0].Arith.Res,
 		dynamicSize: !actualArgs[0].IsArith,
+	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
 	}
 	ins.field = Field{
 		owner:   ins,
