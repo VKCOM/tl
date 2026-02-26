@@ -585,7 +585,7 @@ class tl_switcher {
   public static function tl_get_query_mode($tl_query) {
     $tl_namespace = "_common";
     $exploded = explode($tl_query, '.', 2);
-    if (is_array($exploded)) {
+    if (is_array($exploded) && count($exploded) == 2) {
       $tl_namespace = $exploded[0];
     }
     return self::tl_get_namespace_methods_mode($tl_namespace);
