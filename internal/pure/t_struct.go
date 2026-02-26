@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
@@ -213,7 +212,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
 	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
-
+	panic("TODO - refactor")
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -221,7 +220,6 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
-			rt:            trTL1,
 			argNamespace:  k.getArgNamespace(trTL1),
 			hasTL2:        true,
 		},
@@ -540,16 +538,11 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 }
 
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef, def *tlast.Combinator,
+	resolvedType2 tlast.TL2TypeRef, def *tlast.Combinator,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 	leftArgs := def.TemplateArguments
-	// resolvedType2 := k.convertTypeRef(resolvedType)
 
-	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-	}
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
@@ -560,7 +553,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
-			rt:            resolvedType,
 			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace2(resolvedType2),
 			hasTL2:        false, // could be marked later
@@ -569,9 +561,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
-	}
-	if ins.argNamespace != k.getArgNamespace(resolvedType) {
-		panic("internal error getArgNamespace2")
 	}
 	nextTL2MaskBit := 0
 	fieldsAfterReplace, typesAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
@@ -591,7 +580,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
 				T: tlast.TypeRef{
 					Type: tlast.Name{Name: targ.FieldName},
-					PR:   resolvedType.Args[i].T.PR,
+					PR:   resolvedType2.SomeType.Arguments[i].PR,
 				},
 			})
 		}
@@ -623,18 +612,12 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	for i, fieldDef := range fieldsAfterReplace {
 		fieldType := typesAfterReplace[i]
 		originalFieldIndex := originalFieldIndices[i]
-		rt, natArgs, err := k.resolveTypeTL1(fieldDef.FieldType, leftArgs, localArgs)
+		rt, natArgs, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
 		}
-		rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
-		if err != nil {
-			return nil, err
-		}
-		k.equalTypes(rt, rt2)
-		k.equalNatArgs(natArgs, natArgs2)
 		// log.Printf("resolveTypeTL2 for %s field %s: %s -> %s", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, err
 		}
@@ -693,25 +676,11 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				PR:        fieldDef.PR,
 			})
 			if fieldDef.FieldType.String() != "#" {
-				localArgs = append(localArgs, LocalArg{
-					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
-				})
-				localArgs2 = append(localArgs2, LocalArgHybrid{
+				localArgs = append(localArgs, LocalArgHybrid{
 					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
 				})
 			} else {
-				localArgs = append(localArgs, LocalArg{
-					wrongTypeErr: nil,
-					arg: tlast.ArithmeticOrType{
-						T:           tlast.TypeRef{Type: tlast.Name{Name: "*"}},
-						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
-					},
-					natArgs: []ActualNatArg{{
-						isField:    true,
-						fieldIndex: i, // not originalFieldIndex
-					}},
-				})
-				localArgs2 = append(localArgs2, LocalArgHybrid{
+				localArgs = append(localArgs, LocalArgHybrid{
 					wrongTypeErr: nil,
 					arg: tlast.TL2TypeArgument{
 						Type:        tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
@@ -727,19 +696,13 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 	}
 	if def.IsFunction {
-		rt, natArgs, err := k.resolveTypeTL1(def.FuncDecl, leftArgs, localArgs)
-		if err != nil {
-			return nil, fmt.Errorf("fail to resolve function %s result type: %w", canonicalName, err)
-		}
 		fieldType := k.convertTypeRef(def.FuncDecl)
-		rt2, natArgs2, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs2)
+		rt, natArgs, err := k.resolveTypeHybrid(false, fieldType, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
 		}
-		k.equalTypes(rt, rt2)
-		k.equalNatArgs(natArgs, natArgs2)
 		// log.Printf("resolveTypeTL2 for function %s result type: %s -> %s", canonicalName, def.FuncDecl.String(), rt.String())
-		fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
+		fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
 		if err != nil {
 			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
 		}

@@ -37,7 +37,6 @@ type TypeInstanceCommon struct {
 	natParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	isTopLevel    bool
-	rt            tlast.TypeRef
 	rt2           tlast.TL2TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 
@@ -74,11 +73,7 @@ func (ins *TypeInstanceCommon) IsTopLevel() bool {
 	return ins.isTopLevel
 }
 
-func (ins *TypeInstanceCommon) ResolvedType() tlast.TypeRef {
-	return ins.rt
-}
-
-func (ins *TypeInstanceCommon) ResolvedType2() tlast.TL2TypeRef {
+func (ins *TypeInstanceCommon) ResolvedType() tlast.TL2TypeRef {
 	return ins.rt2
 }
 

@@ -40,26 +40,37 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 }
 
 func JSONHelpString(kernel *pure.Kernel, ins pure.TypeInstance) string {
+	if ins.CanonicalName() == "Maybe<+ab.myType>" {
+		fmt.Print("aha")
+	}
+	if ins.KernelType() == nil {
+		return ins.CanonicalName()
+	}
 	var s strings.Builder
 	s.WriteString(ins.KernelType().CanonicalName().String())
 	rt := ins.Common().ResolvedType()
-	if len(rt.Args) == 0 {
+	//if br := rt.BracketType; br != nil {
+	//	if br.HasIndex {
+	//
+	//	}
+	//}
+	if len(rt.SomeType.Arguments) == 0 {
 		return s.String()
 	}
 	s.WriteByte('<')
-	for i, a := range rt.Args {
+	for i, a := range rt.SomeType.Arguments {
 		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
 		if i != 0 {
 			s.WriteByte(',')
 		}
-		if a.IsArith {
-			s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-		} else if a.T.String() == "*" {
+		if a.IsNumber {
+			s.WriteString(strconv.FormatUint(uint64(a.Number), 10))
+		} else if a.Type.String() == "*" {
 			s.WriteString("#") // TODO - write fieldName here if special argument to function is set
 		} else {
-			ref, _, err := kernel.GetInstanceTL1(a.T)
+			ref, _, err := kernel.GetInstanceTL1(a.Type)
 			if err != nil {
-				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.T, err))
+				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.Type, err))
 			}
 			s.WriteString(JSONHelpString(kernel, ref))
 		}
@@ -87,33 +98,49 @@ func JSONHelpNatArg(ins pure.TypeInstance, fields []pure.Field, natArg pure.Actu
 }
 
 func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields []pure.Field, natArgs *[]pure.ActualNatArg) string {
+	if ins.CanonicalName() == "Maybe<+ab.myType>" {
+		fmt.Print("aha")
+	}
 	var s strings.Builder
-	// TODO - we used those code before, should we simply remove it and use canonical names?
-	//if len(w.origTL) > 1 {
-	//	if bare {
-	//		panic("helpString2 of bare union")
-	//	}
-	//	s.WriteString(w.origTL[0].TypeDecl.Name.String())
-	//} else {
-	//	if bare {
-	//		s.WriteString(w.origTL[0].Construct.Name.String())
+	if ins.KernelType() == nil {
+		return ins.CanonicalName()
+	}
+	rt := ins.Common().ResolvedType()
+	//if br := rt.BracketType; br != nil {
+	//	if br.HasIndex {
+	//		if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
+	//			head = "BuiltinTuple"
+	//			w.resolvedT2GoNameArg(&b, br.IndexType, insideNamespace)
+	//			//if br.IndexType.IsNumber {
+	//			//	b.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
+	//			//}
+	//		} else {
+	//			head = "BuiltinDict"
+	//			w.resolvedT2GoNameArg(&b, br.IndexType, insideNamespace)
+	//		}
 	//	} else {
-	//		s.WriteString(w.origTL[0].TypeDecl.Name.String())
+	//		head = "BuiltinVector"
+	//	}
+	//	w.resolvedT2GoNameArg(&b, tlast.TL2TypeArgument{Type: br.ArrayType}, insideNamespace)
+	//} else {
+	//	head = canonicalGoName(w.goCanonicalName, insideNamespace)
+	//	for _, arg := range rt.SomeType.Arguments {
+	//		w.resolvedT2GoNameArg(&b, arg, insideNamespace)
 	//	}
 	//}
+
 	s.WriteString(ins.KernelType().CanonicalName().String())
-	rt := ins.Common().ResolvedType()
-	if len(rt.Args) == 0 {
+	if len(rt.SomeType.Arguments) == 0 {
 		return s.String()
 	}
 	s.WriteString("<")
-	for i, a := range rt.Args {
+	for i, a := range rt.SomeType.Arguments {
 		if i != 0 {
 			s.WriteString(",")
 		}
-		if a.IsArith {
-			s.WriteString(fmt.Sprintf("%d", a.Arith.Res))
-		} else if a.T.String() == "*" {
+		if a.IsNumber {
+			s.WriteString(fmt.Sprintf("%d", a.Number))
+		} else if a.Type.String() == "*" {
 			natArg := (*natArgs)[0]
 			*natArgs = (*natArgs)[1:]
 			if natArg.IsField() {
@@ -122,9 +149,9 @@ func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields [
 				s.WriteString(natArg.Name())
 			}
 		} else {
-			ref, fieldBare, err := kernel.GetInstanceTL1(a.T)
+			ref, fieldBare, err := kernel.GetInstanceTL1(a.Type)
 			if err != nil {
-				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.T, err))
+				panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", a.Type, err))
 			}
 			s.WriteString(helpString2(kernel, ref, fieldBare, fields, natArgs))
 		}

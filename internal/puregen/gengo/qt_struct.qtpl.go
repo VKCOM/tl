@@ -390,7 +390,7 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		prefixComment := ""
 		if field.IsBit() {
 			prefixComment = "// "
-			fieldTypeString = ifString(field.t.originateFromTL2, "(bit)", "(TrueType)")
+			fieldTypeString = ifString(field.t.originateFromTL2, "bit", "(TrueType)")
 		} else {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}

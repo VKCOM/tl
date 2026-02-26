@@ -67,7 +67,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *pureg
     <ul>
 `)
 	for _, trww := range sortedInstances {
-		if trww.KernelType().OriginTL2() {
+		if trww.KernelType() == nil || trww.KernelType().OriginTL2() {
 			continue
 		}
 		if fun, ok := trww.(*pure.TypeInstanceStruct); ok && fun.ResultType() != nil {
@@ -91,7 +91,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, kernel *pure.Kernel, options *pureg
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
 `)
 	for _, trww := range sortedInstances {
-		if trww.KernelType().OriginTL2() {
+		if trww.KernelType() == nil || trww.KernelType().OriginTL2() {
 			continue
 		}
 		streamprintHTMLHelp(qw422016, kernel, trww)

@@ -77,13 +77,15 @@ func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		kt := pureType.KernelType()
 		myWrapper := &TypeRWWrapper{
-			gen:              gen,
-			pureType:         pureType,
-			NatParams:        pureType.Common().NatParams(),
-			goCanonicalName:  kt.HistoricalName(),
-			originateFromTL2: kt.OriginTL2(),
-			tlTag:            pureType.Common().TLTag(),
-			tlName:           pureType.Common().TLName(),
+			gen:       gen,
+			pureType:  pureType,
+			NatParams: pureType.Common().NatParams(),
+			tlTag:     pureType.Common().TLTag(),
+			tlName:    pureType.Common().TLName(),
+		}
+		if kt != nil {
+			myWrapper.goCanonicalName = kt.HistoricalName()
+			myWrapper.originateFromTL2 = kt.OriginTL2()
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)

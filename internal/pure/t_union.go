@@ -88,7 +88,6 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
-			rt:            trTL1,
 			argNamespace:  k.getArgNamespace(trTL1),
 			hasTL2:        true,
 		},
@@ -122,24 +121,15 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 }
 
 func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
+	resolvedType2 tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1Args(definition[0].TemplateArguments, resolvedType.Args)
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-	}
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
 	for _, localArg := range localArgs { // pass all our parameters to our variant
 		natArgs = append(natArgs, localArg.natArgs...)
 	}
-	var natArgs2 []ActualNatArg
-	for _, localArg := range localArgs2 { // pass all our parameters to our variant
-		natArgs2 = append(natArgs2, localArg.natArgs...)
-	}
-	k.equalNatArgs(natArgs, natArgs2)
 	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
 	variantNames, err := k.VariantNames(definition)
@@ -154,7 +144,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
-			rt:            resolvedType,
 			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace2(resolvedType2),
 			hasTL2:        false, // could be marked later
@@ -163,9 +152,6 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		variantTypes:   make([]*TypeInstanceStruct, len(definition)),
 		elementNatArgs: natArgs,
 		isEnum:         true,
-	}
-	if ins.argNamespace != k.getArgNamespace(resolvedType) {
-		panic("internal error getArgNamespace2")
 	}
 
 	for i, variantDef := range definition {
@@ -177,7 +163,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 		variantCanonicalName := variantDef.Construct.Name.String() + canonicalName[argsStart:]
 		element, err := k.createStructTL1FromTL1(variantCanonicalName, tip,
-			resolvedType, resolvedType2,
+			resolvedType2,
 			variantDef,
 			true, i)
 		if err != nil {

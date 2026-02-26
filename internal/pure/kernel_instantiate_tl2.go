@@ -412,13 +412,9 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 	if err != nil {
 		return nil, false, err
 	}
-	canonicalName, bare, err := k.canonicalStringTL1(trTL1, true)
+	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
 	if err != nil {
 		return nil, false, err
-	}
-	canonicalName2, bare2, err2 := k.canonicalStringTL2(tr, true)
-	if err2 != nil || canonicalName != canonicalName2 || bare != bare2 {
-		panic("getInstanceTL1")
 	}
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, bare, nil
@@ -535,7 +531,7 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		return ref, bare, nil
 	}
 	panic("TODO")
-	return k.getInstanceTL1(trTL1, k.convertTypeRef(trTL1), create)
+	return k.getInstanceTL1(tr, create)
 }
 
 // alias || fields || union

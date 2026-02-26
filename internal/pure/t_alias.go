@@ -66,7 +66,6 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, trTL1 tlast.
 			canonicalName: canonicalName,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
-			rt:            trTL1,
 			hasTL2:        true,
 		},
 		fieldType: fieldType,
