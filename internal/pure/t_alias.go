@@ -50,10 +50,18 @@ func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
 	return ins.fieldType.ins.SkipTL2(r)
 }
 
-func (k *Kernel) createAlias(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+func (k *Kernel) createAlias(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
 	alias tlast.TL2TypeRef,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
-	rt, err := k.resolveTypeTL2(alias, leftArgs, actualArgs)
+
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	if len(natParams) != 0 {
+		panic("TODO - process TL1 types as usual")
+	}
+	rt, natArgs, err := k.resolveType(true, alias, leftArgs, localArgs)
+	if len(natArgs) != 0 {
+		panic("TODO - process TL1 types as usual")
+	}
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
 	}
@@ -65,7 +73,7 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, tr tlast.TL2
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tip:           tip,
-			rt2:           tr,
+			rt2:           resolvedType,
 			isTopLevel:    tip.isTopLevel,
 			hasTL2:        true,
 		},
