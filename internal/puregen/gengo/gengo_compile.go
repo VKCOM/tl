@@ -8,7 +8,6 @@ package gengo
 
 import (
 	"fmt"
-	"log"
 	"slices"
 	"strings"
 
@@ -152,10 +151,10 @@ func (gen *genGo) prepareGeneration() error {
 
 	if options.Kernel.Verbose {
 		//if skippedDueToWhitelist != 0 {
-		//	log.Printf("skipped %d object roots by the whitelist filter: %s", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
+		//	fmt.Printf("skipped %d object roots by the whitelist filter: %s\n", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
 		//}
 		if !bytesWhiteList.Empty() {
-			log.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s", typesCounterMarkBytes, options.BytesWhiteList)
+			fmt.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s\n", typesCounterMarkBytes, options.BytesWhiteList)
 		}
 	}
 	return nil
@@ -180,7 +179,7 @@ func (gen *genGo) findLongAdapter(v *TypeRWWrapper) {
 	longName = longName[:i] + "Long" + longName[i:]
 
 	if tt, ok := gen.generatedTypes[longName]; ok {
-		// log.Printf("long name %s discovered for %s", longName, v.pureType.CanonicalName())
+		// fmt.Printf("long name %s discovered for %s\n", longName, v.pureType.CanonicalName())
 		v.WrLong = tt
 		tt.WrWithoutLong = v
 		return

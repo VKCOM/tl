@@ -88,7 +88,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
-			argNamespace:  k.getArgNamespace2(tr),
+			argNamespace:  k.getArgNamespace(tr),
 			hasTL2:        true,
 		},
 		isEnum:       true,
@@ -124,13 +124,13 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType2 tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
+	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
 	for _, localArg := range localArgs { // pass all our parameters to our variant
 		natArgs = append(natArgs, localArg.natArgs...)
 	}
-	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
+	// fmt.Printf("natArgs for %s union fields is: %v\n", canonicalName, natArgs)
 
 	variantNames, err := k.VariantNames(definition)
 	if err != nil {
@@ -145,7 +145,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 			hasTL2:        false, // could be marked later
 		},
 		variantNames:   variantNames,

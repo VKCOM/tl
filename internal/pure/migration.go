@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
 	"maps"
 	"os"
 	"slices"
@@ -71,7 +70,7 @@ func (k *Kernel) Migration() error {
 			return fmt.Errorf("error writing file %q: %w", name, err)
 		}
 	}
-	log.Printf("migration finished, %d types migrated, %d files written, %d files not touched", typesMigrated, written, notTouched)
+	fmt.Printf("migration finished, %d types migrated, %d files written, %d files not touched\n", typesMigrated, written, notTouched)
 	return nil
 }
 

@@ -100,7 +100,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		})
 	}
 
-	// log.Printf("resolveTypeTL2 of vector for %s field: %s -> %s", canonicalName, fieldT, rt.String())
+	// fmt.Printf("resolveTypeTL2 of vector for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s field: %w", canonicalName, err)
@@ -112,7 +112,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 			natParams:     natParams3,
 			tip:           nil, // TODO - try to live without brackets type at all
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 		},
 		isTuple: false,
 	}
@@ -129,7 +129,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
 
 	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
-	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
+	// fmt.Printf("natParams for tuple %s: %s\n", canonicalName, strings.Join(natParams, ","))
 	//if len(natParams) != 0 {
 	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
 	//}
@@ -146,7 +146,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2Typ
 		natParams3 = append([]string{"n"}, natParams3...)
 	}
 
-	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
+	// fmr.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(resolvedType2.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
@@ -158,7 +158,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2Typ
 			natParams:     natParams3,
 			tip:           nil, // TODO - try to live without brackets type at all
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace(resolvedType2),
 		},
 		isTuple:     true,
 		count:       resolvedType2.BracketType.IndexType.Number,

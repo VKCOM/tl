@@ -9,7 +9,6 @@ package pure
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -107,7 +106,7 @@ func (k *Kernel) addInstance(canonicalName string, kt *KernelType) *TypeInstance
 	if _, ok := k.instances[canonicalName]; ok {
 		panic(fmt.Sprintf("global instance list contains duplicate %q", canonicalName))
 	}
-	kt.instances[canonicalName] = ref
+	kt.instances[canonicalName] = ref // storing pointer terminates recursion
 	kt.instancesOrdered = append(kt.instancesOrdered, ref)
 
 	k.instances[canonicalName] = ref // storing pointer terminates recursion
@@ -209,11 +208,11 @@ func (k *Kernel) Compile() error {
 	if err := k.CompileTL1(namespaceTL1SeeHere); err != nil {
 		return err
 	}
-	log.Printf("tl2pure: compiling %d TL2 combinators", len(k.filesTL2))
+	fmt.Printf("tl2pure: compiling %d TL2 combinators\n", len(k.filesTL2))
 	// then add all TL2 declarations
 	for _, comb := range k.filesTL2 {
 		refName := comb.ReferenceName()
-		// log.Printf("tl2pure: compiling %s", comb)
+		// fmt.Printf("tl2pure: compiling %s\n", comb)
 		if e2, ok := namespaceTL1SeeHere[refName.Namespace]; ok && refName.Namespace != "" {
 			e1 := comb.ReferenceNamePR().BeautifulError(fmt.Errorf("namespace %s must be defined entirely in either .tl or in .tl2 file(s)", refName.Namespace))
 			return tlast.BeautifulError2(e1, e2)
@@ -361,10 +360,6 @@ func (k *Kernel) Compile() error {
 		for _, combinator := range k.filesTL2 {
 			if combinator.IsFunction {
 				for _, m := range combinator.Annotations {
-					// to ignore diagonal legacy
-					//if m.Name == tl1Diagonal {
-					//	continue
-					//}
 					if _, ok := allAnnotations[m.Name]; !ok {
 						if _, ok := k.supportedAnnotations[m.Name]; !ok {
 							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
@@ -384,7 +379,6 @@ func (k *Kernel) Compile() error {
 		}
 		sort.Strings(k.allAnnotations)
 	}
-	//instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
 		if !tip.isTopLevel {
 			continue
@@ -413,7 +407,7 @@ func (k *Kernel) Compile() error {
 		}
 	}
 	if k.opts.Verbose && !tl2WhiteList.Empty() {
-		log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, k.opts.TL2WhiteList)
+		fmt.Printf("found %d object roots for TL2 versions of types by the following filter: %s\n", typesCounterMarkTL2, k.opts.TL2WhiteList)
 	}
 	return nil
 }

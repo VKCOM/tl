@@ -9,7 +9,6 @@ package gencanonical
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/vkcom/tl/internal/pure"
@@ -19,7 +18,7 @@ import (
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if options.Kernel.Verbose {
-		log.Print("generating file with combinators in canonical form...")
+		fmt.Print("generating file with combinators in canonical form...\n")
 	}
 	if options.Outfile == "" {
 		return fmt.Errorf("--outfile should not be empty")
