@@ -57,8 +57,8 @@ cases.testEnumContainer = value:cases.testEnum;
 cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1:bool t2:bool t3:bool;
 cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bool f4:bool;
 cases.testOutFieldMask = f1?:uint32 f2:bool f3:[]int;
-cases.testOutFieldMaskContainer = f:uint32 inner:cases.testOutFieldMask;
-cases.testBeforeReadBitValidation = n:uint32 a?:[]int b?:[]int;
+cases.testOutFieldMaskContainer = f:uint32 fs:uint32 inner:cases.testOutFieldMask;
+cases.testBeforeReadBitValidation = n:uint32 ns:uint32 a?:[]int b?:[]int;
 cases.testAllPossibleFieldConfigs = 
 	local:uint32
 	// no fieldmask, no nat dependencies in type

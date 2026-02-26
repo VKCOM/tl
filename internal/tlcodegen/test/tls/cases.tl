@@ -64,9 +64,9 @@ cases.testEnumContainer value:cases.TestEnum = cases.TestEnumContainer;
 cases.testRecursiveFieldMask f0:# f1:f0.0?# f2:f1.1?# t1:f0.0?%True t2:f1.1?%True t3:f2.2?%True = cases.TestRecursiveFieldmask;
 cases.testLocalFieldmask f1:# f2:f1.0?# f3:f2.1?%True f4:f2.1?%True = cases.TestLocalFieldmask;
 
-cases.testOutFieldMask {f:#} f1:f.0?# f2:f.3?%True f3:f*[int] = cases.TestOutFieldMask f;
-cases.testOutFieldMaskContainer f:# inner:(cases.testOutFieldMask f) = cases.TestOutFieldMaskContainer;
-cases.testBeforeReadBitValidation n:# a:n.0?n*[int] b:n.1?n*[int] = cases.TestBeforeReadBitValidation;
+cases.testOutFieldMask {f:#} {fs:#} f1:f.0?# f2:f.3?%True f3:fs*[int] = cases.TestOutFieldMask f fs;
+cases.testOutFieldMaskContainer f:# fs:# inner:(cases.testOutFieldMask f fs) = cases.TestOutFieldMaskContainer;
+cases.testBeforeReadBitValidation n:# ns:# a:n.0?ns*[int] b:n.1?ns*[int] = cases.TestBeforeReadBitValidation;
 
 cases.testAllPossibleFieldConfigs {outer:#} local:#
     f00:int                 // no fieldmask, no nat dependencies in type
