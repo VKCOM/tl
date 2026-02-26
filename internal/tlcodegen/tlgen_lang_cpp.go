@@ -133,11 +133,13 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOStreamsPath(gen))))
 			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, CppBasicTLIOThrowableStreamsPath(gen))))
 		}
-		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
+		headerFiles, _ := hppInc.sortedIncludesWithMap(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName })
+		for _, headerFile := range headerFiles {
 			if headerFile == header {
-				panic(fmt.Sprintf("CPP HEADER ERROR: header file %q depends on itself", headerFile))
+				continue
+				//panic(fmt.Sprintf("CPP HEADER ERROR: header file %q depends on itself", headerFile))
 			}
+			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
