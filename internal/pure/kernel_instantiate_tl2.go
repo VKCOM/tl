@@ -298,8 +298,6 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 // TODO - we can decide later to convert TL1 type refs to TL2, should weight pro and cons
 func (k *Kernel) convertTL2TypeRefToTL1(tr tlast.TL2TypeRef) (tlast.TypeRef, error) {
 	if tr.IsBracket() {
-		// TODO - replace references to wrapper types tuple and vector
-		// to built-in types __tuple and __vector in both TL1 and TL2 kernels
 		// so the diff before and after migration is minimal
 		elemType, err := k.convertTL2TypeRefToTL1(tr.BracketType.ArrayType)
 		if err != nil {

@@ -352,6 +352,8 @@ func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
 	return nil
 }
 
+// bracket types in returned []tlast.Field are not touched at all, because we want TL2-style types
+// which cannot be expressed in tlast.TypeRef, so for type resolution we use types in []tlast.TL2TypeRef
 func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tlast.TL2TypeRef, []int, error) {
 	var fieldsAfterReplace []tlast.Field
 	var typesAfterReplace []tlast.TL2TypeRef
@@ -378,11 +380,11 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 				PR: nextFieldDef.PR,
 			}
 			fieldDef = nextFieldDef
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
-				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
-			}
-			fieldDef.FieldType.Type = tlast.Name{Name: "__vector"}
-			fieldDef.FieldType.Bare = true
+			//fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+			//	{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			//}
+			//fieldDef.FieldType.Type = tlast.Name{Name: "__vector"}
+			//fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated && i == 0 && !fieldDef.ScaleRepeat.ExplicitScale &&
 			len(def.TemplateArguments) != 0 {
 			a := def.TemplateArguments[len(def.TemplateArguments)-1]
@@ -414,16 +416,17 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 				},
 				PR: fieldDef.PR,
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
-				{T: tlast.TypeRef{PR: a.PR, Type: tlast.Name{Name: a.FieldName}}},
-				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
-			}
-			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
-			fieldDef.FieldType.Bare = true
+			//fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+			//	{T: tlast.TypeRef{PR: a.PR, Type: tlast.Name{Name: a.FieldName}}},
+			//	{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			//}
+			//fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
+			//fieldDef.FieldType.Bare = true
 		} else if fieldDef.IsRepeated {
 			if err := k.isGoodBrackets(fieldDef); err != nil {
 				return nil, nil, nil, err
 			}
+			scale := fieldDef.ScaleRepeat.Scale
 			if !fieldDef.ScaleRepeat.ExplicitScale {
 				prevFieldDef := def.Fields[i-1] // never panics, due to checks above
 				if prevFieldDef.FieldType.String() != "#" {
@@ -431,23 +434,23 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 					e2 := prevFieldDef.PR.BeautifulError(fmt.Errorf("see here"))
 					return nil, nil, nil, tlast.BeautifulError2(e1, e2)
 				}
-				fieldDef.ScaleRepeat.Scale = tlast.ScaleFactor{
+				scale = tlast.ScaleFactor{
 					IsArith: false,
 					Scale:   prevFieldDef.FieldName,
 					PR:      prevFieldDef.PRName,
 				}
 			}
-			fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
-				{},
-				{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
-			}
-			fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
-			fieldDef.FieldType.Bare = true
-			if fieldDef.ScaleRepeat.Scale.IsArith {
-				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR}, IsArith: true, Arith: fieldDef.ScaleRepeat.Scale.Arith}
-			} else {
-				fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: fieldDef.ScaleRepeat.Scale.PR, Type: tlast.Name{Name: fieldDef.ScaleRepeat.Scale.Scale}}}
-			}
+			//fieldDef.FieldType.Args = []tlast.ArithmeticOrType{
+			//	{},
+			//	{T: fieldDef.ScaleRepeat.Rep[0].FieldType},
+			//}
+			//fieldDef.FieldType.Type = tlast.Name{Name: "__tuple"}
+			//fieldDef.FieldType.Bare = true
+			//if scale.IsArith {
+			//	fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: scale.PR}, IsArith: true, Arith: scale.Arith}
+			//} else {
+			//	fieldDef.FieldType.Args[0] = tlast.ArithmeticOrType{T: tlast.TypeRef{PR: scale.PR, Type: tlast.Name{Name: scale.Scale}}}
+			//}
 			type2 = tlast.TL2TypeRef{
 				BracketType: &tlast.TL2BracketType{
 					HasIndex: true,
@@ -457,24 +460,24 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 				},
 				PR: fieldDef.PR,
 			}
-			if fieldDef.ScaleRepeat.Scale.IsArith {
+			if scale.IsArith {
 				type2.BracketType.IndexType = tlast.TL2TypeArgument{
 					IsNumber: true,
-					Number:   fieldDef.ScaleRepeat.Scale.Arith.Res,
-					PR:       fieldDef.ScaleRepeat.Scale.PR,
+					Number:   scale.Arith.Res,
+					PR:       scale.PR,
 				}
 			} else {
 				type2.BracketType.IndexType = tlast.TL2TypeArgument{
 					Type: tlast.TL2TypeRef{
 						SomeType: tlast.TL2TypeApplication{
-							Name:        tlast.TL2TypeName{Name: fieldDef.ScaleRepeat.Scale.Scale},
-							PR:          fieldDef.ScaleRepeat.Scale.PR,
-							PRName:      fieldDef.ScaleRepeat.Scale.PR,
-							PRArguments: fieldDef.ScaleRepeat.Scale.PR.CollapseToEnd(),
+							Name:        tlast.TL2TypeName{Name: scale.Scale},
+							PR:          scale.PR,
+							PRName:      scale.PR,
+							PRArguments: scale.PR.CollapseToEnd(),
 						},
-						PR: fieldDef.ScaleRepeat.Scale.PR,
+						PR: scale.PR,
 					},
-					PR: fieldDef.ScaleRepeat.Scale.PR,
+					PR: scale.PR,
 				}
 			}
 		} else {
