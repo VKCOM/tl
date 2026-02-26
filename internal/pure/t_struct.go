@@ -208,7 +208,7 @@ func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
 	return value
 }
 
-func (k *Kernel) createStruct(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
+func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
 	tlName tlast.TL2TypeName, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate,

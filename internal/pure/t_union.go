@@ -78,7 +78,7 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
 	tlTag uint32, def tlast.TL2UnionType,
 	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
@@ -105,7 +105,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2
 				tlName = tlast.TL2TypeName{Namespace: comment[:ind], Name: comment[ind+1:]}
 			}
 		}
-		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, tr,
+		element, err := k.createStructTL2(canonicalName+"__"+variantDef.Name, tip, tr,
 			tlName, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, true, i, nil, false)
 		if err != nil {

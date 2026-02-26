@@ -50,7 +50,7 @@ func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
 	return ins.fieldType.ins.SkipTL2(r)
 }
 
-func (k *Kernel) createAlias(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
+func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
 	alias tlast.TL2TypeRef,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 

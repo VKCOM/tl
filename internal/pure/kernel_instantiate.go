@@ -7,238 +7,140 @@
 package pure
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-type LocalArgHybrid struct {
-	wrongTypeErr *tlast.ParseError // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
-	arg          tlast.TL2TypeArgument
-	natArgs      []ActualNatArg
-}
-
-func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeRef, []ActualNatArg, error) {
-	ac, natArgs, err := k.resolveArgument(ctxTL2, tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
+// we do not allow creating additional instances externally for now
+// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types are first converted into TL2 style
+func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
+	ref, bare, err := k.getInstance(tr, false)
 	if err != nil {
-		return tr, nil, err
+		return nil, false, err
 	}
-	if ac.IsNumber {
-		// TODO - beautiful test case,
-		return tr, nil, tr.PR.BeautifulError(fmt.Errorf("type argument %s resolved to a number %d", tr, ac.Number))
-	}
-	if ac.Type.String() == "*" {
-		// TODO - beautiful test case,
-		return tr, nil, tr.PR.BeautifulError(fmt.Errorf("type argument %s resolved to a nat argument %s", tr, ac.Type))
-	}
-	return ac.Type, natArgs, nil
+	return ref.ins, bare, nil
 }
 
-func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
-	before := tr
-	was := before.String()
-	tr, natArgs, err := k.resolveArgumentImpl(ctxTL2, tr, leftArgs, actualArgs)
-	after := before.String()
-	if was != after {
-		panic(fmt.Sprintf("tl2pure: internal error, resolveArgumentTL1 destroyed %s original value %s due to golang aliasing", after, was))
+// we identify types by TL2TypeRefs/TL2TypeNames, TL1 types are first converted into TL2 style
+func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
+	canonicalName, bare, err := k.canonicalString(tr, true)
+	if err != nil {
+		return nil, false, err
 	}
-	return tr, natArgs, err
-}
-
-func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
-	if tr.IsNumber {
-		return tr, nil, nil
+	if ref, ok := k.instances[canonicalName]; ok {
+		return ref, bare, nil
 	}
-	if tr.Type.String() == "*" {
-		return tr, nil, tr.Type.PR.BeautifulError(fmt.Errorf("internal error: resolving type more than once"))
+	if !create {
+		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
-	if br := tr.Type.BracketType; br != nil {
-		var natArgs []ActualNatArg
-		bracketType := *tr.Type.BracketType
-		if bracketType.HasIndex {
-			ic, natArgs2, err := k.resolveArgument(ctxTL2, bracketType.IndexType, leftArgs, actualArgs)
-			if err != nil {
-				return tr, nil, err
+	// fmt.Printf("creating an instance of type %s\n", canonicalName)
+	if br := tr.BracketType; br != nil {
+		// must store pointer before children GetInstanceTL2() terminates recursion
+		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+		ref := k.addInstance(canonicalName, k.brackets)
+		if br.HasIndex {
+			if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
+				ref.ins, err = k.createTupleTL1(canonicalName, tr)
+			} else {
+				panic("TODO - dict2")
 			}
-			bracketType.IndexType = ic
-			natArgs = append(natArgs, natArgs2...)
-
-			//TODO - uncomment as soon as code to regenerated tests exists again
-			//if sf := ic.SourceField; sf != (tlast.CombinatorField{}) {
-			//	field := &sf.Comb.Fields[sf.FieldIndex]
-			//	if field.UsedAsMask {
-			//		e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
-			//		e3.PrintWarning(k.opts.ErrorWriter, nil)
-			//		e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
-			//		e2 := ic.PR.BeautifulError(fmt.Errorf("used as size here"))
-			//		return tr, nil, tlast.BeautifulError2(e1, e2)
-			//	}
-			//	field.UsedAsSize = true
-			//	field.UsedAsSizePR = ic.PR
-			//}
+		} else {
+			ref.ins, err = k.createVectorTL1(canonicalName, tr)
 		}
-		ac, natArgs2, err := k.resolveType(ctxTL2, bracketType.ArrayType, leftArgs, actualArgs)
 		if err != nil {
-			return tr, nil, err
+			return nil, false, err
 		}
-		bracketType.ArrayType = ac
-		tr.Type.BracketType = &bracketType
-		natArgs = append(natArgs, natArgs2...)
-		return tr, natArgs, nil
+		return ref, bare, nil
 	}
-	someType := &tr.Type.SomeType
-	// names found in local arguments have priority over global type names
-	if someType.Name.Namespace == "" {
-		for i, targ := range leftArgs {
-			if targ.Name == someType.Name.Name {
-				for _, arg := range someType.Arguments {
-					e1 := arg.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name))
-					e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
-					return tr, nil, tlast.BeautifulError2(e1, e2)
-				}
-				actualArg := actualArgs[i]
-				if actualArg.wrongTypeErr != nil {
-					e1 := tr.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.Name))
-					return tr, nil, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
-				}
-				actualArg.arg.OriginalArgumentName = targ.Name // TODO - check if this is enough
-				actualArg.arg.PR = someType.PR
-				// TODO - check if all necessary PRs are set
-				// actualArg.arg.T.PRArgs = tr.T.PRArgs
-				if actualArg.arg.IsNumber || actualArg.arg.Type.String() == "*" {
-					if someType.Bare {
-						e1 := someType.PR.BeautifulError(fmt.Errorf("reference to #-param %q cannot be bare", targ.Name))
-						e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
-						return tr, nil, tlast.BeautifulError2(e1, e2)
-					}
-					return actualArg.arg, actualArg.natArgs, nil
-				}
-				if someType.Bare && !actualArg.arg.Type.IsBracket() {
-					actualArg.arg.Type.SomeType.Bare = true
-				}
-				return actualArg.arg, actualArg.natArgs, nil
-			}
-		}
-		// probably ref to global type or a typo
-	}
-	tName := someType.Name.String()
+	tName := tr.SomeType.Name.String()
 	kt, ok := k.tips[tName]
 	if !ok {
-		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
+		return nil, false, fmt.Errorf("type %s does not exist", tName)
 	}
-	if kt.isFunction {
-		return tr, nil, kt.functionCanNotBeReferencedError(someType.PR)
-	}
-	if _, ok := kt.tl1Names[tName]; !ok && !ctxTL2 {
-		for good := range kt.tl1Names {
-			return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific, in TL1 please use %s instead", tName, good))
-		}
-		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific and cannot be used from TL1", tName))
-	}
-	if someType.Bare && kt.builtinWrappedCanonicalName != "" {
-		tName = kt.builtinWrappedCanonicalName
-		kt, ok = k.tips[tName]
-		if !ok {
-			return tr, nil, someType.PR.BeautifulError(fmt.Errorf("internal error: built-in wrapped type %s not found", tName))
-		}
-		someType.Name = tlast.TL2TypeName{Name: tName}
-		someType.Bare = false // not required and should not change canonical type
-	}
-
-	if kt.originTL2 && !ctxTL2 {
-		// TODO - this is wrong, add hasTL1, hasTL2 properties instead
-		e1 := someType.PR.BeautifulError(fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", someType.Name))
-		e2 := kt.combTL2.TypeDecl.PRName.BeautifulError(fmt.Errorf("declared here"))
-		return tr, nil, tlast.BeautifulError2(e1, e2)
-	}
-	// checks below are redundant, but they catch type resolve errors early for beautiful errors
-	// if modifying this code, modify also code in func (k *Kernel) resolveArgumentTL2Impl()
-	if len(kt.templateArguments) > len(someType.Arguments) {
-		arg := kt.templateArguments[len(someType.Arguments)]
-		e1 := someType.PRArguments.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.Name))
-		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
-		return tr, nil, tlast.BeautifulError2(e1, e2)
-	}
-	if len(kt.templateArguments) < len(someType.Arguments) {
-		arg := someType.Arguments[len(kt.templateArguments)]
-		e1 := arg.PR.BeautifulError(errors.New("excess template argument here"))
-		// TODO - TemplateArgumentsPR for TL2 types
-		//e2 := kt.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-		return tr, nil, e1 // tlast.BeautifulError2(e1, e2)
-	}
-
-	someType.Arguments = append([]tlast.TL2TypeArgument{}, someType.Arguments...) // preserve original
-	var natArgs []ActualNatArg
-	for i, arg := range someType.Arguments {
-		ta := kt.templateArguments[i]
-		rt, natArgs2, err := k.resolveArgument(ctxTL2, arg, leftArgs, actualArgs)
-		if err != nil {
-			return tr, nil, err
-		}
-		someType.Arguments[i] = rt
-		natArgs = append(natArgs, natArgs2...)
-
-		argNat := rt.IsNumber || rt.Type.String() == "*"
-		if ta.Category.IsNat() && !argNat {
-			e1 := arg.PR.BeautifulError(errors.New("template argument must be # here"))
-			e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
-			return tr, nil, tlast.BeautifulError2(e1, e2)
-		}
-		if !ta.Category.IsNat() && argNat {
-			e1 := arg.PR.BeautifulError(errors.New("template argument must be Type here"))
-			e2 := ta.PR.BeautifulError(fmt.Errorf("argument declared here"))
-			return tr, nil, tlast.BeautifulError2(e1, e2)
-		}
-		if ta.Category.IsNat() {
-			if rt.IsNumber {
-				if kt.targs[i].usedAsNatConst == nil {
-					kt.targs[i].usedAsNatConst = map[uint32]struct{}{}
-				}
-				kt.targs[i].usedAsNatConst[rt.Number] = struct{}{}
-			} else {
-				kt.targs[i].usedAsNatVariable = true
+	// must store pointer before children GetInstanceTL2() terminates recursion
+	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+	ref := k.addInstance(canonicalName, kt)
+	if kt.originTL2 {
+		if !kt.combTL2.IsFunction {
+			ref.ins, err = k.createOrdinaryTypeTL2(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
+				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, tr.SomeType.Arguments)
+			if err != nil {
+				return nil, false, err
 			}
+			return ref, bare, nil
 		}
+		funcDecl := kt.combTL2.FuncDecl
+		resultAlias := false
+		var resultType TypeInstance
+		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
+			resultAlias = true
+			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannot be referenced so no recursion
+		} else if funcDecl.ReturnType.IsTypeAlias {
+			resultAlias = true
+			resultIns, _, err := k.getInstance(funcDecl.ReturnType.TypeAlias, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannot be referenced so no recursion
+		} else {
+			fieldReturnType := funcDecl.ReturnType.StructType.ConstructorFields[0].Type
+			// this is special case because we want no diff during migration to TL2,
+			// and all TL1 functions return exactly this kind of result
+			resultIns, _, err := k.getInstance(fieldReturnType, true)
+			if err != nil {
+				return nil, false, err
+			}
+			resultType = resultIns.ins // function cannotbe referenced so no recursion
+		}
+		ref.ins, err = k.createStructTL2(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
+			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, false, 0,
+			resultType, resultAlias)
+		if err != nil {
+			return nil, false, err
+		}
+		return ref, bare, nil
 	}
-	return tr, natArgs, nil
+	switch {
+	case tName == "__dict":
+		fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr)
+	case tName == "__dict2":
+		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
+		ref.ins, err = k.createDict(canonicalName, kt, tr)
+	case len(kt.combTL1) > 1:
+		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
+	case len(kt.combTL1) == 1:
+		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr, kt.combTL1[0],
+			false, 0)
+	default:
+		return nil, false, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
+	}
+	if err != nil {
+		return nil, false, err
+	}
+	return ref, bare, nil
 }
 
-func (k *Kernel) getArgNamespace(rt tlast.TL2TypeRef) string {
-	argNamespaces := map[string]struct{}{}
-	k.collectArgsNamespaces(tlast.TL2TypeArgument{Type: rt}, argNamespaces)
-	if len(argNamespaces) == 1 {
-		for ns := range argNamespaces {
-			return ns
-		}
-	}
-	if rt.BracketType != nil {
-		return ""
-	}
-	return rt.SomeType.Name.Namespace
-}
+// alias || fields || union
+func (k *Kernel) createOrdinaryTypeTL2(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+	tlName tlast.TL2TypeName, tlTag uint32,
+	definition tlast.TL2TypeDefinition,
+	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
-func (k *Kernel) collectArgsNamespaces(rt tlast.TL2TypeArgument, argNamespaces map[string]struct{}) {
-	// This is policy. You can adjust it, so more or less templates instantiations
-	// are moved into namespace of arguments. Code should compile anyway.
-	if rt.IsNumber || rt.Type.String() == "*" {
-		return
-	}
-	if br := rt.Type.BracketType; br != nil {
-		k.collectArgsNamespaces(tlast.TL2TypeArgument{Type: br.ArrayType}, argNamespaces)
-		if br.HasIndex {
-			k.collectArgsNamespaces(br.IndexType, argNamespaces)
-		}
-	} else {
-		someType := rt.Type.SomeType
-		if someType.Name.Namespace != "" {
-			argNamespaces[someType.Name.Namespace] = struct{}{}
-		}
-		for _, arg := range someType.Arguments {
-			k.collectArgsNamespaces(arg, argNamespaces)
-		}
+	switch {
+	case definition.IsAlias():
+		return k.createAliasTL2(canonicalName, tip, tr, definition.TypeAlias, leftArgs, actualArgs)
+	case definition.StructType.IsUnionType:
+		return k.createUnionTL2(canonicalName, tip, tr, tlTag, definition.StructType.UnionType, leftArgs)
+	default:
+		return k.createStructTL2(canonicalName, tip, tr,
+			tlName, tlTag,
+			true, definition.TypeAlias, definition.StructType.ConstructorFields,
+			leftArgs, false, 0, nil, false)
 	}
 }
