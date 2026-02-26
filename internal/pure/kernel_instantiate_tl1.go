@@ -109,10 +109,6 @@ func (k *Kernel) getInstanceTL1(tr tlast.TL2TypeRef, create bool) (_ *TypeInstan
 	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
 	ref := k.addInstance(canonicalName, kt)
 	switch {
-	case tName == "__vector":
-		panic("should not have __vector any more")
-	case tName == "__tuple":
-		panic("should not have __vector any more")
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments)

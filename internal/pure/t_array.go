@@ -174,7 +174,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2Typ
 }
 
 func (k *Kernel) addTL1Brackets() {
-	// for the purpose of type check, this is object with no fields, like __vector {t:Type} = ;
+	// for the purpose of type check, this is object with no fields, like __dict {t:Type} = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
 			Name: tlast.Name{Name: "__dict"},
@@ -247,49 +247,5 @@ func (k *Kernel) addTL1Brackets() {
 	}
 	if err := k.addTip(kt, "__dict_field", ""); err != nil {
 		panic(fmt.Sprintf("error adding __dict_field: %v", err))
-	}
-	combTL1 = &tlast.Combinator{
-		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__vector"},
-		},
-		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
-	}
-	kt = &KernelType{
-		originTL2:         false,
-		builtin:           true,
-		combTL1:           []*tlast.Combinator{combTL1},
-		instances:         map[string]*TypeInstanceRef{},
-		tl1Names:          map[string]struct{}{"__vector": {}},
-		tl2Names:          map[string]struct{}{},
-		canonicalName:     tlast.TL2TypeName{Name: "__vector"},
-		historicalName:    tlast.TL2TypeName{Name: "BuiltinVector"},
-		canBeBare:         true,
-		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
-		targs:             make([]KernelTypeTarg, 1),
-	}
-	if err := k.addTip(kt, "__vector", ""); err != nil {
-		panic(fmt.Sprintf("error adding __vector: %v", err))
-	}
-	combTL1 = &tlast.Combinator{
-		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__tuple"},
-		},
-		TemplateArguments: []tlast.TemplateArgument{{FieldName: "n", IsNat: true}, {FieldName: "t", IsNat: false}},
-	}
-	kt = &KernelType{
-		originTL2:         false,
-		builtin:           true,
-		combTL1:           []*tlast.Combinator{combTL1},
-		instances:         map[string]*TypeInstanceRef{},
-		tl1Names:          map[string]struct{}{"__tuple": {}},
-		tl2Names:          map[string]struct{}{},
-		canonicalName:     tlast.TL2TypeName{Name: "__tuple"},
-		historicalName:    tlast.TL2TypeName{Name: "BuiltinTuple"},
-		canBeBare:         true,
-		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
-		targs:             make([]KernelTypeTarg, 2),
-	}
-	if err := k.addTip(kt, "__tuple", ""); err != nil {
-		panic(fmt.Sprintf("error adding __tuple: %v", err))
 	}
 }

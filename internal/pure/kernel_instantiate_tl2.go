@@ -422,55 +422,6 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 	if !create {
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
-	//if tr.IsBracket() {
-	//	// log.Printf("creating a bracket instance of type %s", canonicalName)
-	//	// must store pointer before children GetInstanceTL2() terminates recursion
-	//	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-	//	ref := k.addInstance(canonicalName, k.brackets)
-	//
-	//	fieldInstance, fieldBare, err := k.getInstanceTL2(tr.BracketType.ArrayType, true)
-	//	if err != nil {
-	//		return nil, false, err
-	//	}
-	//	if tr.BracketType.HasIndex {
-	//		if tr.BracketType.IndexType.IsNumber {
-	//			// tuple
-	//			kt, ok := k.tips["__tuple"]
-	//			if !ok {
-	//				return ref, false, fmt.Errorf("internal error - built in tuple type not found")
-	//			}
-	//			ref.ins = k.createArray(canonicalName, kt, trTL1, true, tr.BracketType.IndexType.Number, fieldInstance, fieldBare)
-	//			return ref, bare, nil
-	//		}
-	//		// dict
-	//		kt, ok := k.tips["__dict2"]
-	//		if !ok {
-	//			return ref, false, fmt.Errorf("internal error - built in dict2 type not found")
-	//		}
-	//		keyInstance, keyBare, err := k.getInstanceTL2(tr.BracketType.IndexType.Type, true)
-	//		if err != nil {
-	//			return nil, false, err
-	//		}
-	//		if !keyBare {
-	//			return nil, false, fmt.Errorf("internal error dict %s key type is not bare", canonicalName)
-	//		}
-	//		if !keyInstance.ins.GoodForMapKey() {
-	//			return nil, false, fmt.Errorf("type %s is not allowed as a map key (only 'bool', integers and 'string' allowed)", keyInstance.ins.CanonicalName())
-	//		}
-	//		ref.ins, err = k.createDict(canonicalName, kt, trTL1, kt.combTL1[0].TemplateArguments, trTL1.Args, keyInstance, fieldInstance)
-	//		if err != nil {
-	//			return nil, false, err
-	//		}
-	//		return ref, bare, nil
-	//	}
-	//	// vector
-	//	kt, ok := k.tips["__vector"]
-	//	if !ok {
-	//		return ref, false, fmt.Errorf("internal error - built in vector type not found")
-	//	}
-	//	ref.ins = k.createArray(canonicalName, kt, trTL1, false, 0, fieldInstance, fieldBare)
-	//	return ref, bare, nil
-	//}
 	// log.Printf("creating an instance of type %s", canonicalName)
 	// must store pointer before children GetInstanceTL2() terminates recursion
 	// this instance stays mpt initialized in case of error, but kernel then is not consistent anyway

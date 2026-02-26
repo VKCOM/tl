@@ -36,15 +36,15 @@ type KernelType struct {
 	tl1Names map[string]struct{}
 	tl2Names map[string]struct{}
 
-	// TODO - fix comment after refactoring built-in wrappers
 	builtinWrappedCanonicalName string // for 'int#XXXX ? = Int'; this is 'int'
+
 	// for TL2-defined types, simply name of combinator
-	// for TL2 dictionary element, __dictionary_elem
-	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
-	// for TL1-defined types, if function, Constructor.Name (left side of =)
+	// for TL2 dictionary element, __dict_elem
+	// for TL1-defined types, if !function, TypeDecl.Name (right name)
+	// for TL1-defined types, if function, Constructor.Name (left name)
 	// for primitive types, TL2 name (int32, uint32, etc).
-	// for TL1 brackets, __tuple, __vector
 	canonicalName tlast.TL2TypeName
+
 	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
 	// for TL1 Bool, Bool
 	tl1BoxedName   tlast.TL2TypeName
