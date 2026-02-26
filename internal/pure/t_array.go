@@ -91,10 +91,10 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
+	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
 
 	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
@@ -156,10 +156,10 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 
 func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
+	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
 
 	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
@@ -199,8 +199,8 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
 	}
 
-	if resolvedType2.BracketType.IndexType.IsNumber != actualArgs[0].IsArith ||
-		resolvedType2.BracketType.IndexType.Number != actualArgs[0].Arith.Res {
+	if resolvedType2.BracketType.IndexType.IsNumber != resolvedType.Args[0].IsArith ||
+		resolvedType2.BracketType.IndexType.Number != resolvedType.Args[0].Arith.Res {
 		panic("tuple properties differ")
 	}
 
@@ -215,8 +215,8 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 			argNamespace2: k.getArgNamespace2(resolvedType2),
 		},
 		isTuple:     true,
-		count:       actualArgs[0].Arith.Res,
-		dynamicSize: !actualArgs[0].IsArith,
+		count:       resolvedType2.BracketType.IndexType.Number,
+		dynamicSize: !resolvedType2.BracketType.IndexType.IsNumber,
 	}
 	if ins.argNamespace != ins.argNamespace2 {
 		panic("internal error getArgNamespace2")

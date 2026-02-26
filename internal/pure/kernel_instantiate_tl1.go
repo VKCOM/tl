@@ -342,9 +342,9 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 	ref := k.addInstance(canonicalName, kt)
 	switch {
 	case tName == "__vector":
-		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
 	case tName == "__tuple":
-		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
