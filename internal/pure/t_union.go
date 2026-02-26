@@ -122,7 +122,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 }
 
 func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
+	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(definition[0].TemplateArguments, resolvedType.Args)
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
@@ -146,7 +146,9 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			rt:            resolvedType,
+			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace(resolvedType),
+			argNamespace2: k.getArgNamespace2(resolvedType2),
 			hasTL2:        false, // could be marked later
 		},
 		variantNames:   variantNames,
@@ -164,7 +166,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 		variantCanonicalName := variantDef.Construct.Name.String() + canonicalName[argsStart:]
 		element, err := k.createStructTL1FromTL1(variantCanonicalName, tip,
-			resolvedType,
+			resolvedType, resolvedType2,
 			variantDef,
 			true, i)
 		if err != nil {

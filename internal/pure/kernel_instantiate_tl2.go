@@ -416,7 +416,8 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 		}
 		return ref, bare, nil
 	}
-	return k.getInstanceTL1(trTL1, create)
+	panic("TODO")
+	return k.getInstanceTL1(trTL1, k.convertTypeRef(trTL1), create)
 }
 
 // alias || fields || union

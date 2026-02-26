@@ -296,14 +296,15 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 }
 
 func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
-	ref, bare, err := k.getInstanceTL1(tr, false)
+	tr2 := k.convertTypeRef(tr)
+	ref, bare, err := k.getInstanceTL1(tr, tr2, false)
 	if err != nil {
 		return nil, false, err
 	}
 	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
+func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
 	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
 	if err != nil {
 		return nil, false, err
@@ -331,20 +332,20 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, create bool) (_ *TypeInstanceR
 	ref := k.addInstance(canonicalName, kt)
 	switch {
 	case tName == "__vector":
-		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
 	case tName == "__tuple":
-		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
-		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
 	case tName == "__dict2":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
-		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments, tr.Args, nil, nil)
+		ref.ins, err = k.createDict(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args, nil, nil)
 	case len(kt.combTL1) > 1:
-		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
+		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, tr2, kt.combTL1)
 	case len(kt.combTL1) == 1:
-		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr,
+		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr, tr2,
 			kt.combTL1[0],
 			false, 0)
 	default:

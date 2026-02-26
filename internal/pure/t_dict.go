@@ -8,6 +8,7 @@ package pure
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -42,11 +43,17 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (k *Kernel) createDict(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef,
+	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
 	keyType *TypeInstanceRef, fieldType *TypeInstanceRef) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	if k.opts.NewBrackets {
+		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+		}
+	}
 	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{
@@ -62,8 +69,14 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of dict2 %s element: %w", canonicalName, err)
 	}
+	rt2, fieldNatArgs2, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	if err != nil {
+		return nil, err
+	}
+	k.equalTypes(rt, rt2)
+	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
 	////log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
 	}
@@ -86,7 +99,9 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			natParams:     natParams,
 			tip:           tip,
 			rt:            resolvedType,
+			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace(resolvedType),
+			argNamespace2: k.getArgNamespace2(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}
@@ -122,10 +137,16 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 }
 
 func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef,
+	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
 	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	if k.opts.NewBrackets {
+		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+		}
+	}
 	//log.Printf("natParams for dict %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
@@ -134,8 +155,15 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	if err != nil {
 		return nil, fmt.Errorf("fail to resolve type of dict %s element: %w", canonicalName, err)
 	}
+	rt2, fieldNatArgs2, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	if err != nil {
+		return nil, err
+	}
+	k.equalTypes(rt, rt2)
+	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
+
 	//log.Printf("resolveTypeTL2 of dict for %s element: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, true)
+	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
 	}
@@ -156,7 +184,9 @@ func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 			natParams:     natParams,
 			tip:           tip,
 			rt:            resolvedType,
+			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace(resolvedType),
+			argNamespace2: k.getArgNamespace2(resolvedType2),
 		},
 		fieldType: fieldInsStruct,
 	}
