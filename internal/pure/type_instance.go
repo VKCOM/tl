@@ -37,7 +37,7 @@ type TypeInstanceCommon struct {
 	natParams     []string // external nat params (empty for TL2 types)
 	tip           *KernelType
 	isTopLevel    bool
-	rt2           tlast.TL2TypeRef
+	resolvedType  tlast.TL2TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 
 	hasTL2 bool
@@ -74,7 +74,7 @@ func (ins *TypeInstanceCommon) IsTopLevel() bool {
 }
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TL2TypeRef {
-	return ins.rt2
+	return ins.resolvedType
 }
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {

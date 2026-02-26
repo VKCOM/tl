@@ -73,7 +73,8 @@ func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedT
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tip:           tip,
-			rt2:           resolvedType,
+			natParams:     natParams,
+			resolvedType:  resolvedType,
 			isTopLevel:    tip.isTopLevel,
 			hasTL2:        true,
 		},

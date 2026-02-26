@@ -169,35 +169,9 @@ outer:
 		}
 	}
 	// check there will be no references to TL2 combinators from TL1 combinators
-	refErrList := migrationTL1RefsTL2Errors{errNamespaces: map[string]struct{}{}}
-	for _, tip := range k.tipsOrdered {
-		if _, ok := migrateTips[tip]; ok {
-			continue
-		}
-		if tip.originTL2 {
-			continue
-		}
-		// TL1 type and it is not migrating
-		for _, typ := range tip.combTL1 {
-			leftArgs := typ.TemplateArguments
-			for _, fieldDef := range typ.Fields {
-				if err := k.MigrationCheckTL2FromTL1Field(&refErrList, fieldDef, migrateTips, typ, leftArgs); err != nil {
-					return nil, err
-				}
-				if fieldDef.FieldName != "" {
-					leftArgs = append(leftArgs, tlast.TemplateArgument{
-						FieldName: fieldDef.FieldName,
-						IsNat:     true,
-						PR:        fieldDef.PR,
-					})
-				}
-			}
-			if typ.IsFunction {
-				if err := k.MigrationCheckTL2FromTL1Type(&refErrList, typ.FuncDecl, migrateTips, typ, leftArgs); err != nil {
-					return nil, err
-				}
-			}
-		}
+	refErrList, err := k.findTL1toTL2References(migrateTips)
+	if err != nil {
+		return nil, err
 	}
 	for _, err := range refErrList.migrationErrorList {
 		err.PrintWarning(k.opts.ErrorWriter, nil)
@@ -344,6 +318,41 @@ outer:
 		}
 	}
 	return allFiles, nil
+}
+
+func (k *Kernel) findTL1toTL2References(migrateTips map[*KernelType]struct{}) (migrationTL1RefsTL2Errors, error) {
+	// check there will be no references to TL2 combinators from TL1 combinators
+	refErrList := migrationTL1RefsTL2Errors{errNamespaces: map[string]struct{}{}}
+	for _, tip := range k.tipsOrdered {
+		if _, ok := migrateTips[tip]; ok {
+			continue
+		}
+		if tip.originTL2 {
+			continue
+		}
+		// TL1 type and it is not migrating
+		for _, typ := range tip.combTL1 {
+			leftArgs := typ.TemplateArguments
+			for _, fieldDef := range typ.Fields {
+				if err := k.MigrationCheckTL2FromTL1Field(&refErrList, fieldDef, migrateTips, typ, leftArgs); err != nil {
+					return refErrList, err
+				}
+				if fieldDef.FieldName != "" {
+					leftArgs = append(leftArgs, tlast.TemplateArgument{
+						FieldName: fieldDef.FieldName,
+						IsNat:     true,
+						PR:        fieldDef.PR,
+					})
+				}
+			}
+			if typ.IsFunction {
+				if err := k.MigrationCheckTL2FromTL1Type(&refErrList, typ.FuncDecl, migrateTips, typ, leftArgs); err != nil {
+					return refErrList, err
+				}
+			}
+		}
+	}
+	return refErrList, nil
 }
 
 func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, comb *tlast.Combinator) error {
