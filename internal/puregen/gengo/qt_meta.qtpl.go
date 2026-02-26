@@ -405,7 +405,7 @@ func init() {
 				qw422016.N().S(`fillObject(`)
 			}
 			qw422016.N().S(`        &TLItem{tlName: "`)
-			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(wr.tlName.String())
 			qw422016.N().S(`"`)
 
 			if wr.tlTag != 0 {
@@ -438,7 +438,7 @@ func init() {
 			// unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
 
 			qw422016.N().S(`        fillObject(&TLItem{tlName: "`)
-			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(wr.tlName.String())
 			qw422016.N().S(`"`)
 
 			if wr.tlTag != 0 {

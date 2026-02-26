@@ -114,7 +114,7 @@ func (gen *genGo) prepareGeneration() error {
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	for _, v := range gen.generatedTypesList {
-		if bytesWhiteList.HasName(v.tlName) {
+		if bytesWhiteList.HasName2(v.tlName) {
 			v.MarkWantsBytesVersion(bytesChildren)
 			typesCounterMarkBytes++
 		}

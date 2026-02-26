@@ -78,7 +78,7 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }
 
-func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
+func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
 	tlTag uint32, def tlast.TL2UnionType,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
@@ -88,7 +88,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
-			argNamespace:  k.getArgNamespace(trTL1),
+			argNamespace:  k.getArgNamespace2(tr),
 			hasTL2:        true,
 		},
 		isEnum:       true,
@@ -100,12 +100,12 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		tlName.Name += "__" + variantDef.Name
 		found, comment := utils.ExtractTLGenTag(variantDef.CommentBefore, "tlgen:tl1name")
 		if found {
-			tlName = tlast.Name{Name: comment}
+			tlName = tlast.TL2TypeName{Name: comment}
 			if ind := strings.Index(comment, "."); ind >= 0 {
-				tlName = tlast.Name{Namespace: comment[:ind], Name: comment[ind+1:]}
+				tlName = tlast.TL2TypeName{Namespace: comment[:ind], Name: comment[ind+1:]}
 			}
 		}
-		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, trTL1,
+		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, tr,
 			tlName, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil, false)
 		if err != nil {
@@ -139,7 +139,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			tlName:        definition[0].TypeDecl.Name,
+			tlName:        tlast.TL2TypeName(definition[0].TypeDecl.Name),
 			tlTag:         0,
 			natParams:     natParams,
 			tip:           tip,

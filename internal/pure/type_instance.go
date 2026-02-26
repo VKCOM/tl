@@ -31,7 +31,7 @@ type TypeInstanceRef struct {
 
 type TypeInstanceCommon struct {
 	canonicalName string
-	tlName        tlast.Name
+	tlName        tlast.TL2TypeName
 	tlName2       tlast.TL2TypeName
 	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
@@ -47,7 +47,7 @@ func (ins *TypeInstanceCommon) CanonicalName() string {
 	return ins.canonicalName
 }
 
-func (ins *TypeInstanceCommon) TLName() tlast.Name {
+func (ins *TypeInstanceCommon) TLName() tlast.TL2TypeName {
 	return ins.tlName
 }
 

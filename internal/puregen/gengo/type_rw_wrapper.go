@@ -58,7 +58,7 @@ type TypeRWWrapper struct {
 	trw       TypeRW
 	NatParams []string // external params of type Read/Write method
 
-	goCanonicalName tlast.Name // name element for names below and template full names
+	goCanonicalName tlast.TL2TypeName // name element for names below and template full names
 
 	goGlobalName string // globally unique
 	goLocalName  string
@@ -78,7 +78,7 @@ type TypeRWWrapper struct {
 
 	// tl1 info
 	tlTag  uint32
-	tlName tlast.Name // constructor name, except for unions
+	tlName tlast.TL2TypeName // constructor name, except for unions
 	//origTL []*tlast.Combinator
 
 	// TODO - move into TypeRWStruct
@@ -282,7 +282,7 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 		}
 		w.resolvedT2GoNameArg(&b, tlast.TL2TypeArgument{Type: br.ArrayType}, insideNamespace)
 	} else {
-		head = canonicalGoName(w.goCanonicalName, insideNamespace)
+		head = canonicalGoName2(w.goCanonicalName, insideNamespace)
 		for _, arg := range rt.SomeType.Arguments {
 			w.resolvedT2GoNameArg(&b, arg, insideNamespace)
 		}

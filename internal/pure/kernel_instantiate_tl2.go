@@ -196,7 +196,7 @@ func (k *Kernel) resolveArgumentTL2Impl(tr tlast.TL2TypeArgument, leftArgs []tla
 	if kt.isFunction {
 		return tr, kt.functionCanNotBeReferencedError(someType.PRName)
 	}
-	if kt.canonicalName != tlast.Name(someType.Name) {
+	if kt.canonicalName != someType.Name {
 		return tr, someType.PRName.BeautifulError(fmt.Errorf("TL2 type reference must use canonical name %s", kt.canonicalName))
 	}
 	if kt.builtinWrappedCanonicalName != "" {
@@ -488,7 +488,7 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 			if len(kt.combTL2.TypeDecl.TemplateArguments) != len(someType.Arguments) {
 				return nil, false, fmt.Errorf("internal error - typeref to %s must have %d template arguments, has %d", canonicalName, len(kt.combTL2.TypeDecl.TemplateArguments), len(someType.Arguments))
 			}
-			ref.ins, err = k.createOrdinaryType(canonicalName, kt, trTL1, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
+			ref.ins, err = k.createOrdinaryType(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
 				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, someType.Arguments)
 			if err != nil {
 				return nil, false, err
@@ -522,7 +522,7 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 			}
 			resultType = ins.ins // function cannotbe referenced so no recursion
 		}
-		ref.ins, err = k.createStruct(canonicalName, kt, trTL1, kt.canonicalName, funcDecl.Magic, true,
+		ref.ins, err = k.createStruct(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
 			resultType, resultAlias)
 		if err != nil {
@@ -535,18 +535,18 @@ func (k *Kernel) getInstanceTL2(tr tlast.TL2TypeRef, create bool) (*TypeInstance
 }
 
 // alias || fields || union
-func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
-	tlName tlast.Name, tlTag uint32,
+func (k *Kernel) createOrdinaryType(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+	tlName tlast.TL2TypeName, tlTag uint32,
 	definition tlast.TL2TypeDefinition,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
 
 	switch {
 	case definition.IsAlias():
-		return k.createAlias(canonicalName, tip, trTL1, definition.TypeAlias, leftArgs, actualArgs)
+		return k.createAlias(canonicalName, tip, tr, definition.TypeAlias, leftArgs, actualArgs)
 	case definition.StructType.IsUnionType:
-		return k.createUnion(canonicalName, tip, trTL1, tlTag, definition.StructType.UnionType, leftArgs, actualArgs)
+		return k.createUnion(canonicalName, tip, tr, tlTag, definition.StructType.UnionType, leftArgs, actualArgs)
 	default:
-		return k.createStruct(canonicalName, tip, trTL1,
+		return k.createStruct(canonicalName, tip, tr,
 			tlName, tlTag,
 			true, definition.TypeAlias, definition.StructType.ConstructorFields,
 			leftArgs, actualArgs,

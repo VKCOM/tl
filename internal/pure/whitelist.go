@@ -32,6 +32,10 @@ func (w *Whitelist) Empty() bool {
 	return len(w.filters) == 0
 }
 
+func (w *Whitelist) HasName2(name tlast.TL2TypeName) bool {
+	return w.HasName(tlast.Name(name))
+}
+
 func (w *Whitelist) HasName(name tlast.Name) bool {
 	inNameFilterElement := func(name tlast.Name, filter string) bool {
 		if filter == "*" {

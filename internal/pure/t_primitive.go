@@ -68,7 +68,7 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 	ins := TypeInstancePrimitive{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: name,
-			tlName:        tlast.Name{Name: historicalName},
+			tlName:        tlast.TL2TypeName{Name: historicalName},
 		},
 		clone:         clone,
 		goodForMapKey: goodForMapKey,
@@ -84,8 +84,8 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 		instances:      map[string]*TypeInstanceRef{name: ref},
 		tl1Names:       map[string]struct{}{},
 		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.Name{Name: name},
-		historicalName: tlast.Name{Name: historicalName},
+		canonicalName:  tlast.TL2TypeName{Name: name},
+		historicalName: tlast.TL2TypeName{Name: historicalName},
 		canBeBare:      true,
 	}
 	kt.tl2Names[name] = struct{}{}

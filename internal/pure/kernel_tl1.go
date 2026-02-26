@@ -54,7 +54,7 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 	tip.originTL2 = false // allow references from TL1
 	k.tips["Bool"] = tip
 	tip.tl1Names["Bool"] = struct{}{}
-	tip.tl1BoxedName = tlast.Name{Name: "Bool"}
+	tip.tl1BoxedName = tlast.TL2TypeName{Name: "Bool"}
 	// we do not allow references to boxed wrappers from TL2
 	return nil
 }
@@ -86,9 +86,9 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 			instances:      map[string]*TypeInstanceRef{},
 			tl1Names:       map[string]struct{}{bigName: {}},
 			tl2Names:       map[string]struct{}{},
-			canonicalName:  typ.TypeDecl.Name,
-			historicalName: typ.TypeDecl.Name,
-			tl1BoxedName:   typ.TypeDecl.Name,
+			canonicalName:  tlast.TL2TypeName(typ.TypeDecl.Name),
+			historicalName: tlast.TL2TypeName(typ.TypeDecl.Name),
+			tl1BoxedName:   tlast.TL2TypeName(typ.TypeDecl.Name),
 			isTopLevel:     true,
 
 			builtinWrappedCanonicalName: typ.Construct.Name.String(),
@@ -268,8 +268,8 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				isTopLevel: true,
 				// functions have no canonical name, because there is no references to functions
 				// also they have no TL1 names or TL2 names set.
-				canonicalName:  cName,
-				historicalName: cName,
+				canonicalName:  tlast.TL2TypeName(cName),
+				historicalName: tlast.TL2TypeName(cName),
 				canBeBare:      true,
 			}
 			for _, m := range comb.Modifiers {
@@ -319,9 +319,9 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				isTopLevel:        !anyConstructorHasArgs,
 				tl1Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				tl2Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				canonicalName:     cName,
-				historicalName:    cName,
-				tl1BoxedName:      tName,
+				canonicalName:     tlast.TL2TypeName(cName),
+				historicalName:    tlast.TL2TypeName(cName),
+				tl1BoxedName:      tlast.TL2TypeName(tName),
 				canBeBare:         true,
 				templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
 				targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
@@ -356,9 +356,9 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			isTopLevel:        !anyConstructorHasArgs,
 			tl1Names:          map[string]struct{}{tName.String(): {}},
 			tl2Names:          map[string]struct{}{tName.String(): {}},
-			canonicalName:     tName,
-			historicalName:    tName,
-			tl1BoxedName:      tName,
+			canonicalName:     tlast.TL2TypeName(tName),
+			historicalName:    tlast.TL2TypeName(tName),
+			tl1BoxedName:      tlast.TL2TypeName(tName),
 			templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
 			targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 		}

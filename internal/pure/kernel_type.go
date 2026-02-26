@@ -44,12 +44,12 @@ type KernelType struct {
 	// for TL1-defined types, if function, Constructor.Name (left side of =)
 	// for primitive types, TL2 name (int32, uint32, etc).
 	// for TL1 brackets, __tuple, __vector
-	canonicalName tlast.Name
+	canonicalName tlast.TL2TypeName
 	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
 	// for TL1 Bool, Bool
-	tl1BoxedName   tlast.Name
+	tl1BoxedName   tlast.TL2TypeName
 	canBeBare      bool
-	historicalName tlast.Name // go gen historically uses TL1-style names for builtin types
+	historicalName tlast.TL2TypeName // go gen historically uses TL1-style names for builtin types
 
 	// usage tracking for migration/compilcation.
 	// common for union types, so cannot be in combinator itself
@@ -78,11 +78,11 @@ func (t *KernelType) HasAnnotation(a string) bool {
 	return false
 }
 
-func (t *KernelType) CanonicalName() tlast.Name {
+func (t *KernelType) CanonicalName() tlast.TL2TypeName {
 	return t.canonicalName
 }
 
-func (t *KernelType) HistoricalName() tlast.Name {
+func (t *KernelType) HistoricalName() tlast.TL2TypeName {
 	return t.historicalName
 }
 
@@ -91,7 +91,7 @@ func (t *KernelType) CanBeBare() bool {
 }
 
 func (t *KernelType) CanBeBoxed() bool {
-	return t.tl1BoxedName != tlast.Name{}
+	return t.tl1BoxedName != tlast.TL2TypeName{}
 }
 
 func (t *KernelType) functionCanNotBeReferencedError(PR tlast.PositionRange) error {
