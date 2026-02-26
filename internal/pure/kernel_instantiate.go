@@ -64,7 +64,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	if kt.originTL2 {
 		if !kt.combTL2.IsFunction {
 			ref.ins, err = k.createOrdinaryTypeTL2(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
-				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments, tr.SomeType.Arguments)
+				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments)
 			if err != nil {
 				return nil, false, err
 			}
@@ -130,11 +130,11 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 func (k *Kernel) createOrdinaryTypeTL2(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
 	tlName tlast.TL2TypeName, tlTag uint32,
 	definition tlast.TL2TypeDefinition,
-	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
+	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 
 	switch {
 	case definition.IsAlias():
-		return k.createAliasTL2(canonicalName, tip, tr, definition.TypeAlias, leftArgs, actualArgs)
+		return k.createAliasTL2(canonicalName, tip, tr, definition.TypeAlias, leftArgs)
 	case definition.StructType.IsUnionType:
 		return k.createUnionTL2(canonicalName, tip, tr, tlTag, definition.StructType.UnionType, leftArgs)
 	default:

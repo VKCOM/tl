@@ -52,7 +52,7 @@ func (ins *TypeInstanceAlias) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
 	alias tlast.TL2TypeRef,
-	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
+	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
 	if len(natParams) != 0 {

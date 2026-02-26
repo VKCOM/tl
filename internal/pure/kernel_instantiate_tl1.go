@@ -99,6 +99,8 @@ func (k *Kernel) canonicalString(tr tlast.TL2TypeRef, top bool) (_ string, bare 
 	return s.String(), bare, nil
 }
 
+// template instances in default namespace are moved into argument(s) namespace,
+// if only 1 namespace (except default) in arguments
 func (k *Kernel) getArgNamespace(rt tlast.TL2TypeRef) string {
 	argNamespaces := map[string]struct{}{}
 	k.collectArgsNamespaces(tlast.TL2TypeArgument{Type: rt}, argNamespaces)
