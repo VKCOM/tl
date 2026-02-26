@@ -40,24 +40,24 @@ func (k *Kernel) convertTypeArgument(tra tlast.ArithmeticOrType) tlast.TL2TypeAr
 }
 
 func (k *Kernel) convertTypeRef(tr tlast.TypeRef) tlast.TL2TypeRef {
-	if tr.Type.String() == "__vector" && len(tr.Args) == 1 && !tr.Args[0].IsArith {
-		return tlast.TL2TypeRef{
-			BracketType: &tlast.TL2BracketType{
-				ArrayType: k.convertTypeRef(tr.Args[0].T),
-				PR:        tr.PR,
-			},
-		}
-	}
-	if tr.Type.String() == "__tuple" && len(tr.Args) == 2 && !tr.Args[1].IsArith {
-		return tlast.TL2TypeRef{
-			BracketType: &tlast.TL2BracketType{
-				HasIndex:  true,
-				IndexType: k.convertTypeArgument(tr.Args[0]),
-				ArrayType: k.convertTypeRef(tr.Args[1].T),
-				PR:        tr.PR,
-			},
-		}
-	}
+	//if tr.Type.String() == "__vector" && len(tr.Args) == 1 && !tr.Args[0].IsArith {
+	//	return tlast.TL2TypeRef{
+	//		BracketType: &tlast.TL2BracketType{
+	//			ArrayType: k.convertTypeRef(tr.Args[0].T),
+	//			PR:        tr.PR,
+	//		},
+	//	}
+	//}
+	//if tr.Type.String() == "__tuple" && len(tr.Args) == 2 && !tr.Args[1].IsArith {
+	//	return tlast.TL2TypeRef{
+	//		BracketType: &tlast.TL2BracketType{
+	//			HasIndex:  true,
+	//			IndexType: k.convertTypeArgument(tr.Args[0]),
+	//			ArrayType: k.convertTypeRef(tr.Args[1].T),
+	//			PR:        tr.PR,
+	//		},
+	//	}
+	//}
 	//if tr.Type.String() == "__dict" && len(tr.Args) == 2 && !tr.Args[1].IsArith {
 	//	return tlast.TL2TypeRef{
 	//		BracketType: &tlast.TL2BracketType{

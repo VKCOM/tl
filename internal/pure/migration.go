@@ -459,7 +459,7 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 	}
 	tName := tr.Type.String()
 	switch tName {
-	case "__vector", "Vector", "vector":
+	case "Vector", "vector":
 		if len(tr.Args) != 1 || tr.Args[0].IsArith {
 			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected single type argument here"))
 		}
@@ -468,15 +468,15 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 			return tlast.TL2TypeArgument{}, false, err
 		}
 		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &tlast.TL2BracketType{ArrayType: elemType}}}, false, nil
-	case "__tuple", "Tuple", "tuple":
+	case "Tuple", "tuple":
 		if len(tr.Args) != 2 {
 			return tlast.TL2TypeArgument{}, false, tr.PR.BeautifulError(errors.New("expected 2 arguments here"))
 		}
 		argType := tr.Args[0]
 		argCount := tr.Args[1]
-		if tName == "__tuple" {
-			argCount, argType = argType, argCount
-		}
+		//if tName == "__tuple" {
+		//	argCount, argType = argType, argCount
+		//}
 		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, argType.T, leftArgs)
 		if err != nil {
 			return tlast.TL2TypeArgument{}, false, err
