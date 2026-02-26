@@ -98,9 +98,6 @@ func JSONHelpNatArg(ins pure.TypeInstance, fields []pure.Field, natArg pure.Actu
 }
 
 func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields []pure.Field, natArgs *[]pure.ActualNatArg) string {
-	if ins.CanonicalName() == "Maybe<+ab.myType>" {
-		fmt.Print("aha")
-	}
 	var s strings.Builder
 	if ins.KernelType() == nil {
 		return ins.CanonicalName()

@@ -333,7 +333,7 @@ func init() {
                 resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
             -%}
         fillFunction({%- else -%}fillObject({%- endif -%}
-        &TLItem{tlName: "{%= wr.tlName.String() %}" {%- code -%}
+        &TLItem{tlName: "{%s= wr.tlName.String() %}" {%- code -%}
             {%- if wr.tlTag != 0 -%}, tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}{%- endif -%}
             {%- if !wr.originateFromTL2 -%}, hasTL1:true{%- endif -%}
             {%- if wr.HasTL2() -%}, hasTL2:true{%- endif -%}
@@ -346,7 +346,7 @@ func init() {
             if hasTypes != nil { *hasTypes = true }
             // unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
         -%}
-        fillObject(&TLItem{tlName: "{%= wr.tlName.String() %}" {%- code -%}
+        fillObject(&TLItem{tlName: "{%s= wr.tlName.String() %}" {%- code -%}
             {%- if wr.tlTag != 0 -%}, tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}{%- endif -%}
             {%- if !wr.originateFromTL2 -%}, hasTL1:true{%- endif -%}
             {%- if wr.HasTL2() -%}, hasTL2:true{%- endif -%}

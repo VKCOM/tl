@@ -7,32 +7,8 @@
 package pure
 
 import (
-	"fmt"
-
 	"github.com/vkcom/tl/internal/tlast"
 )
-
-func (k *Kernel) equalTypes(rt tlast.TypeRef, rt2 tlast.TL2TypeRef) {
-	rt22 := k.convertTypeRef(rt)
-	a, b := rt22.String(), rt2.String()
-	if a != b {
-		panic(fmt.Errorf("!equalsType %s %s", a, b))
-	}
-}
-
-func (k *Kernel) equalNatArgs(rt []ActualNatArg, rt2 []ActualNatArg) {
-	if len(rt) != len(rt2) {
-		panic(fmt.Errorf("!equalNatArgs %d %d", len(rt), len(rt2)))
-	}
-	for i, na := range rt {
-		nb := rt2[i]
-		a := fmt.Sprintf("%v", na)
-		b := fmt.Sprintf("%v", nb)
-		if a != b {
-			panic(fmt.Errorf("!equalNatArgs %s %s", a, b))
-		}
-	}
-}
 
 func (k *Kernel) convertTemplateArguments(args []tlast.TemplateArgument) []tlast.TL2TypeTemplate {
 	var result []tlast.TL2TypeTemplate

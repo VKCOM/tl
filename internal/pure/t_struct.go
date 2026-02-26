@@ -207,12 +207,11 @@ func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
 	return value
 }
 
-func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast.TypeRef,
-	tlName tlast.Name, tlTag uint32,
+func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+	tlName tlast.TL2TypeName, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
 	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
-	panic("TODO - refactor")
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -220,7 +219,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 			tlTag:         tlTag,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
-			argNamespace:  k.getArgNamespace(trTL1),
+			argNamespace:  k.getArgNamespace2(tr),
 			hasTL2:        true,
 		},
 		isConstructorFields: isConstructorFields,
@@ -228,7 +227,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		unionIndex:          unionIndex,
 		resultType:          resultType,
 		isResultAlias:       resultAlias,
-		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName(tlName),
+		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName2(tlName),
 	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
@@ -265,50 +264,6 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		ins.fields = append(ins.fields, newField)
 	}
 	return ins, nil
-}
-
-// we want the same naming convention for nat params, as in old kernel,
-// though it has no difference to semantic and can be simplified to p0, p1, p2, etc.
-func (k *Kernel) fillNatParam(rt tlast.ArithmeticOrType, natParams *[]string, prefix string) {
-	if rt.IsArith {
-		return
-	}
-	if rt.T.String() == "*" {
-		*natParams = append(*natParams, prefix)
-		return
-	}
-	tName := rt.T.Type.String()
-	tip, ok := k.tips[tName]
-	if !ok {
-		panic("resolved type not found in global type map")
-	}
-	for i, arg := range rt.T.Args {
-		leftArg := tip.combTL1[0].TemplateArguments[i]
-		k.fillNatParam(arg, natParams, prefix+leftArg.FieldName)
-	}
-}
-
-func (k *Kernel) getTL1Args(leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (localArgs []LocalArg, natParams []string) {
-	for i, arg := range actualArgs {
-		leftArg := leftArgs[i]
-		var localNatParams []string
-		k.fillNatParam(arg, &localNatParams, leftArg.FieldName)
-		if len(localNatParams) == 1 {
-			localNatParams[0] = leftArg.FieldName
-		}
-		natParams = append(natParams, localNatParams...)
-		localArg := LocalArg{
-			wrongTypeErr: nil,
-			arg:          arg,
-		}
-		for _, param := range localNatParams {
-			localArg.natArgs = append(localArg.natArgs, ActualNatArg{
-				name: param,
-			})
-		}
-		localArgs = append(localArgs, localArg)
-	}
-	return
 }
 
 // we want the same naming convention for nat params, as in old kernel,
@@ -548,7 +503,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			tlName:        def.Construct.Name,
+			tlName:        tlast.TL2TypeName(def.Construct.Name),
 			tlTag:         def.Construct.ID,
 			natParams:     natParams,
 			tip:           tip,
@@ -572,7 +527,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 	if isDict, dictFieldT := k.IsDict(tip); isDict {
 		fieldT := tlast.TypeRef{
-			Type: dictFieldT.canonicalName,
+			Type: tlast.Name(dictFieldT.canonicalName),
 			Bare: true,
 		}
 		// TODO - I'm not sure if passing PR of actualArgs is correct

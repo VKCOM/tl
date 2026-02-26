@@ -225,8 +225,8 @@ func (k *Kernel) Compile() error {
 			isFunction:     comb.IsFunction,
 			isTopLevel:     len(comb.TypeDecl.TemplateArguments) == 0,
 			canBeBare:      true,
-			canonicalName:  tlast.Name(refName),
-			historicalName: tlast.Name(refName),
+			canonicalName:  refName,
+			historicalName: refName,
 		}
 		if comb.IsFunction {
 			if resultTlName, ok := k.functionNeedsGeneratedResultType(comb.FuncDecl); ok {
@@ -247,8 +247,8 @@ func (k *Kernel) Compile() error {
 					isFunction:     false,
 					isTopLevel:     true,
 					canBeBare:      true,
-					canonicalName:  tlast.Name(resultTlName),
-					historicalName: tlast.Name(resultTlName),
+					canonicalName:  resultTlName,
+					historicalName: resultTlName,
 				}
 				if err := k.addTip(resultKt, resultTlName.String(), ""); err != nil {
 					return fmt.Errorf("error adding function result type %s: %w", resultTlName, err)
@@ -399,9 +399,8 @@ func (k *Kernel) Compile() error {
 	}
 	for _, tip := range k.tipsTopLevel {
 		if !tip.originTL2 {
-			tr := tlast.TypeRef{Type: tip.canonicalName}
-			tr2 := k.convertTypeRef(tr)
-			if _, _, err := k.getInstanceTL1(tr2, true); err != nil {
+			tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
+			if _, _, err := k.getInstanceTL1(tr, true); err != nil {
 				return err
 			}
 		}
@@ -419,7 +418,7 @@ func (k *Kernel) Compile() error {
 	tl2Children := map[TypeInstance]struct{}{}
 	typesCounterMarkTL2 := 0
 	for _, v := range k.instancesOrdered {
-		if tl2WhiteList.HasName(v.ins.Common().tlName) {
+		if tl2WhiteList.HasName2(v.ins.Common().tlName) {
 			k.markWantsTL2(v.ins, tl2Children)
 			typesCounterMarkTL2++
 		}
