@@ -33,7 +33,7 @@
     <h1>Functions</h1>
     <ul>
   {%- for _, trww := range sortedInstances -%}
-    {%- if trww.KernelType().OriginTL2() -%}
+    {%- if trww.KernelType() == nil || trww.KernelType().OriginTL2() -%}
         {%- continue -%}
     {%- endif -%}
     {%- if fun, ok := trww.(*pure.TypeInstanceStruct); ok && fun.ResultType() != nil -%}
@@ -49,7 +49,7 @@
 <h2 id="#">#</h2>
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
   {%- for _, trww := range sortedInstances -%}
-    {%- if trww.KernelType().OriginTL2() -%}
+    {%- if trww.KernelType() == nil || trww.KernelType().OriginTL2() -%}
         {%- continue -%}
     {%- endif -%}
 {%= printHTMLHelp(kernel, trww) %}

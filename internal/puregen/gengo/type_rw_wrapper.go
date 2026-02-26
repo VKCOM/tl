@@ -8,7 +8,6 @@ package gengo
 
 import (
 	"cmp"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -244,44 +243,57 @@ func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 	}
 }
 
-func (w *TypeRWWrapper) resolvedT2GoNameTail(insideNamespace string) string {
-	b := strings.Builder{}
-	for _, arg := range w.pureType.Common().ResolvedType().Args {
-		if arg.IsArith {
-			b.WriteString(strconv.FormatUint(uint64(arg.Arith.Res), 10))
-			continue
-		}
-		if arg.T.String() == "*" {
-			continue
-		}
-		ref, fieldBare, err := w.gen.kernel.GetInstanceTL1(arg.T)
-		if err != nil {
-			panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", arg.T, err))
-		}
-		fieldType, err := w.gen.getType(ref)
-		if err != nil {
-			panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", arg.T, err))
-		}
-		head, tail := fieldType.resolvedT2GoName(insideNamespace)
-		b.WriteString(head)
-		if head != "Bool" && !fieldBare && !fieldType.pureType.BoxedOnly() {
-			// If it cannot be bare, save on redundant suffix
-			// Bool is exception, because it is bare in TL2, but boxed in TL1
-			b.WriteString("Boxed")
-		}
-		b.WriteString(tail)
+func (w *TypeRWWrapper) resolvedT2GoNameArg(b *strings.Builder, arg tlast.TL2TypeArgument, insideNamespace string) {
+	if arg.IsNumber {
+		b.WriteString(strconv.FormatUint(uint64(arg.Number), 10))
+		return
 	}
-	return b.String()
+	if arg.Type.String() == "*" {
+		return
+	}
+	fieldType, fieldBare := w.gen.getTypeMust(arg.Type)
+	head, tail := fieldType.resolvedT2GoName(insideNamespace)
+	b.WriteString(head)
+	if head != "Bool" && !fieldBare && !fieldType.pureType.BoxedOnly() {
+		// If it cannot be bare, save on redundant suffix
+		// Bool is exception, because it is bare in TL2, but boxed in TL1
+		b.WriteString("Boxed")
+	}
+	b.WriteString(tail)
 }
 
 func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
+	b := strings.Builder{}
+	rt := w.pureType.Common().ResolvedType()
+	if br := rt.BracketType; br != nil {
+		if br.HasIndex {
+			if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
+				head = "BuiltinTuple"
+				w.resolvedT2GoNameArg(&b, br.IndexType, insideNamespace)
+				//if br.IndexType.IsNumber {
+				//	b.WriteString(strconv.FormatUint(uint64(br.IndexType.Number), 10))
+				//}
+			} else {
+				head = "BuiltinDict"
+				w.resolvedT2GoNameArg(&b, br.IndexType, insideNamespace)
+			}
+		} else {
+			head = "BuiltinVector"
+		}
+		w.resolvedT2GoNameArg(&b, tlast.TL2TypeArgument{Type: br.ArrayType}, insideNamespace)
+	} else {
+		head = canonicalGoName(w.goCanonicalName, insideNamespace)
+		for _, arg := range rt.SomeType.Arguments {
+			w.resolvedT2GoNameArg(&b, arg, insideNamespace)
+		}
+	}
 	//if w.pureType.CanonicalName() == "Vector<uint32>" {
 	//	fmt.Printf("aga")
 	//}
-	tail = w.resolvedT2GoNameTail(insideNamespace)
+	tail = b.String()
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
-	return canonicalGoName(w.goCanonicalName, insideNamespace), tail
+	return
 }
 
 func stringCompare(a string, b string) int {

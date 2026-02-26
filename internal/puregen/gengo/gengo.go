@@ -17,6 +17,7 @@ import (
 
 	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/internal/puregen"
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -452,4 +453,16 @@ func (gen *genGo) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
 		return nil, fmt.Errorf("internal error: type %q not found", t.CanonicalName())
 	}
 	return result, nil
+}
+
+func (gen *genGo) getTypeMust(rt tlast.TL2TypeRef) (*TypeRWWrapper, bool) {
+	ref, fieldBare, err := gen.kernel.GetInstanceTL1(rt)
+	if err != nil {
+		panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", rt.String(), err))
+	}
+	result, ok := gen.generatedTypes[ref.CanonicalName()]
+	if !ok {
+		panic(fmt.Errorf("internal error: type instance %q not found", ref.CanonicalName()))
+	}
+	return result, fieldBare
 }

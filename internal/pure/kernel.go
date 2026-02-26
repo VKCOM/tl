@@ -401,7 +401,7 @@ func (k *Kernel) Compile() error {
 		if !tip.originTL2 {
 			tr := tlast.TypeRef{Type: tip.canonicalName}
 			tr2 := k.convertTypeRef(tr)
-			if _, _, err := k.getInstanceTL1(tr, tr2, true); err != nil {
+			if _, _, err := k.getInstanceTL1(tr2, true); err != nil {
 				return err
 			}
 		}

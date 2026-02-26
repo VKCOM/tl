@@ -8,7 +8,6 @@ package pure
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/pkg/basictl"
@@ -89,31 +88,10 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 //	return ins
 //}
 
-func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
+func (k *Kernel) createVectorTL1(canonicalName string,
+	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
 
-	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
-	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
-	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-	}
-	// log.Printf("natParams for vector %s: %s", canonicalName, strings.Join(natParams, ","))
-
-	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
-
-	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
-	if err != nil {
-		return nil, fmt.Errorf("fail to resolve type of vector %s field: %w", canonicalName, err)
-	}
-	rt2, fieldNatArgs2, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
-	if err != nil {
-		return nil, err
-	}
-	k.equalTypes(rt, rt2)
-	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
 
 	var fieldNatArgs3 []ActualNatArg
 	for _, param := range natParams3 {
@@ -121,11 +99,9 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 			name: param,
 		})
 	}
-	k.equalTypes(rt, resolvedType2.BracketType.ArrayType)
-	k.equalNatArgs(fieldNatArgs, fieldNatArgs3)
 
 	// log.Printf("resolveTypeTL2 of vector for %s field: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
+	fieldIns, fieldBare, err := k.getInstanceTL1(resolvedType2.BracketType.ArrayType, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of vector %s field: %w", canonicalName, err)
 	}
@@ -133,53 +109,30 @@ func (k *Kernel) createVectorTL1(canonicalName string, tip *KernelType,
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams,
-			tip:           tip,
-			rt:            resolvedType,
+			natParams:     natParams3,
+			tip:           nil, // TODO - try to live without brackets type at all
 			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace2(resolvedType2),
 		},
 		isTuple: false,
 	}
-	if ins.argNamespace != k.getArgNamespace(resolvedType) {
-		panic("internal error getArgNamespace2")
-	}
+
 	ins.field = Field{
 		owner:   ins,
 		ins:     fieldIns,
 		bare:    fieldBare,
-		natArgs: fieldNatArgs,
+		natArgs: fieldNatArgs3,
 	}
 	return ins, nil
 }
 
-func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
-	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
+func (k *Kernel) createTupleTL1(canonicalName string, resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
 
-	// TODO - do not derive parameters from getTL1ArgsHybrid, call fillNatParamHybrid directly
-	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
-	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	_, natParams3 := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType2.BracketType.ArrayType}, "t")
-	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-	}
 	// log.Printf("natParams for tuple %s: %s", canonicalName, strings.Join(natParams, ","))
 	//if len(natParams) != 0 {
 	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
 	//}
-	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
-	rt, fieldNatArgs, err := k.resolveTypeTL1(fieldT, leftArgs, localArgs)
-	if err != nil {
-		return nil, fmt.Errorf("fail to resolve type of tuple %s field: %w", canonicalName, err)
-	}
-	rt2, fieldNatArgs2, err := k.resolveTypeHybrid(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
-	if err != nil {
-		return nil, err
-	}
-	k.equalTypes(rt, rt2)
-	k.equalNatArgs(fieldNatArgs, fieldNatArgs2)
-
 	var fieldNatArgs3 []ActualNatArg
 	for _, param := range natParams3 {
 		//if i == 0 && !resolvedType2.BracketType.IndexType.IsNumber {
@@ -189,26 +142,21 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 			name: param,
 		})
 	}
-	k.equalTypes(rt, resolvedType2.BracketType.ArrayType)
-	k.equalNatArgs(fieldNatArgs, fieldNatArgs3)
-
-	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
-	fieldIns, fieldBare, err := k.getInstanceTL1(rt, rt2, true)
-	if err != nil {
-		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
+	if !resolvedType2.BracketType.IndexType.IsNumber {
+		natParams3 = append([]string{"n"}, natParams3...)
 	}
 
-	if resolvedType2.BracketType.IndexType.IsNumber != resolvedType.Args[0].IsArith ||
-		resolvedType2.BracketType.IndexType.Number != resolvedType.Args[0].Arith.Res {
-		panic("tuple properties differ")
+	// log.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s", canonicalName, fieldT, rt.String())
+	fieldIns, fieldBare, err := k.getInstanceTL1(resolvedType2.BracketType.ArrayType, true)
+	if err != nil {
+		return nil, fmt.Errorf("fail to instantiate type of tuple %s field: %w", canonicalName, err)
 	}
 
 	ins := &TypeInstanceArray{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
-			natParams:     natParams,
-			tip:           tip,
-			rt:            resolvedType,
+			natParams:     natParams3,
+			tip:           nil, // TODO - try to live without brackets type at all
 			rt2:           resolvedType2,
 			argNamespace:  k.getArgNamespace2(resolvedType2),
 		},
@@ -216,14 +164,11 @@ func (k *Kernel) createTupleTL1(canonicalName string, tip *KernelType,
 		count:       resolvedType2.BracketType.IndexType.Number,
 		dynamicSize: !resolvedType2.BracketType.IndexType.IsNumber,
 	}
-	if ins.argNamespace != k.getArgNamespace(resolvedType) {
-		panic("internal error getArgNamespace2")
-	}
 	ins.field = Field{
 		owner:   ins,
 		ins:     fieldIns,
 		bare:    fieldBare,
-		natArgs: fieldNatArgs,
+		natArgs: fieldNatArgs3,
 	}
 	return ins, nil
 }

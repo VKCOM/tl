@@ -106,6 +106,9 @@ func visit(
 	affectedIndexes *map[uint32]BitUsageInfo,
 	natProps *FieldNatProperties,
 ) VisitResult {
+	if natIndex >= len(t.NatParams) {
+		return VisitSuccess
+	}
 	natParamName := t.NatParams[natIndex]
 	typeName := t.goGlobalName
 	key := VisitedTypeNatParam{typeName, natIndex}

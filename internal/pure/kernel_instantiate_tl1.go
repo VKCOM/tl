@@ -254,7 +254,7 @@ func (k *Kernel) resolveArgumentTL1Impl(tr tlast.ArithmeticOrType, leftArgs []tl
 }
 
 func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateArgument,
-	actualArgs []LocalArg, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
+	actualArgs []LocalArgHybrid, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
 	for i, targ := range leftArgs {
 		if targ.FieldName == mask.MaskName {
 			actualArg := actualArgs[i]
@@ -270,10 +270,10 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 			if len(actualArg.natArgs) > 1 {
 				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("internal error: fieldMask reference len(natArg) == %d for parameter %s", len(actualArg.natArgs), targ.FieldName))
 			}
-			if actualArg.arg.IsArith {
+			if actualArg.arg.IsNumber {
 				return ActualNatArg{
 					isNumber: true,
-					number:   actualArg.arg.Arith.Res,
+					number:   actualArg.arg.Number,
 				}, nil
 			}
 			if sf := actualArg.arg.SourceField; sf != (tlast.CombinatorField{}) {
@@ -295,23 +295,18 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateA
 	return ActualNatArg{}, mask.PRName.BeautifulError(errors.New("fieldMask reference not found"))
 }
 
-func (k *Kernel) GetInstanceTL1(tr tlast.TypeRef) (TypeInstance, bool, error) {
-	tr2 := k.convertTypeRef(tr)
-	ref, bare, err := k.getInstanceTL1(tr, tr2, false)
+func (k *Kernel) GetInstanceTL1(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
+	ref, bare, err := k.getInstanceTL1(tr, false)
 	if err != nil {
 		return nil, false, err
 	}
 	return ref.ins, bare, nil
 }
 
-func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
-	canonicalName, bare, err := k.canonicalStringTL1(tr, true)
+func (k *Kernel) getInstanceTL1(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
+	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
 	if err != nil {
 		return nil, false, err
-	}
-	canonicalName2, bare2, err2 := k.canonicalStringTL2(tr2, true)
-	if err2 != nil || canonicalName != canonicalName2 || bare != bare2 {
-		panic("getInstanceTL1")
 	}
 	if ref, ok := k.instances[canonicalName]; ok {
 		return ref, bare, nil
@@ -319,26 +314,35 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 	if !create {
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
-	//if br := tr2.BracketType; br != nil && !br.HasIndex { // vector
-	// must store pointer before children GetInstanceTL2() terminates recursion
-	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
-	//ref := k.addInstance(canonicalName, k.brackets)
-	//ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
-	//if err != nil {
-	//	return nil, false, err
-	//}
-	//return ref, bare, nil
-	//}
+	if br := tr.BracketType; br != nil {
+		ref := k.addInstance(canonicalName, k.brackets)
+		// must store pointer before children GetInstanceTL2() terminates recursion
+		// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+		if br.HasIndex {
+			if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
+				ref.ins, err = k.createTupleTL1(canonicalName, tr)
+			} else {
+				panic("TODO - dict2")
+			}
+		} else {
+			ref.ins, err = k.createVectorTL1(canonicalName, tr)
+		}
+		if err != nil {
+			return nil, false, err
+		}
+		return ref, bare, nil
+	}
 	// log.Printf("creating an instance of type %s", canonicalName)
 	// we must mark all usedAsNatConst, usedAsNatVariable, so
 	// will do some work before looking up and returning existing instance
-	tName := tr.Type.String()
+	tName := tr.SomeType.Name.String()
 	kt, ok := k.tips[tName]
 	if !ok {
-		return nil, false, fmt.Errorf("type %s does not exist", tr.Type)
+		return nil, false, fmt.Errorf("type %s does not exist", tName)
 	}
+	// TODO - instantiate TL2 combinators here
 	if kt.originTL2 {
-		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tr.Type)
+		return nil, false, fmt.Errorf("TL1 combinator cannot reference TL2 combinator %s", tName)
 	}
 	td := kt.combTL1[0]
 	// must store pointer before children GetInstanceTL2() terminates recursion
@@ -346,21 +350,20 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 	ref := k.addInstance(canonicalName, kt)
 	switch {
 	case tName == "__vector":
-		ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
+		panic("should not have __vector any more")
 	case tName == "__tuple":
-		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
+		panic("should not have __vector any more")
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
-		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments)
 	case tName == "__dict2":
-		panic("TODO - rewrite this branch")
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
-		ref.ins, err = k.createDict(canonicalName, kt, tr, tr2, td.TemplateArguments)
+		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments)
 	case len(kt.combTL1) > 1:
-		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, tr2, kt.combTL1)
+		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
 	case len(kt.combTL1) == 1:
-		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr, tr2,
+		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr,
 			kt.combTL1[0],
 			false, 0)
 	default:
