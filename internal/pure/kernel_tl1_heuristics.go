@@ -15,7 +15,11 @@ import (
 )
 
 func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
-	return rt.Type.String() == "true" || rt.Type.String() == "True"
+	return rt.String() == "true" || rt.String() == "True"
+}
+
+func (k *Kernel) IsTrueType2(rt tlast.TL2TypeRef) bool {
+	return rt.String() == "true" || rt.String() == "True"
 }
 
 func (k *Kernel) IsDict(kt *KernelType) (bool, *KernelType) {
