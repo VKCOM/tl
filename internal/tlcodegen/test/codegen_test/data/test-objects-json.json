@@ -502,7 +502,7 @@
       "TestingType": "cases.testOutFieldMaskContainer",
       "Successes": [
         {
-          "GoldenInput": "{\"f\":1,\"inner\":{\"f1\":1,\"f3\":[1]}}",
+          "GoldenInput": "{\"f\":1,\"fs\":1,\"inner\":{\"f1\":1,\"f3\":[1]}}",
           "Alternatives": null,
           "IncorrectAlternatives": null
         },
@@ -515,9 +515,9 @@
           "IncorrectAlternatives": null
         },
         {
-          "GoldenInput": "{\"f\":1,\"inner\":{\"f1\":0,\"f3\":[1]}}",
+          "GoldenInput": "{\"f\":1,\"fs\":1,\"inner\":{\"f1\":0,\"f3\":[1]}}",
           "Alternatives": [
-            "{\"f\":1,\"inner\":{\"f3\":[1]}}"
+            "{\"f\":1,\"fs\":1,\"inner\":{\"f3\":[1]}}"
           ],
           "IncorrectAlternatives": null
         }
@@ -525,7 +525,7 @@
       "Failures": [
         "{\"f\":1,\"inner\":{\"f3\":[1,2]}}",
         "{\"f\":1,\"inner\":{\"f1\":1,\"f2\":true}}",
-        "{\"f\":1,\"inner\":{\"f1\":1}}",
+        "{\"f\":1,\"fs\":1,\"inner\":{\"f1\":1}}",
         "{\"f\":0,\"inner\":{\"f1\":1}}"
       ]
     },
@@ -533,10 +533,10 @@
       "TestingType": "cases.testBeforeReadBitValidation",
       "Successes": [
         {
-          "GoldenInput": "{\"n\":3,\"a\":[1,1,1],\"b\":[1,1,1]}",
+          "GoldenInput": "{\"n\":3,\"ns\":3,\"a\":[1,1,1],\"b\":[1,1,1]}",
           "Alternatives": [
-            "{\"a\":[1,1,1],\"b\":[1,1,1],\"n\":3}",
-            "{\"a\":[1,1,1],\"b\":[1,1,1]}"
+            "{\"ns\":3,\"a\":[1,1,1],\"b\":[1,1,1],\"n\":3}",
+            "{\"ns\":3,\"a\":[1,1,1],\"b\":[1,1,1]}"
           ],
           "IncorrectAlternatives": null
         }
