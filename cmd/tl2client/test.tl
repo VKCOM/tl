@@ -24,47 +24,51 @@ true = True; // this can be used as void type and serialized to empty array in P
 
 map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
-videoAdsService.getLegalPartnerAdsSettingsManyResponseOk#4db649d8
-    fields_mask:              #
-    settings:                 vector<videoAdsService.legalPartnerAdsSettings>
-    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
-
-videoAdsService.getLegalPartnerAdsSettingsManyResponseError#143f3aaa
-    fields_mask:              #
-    error_code:               int
-    error:                    string
-    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
-
-videoAdsService.legalPartnerAdsSettingsVideoRules#ee6ba4fa
-    fields_mask:              #
-    video_id:                 int
-    //rules:                    videoAdsService.legalPartnerAdsSettingsRules
-    = videoAdsService.LegalPartnerAdsSettingsVideoRules;
-
-
-videoAdsService.legalPartnerAdsSettings#59ee3756
-    fields_mask:              #
-    //common_rules:             fields_mask.0?videoAdsService.legalPartnerAdsSettingsRules
-    video_rules:              fields_mask.1?vector<videoAdsService.legalPartnerAdsSettingsVideoRules>
-    //playlist_rules:           fields_mask.2?vector<videoAdsService.legalPartnerAdsSettingsPlaylistRules>
-    = videoAdsService.LegalPartnerAdsSettings;
-
-
-//nonMigrating.example
-//    use:               vector<videoAdsService.legalPartnerAdsSettings>
-//    use2:              videoAdsService.LegalPartnerAdsSettings
-//    = nonMigrating.Example;
+//videoAdsService.getLegalPartnerAdsSettingsManyResponseOk#4db649d8
+//    fields_mask:              #
+//    settings:                 vector<videoAdsService.legalPartnerAdsSettings>
+//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
 //
-//nonMigrating2.example
-//    use:               videoAdsService.LegalPartnerAdsSettings
-//    use2:              vector<videoAdsService.legalPartnerAdsSettings>
-//    = nonMigrating2.Example;
+//videoAdsService.getLegalPartnerAdsSettingsManyResponseError#143f3aaa
+//    fields_mask:              #
+//    error_code:               int
+//    error:                    string
+//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
+//
+//videoAdsService.legalPartnerAdsSettingsVideoRules#ee6ba4fa
+//    fields_mask:              #
+//    video_id:                 int
+//    //rules:                    videoAdsService.legalPartnerAdsSettingsRules
+//    = videoAdsService.LegalPartnerAdsSettingsVideoRules;
+//
+//
+//videoAdsService.legalPartnerAdsSettings#59ee3756
+//    fields_mask:              #
+//    //common_rules:             fields_mask.0?videoAdsService.legalPartnerAdsSettingsRules
+//    video_rules:              fields_mask.1?vector<videoAdsService.legalPartnerAdsSettingsVideoRules>
+//    //playlist_rules:           fields_mask.2?vector<videoAdsService.legalPartnerAdsSettingsPlaylistRules>
+//    = videoAdsService.LegalPartnerAdsSettings;
+//
+//
+////nonMigrating.example
+////    use:               vector<videoAdsService.legalPartnerAdsSettings>
+////    use2:              videoAdsService.LegalPartnerAdsSettings
+////    = nonMigrating.Example;
+////
+////nonMigrating2.example
+////    use:               videoAdsService.LegalPartnerAdsSettings
+////    use2:              vector<videoAdsService.legalPartnerAdsSettings>
+////    = nonMigrating2.Example;
+//
+//---functions---
+//
+//@read
+//videoAdsService.getLegalPartnerAdsSettingsMany#98505e85
+//    fields_mask:              #
+////    requests:                 vector<videoAdsService.getLegalPartnerAdsSettingsRequest>
+//    user_id:                  long
+//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
 
----functions---
-
-@read
-videoAdsService.getLegalPartnerAdsSettingsMany#98505e85
-    fields_mask:              #
-//    requests:                 vector<videoAdsService.getLegalPartnerAdsSettingsRequest>
-    user_id:                  long
-    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
+a.inner {I:#} a:I*[int] = a.Inner I;
+a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
+a.top2 n:# m:# c:vector<a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)> = a.Top2;

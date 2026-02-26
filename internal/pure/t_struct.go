@@ -330,7 +330,7 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 		if !br.HasIndex {
 			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
 		}
-		if br.IndexType.IsNumber {
+		if br.IndexType.IsNumber { // not sure, may be, we better use "n" for index always
 			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"n")
 		} else {
 			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"f")

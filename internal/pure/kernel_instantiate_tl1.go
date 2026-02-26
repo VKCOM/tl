@@ -315,6 +315,16 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 	if !create {
 		return nil, false, fmt.Errorf("internal error: instance %s must exist", canonicalName)
 	}
+	//if br := tr2.BracketType; br != nil && !br.HasIndex { // vector
+	// must store pointer before children GetInstanceTL2() terminates recursion
+	// this instance stays not initialized in case of error, but kernel then is not consistent anyway
+	//ref := k.addInstance(canonicalName, k.brackets)
+	//ref.ins, err = k.createVectorTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
+	//if err != nil {
+	//	return nil, false, err
+	//}
+	//return ref, bare, nil
+	//}
 	// log.Printf("creating an instance of type %s", canonicalName)
 	// we must mark all usedAsNatConst, usedAsNatVariable, so
 	// will do some work before looking up and returning existing instance
