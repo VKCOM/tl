@@ -44,10 +44,9 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType,
-	keyType *TypeInstanceRef, fieldType *TypeInstanceRef) (TypeInstance, error) {
+	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
@@ -139,9 +138,9 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 
 func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument, actualArgs []tlast.ArithmeticOrType) (TypeInstance, error) {
+	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1Args(leftArgs, actualArgs)
+	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
 		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
