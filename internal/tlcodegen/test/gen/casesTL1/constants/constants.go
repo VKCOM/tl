@@ -27,7 +27,7 @@ const (
 	CasesTestAllPossibleFieldConfigs                = 0xfb6836d3 // cases.testAllPossibleFieldConfigs
 	CasesTestAllPossibleFieldConfigsContainer       = 0xe3fae936 // cases.testAllPossibleFieldConfigsContainer
 	CasesTestArray                                  = 0xa888030d // cases.testArray
-	CasesTestBeforeReadBitValidation                = 0x9b2396db // cases.testBeforeReadBitValidation
+	CasesTestBeforeReadBitValidation                = 0xc81cf91b // cases.testBeforeReadBitValidation
 	CasesTestDictAny                                = 0x252b4ddb // cases.testDictAny
 	CasesTestDictInt                                = 0xd3877643 // cases.testDictInt
 	CasesTestDictString                             = 0xc463c79b // cases.testDictString
@@ -39,8 +39,8 @@ const (
 	CasesTestInplaceStructArgs2                     = 0xaa9f2480 // cases.testInplaceStructArgs2
 	CasesTestLocalFieldmask                         = 0xf68fd3f9 // cases.testLocalFieldmask
 	CasesTestMaybe                                  = 0xd6602613 // cases.testMaybe
-	CasesTestOutFieldMask                           = 0xbd6b4b3c // cases.testOutFieldMask
-	CasesTestOutFieldMaskContainer                  = 0x1850ffe4 // cases.testOutFieldMaskContainer
+	CasesTestOutFieldMask                           = 0xe41ff835 // cases.testOutFieldMask
+	CasesTestOutFieldMaskContainer                  = 0x0513c272 // cases.testOutFieldMaskContainer
 	CasesTestRecursiveFieldMask                     = 0xc58cf85e // cases.testRecursiveFieldMask
 	CasesTestTuple                                  = 0x4b9caf8f // cases.testTuple
 	CasesTestUnion1                                 = 0x4b4f09b1 // cases.testUnion1

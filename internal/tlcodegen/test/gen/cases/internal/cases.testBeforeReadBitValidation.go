@@ -15,13 +15,14 @@ var _ = basictl.NatWrite
 
 type CasesTestBeforeReadBitValidation struct {
 	N        uint32
+	Ns       uint32
 	A        []int32 // Conditional: item.N.0
 	B        []int32 // Conditional: item.N.1
 	tl2mask0 byte
 }
 
 func (CasesTestBeforeReadBitValidation) TLName() string { return "cases.testBeforeReadBitValidation" }
-func (CasesTestBeforeReadBitValidation) TLTag() uint32  { return 0x9b2396db }
+func (CasesTestBeforeReadBitValidation) TLTag() uint32  { return 0xc81cf91b }
 
 func (item *CasesTestBeforeReadBitValidation) SetA(v []int32) {
 	item.A = v
@@ -49,6 +50,7 @@ func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.tl2mas
 
 func (item *CasesTestBeforeReadBitValidation) Reset() {
 	item.N = 0
+	item.Ns = 0
 	item.A = item.A[:0]
 	item.B = item.B[:0]
 	item.tl2mask0 = 0
@@ -57,16 +59,16 @@ func (item *CasesTestBeforeReadBitValidation) Reset() {
 func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b11)
-	item.N = rg.LimitValue(item.N)
+	item.Ns = basictl.RandomSize(rg)
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinTupleIntFillRandom(rg, &item.A, item.N)
+		BuiltinTupleIntFillRandom(rg, &item.A, item.Ns)
 	} else {
 		item.A = item.A[:0]
 	}
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
-		BuiltinTupleIntFillRandom(rg, &item.B, item.N)
+		BuiltinTupleIntFillRandom(rg, &item.B, item.Ns)
 	} else {
 		item.B = item.B[:0]
 	}
@@ -91,9 +93,12 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
+	if w, err = basictl.NatRead(w, &item.Ns); err != nil {
+		return w, err
+	}
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinTupleIntRead(w, &item.A, item.N); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.A, item.Ns); err != nil {
 			return w, err
 		}
 	} else {
@@ -101,7 +106,7 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 	}
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
-		if w, err = BuiltinTupleIntRead(w, &item.B, item.N); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.B, item.Ns); err != nil {
 			return w, err
 		}
 	} else {
@@ -116,13 +121,14 @@ func (item *CasesTestBeforeReadBitValidation) WriteGeneral(w []byte) (_ []byte, 
 
 func (item *CasesTestBeforeReadBitValidation) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
+	w = basictl.NatWrite(w, item.Ns)
 	if item.N&(1<<0) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.A, item.N); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.A, item.Ns); err != nil {
 			return w, err
 		}
 	}
 	if item.N&(1<<1) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.B, item.N); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.B, item.Ns); err != nil {
 			return w, err
 		}
 	}
@@ -130,7 +136,7 @@ func (item *CasesTestBeforeReadBitValidation) Write(w []byte) (_ []byte, err err
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x9b2396db); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xc81cf91b); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -141,7 +147,7 @@ func (item *CasesTestBeforeReadBitValidation) WriteBoxedGeneral(w []byte) (_ []b
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x9b2396db)
+	w = basictl.NatWrite(w, 0xc81cf91b)
 	return item.Write(w)
 }
 
@@ -160,6 +166,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in 
 
 func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propNsPresented bool
 	var rawA []byte
 	var rawB []byte
 
@@ -180,6 +187,14 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 					return err
 				}
 				propNPresented = true
+			case "ns":
+				if propNsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "ns")
+				}
+				if err := Json2ReadUint32(in, &item.Ns); err != nil {
+					return err
+				}
+				propNsPresented = true
 			case "a":
 				if rawA != nil {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "a")
@@ -209,6 +224,9 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 	if !propNPresented {
 		item.N = 0
 	}
+	if !propNsPresented {
+		item.Ns = 0
+	}
 	if rawA != nil {
 		item.N |= 1 << 0
 	}
@@ -223,7 +241,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 		if rawA != nil {
 			inAPointer = &inA
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, item.N); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, item.Ns); err != nil {
 			return err
 		}
 
@@ -236,7 +254,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 		if rawB != nil {
 			inBPointer = &inB
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inBPointer, &item.B, item.N); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inBPointer, &item.B, item.Ns); err != nil {
 			return err
 		}
 
@@ -268,17 +286,24 @@ func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(tctx *basictl.JSONWri
 	if (item.N != 0) == false {
 		w = w[:backupIndexN]
 	}
+	backupIndexNs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"ns":`...)
+	w = basictl.JSONWriteUint32(w, item.Ns)
+	if (item.Ns != 0) == false {
+		w = w[:backupIndexNs]
+	}
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, item.N); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, item.Ns); err != nil {
 			return w, err
 		}
 	}
 	if item.N&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"b":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.B, item.N); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.B, item.Ns); err != nil {
 			return w, err
 		}
 	}
@@ -306,6 +331,10 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int, optim
 	var sz int
 
 	if item.N != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.Ns != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -356,13 +385,17 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
+	if item.Ns != 0 {
+		w = basictl.NatWrite(w, item.Ns)
+		currentBlock |= 4
+	}
 	if item.tl2mask0&1 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.A)
-		currentBlock |= 4
+		currentBlock |= 8
 	}
 	if item.tl2mask0&2 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.B)
-		currentBlock |= 8
+		currentBlock |= 16
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -429,6 +462,13 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 		item.N = 0
 	}
 	if block&4 != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.Ns); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Ns = 0
+	}
+	if block&8 != 0 {
 		item.tl2mask0 |= 1
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
@@ -436,7 +476,7 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.A = item.A[:0]
 	}
-	if block&8 != 0 {
+	if block&16 != 0 {
 		item.tl2mask0 |= 2
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err

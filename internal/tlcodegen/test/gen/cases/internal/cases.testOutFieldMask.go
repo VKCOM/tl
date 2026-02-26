@@ -21,7 +21,7 @@ type CasesTestOutFieldMask struct {
 }
 
 func (CasesTestOutFieldMask) TLName() string { return "cases.testOutFieldMask" }
-func (CasesTestOutFieldMask) TLTag() uint32  { return 0xbd6b4b3c }
+func (CasesTestOutFieldMask) TLTag() uint32  { return 0xe41ff835 }
 
 func (item *CasesTestOutFieldMask) SetF1(v uint32, nat_f *uint32) {
 	item.F1 = v
@@ -61,7 +61,7 @@ func (item *CasesTestOutFieldMask) Reset() {
 	item.tl2mask0 = 0
 }
 
-func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {
+func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f uint32, nat_fs uint32) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -72,14 +72,14 @@ func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f u
 	if nat_f&(1<<3) != 0 {
 		item.tl2mask0 |= 2
 	}
-	BuiltinTupleIntFillRandom(rg, &item.F3, nat_f)
+	BuiltinTupleIntFillRandom(rg, &item.F3, nat_fs)
 }
 
-func (item CasesTestOutFieldMask) RepairMasksValue(nat_f uint32) CasesTestOutFieldMask {
-	item.RepairMasks(nat_f)
+func (item CasesTestOutFieldMask) RepairMasksValue(nat_f uint32, nat_fs uint32) CasesTestOutFieldMask {
+	item.RepairMasks(nat_f, nat_fs)
 	return item
 }
-func (item *CasesTestOutFieldMask) RepairMasks(nat_f uint32) {
+func (item *CasesTestOutFieldMask) RepairMasks(nat_f uint32, nat_fs uint32) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -89,7 +89,7 @@ func (item *CasesTestOutFieldMask) RepairMasks(nat_f uint32) {
 	}
 }
 
-func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -102,40 +102,40 @@ func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32) (_ []byte, err e
 	if nat_f&(1<<3) != 0 {
 		item.tl2mask0 |= 2
 	}
-	return BuiltinTupleIntRead(w, &item.F3, nat_f)
+	return BuiltinTupleIntRead(w, &item.F3, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) WriteGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.Write(w, nat_f)
+func (item *CasesTestOutFieldMask) WriteGeneral(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	return item.Write(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) Write(w []byte, nat_f uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) Write(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	if nat_f&(1<<0) != 0 {
 		w = basictl.NatWrite(w, item.F1)
 	}
-	if w, err = BuiltinTupleIntWrite(w, item.F3, nat_f); err != nil {
+	if w, err = BuiltinTupleIntWrite(w, item.F3, nat_fs); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
-func (item *CasesTestOutFieldMask) ReadBoxed(w []byte, nat_f uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xbd6b4b3c); err != nil {
+func (item *CasesTestOutFieldMask) ReadBoxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0xe41ff835); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_f)
+	return item.Read(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) WriteBoxedGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_f)
+func (item *CasesTestOutFieldMask) WriteBoxedGeneral(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) WriteBoxed(w []byte, nat_f uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xbd6b4b3c)
-	return item.Write(w, nat_f)
+func (item *CasesTestOutFieldMask) WriteBoxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0xe41ff835)
+	return item.Write(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_f uint32) error {
+func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_f uint32, nat_fs uint32) error {
 	var propF1Presented bool
 	var rawF3 []byte
 
@@ -187,7 +187,7 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if rawF3 != nil {
 		inF3Pointer = &inF3
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF3Pointer, &item.F3, nat_f); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF3Pointer, &item.F3, nat_fs); err != nil {
 		return err
 	}
 
@@ -201,15 +201,15 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestOutFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_f)
+func (item *CasesTestOutFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) WriteJSON(w []byte, nat_f uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) WriteJSON(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_f)
+	return item.WriteJSONOpt(&tctx, w, nat_f, nat_fs)
 }
-func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if nat_f&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -219,7 +219,7 @@ func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexF3 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F3, nat_f); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F3, nat_fs); err != nil {
 		return w, err
 	}
 	if (len(item.F3) != 0) == false {

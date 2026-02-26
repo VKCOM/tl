@@ -15,28 +15,33 @@ var _ = basictl.NatWrite
 
 type CasesTestOutFieldMaskContainer struct {
 	F     uint32
+	Fs    uint32
 	Inner CasesTestOutFieldMask
 }
 
 func (CasesTestOutFieldMaskContainer) TLName() string { return "cases.testOutFieldMaskContainer" }
-func (CasesTestOutFieldMaskContainer) TLTag() uint32  { return 0x1850ffe4 }
+func (CasesTestOutFieldMaskContainer) TLTag() uint32  { return 0x0513c272 }
 
 func (item *CasesTestOutFieldMaskContainer) Reset() {
 	item.F = 0
+	item.Fs = 0
 	item.Inner.Reset()
 }
 
 func (item *CasesTestOutFieldMaskContainer) FillRandom(rg *basictl.RandGenerator) {
 	item.F = basictl.RandomFieldMask(rg, 0b1001)
-	item.F = rg.LimitValue(item.F)
-	item.Inner.FillRandom(rg, item.F)
+	item.Fs = basictl.RandomSize(rg)
+	item.Inner.FillRandom(rg, item.F, item.Fs)
 }
 
 func (item *CasesTestOutFieldMaskContainer) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.F); err != nil {
 		return w, err
 	}
-	return item.Inner.Read(w, item.F)
+	if w, err = basictl.NatRead(w, &item.Fs); err != nil {
+		return w, err
+	}
+	return item.Inner.Read(w, item.F, item.Fs)
 }
 
 func (item *CasesTestOutFieldMaskContainer) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -45,14 +50,15 @@ func (item *CasesTestOutFieldMaskContainer) WriteGeneral(w []byte) (_ []byte, er
 
 func (item *CasesTestOutFieldMaskContainer) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.F)
-	if w, err = item.Inner.Write(w, item.F); err != nil {
+	w = basictl.NatWrite(w, item.Fs)
+	if w, err = item.Inner.Write(w, item.F, item.Fs); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *CasesTestOutFieldMaskContainer) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x1850ffe4); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0513c272); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -63,7 +69,7 @@ func (item *CasesTestOutFieldMaskContainer) WriteBoxedGeneral(w []byte) (_ []byt
 }
 
 func (item *CasesTestOutFieldMaskContainer) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x1850ffe4)
+	w = basictl.NatWrite(w, 0x0513c272)
 	return item.Write(w)
 }
 
@@ -82,6 +88,7 @@ func (item *CasesTestOutFieldMaskContainer) ReadJSON(legacyTypeNames bool, in *b
 
 func (item *CasesTestOutFieldMaskContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFPresented bool
+	var propFsPresented bool
 	var rawInner []byte
 
 	if in != nil {
@@ -101,6 +108,14 @@ func (item *CasesTestOutFieldMaskContainer) ReadJSONGeneral(tctx *basictl.JSONRe
 					return err
 				}
 				propFPresented = true
+			case "fs":
+				if propFsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMaskContainer", "fs")
+				}
+				if err := Json2ReadUint32(in, &item.Fs); err != nil {
+					return err
+				}
+				propFsPresented = true
 			case "inner":
 				if rawInner != nil {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMaskContainer", "inner")
@@ -122,12 +137,15 @@ func (item *CasesTestOutFieldMaskContainer) ReadJSONGeneral(tctx *basictl.JSONRe
 	if !propFPresented {
 		item.F = 0
 	}
+	if !propFsPresented {
+		item.Fs = 0
+	}
 	var inInnerPointer *basictl.JsonLexer
 	inInner := basictl.JsonLexer{Data: rawInner}
 	if rawInner != nil {
 		inInnerPointer = &inInner
 	}
-	if err := item.Inner.ReadJSONGeneral(tctx, inInnerPointer, item.F); err != nil {
+	if err := item.Inner.ReadJSONGeneral(tctx, inInnerPointer, item.F, item.Fs); err != nil {
 		return err
 	}
 
@@ -152,9 +170,16 @@ func (item *CasesTestOutFieldMaskContainer) WriteJSONOpt(tctx *basictl.JSONWrite
 	if (item.F != 0) == false {
 		w = w[:backupIndexF]
 	}
+	backupIndexFs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"fs":`...)
+	w = basictl.JSONWriteUint32(w, item.Fs)
+	if (item.Fs != 0) == false {
+		w = w[:backupIndexFs]
+	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"inner":`...)
-	if w, err = item.Inner.WriteJSONOpt(tctx, w, item.F); err != nil {
+	if w, err = item.Inner.WriteJSONOpt(tctx, w, item.F, item.Fs); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
