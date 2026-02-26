@@ -96,6 +96,9 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		variantNames: make([]string, len(def.Variants)),
 		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
+	}
 	for i, variantDef := range def.Variants {
 		tlName := tip.canonicalName
 		tlName.Name += "__" + variantDef.Name
@@ -155,6 +158,9 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		variantTypes:   make([]*TypeInstanceStruct, len(definition)),
 		elementNatArgs: natArgs,
 		isEnum:         true,
+	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
 	}
 
 	for i, variantDef := range definition {

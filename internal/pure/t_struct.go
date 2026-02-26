@@ -232,6 +232,9 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		isResultAlias:       resultAlias,
 		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName(tlName),
 	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
+	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
 	}
@@ -540,10 +543,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 
 	localArgs, natParams := k.getTL1Args(leftArgs, resolvedType.Args)
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
-	if k.opts.NewBrackets {
-		if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
-			panic(fmt.Errorf("!equalNatParams %s %s", a, b))
-		}
+	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
 	}
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
@@ -566,11 +567,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
-	if k.opts.NewBrackets {
-		resolvedType2 := k.convertTypeRef(resolvedType)
-		if ins.argNamespace != k.getArgNamespace2(resolvedType2) {
-			panic("internal error getArgNamespace2")
-		}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
 	}
 	nextTL2MaskBit := 0
 	fieldsAfterReplace, typesAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)

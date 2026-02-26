@@ -72,5 +72,8 @@ func (k *Kernel) createAlias(canonicalName string, tip *KernelType, trTL1 tlast.
 		fieldType: fieldType,
 		fieldBare: fieldBare,
 	}
+	if ins.argNamespace != ins.argNamespace2 {
+		panic("internal error getArgNamespace2")
+	}
 	return ins, nil
 }
