@@ -42,10 +42,7 @@ func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (k *Kernel) createDict(canonicalName string, tip *KernelType,
-	resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
-
-	panic("TODO - rewrite this branch")
+	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
 
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
@@ -58,7 +55,7 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 			T: tlast.TypeRef{Type: tlast.Name{Name: "v"}},
 		}},
 	}
-	rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), tip.templateArguments, localArgs2)
 	if err != nil {
 		return nil, err
 	}
@@ -118,19 +115,17 @@ func (k *Kernel) createDict(canonicalName string, tip *KernelType,
 	//		}},
 	//	},
 	//}
-	return ins, nil
 }
 
 func (k *Kernel) createDictTL1(canonicalName string, tip *KernelType,
-	resolvedType2 tlast.TL2TypeRef,
-	leftArgs []tlast.TemplateArgument) (TypeInstance, error) {
+	resolvedType2 tlast.TL2TypeRef) (TypeInstance, error) {
 
 	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	fieldT := tlast.TypeRef{Type: tlast.Name{Name: "t"}}
 
-	rt, fieldNatArgs2, err := k.resolveType(false, k.convertTypeRef(fieldT), leftArgs, localArgs2)
+	rt, fieldNatArgs2, err := k.resolveType(false, k.convertTypeRef(fieldT), tip.templateArguments, localArgs2)
 	if err != nil {
 		return nil, err
 	}

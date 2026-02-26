@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
@@ -207,19 +208,27 @@ func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
 	return value
 }
 
-func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
+func (k *Kernel) createStruct(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
 	tlName tlast.TL2TypeName, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
-	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument,
+	leftArgs []tlast.TL2TypeTemplate,
 	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
+
+	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+
+	if len(natParams) != 0 {
+		return nil, fmt.Errorf("internal error - TL2 struct %s has natparams %s", canonicalName, strings.Join(natParams, ","))
+	}
+
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tlName:        tlName,
 			tlTag:         tlTag,
+			natParams:     natParams,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
-			argNamespace:  k.getArgNamespace(tr),
+			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        true,
 		},
 		isConstructorFields: isConstructorFields,
@@ -234,7 +243,7 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL
 	}
 	nextTL2MaskBit := 0
 	for _, fieldDef := range constructorFields {
-		rt, err := k.resolveTypeTL2(fieldDef.Type, leftArgs, actualArgs)
+		rt, fieldNatArgs, err := k.resolveType(true, fieldDef.Type, leftArgs, localArgs)
 		if err != nil {
 			return nil, err
 		}
@@ -243,10 +252,11 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, tr tlast.TL
 			return nil, err
 		}
 		newField := Field{
-			owner: ins,
-			name:  fieldDef.Name,
-			ins:   fieldIns,
-			bare:  fieldBare,
+			owner:   ins,
+			name:    fieldDef.Name,
+			ins:     fieldIns,
+			bare:    fieldBare,
+			natArgs: fieldNatArgs,
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
@@ -498,7 +508,7 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType2 tlast.TL2TypeRef, def *tlast.Combinator,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
-	leftArgs := def.TemplateArguments
+	leftArgs := append([]tlast.TL2TypeTemplate{}, tip.templateArguments...) // prevent golang aliasing
 
 	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
 	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
@@ -628,10 +638,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 
 		ins.fields = append(ins.fields, newField)
 		if fieldDef.FieldName != "" {
-			leftArgs = append(leftArgs, tlast.TemplateArgument{
-				FieldName: fieldDef.FieldName,
-				IsNat:     true,
-				PR:        fieldDef.PR,
+			leftArgs = append(leftArgs, tlast.TL2TypeTemplate{
+				Name:     fieldDef.FieldName,
+				Category: tlast.TL2TypeCategory{IsNatValue: true},
+				PR:       fieldDef.PR,
 			})
 			if fieldDef.FieldType.String() != "#" {
 				localArgs = append(localArgs, LocalArgHybrid{

@@ -80,7 +80,7 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 
 func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
 	tlTag uint32, def tlast.TL2UnionType,
-	leftArgs []tlast.TL2TypeTemplate, actualArgs []tlast.TL2TypeArgument) (TypeInstance, error) {
+	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -107,7 +107,7 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, tr tlast.TL2
 		}
 		element, err := k.createStruct(canonicalName+"__"+variantDef.Name, tip, tr,
 			tlName, 0,
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, actualArgs, true, i, nil, false)
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, true, i, nil, false)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}

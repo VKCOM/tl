@@ -19,7 +19,7 @@ type LocalArgHybrid struct {
 	natArgs      []ActualNatArg
 }
 
-func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeRef, []ActualNatArg, error) {
 	ac, natArgs, err := k.resolveArgument(ctxTL2, tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
 	if err != nil {
@@ -36,7 +36,7 @@ func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.
 	return ac.Type, natArgs, nil
 }
 
-func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	before := tr
 	was := before.String()
@@ -48,7 +48,7 @@ func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs
 	return tr, natArgs, err
 }
 
-func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	if tr.IsNumber {
 		return tr, nil, nil
@@ -94,24 +94,24 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 	// names found in local arguments have priority over global type names
 	if someType.Name.Namespace == "" {
 		for i, targ := range leftArgs {
-			if targ.FieldName == someType.Name.Name {
+			if targ.Name == someType.Name.Name {
 				for _, arg := range someType.Arguments {
-					e1 := arg.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.FieldName))
+					e1 := arg.PR.BeautifulError(fmt.Errorf("reference to template argument %s cannot have arguments", targ.Name))
 					e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
 					return tr, nil, tlast.BeautifulError2(e1, e2)
 				}
 				actualArg := actualArgs[i]
 				if actualArg.wrongTypeErr != nil {
-					e1 := tr.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.FieldName))
+					e1 := tr.PR.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.Name))
 					return tr, nil, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 				}
-				actualArg.arg.OriginalArgumentName = targ.FieldName // TODO - check if this is enough
+				actualArg.arg.OriginalArgumentName = targ.Name // TODO - check if this is enough
 				actualArg.arg.PR = someType.PR
 				// TODO - check if all necessary PRs are set
 				// actualArg.arg.T.PRArgs = tr.T.PRArgs
 				if actualArg.arg.IsNumber || actualArg.arg.Type.String() == "*" {
 					if someType.Bare {
-						e1 := someType.PR.BeautifulError(fmt.Errorf("reference to #-param %q cannot be bare", targ.FieldName))
+						e1 := someType.PR.BeautifulError(fmt.Errorf("reference to #-param %q cannot be bare", targ.Name))
 						e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
 						return tr, nil, tlast.BeautifulError2(e1, e2)
 					}

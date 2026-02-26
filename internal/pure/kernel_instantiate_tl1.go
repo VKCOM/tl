@@ -13,22 +13,22 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TemplateArgument,
+func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []LocalArgHybrid, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
 	for i, targ := range leftArgs {
-		if targ.FieldName == mask.MaskName {
+		if targ.Name == mask.MaskName {
 			actualArg := actualArgs[i]
 			if actualArg.wrongTypeErr != nil {
-				e1 := mask.PRName.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.FieldName))
+				e1 := mask.PRName.BeautifulError(fmt.Errorf("reference %q should be to #-param or # field", targ.Name))
 				return ActualNatArg{}, tlast.BeautifulError2(e1, actualArg.wrongTypeErr)
 			}
-			if !targ.IsNat {
-				e1 := mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.FieldName))
+			if !targ.Category.IsNatValue {
+				e1 := mask.PRName.BeautifulError(fmt.Errorf("fieldMask cannot reference Type-parameter %s", targ.Name))
 				e2 := targ.PR.BeautifulError(fmt.Errorf("declared here"))
 				return ActualNatArg{}, tlast.BeautifulError2(e1, e2)
 			}
 			if len(actualArg.natArgs) > 1 {
-				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("internal error: fieldMask reference len(natArg) == %d for parameter %s", len(actualArg.natArgs), targ.FieldName))
+				return ActualNatArg{}, mask.PRName.BeautifulError(fmt.Errorf("internal error: fieldMask reference len(natArg) == %d for parameter %s", len(actualArg.natArgs), targ.Name))
 			}
 			if actualArg.arg.IsNumber {
 				return ActualNatArg{
@@ -67,7 +67,7 @@ func (k *Kernel) GetInstance(tr tlast.TL2TypeRef) (TypeInstance, bool, error) {
 
 // we identify types by TL2TypeRefs/TL2TypeNames, TL1 types are first converted into TL2 style
 func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceRef, bare bool, _ error) {
-	canonicalName, bare, err := k.canonicalStringTL2(tr, true)
+	canonicalName, bare, err := k.canonicalString(tr, true)
 	if err != nil {
 		return nil, false, err
 	}
@@ -141,27 +141,24 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 			resultType = resultIns.ins // function cannotbe referenced so no recursion
 		}
 		ref.ins, err = k.createStruct(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
-			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, nil, false, 0,
+			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, false, 0,
 			resultType, resultAlias)
 		if err != nil {
 			return nil, false, err
 		}
 		return ref, bare, nil
 	}
-	td := kt.combTL1[0]
 	switch {
 	case tName == "__dict":
 		fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
-		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments)
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr)
 	case tName == "__dict2":
 		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
-		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
-		ref.ins, err = k.createDict(canonicalName, kt, tr, td.TemplateArguments)
+		ref.ins, err = k.createDict(canonicalName, kt, tr)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
 	case len(kt.combTL1) == 1:
-		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr,
-			kt.combTL1[0],
+		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr, kt.combTL1[0],
 			false, 0)
 	default:
 		return nil, false, fmt.Errorf("wrong type classification, internal error %s", canonicalName)
