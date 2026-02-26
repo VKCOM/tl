@@ -347,11 +347,12 @@ func (k *Kernel) getInstanceTL1(tr tlast.TypeRef, tr2 tlast.TL2TypeRef, create b
 		ref.ins, err = k.createTupleTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
 	case tName == "__dict":
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
-		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args)
+		ref.ins, err = k.createDictTL1(canonicalName, kt, tr, tr2, td.TemplateArguments)
 	case tName == "__dict2":
+		panic("TODO - rewrite this branch")
 		// log.Printf("creating an instance of dictionary type %s", canonicalName)
 		//ref.ins, err = k.createDictTL1(canonicalName, kt, tr, td.TemplateArguments, tr.Args)
-		ref.ins, err = k.createDict(canonicalName, kt, tr, tr2, td.TemplateArguments, tr.Args, nil, nil)
+		ref.ins, err = k.createDict(canonicalName, kt, tr, tr2, td.TemplateArguments)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, tr2, kt.combTL1)
 	case len(kt.combTL1) == 1:

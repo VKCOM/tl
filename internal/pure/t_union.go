@@ -128,12 +128,21 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TypeRef, resolvedType2 tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
 	localArgs, natParams := k.getTL1Args(definition[0].TemplateArguments, resolvedType.Args)
+	localArgs2, natParams2 := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType2)
+	if a, b := strings.Join(natParams, ","), strings.Join(natParams2, ","); a != b || len(localArgs) != len(localArgs2) {
+		panic(fmt.Errorf("!equalNatParams %s %s", a, b))
+	}
 	// log.Printf("natParams for %s: %s", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
 	for _, localArg := range localArgs { // pass all our parameters to our variant
 		natArgs = append(natArgs, localArg.natArgs...)
 	}
+	var natArgs2 []ActualNatArg
+	for _, localArg := range localArgs2 { // pass all our parameters to our variant
+		natArgs2 = append(natArgs2, localArg.natArgs...)
+	}
+	k.equalNatArgs(natArgs, natArgs2)
 	// log.Printf("natArgs for %s union fields is: %v", canonicalName, natArgs)
 
 	variantNames, err := k.VariantNames(definition)
