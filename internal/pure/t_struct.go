@@ -232,9 +232,6 @@ func (k *Kernel) createStruct(canonicalName string, tip *KernelType, trTL1 tlast
 		isResultAlias:       resultAlias,
 		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName(tlName),
 	}
-	if ins.argNamespace != ins.argNamespace2 {
-		panic("internal error getArgNamespace2")
-	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
 	}
@@ -565,8 +562,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			rt:            resolvedType,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType),
-			argNamespace2: k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace2(resolvedType2),
 			hasTL2:        false, // could be marked later
 		},
 		isConstructorFields: true,
@@ -574,7 +570,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
-	if ins.argNamespace != ins.argNamespace2 {
+	if ins.argNamespace != k.getArgNamespace(resolvedType) {
 		panic("internal error getArgNamespace2")
 	}
 	nextTL2MaskBit := 0

@@ -96,9 +96,6 @@ func (k *Kernel) createUnion(canonicalName string, tip *KernelType, trTL1 tlast.
 		variantNames: make([]string, len(def.Variants)),
 		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
 	}
-	if ins.argNamespace != ins.argNamespace2 {
-		panic("internal error getArgNamespace2")
-	}
 	for i, variantDef := range def.Variants {
 		tlName := tip.canonicalName
 		tlName.Name += "__" + variantDef.Name
@@ -159,8 +156,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			rt:            resolvedType,
 			rt2:           resolvedType2,
-			argNamespace:  k.getArgNamespace(resolvedType),
-			argNamespace2: k.getArgNamespace2(resolvedType2),
+			argNamespace:  k.getArgNamespace2(resolvedType2),
 			hasTL2:        false, // could be marked later
 		},
 		variantNames:   variantNames,
@@ -168,7 +164,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		elementNatArgs: natArgs,
 		isEnum:         true,
 	}
-	if ins.argNamespace != ins.argNamespace2 {
+	if ins.argNamespace != k.getArgNamespace(resolvedType) {
 		panic("internal error getArgNamespace2")
 	}
 
