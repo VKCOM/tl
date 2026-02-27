@@ -88,11 +88,7 @@ func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte,
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    {%- if writeNeedsError -%}
-    return item.Write(w{%s= natArgsCall %})
-    {%- else -%}
-    return item.Write(w{%s= natArgsCall %}), nil
-    {%- endif -%}
+    return item.Write(w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
     {%- endif -%}
 }
 
@@ -114,11 +110,7 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    {%- if writeNeedsError -%}
-    return item.WriteBoxed(w{%s= natArgsCall %})
-    {%- else -%}
-    return item.WriteBoxed(w{%s= natArgsCall %}), nil
-    {%- endif -%}
+    return item.WriteBoxed(w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
     {%- endif -%}
 }
 
@@ -339,11 +331,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 
 // This method is general version of WriteJSON, use it instead!
 func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-        {%- if writeNeedsError -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
-        {%- else -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
-        {%- endif -%}
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -354,11 +342,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
-        {%- if writeNeedsError -%}
-    return w, nil
-        {%- else -%}
-    return w
-        {%- endif -%}
+    return w{%s= ifString(writeNeedsError,", nil", "") %}
 }
     {%- else -%}
         {%- code
@@ -370,11 +354,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
     {%- endif -%}
     {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
-        {%- if writeNeedsError -%}
-      return item.WriteJSON(nil)
-        {%- else -%}
-      return item.WriteJSON(nil), nil
-        {%- endif -%}
+      return item.WriteJSON(nil){%s= ifString(!writeNeedsError,", nil", "") %}
 }
 
 func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
@@ -649,11 +629,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 
 // This method is general version of WriteJSON, use it instead!
 func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    {%- if writeNeedsError -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
-    {%- else -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
-    {%- endif -%}
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -724,11 +700,7 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
         {%- endif -%}
     {%- endif -%}
     {%- endfor -%}
-    {%- if writeNeedsError -%}
-    return append(w, '}'), nil
-    {%- else -%}
-    return append(w, '}')
-    {%- endif -%}
+    return append(w, '}'){%s= ifString(writeNeedsError,", nil", "") %}
 }
 {%- endfunc -%}
 
