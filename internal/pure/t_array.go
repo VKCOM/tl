@@ -93,9 +93,9 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 
 	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
-	var fieldNatArgs3 []ActualNatArg
+	var fieldNatArgs []ActualNatArg
 	for _, param := range natParams {
-		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
+		fieldNatArgs = append(fieldNatArgs, ActualNatArg{
 			name: param,
 		})
 	}
@@ -121,7 +121,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		owner:   ins,
 		ins:     fieldIns,
 		bare:    fieldBare,
-		natArgs: fieldNatArgs3,
+		natArgs: fieldNatArgs,
 	}
 	return ins, nil
 }
@@ -196,28 +196,6 @@ func (k *Kernel) addTL1Brackets() {
 	}
 	if err := k.addTip(kt, "__dict", ""); err != nil {
 		panic(fmt.Sprintf("error adding __dict: %v", err))
-	}
-	combTL1 = &tlast.Combinator{
-		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__dict2"},
-		},
-		TemplateArguments: []tlast.TemplateArgument{{FieldName: "k"}, {FieldName: "v"}},
-	}
-	kt = &KernelType{
-		originTL2:         false,
-		builtin:           true,
-		combTL1:           []*tlast.Combinator{combTL1},
-		instances:         map[string]*TypeInstanceRef{},
-		tl1Names:          map[string]struct{}{"__dict2": {}},
-		tl2Names:          map[string]struct{}{},
-		canonicalName:     tlast.TL2TypeName{Name: "__dict2"},
-		historicalName:    tlast.TL2TypeName{Name: "BuiltinDict2"},
-		canBeBare:         true,
-		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
-		targs:             make([]KernelTypeTarg, 2),
-	}
-	if err := k.addTip(kt, "__dict2", ""); err != nil {
-		panic(fmt.Sprintf("error adding __dict2: %v", err))
 	}
 	combTL1 = &tlast.Combinator{
 		Construct: tlast.Constructor{

@@ -289,11 +289,14 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	if br := rt.Type.BracketType; br != nil {
 		if !br.HasIndex {
 			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+			return
 		}
-		if br.IndexType.IsNumber { // not sure, may be, we better use "n" for index always
+		if br.IndexType.IsNumber {
 			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"n")
+			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
 		} else {
-			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"f")
+			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"k")
+			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"v")
 		}
 		return
 	}
@@ -308,6 +311,7 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	}
 }
 
+// Collect nat params from type tree into linear array
 func (k *Kernel) getTL1ArgHybrid(arg tlast.TL2TypeArgument, targName string) (localArgs []LocalArgHybrid, natParams []string) {
 	var localNatParams []string
 	k.fillNatParamHybrid(arg, &localNatParams, targName)
@@ -328,6 +332,7 @@ func (k *Kernel) getTL1ArgHybrid(arg tlast.TL2TypeArgument, targName string) (lo
 	return
 }
 
+// Collect nat params from type tree into linear array
 func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType2 tlast.TL2TypeRef) (localArgs []LocalArgHybrid, natParams []string) {
 	actualArgs := resolvedType2.SomeType.Arguments // empty if brackets
 	if br := resolvedType2.BracketType; br != nil {
@@ -538,51 +543,46 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	if tip.canonicalName.String() == "vector" || tip.canonicalName.String() == "tuple" {
 		ins.isUnwrap = true
 	}
-	if isDict, dictFieldT := k.IsDict(tip); isDict {
-		fieldT := tlast.TypeRef{
-			Type: tlast.Name(dictFieldT.canonicalName),
-			Bare: true,
-		}
-		// TODO - I'm not sure if passing PR of actualArgs is correct
-		for i, targ := range tip.combTL1[0].TemplateArguments {
-			fieldT.Args = append(fieldT.Args, tlast.ArithmeticOrType{
-				T: tlast.TypeRef{
-					Type: tlast.Name{Name: targ.FieldName},
-					PR:   resolvedType.SomeType.Arguments[i].PR,
-				},
-			})
-		}
-		// TODO - PR below
+	isDict, keyRT, elemRT, err := k.IsDictWrapper(tip, resolvedType)
+	if err != nil {
+		return nil, err
+	}
+	if isDict {
+		fmt.Printf("dict detected [%s]%s\n", keyRT.String(), elemRT.String())
 		ins.isUnwrap = true
-		fieldsAfterReplace = []tlast.Field{{
-			FieldName: "",
-			FieldType: tlast.TypeRef{
-				Type: tlast.Name{Name: "__dict"},
-				Bare: true, // TODO - remove
-				Args: []tlast.ArithmeticOrType{{
-					T: fieldT,
-				}},
-			},
-		}}
-		typesAfterReplace = []tlast.TL2TypeRef{{
-			SomeType: tlast.TL2TypeApplication{
-				Name: tlast.TL2TypeName{Name: "__dict"},
-				Bare: true, // TODO - remove
-				Arguments: []tlast.TL2TypeArgument{{
-					Type: k.convertTypeRef(fieldT),
-				}},
-			},
-			PR: tlast.PositionRange{},
-		}}
-		originalFieldIndices = []int{0}
+		if len(fieldsAfterReplace) != 1 || len(typesAfterReplace) != 1 || len(originalFieldIndices) != 1 {
+			return nil, resolvedType.PR.BeautifulError(fmt.Errorf("internal error - during Dict detection"))
+		}
+		originalFieldIndices = []int{0} // TODO - test dict definition with # []
 	}
 
 	for i, fieldDef := range fieldsAfterReplace {
-		fieldType := typesAfterReplace[i]
 		originalFieldIndex := originalFieldIndices[i]
-		rt, natArgs, err := k.resolveType(false, fieldType, leftArgs, localArgs)
-		if err != nil {
-			return nil, err
+		var natArgs []ActualNatArg
+		var rt tlast.TL2TypeRef
+		if isDict {
+			// types are already resolved, we should never resolve twice, this is not correct
+			rt = tlast.TL2TypeRef{
+				BracketType: &tlast.TL2BracketType{
+					IndexType: keyRT,
+					ArrayType: elemRT,
+					HasIndex:  true,
+					PR:        resolvedType.PR,
+				},
+				PR: resolvedType.PR,
+			}
+			// pass all our nat params to the dict
+			for _, param := range natParams {
+				natArgs = append(natArgs, ActualNatArg{
+					name: param,
+				})
+			}
+		} else {
+			fieldType := typesAfterReplace[i]
+			rt, natArgs, err = k.resolveType(false, fieldType, leftArgs, localArgs)
+			if err != nil {
+				return nil, err
+			}
 		}
 		// fmt.Printf("resolveTypeTL2 for %s field %s: %s -> %s\n", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstance(rt, true)

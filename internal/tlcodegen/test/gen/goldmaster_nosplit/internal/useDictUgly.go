@@ -27,39 +27,39 @@ func (UseDictUgly) TLTag() uint32  { return 0xfb9ce817 }
 
 func (item *UseDictUgly) Reset() {
 	item.N = 0
-	BuiltinDictIntKeyDictionaryFieldTupleStringReset(item.D)
-	BuiltinDictLongKeyDictionaryFieldTupleStringReset(item.E)
-	BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
-	BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
-	BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+	BuiltinDictIntTupleStringReset(item.D)
+	BuiltinDictLongTupleStringReset(item.E)
+	BuiltinDictIntPairIntIntReset(item.X)
+	BuiltinDictLongPairIntIntReset(item.Y)
+	BuiltinDictStringPairIntIntReset(item.Z)
 }
 
 func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomSize(rg)
-	BuiltinDictIntKeyDictionaryFieldTupleStringFillRandom(rg, &item.D, item.N)
-	BuiltinDictLongKeyDictionaryFieldTupleStringFillRandom(rg, &item.E, item.N)
-	BuiltinDictDictionaryAnyFieldIntPairIntIntFillRandom(rg, &item.X)
-	BuiltinDictDictionaryAnyFieldLongPairIntIntFillRandom(rg, &item.Y)
-	BuiltinDictDictionaryAnyFieldStringPairIntIntFillRandom(rg, &item.Z)
+	BuiltinDictIntTupleStringFillRandom(rg, &item.D, item.N)
+	BuiltinDictLongTupleStringFillRandom(rg, &item.E, item.N)
+	BuiltinDictIntPairIntIntFillRandom(rg, &item.X)
+	BuiltinDictLongPairIntIntFillRandom(rg, &item.Y)
+	BuiltinDictStringPairIntIntFillRandom(rg, &item.Z)
 }
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictIntKeyDictionaryFieldTupleStringRead(w, &item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringRead(w, &item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictLongKeyDictionaryFieldTupleStringRead(w, &item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringRead(w, &item.E, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictDictionaryAnyFieldIntPairIntIntRead(w, &item.X); err != nil {
+	if w, err = BuiltinDictIntPairIntIntRead(w, &item.X); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictDictionaryAnyFieldLongPairIntIntRead(w, &item.Y); err != nil {
+	if w, err = BuiltinDictLongPairIntIntRead(w, &item.Y); err != nil {
 		return w, err
 	}
-	return BuiltinDictDictionaryAnyFieldStringPairIntIntRead(w, &item.Z)
+	return BuiltinDictStringPairIntIntRead(w, &item.Z)
 }
 
 func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -68,15 +68,15 @@ func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = BuiltinDictIntKeyDictionaryFieldTupleStringWrite(w, item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringWrite(w, item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictLongKeyDictionaryFieldTupleStringWrite(w, item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringWrite(w, item.E, item.N); err != nil {
 		return w, err
 	}
-	w = BuiltinDictDictionaryAnyFieldIntPairIntIntWrite(w, item.X)
-	w = BuiltinDictDictionaryAnyFieldLongPairIntIntWrite(w, item.Y)
-	w = BuiltinDictDictionaryAnyFieldStringPairIntIntWrite(w, item.Z)
+	w = BuiltinDictIntPairIntIntWrite(w, item.X)
+	w = BuiltinDictLongPairIntIntWrite(w, item.Y)
+	w = BuiltinDictStringPairIntIntWrite(w, item.Z)
 	return w, nil
 }
 
@@ -154,7 +154,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "x")
 				}
-				if err := BuiltinDictDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := BuiltinDictIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true
@@ -162,7 +162,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "y")
 				}
-				if err := BuiltinDictDictionaryAnyFieldLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinDictLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true
@@ -170,7 +170,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propZPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "z")
 				}
-				if err := BuiltinDictDictionaryAnyFieldStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
+				if err := BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
 					return err
 				}
 				propZPresented = true
@@ -188,20 +188,20 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 		item.N = 0
 	}
 	if !propXPresented {
-		BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
+		BuiltinDictIntPairIntIntReset(item.X)
 	}
 	if !propYPresented {
-		BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
+		BuiltinDictLongPairIntIntReset(item.Y)
 	}
 	if !propZPresented {
-		BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+		BuiltinDictStringPairIntIntReset(item.Z)
 	}
 	var inDPointer *basictl.JsonLexer
 	inD := basictl.JsonLexer{Data: rawD}
 	if rawD != nil {
 		inDPointer = &inD
 	}
-	if err := BuiltinDictIntKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
+	if err := BuiltinDictIntTupleStringReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
 		return err
 	}
 
@@ -210,7 +210,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	if rawE != nil {
 		inEPointer = &inE
 	}
-	if err := BuiltinDictLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inEPointer, &item.E, item.N); err != nil {
+	if err := BuiltinDictLongTupleStringReadJSONGeneral(tctx, inEPointer, &item.E, item.N); err != nil {
 		return err
 	}
 
@@ -238,7 +238,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = BuiltinDictIntKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.D) != 0) == false {
@@ -247,7 +247,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.E) != 0) == false {
@@ -256,21 +256,21 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = BuiltinDictDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx, w, item.X)
+	w = BuiltinDictIntPairIntIntWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = BuiltinDictDictionaryAnyFieldLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
+	w = BuiltinDictLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
 	if (len(item.Y) != 0) == false {
 		w = w[:backupIndexY]
 	}
 	backupIndexZ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"z":`...)
-	w = BuiltinDictDictionaryAnyFieldStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
+	w = BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
 	if (len(item.Z) != 0) == false {
 		w = w[:backupIndexZ]
 	}
@@ -301,23 +301,23 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictIntKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.D); sz != 0 {
+	if sizes, sz = BuiltinDictIntTupleStringCalculateLayout(sizes, true, &item.D); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictLongKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.E); sz != 0 {
+	if sizes, sz = BuiltinDictLongTupleStringCalculateLayout(sizes, true, &item.E); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
+	if sizes, sz = BuiltinDictIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryAnyFieldLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
+	if sizes, sz = BuiltinDictLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryAnyFieldStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
+	if sizes, sz = BuiltinDictStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -358,19 +358,19 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = BuiltinDictIntKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+	if w, sizes, sz = BuiltinDictIntTupleStringInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
 		currentBlock |= 4
 	}
-	if w, sizes, sz = BuiltinDictLongKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
+	if w, sizes, sz = BuiltinDictLongTupleStringInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
 		currentBlock |= 8
 	}
-	if w, sizes, sz = BuiltinDictDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
+	if w, sizes, sz = BuiltinDictIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = BuiltinDictDictionaryAnyFieldLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
+	if w, sizes, sz = BuiltinDictLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
 		currentBlock |= 32
 	}
-	if w, sizes, sz = BuiltinDictDictionaryAnyFieldStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
 		currentBlock |= 64
 	}
 	if currentBlockPosition < len(w) {
@@ -437,39 +437,39 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.N = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = BuiltinDictIntKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.D); err != nil {
+		if currentR, err = BuiltinDictIntTupleStringInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictIntKeyDictionaryFieldTupleStringReset(item.D)
+		BuiltinDictIntTupleStringReset(item.D)
 	}
 	if block&8 != 0 {
-		if currentR, err = BuiltinDictLongKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.E); err != nil {
+		if currentR, err = BuiltinDictLongTupleStringInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictLongKeyDictionaryFieldTupleStringReset(item.E)
+		BuiltinDictLongTupleStringReset(item.E)
 	}
 	if block&16 != 0 {
-		if currentR, err = BuiltinDictDictionaryAnyFieldIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
+		if currentR, err = BuiltinDictIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
+		BuiltinDictIntPairIntIntReset(item.X)
 	}
 	if block&32 != 0 {
-		if currentR, err = BuiltinDictDictionaryAnyFieldLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
+		if currentR, err = BuiltinDictLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
+		BuiltinDictLongPairIntIntReset(item.Y)
 	}
 	if block&64 != 0 {
-		if currentR, err = BuiltinDictDictionaryAnyFieldStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
+		if currentR, err = BuiltinDictStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+		BuiltinDictStringPairIntIntReset(item.Z)
 	}
 	Unused(currentR)
 	return r, nil

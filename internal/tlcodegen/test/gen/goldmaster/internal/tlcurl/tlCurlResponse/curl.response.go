@@ -9,7 +9,7 @@ package tlCurlResponse
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictStringString"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -700,7 +700,7 @@ func (item *CurlResponseOk) IsSetHttpBody() bool { return item.tl2mask0&1 != 0 }
 func (item *CurlResponseOk) Reset() {
 	item.FieldMask = 0
 	item.HttpCode = 0
-	tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+	tlBuiltinDictStringString.BuiltinDictStringStringReset(item.HttpHeaders)
 	item.HttpBody = ""
 	item.tl2mask0 = 0
 }
@@ -709,7 +709,7 @@ func (item *CurlResponseOk) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.FieldMask = basictl.RandomFieldMask(rg, 0b1)
 	item.HttpCode = basictl.RandomInt(rg)
-	tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringFillRandom(rg, &item.HttpHeaders)
+	tlBuiltinDictStringString.BuiltinDictStringStringFillRandom(rg, &item.HttpHeaders)
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		item.HttpBody = basictl.RandomString(rg)
@@ -737,7 +737,7 @@ func (item *CurlResponseOk) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.HttpCode); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringRead(w, &item.HttpHeaders); err != nil {
+	if w, err = tlBuiltinDictStringString.BuiltinDictStringStringRead(w, &item.HttpHeaders); err != nil {
 		return w, err
 	}
 	if item.FieldMask&(1<<0) != 0 {
@@ -758,7 +758,7 @@ func (item *CurlResponseOk) WriteGeneral(w []byte) (_ []byte, err error) {
 func (item *CurlResponseOk) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.IntWrite(w, item.HttpCode)
-	w = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringWrite(w, item.HttpHeaders)
+	w = tlBuiltinDictStringString.BuiltinDictStringStringWrite(w, item.HttpHeaders)
 	if item.FieldMask&(1<<0) != 0 {
 		w = basictl.StringWrite(w, item.HttpBody)
 	}
@@ -825,7 +825,7 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propHttpHeadersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_headers")
 				}
-				if err := tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
+				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
 					return err
 				}
 				propHttpHeadersPresented = true
@@ -854,7 +854,7 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		item.HttpCode = 0
 	}
 	if !propHttpHeadersPresented {
-		tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+		tlBuiltinDictStringString.BuiltinDictStringStringReset(item.HttpHeaders)
 	}
 	if !propHttpBodyPresented {
 		item.HttpBody = ""
@@ -896,7 +896,7 @@ func (item *CurlResponseOk) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexHttpHeaders := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"http_headers":`...)
-	w = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, item.HttpHeaders)
+	w = tlBuiltinDictStringString.BuiltinDictStringStringWriteJSONOpt(tctx, w, item.HttpHeaders)
 	if (len(item.HttpHeaders) != 0) == false {
 		w = w[:backupIndexHttpHeaders]
 	}
@@ -936,7 +936,7 @@ func (item *CurlResponseOk) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringCalculateLayout(sizes, true, &item.HttpHeaders); sz != 0 {
+	if sizes, sz = tlBuiltinDictStringString.BuiltinDictStringStringCalculateLayout(sizes, true, &item.HttpHeaders); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -985,7 +985,7 @@ func (item *CurlResponseOk) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 		w = basictl.IntWrite(w, item.HttpCode)
 		currentBlock |= 4
 	}
-	if w, sizes, sz = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringInternalWriteTL2(w, sizes, true, &item.HttpHeaders); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictStringString.BuiltinDictStringStringInternalWriteTL2(w, sizes, true, &item.HttpHeaders); sz != 0 {
 		currentBlock |= 8
 	}
 	if item.tl2mask0&1 != 0 {
@@ -1036,11 +1036,11 @@ func (item *CurlResponseOk) InternalReadTL2(r []byte, block byte) (_ []byte, err
 		item.HttpCode = 0
 	}
 	if block&8 != 0 {
-		if currentR, err = tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringInternalReadTL2(currentR, &item.HttpHeaders); err != nil {
+		if currentR, err = tlBuiltinDictStringString.BuiltinDictStringStringInternalReadTL2(currentR, &item.HttpHeaders); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictDictionaryFieldString.BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+		tlBuiltinDictStringString.BuiltinDictStringStringReset(item.HttpHeaders)
 	}
 	if block&16 != 0 {
 		item.tl2mask0 |= 1

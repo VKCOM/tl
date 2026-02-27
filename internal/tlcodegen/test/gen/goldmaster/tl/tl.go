@@ -20,13 +20,15 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall8"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlCall9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldLongPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyFieldStringPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldIntTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldLongTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldStringPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldStringString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyIntPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyLongPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryAnyStringPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlHalfStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe"
@@ -35,11 +37,9 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64s"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntKeyDictionaryFieldTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntKeyDictionaryTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLongKeyDictionaryFieldTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLongKeyDictionaryTupleString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeTest1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeWrapperInt3"
@@ -98,104 +98,104 @@ import (
 )
 
 type (
-	Call1                              = tlCall1.Call1
-	Call2                              = tlCall2.Call2
-	Call3                              = tlCall3.Call3
-	Call4                              = tlCall4.Call4
-	Call5                              = tlCall5.Call5
-	Call6                              = tlCall6.Call6
-	Call7                              = tlCall7.Call7
-	Call8                              = tlCall8.Call8
-	Call9                              = tlCall9.Call9
-	CycleTuple                         = cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
-	DictionaryAnyFieldIntPairIntInt    = tlDictionaryAnyFieldIntPairIntInt.DictionaryAnyFieldIntPairIntInt
-	DictionaryAnyFieldLongPairIntInt   = tlDictionaryAnyFieldLongPairIntInt.DictionaryAnyFieldLongPairIntInt
-	DictionaryAnyFieldStringPairIntInt = tlDictionaryAnyFieldStringPairIntInt.DictionaryAnyFieldStringPairIntInt
-	DictionaryAnyIntPairIntInt         = tlDictionaryAnyIntPairIntInt.DictionaryAnyIntPairIntInt
-	DictionaryAnyLongPairIntInt        = tlDictionaryAnyLongPairIntInt.DictionaryAnyLongPairIntInt
-	DictionaryAnyStringPairIntInt      = tlDictionaryAnyStringPairIntInt.DictionaryAnyStringPairIntInt
-	DictionaryFieldString              = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryFieldStringBytes         = tlDictionaryFieldString.DictionaryFieldStringBytes
-	DictionaryString                   = tlDictionaryString.DictionaryString
-	DictionaryStringBytes              = tlDictionaryString.DictionaryStringBytes
-	HalfStr                            = tlHalfStr.HalfStr
-	Hren                               = cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren
-	HrenMaybe                          = cycle_38a9bf76d71419ee85afa2cdeb3445c4.HrenMaybe
-	InnerMaybe                         = tlInnerMaybe.InnerMaybe
-	InnerMaybe0                        = tlInnerMaybe0.InnerMaybe0
-	Int                                = tlInt.Int
-	Int32s                             = tlInt32s.Int32s
-	Int64s                             = tlInt64s.Int64s
-	IntBoxedMaybe                      = tlIntBoxedMaybe.IntBoxedMaybe
-	IntKeyDictionaryFieldTupleString   = tlIntKeyDictionaryFieldTupleString.IntKeyDictionaryFieldTupleString
-	IntKeyDictionaryTupleString        = tlIntKeyDictionaryTupleString.IntKeyDictionaryTupleString
-	IntMaybe                           = tlIntMaybe.IntMaybe
-	Long                               = tlLong.Long
-	LongKeyDictionaryFieldTupleString  = tlLongKeyDictionaryFieldTupleString.LongKeyDictionaryFieldTupleString
-	LongKeyDictionaryTupleString       = tlLongKeyDictionaryTupleString.LongKeyDictionaryTupleString
-	MaybeTest1                         = tlMaybeTest1.MaybeTest1
-	MaybeWrapperInt3                   = tlMaybeWrapperInt3.MaybeWrapperInt3
-	MultiPoint                         = tlMultiPoint.MultiPoint
-	MyInt32                            = tlMyInt32.MyInt32
-	MyInt64                            = tlMyInt64.MyInt64
-	MyNat                              = tlMyNat.MyNat
-	MyNat2                             = tlMyNat2.MyNat2
-	MyNat3                             = tlMyNat3.MyNat3
-	MyPlus                             = tlMyNat2.MyPlus
-	MyPlus3                            = tlMyNat3.MyPlus3
-	MyZero                             = tlMyNat2.MyZero
-	MyZero3                            = tlMyNat3.MyZero3
-	NativeWrappers                     = tlNativeWrappers.NativeWrappers
-	NoStr                              = tlNoStr.NoStr
-	PairIntInt                         = tlPairIntInt.PairIntInt
-	Replace                            = tlReplace.Replace
-	Replace1                           = tlReplace1.Replace1
-	Replace13                          = tlReplace13.Replace13
-	Replace17                          = tlReplace17.Replace17
-	Replace2                           = tlReplace2.Replace2
-	Replace3                           = tlReplace3.Replace3
-	Replace4                           = tlReplace4.Replace4
-	Replace43                          = tlReplace43.Replace43
-	Replace5                           = tlReplace5.Replace5
-	Replace6                           = tlReplace6.Replace6
-	String                             = tlString.String
-	TestMaybe                          = tlTestMaybe.TestMaybe
-	TestMaybe2                         = tlTestMaybe2.TestMaybe2
-	True                               = tlTrue.True
-	TupleBoxedInt3Maybe                = tlTupleBoxedInt3Maybe.TupleBoxedInt3Maybe
-	TupleBoxedIntBoxed0Maybe           = tlTupleBoxedIntBoxed0Maybe.TupleBoxedIntBoxed0Maybe
-	TupleCycleTuple                    = tlTupleCycleTuple.TupleCycleTuple
-	TupleCycleTuple2                   = tlTupleCycleTuple2.TupleCycleTuple2
-	TupleInt                           = tlTupleInt.TupleInt
-	TupleInt0                          = tlTupleInt0.TupleInt0
-	TupleInt0Maybe                     = tlTupleInt0Maybe.TupleInt0Maybe
-	TupleInt3                          = tlTupleInt3.TupleInt3
-	TupleInt3Maybe                     = tlTupleInt3Maybe.TupleInt3Maybe
-	TupleIntBoxed0                     = tlTupleIntBoxed0.TupleIntBoxed0
-	TupleIntBoxed3                     = tlTupleIntBoxed3.TupleIntBoxed3
-	TupleIntBoxed3Maybe                = tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
-	TupleIntMaybe                      = tlTupleIntMaybe.TupleIntMaybe
-	TupleLong                          = tlTupleLong.TupleLong
-	TupleString                        = tlTupleString.TupleString
-	TypeA                              = tlTypeA.TypeA
-	TypeB                              = tlTypeB.TypeB
-	TypeC                              = tlTypeC.TypeC
-	TypeD                              = tlTypeD.TypeD
-	UnionArgsUse                       = tlUnionArgsUse.UnionArgsUse
-	UnionArgsXXX1Int                   = tlUnionArgsXXXInt.UnionArgsXXX1Int
-	UnionArgsXXX1Long                  = tlUnionArgsXXXLong.UnionArgsXXX1Long
-	UnionArgsXXX2Int                   = tlUnionArgsXXXInt.UnionArgsXXX2Int
-	UnionArgsXXX2Long                  = tlUnionArgsXXXLong.UnionArgsXXX2Long
-	UnionArgsXXXInt                    = tlUnionArgsXXXInt.UnionArgsXXXInt
-	UnionArgsXXXLong                   = tlUnionArgsXXXLong.UnionArgsXXXLong
-	UseDictUgly                        = tlUseDictUgly.UseDictUgly
-	UseResponse                        = tlUseResponse.UseResponse
-	UseStr                             = tlUseStr.UseStr
-	UseStrBytes                        = tlUseStr.UseStrBytes
-	UseTrue                            = tlUseTrue.UseTrue
-	VectorBoxedIntMaybe                = tlVectorBoxedIntMaybe.VectorBoxedIntMaybe
-	VectorInt                          = tlVectorInt.VectorInt
-	VectorIntMaybe                     = tlVectorIntMaybe.VectorIntMaybe
+	Call1                         = tlCall1.Call1
+	Call2                         = tlCall2.Call2
+	Call3                         = tlCall3.Call3
+	Call4                         = tlCall4.Call4
+	Call5                         = tlCall5.Call5
+	Call6                         = tlCall6.Call6
+	Call7                         = tlCall7.Call7
+	Call8                         = tlCall8.Call8
+	Call9                         = tlCall9.Call9
+	CycleTuple                    = cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
+	DictFieldIntPairIntInt        = tlDictFieldIntPairIntInt.DictFieldIntPairIntInt
+	DictFieldIntTupleString       = tlDictFieldIntTupleString.DictFieldIntTupleString
+	DictFieldLongPairIntInt       = tlDictFieldLongPairIntInt.DictFieldLongPairIntInt
+	DictFieldLongTupleString      = tlDictFieldLongTupleString.DictFieldLongTupleString
+	DictFieldStringPairIntInt     = tlDictFieldStringPairIntInt.DictFieldStringPairIntInt
+	DictFieldStringString         = tlDictFieldStringString.DictFieldStringString
+	DictFieldStringStringBytes    = tlDictFieldStringString.DictFieldStringStringBytes
+	DictionaryAnyIntPairIntInt    = tlDictionaryAnyIntPairIntInt.DictionaryAnyIntPairIntInt
+	DictionaryAnyLongPairIntInt   = tlDictionaryAnyLongPairIntInt.DictionaryAnyLongPairIntInt
+	DictionaryAnyStringPairIntInt = tlDictionaryAnyStringPairIntInt.DictionaryAnyStringPairIntInt
+	DictionaryString              = tlDictionaryString.DictionaryString
+	DictionaryStringBytes         = tlDictionaryString.DictionaryStringBytes
+	HalfStr                       = tlHalfStr.HalfStr
+	Hren                          = cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren
+	HrenMaybe                     = cycle_38a9bf76d71419ee85afa2cdeb3445c4.HrenMaybe
+	InnerMaybe                    = tlInnerMaybe.InnerMaybe
+	InnerMaybe0                   = tlInnerMaybe0.InnerMaybe0
+	Int                           = tlInt.Int
+	Int32s                        = tlInt32s.Int32s
+	Int64s                        = tlInt64s.Int64s
+	IntBoxedMaybe                 = tlIntBoxedMaybe.IntBoxedMaybe
+	IntKeyDictionaryTupleString   = tlIntKeyDictionaryTupleString.IntKeyDictionaryTupleString
+	IntMaybe                      = tlIntMaybe.IntMaybe
+	Long                          = tlLong.Long
+	LongKeyDictionaryTupleString  = tlLongKeyDictionaryTupleString.LongKeyDictionaryTupleString
+	MaybeTest1                    = tlMaybeTest1.MaybeTest1
+	MaybeWrapperInt3              = tlMaybeWrapperInt3.MaybeWrapperInt3
+	MultiPoint                    = tlMultiPoint.MultiPoint
+	MyInt32                       = tlMyInt32.MyInt32
+	MyInt64                       = tlMyInt64.MyInt64
+	MyNat                         = tlMyNat.MyNat
+	MyNat2                        = tlMyNat2.MyNat2
+	MyNat3                        = tlMyNat3.MyNat3
+	MyPlus                        = tlMyNat2.MyPlus
+	MyPlus3                       = tlMyNat3.MyPlus3
+	MyZero                        = tlMyNat2.MyZero
+	MyZero3                       = tlMyNat3.MyZero3
+	NativeWrappers                = tlNativeWrappers.NativeWrappers
+	NoStr                         = tlNoStr.NoStr
+	PairIntInt                    = tlPairIntInt.PairIntInt
+	Replace                       = tlReplace.Replace
+	Replace1                      = tlReplace1.Replace1
+	Replace13                     = tlReplace13.Replace13
+	Replace17                     = tlReplace17.Replace17
+	Replace2                      = tlReplace2.Replace2
+	Replace3                      = tlReplace3.Replace3
+	Replace4                      = tlReplace4.Replace4
+	Replace43                     = tlReplace43.Replace43
+	Replace5                      = tlReplace5.Replace5
+	Replace6                      = tlReplace6.Replace6
+	String                        = tlString.String
+	TestMaybe                     = tlTestMaybe.TestMaybe
+	TestMaybe2                    = tlTestMaybe2.TestMaybe2
+	True                          = tlTrue.True
+	TupleBoxedInt3Maybe           = tlTupleBoxedInt3Maybe.TupleBoxedInt3Maybe
+	TupleBoxedIntBoxed0Maybe      = tlTupleBoxedIntBoxed0Maybe.TupleBoxedIntBoxed0Maybe
+	TupleCycleTuple               = tlTupleCycleTuple.TupleCycleTuple
+	TupleCycleTuple2              = tlTupleCycleTuple2.TupleCycleTuple2
+	TupleInt                      = tlTupleInt.TupleInt
+	TupleInt0                     = tlTupleInt0.TupleInt0
+	TupleInt0Maybe                = tlTupleInt0Maybe.TupleInt0Maybe
+	TupleInt3                     = tlTupleInt3.TupleInt3
+	TupleInt3Maybe                = tlTupleInt3Maybe.TupleInt3Maybe
+	TupleIntBoxed0                = tlTupleIntBoxed0.TupleIntBoxed0
+	TupleIntBoxed3                = tlTupleIntBoxed3.TupleIntBoxed3
+	TupleIntBoxed3Maybe           = tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
+	TupleIntMaybe                 = tlTupleIntMaybe.TupleIntMaybe
+	TupleLong                     = tlTupleLong.TupleLong
+	TupleString                   = tlTupleString.TupleString
+	TypeA                         = tlTypeA.TypeA
+	TypeB                         = tlTypeB.TypeB
+	TypeC                         = tlTypeC.TypeC
+	TypeD                         = tlTypeD.TypeD
+	UnionArgsUse                  = tlUnionArgsUse.UnionArgsUse
+	UnionArgsXXX1Int              = tlUnionArgsXXXInt.UnionArgsXXX1Int
+	UnionArgsXXX1Long             = tlUnionArgsXXXLong.UnionArgsXXX1Long
+	UnionArgsXXX2Int              = tlUnionArgsXXXInt.UnionArgsXXX2Int
+	UnionArgsXXX2Long             = tlUnionArgsXXXLong.UnionArgsXXX2Long
+	UnionArgsXXXInt               = tlUnionArgsXXXInt.UnionArgsXXXInt
+	UnionArgsXXXLong              = tlUnionArgsXXXLong.UnionArgsXXXLong
+	UseDictUgly                   = tlUseDictUgly.UseDictUgly
+	UseResponse                   = tlUseResponse.UseResponse
+	UseStr                        = tlUseStr.UseStr
+	UseStrBytes                   = tlUseStr.UseStrBytes
+	UseTrue                       = tlUseTrue.UseTrue
+	VectorBoxedIntMaybe           = tlVectorBoxedIntMaybe.VectorBoxedIntMaybe
+	VectorInt                     = tlVectorInt.VectorInt
+	VectorIntMaybe                = tlVectorIntMaybe.VectorIntMaybe
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

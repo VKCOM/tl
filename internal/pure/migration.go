@@ -538,34 +538,22 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 		//tr.T.Type = tlast.Name{Name: tName}
 		//tr.T.Bare = false // not required
 	}
-	isDict, dictFieldT := k.IsDict(kt)
+	isDict, keyRT, elemRT, err := k.IsDictWrapper(tip, tra.Type)
+	if err != nil {
+		return tlast.TL2TypeArgument{}, false, err
+	}
 	if isDict {
-		if len(someType.Arguments) != len(dictFieldT.combTL1[0].TemplateArguments) {
-			return tlast.TL2TypeArgument{}, false, someType.PR.BeautifulError(fmt.Errorf("internal error during migration: expected %d arguments here", len(dictFieldT.combTL1[0].TemplateArguments)))
-		}
-		for _, targ := range someType.Arguments {
-			if targ.IsNumber {
-				return tlast.TL2TypeArgument{}, false, targ.PR.BeautifulError(errors.New("internal error during migration: dictionary cannot be instantiated with number"))
-			}
-		}
-		keyName := tlast.TL2TypeName(dictFieldT.combTL1[0].Fields[0].FieldType.Type) // key must not have template arguments
-		keyRT := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: keyName}}
-		valueRT := someType.Arguments[0].Type
-		if len(someType.Arguments) == 2 {
-			keyRT = someType.Arguments[0].Type
-			valueRT = someType.Arguments[1].Type
-		}
-		valueType, err := k.MigrationTypeRefImpl(migrateTips, tip, keyRT, leftArgs)
+		keyArg, _, err := k.MigrationArgument(migrateTips, tip, keyRT, leftArgs, false)
 		if err != nil {
 			return tlast.TL2TypeArgument{}, false, err
 		}
-		keyType, err := k.MigrationTypeRefImpl(migrateTips, tip, valueRT, leftArgs)
+		elemType, err := k.MigrationTypeRefImpl(migrateTips, tip, elemRT, leftArgs)
 		if err != nil {
 			return tlast.TL2TypeArgument{}, false, err
 		}
 		bracketType := tlast.TL2BracketType{
-			ArrayType: valueType,
-			IndexType: tlast.TL2TypeArgument{Type: keyType},
+			ArrayType: elemType,
+			IndexType: keyArg,
 			HasIndex:  true,
 		}
 		return tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{BracketType: &bracketType}}, false, nil
@@ -633,10 +621,10 @@ func (k *Kernel) MigrationCheckTL2FromTL1Argument(refErrList *migrationTL1RefsTL
 	tName := tr.Type.String()
 	kt, ok := k.tips[tName]
 	if !ok {
-		return fmt.Errorf("internal error - type %s does not exist", tr.Type)
+		return tr.PR.BeautifulError(fmt.Errorf(" type %s does not exist", tName))
 	}
 	if kt.originTL2 {
-		return tr.PR.BeautifulError(fmt.Errorf("internal error - existing reference from TL1 to TL2 type %s", tName))
+		return tr.PR.BeautifulError(fmt.Errorf("prohibited reference from TL1 to TL2 type %s", tName))
 	}
 	if _, ok := migrateTips[kt]; ok {
 		refErrList.addError(comb, tr.PR.BeautifulError(fmt.Errorf("reference from TL1 prevents migration of type %s", tName)))

@@ -9,11 +9,11 @@ package tlUseDictUgly
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryAnyFieldIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryAnyFieldLongPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryAnyFieldStringPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictIntKeyDictionaryFieldTupleString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictLongKeyDictionaryFieldTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictIntPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictIntTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictLongPairIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictLongTupleString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictStringPairIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -35,39 +35,39 @@ func (UseDictUgly) TLTag() uint32  { return 0xfb9ce817 }
 
 func (item *UseDictUgly) Reset() {
 	item.N = 0
-	tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringReset(item.D)
-	tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringReset(item.E)
-	tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
-	tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
-	tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReset(item.D)
+	tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringReset(item.E)
+	tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntReset(item.X)
+	tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntReset(item.Y)
+	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReset(item.Z)
 }
 
 func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomSize(rg)
-	tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringFillRandom(rg, &item.D, item.N)
-	tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringFillRandom(rg, &item.E, item.N)
-	tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntFillRandom(rg, &item.X)
-	tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntFillRandom(rg, &item.Y)
-	tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntFillRandom(rg, &item.Z)
+	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringFillRandom(rg, &item.D, item.N)
+	tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringFillRandom(rg, &item.E, item.N)
+	tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntFillRandom(rg, &item.X)
+	tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntFillRandom(rg, &item.Y)
+	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntFillRandom(rg, &item.Z)
 }
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringRead(w, &item.D, item.N); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringRead(w, &item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringRead(w, &item.E, item.N); err != nil {
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringRead(w, &item.E, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntRead(w, &item.X); err != nil {
+	if w, err = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntRead(w, &item.X); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntRead(w, &item.Y); err != nil {
+	if w, err = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntRead(w, &item.Y); err != nil {
 		return w, err
 	}
-	return tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntRead(w, &item.Z)
+	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntRead(w, &item.Z)
 }
 
 func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -76,15 +76,15 @@ func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringWrite(w, item.D, item.N); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWrite(w, item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringWrite(w, item.E, item.N); err != nil {
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWrite(w, item.E, item.N); err != nil {
 		return w, err
 	}
-	w = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntWrite(w, item.X)
-	w = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntWrite(w, item.Y)
-	w = tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntWrite(w, item.Z)
+	w = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntWrite(w, item.X)
+	w = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWrite(w, item.Y)
+	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWrite(w, item.Z)
 	return w, nil
 }
 
@@ -162,7 +162,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "x")
 				}
-				if err := tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true
@@ -170,7 +170,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "y")
 				}
-				if err := tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true
@@ -178,7 +178,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propZPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "z")
 				}
-				if err := tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
+				if err := tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
 					return err
 				}
 				propZPresented = true
@@ -196,20 +196,20 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 		item.N = 0
 	}
 	if !propXPresented {
-		tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
+		tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntReset(item.X)
 	}
 	if !propYPresented {
-		tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
+		tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntReset(item.Y)
 	}
 	if !propZPresented {
-		tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+		tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReset(item.Z)
 	}
 	var inDPointer *basictl.JsonLexer
 	inD := basictl.JsonLexer{Data: rawD}
 	if rawD != nil {
 		inDPointer = &inD
 	}
-	if err := tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
+	if err := tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReadJSONGeneral(tctx, inDPointer, &item.D, item.N); err != nil {
 		return err
 	}
 
@@ -218,7 +218,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	if rawE != nil {
 		inEPointer = &inE
 	}
-	if err := tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, inEPointer, &item.E, item.N); err != nil {
+	if err := tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringReadJSONGeneral(tctx, inEPointer, &item.E, item.N); err != nil {
 		return err
 	}
 
@@ -246,7 +246,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.D) != 0) == false {
@@ -255,7 +255,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.E) != 0) == false {
@@ -264,21 +264,21 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntWriteJSONOpt(tctx, w, item.X)
+	w = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
+	w = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
 	if (len(item.Y) != 0) == false {
 		w = w[:backupIndexY]
 	}
 	backupIndexZ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"z":`...)
-	w = tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
+	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
 	if (len(item.Z) != 0) == false {
 		w = w[:backupIndexZ]
 	}
@@ -309,23 +309,23 @@ func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.D); sz != 0 {
+	if sizes, sz = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringCalculateLayout(sizes, true, &item.D); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringCalculateLayout(sizes, true, &item.E); sz != 0 {
+	if sizes, sz = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringCalculateLayout(sizes, true, &item.E); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
+	if sizes, sz = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
+	if sizes, sz = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
+	if sizes, sz = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -366,19 +366,19 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
 		currentBlock |= 4
 	}
-	if w, sizes, sz = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
 		currentBlock |= 8
 	}
-	if w, sizes, sz = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
 		currentBlock |= 32
 	}
-	if w, sizes, sz = tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
 		currentBlock |= 64
 	}
 	if currentBlockPosition < len(w) {
@@ -445,39 +445,39 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.N = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.D); err != nil {
+		if currentR, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictIntKeyDictionaryFieldTupleString.BuiltinDictIntKeyDictionaryFieldTupleStringReset(item.D)
+		tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReset(item.D)
 	}
 	if block&8 != 0 {
-		if currentR, err = tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringInternalReadTL2(currentR, &item.E); err != nil {
+		if currentR, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictLongKeyDictionaryFieldTupleString.BuiltinDictLongKeyDictionaryFieldTupleStringReset(item.E)
+		tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringReset(item.E)
 	}
 	if block&16 != 0 {
-		if currentR, err = tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
+		if currentR, err = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictDictionaryAnyFieldIntPairIntInt.BuiltinDictDictionaryAnyFieldIntPairIntIntReset(item.X)
+		tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntReset(item.X)
 	}
 	if block&32 != 0 {
-		if currentR, err = tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
+		if currentR, err = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictDictionaryAnyFieldLongPairIntInt.BuiltinDictDictionaryAnyFieldLongPairIntIntReset(item.Y)
+		tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntReset(item.Y)
 	}
 	if block&64 != 0 {
-		if currentR, err = tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
+		if currentR, err = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictDictionaryAnyFieldStringPairIntInt.BuiltinDictDictionaryAnyFieldStringPairIntIntReset(item.Z)
+		tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReset(item.Z)
 	}
 	internal.Unused(currentR)
 	return r, nil

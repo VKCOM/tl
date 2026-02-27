@@ -6,8 +6,8 @@ long#22076cba ? = Long;
 
 string#b5286e24 ? = String;
 
-//resultFalse#27930a7b {t:Type} = Maybe t;
-//resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
+resultFalse#27930a7b {t:Type} = Maybe t;
+resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
 
 pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
 
@@ -23,6 +23,35 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 true = True; // this can be used as void type and serialized to empty array in PHP
 
 map {X:Type} {Y:Type} key:X value:Y = Map X Y;
+
+
+intKeyDictionaryField {t:Type}
+    key:int
+    value:t
+    = IntKeyDictionaryField t;
+
+intKeyDictionary#07bafc42 {t:Type}
+    %(Vector %(intKeyDictionaryField t))
+    = IntKeyDictionary t;
+
+longKeyDictionaryField {t:Type}
+    key:long
+    value:t
+    = LongKeyDictionaryField t;
+
+longKeyDictionary#b424d8f1 {t:Type}
+    %(Vector %(longKeyDictionaryField t))
+    = LongKeyDictionary t;
+
+useDictUgly#fb9ce817 n:#
+    // c:dictionaryAny<pair<int,int>, int>
+    d:intKeyDictionary<tuple<string,n>>
+    e:longKeyDictionary<tuple<string,n>>
+    // f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+//    x:dictionaryAny<int, pair<int,int>>
+//    y:dictionaryAny<long, pair<int,int>>
+//    z:dictionaryAny<string, pair<int,int>>
+     = UseDictUgly;
 
 //videoAdsService.getLegalPartnerAdsSettingsManyResponseOk#4db649d8
 //    fields_mask:              #
@@ -69,6 +98,29 @@ map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 //    user_id:                  long
 //    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
 
-a.inner {I:#} a:I*[int] = a.Inner I;
-a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
-a.top2 n:# m:# c:vector<a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)> = a.Top2;
+//a.inner {I:#} a:I*[int] = a.Inner I;
+//a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
+//a.top2 n:# m:# c:vector<a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)> = a.Top2;
+
+//usefulService.userEntityPaymentItemPromo#24c7ec9f
+//  {fields_mask: #}
+//  content: string
+//  = usefulService.UserEntityPaymentItemPromo fields_mask;
+
+//usefulService.userEntityPaymentItem#4f798680
+//  {fields_mask: #}
+//  id: string
+////  promo: (Maybe (usefulService.UserEntityPaymentItemPromo fields_mask))
+//  = usefulService.UserEntityPaymentItem fields_mask;
+//
+//usefulService.getUserEntityResult#e494698a
+//  {fields_mask: #}
+//  entity_id: string
+//  payment_items: (Maybe (Dictionary (usefulService.UserEntityPaymentItem fields_mask)))
+//  = usefulService.GetUserEntityResult fields_mask;
+//
+//@readwrite
+//usefulService.getUserEntity#3c857e52
+//  fields_mask: #
+//  stage_id: fields_mask.0?string
+//  => Maybe (usefulService.GetUserEntityResult fields_mask);

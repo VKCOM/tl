@@ -23,19 +23,19 @@ func (AbUseDictString) TLTag() uint32  { return 0x3325d884 }
 
 func (item *AbUseDictString) Reset() {
 	item.FieldsMask = 0
-	BuiltinDictDictionaryFieldStringReset(item.Tags)
+	BuiltinDictStringStringReset(item.Tags)
 }
 
 func (item *AbUseDictString) FillRandom(rg *basictl.RandGenerator) {
 	item.FieldsMask = basictl.RandomUint(rg)
-	BuiltinDictDictionaryFieldStringFillRandom(rg, &item.Tags)
+	BuiltinDictStringStringFillRandom(rg, &item.Tags)
 }
 
 func (item *AbUseDictString) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
-	return BuiltinDictDictionaryFieldStringRead(w, &item.Tags)
+	return BuiltinDictStringStringRead(w, &item.Tags)
 }
 
 func (item *AbUseDictString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -44,7 +44,7 @@ func (item *AbUseDictString) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *AbUseDictString) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
-	w = BuiltinDictDictionaryFieldStringWrite(w, item.Tags)
+	w = BuiltinDictStringStringWrite(w, item.Tags)
 	return w
 }
 
@@ -98,7 +98,7 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
-				if err := BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
+				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
 				propTagsPresented = true
@@ -116,7 +116,7 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 		item.FieldsMask = 0
 	}
 	if !propTagsPresented {
-		BuiltinDictDictionaryFieldStringReset(item.Tags)
+		BuiltinDictStringStringReset(item.Tags)
 	}
 	return nil
 }
@@ -142,7 +142,7 @@ func (item *AbUseDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	backupIndexTags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tags":`...)
-	w = BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, item.Tags)
+	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, item.Tags)
 	if (len(item.Tags) != 0) == false {
 		w = w[:backupIndexTags]
 	}
@@ -173,7 +173,7 @@ func (item *AbUseDictString) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryFieldStringCalculateLayout(sizes, true, &item.Tags); sz != 0 {
+	if sizes, sz = BuiltinDictStringStringCalculateLayout(sizes, true, &item.Tags); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -214,7 +214,7 @@ func (item *AbUseDictString) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 		w = basictl.NatWrite(w, item.FieldsMask)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = BuiltinDictDictionaryFieldStringInternalWriteTL2(w, sizes, true, &item.Tags); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringStringInternalWriteTL2(w, sizes, true, &item.Tags); sz != 0 {
 		currentBlock |= 4
 	}
 	if currentBlockPosition < len(w) {
@@ -281,11 +281,11 @@ func (item *AbUseDictString) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.FieldsMask = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldStringInternalReadTL2(currentR, &item.Tags); err != nil {
+		if currentR, err = BuiltinDictStringStringInternalReadTL2(currentR, &item.Tags); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryFieldStringReset(item.Tags)
+		BuiltinDictStringStringReset(item.Tags)
 	}
 	Unused(currentR)
 	return r, nil
@@ -297,7 +297,7 @@ func (item *AbUseDictString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 type AbUseDictStringBytes struct {
 	FieldsMask uint32
-	Tags       []DictionaryFieldStringBytes
+	Tags       []DictFieldStringStringBytes
 }
 
 func (AbUseDictStringBytes) TLName() string { return "ab.useDictString" }
@@ -310,14 +310,14 @@ func (item *AbUseDictStringBytes) Reset() {
 
 func (item *AbUseDictStringBytes) FillRandom(rg *basictl.RandGenerator) {
 	item.FieldsMask = basictl.RandomUint(rg)
-	BuiltinDictDictionaryFieldStringBytesFillRandom(rg, &item.Tags)
+	BuiltinDictStringStringBytesFillRandom(rg, &item.Tags)
 }
 
 func (item *AbUseDictStringBytes) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
-	return BuiltinDictDictionaryFieldStringBytesRead(w, &item.Tags)
+	return BuiltinDictStringStringBytesRead(w, &item.Tags)
 }
 
 func (item *AbUseDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -326,7 +326,7 @@ func (item *AbUseDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *AbUseDictStringBytes) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
-	w = BuiltinDictDictionaryFieldStringBytesWrite(w, item.Tags)
+	w = BuiltinDictStringStringBytesWrite(w, item.Tags)
 	return w
 }
 
@@ -380,7 +380,7 @@ func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
-				if err := BuiltinDictDictionaryFieldStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
+				if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
 				propTagsPresented = true
@@ -424,7 +424,7 @@ func (item *AbUseDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w
 	backupIndexTags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tags":`...)
-	w = BuiltinDictDictionaryFieldStringBytesWriteJSONOpt(tctx, w, item.Tags)
+	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, item.Tags)
 	if (len(item.Tags) != 0) == false {
 		w = w[:backupIndexTags]
 	}
@@ -455,7 +455,7 @@ func (item *AbUseDictStringBytes) CalculateLayout(sizes []int, optimizeEmpty boo
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryFieldStringBytesCalculateLayout(sizes, true, &item.Tags); sz != 0 {
+	if sizes, sz = BuiltinDictStringStringBytesCalculateLayout(sizes, true, &item.Tags); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -496,7 +496,7 @@ func (item *AbUseDictStringBytes) InternalWriteTL2(w []byte, sizes []int, optimi
 		w = basictl.NatWrite(w, item.FieldsMask)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = BuiltinDictDictionaryFieldStringBytesInternalWriteTL2(w, sizes, true, &item.Tags); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringStringBytesInternalWriteTL2(w, sizes, true, &item.Tags); sz != 0 {
 		currentBlock |= 4
 	}
 	if currentBlockPosition < len(w) {
@@ -563,7 +563,7 @@ func (item *AbUseDictStringBytes) InternalReadTL2(r []byte) (_ []byte, err error
 		item.FieldsMask = 0
 	}
 	if block&4 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldStringBytesInternalReadTL2(currentR, &item.Tags); err != nil {
+		if currentR, err = BuiltinDictStringStringBytesInternalReadTL2(currentR, &item.Tags); err != nil {
 			return currentR, err
 		}
 	} else {

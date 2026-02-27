@@ -1020,7 +1020,7 @@ func `)
 			qw422016.N().S(`WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m `)
 			qw422016.N().S(typeString)
 			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
+			qw422016.N().S(valueNatArgsDecl)
 			qw422016.N().S(`) `)
 			qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 			qw422016.N().S(` {
