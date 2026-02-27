@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// we give warnings for many fields of this kind
 type UseTrue struct {
 	Fm uint32
 	// A (TrueType) // Conditional: item.Fm.0

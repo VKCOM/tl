@@ -22,6 +22,7 @@ func (item UnionArgsXXX1Int) AsUnion() UnionArgsXXXInt {
 	return ret
 }
 
+//----- Unions
 type UnionArgsXXX1Int struct {
 	X []int32
 }

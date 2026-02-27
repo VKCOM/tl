@@ -332,6 +332,7 @@ func (item AbCounterChangeRequestPeriodsMany) AsUnion() AbCounterChangeRequestPe
 	return ret
 }
 
+// remove common prefix
 type AbCounterChangeRequestPeriodsMany struct {
 	ObjectsPeridos []int32
 }

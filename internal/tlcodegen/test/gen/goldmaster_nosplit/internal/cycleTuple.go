@@ -373,6 +373,7 @@ func BuiltinTupleCycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	return append(w, ']'), nil
 }
 
+// ban such things
 type CycleTuple struct {
 	N        uint32
 	Ns       uint32

@@ -18,6 +18,7 @@ type TestMaybe struct {
 	A IntMaybe
 	B IntBoxedMaybe
 	C VectorIntMaybe
+	// comment for d field
 	D TupleInt3Maybe
 	E TupleIntMaybe
 	F MaybeWrapperInt3

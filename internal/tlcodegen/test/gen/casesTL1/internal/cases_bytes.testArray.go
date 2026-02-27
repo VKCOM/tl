@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: Bytes vesrion
 type CasesBytesTestArray struct {
 	N   uint32
 	Arr []string
@@ -174,6 +175,7 @@ func (item *CasesBytesTestArray) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// BLOCK: Bytes vesrion
 type CasesBytesTestArrayBytes struct {
 	N   uint32
 	Arr [][]byte

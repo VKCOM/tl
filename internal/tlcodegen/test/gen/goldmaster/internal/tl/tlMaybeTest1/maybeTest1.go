@@ -31,6 +31,8 @@ type MaybeTest1 struct {
 	B tlIntBoxedMaybe.IntBoxedMaybe
 	C tlTupleInt3Maybe.TupleInt3Maybe
 	D tlTupleIntBoxed3Maybe.TupleIntBoxed3Maybe
+	// This comment is before field e
+	// Second line of comment before field e
 	E tlInnerMaybe.InnerMaybe
 	F tlInnerMaybe0.InnerMaybe0
 	G tlVectorIntMaybe.VectorIntMaybe

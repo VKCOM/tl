@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//----- Test Recursive types
 type MyNat struct {
 	FieldsMask uint32
 	A          *MyNat // Conditional: item.FieldsMask.0

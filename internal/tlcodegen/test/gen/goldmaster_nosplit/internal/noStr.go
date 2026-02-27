@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//---- test bytes version propagation
 type NoStr struct {
 	X int32
 }

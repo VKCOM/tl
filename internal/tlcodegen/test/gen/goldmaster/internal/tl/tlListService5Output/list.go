@@ -16,6 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//---- test recursive struct without union as result
 type ListService5Output struct {
 	Flag     uint32
 	Head     tlService5Output.Service5Output // Conditional: item.Flag.0

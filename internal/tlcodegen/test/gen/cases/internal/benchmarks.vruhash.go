@@ -13,6 +13,8 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: BENCHMARKS
+// We store xxh3 components in LE endianness, as common in TL
 type BenchmarksVruhash struct {
 	Low  int64
 	High int64

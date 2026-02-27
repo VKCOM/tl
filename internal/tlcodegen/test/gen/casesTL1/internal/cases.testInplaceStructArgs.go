@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: TEST INPLACING ARGUMENTS
 type CasesTestInplaceStructArgs struct {
 	A1  uint32
 	A2  uint32

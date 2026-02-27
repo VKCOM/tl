@@ -358,35 +358,21 @@ func (struct_ *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *Dire
 func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
-	if struct_.pureTypeStruct.Common().CommentBefore() != "" {
-		qw422016.N().S(`        `)
-		qw422016.N().S(struct_.pureTypeStruct.Common().CommentBefore())
-		qw422016.N().S(`
-`)
-	}
-	if struct_.pureTypeStruct.Common().CommentRight() != "" {
-		qw422016.N().S(`        `)
-		qw422016.N().S(struct_.pureTypeStruct.Common().CommentRight())
-		qw422016.N().S(`
-`)
-	}
+	qw422016.N().S(`    `)
+	qw422016.N().S(printCommentsType(struct_.pureTypeStruct))
+
 	if struct_.isTypeDef() {
 		asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		if struct_.Fields[0].pureField.CommentBefore() != "" {
-			qw422016.N().S(`        `)
-			qw422016.N().S(struct_.Fields[0].pureField.CommentBefore())
-			qw422016.N().S(`
-`)
-		}
+		qw422016.N().S(`    `)
+		qw422016.N().S(printCommentsField(struct_.Fields[0]))
+
 		qw422016.N().S(`type `)
 		qw422016.N().S(goName)
 		qw422016.N().S(` `)
 		qw422016.N().S(asterisk)
 		qw422016.N().S(fieldTypeString)
-		qw422016.N().S(` `)
-		qw422016.N().S(struct_.Fields[0].pureField.CommentRight())
 		qw422016.N().S(`
 `)
 		return
@@ -396,12 +382,9 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(` struct {
 `)
 	for _, field := range struct_.Fields {
-		if field.pureField.CommentBefore() != "" {
-			qw422016.N().S(`            `)
-			qw422016.N().S(field.pureField.CommentBefore())
-			qw422016.N().S(`
-`)
-		}
+		qw422016.N().S(`        `)
+		qw422016.N().S(printCommentsField(field))
+
 		if field.IsTL2Omitted() {
 			continue
 		}
@@ -427,7 +410,6 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		qw422016.N().S(` `)
 		qw422016.N().S(asterisk)
 		qw422016.N().S(fieldTypeString)
-		qw422016.N().S(field.pureField.CommentRight())
 		qw422016.N().S(fieldsMaskComment)
 		qw422016.N().S(`
 `)

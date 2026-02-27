@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: TEST UNIONS
 type CasesTestMaybe struct {
 	Value IntMaybe
 }

@@ -29,7 +29,10 @@ func (union *TypeRWUnion) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVer
 	union.streamgenerateEnumAlias(qw422016, bytesVersion)
 	qw422016.N().S(`
 
-type `)
+`)
+	qw422016.N().S(printCommentsType(union.wr.pureType))
+
+	qw422016.N().S(`type `)
 	qw422016.N().S(goName)
 	qw422016.N().S(` struct { `)
 	union.streamgenerateFields(qw422016, bytesVersion, directImports)

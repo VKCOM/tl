@@ -17,6 +17,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// combinator comment
 type NativeWrappers struct {
 	A int32
 	B int32

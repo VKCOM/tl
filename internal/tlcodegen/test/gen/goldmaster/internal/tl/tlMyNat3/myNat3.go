@@ -320,6 +320,7 @@ func (item MyPlus3) AsUnion() MyNat3 {
 	return ret
 }
 
+// typedef
 type MyPlus3 MyNat3
 
 func (MyPlus3) TLName() string { return "myPlus3" }

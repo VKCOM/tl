@@ -26,6 +26,7 @@ type TestMaybe struct {
 	A tlIntMaybe.IntMaybe
 	B tlIntBoxedMaybe.IntBoxedMaybe
 	C tlVectorIntMaybe.VectorIntMaybe
+	// comment for d field
 	D tlTupleInt3Maybe.TupleInt3Maybe
 	E tlTupleIntMaybe.TupleIntMaybe
 	F tlMaybeWrapperInt3.MaybeWrapperInt3

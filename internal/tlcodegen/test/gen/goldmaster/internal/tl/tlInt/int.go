@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//----- Test Multiple native wrappers
 type Int int32
 
 func (Int) TLName() string { return "int" }

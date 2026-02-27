@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//----- Test function calls to and from namespaces
 type TypeA struct {
 	X int32
 }

@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//----- Test function calls to and from namespaces
 type TypeA struct {
 	X int32
 }

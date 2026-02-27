@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// combinator comment
 type NativeWrappers struct {
 	A int32
 	B int32
