@@ -214,7 +214,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 	leftArgs []tlast.TL2TypeTemplate,
 	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
 
-	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 
 	if len(natParams) != 0 {
 		return nil, fmt.Errorf("internal error - TL2 struct %s has natparams %s", canonicalName, strings.Join(natParams, ","))
@@ -280,7 +280,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 
 // we want the same naming convention for nat params, as in old kernel,
 // though it has no difference to semantic and can be simplified to p0, p1, p2, etc.
-func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]string, prefix string) {
+func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]string, prefix string) {
 	if rt.IsNumber {
 		return
 	}
@@ -290,15 +290,15 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	}
 	if br := rt.Type.BracketType; br != nil {
 		if !br.HasIndex {
-			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
 			return
 		}
 		if br.IndexType.IsNumber {
-			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"n")
-			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+			k.fillNatParamFromArg(br.IndexType, natParams, prefix+"n")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
 		} else {
-			k.fillNatParamHybrid(br.IndexType, natParams, prefix+"k")
-			k.fillNatParamHybrid(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"v")
+			k.fillNatParamFromArg(br.IndexType, natParams, prefix+"k")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"v")
 		}
 		return
 	}
@@ -309,19 +309,19 @@ func (k *Kernel) fillNatParamHybrid(rt tlast.TL2TypeArgument, natParams *[]strin
 	}
 	for i, arg := range rt.Type.SomeType.Arguments {
 		leftArg := tip.combTL1[0].TemplateArguments[i]
-		k.fillNatParamHybrid(arg, natParams, prefix+leftArg.FieldName)
+		k.fillNatParamFromArg(arg, natParams, prefix+leftArg.FieldName)
 	}
 }
 
 // Collect nat params from type tree into linear array
-func (k *Kernel) getTL1ArgHybrid(arg tlast.TL2TypeArgument, targName string) (localArgs []LocalArgHybrid, natParams []string) {
+func (k *Kernel) fillLocalArg(arg tlast.TL2TypeArgument, targName string) (localArgs []LocalArg, natParams []string) {
 	var localNatParams []string
-	k.fillNatParamHybrid(arg, &localNatParams, targName)
+	k.fillNatParamFromArg(arg, &localNatParams, targName)
 	if len(localNatParams) == 1 {
 		localNatParams[0] = targName
 	}
 	natParams = append(natParams, localNatParams...)
-	localArg := LocalArgHybrid{
+	localArg := LocalArg{
 		wrongTypeErr: nil,
 		arg:          arg,
 	}
@@ -335,7 +335,7 @@ func (k *Kernel) getTL1ArgHybrid(arg tlast.TL2TypeArgument, targName string) (lo
 }
 
 // Collect nat params from type tree into linear array
-func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType2 tlast.TL2TypeRef) (localArgs []LocalArgHybrid, natParams []string) {
+func (k *Kernel) fillLocalArgs(leftArgs []tlast.TL2TypeTemplate, resolvedType2 tlast.TL2TypeRef) (localArgs []LocalArg, natParams []string) {
 	actualArgs := resolvedType2.SomeType.Arguments // empty if brackets
 	if br := resolvedType2.BracketType; br != nil {
 		if br.HasIndex {
@@ -345,7 +345,7 @@ func (k *Kernel) getTL1ArgsHybrid(leftArgs []tlast.TL2TypeTemplate, resolvedType
 	}
 	for i, arg := range actualArgs {
 		leftArg := leftArgs[i]
-		args, params := k.getTL1ArgHybrid(arg, leftArg.Name)
+		args, params := k.fillLocalArg(arg, leftArg.Name)
 		natParams = append(natParams, params...)
 		localArgs = append(localArgs, args...)
 	}
@@ -517,7 +517,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 	leftArgs := append([]tlast.TL2TypeTemplate{}, tip.templateArguments...) // prevent golang aliasing
 
-	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	ins := &TypeInstanceStruct{
@@ -648,11 +648,11 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				PR:       fieldDef.PR,
 			})
 			if fieldDef.FieldType.String() != "#" {
-				localArgs = append(localArgs, LocalArgHybrid{
+				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
 				})
 			} else {
-				localArgs = append(localArgs, LocalArgHybrid{
+				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
 					arg: tlast.TL2TypeArgument{
 						Type:        tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},

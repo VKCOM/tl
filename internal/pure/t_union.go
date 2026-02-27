@@ -125,7 +125,7 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	var natArgs []ActualNatArg
