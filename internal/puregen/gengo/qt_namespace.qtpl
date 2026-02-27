@@ -153,10 +153,8 @@ func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
          }
          tlName := wr.tlName.String()
     -%}
-    {%- if fun.pureTypeStruct.Common().CommentBefore() != "" -%}
-        {%s= fun.pureTypeStruct.Common().CommentBefore() %}
-    {%- endif -%}
-func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {{%s= fun.pureTypeStruct.Common().CommentRight() %}
+    {%s= printCommentsType(fun.pureTypeStruct) -%} {%- code -%}
+func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
     req := c.Client.GetRequest()
     req.ActorID = c.ActorID
     {%- if fun.wr.HasAnnotation("read") -%}
@@ -243,10 +241,8 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
                     ret = funcTypeString + "__Result"
                 }
             -%}
-    {%- if fun.pureTypeStruct.Common().CommentBefore() != "" -%}
-        {%s= fun.pureTypeStruct.Common().CommentBefore() %}
-    {%- endif -%}
-{%s= funcTypeString %} func(ctx context.Context, args {%s= funcTypeString %}) ({%s= ret %}, error) // {%s= tlName %} {%s= fun.pureTypeStruct.Common().CommentRight() %}
+    {%s= printCommentsType(fun.pureTypeStruct) -%} {%- code -%}
+{%s= funcTypeString %} func(ctx context.Context, args {%s= funcTypeString %}) ({%s= ret %}, error) // {%s= tlName %}
         {%- endif -%}
     {%- endfor -%}
 
