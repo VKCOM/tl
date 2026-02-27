@@ -20,17 +20,17 @@ func (DictionaryAnyIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyIntInt) Reset() {
 	ptr := (*map[int32]int32)(item)
-	BuiltinDictDictionaryAnyFieldIntIntReset(*ptr)
+	BuiltinDictIntIntReset(*ptr)
 }
 
 func (item *DictionaryAnyIntInt) FillRandom(rg *basictl.RandGenerator) {
 	ptr := (*map[int32]int32)(item)
-	BuiltinDictDictionaryAnyFieldIntIntFillRandom(rg, ptr)
+	BuiltinDictIntIntFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyIntInt) Read(w []byte) (_ []byte, err error) {
 	ptr := (*map[int32]int32)(item)
-	return BuiltinDictDictionaryAnyFieldIntIntRead(w, ptr)
+	return BuiltinDictIntIntRead(w, ptr)
 }
 
 func (item *DictionaryAnyIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -39,7 +39,7 @@ func (item *DictionaryAnyIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *DictionaryAnyIntInt) Write(w []byte) []byte {
 	ptr := (*map[int32]int32)(item)
-	return BuiltinDictDictionaryAnyFieldIntIntWrite(w, *ptr)
+	return BuiltinDictIntIntWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -68,7 +68,7 @@ func (item *DictionaryAnyIntInt) ReadJSON(legacyTypeNames bool, in *basictl.Json
 
 func (item *DictionaryAnyIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[int32]int32)(item)
-	if err := BuiltinDictDictionaryAnyFieldIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -86,7 +86,7 @@ func (item *DictionaryAnyIntInt) WriteJSON(w []byte) []byte {
 
 func (item *DictionaryAnyIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[int32]int32)(item)
-	w = BuiltinDictDictionaryAnyFieldIntIntWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictIntIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyIntInt) MarshalJSON() ([]byte, error) {
@@ -108,9 +108,9 @@ func (item *DictionaryAnyIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext
 	ptr := (*map[int32]int32)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictDictionaryAnyFieldIntIntCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictIntIntCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinDictDictionaryAnyFieldIntIntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictIntIntInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -123,7 +123,7 @@ func (item *DictionaryAnyIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext
 
 func (item *DictionaryAnyIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[int32]int32)(item)
-	if r, err = BuiltinDictDictionaryAnyFieldIntIntInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictIntIntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -133,24 +133,24 @@ func (item *DictionaryAnyIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 	return item.InternalReadTL2(r)
 }
 
-type DictionaryAnyIntIntBytes []DictionaryAnyFieldIntInt
+type DictionaryAnyIntIntBytes []DictFieldIntInt
 
 func (DictionaryAnyIntIntBytes) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyIntIntBytes) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyIntIntBytes) Reset() {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
+	ptr := (*[]DictFieldIntInt)(item)
 	*ptr = (*ptr)[:0]
 }
 
 func (item *DictionaryAnyIntIntBytes) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	BuiltinDictDictionaryAnyFieldIntIntBytesFillRandom(rg, ptr)
+	ptr := (*[]DictFieldIntInt)(item)
+	BuiltinDictIntIntBytesFillRandom(rg, ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	return BuiltinDictDictionaryAnyFieldIntIntBytesRead(w, ptr)
+	ptr := (*[]DictFieldIntInt)(item)
+	return BuiltinDictIntIntBytesRead(w, ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -158,8 +158,8 @@ func (item *DictionaryAnyIntIntBytes) WriteGeneral(w []byte) (_ []byte, err erro
 }
 
 func (item *DictionaryAnyIntIntBytes) Write(w []byte) []byte {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	return BuiltinDictDictionaryAnyFieldIntIntBytesWrite(w, *ptr)
+	ptr := (*[]DictFieldIntInt)(item)
+	return BuiltinDictIntIntBytesWrite(w, *ptr)
 }
 
 func (item *DictionaryAnyIntIntBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -187,8 +187,8 @@ func (item *DictionaryAnyIntIntBytes) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 func (item *DictionaryAnyIntIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	if err := BuiltinDictDictionaryAnyFieldIntIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	ptr := (*[]DictFieldIntInt)(item)
+	if err := BuiltinDictIntIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -205,8 +205,8 @@ func (item *DictionaryAnyIntIntBytes) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryAnyIntIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	w = BuiltinDictDictionaryAnyFieldIntIntBytesWriteJSONOpt(tctx, w, *ptr)
+	ptr := (*[]DictFieldIntInt)(item)
+	w = BuiltinDictIntIntBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyIntIntBytes) MarshalJSON() ([]byte, error) {
@@ -225,12 +225,12 @@ func (item *DictionaryAnyIntIntBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteCo
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
+	ptr := (*[]DictFieldIntInt)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictDictionaryAnyFieldIntIntBytesCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictIntIntBytesCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinDictDictionaryAnyFieldIntIntBytesInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictIntIntBytesInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -242,8 +242,8 @@ func (item *DictionaryAnyIntIntBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteCo
 }
 
 func (item *DictionaryAnyIntIntBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]DictionaryAnyFieldIntInt)(item)
-	if r, err = BuiltinDictDictionaryAnyFieldIntIntBytesInternalReadTL2(r, ptr); err != nil {
+	ptr := (*[]DictFieldIntInt)(item)
+	if r, err = BuiltinDictIntIntBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil

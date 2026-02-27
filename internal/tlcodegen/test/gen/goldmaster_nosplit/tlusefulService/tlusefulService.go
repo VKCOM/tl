@@ -12,8 +12,8 @@ import (
 )
 
 type (
+	DictFieldStringUserEntityPaymentItemBoxed      = internal.DictFieldStringUsefulServiceUserEntityPaymentItemBoxed
 	DictionaryBoxedUserEntityPaymentItemBoxedMaybe = internal.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
-	DictionaryFieldUserEntityPaymentItemBoxed      = internal.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
 	DictionaryUserEntityPaymentItemBoxed           = internal.DictionaryUsefulServiceUserEntityPaymentItemBoxed
 	GetUserEntity                                  = internal.UsefulServiceGetUserEntity
 	GetUserEntityResult                            = internal.UsefulServiceGetUserEntityResult

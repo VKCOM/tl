@@ -20,17 +20,17 @@ func (LongKeyDictionaryTupleString) TLTag() uint32  { return 0xb424d8f1 }
 
 func (item *LongKeyDictionaryTupleString) Reset() {
 	ptr := (*map[int64][]string)(item)
-	BuiltinDictLongKeyDictionaryFieldTupleStringReset(*ptr)
+	BuiltinDictLongTupleStringReset(*ptr)
 }
 
 func (item *LongKeyDictionaryTupleString) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
 	ptr := (*map[int64][]string)(item)
-	BuiltinDictLongKeyDictionaryFieldTupleStringFillRandom(rg, ptr, nat_t)
+	BuiltinDictLongTupleStringFillRandom(rg, ptr, nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[int64][]string)(item)
-	return BuiltinDictLongKeyDictionaryFieldTupleStringRead(w, ptr, nat_t)
+	return BuiltinDictLongTupleStringRead(w, ptr, nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -39,7 +39,7 @@ func (item *LongKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (
 
 func (item *LongKeyDictionaryTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[int64][]string)(item)
-	return BuiltinDictLongKeyDictionaryFieldTupleStringWrite(w, *ptr, nat_t)
+	return BuiltinDictLongTupleStringWrite(w, *ptr, nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -60,7 +60,7 @@ func (item *LongKeyDictionaryTupleString) WriteBoxed(w []byte, nat_t uint32) (_ 
 
 func (item *LongKeyDictionaryTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	ptr := (*map[int64][]string)(item)
-	if err := BuiltinDictLongKeyDictionaryFieldTupleStringReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+	if err := BuiltinDictLongTupleStringReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -78,7 +78,7 @@ func (item *LongKeyDictionaryTupleString) WriteJSON(w []byte, nat_t uint32) (_ [
 
 func (item *LongKeyDictionaryTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[int64][]string)(item)
-	if w, err = BuiltinDictLongKeyDictionaryFieldTupleStringWriteJSONOpt(tctx, w, *ptr, nat_t); err != nil {
+	if w, err = BuiltinDictLongTupleStringWriteJSONOpt(tctx, w, *ptr, nat_t); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -92,9 +92,9 @@ func (item *LongKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2Wri
 	ptr := (*map[int64][]string)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictLongKeyDictionaryFieldTupleStringCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictLongTupleStringCalculateLayout(sizes, false, ptr)
 	currentSize += sz
-	w, sizes, _ = BuiltinDictLongKeyDictionaryFieldTupleStringInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictLongTupleStringInternalWriteTL2(w, sizes, false, ptr)
 
 	Unused(ptr)
 	Unused(currentSize)
@@ -107,7 +107,7 @@ func (item *LongKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2Wri
 
 func (item *LongKeyDictionaryTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[int64][]string)(item)
-	if r, err = BuiltinDictLongKeyDictionaryFieldTupleStringInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictLongTupleStringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil

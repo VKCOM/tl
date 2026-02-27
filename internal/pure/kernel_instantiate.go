@@ -43,7 +43,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 			if br.IndexType.IsNumber || br.IndexType.Type.String() == "*" {
 				ref.ins, err = k.createTupleTL1(canonicalName, tr)
 			} else {
-				panic("TODO - dict2")
+				ref.ins, err = k.createDict(canonicalName, tr)
 			}
 		} else {
 			ref.ins, err = k.createVectorTL1(canonicalName, tr)
@@ -109,9 +109,6 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	case tName == "__dict":
 		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
 		ref.ins, err = k.createDictTL1(canonicalName, kt, tr)
-	case tName == "__dict2":
-		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
-		ref.ins, err = k.createDict(canonicalName, kt, tr)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
 	case len(kt.combTL1) == 1:

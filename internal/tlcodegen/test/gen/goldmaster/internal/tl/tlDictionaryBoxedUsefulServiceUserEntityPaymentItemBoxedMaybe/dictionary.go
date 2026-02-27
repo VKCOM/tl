@@ -9,7 +9,7 @@ package tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceUserEntityPaymentItem"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -28,7 +28,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Reset()
 func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
 	if basictl.RandomUint(rg)&1 == 1 {
 		item.Ok = true
-		tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
+		tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, &item.Value, nat_t)
 	} else {
 		item.Ok = false
 	}
@@ -42,7 +42,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadBox
 		if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 			return w, err
 		}
-		return tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
+		return tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w, &item.Value, nat_t)
 	}
 	return w, nil
 }
@@ -55,7 +55,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteBo
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		w = basictl.NatWrite(w, 0x1f4c618f)
-		return tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
+		return tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w, item.Value, nat_t)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }
@@ -77,7 +77,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Calcula
 	currentSize += basictl.TL2CalculateSize(1)
 	lastUsedByte = currentSize
 
-	if sizes, sz = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
+	if sizes, sz = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -110,7 +110,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Interna
 
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
-	if w, sizes, sz = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+	if w, sizes, sz = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
 		currentBlock |= 2
 	}
 	w[currentBlockPosition] = currentBlock
@@ -157,11 +157,11 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Interna
 	}
 
 	if block&2 != 0 {
-		if currentR, err = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
+		if currentR, err = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(currentR, &item.Value); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
+		tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReset(item.Value)
 	}
 	return r, nil
 }
@@ -178,7 +178,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSO
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -201,7 +201,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJS
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = tlBuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
+		w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }

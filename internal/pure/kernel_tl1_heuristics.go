@@ -7,6 +7,7 @@
 package pure
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -22,29 +23,61 @@ func (k *Kernel) IsTrueType2(rt tlast.TL2TypeRef) bool {
 	return rt.String() == "true" || rt.String() == "True"
 }
 
-func (k *Kernel) IsDict(kt *KernelType) (bool, *KernelType) {
+func (k *Kernel) IsDictWrapper(kt *KernelType, resolvedType tlast.TL2TypeRef) (bool, tlast.TL2TypeArgument, tlast.TL2TypeRef, error) {
+	//dictionaryField {t:Type} key:string value:t = DictionaryField t;
+	//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
+	//
+	//dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
+	//dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
+	//
+	//intKeyDictionaryField {t:Type} key:int value:t = IntKeyDictionaryField t;
+	//intKeyDictionary#07bafc42 {t:Type} %(Vector %(intKeyDictionaryField t)) = IntKeyDictionary t;
+	//
+	// when instantiating those wrappers (structs), we detect they are dict wrappers, so
+	// instantiate their first field as Dict<K,V> and set their isUnwrapped to true
 	if kt.originTL2 || len(kt.combTL1) != 1 ||
 		!strings.Contains(strings.ToLower(kt.canonicalName.Name), "dictionary") {
-		return false, nil
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
 	}
+	// we do not check for len(kt.combTL1[0].Fields) != 1, because it could be dict # [] = Dict;
 	fieldT, fieldOk := k.tips[kt.canonicalName.String()+"Field"]
 	if !fieldOk || fieldT.originTL2 || len(fieldT.combTL1) != 1 {
-		return false, nil
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
 	}
 	if len(fieldT.combTL1[0].TemplateArguments) == 0 ||
 		len(fieldT.combTL1[0].TemplateArguments) > 2 ||
 		len(fieldT.combTL1[0].TemplateArguments) != len(kt.combTL1[0].TemplateArguments) ||
 		len(fieldT.combTL1[0].Fields) != 2 {
-		return false, nil
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
 	}
+	targs := kt.combTL1[0].TemplateArguments
 	// This only checks some type properties, they are enough for us for now
-	for i, targ := range kt.combTL1[0].TemplateArguments {
+	for i, targ := range targs {
 		farg := fieldT.combTL1[0].TemplateArguments[i]
 		if targ.IsNat || farg.IsNat || targ.FieldName != farg.FieldName {
-			return false, nil
+			return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
 		}
 	}
-	return true, fieldT
+	if resolvedType.IsBracket() {
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, resolvedType.PR.BeautifulError(errors.New("internal error - Dict resolved type is bracket type"))
+	}
+	if len(resolvedType.SomeType.Arguments) != len(targs) {
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, resolvedType.PR.BeautifulError(errors.New("internal error - Dict mismatch of type arguments"))
+	}
+	fieldKeyType := k.convertTypeRef(fieldT.combTL1[0].Fields[0].FieldType)
+	keyRT := tlast.TL2TypeArgument{Type: fieldKeyType, PR: fieldKeyType.PR}
+	elemRT := resolvedType.SomeType.Arguments[0]
+	if len(targs) == 2 {
+		keyRT = resolvedType.SomeType.Arguments[0]
+		elemRT = resolvedType.SomeType.Arguments[1]
+	}
+	if keyRT.IsNumber {
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, resolvedType.PR.BeautifulError(fmt.Errorf("dictionary key cannot be number %d", keyRT.Number))
+	}
+	if elemRT.IsNumber {
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, resolvedType.PR.BeautifulError(fmt.Errorf("dictionary value cannot be number %d", elemRT.Number))
+	}
+	return true, keyRT, elemRT.Type, nil
 }
 
 func (k *Kernel) VariantNames(definition []*tlast.Combinator) ([]string, error) {

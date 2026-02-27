@@ -697,7 +697,7 @@ func (item *CurlResponseOk) IsSetHttpBody() bool { return item.tl2mask0&1 != 0 }
 func (item *CurlResponseOk) Reset() {
 	item.FieldMask = 0
 	item.HttpCode = 0
-	BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+	BuiltinDictStringStringReset(item.HttpHeaders)
 	item.HttpBody = ""
 	item.tl2mask0 = 0
 }
@@ -706,7 +706,7 @@ func (item *CurlResponseOk) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.FieldMask = basictl.RandomFieldMask(rg, 0b1)
 	item.HttpCode = basictl.RandomInt(rg)
-	BuiltinDictDictionaryFieldStringFillRandom(rg, &item.HttpHeaders)
+	BuiltinDictStringStringFillRandom(rg, &item.HttpHeaders)
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		item.HttpBody = basictl.RandomString(rg)
@@ -734,7 +734,7 @@ func (item *CurlResponseOk) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.HttpCode); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictDictionaryFieldStringRead(w, &item.HttpHeaders); err != nil {
+	if w, err = BuiltinDictStringStringRead(w, &item.HttpHeaders); err != nil {
 		return w, err
 	}
 	if item.FieldMask&(1<<0) != 0 {
@@ -755,7 +755,7 @@ func (item *CurlResponseOk) WriteGeneral(w []byte) (_ []byte, err error) {
 func (item *CurlResponseOk) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.IntWrite(w, item.HttpCode)
-	w = BuiltinDictDictionaryFieldStringWrite(w, item.HttpHeaders)
+	w = BuiltinDictStringStringWrite(w, item.HttpHeaders)
 	if item.FieldMask&(1<<0) != 0 {
 		w = basictl.StringWrite(w, item.HttpBody)
 	}
@@ -822,7 +822,7 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propHttpHeadersPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_headers")
 				}
-				if err := BuiltinDictDictionaryFieldStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
+				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
 					return err
 				}
 				propHttpHeadersPresented = true
@@ -851,7 +851,7 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		item.HttpCode = 0
 	}
 	if !propHttpHeadersPresented {
-		BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+		BuiltinDictStringStringReset(item.HttpHeaders)
 	}
 	if !propHttpBodyPresented {
 		item.HttpBody = ""
@@ -893,7 +893,7 @@ func (item *CurlResponseOk) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexHttpHeaders := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"http_headers":`...)
-	w = BuiltinDictDictionaryFieldStringWriteJSONOpt(tctx, w, item.HttpHeaders)
+	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, item.HttpHeaders)
 	if (len(item.HttpHeaders) != 0) == false {
 		w = w[:backupIndexHttpHeaders]
 	}
@@ -933,7 +933,7 @@ func (item *CurlResponseOk) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
-	if sizes, sz = BuiltinDictDictionaryFieldStringCalculateLayout(sizes, true, &item.HttpHeaders); sz != 0 {
+	if sizes, sz = BuiltinDictStringStringCalculateLayout(sizes, true, &item.HttpHeaders); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -982,7 +982,7 @@ func (item *CurlResponseOk) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 		w = basictl.IntWrite(w, item.HttpCode)
 		currentBlock |= 4
 	}
-	if w, sizes, sz = BuiltinDictDictionaryFieldStringInternalWriteTL2(w, sizes, true, &item.HttpHeaders); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringStringInternalWriteTL2(w, sizes, true, &item.HttpHeaders); sz != 0 {
 		currentBlock |= 8
 	}
 	if item.tl2mask0&1 != 0 {
@@ -1033,11 +1033,11 @@ func (item *CurlResponseOk) InternalReadTL2(r []byte, block byte) (_ []byte, err
 		item.HttpCode = 0
 	}
 	if block&8 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldStringInternalReadTL2(currentR, &item.HttpHeaders); err != nil {
+		if currentR, err = BuiltinDictStringStringInternalReadTL2(currentR, &item.HttpHeaders); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryFieldStringReset(item.HttpHeaders)
+		BuiltinDictStringStringReset(item.HttpHeaders)
 	}
 	if block&16 != 0 {
 		item.tl2mask0 |= 1

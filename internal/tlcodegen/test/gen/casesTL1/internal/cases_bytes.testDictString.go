@@ -21,15 +21,15 @@ func (CasesBytesTestDictString) TLName() string { return "cases_bytes.testDictSt
 func (CasesBytesTestDictString) TLTag() uint32  { return 0x6c04d6ce }
 
 func (item *CasesBytesTestDictString) Reset() {
-	BuiltinDictDictionaryFieldIntReset(item.Dict)
+	BuiltinDictStringIntReset(item.Dict)
 }
 
 func (item *CasesBytesTestDictString) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinDictDictionaryFieldIntFillRandom(rg, &item.Dict)
+	BuiltinDictStringIntFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictString) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictDictionaryFieldIntRead(w, &item.Dict)
+	return BuiltinDictStringIntRead(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,7 +37,7 @@ func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err erro
 }
 
 func (item *CasesBytesTestDictString) Write(w []byte) []byte {
-	w = BuiltinDictDictionaryFieldIntWrite(w, item.Dict)
+	w = BuiltinDictStringIntWrite(w, item.Dict)
 	return w
 }
 
@@ -82,7 +82,7 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
-				if err := BuiltinDictDictionaryFieldIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -97,7 +97,7 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 		}
 	}
 	if !propDictPresented {
-		BuiltinDictDictionaryFieldIntReset(item.Dict)
+		BuiltinDictStringIntReset(item.Dict)
 	}
 	return nil
 }
@@ -116,7 +116,7 @@ func (item *CasesBytesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContex
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictDictionaryFieldIntWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -135,7 +135,7 @@ func (item *CasesBytesTestDictString) UnmarshalJSON(b []byte) error {
 }
 
 type CasesBytesTestDictStringBytes struct {
-	Dict []DictionaryFieldIntBytes
+	Dict []DictFieldStringIntBytes
 }
 
 func (CasesBytesTestDictStringBytes) TLName() string { return "cases_bytes.testDictString" }
@@ -146,11 +146,11 @@ func (item *CasesBytesTestDictStringBytes) Reset() {
 }
 
 func (item *CasesBytesTestDictStringBytes) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinDictDictionaryFieldIntBytesFillRandom(rg, &item.Dict)
+	BuiltinDictStringIntBytesFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictStringBytes) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictDictionaryFieldIntBytesRead(w, &item.Dict)
+	return BuiltinDictStringIntBytesRead(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -158,7 +158,7 @@ func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err
 }
 
 func (item *CasesBytesTestDictStringBytes) Write(w []byte) []byte {
-	w = BuiltinDictDictionaryFieldIntBytesWrite(w, item.Dict)
+	w = BuiltinDictStringIntBytesWrite(w, item.Dict)
 	return w
 }
 
@@ -203,7 +203,7 @@ func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
-				if err := BuiltinDictDictionaryFieldIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -237,7 +237,7 @@ func (item *CasesBytesTestDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteC
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictDictionaryFieldIntBytesWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntBytesWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}

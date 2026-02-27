@@ -8,8 +8,8 @@
 package tlusefulService
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictFieldStringUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUsefulServiceGetUserEntityResultBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe"
@@ -20,8 +20,8 @@ import (
 )
 
 type (
+	DictFieldStringUserEntityPaymentItemBoxed      = tlDictFieldStringUsefulServiceUserEntityPaymentItemBoxed.DictFieldStringUsefulServiceUserEntityPaymentItemBoxed
 	DictionaryBoxedUserEntityPaymentItemBoxedMaybe = tlDictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe.DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe
-	DictionaryFieldUserEntityPaymentItemBoxed      = tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
 	DictionaryUserEntityPaymentItemBoxed           = tlDictionaryUsefulServiceUserEntityPaymentItemBoxed.DictionaryUsefulServiceUserEntityPaymentItemBoxed
 	GetUserEntity                                  = tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity
 	GetUserEntityResult                            = tlUsefulServiceGetUserEntityResult.UsefulServiceGetUserEntityResult

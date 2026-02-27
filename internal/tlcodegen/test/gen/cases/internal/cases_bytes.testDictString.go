@@ -21,15 +21,15 @@ func (CasesBytesTestDictString) TLName() string { return "cases_bytes.testDictSt
 func (CasesBytesTestDictString) TLTag() uint32  { return 0x6c04d6ce }
 
 func (item *CasesBytesTestDictString) Reset() {
-	BuiltinDictDictionaryFieldIntReset(item.Dict)
+	BuiltinDictStringIntReset(item.Dict)
 }
 
 func (item *CasesBytesTestDictString) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinDictDictionaryFieldIntFillRandom(rg, &item.Dict)
+	BuiltinDictStringIntFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictString) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictDictionaryFieldIntRead(w, &item.Dict)
+	return BuiltinDictStringIntRead(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,7 +37,7 @@ func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err erro
 }
 
 func (item *CasesBytesTestDictString) Write(w []byte) []byte {
-	w = BuiltinDictDictionaryFieldIntWrite(w, item.Dict)
+	w = BuiltinDictStringIntWrite(w, item.Dict)
 	return w
 }
 
@@ -82,7 +82,7 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
-				if err := BuiltinDictDictionaryFieldIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -97,7 +97,7 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 		}
 	}
 	if !propDictPresented {
-		BuiltinDictDictionaryFieldIntReset(item.Dict)
+		BuiltinDictStringIntReset(item.Dict)
 	}
 	return nil
 }
@@ -116,7 +116,7 @@ func (item *CasesBytesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContex
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictDictionaryFieldIntWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -143,7 +143,7 @@ func (item *CasesBytesTestDictString) CalculateLayout(sizes []int, optimizeEmpty
 	lastUsedByte := 0
 	var sz int
 
-	if sizes, sz = BuiltinDictDictionaryFieldIntCalculateLayout(sizes, true, &item.Dict); sz != 0 {
+	if sizes, sz = BuiltinDictStringIntCalculateLayout(sizes, true, &item.Dict); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -180,7 +180,7 @@ func (item *CasesBytesTestDictString) InternalWriteTL2(w []byte, sizes []int, op
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	if w, sizes, sz = BuiltinDictDictionaryFieldIntInternalWriteTL2(w, sizes, true, &item.Dict); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringIntInternalWriteTL2(w, sizes, true, &item.Dict); sz != 0 {
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
@@ -240,11 +240,11 @@ func (item *CasesBytesTestDictString) InternalReadTL2(r []byte) (_ []byte, err e
 		}
 	}
 	if block&2 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldIntInternalReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = BuiltinDictStringIntInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinDictDictionaryFieldIntReset(item.Dict)
+		BuiltinDictStringIntReset(item.Dict)
 	}
 	Unused(currentR)
 	return r, nil
@@ -255,7 +255,7 @@ func (item *CasesBytesTestDictString) ReadTL2(r []byte, ctx *basictl.TL2ReadCont
 }
 
 type CasesBytesTestDictStringBytes struct {
-	Dict []DictionaryFieldIntBytes
+	Dict []DictFieldStringIntBytes
 }
 
 func (CasesBytesTestDictStringBytes) TLName() string { return "cases_bytes.testDictString" }
@@ -266,11 +266,11 @@ func (item *CasesBytesTestDictStringBytes) Reset() {
 }
 
 func (item *CasesBytesTestDictStringBytes) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinDictDictionaryFieldIntBytesFillRandom(rg, &item.Dict)
+	BuiltinDictStringIntBytesFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictStringBytes) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictDictionaryFieldIntBytesRead(w, &item.Dict)
+	return BuiltinDictStringIntBytesRead(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -278,7 +278,7 @@ func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err
 }
 
 func (item *CasesBytesTestDictStringBytes) Write(w []byte) []byte {
-	w = BuiltinDictDictionaryFieldIntBytesWrite(w, item.Dict)
+	w = BuiltinDictStringIntBytesWrite(w, item.Dict)
 	return w
 }
 
@@ -323,7 +323,7 @@ func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
-				if err := BuiltinDictDictionaryFieldIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -357,7 +357,7 @@ func (item *CasesBytesTestDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteC
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictDictionaryFieldIntBytesWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntBytesWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -384,7 +384,7 @@ func (item *CasesBytesTestDictStringBytes) CalculateLayout(sizes []int, optimize
 	lastUsedByte := 0
 	var sz int
 
-	if sizes, sz = BuiltinDictDictionaryFieldIntBytesCalculateLayout(sizes, true, &item.Dict); sz != 0 {
+	if sizes, sz = BuiltinDictStringIntBytesCalculateLayout(sizes, true, &item.Dict); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -421,7 +421,7 @@ func (item *CasesBytesTestDictStringBytes) InternalWriteTL2(w []byte, sizes []in
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	if w, sizes, sz = BuiltinDictDictionaryFieldIntBytesInternalWriteTL2(w, sizes, true, &item.Dict); sz != 0 {
+	if w, sizes, sz = BuiltinDictStringIntBytesInternalWriteTL2(w, sizes, true, &item.Dict); sz != 0 {
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
@@ -481,7 +481,7 @@ func (item *CasesBytesTestDictStringBytes) InternalReadTL2(r []byte) (_ []byte, 
 		}
 	}
 	if block&2 != 0 {
-		if currentR, err = BuiltinDictDictionaryFieldIntBytesInternalReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = BuiltinDictStringIntBytesInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {

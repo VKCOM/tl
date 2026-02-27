@@ -21,15 +21,15 @@ func (CasesTestDictString) TLName() string { return "cases.testDictString" }
 func (CasesTestDictString) TLTag() uint32  { return 0xc463c79b }
 
 func (item *CasesTestDictString) Reset() {
-	BuiltinDictDictionaryFieldIntReset(item.Dict)
+	BuiltinDictStringIntReset(item.Dict)
 }
 
 func (item *CasesTestDictString) FillRandom(rg *basictl.RandGenerator) {
-	BuiltinDictDictionaryFieldIntFillRandom(rg, &item.Dict)
+	BuiltinDictStringIntFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesTestDictString) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictDictionaryFieldIntRead(w, &item.Dict)
+	return BuiltinDictStringIntRead(w, &item.Dict)
 }
 
 func (item *CasesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,7 +37,7 @@ func (item *CasesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestDictString) Write(w []byte) []byte {
-	w = BuiltinDictDictionaryFieldIntWrite(w, item.Dict)
+	w = BuiltinDictStringIntWrite(w, item.Dict)
 	return w
 }
 
@@ -82,7 +82,7 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testDictString", "dict")
 				}
-				if err := BuiltinDictDictionaryFieldIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -97,7 +97,7 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 		}
 	}
 	if !propDictPresented {
-		BuiltinDictDictionaryFieldIntReset(item.Dict)
+		BuiltinDictStringIntReset(item.Dict)
 	}
 	return nil
 }
@@ -116,7 +116,7 @@ func (item *CasesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictDictionaryFieldIntWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}

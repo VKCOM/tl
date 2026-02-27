@@ -565,7 +565,7 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s=
     {%- endif -%}
 }
                 {%- else -%}
-func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)

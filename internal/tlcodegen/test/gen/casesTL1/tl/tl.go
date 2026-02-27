@@ -12,14 +12,14 @@ import (
 )
 
 type (
+	DictFieldIntInt                                                    = internal.DictFieldIntInt
+	DictFieldStringInt                                                 = internal.DictFieldStringInt
+	DictFieldStringIntBytes                                            = internal.DictFieldStringIntBytes
+	DictFieldStringString                                              = internal.DictFieldStringString
+	DictFieldStringStringBytes                                         = internal.DictFieldStringStringBytes
 	DictionaryAnyFieldDoubleInt                                        = internal.DictionaryAnyFieldDoubleInt
-	DictionaryAnyFieldIntInt                                           = internal.DictionaryAnyFieldIntInt
 	DictionaryAnyIntInt                                                = internal.DictionaryAnyIntInt
 	DictionaryAnyIntIntBytes                                           = internal.DictionaryAnyIntIntBytes
-	DictionaryFieldInt                                                 = internal.DictionaryFieldInt
-	DictionaryFieldIntBytes                                            = internal.DictionaryFieldIntBytes
-	DictionaryFieldString                                              = internal.DictionaryFieldString
-	DictionaryFieldStringBytes                                         = internal.DictionaryFieldStringBytes
 	DictionaryInt                                                      = internal.DictionaryInt
 	DictionaryIntBytes                                                 = internal.DictionaryIntBytes
 	DictionaryString                                                   = internal.DictionaryString
