@@ -581,7 +581,13 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 			state.Inherit(localState)
 			return
 		}
+
+		commentStart := restTokens
+		if restTokens.skipToNewline() {
+			result.CommentRight = parseCommentRight(commentStart, restTokens)
+		}
 	}
+
 	result.PR.End = restTokens.front().pos
 	return
 }
