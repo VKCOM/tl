@@ -204,9 +204,9 @@ func (item *`)
 		qw422016.N().S(`    return item.Write(w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)`)
-		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
-		qw422016.N().S(`
-`)
+		if !writeNeedsError {
+			qw422016.N().S(`, nil`)
+		}
 	}
 	qw422016.N().S(`}
 
@@ -257,9 +257,9 @@ func (item *`)
 			qw422016.N().S(`    return item.WriteBoxed(w`)
 			qw422016.N().S(natArgsCall)
 			qw422016.N().S(`)`)
-			qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
-			qw422016.N().S(`
-`)
+			if !writeNeedsError {
+				qw422016.N().S(`, nil`)
+			}
 		}
 		qw422016.N().S(`}
 
@@ -705,9 +705,10 @@ func (item *`)
     return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)`)
-		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
-		qw422016.N().S(`
-}
+		if !writeNeedsError {
+			qw422016.N().S(`, nil`)
+		}
+		qw422016.N().S(`}
 
 func (item *`)
 		qw422016.N().S(goName)
@@ -736,9 +737,10 @@ func (item *`)
 		qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError))
 		qw422016.N().S(`
     return w`)
-		qw422016.N().S(ifString(writeNeedsError, ", nil", ""))
-		qw422016.N().S(`
-}
+		if writeNeedsError {
+			qw422016.N().S(`, nil`)
+		}
+		qw422016.N().S(`}
 `)
 	} else {
 		// Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required
@@ -757,9 +759,10 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) MarshalJSON() ([]byte, error) {
       return item.WriteJSON(nil)`)
-		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
-		qw422016.N().S(`
-}
+		if !writeNeedsError {
+			qw422016.N().S(`, nil`)
+		}
+		qw422016.N().S(`}
 
 func (item *`)
 		qw422016.N().S(goName)
@@ -1349,9 +1352,10 @@ func (item *`)
     return item.WriteJSONOpt(tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)`)
-	qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
-	qw422016.N().S(`
-}
+	if !writeNeedsError {
+		qw422016.N().S(`, nil`)
+	}
+	qw422016.N().S(`}
 
 func (item *`)
 	qw422016.N().S(goName)
@@ -1499,9 +1503,10 @@ func (item *`)
 		}
 	}
 	qw422016.N().S(`    return append(w, '}')`)
-	qw422016.N().S(ifString(writeNeedsError, ", nil", ""))
-	qw422016.N().S(`
-}
+	if writeNeedsError {
+		qw422016.N().S(`, nil`)
+	}
+	qw422016.N().S(`}
 `)
 }
 

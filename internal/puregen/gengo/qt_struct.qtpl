@@ -88,7 +88,7 @@ func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte,
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    return item.Write(w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
+    return item.Write(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
     {%- endif -%}
 }
 
@@ -110,7 +110,7 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    return item.WriteBoxed(w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
+    return item.WriteBoxed(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
     {%- endif -%}
 }
 
@@ -331,7 +331,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 
 // This method is general version of WriteJSON, use it instead!
 func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -342,7 +342,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
-    return w{%s= ifString(writeNeedsError,", nil", "") %}
+    return w{%- if writeNeedsError -%}, nil{%- endif -%}
 }
     {%- else -%}
         {%- code
@@ -354,7 +354,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
     {%- endif -%}
     {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
-      return item.WriteJSON(nil){%s= ifString(!writeNeedsError,", nil", "") %}
+      return item.WriteJSON(nil){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
 
 func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
@@ -629,7 +629,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 
 // This method is general version of WriteJSON, use it instead!
 func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%s= ifString(!writeNeedsError,", nil", "") %}
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -682,6 +682,9 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
 
 {"fields_mask":1024} // we do not want this, as it is hard to say "pre_vote_demote" is set
 {"fields_mask":1024, "pre_vote_demote": ""} // we want this, viewer knows immediately that "pre_vote_demote" is set
+
+also, below, we need to use backupIndex, because there is tuples, which must be checked for size,
+so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
 {% endcomment -%}
             {%- if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
                 backupIndex{%s= field.goName %} := len(w)
@@ -700,7 +703,7 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
         {%- endif -%}
     {%- endif -%}
     {%- endfor -%}
-    return append(w, '}'){%s= ifString(writeNeedsError,", nil", "") %}
+    return append(w, '}'){%- if writeNeedsError -%}, nil{%- endif -%}
 }
 {%- endfunc -%}
 
