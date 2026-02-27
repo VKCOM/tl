@@ -106,9 +106,6 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 		return ref, bare, nil
 	}
 	switch {
-	case tName == "__dict":
-		// fmt.Printf("creating an instance of dictionary type %s\n", canonicalName)
-		ref.ins, err = k.createDictTL1(canonicalName, kt, tr)
 	case len(kt.combTL1) > 1:
 		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
 	case len(kt.combTL1) == 1:
