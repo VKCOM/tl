@@ -183,6 +183,7 @@ func BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	return append(w, ']')
 }
 
+//----- Test Recursive between namespaces
 type Cyc1MyCycle struct {
 	FieldsMask uint32
 	A          Cyc2MyCycle // Conditional: item.FieldsMask.0

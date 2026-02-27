@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//----- Test Dependent types
 type AInner struct {
 	A []int32
 }
@@ -244,6 +245,7 @@ func (item *AInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 	return item.InternalReadTL2(r)
 }
 
+//----- Test Dependent types
 type AInner3 struct {
 	A [3]int32
 }

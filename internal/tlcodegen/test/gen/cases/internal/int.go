@@ -819,6 +819,7 @@ func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec 
 	return append(w, ']')
 }
 
+// BASE TYPES
 type Int int32
 
 func (Int) TLName() string { return "int" }

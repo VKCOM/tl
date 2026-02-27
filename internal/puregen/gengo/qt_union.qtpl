@@ -12,6 +12,7 @@
     -%}
 {%= union.generateEnumAlias(bytesVersion) %}
 
+{%s= printCommentsType(union.wr.pureType) -%} {%- code -%}
 type {%s= goName %} struct { {%= union.generateFields(bytesVersion, directImports) %} }
 
 func (item {%s= goName %}) TLName() string { return _{%s= addBytes(union.wr.goGlobalName, false) %}[item.index].TLName }

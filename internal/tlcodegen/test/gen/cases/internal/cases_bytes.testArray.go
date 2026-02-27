@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: Bytes vesrion
 type CasesBytesTestArray struct {
 	N   uint32
 	Arr []string
@@ -309,6 +310,7 @@ func (item *CasesBytesTestArray) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 	return item.InternalReadTL2(r)
 }
 
+// BLOCK: Bytes vesrion
 type CasesBytesTestArrayBytes struct {
 	N   uint32
 	Arr [][]byte

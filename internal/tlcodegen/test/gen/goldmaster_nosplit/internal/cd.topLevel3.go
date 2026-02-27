@@ -13,6 +13,8 @@ import (
 
 var _ = basictl.NatWrite
 
+// comment for TopLevel3
+// also comment for TopLevel3
 type CdTopLevel3 struct {
 	A UseStr
 	B HalfStr

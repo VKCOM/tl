@@ -23,6 +23,9 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Multiline comment before combinator
+//----- Test Multiple native wrappers
+//
 type MultiPoint struct {
 	A [3]int32
 	B [3]int32

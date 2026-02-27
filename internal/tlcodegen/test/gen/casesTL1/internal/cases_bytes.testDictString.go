@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// will be map
 type CasesBytesTestDictString struct {
 	Dict map[string]int32
 }
@@ -134,6 +135,7 @@ func (item *CasesBytesTestDictString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// will be map
 type CasesBytesTestDictStringBytes struct {
 	Dict []DictFieldStringIntBytes
 }

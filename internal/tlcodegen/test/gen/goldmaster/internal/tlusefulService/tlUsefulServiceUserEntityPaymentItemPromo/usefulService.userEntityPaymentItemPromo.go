@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//----- Test Dictionaries
 type UsefulServiceUserEntityPaymentItemPromo struct {
 	Content string
 }

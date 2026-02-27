@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: TEST RECURSIVE TYPES
 type CasesMyCycle1 struct {
 	FieldsMask uint32
 	A          *CasesMyCycle2 // Conditional: item.FieldsMask.0

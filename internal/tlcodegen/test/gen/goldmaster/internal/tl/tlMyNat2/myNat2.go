@@ -320,6 +320,7 @@ func (item MyPlus) AsUnion() MyNat2 {
 	return ret
 }
 
+// struct with field
 type MyPlus struct {
 	A MyNat2
 }

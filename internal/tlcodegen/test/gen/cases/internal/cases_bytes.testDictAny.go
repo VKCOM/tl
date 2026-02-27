@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// will be array of tuples
 type CasesBytesTestDictAny struct {
 	Dict []DictionaryAnyFieldDoubleInt
 }

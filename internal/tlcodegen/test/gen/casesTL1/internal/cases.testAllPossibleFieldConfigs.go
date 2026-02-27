@@ -16,17 +16,29 @@ var _ = basictl.NatWrite
 type CasesTestAllPossibleFieldConfigs struct {
 	Local  uint32
 	Locals uint32
-	F00    int32
-	F01    True
-	F02    []int32
-	F03    []int32
-	F10    int32 // Conditional: item.Local.0
+	// no fieldmask, no nat dependencies in type
+	F00 int32
+	// no fieldmask, true type
+	F01 True
+	// no fieldmask, have some local nat dependencies in type
+	F02 []int32
+	// no fieldmask, have only external nat dependencies in type
+	F03 []int32
+	// local fieldmask, no nat dependencies in type
+	F10 int32 // Conditional: item.Local.0
+	// local fieldmask, true type
 	// F11 (TrueType) // Conditional: item.Local.1
+	// local fieldmask, have some local nat dependencies in type
 	F12 []int32 // Conditional: item.Local.2
+	// local fieldmask, have only external nat dependencies in type
 	F13 []int32 // Conditional: item.Local.3
-	F20 int32   // Conditional: nat_outer.0
+	// outer fieldmask, no nat dependencies in type
+	F20 int32 // Conditional: nat_outer.0
+	// outer fieldmask, true type
 	// F21 (TrueType) // Conditional: nat_outer.1
+	// outer fieldmask, have some local nat dependencies in type
 	F22 []int32 // Conditional: nat_outer.2
+	// outer fieldmask, have only external nat dependencies in type
 	F23 []int32 // Conditional: nat_outer.3
 }
 

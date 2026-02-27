@@ -23,8 +23,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type UseDictUgly struct {
 	N uint32
+	// c:dictionaryAny<pair<int,int>, int>
 	D map[int32][]string
 	E map[int64][]string
+	// f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
 	X map[int32]tlPairIntInt.PairIntInt
 	Y map[int64]tlPairIntInt.PairIntInt
 	Z map[string]tlPairIntInt.PairIntInt

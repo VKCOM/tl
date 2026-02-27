@@ -244,6 +244,7 @@ func (item AbCode) AsUnion() AbResponse {
 	return ret
 }
 
+// Union comment - Code
 type AbCode struct {
 	X int32
 }
@@ -498,6 +499,7 @@ func (item AbEmpty) AsUnion() AbResponse {
 	return ret
 }
 
+// Union comment - Empty
 type AbEmpty struct {
 }
 
@@ -1475,6 +1477,8 @@ func (item CdResponse) AsUnion() AbResponse {
 	return ret
 }
 
+// Also union comment
+// Multiline Alias
 type CdResponse struct {
 	X   int32
 	Str string
@@ -1770,6 +1774,8 @@ func (item CdResponseBytes) AsUnion() AbResponseBytes {
 	return ret
 }
 
+// Also union comment
+// Multiline Alias
 type CdResponseBytes struct {
 	X   int32
 	Str []byte

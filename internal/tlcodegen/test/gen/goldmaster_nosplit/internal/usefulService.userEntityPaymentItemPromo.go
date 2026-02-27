@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//----- Test Dictionaries
 type UsefulServiceUserEntityPaymentItemPromo struct {
 	Content string
 }

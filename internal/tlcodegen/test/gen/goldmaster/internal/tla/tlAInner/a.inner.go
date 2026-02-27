@@ -16,6 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//----- Test Dependent types
 type AInner struct {
 	A []int32
 }

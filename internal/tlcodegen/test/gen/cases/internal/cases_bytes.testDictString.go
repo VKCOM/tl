@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// will be map
 type CasesBytesTestDictString struct {
 	Dict map[string]int32
 }
@@ -254,6 +255,7 @@ func (item *CasesBytesTestDictString) ReadTL2(r []byte, ctx *basictl.TL2ReadCont
 	return item.InternalReadTL2(r)
 }
 
+// will be map
 type CasesBytesTestDictStringBytes struct {
 	Dict []DictFieldStringIntBytes
 }

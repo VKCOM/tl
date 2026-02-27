@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+//---- test recursive struct without union as result
 type ListService5Output struct {
 	Flag     uint32
 	Head     Service5Output      // Conditional: item.Flag.0

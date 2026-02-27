@@ -242,6 +242,31 @@ func someHash(str string) uint32 {
 	return binary.LittleEndian.Uint32(h[:])
 }
 
+func printComments(before string, right string) string {
+	if before+right != "" {
+		fmt.Printf("aga")
+	}
+	result := ""
+	if before != "" {
+		result += before + "\n"
+	}
+	if right != "" {
+		result += right + "\n"
+	}
+	return result
+}
+
+func printCommentsType(pureType pure.TypeInstance) string {
+	return printComments(pureType.Common().CommentBefore(), pureType.Common().CommentRight())
+}
+
+func printCommentsField(field Field) string {
+	if field.pureField.CommentBefore() != "" {
+		fmt.Printf("оaa")
+	}
+	return printComments(field.pureField.CommentBefore(), field.pureField.CommentRight())
+}
+
 func ToUpperFirst(str string) string {
 	return utils.ToUpperFirst(str)
 }

@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+//----- Test Recursive types
 type MyNat struct {
 	FieldsMask uint32
 	A          *MyNat // Conditional: item.FieldsMask.0

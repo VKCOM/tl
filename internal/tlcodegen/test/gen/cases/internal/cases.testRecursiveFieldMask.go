@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: TEST FIELD MASKS
 type CasesTestRecursiveFieldMask struct {
 	F0 uint32
 	F1 uint32 // Conditional: item.F0.0

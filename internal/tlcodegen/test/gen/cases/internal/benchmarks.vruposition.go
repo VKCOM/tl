@@ -15,17 +15,25 @@ var _ = basictl.NatWrite
 
 type BenchmarksVruposition struct {
 	FieldsMask uint32
+	// we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
 	// CommitBit (TrueType) // Conditional: item.FieldsMask.0
+	// this block contains meta data of VR protocol
 	// MetaBlock (TrueType) // Conditional: item.FieldsMask.1
+	// this position splits payload. If this set, meta_block and commit_bit are both not set
 	// SplitPayload (TrueType) // Conditional: item.FieldsMask.3
+	// If set, binlog should rotate and this block should be in new file
 	// RotationBlock (TrueType) // Conditional: item.FieldsMask.5
+	// If set, hash is stored in canonical byte order.
 	// CanonicalHash (TrueType) // Conditional: item.FieldsMask.15
+	// Motivation for storing it in each block - when random seeking into the middle of file, we must be sure without scanning from beginning
 	PayloadOffset int64
+	// Only for debug, not used in any logic
 	BlockTimeNano int64
 	Hash          BenchmarksVruhash
 	FileOffset    int64
-	SeqNumber     int64 // Conditional: item.FieldsMask.14
-	tl2mask0      byte
+	// incremented after each block.
+	SeqNumber int64 // Conditional: item.FieldsMask.14
+	tl2mask0  byte
 }
 
 func (BenchmarksVruposition) TLName() string { return "benchmarks.vruposition" }

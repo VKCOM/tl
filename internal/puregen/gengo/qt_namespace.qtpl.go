@@ -276,13 +276,21 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	}
 	tlName := wr.tlName.String()
 
+	if fun.pureTypeStruct.Common().CommentBefore() != "" {
+		qw422016.N().S(`        `)
+		qw422016.N().S(fun.pureTypeStruct.Common().CommentBefore())
+		qw422016.N().S(`
+`)
+	}
 	qw422016.N().S(`func (c *Client) `)
 	qw422016.N().S(funcTypeString)
 	qw422016.N().S(`(ctx context.Context, args `)
 	qw422016.N().S(funcTypeString)
 	qw422016.N().S(`, extra *rpc.InvokeReqExtra, ret *`)
 	qw422016.N().S(ret)
-	qw422016.N().S(`) (err error) {
+	qw422016.N().S(`) (err error) {`)
+	qw422016.N().S(fun.pureTypeStruct.Common().CommentRight())
+	qw422016.N().S(`
     req := c.Client.GetRequest()
     req.ActorID = c.ActorID
 `)
@@ -412,6 +420,12 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, gen *genGo, name string, ty
 				ret = funcTypeString + "__Result"
 			}
 
+			if fun.pureTypeStruct.Common().CommentBefore() != "" {
+				qw422016.N().S(`        `)
+				qw422016.N().S(fun.pureTypeStruct.Common().CommentBefore())
+				qw422016.N().S(`
+`)
+			}
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(` func(ctx context.Context, args `)
 			qw422016.N().S(funcTypeString)
@@ -419,6 +433,8 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, gen *genGo, name string, ty
 			qw422016.N().S(ret)
 			qw422016.N().S(`, error) // `)
 			qw422016.N().S(tlName)
+			qw422016.N().S(` `)
+			qw422016.N().S(fun.pureTypeStruct.Common().CommentRight())
 			qw422016.N().S(`
 `)
 		}

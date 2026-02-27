@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// will be map
 type CasesTestDictString struct {
 	Dict map[string]int32
 }

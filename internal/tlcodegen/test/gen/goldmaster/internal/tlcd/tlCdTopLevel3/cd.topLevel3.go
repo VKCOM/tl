@@ -17,6 +17,8 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// comment for TopLevel3
+// also comment for TopLevel3
 type CdTopLevel3 struct {
 	A tlUseStr.UseStr
 	B tlHalfStr.HalfStr

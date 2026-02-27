@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// BLOCK: TEST BRACKETS (arrays, vectors, dicitinaries etc.)
 type CasesTestArray struct {
 	N   uint32
 	Arr []int32

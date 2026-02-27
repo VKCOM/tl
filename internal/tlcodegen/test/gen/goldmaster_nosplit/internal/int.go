@@ -987,6 +987,7 @@ func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec 
 	return append(w, ']')
 }
 
+//----- Test Multiple native wrappers
 type Int int32
 
 func (Int) TLName() string { return "int" }
