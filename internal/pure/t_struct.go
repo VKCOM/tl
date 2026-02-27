@@ -548,7 +548,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		return nil, err
 	}
 	if isDict {
-		fmt.Printf("dict detected [%s]%s\n", keyRT.String(), elemRT.String())
+		// fmt.Printf("dict detected [%s]%s\n", keyRT.String(), elemRT.String())
 		ins.isUnwrap = true
 		if len(fieldsAfterReplace) != 1 || len(typesAfterReplace) != 1 || len(originalFieldIndices) != 1 {
 			return nil, resolvedType.PR.BeautifulError(fmt.Errorf("internal error - during Dict detection"))

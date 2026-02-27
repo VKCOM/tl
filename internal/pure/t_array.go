@@ -174,43 +174,16 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 }
 
 func (k *Kernel) addTL1Brackets() {
-	// for the purpose of type check, this is object with no fields, like __dict {t:Type} = ;
-	combTL1 := &tlast.Combinator{
-		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__dict"},
-		},
-		TemplateArguments: []tlast.TemplateArgument{{FieldName: "t", IsNat: false}},
+	// TODO - parse primitive definitions from local TL so Beautiful Errors work correctly for int<int>, etc.
+	str := "__dict_field {k:Type} {v:Type} key:k value:v = DictField;"
+	combs, err := tlast.ParseTLFile(str, "builtin.tl", tlast.LexerOptions{AllowBuiltin: true, AllowDirty: true})
+	if err != nil || len(combs) != 1 {
+		panic("error adding built in types")
 	}
+	combTL1 := combs[0]
+	combTL1.Construct.ID = 0
+	combTL1.TypeDecl.Name = tlast.Name{}
 	kt := &KernelType{
-		originTL2:         false,
-		builtin:           true,
-		combTL1:           []*tlast.Combinator{combTL1},
-		instances:         map[string]*TypeInstanceRef{},
-		tl1Names:          map[string]struct{}{"__dict": {}},
-		tl2Names:          map[string]struct{}{},
-		canonicalName:     tlast.TL2TypeName{Name: "__dict"},
-		historicalName:    tlast.TL2TypeName{Name: "BuiltinDict"},
-		canBeBare:         true,
-		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
-		targs:             make([]KernelTypeTarg, 1),
-	}
-	if err := k.addTip(kt, "__dict", ""); err != nil {
-		panic(fmt.Sprintf("error adding __dict: %v", err))
-	}
-	combTL1 = &tlast.Combinator{
-		Construct: tlast.Constructor{
-			Name: tlast.Name{Name: "__dict_field"},
-		},
-		TemplateArguments: []tlast.TemplateArgument{{FieldName: "k", IsNat: false}, {FieldName: "v", IsNat: false}},
-		Fields: []tlast.Field{{
-			FieldName: "key",
-			FieldType: tlast.TypeRef{Type: tlast.Name{Name: "k"}},
-		}, {
-			FieldName: "value",
-			FieldType: tlast.TypeRef{Type: tlast.Name{Name: "v"}},
-		}},
-	}
-	kt = &KernelType{
 		originTL2:         false,
 		builtin:           true,
 		combTL1:           []*tlast.Combinator{combTL1},
