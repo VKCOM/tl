@@ -243,9 +243,6 @@ func someHash(str string) uint32 {
 }
 
 func printComments(before string, right string) string {
-	if before+right != "" {
-		fmt.Printf("aga")
-	}
 	result := ""
 	if before != "" {
 		result += before + "\n"
@@ -261,9 +258,6 @@ func printCommentsType(pureType pure.TypeInstance) string {
 }
 
 func printCommentsField(field Field) string {
-	if field.pureField.CommentBefore() != "" {
-		fmt.Printf("оaa")
-	}
 	return printComments(field.pureField.CommentBefore(), field.pureField.CommentRight())
 }
 
