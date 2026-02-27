@@ -228,17 +228,14 @@ func (item *`)
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		if writeNeedsError {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`), nil
-`)
+		qw422016.N().S(`    return item.WriteBoxed(w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)`)
+		if !writeNeedsError {
+			qw422016.N().S(`, nil`)
 		}
+		qw422016.N().S(`
+`)
 	}
 	qw422016.N().S(`}
 
@@ -264,13 +261,12 @@ func (item *`)
 		qw422016.N().S(`[item.index].TLTag)
 `)
 		if union.IsEnum {
+			qw422016.N().S(`            return w`)
 			if writeNeedsError {
-				qw422016.N().S(`            return w, nil
-`)
-			} else {
-				qw422016.N().S(`            return w
-`)
+				qw422016.N().S(`, nil`)
 			}
+			qw422016.N().S(`
+`)
 		} else {
 			qw422016.N().S(`        switch item.index {
 `)
@@ -280,13 +276,12 @@ func (item *`)
 				qw422016.N().S(`:
 `)
 				if field.t.IsTrueType() {
+					qw422016.N().S(`                    return w`)
 					if writeNeedsError {
-						qw422016.N().S(`                return w, nil
-`)
-					} else {
-						qw422016.N().S(`                return w
-`)
+						qw422016.N().S(`, nil`)
 					}
+					qw422016.N().S(`
+`)
 				} else {
 					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
@@ -296,14 +291,12 @@ func (item *`)
 				}
 			}
 			qw422016.N().S(`        }
-`)
+        return w`)
 			if writeNeedsError {
-				qw422016.N().S(`        return w, nil
-`)
-			} else {
-				qw422016.N().S(`        return w
-`)
+				qw422016.N().S(`, nil`)
 			}
+			qw422016.N().S(`
+`)
 		}
 	}
 	qw422016.N().S(`}
@@ -649,19 +642,14 @@ func (item `)
 	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) ([]byte, error) {
-`)
-	if writeNeedsError {
-		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
-`)
-	} else {
-		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`), nil
-`)
+    return item.WriteJSONOpt(tctx, w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)`)
+	if !writeNeedsError {
+		qw422016.N().S(`, nil`)
 	}
-	qw422016.N().S(`}
+	qw422016.N().S(`
+}
 
 func (item `)
 	qw422016.N().S(asterisk)
@@ -867,25 +855,21 @@ func (item `)
 `)
 				}
 			}
+			qw422016.N().S(`        return append(w, '}')`)
 			if writeNeedsError {
-				qw422016.N().S(`        return append(w, '}'), nil
-`)
-			} else {
-				qw422016.N().S(`        return append(w, '}')
-`)
+				qw422016.N().S(`, nil`)
 			}
+			qw422016.N().S(`
+`)
 		}
 	}
 	qw422016.N().S(`        default: // Impossible due to panic above
-`)
+            return w`)
 	if writeNeedsError {
-		qw422016.N().S(`            return w, nil
-`)
-	} else {
-		qw422016.N().S(`            return w
-`)
+		qw422016.N().S(`, nil`)
 	}
-	qw422016.N().S(`    }
+	qw422016.N().S(`
+    }
 }
 
 `)
@@ -916,15 +900,12 @@ func (item `)
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) MarshalJSON() ([]byte, error) {
-`)
-		if writeNeedsError {
-			qw422016.N().S(`    return item.WriteJSON(nil)
-`)
-		} else {
-			qw422016.N().S(`    return item.WriteJSON(nil), nil
-`)
+    return item.WriteJSON(nil)`)
+		if !writeNeedsError {
+			qw422016.N().S(`, nil`)
 		}
-		qw422016.N().S(`}
+		qw422016.N().S(`
+}
 
 func (item *`)
 		qw422016.N().S(goName)

@@ -108,11 +108,7 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
     {%- if union.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    {%- if writeNeedsError -%}
-    return item.WriteBoxed(w{%s= natArgsCall %})
-    {%- else -%}
-    return item.WriteBoxed(w{%s= natArgsCall %}), nil
-    {%- endif -%}
+    return item.WriteBoxed(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif %}
     {%- endif -%}
 }
 
@@ -126,32 +122,20 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
     {%- else -%}
         w = basictl.NatWrite(w, _{%s= addBytes(union.wr.goGlobalName, false) %}[item.index].TLTag)
         {%- if union.IsEnum -%}
-            {%- if writeNeedsError -%}
-            return w, nil
-            {%- else -%}
-            return w
-            {%- endif -%}
+            return w{%- if writeNeedsError -%}, nil{%- endif %}
         {%- else -%}
         switch item.index {
             {%- for i, field := range union.Fields -%}
             case {%d i %}:
                 {%- if field.t.IsTrueType() -%}
-                    {%- if writeNeedsError -%}
-                return w, nil
-                    {%- else -%}
-                return w
-                    {%- endif -%}
+                    return w{%- if writeNeedsError -%}, nil{%- endif %}
                 {%- else -%}
             {%s= field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf( "item.value%s", field.goName), true,
                     formatNatArgs(nil, union.ElementNatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
                 {%- endif -%}
             {%- endfor -%}
         }
-            {%- if writeNeedsError -%}
-        return w, nil
-            {%- else -%}
-        return w
-            {%- endif -%}
+        return w{%- if writeNeedsError -%}, nil{%- endif %}
         {%- endif -%}
     {%- endif -%}
 }
@@ -352,11 +336,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 
 // This method is general version of WriteJSON, use it instead!
 func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) ([]byte, error) {
-    {%- if writeNeedsError -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
-    {%- else -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
-    {%- endif -%}
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif %}
 }
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -450,19 +430,11 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
     }
     {%- endif -%}
             {%- endif -%}
-            {%- if writeNeedsError -%}
-        return append(w, '}'), nil
-            {%- else -%}
-        return append(w, '}')
-            {%- endif -%}
+        return append(w, '}'){%- if writeNeedsError -%}, nil{%- endif %}
     {%- endif -%}
         {%- endfor -%}
         default: // Impossible due to panic above
-        {%- if writeNeedsError -%}
-            return w, nil
-        {%- else -%}
-            return w
-        {%- endif -%}
+            return w{%- if writeNeedsError -%}, nil{%- endif %}
     }
 }
 
@@ -480,11 +452,7 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatPara
 }
 
 func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
-    {%- if writeNeedsError -%}
-    return item.WriteJSON(nil)
-    {%- else -%}
-    return item.WriteJSON(nil), nil
-    {%- endif -%}
+    return item.WriteJSON(nil){%- if !writeNeedsError -%}, nil{%- endif %}
 }
 
 func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
