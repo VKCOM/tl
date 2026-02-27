@@ -110,13 +110,13 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
       if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
           return
       }
-      commentsBefore := trww.KernelType().CommentsBefore()
-      commentsRight := trww.KernelType().CommentsRight()
+      commentBefore := trww.Common().CommentBefore()
+      commentRight := trww.Common().CommentRight()
       combinatorTexts := trww.KernelType().CombinatorTexts()
  -%}
 <h2 id="{%s trww.CanonicalName() %}">{%s JSONHelpString(kernel, trww) %}</h2>
-    {%- if len(commentsBefore) == 1 && commentsBefore[0] != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(commentsBefore[0]) -%}
+    {%- if commentBefore != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(commentBefore) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
@@ -174,8 +174,8 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
   <dt>TL</dt>
   <dd>
     <code>{%s combinatorTexts[0] %}</code>
-    {%- if commentsRight[0] != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(commentsRight[0]) -%}
+    {%- if commentRight != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(commentRight) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
@@ -204,7 +204,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
   <dt>JSON</dt>
   <dd><code>
       <table>
-    {%- for i, field := range trw.VariantTypes() -%}
+    {%- for _, field := range trw.VariantTypes() -%}
             {%- code
                 tag := fmt.Sprintf("%08x", field.TLTag())
                 originalName := field.TLName().String()
@@ -216,8 +216,8 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
                 <td>{"type":<span title='Can be also specified as "{%s originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s originalName %}#{%s tag %}"</span>{%- if !IsEmptyStruct(field) -%},</td><td>"value":{%= makeRef(field.CanonicalName(), JSONHelpString(kernel, field)) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
             {%- endif -%}
           <td>
-    {%- if commentsRight[i] != "" -%}
-    {%- for _, line := range tlast.SplitMultilineComment(commentsRight[i]) -%}
+    {%- if field.Common().CommentRight() != "" -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.Common().CommentRight()) -%}
     <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="3">
     {%- endfor -%}
     {%- endif -%}

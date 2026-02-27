@@ -116,26 +116,14 @@ func (t *KernelType) TL1() []*tlast.Combinator {
 //	return t.combTL2
 //}
 
-func (t *KernelType) CommentsBefore() []string {
-	var result []string
-	for _, comb := range t.combTL1 {
-		result = append(result, comb.CommentBefore)
-	}
-	return result
-}
-
-func (t *KernelType) CommentsRight() []string {
-	var result []string
-	for _, comb := range t.combTL1 {
-		result = append(result, comb.CommentRight)
-	}
-	return result
-}
-
 func (t *KernelType) CombinatorTexts() []string {
 	var result []string
-	for _, comb := range t.combTL1 {
-		result = append(result, comb.String())
+	if t.originTL2 {
+		result = append(result, t.combTL2.String())
+	} else {
+		for _, comb := range t.combTL1 {
+			result = append(result, comb.String())
+		}
 	}
 	return result
 }
