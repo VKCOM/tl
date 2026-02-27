@@ -35,10 +35,8 @@ func (item *CasesTL2TestParamsGeneration) Reset() {
 }
 
 func (item *CasesTL2TestParamsGeneration) FillRandom(rg *basictl.RandGenerator) {
-	item.N1 = basictl.RandomFieldMask(rg, 0b1)
-	item.N1 = rg.LimitValue(item.N1)
-	item.N2 = basictl.RandomFieldMask(rg, 0b1)
-	item.N2 = rg.LimitValue(item.N2)
+	item.N1 = basictl.RandomFieldMask(rg, 0b11)
+	item.N2 = basictl.RandomSize(rg)
 	item.X1.FillRandom(rg)
 	item.X2.FillRandom(rg, item.N1)
 	item.X3.FillRandom(rg, item.N2)
@@ -72,9 +70,7 @@ func (item *CasesTL2TestParamsGeneration) Write(w []byte) (_ []byte, err error) 
 	w = basictl.NatWrite(w, item.N1)
 	w = basictl.NatWrite(w, item.N2)
 	w = item.X1.Write(w)
-	if w, err = item.X2.Write(w, item.N1); err != nil {
-		return w, err
-	}
+	w = item.X2.Write(w, item.N1)
 	if w, err = item.X3.Write(w, item.N2); err != nil {
 		return w, err
 	}
@@ -257,9 +253,7 @@ func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	w = item.X1.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x2":`...)
-	if w, err = item.X2.WriteJSONOpt(tctx, w, item.N1); err != nil {
-		return w, err
-	}
+	w = item.X2.WriteJSONOpt(tctx, w, item.N1)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x3":`...)
 	if w, err = item.X3.WriteJSONOpt(tctx, w, item.N2); err != nil {

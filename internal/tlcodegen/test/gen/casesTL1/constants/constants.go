@@ -24,8 +24,8 @@ const (
 	CasesMyCycle2                                   = 0x5444c9a2 // cases.myCycle2
 	CasesMyCycle3                                   = 0x7624f86b // cases.myCycle3
 	CasesTestAllDicts                               = 0xec4b79a6 // cases.testAllDicts
-	CasesTestAllPossibleFieldConfigs                = 0xfb6836d3 // cases.testAllPossibleFieldConfigs
-	CasesTestAllPossibleFieldConfigsContainer       = 0xe3fae936 // cases.testAllPossibleFieldConfigsContainer
+	CasesTestAllPossibleFieldConfigs                = 0xc3607629 // cases.testAllPossibleFieldConfigs
+	CasesTestAllPossibleFieldConfigsContainer       = 0xb932488a // cases.testAllPossibleFieldConfigsContainer
 	CasesTestArray                                  = 0xa888030d // cases.testArray
 	CasesTestBeforeReadBitValidation                = 0xc81cf91b // cases.testBeforeReadBitValidation
 	CasesTestDictAny                                = 0x252b4ddb // cases.testDictAny
@@ -63,7 +63,7 @@ const (
 	CasesTL2TestFunctionWithDep1                    = 0xb6c63b07 // casesTL2.testFunctionWithDep1
 	CasesTL2TestFunctionWithDep2                    = 0x9d44a2fd // casesTL2.testFunctionWithDep2
 	CasesTL2TestObject                              = 0x4f96dd95 // casesTL2.testObject
-	CasesTL2TestObjectWithMuiltiParams              = 0x76444f62 // casesTL2.testObjectWithMuiltiParams
+	CasesTL2TestObjectWithMuiltiParams              = 0xc1de8275 // casesTL2.testObjectWithMuiltiParams
 	CasesTL2TestObjectWithParam                     = 0xd0ce3a42 // casesTL2.testObjectWithParam
 	CasesTL2TestParamsGeneration                    = 0xaac2f033 // casesTL2.testParamsGeneration
 	CasesTL2TestVectorBool                          = 0x644bb447 // casesTL2.testVectorBool

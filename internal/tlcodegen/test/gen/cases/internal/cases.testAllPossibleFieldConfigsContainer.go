@@ -14,24 +14,26 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestAllPossibleFieldConfigsContainer struct {
-	Outer uint32
-	Value CasesTestAllPossibleFieldConfigs
+	Outer  uint32
+	Outers uint32
+	Value  CasesTestAllPossibleFieldConfigs
 }
 
 func (CasesTestAllPossibleFieldConfigsContainer) TLName() string {
 	return "cases.testAllPossibleFieldConfigsContainer"
 }
-func (CasesTestAllPossibleFieldConfigsContainer) TLTag() uint32 { return 0xe3fae936 }
+func (CasesTestAllPossibleFieldConfigsContainer) TLTag() uint32 { return 0xb932488a }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) Reset() {
 	item.Outer = 0
+	item.Outers = 0
 	item.Value.Reset()
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) FillRandom(rg *basictl.RandGenerator) {
 	item.Outer = basictl.RandomFieldMask(rg, 0b1111)
-	item.Outer = rg.LimitValue(item.Outer)
-	item.Value.FillRandom(rg, item.Outer)
+	item.Outers = basictl.RandomSize(rg)
+	item.Value.FillRandom(rg, item.Outer, item.Outers)
 }
 
 func (item CasesTestAllPossibleFieldConfigsContainer) RepairMasksValue() CasesTestAllPossibleFieldConfigsContainer {
@@ -39,14 +41,17 @@ func (item CasesTestAllPossibleFieldConfigsContainer) RepairMasksValue() CasesTe
 	return item
 }
 func (item *CasesTestAllPossibleFieldConfigsContainer) RepairMasks() {
-	item.Value.RepairMasks(item.Outer)
+	item.Value.RepairMasks(item.Outer, item.Outers)
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Outer); err != nil {
 		return w, err
 	}
-	return item.Value.Read(w, item.Outer)
+	if w, err = basictl.NatRead(w, &item.Outers); err != nil {
+		return w, err
+	}
+	return item.Value.Read(w, item.Outer, item.Outers)
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -55,14 +60,15 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteGeneral(w []byte) (_
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Outer)
-	if w, err = item.Value.Write(w, item.Outer); err != nil {
+	w = basictl.NatWrite(w, item.Outers)
+	if w, err = item.Value.Write(w, item.Outer, item.Outers); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xe3fae936); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xb932488a); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -73,7 +79,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteBoxedGeneral(w []byt
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xe3fae936)
+	w = basictl.NatWrite(w, 0xb932488a)
 	return item.Write(w)
 }
 
@@ -92,6 +98,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames 
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propOuterPresented bool
+	var propOutersPresented bool
 	var rawValue []byte
 
 	if in != nil {
@@ -111,6 +118,14 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *bas
 					return err
 				}
 				propOuterPresented = true
+			case "outers":
+				if propOutersPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "outers")
+				}
+				if err := Json2ReadUint32(in, &item.Outers); err != nil {
+					return err
+				}
+				propOutersPresented = true
 			case "value":
 				if rawValue != nil {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "value")
@@ -132,12 +147,15 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *bas
 	if !propOuterPresented {
 		item.Outer = 0
 	}
+	if !propOutersPresented {
+		item.Outers = 0
+	}
 	var inValuePointer *basictl.JsonLexer
 	inValue := basictl.JsonLexer{Data: rawValue}
 	if rawValue != nil {
 		inValuePointer = &inValue
 	}
-	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, item.Outer); err != nil {
+	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, item.Outer, item.Outers); err != nil {
 		return err
 	}
 
@@ -162,9 +180,16 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(tctx *basict
 	if (item.Outer != 0) == false {
 		w = w[:backupIndexOuter]
 	}
+	backupIndexOuters := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"outers":`...)
+	w = basictl.JSONWriteUint32(w, item.Outers)
+	if (item.Outers != 0) == false {
+		w = w[:backupIndexOuters]
+	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, item.Outer); err != nil {
+	if w, err = item.Value.WriteJSONOpt(tctx, w, item.Outer, item.Outers); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -191,6 +216,10 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) CalculateLayout(sizes []i
 	var sz int
 
 	if item.Outer != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.Outers != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -235,8 +264,12 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalWriteTL2(w []byte
 		w = basictl.NatWrite(w, item.Outer)
 		currentBlock |= 2
 	}
-	if w, sizes, sz = item.Value.InternalWriteTL2(w, sizes, true); sz != 0 {
+	if item.Outers != 0 {
+		w = basictl.NatWrite(w, item.Outers)
 		currentBlock |= 4
+	}
+	if w, sizes, sz = item.Value.InternalWriteTL2(w, sizes, true); sz != 0 {
+		currentBlock |= 8
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -302,6 +335,13 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalReadTL2(r []byte)
 		item.Outer = 0
 	}
 	if block&4 != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.Outers); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Outers = 0
+	}
+	if block&8 != 0 {
 		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}

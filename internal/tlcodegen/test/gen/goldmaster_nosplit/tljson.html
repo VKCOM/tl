@@ -3371,6 +3371,13 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
         </tr>
         <tr>
 
+          <td>&nbsp;&nbsp;"ns"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
           <td>&nbsp;&nbsp;"a"</td><td>: [2 × <a href="#cycleTuple">cycleTuple</a>],</td>
           <td>// n bit #0
 </td>
@@ -3379,7 +3386,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
         </tr>
         <tr>
 
-          <td>&nbsp;&nbsp;"b"</td><td>: [n × <a href="#cycleTuple">cycleTuple</a>],</td>
+          <td>&nbsp;&nbsp;"b"</td><td>: [ns × <a href="#cycleTuple">cycleTuple</a>],</td>
           <td></td>
           <td>
           </td>
@@ -3397,7 +3404,7 @@ External # (nat) arguments: <b>W, PXI, PYI</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>cycleTuple n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?(3)*[int] = CycleTuple;</code>
+    <code>cycleTuple n:# ns:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple ns) c:n.2?(3)*[int] = CycleTuple;</code>
   </dd>
 </dl>
 

@@ -21,7 +21,7 @@
       "flags": 16
     },
     {
-      "name": -932709661,
+      "name": -1661593488,
       "id": "CycleTuple",
       "constructors_num": 1
     },
@@ -3882,18 +3882,29 @@
     {
       "type": "tls.combinator_v4",
       "value": {
-        "name": -932709661,
+        "name": -1661593488,
         "id": "cycleTuple",
-        "type_name": -932709661,
+        "type_name": -1661593488,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
-            "args_num": 4,
+            "args_num": 5,
             "args": [
               {
                 "id": "n",
                 "flags": 2,
                 "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "ns",
+                "flags": 2,
+                "var_num": 1,
                 "type": {
                   "type": "tls.typeExpr",
                   "value": {
@@ -3918,7 +3929,7 @@
                           "expr": {
                             "type": "tls.typeExpr",
                             "value": {
-                              "name": -932709661,
+                              "name": -1661593488,
                               "flags": 1
                             }
                           }
@@ -3953,7 +3964,7 @@
                           "expr": {
                             "type": "tls.typeExpr",
                             "value": {
-                              "name": -932709661,
+                              "name": -1661593488,
                               "flags": 1
                             }
                           }
@@ -3964,7 +3975,9 @@
                         "value": {
                           "expr": {
                             "type": "tls.natVar",
-                            "value": {}
+                            "value": {
+                              "var_num": 1
+                            }
                           }
                         }
                       }
@@ -4008,7 +4021,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": -932709661
+              "name": -1661593488
             }
           }
         }

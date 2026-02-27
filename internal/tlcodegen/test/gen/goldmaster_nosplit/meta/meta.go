@@ -369,7 +369,7 @@ func init() {
 	fillObject(&TLItem{tlName: "cyc1.myCycle", tag: 0x136ecc9e, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cyc2.myCycle", tag: 0xfba5eecb, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cyc3.myCycle", tag: 0x47866860, hasTL1: true, hasTL2: true})
-	fillObject(&TLItem{tlName: "cycleTuple", tag: 0xc867fae3, hasTL1: true, hasTL2: true})
+	fillObject(&TLItem{tlName: "cycleTuple", tag: 0x9cf61870, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "halfStr", tag: 0x647ddaf5, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "hren", tag: 0x12ab5219, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "int", tag: 0xa8509bda, hasTL1: true, hasTL2: true})

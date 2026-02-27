@@ -409,30 +409,34 @@ func updateTestData(t *testing.T) {
 	updated := false
 
 	for testName, testValues := range tests.Tests {
-		for i, success := range testValues.Successes {
-			if !success.IsTL2DataFixed {
-				testObject := factory.CreateObjectFromName(testValues.TestingType)
-				if testObject == nil {
-					t.Fatalf("No testing object for test \"%s\"", testName)
-					return
-				}
-				bytes := utils.ParseHexToBytes(success.Bytes)
-				_, readErr := testObject.Read(bytes)
-				if readErr != nil {
-					t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
-					return
-				}
-				data := testObject.WriteTL2(nil, nil)
-				tl2StringData := utils.SprintHexDumpTL2(data)
+		t.Run(testValues.TestingType, func(t *testing.T) {
+			for i, success := range testValues.Successes {
+				t.Run(fmt.Sprintf("TL1 Bytes: %s", success.Bytes), func(t *testing.T) {})
+				if !success.IsTL2DataFixed {
+					testObject := factory.CreateObjectFromName(testValues.TestingType)
+					if testObject == nil {
+						t.Fatalf("No testing object for test \"%s\"", testName)
+						return
+					}
+					bytes := utils.ParseHexToBytes(success.Bytes)
+					_, readErr := testObject.Read(bytes)
+					if readErr != nil {
+						t.Logf(">>> BYTES \"%s\" <<<<", success.Bytes)
+						t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
+						return
+					}
+					data := testObject.WriteTL2(nil, nil)
+					tl2StringData := utils.SprintHexDumpTL2(data)
 
-				if success.BytesTL2 != tl2StringData {
-					updated = true
-					newTestValues := tests.Tests[testName]
-					newTestValues.Successes[i].BytesTL2 = tl2StringData
-					tests.Tests[testName] = newTestValues
+					if success.BytesTL2 != tl2StringData {
+						updated = true
+						newTestValues := tests.Tests[testName]
+						newTestValues.Successes[i].BytesTL2 = tl2StringData
+						tests.Tests[testName] = newTestValues
+					}
 				}
 			}
-		}
+		})
 	}
 
 	if updated {

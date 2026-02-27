@@ -375,6 +375,7 @@ func BuiltinTupleCycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 
 type CycleTuple struct {
 	N        uint32
+	Ns       uint32
 	A        *[2]CycleTuple // Conditional: item.N.0
 	B        []CycleTuple
 	C        [3]int32 // Conditional: item.N.2
@@ -382,7 +383,7 @@ type CycleTuple struct {
 }
 
 func (CycleTuple) TLName() string { return "cycleTuple" }
-func (CycleTuple) TLTag() uint32  { return 0xc867fae3 }
+func (CycleTuple) TLTag() uint32  { return 0x9cf61870 }
 
 func (item *CycleTuple) SetA(v [2]CycleTuple) {
 	if item.A == nil {
@@ -415,6 +416,7 @@ func (item *CycleTuple) IsSetC() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CycleTuple) Reset() {
 	item.N = 0
+	item.Ns = 0
 	if item.A != nil {
 		BuiltinTuple2CycleTupleReset(item.A)
 	}
@@ -426,7 +428,7 @@ func (item *CycleTuple) Reset() {
 func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b101)
-	item.N = rg.LimitValue(item.N)
+	item.Ns = basictl.RandomSize(rg)
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		rg.IncreaseDepth()
@@ -440,7 +442,7 @@ func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
 			BuiltinTuple2CycleTupleReset(item.A)
 		}
 	}
-	BuiltinTupleCycleTupleFillRandom(rg, &item.B, item.N)
+	BuiltinTupleCycleTupleFillRandom(rg, &item.B, item.Ns)
 	if item.N&(1<<2) != 0 {
 		item.tl2mask0 |= 2
 		BuiltinTuple3IntFillRandom(rg, &item.C)
@@ -461,7 +463,7 @@ func (item *CycleTuple) RepairMasks() {
 	if item.A != nil {
 		BuiltinTuple2CycleTupleRepairMasks(item.A)
 	}
-	BuiltinTupleCycleTupleRepairMasks(&item.B, item.N)
+	BuiltinTupleCycleTupleRepairMasks(&item.B, item.Ns)
 	if item.N&(1<<2) != 0 {
 		item.tl2mask0 |= 2
 	}
@@ -470,6 +472,9 @@ func (item *CycleTuple) RepairMasks() {
 func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
+		return w, err
+	}
+	if w, err = basictl.NatRead(w, &item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<0) != 0 {
@@ -491,7 +496,7 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleCycleTupleRead(w, &item.B, item.N); err != nil {
+	if w, err = BuiltinTupleCycleTupleRead(w, &item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<2) != 0 {
@@ -511,6 +516,7 @@ func (item *CycleTuple) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
+	w = basictl.NatWrite(w, item.Ns)
 	if item.N&(1<<0) != 0 {
 		if item.A == nil {
 			var tmpValue [2]CycleTuple
@@ -526,7 +532,7 @@ func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
 		}
 	}
 	w = basictl.NatWrite(w, 0x9770768a)
-	if w, err = BuiltinTupleCycleTupleWrite(w, item.B, item.N); err != nil {
+	if w, err = BuiltinTupleCycleTupleWrite(w, item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<2) != 0 {
@@ -536,7 +542,7 @@ func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
 }
 
 func (item *CycleTuple) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xc867fae3); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x9cf61870); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -547,7 +553,7 @@ func (item *CycleTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *CycleTuple) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xc867fae3)
+	w = basictl.NatWrite(w, 0x9cf61870)
 	return item.Write(w)
 }
 
@@ -566,6 +572,7 @@ func (item *CycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 
 func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propNsPresented bool
 	var propAPresented bool
 	var rawB []byte
 	var propCPresented bool
@@ -587,6 +594,14 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return err
 				}
 				propNPresented = true
+			case "ns":
+				if propNsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "ns")
+				}
+				if err := Json2ReadUint32(in, &item.Ns); err != nil {
+					return err
+				}
+				propNsPresented = true
 			case "a":
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "a")
@@ -627,6 +642,9 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	if !propNPresented {
 		item.N = 0
 	}
+	if !propNsPresented {
+		item.Ns = 0
+	}
 	if !propAPresented {
 		if item.A != nil {
 			BuiltinTuple2CycleTupleReset(item.A)
@@ -646,7 +664,7 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	if rawB != nil {
 		inBPointer = &inB
 	}
-	if err := BuiltinTupleCycleTupleReadJSONGeneral(tctx, inBPointer, &item.B, item.N); err != nil {
+	if err := BuiltinTupleCycleTupleReadJSONGeneral(tctx, inBPointer, &item.B, item.Ns); err != nil {
 		return err
 	}
 
@@ -677,6 +695,13 @@ func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (
 	if (item.N != 0) == false {
 		w = w[:backupIndexN]
 	}
+	backupIndexNs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"ns":`...)
+	w = basictl.JSONWriteUint32(w, item.Ns)
+	if (item.Ns != 0) == false {
+		w = w[:backupIndexNs]
+	}
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
@@ -687,7 +712,7 @@ func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(tctx, w, item.B, item.N); err != nil {
+	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(tctx, w, item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if (len(item.B) != 0) == false {
@@ -722,6 +747,10 @@ func (item *CycleTuple) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 	var sz int
 
 	if item.N != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.Ns != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -776,16 +805,20 @@ func (item *CycleTuple) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if item.tl2mask0&1 != 0 {
-		w, sizes, _ = BuiltinTuple2CycleTupleInternalWriteTL2(w, sizes, false, item.A)
+	if item.Ns != 0 {
+		w = basictl.NatWrite(w, item.Ns)
 		currentBlock |= 4
 	}
-	if w, sizes, sz = BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
+	if item.tl2mask0&1 != 0 {
+		w, sizes, _ = BuiltinTuple2CycleTupleInternalWriteTL2(w, sizes, false, item.A)
 		currentBlock |= 8
+	}
+	if w, sizes, sz = BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
+		currentBlock |= 16
 	}
 	if item.tl2mask0&2 != 0 {
 		w, sizes, _ = BuiltinTuple3IntInternalWriteTL2(w, sizes, false, &item.C)
-		currentBlock |= 16
+		currentBlock |= 32
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -852,6 +885,13 @@ func (item *CycleTuple) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.N = 0
 	}
 	if block&4 != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.Ns); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Ns = 0
+	}
+	if block&8 != 0 {
 		item.tl2mask0 |= 1
 		if item.A == nil {
 			item.A = new([2]CycleTuple)
@@ -864,14 +904,14 @@ func (item *CycleTuple) InternalReadTL2(r []byte) (_ []byte, err error) {
 			BuiltinTuple2CycleTupleReset(item.A)
 		}
 	}
-	if block&8 != 0 {
+	if block&16 != 0 {
 		if currentR, err = BuiltinTupleCycleTupleInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.B = item.B[:0]
 	}
-	if block&16 != 0 {
+	if block&32 != 0 {
 		item.tl2mask0 |= 2
 		if currentR, err = BuiltinTuple3IntInternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err

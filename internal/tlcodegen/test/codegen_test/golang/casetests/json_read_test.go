@@ -58,66 +58,53 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 
 	fmt.Println("Seed: ", seed)
 
-	for sId, success := range mt.samples.Successes {
-		alternatives := success.Alternatives
-		if len(alternatives) == 0 {
-			alternatives = append(alternatives, success.GoldenInput)
+	t.Run("Successes", func(t *testing.T) {
+		for _, success := range mt.samples.Successes {
+			alternatives := success.Alternatives
+			if len(alternatives) == 0 {
+				alternatives = append(alternatives, success.GoldenInput)
+			}
+			for _, alternative := range alternatives {
+				t.Run(fmt.Sprintf("%q", alternative), func(t *testing.T) {
+					mt.object.FillRandom(rg)
+					readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
+
+					assert.Nil(t, readErr)
+					writeData, writeErr := mt.object.MarshalJSON()
+
+					assert.Nil(t, writeErr)
+					assert.Equal(t, success.GoldenInput, string(writeData))
+
+					readAgainErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
+					assert.Nil(t, readAgainErr)
+
+					writeAgainData, writeAgainErr := mt.object.MarshalJSON()
+
+					assert.Nil(t, writeAgainErr)
+					assert.Equal(t, success.GoldenInput, string(writeAgainData))
+				})
+
+				if t.Failed() {
+					return
+				}
+			}
 		}
-		for aId, alternative := range alternatives {
-			t.Run(fmt.Sprintf("Object %d - Alternative %d", sId, aId), func(t *testing.T) {
+	})
+
+	t.Run("Failures", func(t *testing.T) {
+		for _, failure := range mt.samples.Failures {
+			t.Run(fmt.Sprintf("%q", failure), func(t *testing.T) {
 				mt.object.FillRandom(rg)
-				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
+				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
 
-				assert.Nil(t, readErr)
-				writeData, writeErr := mt.object.MarshalJSON()
-
-				assert.Nil(t, writeErr)
-				assert.Equal(t, success.GoldenInput, string(writeData))
-
-				readAgainErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
-				assert.Nil(t, readAgainErr)
-
-				writeAgainData, writeAgainErr := mt.object.MarshalJSON()
-
-				assert.Nil(t, writeAgainErr)
-				assert.Equal(t, success.GoldenInput, string(writeAgainData))
+				assert.NotNil(t, readErr)
 			})
 
 			if t.Failed() {
 				return
 			}
 		}
-
-		for aId, alternative := range success.IncorrectAlternatives {
-			t.Run(fmt.Sprintf("Object %d - Wrong alternative %d", sId, aId), func(t *testing.T) {
-				mt.object.FillRandom(rg)
-				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
-
-				assert.Nil(t, readErr)
-				writeData, writeErr := mt.object.MarshalJSON()
-
-				assert.Nil(t, writeErr)
-				assert.NotEqual(t, success.GoldenInput, string(writeData))
-			})
-
-			if t.Failed() {
-				return
-			}
-		}
-	}
-
-	for fId, failure := range mt.samples.Failures {
-		t.Run(fmt.Sprintf("Failure %d", fId), func(t *testing.T) {
-			mt.object.FillRandom(rg)
-			readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
-
-			assert.NotNil(t, readErr)
-		})
-
-		if t.Failed() {
-			return
-		}
-	}
+	})
 }
 
 func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
@@ -196,7 +183,7 @@ func TestGeneralCases(t *testing.T) {
 	}
 
 	for testName, testValues := range tests.Tests {
-		t.Run(testName, func(t *testing.T) {
+		t.Run(testValues.TestingType, func(t *testing.T) {
 			testObject := factory.CreateObjectFromName(testValues.TestingType)
 			if testValues.UseBytes {
 				testObject = factory_bytes.CreateObjectFromName(testValues.TestingType)
