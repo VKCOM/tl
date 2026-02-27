@@ -14,12 +14,13 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestAllPossibleFieldConfigs struct {
-	Local uint32
-	F00   int32
-	F01   True
-	F02   []int32
-	F03   []int32
-	F10   int32 // Conditional: item.Local.0
+	Local  uint32
+	Locals uint32
+	F00    int32
+	F01    True
+	F02    []int32
+	F03    []int32
+	F10    int32 // Conditional: item.Local.0
 	// F11 (TrueType) // Conditional: item.Local.1
 	F12 []int32 // Conditional: item.Local.2
 	F13 []int32 // Conditional: item.Local.3
@@ -31,7 +32,7 @@ type CasesTestAllPossibleFieldConfigs struct {
 }
 
 func (CasesTestAllPossibleFieldConfigs) TLName() string { return "cases.testAllPossibleFieldConfigs" }
-func (CasesTestAllPossibleFieldConfigs) TLTag() uint32  { return 0xfb6836d3 }
+func (CasesTestAllPossibleFieldConfigs) TLTag() uint32  { return 0xc3607629 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF10(v int32) {
 	item.F10 = v
@@ -149,6 +150,7 @@ func (item *CasesTestAllPossibleFieldConfigs) IsSetF23() bool { return item.tl2m
 
 func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.Local = 0
+	item.Locals = 0
 	item.F00 = 0
 	item.F02 = item.F02[:0]
 	item.F03 = item.F03[:0]
@@ -161,14 +163,14 @@ func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.tl2mask0 = 0
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator, nat_outer uint32) {
+func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator, nat_outer uint32, nat_outers uint32) {
 	item.tl2mask0 = 0
 	item.Local = basictl.RandomFieldMask(rg, 0b1111)
-	item.Local = rg.LimitValue(item.Local)
+	item.Locals = basictl.RandomSize(rg)
 	item.F00 = basictl.RandomInt(rg)
 	item.F01.FillRandom(rg)
-	BuiltinTupleIntFillRandom(rg, &item.F02, item.Local)
-	BuiltinTupleIntFillRandom(rg, &item.F03, nat_outer)
+	BuiltinTupleIntFillRandom(rg, &item.F02, item.Locals)
+	BuiltinTupleIntFillRandom(rg, &item.F03, nat_outers)
 	if item.Local&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 		item.F10 = basictl.RandomInt(rg)
@@ -180,13 +182,13 @@ func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerat
 	}
 	if item.Local&(1<<2) != 0 {
 		item.tl2mask0 |= 4
-		BuiltinTupleIntFillRandom(rg, &item.F12, item.Local)
+		BuiltinTupleIntFillRandom(rg, &item.F12, item.Locals)
 	} else {
 		item.F12 = item.F12[:0]
 	}
 	if item.Local&(1<<3) != 0 {
 		item.tl2mask0 |= 8
-		BuiltinTupleIntFillRandom(rg, &item.F13, nat_outer)
+		BuiltinTupleIntFillRandom(rg, &item.F13, nat_outers)
 	} else {
 		item.F13 = item.F13[:0]
 	}
@@ -201,23 +203,23 @@ func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerat
 	}
 	if nat_outer&(1<<2) != 0 {
 		item.tl2mask0 |= 64
-		BuiltinTupleIntFillRandom(rg, &item.F22, item.Local)
+		BuiltinTupleIntFillRandom(rg, &item.F22, item.Locals)
 	} else {
 		item.F22 = item.F22[:0]
 	}
 	if nat_outer&(1<<3) != 0 {
 		item.tl2mask0 |= 128
-		BuiltinTupleIntFillRandom(rg, &item.F23, nat_outer)
+		BuiltinTupleIntFillRandom(rg, &item.F23, nat_outers)
 	} else {
 		item.F23 = item.F23[:0]
 	}
 }
 
-func (item CasesTestAllPossibleFieldConfigs) RepairMasksValue(nat_outer uint32) CasesTestAllPossibleFieldConfigs {
-	item.RepairMasks(nat_outer)
+func (item CasesTestAllPossibleFieldConfigs) RepairMasksValue(nat_outer uint32, nat_outers uint32) CasesTestAllPossibleFieldConfigs {
+	item.RepairMasks(nat_outer, nat_outers)
 	return item
 }
-func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32) {
+func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32, nat_outers uint32) {
 	item.tl2mask0 = 0
 	if item.Local&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -245,9 +247,12 @@ func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32) {
 	}
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Local); err != nil {
+		return w, err
+	}
+	if w, err = basictl.NatRead(w, &item.Locals); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.F00); err != nil {
@@ -256,10 +261,10 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	if w, err = item.F01.Read(w); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntRead(w, &item.F02, item.Local); err != nil {
+	if w, err = BuiltinTupleIntRead(w, &item.F02, item.Locals); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntRead(w, &item.F03, nat_outer); err != nil {
+	if w, err = BuiltinTupleIntRead(w, &item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if item.Local&(1<<0) != 0 {
@@ -275,7 +280,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	}
 	if item.Local&(1<<2) != 0 {
 		item.tl2mask0 |= 4
-		if w, err = BuiltinTupleIntRead(w, &item.F12, item.Local); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	} else {
@@ -283,7 +288,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	}
 	if item.Local&(1<<3) != 0 {
 		item.tl2mask0 |= 8
-		if w, err = BuiltinTupleIntRead(w, &item.F13, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	} else {
@@ -302,7 +307,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	}
 	if nat_outer&(1<<2) != 0 {
 		item.tl2mask0 |= 64
-		if w, err = BuiltinTupleIntRead(w, &item.F22, item.Local); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	} else {
@@ -310,7 +315,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	}
 	if nat_outer&(1<<3) != 0 {
 		item.tl2mask0 |= 128
-		if w, err = BuiltinTupleIntRead(w, &item.F23, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	} else {
@@ -319,30 +324,31 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteGeneral(w []byte, nat_outer uint32) (_ []byte, err error) {
-	return item.Write(w, nat_outer)
+func (item *CasesTestAllPossibleFieldConfigs) WriteGeneral(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.Write(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Local)
+	w = basictl.NatWrite(w, item.Locals)
 	w = basictl.IntWrite(w, item.F00)
 	w = item.F01.Write(w)
-	if w, err = BuiltinTupleIntWrite(w, item.F02, item.Local); err != nil {
+	if w, err = BuiltinTupleIntWrite(w, item.F02, item.Locals); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntWrite(w, item.F03, nat_outer); err != nil {
+	if w, err = BuiltinTupleIntWrite(w, item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if item.Local&(1<<0) != 0 {
 		w = basictl.IntWrite(w, item.F10)
 	}
 	if item.Local&(1<<2) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F12, item.Local); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if item.Local&(1<<3) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F13, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -350,36 +356,37 @@ func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32) 
 		w = basictl.IntWrite(w, item.F20)
 	}
 	if nat_outer&(1<<2) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F22, item.Local); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if nat_outer&(1<<3) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F23, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadBoxed(w []byte, nat_outer uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xfb6836d3); err != nil {
+func (item *CasesTestAllPossibleFieldConfigs) ReadBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0xc3607629); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_outer)
+	return item.Read(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteBoxedGeneral(w []byte, nat_outer uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_outer)
+func (item *CasesTestAllPossibleFieldConfigs) WriteBoxedGeneral(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.WriteBoxed(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteBoxed(w []byte, nat_outer uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xfb6836d3)
-	return item.Write(w, nat_outer)
+func (item *CasesTestAllPossibleFieldConfigs) WriteBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	w = basictl.NatWrite(w, 0xc3607629)
+	return item.Write(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32) error {
+func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32, nat_outers uint32) error {
 	var propLocalPresented bool
+	var propLocalsPresented bool
 	var propF00Presented bool
 	var propF01Presented bool
 	var rawF02 []byte
@@ -410,6 +417,14 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return err
 				}
 				propLocalPresented = true
+			case "locals":
+				if propLocalsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "locals")
+				}
+				if err := Json2ReadUint32(in, &item.Locals); err != nil {
+					return err
+				}
+				propLocalsPresented = true
 			case "f00":
 				if propF00Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f00")
@@ -516,6 +531,9 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if !propLocalPresented {
 		item.Local = 0
 	}
+	if !propLocalsPresented {
+		item.Locals = 0
+	}
 	if !propF00Presented {
 		item.F00 = 0
 	}
@@ -547,7 +565,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if rawF02 != nil {
 		inF02Pointer = &inF02
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF02Pointer, &item.F02, item.Local); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF02Pointer, &item.F02, item.Locals); err != nil {
 		return err
 	}
 
@@ -556,7 +574,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if rawF03 != nil {
 		inF03Pointer = &inF03
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF03Pointer, &item.F03, nat_outer); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF03Pointer, &item.F03, nat_outers); err != nil {
 		return err
 	}
 
@@ -568,7 +586,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		if rawF12 != nil {
 			inF12Pointer = &inF12
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF12Pointer, &item.F12, item.Local); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF12Pointer, &item.F12, item.Locals); err != nil {
 			return err
 		}
 
@@ -581,7 +599,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		if rawF13 != nil {
 			inF13Pointer = &inF13
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF13Pointer, &item.F13, nat_outer); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF13Pointer, &item.F13, nat_outers); err != nil {
 			return err
 		}
 
@@ -597,7 +615,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		if rawF22 != nil {
 			inF22Pointer = &inF22
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF22Pointer, &item.F22, item.Local); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF22Pointer, &item.F22, item.Locals); err != nil {
 			return err
 		}
 
@@ -613,7 +631,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		if rawF23 != nil {
 			inF23Pointer = &inF23
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF23Pointer, &item.F23, nat_outer); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF23Pointer, &item.F23, nat_outers); err != nil {
 			return err
 		}
 
@@ -650,15 +668,15 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_outer)
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSON(w []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSON(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_outer)
+	return item.WriteJSONOpt(&tctx, w, nat_outer, nat_outers)
 }
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexLocal := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -666,6 +684,13 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	w = basictl.JSONWriteUint32(w, item.Local)
 	if (item.Local != 0) == false {
 		w = w[:backupIndexLocal]
+	}
+	backupIndexLocals := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"locals":`...)
+	w = basictl.JSONWriteUint32(w, item.Locals)
+	if (item.Locals != 0) == false {
+		w = w[:backupIndexLocals]
 	}
 	backupIndexF00 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -677,7 +702,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	backupIndexF02 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f02":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F02, item.Local); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F02, item.Locals); err != nil {
 		return w, err
 	}
 	if (len(item.F02) != 0) == false {
@@ -686,7 +711,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	backupIndexF03 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f03":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F03, nat_outer); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if (len(item.F03) != 0) == false {
@@ -704,14 +729,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.Local&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f12":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F12, item.Local); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if item.Local&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f13":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F13, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -723,14 +748,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if nat_outer&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f22":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F22, item.Local); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if nat_outer&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f23":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F23, nat_outer); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -747,6 +772,10 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, optim
 	var sz int
 
 	if item.Local != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.Locals != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -769,10 +798,10 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, optim
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
+	currentSize++
 	if item.tl2mask0&2 != 0 {
 		lastUsedByte = currentSize
 	}
-	currentSize++
 	if item.tl2mask0&4 != 0 {
 		sizes, sz = BuiltinTupleIntCalculateLayout(sizes, false, &item.F12)
 		currentSize += sz
@@ -837,24 +866,25 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 		w = basictl.NatWrite(w, item.Local)
 		currentBlock |= 2
 	}
-	if item.F00 != 0 {
-		w = basictl.IntWrite(w, item.F00)
+	if item.Locals != 0 {
+		w = basictl.NatWrite(w, item.Locals)
 		currentBlock |= 4
 	}
-	if false {
+	if item.F00 != 0 {
+		w = basictl.IntWrite(w, item.F00)
 		currentBlock |= 8
 	}
-	if w, sizes, sz = BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F02); sz != 0 {
+	if false {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F03); sz != 0 {
+	if w, sizes, sz = BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F02); sz != 0 {
 		currentBlock |= 32
+	}
+	if w, sizes, sz = BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F03); sz != 0 {
+		currentBlock |= 64
 	}
 	if item.tl2mask0&1 != 0 {
 		w = basictl.IntWrite(w, item.F10)
-		currentBlock |= 64
-	}
-	if item.tl2mask0&2 != 0 {
 		currentBlock |= 128
 	}
 	if currentBlockPosition < len(w) {
@@ -866,28 +896,31 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
 	}
+	if item.tl2mask0&2 != 0 {
+		currentBlock |= 1
+	}
 	if item.tl2mask0&4 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F12)
-		currentBlock |= 1
+		currentBlock |= 2
 	}
 	if item.tl2mask0&8 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F13)
-		currentBlock |= 2
+		currentBlock |= 4
 	}
 	if item.tl2mask0&16 != 0 {
 		w = basictl.IntWrite(w, item.F20)
-		currentBlock |= 4
+		currentBlock |= 8
 	}
 	if item.tl2mask0&32 != 0 {
-		currentBlock |= 8
+		currentBlock |= 16
 	}
 	if item.tl2mask0&64 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F22)
-		currentBlock |= 16
+		currentBlock |= 32
 	}
 	if item.tl2mask0&128 != 0 {
 		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F23)
-		currentBlock |= 32
+		currentBlock |= 64
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -954,41 +987,45 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 		item.Local = 0
 	}
 	if block&4 != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.Locals); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Locals = 0
+	}
+	if block&8 != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.F00); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F00 = 0
 	}
-	if block&8 != 0 {
+	if block&16 != 0 {
 		if currentR, err = basictl.SkipSizedValue(currentR); err != nil {
 			return currentR, err
 		}
 	}
-	if block&16 != 0 {
+	if block&32 != 0 {
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F02); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F02 = item.F02[:0]
 	}
-	if block&32 != 0 {
+	if block&64 != 0 {
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F03); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F03 = item.F03[:0]
 	}
-	if block&64 != 0 {
+	if block&128 != 0 {
 		item.tl2mask0 |= 1
 		if currentR, err = basictl.IntRead(currentR, &item.F10); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F10 = 0
-	}
-	if block&128 != 0 {
-		item.tl2mask0 |= 2
 	}
 	// start the next block
 	if len(currentR) > 0 {
@@ -999,6 +1036,9 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 		block = 0
 	}
 	if block&1 != 0 {
+		item.tl2mask0 |= 2
+	}
+	if block&2 != 0 {
 		item.tl2mask0 |= 4
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F12); err != nil {
 			return currentR, err
@@ -1006,7 +1046,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F12 = item.F12[:0]
 	}
-	if block&2 != 0 {
+	if block&4 != 0 {
 		item.tl2mask0 |= 8
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F13); err != nil {
 			return currentR, err
@@ -1014,7 +1054,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F13 = item.F13[:0]
 	}
-	if block&4 != 0 {
+	if block&8 != 0 {
 		item.tl2mask0 |= 16
 		if currentR, err = basictl.IntRead(currentR, &item.F20); err != nil {
 			return currentR, err
@@ -1022,10 +1062,10 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F20 = 0
 	}
-	if block&8 != 0 {
+	if block&16 != 0 {
 		item.tl2mask0 |= 32
 	}
-	if block&16 != 0 {
+	if block&32 != 0 {
 		item.tl2mask0 |= 64
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F22); err != nil {
 			return currentR, err
@@ -1033,7 +1073,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F22 = item.F22[:0]
 	}
-	if block&32 != 0 {
+	if block&64 != 0 {
 		item.tl2mask0 |= 128
 		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F23); err != nil {
 			return currentR, err

@@ -313,7 +313,7 @@ func init() {
 	fillFunction(&TLItem{tlName: "call7", tag: 0x262a43e2, hasTL1: true, hasTL2: true, annotations: 0x8})
 	fillFunction(&TLItem{tlName: "call8", tag: 0x7b400184, hasTL1: true, hasTL2: true, annotations: 0x8})
 	fillFunction(&TLItem{tlName: "call9", tag: 0x67a0d62d, hasTL1: true, hasTL2: true, annotations: 0x8})
-	fillObject(&TLItem{tlName: "cycleTuple", tag: 0xc867fae3, hasTL1: true, hasTL2: true})
+	fillObject(&TLItem{tlName: "cycleTuple", tag: 0x9cf61870, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "halfStr", tag: 0x647ddaf5, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "hren", tag: 0x12ab5219, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "int", tag: 0xa8509bda, hasTL1: true, hasTL2: true})

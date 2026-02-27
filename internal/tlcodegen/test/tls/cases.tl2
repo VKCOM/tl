@@ -61,6 +61,7 @@ cases.testOutFieldMaskContainer = f:uint32 fs:uint32 inner:cases.testOutFieldMas
 cases.testBeforeReadBitValidation = n:uint32 ns:uint32 a?:[]int b?:[]int;
 cases.testAllPossibleFieldConfigs = 
 	local:uint32
+	locals:uint32
 	// no fieldmask, no nat dependencies in type
 	f00:int
 	// no fieldmask, true type
@@ -83,7 +84,7 @@ cases.testAllPossibleFieldConfigs =
 	f22?:[]int
 	// outer fieldmask, have only external nat dependencies in type
 	f23?:[]int;
-cases.testAllPossibleFieldConfigsContainer = outer:uint32 value:cases.testAllPossibleFieldConfigs;
+cases.testAllPossibleFieldConfigsContainer = outer:uint32 outers:uint32 value:cases.testAllPossibleFieldConfigs;
 // BLOCK: TEST INPLACING ARGUMENTS
 cases.testInplaceStructArgs = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<int>;
 cases.testInplaceStructArgs2 = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<pair<tuple<int>,tuple<int>>>;
@@ -159,9 +160,9 @@ casesTL2.testParamsGeneration =
 	x3:casesTL2.testObjectWithMuiltiParams_N<3>
 	x4:casesTL2.testObjectWithMuiltiParams;
 casesTL2.testObjectWithMuiltiParams = f1?:[]int f2?:[]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:#> = f1?:[n]int f2?:[]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:#> = f1?:[]int f2?:[m]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:#,m:#> = f1?:[n]int f2?:[m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:#> = f1?:[]int f2?:[]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:#> = f1?:[m]int f2?:[m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:#,m:#> = f1?:[m]int f2?:[m]int;
 casesGo.testNames = write:int read:int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => ;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => ;

@@ -67,19 +67,18 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 			bracketType.IndexType = ic
 			natArgs = append(natArgs, natArgs2...)
 
-			//TODO - uncomment as soon as code to regenerated tests exists again
-			//if sf := ic.SourceField; sf != (tlast.CombinatorField{}) {
-			//	field := &sf.Comb.Fields[sf.FieldIndex]
-			//	if field.UsedAsMask {
-			//		e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
-			//		e3.PrintWarning(k.opts.ErrorWriter, nil)
-			//		e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
-			//		e2 := ic.PR.BeautifulError(fmt.Errorf("used as size here"))
-			//		return tr, nil, tlast.BeautifulError2(e1, e2)
-			//	}
-			//	field.UsedAsSize = true
-			//	field.UsedAsSizePR = ic.PR
-			//}
+			if sf := ic.SourceField; sf != (tlast.CombinatorField{}) {
+				field := &sf.Comb.Fields[sf.FieldIndex]
+				if field.UsedAsMask {
+					e3 := field.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
+					e3.PrintWarning(k.opts.ErrorWriter, nil)
+					e1 := field.PRName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.FieldName))
+					e2 := ic.PR.BeautifulError(fmt.Errorf("used as size here"))
+					return tr, nil, tlast.BeautifulError2(e1, e2)
+				}
+				field.UsedAsSize = true
+				field.UsedAsSizePR = ic.PR
+			}
 		}
 		ac, natArgs2, err := k.resolveType(ctxTL2, bracketType.ArrayType, leftArgs, actualArgs)
 		if err != nil {

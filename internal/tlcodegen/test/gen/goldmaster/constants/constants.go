@@ -72,7 +72,7 @@ const (
 	Cyc1MyCycle                             = 0x136ecc9e // cyc1.myCycle
 	Cyc2MyCycle                             = 0xfba5eecb // cyc2.myCycle
 	Cyc3MyCycle                             = 0x47866860 // cyc3.myCycle
-	CycleTuple                              = 0xc867fae3 // cycleTuple
+	CycleTuple                              = 0x9cf61870 // cycleTuple
 	Dictionary                              = 0x1f4c618f // dictionary
 	DictionaryAny                           = 0x1f4c6190 // dictionaryAny
 	DictionaryAnyField                      = 0xe466c347 // dictionaryAnyField

@@ -95,7 +95,7 @@ myZero3 = MyNat3;
 myPlus3 MyNat3 = MyNat3; // typedef
 
 // ban such things
-cycleTuple n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?3*[int] = CycleTuple;
+cycleTuple n:# ns:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple ns) c:n.2?3*[int] = CycleTuple;
 
 hren next:(Maybe hren) = Hren;
 //----- Test Recursive between namespaces

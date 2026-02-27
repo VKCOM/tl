@@ -341,7 +341,7 @@ func init() {
 	fillObject(&TLItem{tlName: "casesTL2.testParamsGeneration", tag: 0xaac2f033, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "casesTL2.testVectorBool", tag: 0x644bb447, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cases.testAllDicts", tag: 0xec4b79a6, hasTL1: true, hasTL2: true})
-	fillObject(&TLItem{tlName: "cases.testAllPossibleFieldConfigsContainer", tag: 0xe3fae936, hasTL1: true, hasTL2: true})
+	fillObject(&TLItem{tlName: "cases.testAllPossibleFieldConfigsContainer", tag: 0xb932488a, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cases.testArray", tag: 0xa888030d, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cases.testBeforeReadBitValidation", tag: 0xc81cf91b, hasTL1: true, hasTL2: true})
 	fillObject(&TLItem{tlName: "cases.testDictAny", tag: 0x252b4ddb, hasTL1: true, hasTL2: true})

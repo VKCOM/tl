@@ -15,14 +15,14 @@ var _ = basictl.NatWrite
 
 type CasesTL2TestObjectWithMuiltiParams struct {
 	F1       []int32 // Conditional: nat_n.0
-	F2       []int32 // Conditional: nat_m.0
+	F2       []int32 // Conditional: nat_n.1
 	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams) TLName() string {
 	return "casesTL2.testObjectWithMuiltiParams"
 }
-func (CasesTL2TestObjectWithMuiltiParams) TLTag() uint32 { return 0x76444f62 }
+func (CasesTL2TestObjectWithMuiltiParams) TLTag() uint32 { return 0xc1de8275 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) SetF1(v []int32, nat_n *uint32) {
 	item.F1 = v
@@ -40,17 +40,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ClearF1(nat_n *uint32) {
 }
 func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) SetF2(v []int32, nat_m *uint32) {
+func (item *CasesTL2TestObjectWithMuiltiParams) SetF2(v []int32, nat_n *uint32) {
 	item.F2 = v
-	if nat_m != nil {
-		*nat_m |= 1 << 0
+	if nat_n != nil {
+		*nat_n |= 1 << 1
 	}
 	item.tl2mask0 |= 2
 }
-func (item *CasesTL2TestObjectWithMuiltiParams) ClearF2(nat_m *uint32) {
+func (item *CasesTL2TestObjectWithMuiltiParams) ClearF2(nat_n *uint32) {
 	item.F2 = item.F2[:0]
-	if nat_m != nil {
-		*nat_m &^= 1 << 0
+	if nat_n != nil {
+		*nat_n &^= 1 << 1
 	}
 	item.tl2mask0 &^= 2
 }
@@ -66,11 +66,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams) FillRandom(rg *basictl.RandGener
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinTupleIntFillRandom(rg, &item.F1, nat_n)
+		BuiltinTupleIntFillRandom(rg, &item.F1, nat_m)
 	} else {
 		item.F1 = item.F1[:0]
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		BuiltinTupleIntFillRandom(rg, &item.F2, nat_m)
 	} else {
@@ -87,7 +87,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) RepairMasks(nat_n uint32, nat_m 
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 }
@@ -96,13 +96,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte, nat_n uint32, nat
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinTupleIntRead(w, &item.F1, nat_n); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F1, nat_m); err != nil {
 			return w, err
 		}
 	} else {
 		item.F1 = item.F1[:0]
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		if w, err = BuiltinTupleIntRead(w, &item.F2, nat_m); err != nil {
 			return w, err
@@ -119,11 +119,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteGeneral(w []byte, nat_n uin
 
 func (item *CasesTL2TestObjectWithMuiltiParams) Write(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	if nat_n&(1<<0) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F1, nat_n); err != nil {
+		if w, err = BuiltinTupleIntWrite(w, item.F1, nat_m); err != nil {
 			return w, err
 		}
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		if w, err = BuiltinTupleIntWrite(w, item.F2, nat_m); err != nil {
 			return w, err
 		}
@@ -132,7 +132,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) Write(w []byte, nat_n uint32, na
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadBoxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x76444f62); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_n, nat_m)
@@ -143,7 +143,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteBoxedGeneral(w []byte, nat_
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) WriteBoxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x76444f62)
+	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.Write(w, nat_n, nat_m)
 }
 
@@ -197,12 +197,12 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 		if rawF1 != nil {
 			inF1Pointer = &inF1
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_n); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_m); err != nil {
 			return err
 		}
 
 	}
-	if nat_m&(1<<0) == 0 {
+	if nat_n&(1<<1) == 0 {
 		if rawF2 != nil {
 			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
 		}
@@ -221,7 +221,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 	return nil
@@ -241,11 +241,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONW
 	if nat_n&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_n); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_m); err != nil {
 			return w, err
 		}
 	}
-	if nat_m&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
 		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F2, nat_m); err != nil {
@@ -397,17 +397,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL2(r []byte, ctx *basictl.T
 }
 
 type CasesTL2TestObjectWithMuiltiParams2 struct {
-	F1       []int32  // Conditional: nat_n.0
-	F2       [2]int32 // Conditional: 2.0
+	F1       [2]int32 // Conditional: nat_n.0
+	F2       [2]int32 // Conditional: nat_n.1
 	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams2) TLName() string {
 	return "casesTL2.testObjectWithMuiltiParams"
 }
-func (CasesTL2TestObjectWithMuiltiParams2) TLTag() uint32 { return 0x76444f62 }
+func (CasesTL2TestObjectWithMuiltiParams2) TLTag() uint32 { return 0xc1de8275 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) SetF1(v []int32, nat_n *uint32) {
+func (item *CasesTL2TestObjectWithMuiltiParams2) SetF1(v [2]int32, nat_n *uint32) {
 	item.F1 = v
 	if nat_n != nil {
 		*nat_n |= 1 << 0
@@ -415,7 +415,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) SetF1(v []int32, nat_n *uint32)
 	item.tl2mask0 |= 1
 }
 func (item *CasesTL2TestObjectWithMuiltiParams2) ClearF1(nat_n *uint32) {
-	item.F1 = item.F1[:0]
+	BuiltinTuple2IntReset(&item.F1)
 	if nat_n != nil {
 		*nat_n &^= 1 << 0
 	}
@@ -423,8 +423,24 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ClearF1(nat_n *uint32) {
 }
 func (item *CasesTL2TestObjectWithMuiltiParams2) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
+func (item *CasesTL2TestObjectWithMuiltiParams2) SetF2(v [2]int32, nat_n *uint32) {
+	item.F2 = v
+	if nat_n != nil {
+		*nat_n |= 1 << 1
+	}
+	item.tl2mask0 |= 2
+}
+func (item *CasesTL2TestObjectWithMuiltiParams2) ClearF2(nat_n *uint32) {
+	BuiltinTuple2IntReset(&item.F2)
+	if nat_n != nil {
+		*nat_n &^= 1 << 1
+	}
+	item.tl2mask0 &^= 2
+}
+func (item *CasesTL2TestObjectWithMuiltiParams2) IsSetF2() bool { return item.tl2mask0&2 != 0 }
+
 func (item *CasesTL2TestObjectWithMuiltiParams2) Reset() {
-	item.F1 = item.F1[:0]
+	BuiltinTuple2IntReset(&item.F1)
 	BuiltinTuple2IntReset(&item.F2)
 	item.tl2mask0 = 0
 }
@@ -433,11 +449,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) FillRandom(rg *basictl.RandGene
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinTupleIntFillRandom(rg, &item.F1, nat_n)
+		BuiltinTuple2IntFillRandom(rg, &item.F1)
 	} else {
-		item.F1 = item.F1[:0]
+		BuiltinTuple2IntReset(&item.F1)
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		BuiltinTuple2IntFillRandom(rg, &item.F2)
 	} else {
@@ -454,7 +470,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) RepairMasks(nat_n uint32) {
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 }
@@ -463,13 +479,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) Read(w []byte, nat_n uint32) (_
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinTupleIntRead(w, &item.F1, nat_n); err != nil {
+		if w, err = BuiltinTuple2IntRead(w, &item.F1); err != nil {
 			return w, err
 		}
 	} else {
-		item.F1 = item.F1[:0]
+		BuiltinTuple2IntReset(&item.F1)
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		if w, err = BuiltinTuple2IntRead(w, &item.F2); err != nil {
 			return w, err
@@ -481,39 +497,37 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) Read(w []byte, nat_n uint32) (_
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.Write(w, nat_n)
+	return item.Write(w, nat_n), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) Write(w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams2) Write(w []byte, nat_n uint32) []byte {
 	if nat_n&(1<<0) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F1, nat_n); err != nil {
-			return w, err
-		}
+		w = BuiltinTuple2IntWrite(w, &item.F1)
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		w = BuiltinTuple2IntWrite(w, &item.F2)
 	}
-	return w, nil
+	return w
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x76444f62); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_n)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_n)
+	return item.WriteBoxed(w, nat_n), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x76444f62)
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteBoxed(w []byte, nat_n uint32) []byte {
+	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.Write(w, nat_n)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	var rawF1 []byte
+	var propF1Presented bool
 	var propF2Presented bool
 
 	if in != nil {
@@ -526,18 +540,21 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 			in.WantColon()
 			switch key {
 			case "f1":
-				if rawF1 != nil {
+				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				rawF1 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				if nat_n&(1<<0) == 0 {
+					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
 				}
+				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
+					return err
+				}
+				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				if 2&(1<<0) == 0 {
+				if nat_n&(1<<1) == 0 {
 					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
 				}
 				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
@@ -554,29 +571,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 			return in.Error()
 		}
 	}
+	if !propF1Presented {
+		BuiltinTuple2IntReset(&item.F1)
+	}
 	if !propF2Presented {
 		BuiltinTuple2IntReset(&item.F2)
-	}
-	if nat_n&(1<<0) == 0 {
-		if rawF1 != nil {
-			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-		}
-		item.F1 = item.F1[:0]
-	} else {
-		var inF1Pointer *basictl.JsonLexer
-		inF1 := basictl.JsonLexer{Data: rawF1}
-		if rawF1 != nil {
-			inF1Pointer = &inF1
-		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_n); err != nil {
-			return err
-		}
-
 	}
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 	return nil
@@ -584,28 +588,26 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 
 // This method is general version of WriteJSON, use it instead!
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n)
+	return item.WriteJSONOpt(tctx, w, nat_n), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSON(w []byte, nat_n uint32) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w, nat_n)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) []byte {
 	w = append(w, '{')
 	if nat_n&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_n); err != nil {
-			return w, err
-		}
+		w = BuiltinTuple2IntWriteJSONOpt(tctx, w, &item.F1)
 	}
-	if 2&(1<<0) != 0 {
+	if nat_n&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
 		w = BuiltinTuple2IntWriteJSONOpt(tctx, w, &item.F2)
 	}
-	return append(w, '}'), nil
+	return append(w, '}')
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
@@ -618,7 +620,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) CalculateLayout(sizes []int, op
 	var sz int
 
 	if item.tl2mask0&1 != 0 {
-		sizes, sz = BuiltinTupleIntCalculateLayout(sizes, false, &item.F1)
+		sizes, sz = BuiltinTuple2IntCalculateLayout(sizes, false, &item.F1)
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -661,7 +663,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) InternalWriteTL2(w []byte, size
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	if item.tl2mask0&1 != 0 {
-		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F1)
+		w, sizes, _ = BuiltinTuple2IntInternalWriteTL2(w, sizes, false, &item.F1)
 		currentBlock |= 2
 	}
 	if item.tl2mask0&2 != 0 {
@@ -727,11 +729,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) InternalReadTL2(r []byte) (_ []
 	item.tl2mask0 = 0
 	if block&2 != 0 {
 		item.tl2mask0 |= 1
-		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F1); err != nil {
+		if currentR, err = BuiltinTuple2IntInternalReadTL2(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F1 = item.F1[:0]
+		BuiltinTuple2IntReset(&item.F1)
 	}
 	if block&4 != 0 {
 		item.tl2mask0 |= 2
@@ -750,34 +752,18 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadTL2(r []byte, ctx *basictl.
 }
 
 type CasesTL2TestObjectWithMuiltiParams3 struct {
-	F1       [3]int32 // Conditional: 3.0
-	F2       []int32  // Conditional: nat_m.0
+	F1       []int32 // Conditional: 3.0
+	F2       []int32 // Conditional: 3.1
 	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams3) TLName() string {
 	return "casesTL2.testObjectWithMuiltiParams"
 }
-func (CasesTL2TestObjectWithMuiltiParams3) TLTag() uint32 { return 0x76444f62 }
-
-func (item *CasesTL2TestObjectWithMuiltiParams3) SetF2(v []int32, nat_m *uint32) {
-	item.F2 = v
-	if nat_m != nil {
-		*nat_m |= 1 << 0
-	}
-	item.tl2mask0 |= 2
-}
-func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF2(nat_m *uint32) {
-	item.F2 = item.F2[:0]
-	if nat_m != nil {
-		*nat_m &^= 1 << 0
-	}
-	item.tl2mask0 &^= 2
-}
-func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2() bool { return item.tl2mask0&2 != 0 }
+func (CasesTL2TestObjectWithMuiltiParams3) TLTag() uint32 { return 0xc1de8275 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) Reset() {
-	BuiltinTuple3IntReset(&item.F1)
+	item.F1 = item.F1[:0]
 	item.F2 = item.F2[:0]
 	item.tl2mask0 = 0
 }
@@ -786,11 +772,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) FillRandom(rg *basictl.RandGene
 	item.tl2mask0 = 0
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinTuple3IntFillRandom(rg, &item.F1)
+		BuiltinTupleIntFillRandom(rg, &item.F1, nat_m)
 	} else {
-		BuiltinTuple3IntReset(&item.F1)
+		item.F1 = item.F1[:0]
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		BuiltinTupleIntFillRandom(rg, &item.F2, nat_m)
 	} else {
@@ -807,7 +793,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) RepairMasks(nat_m uint32) {
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 }
@@ -816,13 +802,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) Read(w []byte, nat_m uint32) (_
 	item.tl2mask0 = 0
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinTuple3IntRead(w, &item.F1); err != nil {
+		if w, err = BuiltinTupleIntRead(w, &item.F1, nat_m); err != nil {
 			return w, err
 		}
 	} else {
-		BuiltinTuple3IntReset(&item.F1)
+		item.F1 = item.F1[:0]
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		if w, err = BuiltinTupleIntRead(w, &item.F2, nat_m); err != nil {
 			return w, err
@@ -839,9 +825,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteGeneral(w []byte, nat_m ui
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) Write(w []byte, nat_m uint32) (_ []byte, err error) {
 	if 3&(1<<0) != 0 {
-		w = BuiltinTuple3IntWrite(w, &item.F1)
+		if w, err = BuiltinTupleIntWrite(w, item.F1, nat_m); err != nil {
+			return w, err
+		}
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		if w, err = BuiltinTupleIntWrite(w, item.F2, nat_m); err != nil {
 			return w, err
 		}
@@ -850,7 +838,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) Write(w []byte, nat_m uint32) (
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadBoxed(w []byte, nat_m uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x76444f62); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_m)
@@ -861,12 +849,12 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteBoxedGeneral(w []byte, nat
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) WriteBoxed(w []byte, nat_m uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x76444f62)
+	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.Write(w, nat_m)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_m uint32) error {
-	var propF1Presented bool
+	var rawF1 []byte
 	var rawF2 []byte
 
 	if in != nil {
@@ -879,16 +867,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			in.WantColon()
 			switch key {
 			case "f1":
-				if propF1Presented {
+				if rawF1 != nil {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				if 3&(1<<0) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
+				rawF1 = in.Raw()
+				if !in.Ok() {
+					return in.Error()
 				}
-				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
-					return err
-				}
-				propF1Presented = true
 			case "f2":
 				if rawF2 != nil {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
@@ -907,10 +892,23 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			return in.Error()
 		}
 	}
-	if !propF1Presented {
-		BuiltinTuple3IntReset(&item.F1)
+	if 3&(1<<0) == 0 {
+		if rawF1 != nil {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
+		}
+		item.F1 = item.F1[:0]
+	} else {
+		var inF1Pointer *basictl.JsonLexer
+		inF1 := basictl.JsonLexer{Data: rawF1}
+		if rawF1 != nil {
+			inF1Pointer = &inF1
+		}
+		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_m); err != nil {
+			return err
+		}
+
 	}
-	if nat_m&(1<<0) == 0 {
+	if 3&(1<<1) == 0 {
 		if rawF2 != nil {
 			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
 		}
@@ -929,7 +927,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 	return nil
@@ -949,9 +947,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(tctx *basictl.JSON
 	if 3&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.F1)
+		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_m); err != nil {
+			return w, err
+		}
 	}
-	if nat_m&(1<<0) != 0 {
+	if 3&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
 		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F2, nat_m); err != nil {
@@ -971,7 +971,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int, op
 	var sz int
 
 	if item.tl2mask0&1 != 0 {
-		sizes, sz = BuiltinTuple3IntCalculateLayout(sizes, false, &item.F1)
+		sizes, sz = BuiltinTupleIntCalculateLayout(sizes, false, &item.F1)
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -1014,7 +1014,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) InternalWriteTL2(w []byte, size
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	if item.tl2mask0&1 != 0 {
-		w, sizes, _ = BuiltinTuple3IntInternalWriteTL2(w, sizes, false, &item.F1)
+		w, sizes, _ = BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F1)
 		currentBlock |= 2
 	}
 	if item.tl2mask0&2 != 0 {
@@ -1080,11 +1080,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) InternalReadTL2(r []byte) (_ []
 	item.tl2mask0 = 0
 	if block&2 != 0 {
 		item.tl2mask0 |= 1
-		if currentR, err = BuiltinTuple3IntInternalReadTL2(currentR, &item.F1); err != nil {
+		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinTuple3IntReset(&item.F1)
+		item.F1 = item.F1[:0]
 	}
 	if block&4 != 0 {
 		item.tl2mask0 |= 2
@@ -1103,18 +1103,18 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadTL2(r []byte, ctx *basictl.
 }
 
 type CasesTL2TestObjectWithMuiltiParams41 struct {
-	F1       [4]int32 // Conditional: 4.0
-	F2       [1]int32 // Conditional: 1.0
+	F1       [1]int32 // Conditional: 4.0
+	F2       [1]int32 // Conditional: 4.1
 	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams41) TLName() string {
 	return "casesTL2.testObjectWithMuiltiParams"
 }
-func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0x76444f62 }
+func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0xc1de8275 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Reset() {
-	BuiltinTuple4IntReset(&item.F1)
+	BuiltinTuple1IntReset(&item.F1)
 	BuiltinTuple1IntReset(&item.F2)
 	item.tl2mask0 = 0
 }
@@ -1123,11 +1123,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		BuiltinTuple4IntFillRandom(rg, &item.F1)
+		BuiltinTuple1IntFillRandom(rg, &item.F1)
 	} else {
-		BuiltinTuple4IntReset(&item.F1)
+		BuiltinTuple1IntReset(&item.F1)
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		BuiltinTuple1IntFillRandom(rg, &item.F2)
 	} else {
@@ -1144,7 +1144,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) RepairMasks() {
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 }
@@ -1153,13 +1153,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err 
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinTuple4IntRead(w, &item.F1); err != nil {
+		if w, err = BuiltinTuple1IntRead(w, &item.F1); err != nil {
 			return w, err
 		}
 	} else {
-		BuiltinTuple4IntReset(&item.F1)
+		BuiltinTuple1IntReset(&item.F1)
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		if w, err = BuiltinTuple1IntRead(w, &item.F2); err != nil {
 			return w, err
@@ -1176,16 +1176,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteGeneral(w []byte) (_ []by
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Write(w []byte) []byte {
 	if 4&(1<<0) != 0 {
-		w = BuiltinTuple4IntWrite(w, &item.F1)
+		w = BuiltinTuple1IntWrite(w, &item.F1)
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		w = BuiltinTuple1IntWrite(w, &item.F2)
 	}
 	return w
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x76444f62); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -1196,7 +1196,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxedGeneral(w []byte) (_
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x76444f62)
+	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.Write(w)
 }
 
@@ -1229,7 +1229,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 				if 4&(1<<0) == 0 {
 					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
 				}
-				if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
 				propF1Presented = true
@@ -1237,7 +1237,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				if 1&(1<<0) == 0 {
+				if 4&(1<<1) == 0 {
 					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
 				}
 				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
@@ -1255,7 +1255,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 		}
 	}
 	if !propF1Presented {
-		BuiltinTuple4IntReset(&item.F1)
+		BuiltinTuple1IntReset(&item.F1)
 	}
 	if !propF2Presented {
 		BuiltinTuple1IntReset(&item.F2)
@@ -1263,7 +1263,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
 	return nil
@@ -1283,9 +1283,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONOpt(tctx *basictl.JSO
 	if 4&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = BuiltinTuple4IntWriteJSONOpt(tctx, w, &item.F1)
+		w = BuiltinTuple1IntWriteJSONOpt(tctx, w, &item.F1)
 	}
-	if 1&(1<<0) != 0 {
+	if 4&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
 		w = BuiltinTuple1IntWriteJSONOpt(tctx, w, &item.F2)
@@ -1314,7 +1314,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int, o
 	var sz int
 
 	if item.tl2mask0&1 != 0 {
-		sizes, sz = BuiltinTuple4IntCalculateLayout(sizes, false, &item.F1)
+		sizes, sz = BuiltinTuple1IntCalculateLayout(sizes, false, &item.F1)
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -1357,7 +1357,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, siz
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	if item.tl2mask0&1 != 0 {
-		w, sizes, _ = BuiltinTuple4IntInternalWriteTL2(w, sizes, false, &item.F1)
+		w, sizes, _ = BuiltinTuple1IntInternalWriteTL2(w, sizes, false, &item.F1)
 		currentBlock |= 2
 	}
 	if item.tl2mask0&2 != 0 {
@@ -1423,11 +1423,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 	item.tl2mask0 = 0
 	if block&2 != 0 {
 		item.tl2mask0 |= 1
-		if currentR, err = BuiltinTuple4IntInternalReadTL2(currentR, &item.F1); err != nil {
+		if currentR, err = BuiltinTuple1IntInternalReadTL2(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
-		BuiltinTuple4IntReset(&item.F1)
+		BuiltinTuple1IntReset(&item.F1)
 	}
 	if block&4 != 0 {
 		item.tl2mask0 |= 2
