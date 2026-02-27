@@ -90,6 +90,8 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 			isTopLevel:    tip.isTopLevel,
 			argNamespace:  k.getArgNamespace(tr),
 			hasTL2:        true,
+			commentBefore: tip.combTL2.CommentBefore,
+			commentRight:  "", // TODO - no comment right in TL2?
 		},
 		isEnum:       true,
 		variantNames: make([]string, len(def.Variants)),
@@ -147,6 +149,8 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			resolvedType:  resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        false, // could be marked later
+			commentBefore: "",    // no comment for union in TL1
+			commentRight:  "",    // no comment for union in TL1
 		},
 		variantNames:   variantNames,
 		variantTypes:   make([]*TypeInstanceStruct, len(definition)),

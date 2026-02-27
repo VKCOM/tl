@@ -192,8 +192,8 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 	if _, ok := trww.(*pure.TypeInstancePrimitive); ok {
 		return
 	}
-	commentsBefore := trww.KernelType().CommentsBefore()
-	commentsRight := trww.KernelType().CommentsRight()
+	commentBefore := trww.Common().CommentBefore()
+	commentRight := trww.Common().CommentRight()
 	combinatorTexts := trww.KernelType().CombinatorTexts()
 
 	qw422016.N().S(`<h2 id="`)
@@ -202,8 +202,8 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 	qw422016.E().S(JSONHelpString(kernel, trww))
 	qw422016.N().S(`</h2>
 `)
-	if len(commentsBefore) == 1 && commentsBefore[0] != "" {
-		for _, line := range tlast.SplitMultilineComment(commentsBefore[0]) {
+	if commentBefore != "" {
+		for _, line := range tlast.SplitMultilineComment(commentBefore) {
 			qw422016.N().S(`    <code style="color:DarkCyan">`)
 			qw422016.E().S(line)
 			qw422016.N().S(`</code></br>
@@ -309,8 +309,8 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 		qw422016.E().S(combinatorTexts[0])
 		qw422016.N().S(`</code>
 `)
-		if commentsRight[0] != "" {
-			for _, line := range tlast.SplitMultilineComment(commentsRight[0]) {
+		if commentRight != "" {
+			for _, line := range tlast.SplitMultilineComment(commentRight) {
 				qw422016.N().S(`    <code style="color:DarkCyan">`)
 				qw422016.E().S(line)
 				qw422016.N().S(`</code></br>
@@ -353,7 +353,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
   <dd><code>
       <table>
 `)
-		for i, field := range trw.VariantTypes() {
+		for _, field := range trw.VariantTypes() {
 			tag := fmt.Sprintf("%08x", field.TLTag())
 			originalName := field.TLName().String()
 
@@ -390,8 +390,8 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, kernel *pure.Kernel, trww pu
 			}
 			qw422016.N().S(`          <td>
 `)
-			if commentsRight[i] != "" {
-				for _, line := range tlast.SplitMultilineComment(commentsRight[i]) {
+			if field.Common().CommentRight() != "" {
+				for _, line := range tlast.SplitMultilineComment(field.Common().CommentRight()) {
 					qw422016.N().S(`    <code style="color:DarkCyan">`)
 					qw422016.E().S(line)
 					qw422016.N().S(`</code></td></tr><tr><td colspan="3">

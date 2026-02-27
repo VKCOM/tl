@@ -40,7 +40,9 @@ type TypeInstanceCommon struct {
 	resolvedType  tlast.TL2TypeRef
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 
-	hasTL2 bool
+	hasTL2        bool
+	commentBefore string
+	commentRight  string
 }
 
 func (ins *TypeInstanceCommon) CanonicalName() string {
@@ -83,6 +85,15 @@ func (ins *TypeInstanceCommon) ArgNamespace() string {
 
 func (ins *TypeInstanceCommon) HasTL2() bool {
 	return ins.hasTL2
+}
+
+// union has also comment per variant
+func (ins *TypeInstanceCommon) CommentBefore() string {
+	return ins.commentBefore
+}
+
+func (ins *TypeInstanceCommon) CommentRight() string {
+	return ins.commentRight
 }
 
 func (ins *TypeInstanceCommon) BoxedOnly() bool {

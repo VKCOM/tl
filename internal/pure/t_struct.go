@@ -230,6 +230,8 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        true,
+			commentBefore: tip.combTL2.CommentBefore,
+			commentRight:  "", // TODO - no comment right in TL2?
 		},
 		isConstructorFields: isConstructorFields,
 		isUnionElement:      isUnionElement,
@@ -529,6 +531,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			resolvedType:  resolvedType,
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        false, // could be marked later
+			commentBefore: def.CommentBefore,
+			commentRight:  def.CommentRight,
 		},
 		isConstructorFields: true,
 		isUnionElement:      isUnionElement,

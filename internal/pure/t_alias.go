@@ -77,6 +77,8 @@ func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedT
 			resolvedType:  resolvedType,
 			isTopLevel:    tip.isTopLevel,
 			hasTL2:        true,
+			commentBefore: tip.combTL2.CommentBefore,
+			commentRight:  "", // TODO - no comment right in TL2?
 		},
 		fieldType: fieldType,
 		fieldBare: fieldBare,

@@ -159,16 +159,28 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
 
 {%- func (struct_ *TypeRWStruct)typeDefinition(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
+    {%- if struct_.pureTypeStruct.Common().CommentBefore() != "" -%}
+        {%s= struct_.pureTypeStruct.Common().CommentBefore() %}
+    {%- endif -%}
+    {%- if struct_.pureTypeStruct.Common().CommentRight() != "" -%}
+        {%s= struct_.pureTypeStruct.Common().CommentRight() %}
+    {%- endif -%}
     {%- if struct_.isTypeDef() -%}
         {%- code
             asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
-type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
+    {%- if struct_.Fields[0].pureField.CommentBefore() != "" -%}
+        {%s= struct_.Fields[0].pureField.CommentBefore() %}
+    {%- endif -%}
+type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %} {%s= struct_.Fields[0].pureField.CommentRight() %}
         {%- return -%}
     {%- endif -%}
 type {%s= goName %} struct {
     {%- for _, field := range struct_.Fields -%}
+        {%- if field.pureField.CommentBefore() != "" -%}
+            {%s= field.pureField.CommentBefore() %}
+        {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             asterisk := ifString(field.recursive, "*", "")
@@ -187,7 +199,7 @@ type {%s= goName %} struct {
                 fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
             }
         -%}
-    {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
+    {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= field.pureField.CommentRight() %}{%s= fieldsMaskComment %}
     {%- endfor -%}
     {%- if struct_.wr.HasTL2() -%}
         {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
