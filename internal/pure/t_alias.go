@@ -54,7 +54,7 @@ func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedT
 	alias tlast.TL2TypeRef,
 	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 
-	localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 	if len(natParams) != 0 {
 		panic("TODO - process TL1 types as usual")
 	}

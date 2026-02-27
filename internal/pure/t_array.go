@@ -91,7 +91,7 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 func (k *Kernel) createVectorTL1(canonicalName string,
 	resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
 	var fieldNatArgs []ActualNatArg
 	for _, param := range natParams {
@@ -128,7 +128,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 
 func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 	// fmt.Printf("natParams for tuple %s: %s\n", canonicalName, strings.Join(natParams, ","))
 	//if len(natParams) != 0 {
 	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))

@@ -57,8 +57,8 @@ func (k *Kernel) createDict(canonicalName string,
 		PR: resolvedType.PR, // TODO - check all PRs
 	}
 
-	_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType}, "t")
-	//_, natParams := k.getTL1ArgHybrid(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType}, "t")
+	//_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
 	var fieldNatArgs []ActualNatArg
 	for _, param := range natParams {
@@ -90,7 +90,7 @@ func (k *Kernel) createDict(canonicalName string,
 	//	isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	//}
 
-	//localArgs, natParams := k.getTL1ArgsHybrid(tip.templateArguments, resolvedType)
+	//localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
 
 	//fieldT := tlast.TypeRef{

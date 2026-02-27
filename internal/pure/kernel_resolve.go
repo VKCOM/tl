@@ -13,14 +13,14 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-type LocalArgHybrid struct {
+type LocalArg struct {
 	wrongTypeErr *tlast.ParseError // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
 	arg          tlast.TL2TypeArgument
 	natArgs      []ActualNatArg
 }
 
 func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeRef, []ActualNatArg, error) {
+	actualArgs []LocalArg) (tlast.TL2TypeRef, []ActualNatArg, error) {
 	ac, natArgs, err := k.resolveArgument(ctxTL2, tlast.TL2TypeArgument{Type: tr}, leftArgs, actualArgs)
 	if err != nil {
 		return tr, nil, err
@@ -37,7 +37,7 @@ func (k *Kernel) resolveType(ctxTL2 bool, tr tlast.TL2TypeRef, leftArgs []tlast.
 }
 
 func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
+	actualArgs []LocalArg) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	before := tr
 	was := before.String()
 	tr, natArgs, err := k.resolveArgumentImpl(ctxTL2, tr, leftArgs, actualArgs)
@@ -49,7 +49,7 @@ func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs
 }
 
 func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid) (tlast.TL2TypeArgument, []ActualNatArg, error) {
+	actualArgs []LocalArg) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	if tr.IsNumber {
 		return tr, nil, nil
 	}
@@ -207,7 +207,7 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 }
 
 func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArgHybrid, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
+	actualArgs []LocalArg, combinatorField tlast.CombinatorField) (ActualNatArg, error) {
 	for i, targ := range leftArgs {
 		if targ.Name == mask.MaskName {
 			actualArg := actualArgs[i]
