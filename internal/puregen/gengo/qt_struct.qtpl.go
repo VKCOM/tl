@@ -201,17 +201,12 @@ func (item *`)
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		if writeNeedsError {
-			qw422016.N().S(`    return item.Write(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+		qw422016.N().S(`    return item.Write(w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)`)
+		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
+		qw422016.N().S(`
 `)
-		} else {
-			qw422016.N().S(`    return item.Write(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`), nil
-`)
-		}
 	}
 	qw422016.N().S(`}
 
@@ -259,17 +254,12 @@ func (item *`)
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
-			if writeNeedsError {
-				qw422016.N().S(`    return item.WriteBoxed(w`)
-				qw422016.N().S(natArgsCall)
-				qw422016.N().S(`)
+			qw422016.N().S(`    return item.WriteBoxed(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)`)
+			qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
+			qw422016.N().S(`
 `)
-			} else {
-				qw422016.N().S(`    return item.WriteBoxed(w`)
-				qw422016.N().S(natArgsCall)
-				qw422016.N().S(`), nil
-`)
-			}
 		}
 		qw422016.N().S(`}
 
@@ -712,19 +702,12 @@ func (item *`)
 		qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-`)
-		if writeNeedsError {
-			qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`), nil
-`)
-		}
-		qw422016.N().S(`}
+    return item.WriteJSONOpt(tctx, w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)`)
+		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
+		qw422016.N().S(`
+}
 
 func (item *`)
 		qw422016.N().S(goName)
@@ -752,15 +735,10 @@ func (item *`)
     `)
 		qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError))
 		qw422016.N().S(`
-`)
-		if writeNeedsError {
-			qw422016.N().S(`    return w, nil
-`)
-		} else {
-			qw422016.N().S(`    return w
-`)
-		}
-		qw422016.N().S(`}
+    return w`)
+		qw422016.N().S(ifString(writeNeedsError, ", nil", ""))
+		qw422016.N().S(`
+}
 `)
 	} else {
 		// Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required
@@ -778,15 +756,10 @@ func (item *`)
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) MarshalJSON() ([]byte, error) {
-`)
-		if writeNeedsError {
-			qw422016.N().S(`      return item.WriteJSON(nil)
-`)
-		} else {
-			qw422016.N().S(`      return item.WriteJSON(nil), nil
-`)
-		}
-		qw422016.N().S(`}
+      return item.WriteJSON(nil)`)
+		qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
+		qw422016.N().S(`
+}
 
 func (item *`)
 		qw422016.N().S(goName)
@@ -1373,19 +1346,12 @@ func (item *`)
 	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
-`)
-	if writeNeedsError {
-		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
-`)
-	} else {
-		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`), nil
-`)
-	}
-	qw422016.N().S(`}
+    return item.WriteJSONOpt(tctx, w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)`)
+	qw422016.N().S(ifString(!writeNeedsError, ", nil", ""))
+	qw422016.N().S(`
+}
 
 func (item *`)
 	qw422016.N().S(goName)
@@ -1532,14 +1498,10 @@ func (item *`)
 			}
 		}
 	}
-	if writeNeedsError {
-		qw422016.N().S(`    return append(w, '}'), nil
-`)
-	} else {
-		qw422016.N().S(`    return append(w, '}')
-`)
-	}
-	qw422016.N().S(`}
+	qw422016.N().S(`    return append(w, '}')`)
+	qw422016.N().S(ifString(writeNeedsError, ", nil", ""))
+	qw422016.N().S(`
+}
 `)
 }
 
