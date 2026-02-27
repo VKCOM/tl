@@ -962,6 +962,65 @@ testNs.testName<x:Type, y:#> = IntValue x:int
 				})
 			})
 		})
+
+		t.Run("comments right", func(t *testing.T) {
+			t.Run("comment in struct", func(t *testing.T) {
+				it, _ := setupIterator(`test.struct = 
+x:int // a
+y:int // b
+;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.Nil(t, err)
+				assert.True(t, newIt.expect(eof))
+
+				assert.Equal(t, "// a", comb.TypeDecl.Type.StructType.ConstructorFields[0].CommentRight)
+				assert.Equal(t, "// b", comb.TypeDecl.Type.StructType.ConstructorFields[1].CommentRight)
+			})
+
+			t.Run("comment in union constructor", func(t *testing.T) {
+				it, _ := setupIterator(`test.union = | Con1
+x:int // a
+y:int // b
+;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.Nil(t, err)
+				assert.True(t, newIt.expect(eof))
+
+				assert.Equal(t, "// a", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[0].CommentRight)
+				assert.Equal(t, "// b", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[1].CommentRight)
+			})
+
+			t.Run("comment in union constructor multi line ", func(t *testing.T) {
+				it, _ := setupIterator(`test.union = | Con1
+x:int // a
+y:int // b
+// c
+z:int
+;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.Nil(t, err)
+				assert.True(t, newIt.expect(eof))
+
+				assert.Equal(t, "// a", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[0].CommentRight)
+				assert.Equal(t, "// b", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[1].CommentRight)
+				assert.Equal(t, "// c", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[2].CommentBefore)
+
+			})
+
+			t.Run("comment in union constructor right after field but before next constructor", func(t *testing.T) {
+				it, _ := setupIterator(`test.union = Con1
+x:int // comment1
+// comment2
+| Con2;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.Nil(t, err)
+				assert.True(t, newIt.expect(eof))
+
+				assert.Equal(t, "// comment1", comb.TypeDecl.Type.StructType.UnionType.Variants[0].Fields[0].CommentRight)
+				// comment before vertical bar but goes to field
+				assert.Equal(t, "// comment2", comb.TypeDecl.Type.StructType.UnionType.Variants[1].CommentBefore)
+			})
+		})
 	})
 
 	t.Run("beautiful errors", func(t *testing.T) {

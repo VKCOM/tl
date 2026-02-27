@@ -79,6 +79,7 @@ type TL2Field struct {
 	PRName PositionRange
 
 	CommentBefore string
+	CommentRight  string
 }
 
 // TL2TypeDefinition = (eq TL2StructTypeDefinition) | (alias TL2TypeRef);
