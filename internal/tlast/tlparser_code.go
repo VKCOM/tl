@@ -532,6 +532,7 @@ func parseFields(tokens tokenIterator, finishToken1 int, finishToken2 int, outer
 		}
 		commentStart = rest
 		if rest.skipToNewline() {
+			field.NewlineRight = true
 			field.CommentRight = parseCommentRight(commentStart, rest)
 		}
 		res = append(res, field)

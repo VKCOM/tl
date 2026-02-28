@@ -211,7 +211,7 @@ lint:
 testpure: build
 	@./target/bin/tl2gen --language=tl2migration -v \
 		--tl2migrationDevMode \
-		--tl2WhiteList=a.,statshouseApi.,videoAdsService. \
+		--tl2WhiteList=curl.,a.,statshouseApi.,videoAdsService. \
 		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
 	@./target/bin/tl2gen --language=go -v --split-internal \
 		--tl2WhiteList=* \

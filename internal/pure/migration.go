@@ -219,7 +219,7 @@ outer:
 				if err != nil {
 					return nil, err
 				}
-				leftArgs, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace)
+				leftArgs, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false)
 				if err != nil {
 					return nil, err
 				}
@@ -254,7 +254,7 @@ outer:
 				} else {
 					// migrate fields
 					bb.WriteString(" = ")
-					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace)
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false)
 					if err != nil {
 						return nil, err
 					}
@@ -309,7 +309,7 @@ outer:
 					}
 				} else {
 					// migrate fields
-					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace)
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, true)
 					if err != nil {
 						return nil, err
 					}
@@ -383,16 +383,23 @@ func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, c
 }
 
 func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]struct{}, tip *KernelType, comb *tlast.Combinator,
-	fieldsAfterReplace []tlast.Field, typesAfterReplace []tlast.TL2TypeRef) ([]tlast.TemplateArgument, error) {
+	fieldsAfterReplace []tlast.Field, typesAfterReplace []tlast.TL2TypeRef, indent bool) ([]tlast.TemplateArgument, error) {
 	leftArgs := comb.TemplateArguments
 	for i, fieldDef := range fieldsAfterReplace {
 		fieldType := typesAfterReplace[i]
 		if fieldDef.FieldName == "" {
 			return nil, fieldDef.PR.BeautifulError(fmt.Errorf("internal error: anonymous field cannot be migrated"))
 		}
-		if i != 0 {
-			bb.WriteString(" ")
+		if fieldDef.CommentBefore != "" {
+			bb.WriteString(fieldDef.CommentBefore)
+			bb.WriteString("\n    ")
+			if indent {
+				bb.WriteString("    ")
+			}
 		}
+		//if i != 0 {
+		//	bb.WriteString(" ")
+		//}
 		bb.WriteString(fieldDef.FieldName)
 		if fieldDef.Mask != nil && k.IsTrueType2(fieldType) {
 			bb.WriteString(":bit")
@@ -404,6 +411,18 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 			if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldType, leftArgs); err != nil {
 				return nil, err
 			}
+		}
+		if fieldDef.CommentRight != "" {
+			bb.WriteString(" ")
+			bb.WriteString(fieldDef.CommentRight)
+		}
+		if fieldDef.NewlineRight {
+			bb.WriteString("\n    ")
+			if indent {
+				bb.WriteString("    ")
+			}
+		} else {
+			bb.WriteString(" ")
 		}
 		if fieldDef.FieldName != "" {
 			leftArgs = append(leftArgs, tlast.TemplateArgument{
