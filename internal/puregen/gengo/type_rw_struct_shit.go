@@ -9,8 +9,6 @@ package gengo
 import (
 	"fmt"
 	"sort"
-
-	"github.com/vkcom/tl/internal/pure"
 )
 
 // TODO - this must be rewritten in more clean style...
@@ -42,49 +40,31 @@ func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct b
 	//	fmt.Printf("wrong FieldIndex %d in %s\n", fieldId, trw.pureTypeStruct.CanonicalName())
 	//	return FieldIsNotNat, nil
 	//}
-	var linear1 [32][]pure.CombinatorField
 	linear2 := trw.pureTypeStruct.GetNatFieldUsage(fieldId, inStruct, inReturnType).AffectedFields
 
 	p, u := trw.getFieldNatPropertiesAsUsageMap(fieldId, inStruct, inReturnType)
+
+	u2 := map[uint32]BitUsageInfo{}
+	for bit, aff := range linear2 {
+		if len(aff) == 0 {
+			continue
+		}
+		if u2[uint32(bit)].AffectedFields == nil {
+			u2[uint32(bit)] = BitUsageInfo{map[*TypeRWStruct][]int{}}
+		}
+		af := u2[uint32(bit)].AffectedFields
+		for pt, fieldIndexes := range aff {
+			wr := trw.wr.gen.getTypeMust(pt).trw.(*TypeRWStruct)
+			for _, fi := range fieldIndexes {
+				af[wr] = append(af[wr], fi)
+			}
+		}
+	}
+	if len(u2) != len(u) {
+		fmt.Printf("wrong FieldNatProperties lens %d %d in %s fieldIndex %d\n", len(u2), len(u), trw.pureTypeStruct.CanonicalName(), fieldId)
+	}
 	//if trw.pureTypeStruct.CanonicalName() == "curl.request" {
 	//	fmt.Printf("aah")
-	//}
-	for k, v := range u {
-		for t, bits := range v.AffectedFields {
-			for _, bb := range bits {
-				linear1[k] = append(linear1[k], pure.CombinatorField{
-					Ins:        t.pureTypeStruct,
-					FieldIndex: bb,
-				})
-			}
-		}
-	}
-
-	for i := 0; i < 32; i++ {
-		linear1[i] = pure.CombinatorFieldsSortAndUnique(linear1[i])
-		linear2[i] = pure.CombinatorFieldsSortAndUnique(linear2[i])
-		if len(linear1[i]) != len(linear2[i]) {
-			//if trw.wr.tlName.Namespace == "playlists" {
-			fmt.Printf("wrong FieldNatProperties lens %d %d in %s fieldIndex %d\n", len(linear1[i]), len(linear2[i]), trw.pureTypeStruct.CanonicalName(), fieldId)
-			p, u = trw.getFieldNatPropertiesAsUsageMap(fieldId, inStruct, inReturnType)
-			//}
-		} else {
-			for j, cf := range linear1[i] {
-				cf2 := linear2[i][j]
-				if cf.Ins != cf2.Ins || cf.FieldIndex != cf2.FieldIndex {
-					//if trw.wr.tlName.Namespace == "playlists" {
-					fmt.Printf("wrong FieldNatProperties in %s fieldIndex %d\n", trw.pureTypeStruct.CanonicalName(), fieldId)
-					//}
-				}
-			}
-		}
-	}
-	//kt := trw.pureTypeStruct.KernelType()
-	//if kt != nil && !kt.OriginTL2() && len(kt.TL1()) == 1 {
-	//	fields := kt.TL1()[0].Fields
-	//	if fieldId < len(fields) {
-	//		field := fields[fieldId]
-	//	}
 	//}
 	return p, u
 }
