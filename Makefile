@@ -51,27 +51,27 @@ gen_dev: qtpl gen
 
 .PHONY: goldmaster_nocompile
 goldmaster_nocompile: build
-	@./target/bin/tl2gen --language=go -v \
-		--copyrightPath=./COPYRIGHT \
-		--outdir=./$(GEN_PATH)/casesTL1 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
-		--generateByteVersions=cases_bytes. \
-		--generateRandomCode \
-		--generateLegacyJsonRead=false \
-		--checkLengthSanity=false \
-		./$(TLS_PATH)/cases.tl
-	@./target/bin/tl2gen --language=go -v \
-		--tl2WhiteList=* \
-		--copyrightPath=./COPYRIGHT \
-		--outdir=./$(GEN_PATH)/cases \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
-		--generateByteVersions=cases_bytes. \
-		--generateRandomCode \
-		--generateLegacyJsonRead=false \
-		--checkLengthSanity=false \
-		./$(TLS_PATH)/cases.tl
+#	@./target/bin/tl2gen --language=go -v \
+#		--copyrightPath=./COPYRIGHT \
+#		--outdir=./$(GEN_PATH)/casesTL1 \
+#		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
+#		--basicPkgPath=$(BASIC_TL_PATH) \
+#		--generateByteVersions=cases_bytes. \
+#		--generateRandomCode \
+#		--generateLegacyJsonRead=false \
+#		--checkLengthSanity=false \
+#		./$(TLS_PATH)/cases.tl
+#	@./target/bin/tl2gen --language=go -v \
+#		--tl2WhiteList=* \
+#		--copyrightPath=./COPYRIGHT \
+#		--outdir=./$(GEN_PATH)/cases \
+#		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
+#		--basicPkgPath=$(BASIC_TL_PATH) \
+#		--generateByteVersions=cases_bytes. \
+#		--generateRandomCode \
+#		--generateLegacyJsonRead=false \
+#		--checkLengthSanity=false \
+#		./$(TLS_PATH)/cases.tl
 	@./target/bin/tl2gen --language=go --split-internal -v \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \

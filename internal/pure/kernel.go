@@ -397,6 +397,20 @@ func (k *Kernel) Compile() error {
 			return err
 		}
 	}
+	for _, ref := range k.instancesOrdered {
+		if ins, ok := ref.ins.(*TypeInstanceStruct); ok {
+			for i, field := range ins.fields {
+				natFieldUsage := ins.GetNatFieldUsage(i, true, true)
+				if natFieldUsage.UsedAsSize && natFieldUsage.UsedAsMask {
+					e3 := natFieldUsage.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
+					e3.PrintWarning(k.opts.ErrorWriter, nil)
+					e1 := field.prName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.Name()))
+					e2 := natFieldUsage.UsedAsSizePR.BeautifulError(fmt.Errorf("used as size here"))
+					return tlast.BeautifulError2(e1, e2)
+				}
+			}
+		}
+	}
 	var cf cycleFinder
 	for _, ref := range k.instancesOrdered {
 		cf.reset()
