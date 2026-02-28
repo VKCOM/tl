@@ -141,7 +141,14 @@ curl.responseError#af514651
   error_string: string
   = curl.Response;
 
+quick.usage fields_mask:# obj:playlists.object_id_ext<fields_mask> = quick.Usage;
+
+
+playlists.object_id_ext#7feadb07 {fields_mask:#} owner_id:long object_id:int date:fields_mask.0?int = playlists.Object_id_ext fields_mask;
+
 ---functions---
+
+@readwrite playlists.addObjectLRU owner_id:long playlist_id:int max_lru_size:int object_fields_mask:# object:%(playlists.Object_id_ext object_fields_mask) = Bool;
 
 // comment before request
 @kphp

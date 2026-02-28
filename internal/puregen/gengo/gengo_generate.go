@@ -207,7 +207,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		IsEnum:   pureType.IsEnum(),
 	}
 	myWrapper.trw = res
-	kt := pureType.KernelType()
 	for i, typ := range pureType.VariantTypes() {
 		variantName := pureType.VariantNames()[i]
 
@@ -215,7 +214,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			gen:              gen,
 			pureType:         typ,
 			NatParams:        myWrapper.NatParams,
-			originateFromTL2: kt.OriginTL2(),
+			originateFromTL2: myWrapper.originateFromTL2,
 			tlTag:            typ.TLTag(),
 			tlName:           typ.TLName(),
 			fileNameOverride: myWrapper,

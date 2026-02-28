@@ -142,6 +142,7 @@ func runMain(opt *puregen.Options) error {
 		if err := f(kernel, opt); err != nil {
 			return err
 		}
+		kernel.PrintUnusedWarnings()
 		return opt.ReplaceStringInDir()
 	}
 	var keys []string

@@ -94,8 +94,6 @@ func (k *Kernel) MigrationForTests() (string, error) {
 }
 
 func (k *Kernel) migrationImpl(tryOpenEmptyTL2Files bool, typesMigrated *int) (map[string]*bytes.Buffer, error) {
-	tl2WhiteList := NewWhiteList(k.opts.TL2WhiteList)
-
 	migrateTips := map[*KernelType]struct{}{}
 	migrateNames := map[tlast.Name]struct{}{}
 outer:
@@ -105,10 +103,10 @@ outer:
 		}
 		migrate := false
 		for _, comb := range tip.combTL1 {
-			if tl2WhiteList.HasName(comb.Construct.Name) {
+			if k.tl2WhiteList.HasName(comb.Construct.Name) {
 				migrate = true
 			}
-			if !comb.IsFunction && tl2WhiteList.HasName(comb.TypeDecl.Name) {
+			if !comb.IsFunction && k.tl2WhiteList.HasName(comb.TypeDecl.Name) {
 				migrate = true
 			}
 		}

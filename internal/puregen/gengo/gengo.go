@@ -7,9 +7,11 @@
 package gengo
 
 import (
+	"cmp"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"maps"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -33,6 +35,7 @@ type genGo struct {
 	kernel  *pure.Kernel
 	options *puregen.Options
 
+	bytesWhiteList      pure.Whitelist
 	rawHandlerWhileList pure.Whitelist
 
 	BasicPackageNameFull     string // basic types are in separate namespace to minimize conflicts
@@ -63,6 +66,12 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	}
 	if err := gen.generateCodeGolang(); err != nil {
 		return err
+	}
+	if err := gen.bytesWhiteList.UnusedWarning(); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+	if err := gen.rawHandlerWhileList.UnusedWarning(); err != nil {
+		fmt.Printf("%v\n", err)
 	}
 	return nil
 }
@@ -224,7 +233,15 @@ func (gen *genGo) generateCodeGolang() error {
 		internalFiles[ff] = append(internalFiles[ff], typeRw)
 	}
 	var s strings.Builder
-	for ff, types := range internalFiles {
+	// deterministic order helps in debug
+	internalFilesKeys := slices.SortedFunc(maps.Keys(internalFiles), func(file InsFile, file2 InsFile) int {
+		if c := cmp.Compare(file.fileName, file2.fileName); c != 0 {
+			return c
+		}
+		return cmp.Compare(file.ins.Name, file2.ins.Name)
+	})
+	for _, ff := range internalFilesKeys {
+		types := internalFiles[ff]
 		directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
 		for _, typeRw := range types {
 			_ = typeRw.trw.GenerateCode(false, directImports)

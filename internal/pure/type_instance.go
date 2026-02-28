@@ -35,6 +35,7 @@ type TypeInstanceCommon struct {
 	tlName2       tlast.TL2TypeName
 	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
+	natFieldUsage []NatFieldUsage
 	tip           *KernelType
 	isTopLevel    bool
 	resolvedType  tlast.TL2TypeRef
@@ -81,6 +82,13 @@ func (ins *TypeInstanceCommon) ResolvedType() tlast.TL2TypeRef {
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {
 	return ins.argNamespace
+}
+
+func (ins *TypeInstanceCommon) OriginTL2() bool {
+	if ins.tip != nil {
+		return ins.tip.OriginTL2()
+	}
+	return false
 }
 
 func (ins *TypeInstanceCommon) HasTL2() bool {

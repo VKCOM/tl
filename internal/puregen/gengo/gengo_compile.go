@@ -76,15 +76,15 @@ func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		kt := pureType.KernelType()
 		myWrapper := &TypeRWWrapper{
-			gen:       gen,
-			pureType:  pureType,
-			NatParams: pureType.Common().NatParams(),
-			tlTag:     pureType.Common().TLTag(),
-			tlName:    pureType.Common().TLName(),
+			gen:              gen,
+			pureType:         pureType,
+			NatParams:        pureType.Common().NatParams(),
+			tlTag:            pureType.Common().TLTag(),
+			tlName:           pureType.Common().TLName(),
+			originateFromTL2: pureType.Common().OriginTL2(),
 		}
 		if kt != nil {
 			myWrapper.goCanonicalName = kt.HistoricalName()
-			myWrapper.originateFromTL2 = kt.OriginTL2()
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
@@ -107,13 +107,13 @@ func (gen *genGo) addTypeWrappers() error {
 func (gen *genGo) prepareGeneration() error {
 	options := gen.options
 
-	bytesWhiteList := pure.NewWhiteList(options.BytesWhiteList)
-	gen.rawHandlerWhileList = pure.NewWhiteList(options.Go.RawHandlerWhileList)
+	gen.bytesWhiteList = pure.NewWhiteList("--generateByteVersions", options.BytesWhiteList)
+	gen.rawHandlerWhileList = pure.NewWhiteList("--rawHandlerWhiteList", options.Go.RawHandlerWhileList)
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	for _, v := range gen.generatedTypesList {
-		if bytesWhiteList.HasName2(v.tlName) {
+		if gen.bytesWhiteList.HasName2(v.tlName) {
 			v.MarkWantsBytesVersion(bytesChildren)
 			typesCounterMarkBytes++
 		}
@@ -154,7 +154,7 @@ func (gen *genGo) prepareGeneration() error {
 		//if skippedDueToWhitelist != 0 {
 		//	fmt.Printf("skipped %d object roots by the whitelist filter: %s\n", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
 		//}
-		if !bytesWhiteList.Empty() {
+		if !gen.bytesWhiteList.Empty() {
 			fmt.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s\n", typesCounterMarkBytes, options.BytesWhiteList)
 		}
 	}

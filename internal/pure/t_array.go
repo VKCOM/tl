@@ -93,12 +93,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 
 	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
-	var fieldNatArgs []ActualNatArg
-	for _, param := range natParams {
-		fieldNatArgs = append(fieldNatArgs, ActualNatArg{
-			name: param,
-		})
-	}
+	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
 	// fmt.Printf("resolveTypeTL2 of vector for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(resolvedType.BracketType.ArrayType, true)
@@ -133,15 +128,8 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 	//if len(natParams) != 0 {
 	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
 	//}
-	var fieldNatArgs3 []ActualNatArg
-	for _, param := range natParams {
-		//if i == 0 && !resolvedType.BracketType.IndexType.IsNumber {
-		//	continue
-		//}
-		fieldNatArgs3 = append(fieldNatArgs3, ActualNatArg{
-			name: param,
-		})
-	}
+	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
+
 	if !resolvedType.BracketType.IndexType.IsNumber {
 		natParams = append([]string{"n"}, natParams...)
 	}
@@ -168,7 +156,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 		owner:   ins,
 		ins:     fieldIns,
 		bare:    fieldBare,
-		natArgs: fieldNatArgs3,
+		natArgs: fieldNatArgs,
 	}
 	return ins, nil
 }

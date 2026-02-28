@@ -7,9 +7,11 @@
 package pure
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"log"
+	"slices"
 	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
@@ -46,6 +48,31 @@ func (arg *ActualNatArg) Name() string {
 	return arg.name
 }
 
+type CombinatorField struct {
+	Ins        *TypeInstanceStruct
+	FieldIndex int
+}
+
+type NatFieldUsage struct {
+	UsedAsMask     bool
+	UsedAsMaskPR   tlast.PositionRange
+	UsedAsSize     bool
+	UsedAsSizePR   tlast.PositionRange
+	AffectedFields [32][]CombinatorField // which fields each bit affects
+	PRName         tlast.PositionRange
+}
+
+func CombinatorFieldsSortAndUnique(cf []CombinatorField) []CombinatorField {
+	order := func(a, b CombinatorField) int {
+		if c := cmp.Compare(a.Ins.canonicalName, b.Ins.canonicalName); c != 0 {
+			return c
+		}
+		return cmp.Compare(a.FieldIndex, b.FieldIndex)
+	}
+	slices.SortFunc(cf, order)
+	return slices.Compact(cf)
+}
+
 type Field struct {
 	owner TypeInstance
 	name  string
@@ -65,6 +92,8 @@ type Field struct {
 
 	natArgs []ActualNatArg // for TL1 only, empty for TL2
 	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
+
+	natFieldUsage NatFieldUsage
 }
 
 func (f Field) OwnerTypeInstance() TypeInstance { return f.owner }
@@ -262,6 +291,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
+			//PRName: fieldDef.PRName,
 		}
 		if fieldDef.IsOptional && newField.ins.ins.IsBit() {
 			// we allow optional bit through aliases or template arguments,
@@ -350,6 +380,19 @@ func (k *Kernel) fillLocalArgs(leftArgs []tlast.TL2TypeTemplate, resolvedType2 t
 		localArgs = append(localArgs, args...)
 	}
 	return
+}
+
+func (k *Kernel) natParamsToActualNatArgs(natParams []string) []ActualNatArg {
+	var result []ActualNatArg
+	for _, param := range natParams {
+		//if i == 0 && !resolvedType.BracketType.IndexType.IsNumber {
+		//	continue
+		//}
+		result = append(result, ActualNatArg{
+			name: param,
+		})
+	}
+	return result
 }
 
 func (k *Kernel) isGoodBrackets(fieldDef tlast.Field) error {
@@ -526,6 +569,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tlName:        tlast.TL2TypeName(def.Construct.Name),
 			tlTag:         def.Construct.ID,
 			natParams:     natParams,
+			natFieldUsage: make([]NatFieldUsage, len(natParams)),
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			resolvedType:  resolvedType,
@@ -539,6 +583,9 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
+	//for i := range localArgs {
+	//	localArgs[i].arg.SourceFieldAny = &ins.natFieldUsage[i]
+	//}
 	nextTL2MaskBit := 0
 	fieldsAfterReplace, typesAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
 	if err != nil {
@@ -562,6 +609,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 
 	for i, fieldDef := range fieldsAfterReplace {
 		originalFieldIndex := originalFieldIndices[i]
+		fieldType := typesAfterReplace[i]
 		var natArgs []ActualNatArg
 		var rt tlast.TL2TypeRef
 		if isDict {
@@ -576,13 +624,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				PR: resolvedType.PR,
 			}
 			// pass all our nat params to the dict
-			for _, param := range natParams {
-				natArgs = append(natArgs, ActualNatArg{
-					name: param,
-				})
-			}
+			natArgs = k.natParamsToActualNatArgs(natParams)
 		} else {
-			fieldType := typesAfterReplace[i]
 			rt, natArgs, err = k.resolveType(false, fieldType, leftArgs, localArgs)
 			if err != nil {
 				return nil, err
@@ -601,13 +644,14 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			ins:           fieldIns,
 			natArgs:       natArgs,
 			bare:          fieldBare,
+			//PRName:        fieldDef.PRName,
 		}
 		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
 			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&
 			utils.DoLint(fieldDef.CommentRight) {
 			// We compare type by name, because there is examples of other true types which are to be extended
 			// to unions or have added fields in the future
-			e1 := fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("true type fields should be bare, use 'true' or '%%True' instead"))
+			e1 := typesAfterReplace[i].PR.BeautifulError(fmt.Errorf("true type fields should be bare, use 'true' or '%%True' instead"))
 			if k.opts.WarningsAreErrors {
 				return nil, e1
 			}
@@ -618,7 +662,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				return nil, fieldDef.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", fieldDef.Mask.BitNumber))
 			}
 			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs,
-				tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex})
+				tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
+				CombinatorField{Ins: ins, FieldIndex: i})
 			if err != nil {
 				return nil, err
 			}
@@ -633,7 +678,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			!purelegacy.AllowBoolFieldsmask(def.Construct.Name.String(), newField.name) &&
 			utils.DoLint(fieldDef.CommentRight) {
 			// We compare type by name to make warning more narrow at first.
-			e1 := fieldDef.FieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, use 'true' instead of 'Bool' or add // tlgen:nolint to the right"))
+			e1 := fieldType.PR.BeautifulError(fmt.Errorf("using Bool type under fields mask produces 3rd state, use 'true' instead of 'Bool' or add // tlgen:nolint to the right"))
 			if k.opts.WarningsAreErrors {
 				return nil, e1
 			}
@@ -647,7 +692,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				Category: tlast.TL2TypeCategory{IsNatValue: true},
 				PR:       fieldDef.PR,
 			})
-			if fieldDef.FieldType.String() != "#" {
+			if fieldType.String() != "#" {
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: fieldDef.PRName.BeautifulError(fmt.Errorf("defined here")),
 				})
@@ -655,9 +700,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
 					arg: tlast.TL2TypeArgument{
-						Type:        tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
-						PR:          fieldDef.PR,
-						SourceField: tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
+						Type:           tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
+						PR:             fieldDef.PR,
+						SourceField:    tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
+						SourceFieldAny: &newField.natFieldUsage,
 					},
 					natArgs: []ActualNatArg{{
 						isField:    true,
