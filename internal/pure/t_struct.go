@@ -7,11 +7,9 @@
 package pure
 
 import (
-	"cmp"
 	"errors"
 	"fmt"
 	"log"
-	"slices"
 	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
@@ -50,30 +48,6 @@ func (arg *ActualNatArg) FieldIndex() int {
 
 func (arg *ActualNatArg) Name() string {
 	return arg.name
-}
-
-type CombinatorField struct {
-	Ins        *TypeInstanceStruct
-	FieldIndex int
-}
-
-type NatFieldUsage struct {
-	UsedAsMask     bool
-	UsedAsMaskPR   tlast.PositionRange
-	UsedAsSize     bool
-	UsedAsSizePR   tlast.PositionRange
-	AffectedFields [32][]CombinatorField // which fields each bit affects
-}
-
-func CombinatorFieldsSortAndUnique(cf []CombinatorField) []CombinatorField {
-	order := func(a, b CombinatorField) int {
-		if c := cmp.Compare(a.Ins.canonicalName, b.Ins.canonicalName); c != 0 {
-			return c
-		}
-		return cmp.Compare(a.FieldIndex, b.FieldIndex)
-	}
-	slices.SortFunc(cf, order)
-	return slices.Compact(cf)
 }
 
 type Field struct {
@@ -706,8 +680,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 					arg: tlast.TL2TypeArgument{
 						Type: tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
 						PR:   fieldDef.PR,
-						//SourceField:    tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
-						//SourceFieldAny: &newField.natFieldUsage,
 					},
 					natArgs: []ActualNatArg{{
 						isField:    true,
