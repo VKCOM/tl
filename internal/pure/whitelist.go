@@ -7,23 +7,32 @@
 package pure
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
 
 type Whitelist struct {
-	filters []string
+	whiltelistName string
+	filters        []string
+	used           []bool
+	asterisk       bool // it is always considered unused
 }
 
-func NewWhiteList(filter string) Whitelist {
-	var result Whitelist
+func NewWhiteList(whiltelistName string, filter string) Whitelist {
+	result := Whitelist{whiltelistName: whiltelistName}
 	for _, str := range strings.Split(filter, ",") {
 		str = strings.TrimSpace(str)
 		if str == "" {
 			continue
 		}
+		if str == "*" {
+			result.asterisk = true
+			continue
+		}
 		result.filters = append(result.filters, str)
+		result.used = append(result.used, false)
 	}
 	return result
 }
@@ -37,20 +46,34 @@ func (w *Whitelist) HasName2(name tlast.TL2TypeName) bool {
 }
 
 func (w *Whitelist) HasName(name tlast.Name) bool {
+	if w.asterisk {
+		return true
+	}
 	inNameFilterElement := func(name tlast.Name, filter string) bool {
-		if filter == "*" {
-			return true
-		}
 		if strings.HasSuffix(filter, ".") {
 			return name.Namespace == strings.TrimSuffix(filter, ".")
 		}
 		return name.String() == filter
 	}
 
-	for _, filter := range w.filters {
+	for i, filter := range w.filters {
 		if inNameFilterElement(name, filter) {
+			w.used[i] = true
 			return true
 		}
 	}
 	return false
+}
+
+func (w *Whitelist) UnusedWarning() error {
+	var unusedFilters []string
+	for i, used := range w.used {
+		if !used {
+			unusedFilters = append(unusedFilters, w.filters[i])
+		}
+	}
+	if len(unusedFilters) != 0 {
+		return fmt.Errorf("warning: unused filters in %s whitelist: %s", w.whiltelistName, strings.Join(unusedFilters, ", "))
+	}
+	return nil
 }

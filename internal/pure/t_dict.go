@@ -60,12 +60,7 @@ func (k *Kernel) createDict(canonicalName string,
 	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType}, "t")
 	//_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
-	var fieldNatArgs []ActualNatArg
-	for _, param := range natParams {
-		fieldNatArgs = append(fieldNatArgs, ActualNatArg{
-			name: param,
-		})
-	}
+	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
 	//ktField, ok := k.tips["__dict_field"]
 	//if !ok {

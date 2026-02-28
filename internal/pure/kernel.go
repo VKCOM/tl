@@ -22,6 +22,7 @@ import (
 type Kernel struct {
 	opts                  *OptionsKernel
 	rpcPreferTL2WhiteList Whitelist
+	tl2WhiteList          Whitelist
 	// each type can have up to 3 elements in this map, TL1 constructor, TL1 type and canonical primitive name
 	tips         map[string]*KernelType
 	tipsOrdered  []*KernelType
@@ -43,7 +44,8 @@ type Kernel struct {
 func NewKernel(opts *OptionsKernel) *Kernel {
 	k := &Kernel{
 		opts:                  opts,
-		rpcPreferTL2WhiteList: NewWhiteList(opts.RPCPreferTL2WhiteList),
+		rpcPreferTL2WhiteList: NewWhiteList("--rpcPreferTL2WhiteList", opts.RPCPreferTL2WhiteList),
+		tl2WhiteList:          NewWhiteList("--tl2WhiteList", opts.TL2WhiteList),
 		brackets: &KernelType{
 			originTL2: true,
 			builtin:   true,
@@ -404,16 +406,15 @@ func (k *Kernel) Compile() error {
 			return fmt.Errorf("found recursive cycle %s", res)
 		}
 	}
-	tl2WhiteList := NewWhiteList(k.opts.TL2WhiteList)
 	tl2Children := map[TypeInstance]struct{}{}
 	typesCounterMarkTL2 := 0
 	for _, v := range k.instancesOrdered {
-		if tl2WhiteList.HasName2(v.ins.Common().tlName) {
+		if !v.ins.Common().OriginTL2() && k.tl2WhiteList.HasName2(v.ins.Common().tlName) {
 			k.markWantsTL2(v.ins, tl2Children)
 			typesCounterMarkTL2++
 		}
 	}
-	if k.opts.Verbose && !tl2WhiteList.Empty() {
+	if k.opts.Verbose && !k.tl2WhiteList.Empty() {
 		fmt.Printf("found %d object roots for TL2 versions of types by the following filter: %s\n", typesCounterMarkTL2, k.opts.TL2WhiteList)
 	}
 	return nil
@@ -495,5 +496,14 @@ func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]s
 	children = node.GetChildren(children, true)
 	for _, child := range children {
 		k.markWantsTL2(child, visitedNodes)
+	}
+}
+
+func (k *Kernel) PrintUnusedWarnings() {
+	if err := k.rpcPreferTL2WhiteList.UnusedWarning(); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+	if err := k.tl2WhiteList.UnusedWarning(); err != nil {
+		fmt.Printf("%v\n", err)
 	}
 }

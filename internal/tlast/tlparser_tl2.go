@@ -30,7 +30,8 @@ type TL2TypeArgument struct {
 
 	// this is set during type resolution, so the information
 	// about which field masks are used where
-	SourceField CombinatorField
+	SourceField    CombinatorField
+	SourceFieldAny any
 }
 
 // TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts)?;

@@ -58,10 +58,6 @@ type ArithmeticOrType struct {
 	IsArith bool
 	Arith   Arithmetic
 	T       TypeRef // PR of T can also be used for Arith
-
-	// this is set during type resolution, so the information
-	// about which field masks are used where
-	SourceField CombinatorField
 }
 
 type ScaleFactor struct {
@@ -95,10 +91,6 @@ type TypeRef struct { // due to complexity, parsing of TypeRef defined in separa
 
 	PR     PositionRange
 	PRArgs PositionRange
-
-	// this is set during type resolution, so the information
-	// about argument references not erased from the type
-	OriginalArgumentName string
 }
 
 type Field struct {
