@@ -6,7 +6,37 @@
 
 package pure
 
-import "fmt"
+import (
+	"cmp"
+	"fmt"
+	"slices"
+
+	"github.com/vkcom/tl/internal/tlast"
+)
+
+type CombinatorField struct {
+	Ins        *TypeInstanceStruct
+	FieldIndex int
+}
+
+type NatFieldUsage struct {
+	UsedAsMask     bool
+	UsedAsMaskPR   tlast.PositionRange
+	UsedAsSize     bool
+	UsedAsSizePR   tlast.PositionRange
+	AffectedFields [32][]CombinatorField // which fields each bit affects
+}
+
+func CombinatorFieldsSortAndUnique(cf []CombinatorField) []CombinatorField {
+	order := func(a, b CombinatorField) int {
+		if c := cmp.Compare(a.Ins.canonicalName, b.Ins.canonicalName); c != 0 {
+			return c
+		}
+		return cmp.Compare(a.FieldIndex, b.FieldIndex)
+	}
+	slices.SortFunc(cf, order)
+	return slices.Compact(cf)
+}
 
 func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields bool, inReturnType bool) NatFieldUsage {
 	var natFieldUsage NatFieldUsage
