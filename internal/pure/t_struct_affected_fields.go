@@ -1,0 +1,100 @@
+// Copyright 2025 V Kontakte LLC
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+package pure
+
+import "fmt"
+
+func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields bool, inReturnType bool) NatFieldUsage {
+	var natFieldUsage NatFieldUsage
+
+	if inStructFields {
+		for i, field := range ins.fields {
+			if field.FieldMask() != nil &&
+				field.FieldMask().IsField() && field.FieldMask().FieldIndex() == fieldIndex {
+				if !natFieldUsage.UsedAsMask {
+					natFieldUsage.UsedAsMask = true
+					natFieldUsage.UsedAsMaskPR = field.prName
+				}
+				natFieldUsage.AffectedFields[field.bitNumber] = append(natFieldUsage.AffectedFields[field.bitNumber],
+					CombinatorField{Ins: ins, FieldIndex: i})
+			}
+			for argIndex, natArg := range field.natArgs {
+				if natArg.IsField() && natArg.FieldIndex() == fieldIndex {
+					visitedNodes := map[TypeInstance]struct{}{}
+					markAffectedFields(field.ins.ins, visitedNodes, &natFieldUsage, argIndex)
+				}
+			}
+		}
+	}
+	if inReturnType && ins.resultType != nil {
+		for argIndex, natArg := range ins.resultNatArgs {
+			if natArg.IsField() && natArg.FieldIndex() == fieldIndex {
+				visitedNodes := map[TypeInstance]struct{}{}
+				markAffectedFields(ins.resultType, visitedNodes, &natFieldUsage, argIndex)
+			}
+		}
+	}
+	return natFieldUsage
+}
+
+func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{}, natFieldUsage *NatFieldUsage, natIndex int) {
+	if _, ok := visitedNodes[node]; ok {
+		return
+	}
+	visitedNodes[node] = struct{}{}
+	if natIndex > len(node.Common().natParams) {
+		fmt.Printf("natIndex %s\n", node.CanonicalName())
+	}
+	natParamName := node.Common().natParams[natIndex]
+	switch ins := node.(type) {
+	case *TypeInstanceStruct:
+		for fieldIndex, field := range ins.fields {
+			if field.FieldMask() != nil && !field.FieldMask().IsField() && !field.FieldMask().IsNumber() && field.FieldMask().name == natParamName {
+				if !natFieldUsage.UsedAsMask {
+					natFieldUsage.UsedAsMask = true
+					natFieldUsage.UsedAsMaskPR = field.prName
+				}
+				natFieldUsage.AffectedFields[field.bitNumber] = append(natFieldUsage.AffectedFields[field.bitNumber],
+					CombinatorField{
+						Ins:        ins,
+						FieldIndex: fieldIndex,
+					})
+			}
+			for argIndex, natArg := range field.NatArgs() {
+				if natArg.IsName() && natArg.Name() == natParamName {
+					markAffectedFields(field.ins.ins, visitedNodes, natFieldUsage, argIndex)
+				}
+			}
+		}
+	case *TypeInstanceAlias:
+		// TODO - will it have natParams?
+	case *TypeInstanceUnion:
+		for _, variant := range ins.variantTypes {
+			markAffectedFields(variant, visitedNodes, natFieldUsage, natIndex)
+		}
+	case *TypeInstanceArray:
+		// tuple
+		if ins.dynamicSize && natIndex == 0 {
+			if !natFieldUsage.UsedAsSize {
+				natFieldUsage.UsedAsSize = true
+				natFieldUsage.UsedAsSizePR = ins.resolvedType.BracketType.IndexType.PR // TODO - check
+			}
+		} else {
+			for argIndex, natArg := range ins.field.NatArgs() {
+				if natArg.IsName() && natArg.Name() == natParamName {
+					markAffectedFields(ins.field.ins.ins, visitedNodes, natFieldUsage, argIndex)
+				}
+			}
+		}
+	case *TypeInstanceDict:
+		for argIndex, natArg := range ins.field.NatArgs() {
+			if natArg.IsName() && natArg.Name() == natParamName {
+				markAffectedFields(ins.field.ins.ins, visitedNodes, natFieldUsage, argIndex)
+			}
+		}
+	}
+}
