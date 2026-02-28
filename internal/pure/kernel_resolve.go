@@ -194,7 +194,7 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 }
 
 func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TL2TypeTemplate,
-	actualArgs []LocalArg, combinatorField tlast.CombinatorField, combinatorField2 CombinatorField) (ActualNatArg, error) {
+	actualArgs []LocalArg) (ActualNatArg, error) {
 	for i, targ := range leftArgs {
 		if targ.Name == mask.MaskName {
 			actualArg := actualArgs[i]

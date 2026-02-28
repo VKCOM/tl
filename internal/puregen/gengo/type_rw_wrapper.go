@@ -129,7 +129,7 @@ func (w *TypeRWWrapper) resolvedT2GoNameArg(b *strings.Builder, arg tlast.TL2Typ
 	if arg.Type.String() == "*" {
 		return
 	}
-	fieldType, fieldBare := w.gen.getTypeMust(arg.Type)
+	fieldType, fieldBare := w.gen.getTypeWrapperMust(arg.Type)
 	head, tail := fieldType.resolvedT2GoName(insideNamespace)
 	b.WriteString(head)
 	if head != "Bool" && !fieldBare && !fieldType.pureType.BoxedOnly() {

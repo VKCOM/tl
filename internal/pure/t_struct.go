@@ -586,7 +586,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	}
 
 	for i, fieldDef := range fieldsAfterReplace {
-		originalFieldIndex := originalFieldIndices[i]
 		fieldType := typesAfterReplace[i]
 		var natArgs []ActualNatArg
 		var rt tlast.TL2TypeRef
@@ -639,9 +638,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			if fieldDef.Mask.BitNumber >= 32 {
 				return nil, fieldDef.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", fieldDef.Mask.BitNumber))
 			}
-			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs,
-				tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
-				CombinatorField{Ins: ins, FieldIndex: i})
+			fieldMask, err := k.resolveMaskTL1(*fieldDef.Mask, leftArgs, localArgs)
 			if err != nil {
 				return nil, err
 			}

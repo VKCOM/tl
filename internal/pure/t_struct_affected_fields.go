@@ -7,35 +7,34 @@
 package pure
 
 import (
-	"cmp"
 	"fmt"
 	"slices"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
 
-type CombinatorField struct {
-	Ins        *TypeInstanceStruct
-	FieldIndex int
-}
-
 type NatFieldUsage struct {
 	UsedAsMask     bool
 	UsedAsMaskPR   tlast.PositionRange
 	UsedAsSize     bool
 	UsedAsSizePR   tlast.PositionRange
-	AffectedFields [32][]CombinatorField // which fields each bit affects
+	AffectedFields [32]map[*TypeInstanceStruct][]int // bit->type->fieldIndexes
 }
 
-func CombinatorFieldsSortAndUnique(cf []CombinatorField) []CombinatorField {
-	order := func(a, b CombinatorField) int {
-		if c := cmp.Compare(a.Ins.canonicalName, b.Ins.canonicalName); c != 0 {
-			return c
-		}
-		return cmp.Compare(a.FieldIndex, b.FieldIndex)
+func (f *NatFieldUsage) appendUsage(bit uint32, Ins *TypeInstanceStruct, FieldIndex int) {
+	if f.AffectedFields[bit] == nil {
+		f.AffectedFields[bit] = map[*TypeInstanceStruct][]int{}
 	}
-	slices.SortFunc(cf, order)
-	return slices.Compact(cf)
+	was := f.AffectedFields[bit][Ins]
+	// keep ordered unique state
+	for _, u := range was {
+		if u == FieldIndex {
+			return
+		}
+	}
+	was = append(was, FieldIndex)
+	slices.Sort(was)
+	f.AffectedFields[bit][Ins] = was
 }
 
 func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields bool, inReturnType bool) NatFieldUsage {
@@ -49,8 +48,7 @@ func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields b
 					natFieldUsage.UsedAsMask = true
 					natFieldUsage.UsedAsMaskPR = field.prName
 				}
-				natFieldUsage.AffectedFields[field.bitNumber] = append(natFieldUsage.AffectedFields[field.bitNumber],
-					CombinatorField{Ins: ins, FieldIndex: i})
+				natFieldUsage.appendUsage(field.bitNumber, ins, i)
 			}
 			for argIndex, natArg := range field.natArgs {
 				if natArg.IsField() && natArg.FieldIndex() == fieldIndex {
@@ -88,11 +86,7 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 					natFieldUsage.UsedAsMask = true
 					natFieldUsage.UsedAsMaskPR = field.prName
 				}
-				natFieldUsage.AffectedFields[field.bitNumber] = append(natFieldUsage.AffectedFields[field.bitNumber],
-					CombinatorField{
-						Ins:        ins,
-						FieldIndex: fieldIndex,
-					})
+				natFieldUsage.appendUsage(field.bitNumber, ins, fieldIndex)
 			}
 			for argIndex, natArg := range field.NatArgs() {
 				if natArg.IsName() && natArg.Name() == natParamName {
