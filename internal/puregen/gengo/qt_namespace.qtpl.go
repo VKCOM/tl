@@ -174,14 +174,14 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *genGo, anyTypeAlias bool, 
 	}
 	for _, wr := range types {
 		if wr.ShouldWriteEnumElementAlias() {
-			_, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
-			ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.unionParent.wr.tlName.Namespace // false for vectors moved into our namespace
+			_, ourUnionParentLocal := ourTypes[wr.UnionParent().wr]
+			ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.UnionParent().wr.tlName.Namespace // false for vectors moved into our namespace
 			typeString := wr.TypeString2(false, directImports, nil, true, true)
 
 			qw422016.N().S(`func `)
 			qw422016.N().S(typeString)
 			qw422016.N().S(`() `)
-			qw422016.N().S(wr.unionParent.wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false))
+			qw422016.N().S(wr.UnionParent().wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false))
 			qw422016.N().S(` { return `)
 			qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
 			qw422016.N().S(`() }

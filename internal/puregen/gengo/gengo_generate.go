@@ -95,7 +95,8 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 	return nil // fmt.Errorf("unknown primitive type")
 }
 
-func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct) error {
+func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct,
+	unionParent *TypeRWUnion, unionIndex int) error {
 	head, tail := myWrapper.resolvedT2GoName("")
 	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
@@ -120,6 +121,8 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 	res := &TypeRWStruct{
 		wr:             myWrapper,
 		pureTypeStruct: pureType,
+		unionParent:    unionParent,
+		unionIndex:     unionIndex,
 	}
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
@@ -215,8 +218,6 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 			originateFromTL2: kt.OriginTL2(),
 			tlTag:            typ.TLTag(),
 			tlName:           typ.TLName(),
-			unionParent:      res,
-			unionIndex:       i,
 			fileNameOverride: myWrapper,
 			goCanonicalName:  typ.TLName(),
 			ns:               myWrapper.ns,
@@ -229,7 +230,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		gen.generatedTypes[typ.CanonicalName()] = variantWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, variantWrapper)
 
-		if err := gen.generateTypeStruct(variantWrapper, typ); err != nil {
+		if err := gen.generateTypeStruct(variantWrapper, typ, res, i); err != nil {
 			return err
 		}
 

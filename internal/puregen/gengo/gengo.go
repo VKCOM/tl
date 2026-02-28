@@ -195,7 +195,7 @@ func (gen *genGo) generateCodeGolang() error {
 			}
 			var typesWithoutUnionElements []*TypeRWWrapper
 			for _, t := range ins.Types {
-				if t.unionParent == nil {
+				if t.UnionParent() == nil {
 					typesWithoutUnionElements = append(typesWithoutUnionElements, t)
 				}
 			}

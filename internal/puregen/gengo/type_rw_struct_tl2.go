@@ -22,13 +22,13 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+	if trw.wr.IsTrueType() && trw.unionParent == nil {
 		if zeroIfEmpty {
 			return "if false {"
 		}
 		return "currentSize += 1"
 	}
-	if trw.isTypeDef() && trw.wr.unionParent == nil {
+	if trw.isTypeDef() && trw.unionParent == nil {
 		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
 		if refObject {
 			targetObject = fmt.Sprintf("(*%s)(%s)", actualType, targetObject)
@@ -58,13 +58,13 @@ func (trw *TypeRWStruct) writeTL2Call(
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+	if trw.wr.IsTrueType() && trw.unionParent == nil {
 		if zeroIfEmpty {
 			return "if false {"
 		}
 		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetBytes)
 	}
-	if trw.isTypeDef() && trw.wr.unionParent == nil {
+	if trw.isTypeDef() && trw.unionParent == nil {
 		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
 		if refObject {
 			targetObject = fmt.Sprintf("(*%s)(%s)", actualType, targetObject)
@@ -96,14 +96,11 @@ func (trw *TypeRWStruct) readTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-	//	return ""
-	//}
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.ReadTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
 	}
 	additionalSuffix := ""
-	if trw.wr.unionParent != nil {
+	if trw.unionParent != nil {
 		additionalSuffix = ", block"
 	}
 	return fmt.Sprintf("if %[3]s, err = %[2]s.InternalReadTL2(%[3]s%[4]s); err != nil { return %[3]s, err }",

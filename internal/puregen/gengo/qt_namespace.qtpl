@@ -97,11 +97,11 @@ type(
     {%- for _, wr := range types -%}
         {%- if wr.ShouldWriteEnumElementAlias() -%}
             {%- code
-                _, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
-                ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.unionParent.wr.tlName.Namespace // false for vectors moved into our namespace
+                _, ourUnionParentLocal := ourTypes[wr.UnionParent().wr]
+                ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.UnionParent().wr.tlName.Namespace // false for vectors moved into our namespace
                 typeString := wr.TypeString2(false, directImports, nil, true, true)
             -%}
-func {%s= typeString %}() {%s= wr.unionParent.wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
+func {%s= typeString %}() {%s= wr.UnionParent().wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
         {%- endif -%}
     {%- endfor -%}
     {%- for _, wr := range types -%}

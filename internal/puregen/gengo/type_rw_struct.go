@@ -25,6 +25,9 @@ type TypeRWStruct struct {
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []pure.ActualNatArg
 
+	unionParent *TypeRWUnion // a bit hackish, but simple
+	unionIndex  int
+
 	fieldsDec  Deconflicter // TODO - add all generated methods here
 	setNames   []string     // method names should be the same for bytes and normal versions, so we remember them here
 	clearNames []string
