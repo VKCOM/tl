@@ -30,10 +30,10 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
-	if struct_.wr.unionParent != nil {
-		ep := struct_.wr.unionParent.wr.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+	if struct_.unionParent != nil {
+		ep := struct_.unionParent.wr.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		if struct_.wr.unionParent.IsEnum {
+		if struct_.unionParent.IsEnum {
 			qw422016.N().S(`func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`() `)
@@ -41,7 +41,7 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 			qw422016.N().S(` { return `)
 			qw422016.N().S(ep)
 			qw422016.N().S(`__MakeEnum(`)
-			qw422016.N().D(struct_.wr.unionIndex)
+			qw422016.N().D(struct_.unionIndex)
 			qw422016.N().S(`) }
 `)
 			return
@@ -55,7 +55,7 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 			qw422016.N().S(ep)
 			qw422016.N().S(`
     ret.Set`)
-			qw422016.N().S(struct_.wr.unionParent.Fields[struct_.wr.unionIndex].goName)
+			qw422016.N().S(struct_.unionParent.Fields[struct_.unionIndex].goName)
 			qw422016.N().S(`(`)
 			qw422016.N().S(ifString(struct_.wr.IsTrueType(), "", "item"))
 			qw422016.N().S(`)
@@ -2429,7 +2429,7 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
 
-	if struct_.isTypeDef() && struct_.wr.unionParent == nil {
+	if struct_.isTypeDef() && struct_.unionParent == nil {
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
@@ -2516,7 +2516,7 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 `)
-			if len(struct_.Fields) == 0 && (struct_.wr.unionParent == nil || struct_.wr.unionIndex == 0) {
+			if len(struct_.Fields) == 0 && (struct_.unionParent == nil || struct_.unionIndex == 0) {
 				qw422016.N().S(`        if optimizeEmpty {
             return sizes, 0
         }
@@ -2540,10 +2540,10 @@ func (item *`)
     var sz int
 
 `)
-				if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+				if struct_.unionParent != nil && struct_.unionIndex != 0 {
 					qw422016.N().S(`        // add constructor No for union type in case of non first option
         currentSize += basictl.TL2CalculateSize(`)
-					qw422016.N().D(struct_.wr.unionIndex)
+					qw422016.N().D(struct_.unionIndex)
 					qw422016.N().S(`)
         lastUsedByte = currentSize
 `)
@@ -2613,7 +2613,7 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 `)
-			if len(struct_.Fields) == 0 && (struct_.wr.unionParent == nil || struct_.wr.unionIndex == 0) {
+			if len(struct_.Fields) == 0 && (struct_.unionParent == nil || struct_.unionIndex == 0) {
 				qw422016.N().S(`        if optimizeEmpty {
             return w, sizes, 0
         }
@@ -2649,10 +2649,10 @@ func (item *`)
     currentBlockPosition := len(w)
     w = append(w, 0)
 `)
-				if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+				if struct_.unionParent != nil && struct_.unionIndex != 0 {
 					qw422016.N().S(`        // add constructor No for union type in case of non first option
         w = basictl.TL2WriteSize(w, `)
-					qw422016.N().D(struct_.wr.unionIndex)
+					qw422016.N().D(struct_.unionIndex)
 					qw422016.N().S(`)
         currentBlock |= 1
 `)
@@ -2758,7 +2758,7 @@ func (item *`)
 
 `)
 		if struct_.wr.HasTL2() {
-			if struct_.wr.unionParent == nil {
+			if struct_.unionParent == nil {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -2906,7 +2906,7 @@ func (item *`)
 			qw422016.N().S(`)
 `)
 		} else {
-			if struct_.wr.unionParent != nil {
+			if struct_.unionParent != nil {
 				qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if currentSize == 0 {
@@ -2925,10 +2925,10 @@ func (item *`)
         var index int
         if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
         if index != `)
-				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().D(struct_.unionIndex)
 				qw422016.N().S(` {
             return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, `)
-				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().D(struct_.unionIndex)
 				qw422016.N().S(`)
         }
     }

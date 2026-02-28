@@ -33,7 +33,7 @@ func (gen *genGo) compile() error {
 				}
 			}
 		case *pure.TypeInstanceStruct:
-			if err := gen.generateTypeStruct(myWrapper, pureType); err != nil {
+			if err := gen.generateTypeStruct(myWrapper, pureType, nil, 0); err != nil {
 				return err
 			}
 		case *pure.TypeInstanceArray:

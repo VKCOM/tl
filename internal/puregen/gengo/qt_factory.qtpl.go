@@ -106,7 +106,7 @@ func init() {
 			continue
 		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok {
-			if wr.unionParent != nil && wr.unionParent.IsEnum {
+			if wr.UnionParent() != nil && wr.UnionParent().IsEnum {
 				if hasCode != nil {
 					*hasCode = true
 				}

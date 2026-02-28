@@ -63,7 +63,7 @@ func init() {
         {%- continue -%}
     {%- endif -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
-        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
+        {%- if wr.UnionParent() != nil && wr.UnionParent().IsEnum -%}
             {%- code if hasCode != nil { *hasCode = true } -%}
             meta.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
             {%- continue -%}

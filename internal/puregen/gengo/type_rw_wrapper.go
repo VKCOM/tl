@@ -50,10 +50,6 @@ type TypeRWWrapper struct {
 	tlTag  uint32
 	tlName tlast.TL2TypeName
 
-	// TODO - move into TypeRWStruct
-	unionParent *TypeRWUnion // a bit hackish, but simple
-	unionIndex  int
-
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 }
@@ -64,6 +60,13 @@ func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 
 func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 	return cmp.Compare(a.goGlobalName, b.goGlobalName)
+}
+
+func (wr *TypeRWWrapper) UnionParent() *TypeRWUnion {
+	if struct_, ok := wr.trw.(*TypeRWStruct); ok {
+		return struct_.unionParent
+	}
+	return nil
 }
 
 func (wr *TypeRWWrapper) HasTL2() bool {
@@ -169,8 +172,8 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 }
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
-	if _, ok := w.trw.(*TypeRWStruct); ok {
-		if w.unionParent == nil || !w.unionParent.IsEnum {
+	if struct_, ok := w.trw.(*TypeRWStruct); ok {
+		if struct_.unionParent == nil || !struct_.unionParent.IsEnum {
 			return true
 		}
 	}
@@ -184,7 +187,10 @@ func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
 }
 
 func (w *TypeRWWrapper) ShouldWriteEnumElementAlias() bool {
-	return w.unionParent != nil && w.unionParent.IsEnum
+	if struct_, ok := w.trw.(*TypeRWStruct); ok {
+		return struct_.unionParent != nil && struct_.unionParent.IsEnum
+	}
+	return false
 }
 
 func (w *TypeRWWrapper) MarkHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
