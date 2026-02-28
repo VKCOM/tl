@@ -76,10 +76,8 @@ type TypeRWWrapper struct {
 
 	originateFromTL2 bool
 
-	// tl1 info
 	tlTag  uint32
-	tlName tlast.TL2TypeName // constructor name, except for unions
-	//origTL []*tlast.Combinator
+	tlName tlast.TL2TypeName
 
 	// TODO - move into TypeRWStruct
 	unionParent *TypeRWUnion // a bit hackish, but simple
@@ -87,12 +85,14 @@ type TypeRWWrapper struct {
 
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
+}
 
-	// tl2 info (if union is not nil otherwise check there)
-	//tl2Name              tlast.TL2TypeName
-	//tl2Origin            *tlast.TL2Combinator
-	//tl2IsResult          bool
-	//tl2IsBuiltinBrackets bool
+func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
+	return cmp.Compare(a.goLocalName, b.goLocalName)
+}
+
+func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
+	return cmp.Compare(a.goGlobalName, b.goGlobalName)
 }
 
 func (wr *TypeRWWrapper) HasTL2() bool {
@@ -195,17 +195,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
 	return
-}
-
-func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
-	an := a.TypeString2(false, nil, nil, true, true)
-	bn := b.TypeString2(false, nil, nil, true, true)
-	return cmp.Compare(an, bn)
-}
-
-func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
-	// return stringCompare(a.CanonicalString(), b.CanonicalString()) TODO - better idea after everything is stabilized
-	return cmp.Compare(a.goGlobalName, b.goGlobalName)
 }
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
