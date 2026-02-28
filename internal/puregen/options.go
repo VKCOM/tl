@@ -40,6 +40,8 @@ type Options struct {
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
 
+	ProfileCPU string
+
 	// sometimes we need to replace lots of names in vkgo repository, when we change generation.
 	// so it turned out, the fastest solution is simply use generator itself
 	ReplaceDir string
@@ -80,6 +82,8 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 		"whether to generate methods for random filling structs")
 	f.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
+
+	f.StringVar(&opt.ProfileCPU, "profileCPU", "", "write cpu profile to this file")
 
 	f.StringVar(&opt.ReplaceDir, "replaceDir", "",
 		"path to main repository so generator can make replacement of legacy names")

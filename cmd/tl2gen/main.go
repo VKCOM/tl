@@ -14,6 +14,7 @@ import (
 	//"net/http"
 	//_ "net/http/pprof" // Import for side effects: registers pprof handlers
 	"os"
+	"runtime/pprof"
 	"sort"
 	"strings"
 
@@ -46,7 +47,7 @@ func languagesString() string {
 }
 
 func main() {
-	log.Printf("tl2gen version: %s", utils.AppVersion())
+	fmt.Printf("tl2gen version: %s\n", utils.AppVersion())
 
 	//runtime.SetMutexProfileFraction(1)
 	//runtime.SetBlockProfileRate(1)
@@ -55,7 +56,7 @@ func main() {
 	//		fmt.Println(err)
 	//	}
 	//}()
-	log.SetFlags(0)
+	//log.SetFlags(0)
 
 	opt := puregen.Options{
 		ErrorWriter: os.Stdout,
@@ -97,6 +98,21 @@ func runMain(opt *puregen.Options) error {
 	}
 
 	kernel := pure.NewKernel(&opt.Kernel)
+
+	if opt.ProfileCPU != "" {
+		f, err := os.Create(opt.ProfileCPU)
+		if err != nil {
+			fmt.Printf("could not create CPU profile file %s: %v\n", opt.ProfileCPU, err)
+		} else {
+			defer f.Close() // error handling omitted for example
+			if err := pprof.StartCPUProfile(f); err != nil {
+				fmt.Printf("could not start CPU profile: %v\n", err)
+			} else {
+				fmt.Printf("starting CPU profiling, to ananlyze run 'go tool pprof -http=:8080 %s'\n", opt.ProfileCPU)
+				defer pprof.StopCPUProfile()
+			}
+		}
+	}
 
 	// parse tl1
 	pathsTL1, err := utils.WalkDeterministic(".tl", args...)
