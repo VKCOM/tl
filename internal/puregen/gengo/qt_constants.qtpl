@@ -1,4 +1,5 @@
 {%- import "fmt" -%}
+{%- import "cmp" -%}
 {%- import "golang.org/x/exp/slices" -%}
 {%- import "github.com/vkcom/tl/internal/tlast" -%}
 
@@ -7,42 +8,32 @@
 {%s= commentString %}
 package {%s= pkgName %}
 {%- code
-    var sortedConstructors []*tlast.Combinator
+    type Line struct {
+        conName tlast.TL2TypeName
+        magic   uint32
+    }
+    var lines []Line
     for _, c := range gen.kernel.TL1() {
         if c.Crc32() == 0 || c.Construct.Name.String() == "_" { // TODO - remove second check after ReqResult removed from combined.tl
             continue
         }
-        sortedConstructors = append(sortedConstructors, c)
+        lines = append(lines, Line{conName:tlast.TL2TypeName(c.Construct.Name), magic:c.Crc32()})
     }
-    slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-        return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
-    })
-
-    sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
     for _, combinator := range gen.kernel.TL2() {
-        if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
-            sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+        if combinator.IsFunction && combinator.FuncDecl.Magic != 0 {
+            lines = append(lines, Line{conName:combinator.ReferenceName(), magic:combinator.FuncDecl.Magic})
+        }
+        if !combinator.IsFunction && combinator.TypeDecl.Magic != 0 {
+            lines = append(lines, Line{conName:combinator.ReferenceName(), magic:combinator.TypeDecl.Magic})
         }
     }
-    slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-        return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+    slices.SortStableFunc(lines, func(a, b Line) int {
+        return cmp.Compare(a.conName.String(), b.conName.String())
     })
 -%}
 const (
-    {%- for _, c := range sortedConstructors -%}
-        {%- if c.Crc32() == 0 -%} {%- continue -%} {%- endif -%}
-        {%s= canonicalGoName(c.Construct.Name, "") %} = {%s= fmt.Sprintf("%#08x", c.Crc32()) %} // {%s= c.Construct.Name.String() %}
-    {%- endfor -%}
-    {%- for _, c := range sortedTL2Combinators -%}
-        {%- code
-            refName := c.ReferenceName()
-            magic := c.FuncDecl.Magic
-            if !c.IsFunction {
-                magic = c.TypeDecl.Magic
-            }
-            name := canonicalGoName2(refName, "")
-        -%}
-        {%s name %} = {%s= fmt.Sprintf("%#08x", magic) %} // {%s= refName.String() %}
+    {%- for _, c := range lines -%}
+        {%s= canonicalGoName2(c.conName, "") %} = {%s= fmt.Sprintf("%#08x", c.magic) %} // {%s= c.conName.String() %}
     {%- endfor -%}
 )
 {%- endfunc  -%}

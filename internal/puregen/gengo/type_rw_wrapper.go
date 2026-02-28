@@ -110,100 +110,6 @@ func (wr *TypeRWWrapper) Namespace() string {
 	return wr.tlName.Namespace
 }
 
-// Those have unique structure fully defined by the magic.
-// items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
-// they could not be distinguished by the magic. For example vector<int> and vector<long>.
-//func (w *TypeRWWrapper) IsTopLevel() bool {
-//	if w.originateFromTL2 {
-//		if w.unionParent == nil {
-//			if w.tl2IsResult {
-//				return false
-//			}
-//			if w.tl2IsBuiltinBrackets {
-//				return false
-//			}
-//			if w.tl2Origin != nil {
-//				if w.tl2Origin.IsFunction {
-//					return true
-//				}
-//				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
-//			}
-//			return false
-//		} else {
-//			return false
-//		}
-//	}
-//	if len(w.origTL) == 0 {
-//		// fmt.Printf("Empty origTL for %s %v\n", w.goGlobalName, w.pureType.KernelType().)
-//		return false
-//	}
-//	return len(w.origTL[0].TemplateArguments) == 0
-//}
-
-//func (w *TypeRWWrapper) CanonicalStringTop() string {
-//	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
-//}
-//
-//func (w *TypeRWWrapper) CanonicalString(bare bool) string {
-//	var s strings.Builder
-//	if w.originateFromTL2 {
-//		if w.unionParent == nil {
-//			if w.tl2IsResult {
-//				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
-//			} else if w.tl2IsBuiltinBrackets {
-//				s.WriteString("__builtin_brackets")
-//			} else if w.tl2Origin != nil {
-//				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
-//			} else {
-//				s.WriteString(w.tl2Name.String())
-//			}
-//		} else {
-//			originType := w.unionParent.wr.tl2Origin
-//			if w.unionParent.wr.tl2IsResult {
-//				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.StructType.UnionType.Variants[w.unionIndex].Name)
-//			} else {
-//				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.StructType.UnionType.Variants[w.unionIndex].Name)
-//			}
-//		}
-//	} else {
-//		if len(w.origTL) > 1 {
-//			if bare {
-//				panic("CanonicalString of bare union")
-//			}
-//			w.origTL[0].TypeDecl.Name.WriteString(&s)
-//		} else if len(w.origTL) == 1 {
-//			if bare {
-//				w.origTL[0].Construct.Name.WriteString(&s)
-//			} else {
-//				w.origTL[0].TypeDecl.Name.WriteString(&s)
-//			}
-//		} else {
-//			panic("all builtins are parsed from TL text, so must have exactly one constructor")
-//		}
-//	}
-//	if len(w.arguments) == 0 {
-//		return s.String()
-//	}
-//	s.WriteByte('<')
-//	for i, a := range w.arguments {
-//		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
-//		if i != 0 {
-//			s.WriteByte(',')
-//		}
-//		if a.isNat {
-//			if a.isArith {
-//				s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-//			} else {
-//				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
-//			}
-//		} else {
-//			s.WriteString(a.tip.CanonicalString(a.bare))
-//		}
-//	}
-//	s.WriteByte('>')
-//	return s.String()
-//}
-
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {
 	return w.pureType.KernelType().HasAnnotation(str)
 }
@@ -221,17 +127,15 @@ func (w *TypeRWWrapper) AnnotationsMask() uint32 {
 func (w *TypeRWWrapper) DoArgumentsContainUnionTypes() bool {
 	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
 		return w.wr.containsUnion(map[*TypeRWWrapper]bool{})
-	} else {
-		return false
 	}
+	return false
 }
 
 func (w *TypeRWWrapper) DoesReturnTypeContainUnionTypes() bool {
 	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
 		return w.ResultType.containsUnion(map[*TypeRWWrapper]bool{})
-	} else {
-		return false
 	}
+	return false
 }
 
 func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -291,16 +195,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	// We keep compatibility with legacy golang naming
 	// This is customization point, generated code should work with whatever naming strategy is selected here
 	return
-}
-
-func stringCompare(a string, b string) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
 }
 
 func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
@@ -434,8 +328,4 @@ func (w *TypeRWWrapper) IsFunction() bool {
 		return false
 	}
 	return structElement.ResultType != nil
-}
-
-func (w *TypeRWWrapper) JSONHelpString() string {
-	return w.pureType.CanonicalName()
 }

@@ -5,6 +5,8 @@ package gengo
 
 import "fmt"
 
+import "cmp"
+
 import "golang.org/x/exp/slices"
 
 import "github.com/vkcom/tl/internal/tlast"
@@ -27,56 +29,38 @@ package `)
 	qw422016.N().S(pkgName)
 	qw422016.N().S(`
 `)
-	var sortedConstructors []*tlast.Combinator
+	type Line struct {
+		conName tlast.TL2TypeName
+		magic   uint32
+	}
+	var lines []Line
 	for _, c := range gen.kernel.TL1() {
 		if c.Crc32() == 0 || c.Construct.Name.String() == "_" { // TODO - remove second check after ReqResult removed from combined.tl
 			continue
 		}
-		sortedConstructors = append(sortedConstructors, c)
+		lines = append(lines, Line{conName: tlast.TL2TypeName(c.Construct.Name), magic: c.Crc32()})
 	}
-	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
-		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
-	})
-
-	sortedTL2Combinators := make([]tlast.TL2Combinator, 0)
 	for _, combinator := range gen.kernel.TL2() {
-		if combinator.IsFunction || combinator.TypeDecl.Magic != 0 {
-			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+		if combinator.IsFunction && combinator.FuncDecl.Magic != 0 {
+			lines = append(lines, Line{conName: combinator.ReferenceName(), magic: combinator.FuncDecl.Magic})
+		}
+		if !combinator.IsFunction && combinator.TypeDecl.Magic != 0 {
+			lines = append(lines, Line{conName: combinator.ReferenceName(), magic: combinator.TypeDecl.Magic})
 		}
 	}
-	slices.SortStableFunc(sortedTL2Combinators, func(a, b tlast.TL2Combinator) int {
-		return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+	slices.SortStableFunc(lines, func(a, b Line) int {
+		return cmp.Compare(a.conName.String(), b.conName.String())
 	})
 
 	qw422016.N().S(`const (
 `)
-	for _, c := range sortedConstructors {
-		if c.Crc32() == 0 {
-			continue
-		}
+	for _, c := range lines {
 		qw422016.N().S(`        `)
-		qw422016.N().S(canonicalGoName(c.Construct.Name, ""))
+		qw422016.N().S(canonicalGoName2(c.conName, ""))
 		qw422016.N().S(` = `)
-		qw422016.N().S(fmt.Sprintf("%#08x", c.Crc32()))
+		qw422016.N().S(fmt.Sprintf("%#08x", c.magic))
 		qw422016.N().S(` // `)
-		qw422016.N().S(c.Construct.Name.String())
-		qw422016.N().S(`
-`)
-	}
-	for _, c := range sortedTL2Combinators {
-		refName := c.ReferenceName()
-		magic := c.FuncDecl.Magic
-		if !c.IsFunction {
-			magic = c.TypeDecl.Magic
-		}
-		name := canonicalGoName2(refName, "")
-
-		qw422016.N().S(`        `)
-		qw422016.E().S(name)
-		qw422016.N().S(` = `)
-		qw422016.N().S(fmt.Sprintf("%#08x", magic))
-		qw422016.N().S(` // `)
-		qw422016.N().S(refName.String())
+		qw422016.N().S(c.conName.String())
 		qw422016.N().S(`
 `)
 	}

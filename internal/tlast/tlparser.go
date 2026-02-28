@@ -112,9 +112,11 @@ type Field struct {
 
 	PR     PositionRange
 	PRName PositionRange
+	AllPR  PositionRange // with all whitespace in file (except sections and last section) accounted for
 
 	CommentBefore string // comment before field
 	CommentRight  string // comment to the right of field
+	NewlineRight  bool
 
 	// this is set during type resolution, so the information
 	// about argument references not erased from the type
