@@ -40,6 +40,10 @@ func (arg *ActualNatArg) IsField() bool {
 	return arg.isField
 }
 
+func (arg *ActualNatArg) IsName() bool {
+	return !arg.isField && !arg.isNumber
+}
+
 func (arg *ActualNatArg) FieldIndex() int {
 	return arg.fieldIndex
 }
@@ -59,7 +63,6 @@ type NatFieldUsage struct {
 	UsedAsSize     bool
 	UsedAsSizePR   tlast.PositionRange
 	AffectedFields [32][]CombinatorField // which fields each bit affects
-	PRName         tlast.PositionRange
 }
 
 func CombinatorFieldsSortAndUnique(cf []CombinatorField) []CombinatorField {
@@ -93,7 +96,8 @@ type Field struct {
 	natArgs []ActualNatArg // for TL1 only, empty for TL2
 	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
 
-	natFieldUsage NatFieldUsage
+	prName tlast.PositionRange
+	//natFieldUsage NatFieldUsage
 }
 
 func (f Field) OwnerTypeInstance() TypeInstance { return f.owner }
@@ -291,7 +295,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			// commentRight:  fieldDef., CommentRight - TODO
-			//PRName: fieldDef.PRName,
+			prName: fieldDef.PRName,
 		}
 		if fieldDef.IsOptional && newField.ins.ins.IsBit() {
 			// we allow optional bit through aliases or template arguments,
@@ -644,7 +648,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			ins:           fieldIns,
 			natArgs:       natArgs,
 			bare:          fieldBare,
-			//PRName:        fieldDef.PRName,
+			prName:        fieldDef.PRName,
 		}
 		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
 			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&
@@ -700,10 +704,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 				localArgs = append(localArgs, LocalArg{
 					wrongTypeErr: nil,
 					arg: tlast.TL2TypeArgument{
-						Type:           tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
-						PR:             fieldDef.PR,
-						SourceField:    tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
-						SourceFieldAny: &newField.natFieldUsage,
+						Type: tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "*"}}},
+						PR:   fieldDef.PR,
+						//SourceField:    tlast.CombinatorField{Comb: def, FieldIndex: originalFieldIndex},
+						//SourceFieldAny: &newField.natFieldUsage,
 					},
 					natArgs: []ActualNatArg{{
 						isField:    true,
