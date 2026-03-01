@@ -36,6 +36,10 @@ type TypeRWStruct struct {
 
 var _ TypeRW = &TypeRWStruct{}
 
+func (trw *TypeRWStruct) isGolangTypedef() bool {
+	return len(trw.Fields) == 1 && trw.Fields[0].pureField.Name() == ""
+}
+
 func (trw *TypeRWStruct) isAlias() bool {
 	return trw.pureTypeStruct.IsAlias()
 }

@@ -105,3 +105,12 @@ func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImport
 	}
 	return resetCode
 }
+
+func (f *Field) FieldAccess(trw *TypeRWStruct, bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) (string, bool) {
+	// presumably, the only case when we have an empty name, is single first field of alias-like defs
+	if f.pureField.Name() != "" {
+		return fmt.Sprintf("item.%s", f.goName), f.recursive
+	}
+	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	return fmt.Sprintf("(*%s)(item)", myType), true
+}

@@ -50,27 +50,23 @@ func (item {%s= goName %}) RepairMasksValue({%s= strings.TrimPrefix(natArgsDecl,
     return item
 }
 func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {
-    {%- if struct_.isAlias() -%}
-        {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-{%s= field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
-    {%- else -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(struct_, bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.MaskTL2Bit() != nil && field.FieldMask() != nil -%}
             if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
             }
         {%- endif -%}
         {%- code
-            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive)
+            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk)
         -%}
         {%- if !field.IsBit() && field.t.hasRepairMasks -%}
             {%- if field.recursive -%}
-                if item.{%s field.goName %} != nil {
+                if {%s= fieldAccess %} != nil {
                     {%s= repairCode %}
                 }
             {%- else -%}
@@ -78,7 +74,6 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
             {%- endif -%}
         {%- endif -%}
     {%- endfor -%}
-    {%- endif -%}
 }
         {%- endif -%}
 
