@@ -52,6 +52,10 @@ type genGo struct {
 }
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
+	options.Kernel.InstantiateConstants = true
+	if err := kernel.Compile(); err != nil {
+		return err
+	}
 	gen := genGo{
 		kernel:         kernel,
 		options:        options,

@@ -20,6 +20,9 @@ import (
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
+	if err := kernel.Compile(); err != nil {
+		return err
+	}
 	if options.Kernel.Verbose {
 		fmt.Printf("generating tljson.html documentation...\n")
 	}

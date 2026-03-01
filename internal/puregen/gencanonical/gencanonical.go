@@ -17,6 +17,9 @@ import (
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
+	if err := kernel.Compile(); err != nil {
+		return err
+	}
 	if options.Kernel.Verbose {
 		fmt.Print("generating file with combinators in canonical form...\n")
 	}

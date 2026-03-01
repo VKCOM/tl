@@ -31,7 +31,7 @@ import (
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
 	"canonical":    gencanonical.Generate,
 	"go":           gengo.Generate,
-	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return nil }, // nothing more than lint
+	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Compile() }, // nothing more than lint
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
 	"tljson.html":  gentljsonhtml.Generate,
 	"tlo":          gentlo.Generate,
@@ -135,9 +135,6 @@ func runMain(opt *puregen.Options) error {
 		}
 	}
 
-	if err := kernel.Compile(); err != nil {
-		return err
-	}
 	if f, ok := languages[opt.Language]; ok {
 		if err := f(kernel, opt); err != nil {
 			return err
