@@ -2150,8 +2150,8 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		}
 		qw422016.N().S(`        `)
 		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-		if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); (fieldProps & (FieldIsNat | FieldUsedAsFieldMask | FieldUsedAsSize)) != 0 {
-			if (fieldProps & FieldUsedAsFieldMask) != 0 {
+		if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); fieldProps.UsedAsMask || fieldProps.UsedAsSize {
+			if fieldProps.UsedAsMask {
 				bitMask := uint32(0)
 				for _, indexPosition := range indexes {
 					bitMask |= 1 << indexPosition
@@ -2163,7 +2163,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 				qw422016.E().S(fmt.Sprintf("0b%b", bitMask))
 				qw422016.N().S(`)
 `)
-				if (fieldProps & FieldUsedAsSize) != 0 {
+				if fieldProps.UsedAsSize {
 					qw422016.N().S(`item.`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(` = rg.LimitValue(item.`)
@@ -2171,14 +2171,10 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 					qw422016.N().S(`)
 `)
 				}
-			} else if (fieldProps & FieldUsedAsSize) != 0 {
+			} else {
 				qw422016.N().S(`item.`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(` = basictl.RandomSize(rg)
-`)
-			} else if fieldProps == FieldIsNat {
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
-				qw422016.N().S(`
 `)
 			}
 		} else {

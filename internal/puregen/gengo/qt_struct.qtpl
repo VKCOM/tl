@@ -1078,8 +1078,8 @@ if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitN
 rg.IncreaseDepth()
         {%- endif -%}
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%- if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); (fieldProps & (FieldIsNat | FieldUsedAsFieldMask | FieldUsedAsSize)) != 0 -%}
-            {%- if (fieldProps & FieldUsedAsFieldMask) != 0 -%}
+        {%- if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); fieldProps.UsedAsMask || fieldProps.UsedAsSize -%}
+            {%- if fieldProps.UsedAsMask -%}
                 {%- code
                     bitMask := uint32(0)
                     for _, indexPosition := range indexes {
@@ -1087,13 +1087,11 @@ rg.IncreaseDepth()
                     }
                 -%}
 item.{%s= field.goName %}= basictl.RandomFieldMask(rg, {%s fmt.Sprintf("0b%b", bitMask) %})
-                {%- if (fieldProps & FieldUsedAsSize) != 0 -%}
+                {%- if fieldProps.UsedAsSize -%}
 item.{%s= field.goName %} = rg.LimitValue(item.{%s= field.goName %})
                 {%- endif -%}
-            {%- elseif (fieldProps & FieldUsedAsSize) != 0 -%}
+            {%- else -%}
 item.{%s= field.goName %} = basictl.RandomSize(rg)
-            {%- elseif fieldProps == FieldIsNat -%}
-{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
             {%- endif -%}
         {%- else -%}
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
