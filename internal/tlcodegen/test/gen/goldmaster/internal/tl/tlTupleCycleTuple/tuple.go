@@ -18,6 +18,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleCycleTuple []cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple
 
+func (item *TupleCycleTuple) ptr() *[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple {
+	return (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+}
+
 func (TupleCycleTuple) TLName() string { return "tuple" }
 func (TupleCycleTuple) TLTag() uint32  { return 0x9770768a }
 
@@ -36,7 +40,7 @@ func (item TupleCycleTuple) RepairMasksValue(nat_n uint32) TupleCycleTuple {
 	return item
 }
 func (item *TupleCycleTuple) RepairMasks(nat_n uint32) {
-	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRepairMasks((*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item), nat_n)
+	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRepairMasks(item.ptr(), nat_n)
 }
 
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -49,8 +53,10 @@ func (item *TupleCycleTuple) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err
 }
 
 func (item *TupleCycleTuple) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWrite(w, *ptr, nat_n)
+	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {

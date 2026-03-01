@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleInt3 [3]int32
 
+func (item *TupleInt3) ptr() *[3]int32 { return (*[3]int32)(item) }
+
 func (TupleInt3) TLName() string { return "tuple" }
 func (TupleInt3) TLTag() uint32  { return 0x9770768a }
 
@@ -41,8 +43,8 @@ func (item *TupleInt3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt3) Write(w []byte) []byte {
-	ptr := (*[3]int32)(item)
-	return tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, ptr)
+	w = tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt3) ReadBoxed(w []byte) (_ []byte, err error) {

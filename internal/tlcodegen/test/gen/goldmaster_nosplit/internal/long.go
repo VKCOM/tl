@@ -201,6 +201,8 @@ func BuiltinTupleLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec 
 
 type Long int64
 
+func (item *Long) ptr() *int64 { return (*int64)(item) }
+
 func (Long) TLName() string { return "long" }
 func (Long) TLTag() uint32  { return 0x22076cba }
 
@@ -224,8 +226,8 @@ func (item *Long) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Long) Write(w []byte) []byte {
-	ptr := (*int64)(item)
-	return basictl.LongWrite(w, *ptr)
+	w = basictl.LongWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Long) ReadBoxed(w []byte) (_ []byte, err error) {

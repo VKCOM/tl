@@ -23,6 +23,8 @@ func (item AbAlias) AsUnion() AbResponse {
 
 type AbAlias int32
 
+func (item *AbAlias) ptr() *int32 { return (*int32)(item) }
+
 func (AbAlias) TLName() string { return "ab.alias" }
 func (AbAlias) TLTag() uint32  { return 0x944aaa97 }
 
@@ -46,8 +48,8 @@ func (item *AbAlias) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *AbAlias) Write(w []byte) []byte {
-	ptr := (*int32)(item)
-	return basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *AbAlias) ReadBoxed(w []byte) (_ []byte, err error) {

@@ -201,6 +201,8 @@ func BuiltinTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, ve
 
 type String string
 
+func (item *String) ptr() *string { return (*string)(item) }
+
 func (String) TLName() string { return "string" }
 func (String) TLTag() uint32  { return 0xb5286e24 }
 
@@ -224,8 +226,8 @@ func (item *String) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *String) Write(w []byte) []byte {
-	ptr := (*string)(item)
-	return basictl.StringWrite(w, *ptr)
+	w = basictl.StringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *String) ReadBoxed(w []byte) (_ []byte, err error) {

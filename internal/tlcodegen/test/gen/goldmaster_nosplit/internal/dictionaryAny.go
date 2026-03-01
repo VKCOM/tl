@@ -15,6 +15,10 @@ var _ = basictl.NatWrite
 
 type DictionaryAnyIntPairIntInt map[int32]PairIntInt
 
+func (item *DictionaryAnyIntPairIntInt) ptr() *map[int32]PairIntInt {
+	return (*map[int32]PairIntInt)(item)
+}
+
 func (DictionaryAnyIntPairIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyIntPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
@@ -38,8 +42,8 @@ func (item *DictionaryAnyIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err er
 }
 
 func (item *DictionaryAnyIntPairIntInt) Write(w []byte) []byte {
-	ptr := (*map[int32]PairIntInt)(item)
-	return BuiltinDictIntPairIntIntWrite(w, *ptr)
+	w = BuiltinDictIntPairIntIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryAnyIntPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -135,6 +139,10 @@ func (item *DictionaryAnyIntPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadCo
 
 type DictionaryAnyLongPairIntInt map[int64]PairIntInt
 
+func (item *DictionaryAnyLongPairIntInt) ptr() *map[int64]PairIntInt {
+	return (*map[int64]PairIntInt)(item)
+}
+
 func (DictionaryAnyLongPairIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyLongPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
@@ -158,8 +166,8 @@ func (item *DictionaryAnyLongPairIntInt) WriteGeneral(w []byte) (_ []byte, err e
 }
 
 func (item *DictionaryAnyLongPairIntInt) Write(w []byte) []byte {
-	ptr := (*map[int64]PairIntInt)(item)
-	return BuiltinDictLongPairIntIntWrite(w, *ptr)
+	w = BuiltinDictLongPairIntIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryAnyLongPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -255,6 +263,10 @@ func (item *DictionaryAnyLongPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadC
 
 type DictionaryAnyStringPairIntInt map[string]PairIntInt
 
+func (item *DictionaryAnyStringPairIntInt) ptr() *map[string]PairIntInt {
+	return (*map[string]PairIntInt)(item)
+}
+
 func (DictionaryAnyStringPairIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyStringPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
@@ -278,8 +290,8 @@ func (item *DictionaryAnyStringPairIntInt) WriteGeneral(w []byte) (_ []byte, err
 }
 
 func (item *DictionaryAnyStringPairIntInt) Write(w []byte) []byte {
-	ptr := (*map[string]PairIntInt)(item)
-	return BuiltinDictStringPairIntIntWrite(w, *ptr)
+	w = BuiltinDictStringPairIntIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryAnyStringPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {

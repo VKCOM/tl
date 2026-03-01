@@ -341,8 +341,8 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(`    `)
 	qw422016.N().S(printCommentsType(struct_.pureTypeStruct))
 
-	if struct_.isAlias() {
-		asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isAlias()
+	if struct_.isAlias() || struct_.isGolangTypedef() {
+		asterisk := ifString(struct_.Fields[0].recursive, "*", "")
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
 		qw422016.N().S(`    `)
@@ -354,6 +354,14 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		qw422016.N().S(asterisk)
 		qw422016.N().S(fieldTypeString)
 		qw422016.N().S(`
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ptr() *`)
+		qw422016.N().S(fieldTypeString)
+		qw422016.N().S(` { return (*`)
+		qw422016.N().S(fieldTypeString)
+		qw422016.N().S(`)(item) }
 `)
 		return
 	}
@@ -2214,18 +2222,6 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		}
 		return
 	}
-	if struct_.isAlias() {
-		field := struct_.Fields[0]
-
-		qw422016.N().S(`ptr := (*`)
-		qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-		qw422016.N().S(`)(item)
-`)
-		qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), true, true, struct_.wr.hasErrorInWriteMethods))
-		qw422016.N().S(`
-`)
-		return
-	}
 	for _, field := range struct_.Fields {
 		if field.IsBit() {
 			if !field.Bare() {
@@ -2244,7 +2240,9 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 			}
 			continue
 		}
-		writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, false, field.t.hasErrorInWriteMethods)
+		fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
+		writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, false, field.t.hasErrorInWriteMethods)
 
 		if field.FieldMask() != nil {
 			qw422016.N().S(`        if `)
@@ -2258,7 +2256,7 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 			/* non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */
 
 			qw422016.N().S(`        if `)
-			qw422016.N().S(fmt.Sprintf("item.%s", field.goName))
+			qw422016.N().S(fieldAccess)
 			qw422016.N().S(` == nil {
             var tmpValue `)
 			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))

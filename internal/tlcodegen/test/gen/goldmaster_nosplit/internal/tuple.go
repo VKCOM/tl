@@ -397,6 +397,8 @@ func (item TupleBoxedIntBoxed0Maybe) String() string {
 
 type TupleCycleTuple []CycleTuple
 
+func (item *TupleCycleTuple) ptr() *[]CycleTuple { return (*[]CycleTuple)(item) }
+
 func (TupleCycleTuple) TLName() string { return "tuple" }
 func (TupleCycleTuple) TLTag() uint32  { return 0x9770768a }
 
@@ -415,7 +417,7 @@ func (item TupleCycleTuple) RepairMasksValue(nat_n uint32) TupleCycleTuple {
 	return item
 }
 func (item *TupleCycleTuple) RepairMasks(nat_n uint32) {
-	BuiltinTupleCycleTupleRepairMasks((*[]CycleTuple)(item), nat_n)
+	BuiltinTupleCycleTupleRepairMasks(item.ptr(), nat_n)
 }
 
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -428,8 +430,10 @@ func (item *TupleCycleTuple) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err
 }
 
 func (item *TupleCycleTuple) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]CycleTuple)(item)
-	return BuiltinTupleCycleTupleWrite(w, *ptr, nat_n)
+	if w, err = BuiltinTupleCycleTupleWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -509,6 +513,8 @@ func (item *TupleCycleTuple) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 type TupleCycleTuple2 [2]CycleTuple
 
+func (item *TupleCycleTuple2) ptr() *[2]CycleTuple { return (*[2]CycleTuple)(item) }
+
 func (TupleCycleTuple2) TLName() string { return "tuple" }
 func (TupleCycleTuple2) TLTag() uint32  { return 0x9770768a }
 
@@ -527,7 +533,7 @@ func (item TupleCycleTuple2) RepairMasksValue() TupleCycleTuple2 {
 	return item
 }
 func (item *TupleCycleTuple2) RepairMasks() {
-	BuiltinTuple2CycleTupleRepairMasks((*[2]CycleTuple)(item))
+	BuiltinTuple2CycleTupleRepairMasks(item.ptr())
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {
@@ -540,8 +546,10 @@ func (item *TupleCycleTuple2) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleCycleTuple2) Write(w []byte) (_ []byte, err error) {
-	ptr := (*[2]CycleTuple)(item)
-	return BuiltinTuple2CycleTupleWrite(w, ptr)
+	if w, err = BuiltinTuple2CycleTupleWrite(w, item.ptr()); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleCycleTuple2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -643,6 +651,8 @@ func (item *TupleCycleTuple2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ 
 
 type TupleInt []int32
 
+func (item *TupleInt) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (TupleInt) TLName() string { return "tuple" }
 func (TupleInt) TLTag() uint32  { return 0x9770768a }
 
@@ -666,8 +676,10 @@ func (item *TupleInt) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error)
 }
 
 func (item *TupleInt) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return BuiltinTupleIntWrite(w, *ptr, nat_n)
+	if w, err = BuiltinTupleIntWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleInt) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -747,6 +759,8 @@ func (item *TupleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, 
 
 type TupleInt0 [0]int32
 
+func (item *TupleInt0) ptr() *[0]int32 { return (*[0]int32)(item) }
+
 func (TupleInt0) TLName() string { return "tuple" }
 func (TupleInt0) TLTag() uint32  { return 0x9770768a }
 
@@ -770,8 +784,8 @@ func (item *TupleInt0) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt0) Write(w []byte) []byte {
-	ptr := (*[0]int32)(item)
-	return BuiltinTuple0IntWrite(w, ptr)
+	w = BuiltinTuple0IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt0) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -1054,6 +1068,8 @@ func (item TupleInt0Maybe) String() string {
 
 type TupleInt3 [3]int32
 
+func (item *TupleInt3) ptr() *[3]int32 { return (*[3]int32)(item) }
+
 func (TupleInt3) TLName() string { return "tuple" }
 func (TupleInt3) TLTag() uint32  { return 0x9770768a }
 
@@ -1077,8 +1093,8 @@ func (item *TupleInt3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt3) Write(w []byte) []byte {
-	ptr := (*[3]int32)(item)
-	return BuiltinTuple3IntWrite(w, ptr)
+	w = BuiltinTuple3IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt3) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -1361,6 +1377,8 @@ func (item TupleInt3Maybe) String() string {
 
 type TupleIntBoxed0 [0]int32
 
+func (item *TupleIntBoxed0) ptr() *[0]int32 { return (*[0]int32)(item) }
+
 func (TupleIntBoxed0) TLName() string { return "tuple" }
 func (TupleIntBoxed0) TLTag() uint32  { return 0x9770768a }
 
@@ -1384,8 +1402,8 @@ func (item *TupleIntBoxed0) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleIntBoxed0) Write(w []byte) []byte {
-	ptr := (*[0]int32)(item)
-	return BuiltinTuple0IntBoxedWrite(w, ptr)
+	w = BuiltinTuple0IntBoxedWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleIntBoxed0) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -1481,6 +1499,8 @@ func (item *TupleIntBoxed0) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 
 type TupleIntBoxed3 [3]int32
 
+func (item *TupleIntBoxed3) ptr() *[3]int32 { return (*[3]int32)(item) }
+
 func (TupleIntBoxed3) TLName() string { return "tuple" }
 func (TupleIntBoxed3) TLTag() uint32  { return 0x9770768a }
 
@@ -1504,8 +1524,8 @@ func (item *TupleIntBoxed3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleIntBoxed3) Write(w []byte) []byte {
-	ptr := (*[3]int32)(item)
-	return BuiltinTuple3IntBoxedWrite(w, ptr)
+	w = BuiltinTuple3IntBoxedWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleIntBoxed3) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -1975,6 +1995,8 @@ func (item *TupleIntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 
 type TupleLong []int64
 
+func (item *TupleLong) ptr() *[]int64 { return (*[]int64)(item) }
+
 func (TupleLong) TLName() string { return "tuple" }
 func (TupleLong) TLTag() uint32  { return 0x9770768a }
 
@@ -1998,8 +2020,10 @@ func (item *TupleLong) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error
 }
 
 func (item *TupleLong) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int64)(item)
-	return BuiltinTupleLongWrite(w, *ptr, nat_n)
+	if w, err = BuiltinTupleLongWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleLong) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -2079,6 +2103,8 @@ func (item *TupleLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte,
 
 type TupleString []string
 
+func (item *TupleString) ptr() *[]string { return (*[]string)(item) }
+
 func (TupleString) TLName() string { return "tuple" }
 func (TupleString) TLTag() uint32  { return 0x9770768a }
 
@@ -2102,8 +2128,10 @@ func (item *TupleString) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err err
 }
 
 func (item *TupleString) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]string)(item)
-	return BuiltinTupleStringWrite(w, *ptr, nat_n)
+	if w, err = BuiltinTupleStringWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleString) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {

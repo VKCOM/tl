@@ -91,17 +91,19 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 	if !f.recursive {
 		return ""
 	}
+	fieldAccess, _ := f.FieldAccess(bytesVersion, directImports, ins)
 	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	return fmt.Sprintf(`	if item.%s == nil { item.%s = new(%s) }
-`, f.goName, f.goName, myType)
+	return fmt.Sprintf(`	if %s == nil { %s = new(%s) }
+`, fieldAccess, fieldAccess, myType)
 }
 
 func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
-	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, ins, fmt.Sprintf("item.%s", f.goName), f.recursive)
+	fieldAccess, fieldAsterisk := f.FieldAccess(bytesVersion, directImports, ins)
+	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, ins, fieldAccess, fieldAsterisk)
 	if f.recursive {
-		return fmt.Sprintf(`	if item.%s != nil {
+		return fmt.Sprintf(`	if %s != nil {
 		%s
-	}`, f.goName, resetCode)
+	}`, fieldAccess, resetCode)
 	}
 	return resetCode
 }
@@ -111,6 +113,6 @@ func (f *Field) FieldAccess(bytesVersion bool, directImports *DirectImports, ins
 	if f.pureField.Name() != "" {
 		return fmt.Sprintf("item.%s", f.goName), f.recursive
 	}
-	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	return fmt.Sprintf("(*%s)(item)", myType), true
+	//myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	return "item.ptr()", true
 }

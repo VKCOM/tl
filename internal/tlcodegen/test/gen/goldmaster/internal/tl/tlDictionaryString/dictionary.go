@@ -19,6 +19,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type DictionaryString map[string]string
 
+func (item *DictionaryString) ptr() *map[string]string { return (*map[string]string)(item) }
+
 func (DictionaryString) TLName() string { return "dictionary" }
 func (DictionaryString) TLTag() uint32  { return 0x1f4c618f }
 
@@ -42,8 +44,8 @@ func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *DictionaryString) Write(w []byte) []byte {
-	ptr := (*map[string]string)(item)
-	return tlBuiltinDictStringString.BuiltinDictStringStringWrite(w, *ptr)
+	w = tlBuiltinDictStringString.BuiltinDictStringStringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -139,6 +141,10 @@ func (item *DictionaryString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ 
 
 type DictionaryStringBytes []tlDictFieldStringString.DictFieldStringStringBytes
 
+func (item *DictionaryStringBytes) ptr() *[]tlDictFieldStringString.DictFieldStringStringBytes {
+	return (*[]tlDictFieldStringString.DictFieldStringStringBytes)(item)
+}
+
 func (DictionaryStringBytes) TLName() string { return "dictionary" }
 func (DictionaryStringBytes) TLTag() uint32  { return 0x1f4c618f }
 
@@ -162,8 +168,8 @@ func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) 
 }
 
 func (item *DictionaryStringBytes) Write(w []byte) []byte {
-	ptr := (*[]tlDictFieldStringString.DictFieldStringStringBytes)(item)
-	return tlBuiltinDictStringString.BuiltinDictStringStringBytesWrite(w, *ptr)
+	w = tlBuiltinDictStringString.BuiltinDictStringStringBytesWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {

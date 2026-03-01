@@ -18,6 +18,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type LongKeyDictionaryTupleString map[int64][]string
 
+func (item *LongKeyDictionaryTupleString) ptr() *map[int64][]string {
+	return (*map[int64][]string)(item)
+}
+
 func (LongKeyDictionaryTupleString) TLName() string { return "longKeyDictionary" }
 func (LongKeyDictionaryTupleString) TLTag() uint32  { return 0xb424d8f1 }
 
@@ -41,8 +45,10 @@ func (item *LongKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (
 }
 
 func (item *LongKeyDictionaryTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
-	ptr := (*map[int64][]string)(item)
-	return tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWrite(w, *ptr, nat_t)
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWrite(w, *item.ptr(), nat_t); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *LongKeyDictionaryTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {

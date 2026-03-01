@@ -204,6 +204,8 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJS
 
 type DictionaryString map[string]string
 
+func (item *DictionaryString) ptr() *map[string]string { return (*map[string]string)(item) }
+
 func (DictionaryString) TLName() string { return "dictionary" }
 func (DictionaryString) TLTag() uint32  { return 0x1f4c618f }
 
@@ -227,8 +229,8 @@ func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *DictionaryString) Write(w []byte) []byte {
-	ptr := (*map[string]string)(item)
-	return BuiltinDictStringStringWrite(w, *ptr)
+	w = BuiltinDictStringStringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -324,6 +326,10 @@ func (item *DictionaryString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ 
 
 type DictionaryStringBytes []DictFieldStringStringBytes
 
+func (item *DictionaryStringBytes) ptr() *[]DictFieldStringStringBytes {
+	return (*[]DictFieldStringStringBytes)(item)
+}
+
 func (DictionaryStringBytes) TLName() string { return "dictionary" }
 func (DictionaryStringBytes) TLTag() uint32  { return 0x1f4c618f }
 
@@ -347,8 +353,8 @@ func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) 
 }
 
 func (item *DictionaryStringBytes) Write(w []byte) []byte {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	return BuiltinDictStringStringBytesWrite(w, *ptr)
+	w = BuiltinDictStringStringBytesWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -444,6 +450,10 @@ func (item *DictionaryStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext
 
 type DictionaryUsefulServiceUserEntityPaymentItemBoxed map[string]UsefulServiceUserEntityPaymentItem
 
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ptr() *map[string]UsefulServiceUserEntityPaymentItem {
+	return (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+}
+
 func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLName() string { return "dictionary" }
 func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLTag() uint32  { return 0x1f4c618f }
 
@@ -467,8 +477,8 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_t uint32) []byte {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	return BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
+	w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w, *item.ptr(), nat_t)
+	return w
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {

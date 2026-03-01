@@ -18,6 +18,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type VectorCyc1MyCycle []cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle
 
+func (item *VectorCyc1MyCycle) ptr() *[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle {
+	return (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
+}
+
 func (VectorCyc1MyCycle) TLName() string { return "vector" }
 func (VectorCyc1MyCycle) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -36,7 +40,7 @@ func (item VectorCyc1MyCycle) RepairMasksValue() VectorCyc1MyCycle {
 	return item
 }
 func (item *VectorCyc1MyCycle) RepairMasks() {
-	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRepairMasks((*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item))
+	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRepairMasks(item.ptr())
 }
 
 func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {
@@ -49,8 +53,8 @@ func (item *VectorCyc1MyCycle) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorCyc1MyCycle) Write(w []byte) []byte {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	return cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWrite(w, *ptr)
+	w = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorCyc1MyCycle) ReadBoxed(w []byte) (_ []byte, err error) {

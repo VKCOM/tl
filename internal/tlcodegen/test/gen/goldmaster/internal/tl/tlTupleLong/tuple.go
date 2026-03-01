@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleLong []int64
 
+func (item *TupleLong) ptr() *[]int64 { return (*[]int64)(item) }
+
 func (TupleLong) TLName() string { return "tuple" }
 func (TupleLong) TLTag() uint32  { return 0x9770768a }
 
@@ -41,8 +43,10 @@ func (item *TupleLong) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error
 }
 
 func (item *TupleLong) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int64)(item)
-	return tlBuiltinTupleLong.BuiltinTupleLongWrite(w, *ptr, nat_n)
+	if w, err = tlBuiltinTupleLong.BuiltinTupleLongWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleLong) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {

@@ -15,6 +15,8 @@ var _ = basictl.NatWrite
 
 type VectorAColor []AColor
 
+func (item *VectorAColor) ptr() *[]AColor { return (*[]AColor)(item) }
+
 func (VectorAColor) TLName() string { return "vector" }
 func (VectorAColor) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -38,8 +40,8 @@ func (item *VectorAColor) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorAColor) Write(w []byte) []byte {
-	ptr := (*[]AColor)(item)
-	return BuiltinVectorAColorWrite(w, *ptr)
+	w = BuiltinVectorAColorWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorAColor) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -328,6 +330,8 @@ func (item VectorBoxedIntMaybe) String() string {
 
 type VectorCyc1MyCycle []Cyc1MyCycle
 
+func (item *VectorCyc1MyCycle) ptr() *[]Cyc1MyCycle { return (*[]Cyc1MyCycle)(item) }
+
 func (VectorCyc1MyCycle) TLName() string { return "vector" }
 func (VectorCyc1MyCycle) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -346,7 +350,7 @@ func (item VectorCyc1MyCycle) RepairMasksValue() VectorCyc1MyCycle {
 	return item
 }
 func (item *VectorCyc1MyCycle) RepairMasks() {
-	BuiltinVectorCyc1MyCycleRepairMasks((*[]Cyc1MyCycle)(item))
+	BuiltinVectorCyc1MyCycleRepairMasks(item.ptr())
 }
 
 func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {
@@ -359,8 +363,8 @@ func (item *VectorCyc1MyCycle) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorCyc1MyCycle) Write(w []byte) []byte {
-	ptr := (*[]Cyc1MyCycle)(item)
-	return BuiltinVectorCyc1MyCycleWrite(w, *ptr)
+	w = BuiltinVectorCyc1MyCycleWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorCyc1MyCycle) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -456,6 +460,8 @@ func (item *VectorCyc1MyCycle) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 
 type VectorInt []int32
 
+func (item *VectorInt) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (VectorInt) TLName() string { return "vector" }
 func (VectorInt) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -479,8 +485,8 @@ func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorInt) Write(w []byte) []byte {
-	ptr := (*[]int32)(item)
-	return BuiltinVectorIntWrite(w, *ptr)
+	w = BuiltinVectorIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorInt) ReadBoxed(w []byte) (_ []byte, err error) {

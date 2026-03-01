@@ -19,6 +19,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type DictionaryAnyLongPairIntInt map[int64]tlPairIntInt.PairIntInt
 
+func (item *DictionaryAnyLongPairIntInt) ptr() *map[int64]tlPairIntInt.PairIntInt {
+	return (*map[int64]tlPairIntInt.PairIntInt)(item)
+}
+
 func (DictionaryAnyLongPairIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyLongPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
@@ -42,8 +46,8 @@ func (item *DictionaryAnyLongPairIntInt) WriteGeneral(w []byte) (_ []byte, err e
 }
 
 func (item *DictionaryAnyLongPairIntInt) Write(w []byte) []byte {
-	ptr := (*map[int64]tlPairIntInt.PairIntInt)(item)
-	return tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWrite(w, *ptr)
+	w = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryAnyLongPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
