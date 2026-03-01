@@ -24,6 +24,7 @@ type TypeInstanceStruct struct {
 	fields              []Field
 	isUnionElement      bool
 	unionIndex          int
+	isTypedef           bool
 	isAlias             bool
 	isUnwrap            bool
 
@@ -36,6 +37,11 @@ type TypeInstanceStruct struct {
 
 func (ins *TypeInstanceStruct) Fields() []Field {
 	return ins.fields
+}
+
+// this struct has empty name of the single field (without fieldsmask)
+func (ins *TypeInstanceStruct) IsTypedef() bool {
+	return ins.isTypedef
 }
 
 // Both TL1-style typedef (single anonymous field)
@@ -638,7 +644,8 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}
 	// !isUnionElement &&
-	ins.isAlias = !def.IsFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
+	ins.isTypedef = !def.IsFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
+	ins.isAlias = !isUnionElement && ins.isTypedef
 
 	return ins, nil
 }

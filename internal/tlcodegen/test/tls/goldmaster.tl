@@ -133,6 +133,10 @@ ab.empty = ab.Response; // Union comment - Empty
 ab.code x:int = ab.Response; // Union comment - Code
 ab.alias int = ab.Response;
 
+//{"type":"empty"} {"type":"code", "value":{x:123}} {"type":"alias", x:123}
+//ab.Response = empty | code x:int | alias int;
+//{"_type":"empty"} {"_type":"code", "x":123} {"_type":"alias", "_value":123}
+
 // Also union comment
 // Multiline Alias
 cd.response x:int str:string = ab.Response;
