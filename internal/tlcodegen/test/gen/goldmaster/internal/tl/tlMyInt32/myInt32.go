@@ -24,18 +24,15 @@ func (MyInt32) TLName() string { return "myInt32" }
 func (MyInt32) TLTag() uint32  { return 0xba59e151 }
 
 func (item *MyInt32) Reset() {
-	ptr := (*tlInt32s.Int32s)(item)
-	ptr.Reset()
+	item.ptr().Reset()
 }
 
 func (item *MyInt32) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*tlInt32s.Int32s)(item)
-	ptr.FillRandom(rg)
+	item.ptr().FillRandom(rg)
 }
 
 func (item *MyInt32) Read(w []byte) (_ []byte, err error) {
-	ptr := (*tlInt32s.Int32s)(item)
-	return ptr.Read(w)
+	return item.ptr().Read(w)
 }
 
 func (item *MyInt32) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -72,8 +69,7 @@ func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *MyInt32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*tlInt32s.Int32s)(item)
-	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
+	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -90,8 +86,7 @@ func (item *MyInt32) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyInt32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*tlInt32s.Int32s)(item)
-	w = ptr.WriteJSONOpt(tctx, w)
+	w = item.ptr().WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyInt32) MarshalJSON() ([]byte, error) {
@@ -110,13 +105,11 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*tlInt32s.Int32s)(item)
 	var sz int
 	var currentSize int
 	currentSize += 4
-	w = basictl.IntWrite(w, *(*int32)(ptr))
+	w = basictl.IntWrite(w, *(*int32)(item.ptr()))
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -126,8 +119,7 @@ func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *MyInt32) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*tlInt32s.Int32s)(item)
-	if r, err = ptr.InternalReadTL2(r); err != nil {
+	if r, err = item.ptr().InternalReadTL2(r); err != nil {
 		return r, err
 	}
 	return r, nil

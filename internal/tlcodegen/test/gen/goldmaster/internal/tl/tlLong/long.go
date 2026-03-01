@@ -23,18 +23,15 @@ func (Long) TLName() string { return "long" }
 func (Long) TLTag() uint32  { return 0x22076cba }
 
 func (item *Long) Reset() {
-	ptr := (*int64)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *Long) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*int64)(item)
-	*ptr = basictl.RandomLong(rg)
+	*item.ptr() = basictl.RandomLong(rg)
 }
 
 func (item *Long) Read(w []byte) (_ []byte, err error) {
-	ptr := (*int64)(item)
-	return basictl.LongRead(w, ptr)
+	return basictl.LongRead(w, item.ptr())
 }
 
 func (item *Long) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -71,8 +68,7 @@ func (item *Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 func (item *Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*int64)(item)
-	if err := internal.Json2ReadInt64(in, ptr); err != nil {
+	if err := internal.Json2ReadInt64(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -89,8 +85,7 @@ func (item *Long) WriteJSON(w []byte) []byte {
 }
 
 func (item *Long) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*int64)(item)
-	w = basictl.JSONWriteInt64(w, *ptr)
+	w = basictl.JSONWriteInt64(w, *item.ptr())
 	return w
 }
 func (item *Long) MarshalJSON() ([]byte, error) {
@@ -109,13 +104,11 @@ func (item *Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*int64)(item)
 	var sz int
 	var currentSize int
 	currentSize += 8
-	w = basictl.LongWrite(w, *ptr)
+	w = basictl.LongWrite(w, *item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -125,8 +118,7 @@ func (item *Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *Long) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*int64)(item)
-	if r, err = basictl.LongRead(r, ptr); err != nil {
+	if r, err = basictl.LongRead(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

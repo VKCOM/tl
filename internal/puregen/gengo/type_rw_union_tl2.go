@@ -17,7 +17,7 @@ func (trw *TypeRWUnion) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), zeroIfEmpty)
+	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, targetObject, zeroIfEmpty)
 	if zeroIfEmpty {
 		sz = fmt.Sprintf("if %s; sz != 0 {", sz)
 	}

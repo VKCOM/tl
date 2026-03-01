@@ -26,13 +26,11 @@ func (VectorCyc1MyCycle) TLName() string { return "vector" }
 func (VectorCyc1MyCycle) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorCyc1MyCycle) Reset() {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorCyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleFillRandom(rg, ptr)
+	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleFillRandom(rg, item.ptr())
 }
 
 func (item VectorCyc1MyCycle) RepairMasksValue() VectorCyc1MyCycle {
@@ -44,8 +42,7 @@ func (item *VectorCyc1MyCycle) RepairMasks() {
 }
 
 func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	return cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRead(w, ptr)
+	return cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRead(w, item.ptr())
 }
 
 func (item *VectorCyc1MyCycle) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -82,8 +79,7 @@ func (item *VectorCyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 func (item *VectorCyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	if err := cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -100,8 +96,7 @@ func (item *VectorCyc1MyCycle) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorCyc1MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	w = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx, w, *ptr)
+	w = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorCyc1MyCycle) MarshalJSON() ([]byte, error) {
@@ -120,14 +115,12 @@ func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleCalculateLayout(sizes, false, ptr)
+	sizes, sz = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -137,8 +130,7 @@ func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 }
 
 func (item *VectorCyc1MyCycle) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	if r, err = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalReadTL2(r, ptr); err != nil {
+	if r, err = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

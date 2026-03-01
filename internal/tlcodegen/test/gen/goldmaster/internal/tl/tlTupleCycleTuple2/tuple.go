@@ -26,13 +26,11 @@ func (TupleCycleTuple2) TLName() string { return "tuple" }
 func (TupleCycleTuple2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleCycleTuple2) Reset() {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReset(ptr)
+	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReset(item.ptr())
 }
 
 func (item *TupleCycleTuple2) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleFillRandom(rg, ptr)
+	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleFillRandom(rg, item.ptr())
 }
 
 func (item TupleCycleTuple2) RepairMasksValue() TupleCycleTuple2 {
@@ -44,8 +42,7 @@ func (item *TupleCycleTuple2) RepairMasks() {
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleRead(w, ptr)
+	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleRead(w, item.ptr())
 }
 
 func (item *TupleCycleTuple2) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -88,8 +85,7 @@ func (item *TupleCycleTuple2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 func (item *TupleCycleTuple2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if err := cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -106,8 +102,7 @@ func (item *TupleCycleTuple2) WriteJSON(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleCycleTuple2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleWriteJSONOpt(tctx, w, ptr); err != nil {
+	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleWriteJSONOpt(tctx, w, item.ptr()); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -128,14 +123,12 @@ func (item *TupleCycleTuple2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleCalculateLayout(sizes, false, ptr)
+	sizes, sz = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -145,8 +138,7 @@ func (item *TupleCycleTuple2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 }
 
 func (item *TupleCycleTuple2) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if r, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleInternalReadTL2(r, ptr); err != nil {
+	if r, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

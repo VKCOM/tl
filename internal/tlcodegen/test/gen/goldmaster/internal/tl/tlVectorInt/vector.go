@@ -24,18 +24,15 @@ func (VectorInt) TLName() string { return "vector" }
 func (VectorInt) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorInt) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]int32)(item)
-	tlBuiltinVectorInt.BuiltinVectorIntFillRandom(rg, ptr)
+	tlBuiltinVectorInt.BuiltinVectorIntFillRandom(rg, item.ptr())
 }
 
 func (item *VectorInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, ptr)
+	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, item.ptr())
 }
 
 func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -72,8 +69,7 @@ func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *VectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]int32)(item)
-	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -90,8 +86,7 @@ func (item *VectorInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]int32)(item)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorInt) MarshalJSON() ([]byte, error) {
@@ -110,14 +105,12 @@ func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]int32)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -127,8 +120,7 @@ func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *VectorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	if r, err = tlBuiltinVectorInt.BuiltinVectorIntInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorInt.BuiltinVectorIntInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

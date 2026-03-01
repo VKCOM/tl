@@ -24,18 +24,15 @@ func (TupleIntBoxed3) TLName() string { return "tuple" }
 func (TupleIntBoxed3) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleIntBoxed3) Reset() {
-	ptr := (*[3]int32)(item)
-	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(ptr)
+	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(item.ptr())
 }
 
 func (item *TupleIntBoxed3) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[3]int32)(item)
-	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedFillRandom(rg, ptr)
+	tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedFillRandom(rg, item.ptr())
 }
 
 func (item *TupleIntBoxed3) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[3]int32)(item)
-	return tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedRead(w, ptr)
+	return tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedRead(w, item.ptr())
 }
 
 func (item *TupleIntBoxed3) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -72,8 +69,7 @@ func (item *TupleIntBoxed3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func (item *TupleIntBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[3]int32)(item)
-	if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -90,8 +86,7 @@ func (item *TupleIntBoxed3) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleIntBoxed3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[3]int32)(item)
-	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleIntBoxed3) MarshalJSON() ([]byte, error) {
@@ -110,14 +105,12 @@ func (item *TupleIntBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[3]int32)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -127,8 +120,7 @@ func (item *TupleIntBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
 }
 
 func (item *TupleIntBoxed3) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[3]int32)(item)
-	if r, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil
