@@ -36,8 +36,7 @@ func (item VectorCyc1MyCycle) RepairMasksValue() VectorCyc1MyCycle {
 	return item
 }
 func (item *VectorCyc1MyCycle) RepairMasks() {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRepairMasks(ptr)
+	cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRepairMasks((*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item))
 }
 
 func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {

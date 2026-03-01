@@ -415,8 +415,7 @@ func (item TupleCycleTuple) RepairMasksValue(nat_n uint32) TupleCycleTuple {
 	return item
 }
 func (item *TupleCycleTuple) RepairMasks(nat_n uint32) {
-	ptr := (*[]CycleTuple)(item)
-	BuiltinTupleCycleTupleRepairMasks(ptr, nat_n)
+	BuiltinTupleCycleTupleRepairMasks((*[]CycleTuple)(item), nat_n)
 }
 
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -528,8 +527,7 @@ func (item TupleCycleTuple2) RepairMasksValue() TupleCycleTuple2 {
 	return item
 }
 func (item *TupleCycleTuple2) RepairMasks() {
-	ptr := (*[2]CycleTuple)(item)
-	BuiltinTuple2CycleTupleRepairMasks(ptr)
+	BuiltinTuple2CycleTupleRepairMasks((*[2]CycleTuple)(item))
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {

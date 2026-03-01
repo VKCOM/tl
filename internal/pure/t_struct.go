@@ -637,6 +637,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		ins.resultNatArgs = natArgs
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}
+	// !isUnionElement &&
 	ins.isAlias = !def.IsFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
 
 	return ins, nil
