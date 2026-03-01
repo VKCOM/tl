@@ -36,7 +36,6 @@ type TypeRWWrapper struct {
 
 	wantsBytesVersion bool
 	hasRepairMasks    bool
-	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
 	hasBytesVersion        bool
 	hasErrorInWriteMethods bool

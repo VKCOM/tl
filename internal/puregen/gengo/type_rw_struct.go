@@ -37,13 +37,10 @@ type TypeRWStruct struct {
 var _ TypeRW = &TypeRWStruct{}
 
 func (trw *TypeRWStruct) isAlias() bool {
-	return trw.pureTypeStruct.IsAlias() && !trw.Fields[0].recursive
+	return trw.pureTypeStruct.IsAlias()
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
-	if !trw.isAlias() || trw.wr.preventUnwrap {
-		return false
-	}
 	return trw.pureTypeStruct.IsUnwrap()
 }
 
