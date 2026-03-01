@@ -50,7 +50,7 @@ func (item {%s= goName %}) RepairMasksValue({%s= strings.TrimPrefix(natArgsDecl,
     return item
 }
 func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ",") %}) {
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
@@ -152,9 +152,9 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
 {%- func (struct_ *TypeRWStruct)typeDefinition(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%s= printCommentsType(struct_.pureTypeStruct) -%} {%- code -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code
-            asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
+            asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isAlias()
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
     {%s= printCommentsField(struct_.Fields[0]) -%} {%- code -%}
@@ -311,7 +311,7 @@ type {%s= goName %} struct {
         natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
         writeNeedsError := struct_.wr.hasErrorInWriteMethods
     -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code
             field := struct_.Fields[0]
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
@@ -998,7 +998,7 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)resetFields(bytesVersion bool, directImports *DirectImports) -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", true) %}
@@ -1015,7 +1015,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)randomFields(bytesVersion bool, directImports *DirectImports) -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
@@ -1106,7 +1106,7 @@ rg.DecreaseDepth()
         {%- endif -%}
         {%- return -%}
     {%- endif -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), true, true, struct_.wr.hasErrorInWriteMethods) %}
@@ -1154,7 +1154,7 @@ return w
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- return -%}
     {%- endif -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), true, true) %}
@@ -1205,7 +1205,7 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
     -%}
-{%- if struct_.isTypeDef() && struct_.unionParent == nil -%}
+{%- if struct_.isAlias() && struct_.unionParent == nil -%}
         {%- code
             field := struct_.Fields[0]
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
@@ -1258,7 +1258,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
         }
         return sizes, 1
     {%- else -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     sizes = append(sizes, {%v= someHash(goName) %})
@@ -1283,7 +1283,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
             fieldName := fmt.Sprintf("item.%s", field.goName)
             fieldRecursive := field.recursive
             fieldAsterisk := fieldRecursive
-            if struct_.isTypeDef() {
+            if struct_.isAlias() {
                 fieldName = "ptr"
                 fieldRecursive = true
                 fieldAsterisk = true
@@ -1326,7 +1326,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         w = append(w, 0)
         return w, sizes, 1
     {%- else -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     if sizes[0] != {%v= someHash(goName) %} {
@@ -1369,7 +1369,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
             fieldAsterisk := field.recursive
-            if struct_.isTypeDef() {
+            if struct_.isAlias() {
                 fieldName = "ptr"
                 fieldAsterisk = true
             }
@@ -1452,7 +1452,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
-    {%- if struct_.isTypeDef() -%}
+    {%- if struct_.isAlias() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
         {%- for fieldIndex, field := range struct_.Fields -%}
@@ -1460,7 +1460,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             fieldName := fmt.Sprintf("item.%s", field.goName)
             fieldRecursive := field.recursive
             fieldAsterisk := fieldRecursive
-            if struct_.isTypeDef() {
+            if struct_.isAlias() {
                 fieldName = "ptr"
                 fieldAsterisk = true
             }

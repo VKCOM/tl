@@ -24,7 +24,6 @@ true = True; // this can be used as void type and serialized to empty array in P
 
 map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
-
 intKeyDictionaryField {t:Type}
     key:int
     value:t
@@ -43,132 +42,28 @@ longKeyDictionary#b424d8f1 {t:Type}
     %(Vector %(longKeyDictionaryField t))
     = LongKeyDictionary t;
 
-useDictUgly#fb9ce817 n:#
-    // c:dictionaryAny<pair<int,int>, int>
-    d:intKeyDictionary<tuple<string,n>>
-    e:longKeyDictionary<tuple<string,n>>
-    // f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
-//    x:dictionaryAny<int, pair<int,int>>
-//    y:dictionaryAny<long, pair<int,int>>
-//    z:dictionaryAny<string, pair<int,int>>
-     = UseDictUgly;
+---types---
 
-//videoAdsService.getLegalPartnerAdsSettingsManyResponseOk#4db649d8
-//    fields_mask:              #
-//    settings:                 vector<videoAdsService.legalPartnerAdsSettings>
-//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
-//
-//videoAdsService.getLegalPartnerAdsSettingsManyResponseError#143f3aaa
-//    fields_mask:              #
-//    error_code:               int
-//    error:                    string
-//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
-//
-//videoAdsService.legalPartnerAdsSettingsVideoRules#ee6ba4fa
-//    fields_mask:              #
-//    video_id:                 int
-//    //rules:                    videoAdsService.legalPartnerAdsSettingsRules
-//    = videoAdsService.LegalPartnerAdsSettingsVideoRules;
-//
-//
-//videoAdsService.legalPartnerAdsSettings#59ee3756
-//    fields_mask:              #
-//    //common_rules:             fields_mask.0?videoAdsService.legalPartnerAdsSettingsRules
-//    video_rules:              fields_mask.1?vector<videoAdsService.legalPartnerAdsSettingsVideoRules>
-//    //playlist_rules:           fields_mask.2?vector<videoAdsService.legalPartnerAdsSettingsPlaylistRules>
-//    = videoAdsService.LegalPartnerAdsSettings;
-//
-//
-////nonMigrating.example
-////    use:               vector<videoAdsService.legalPartnerAdsSettings>
-////    use2:              videoAdsService.LegalPartnerAdsSettings
-////    = nonMigrating.Example;
-////
-////nonMigrating2.example
-////    use:               videoAdsService.LegalPartnerAdsSettings
-////    use2:              vector<videoAdsService.legalPartnerAdsSettings>
-////    = nonMigrating2.Example;
-//
-//---functions---
-//
-//@read
-//videoAdsService.getLegalPartnerAdsSettingsMany#98505e85
-//    fields_mask:              #
-////    requests:                 vector<videoAdsService.getLegalPartnerAdsSettingsRequest>
-//    user_id:                  long
-//    = videoAdsService.GetLegalPartnerAdsSettingsManyResponse;
+videoAdsService.fullPostID#4dda7b2f
+    fields_mask:              #
+    owner_id:                 long
+    post_id:                  long
+    bit1:           fields_mask.2?true
+    bool1:          fields_mask.3?Bool
+    = videoAdsService.FullPostID;
 
-//a.inner {I:#} a:I*[int] = a.Inner I;
-//a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
-//a.top2 n:# m:# c:vector<a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)> = a.Top2;
+videoAdsService.checkParams#6742a1bb videoAdsService.fullPostID = videoAdsService.CheckParams;
 
-//usefulService.userEntityPaymentItemPromo#24c7ec9f
-//  {fields_mask: #}
-//  content: string
-//  = usefulService.UserEntityPaymentItemPromo fields_mask;
-
-//usefulService.userEntityPaymentItem#4f798680
-//  {fields_mask: #}
-//  id: string
-////  promo: (Maybe (usefulService.UserEntityPaymentItemPromo fields_mask))
-//  = usefulService.UserEntityPaymentItem fields_mask;
-//
-//usefulService.getUserEntityResult#e494698a
-//  {fields_mask: #}
-//  entity_id: string
-//  payment_items: (Maybe (Dictionary (usefulService.UserEntityPaymentItem fields_mask)))
-//  = usefulService.GetUserEntityResult fields_mask;
-//
-//@readwrite
-//usefulService.getUserEntity#3c857e52
-//  fields_mask: #
-//  stage_id: fields_mask.0?string
-//  => Maybe (usefulService.GetUserEntityResult fields_mask);
+videoAdsService.checkFields#cf0cd638
+    fields_mask:                  #
+    can_show_banner:              fields_mask.0?true
+    ads_disabled:                 fields_mask.1?true
+    legal_partner:                fields_mask.2?videoAdsService.checkParams
+    ads_type:                     fields_mask.3?videoAdsService.CheckParams
+    = videoAdsService.CheckFields;
 
 
-// comment before Ok
-curl.responseOk#57d7a33a
-  field_mask:   #
-  http_code:    int
-  http_headers: %(Dictionary string)
-  http_body:    field_mask.0?string
-  = curl.Response;
-
-// comment before Error
-curl.responseError#af514651
-  field_mask:   #
-  error_code:   int
-  error_string: string
-  = curl.Response;
-
-quick.usage fields_mask:# obj:playlists.object_id_ext<fields_mask> = quick.Usage;
-
-
-playlists.object_id_ext#7feadb07 {fields_mask:#} owner_id:long object_id:int date:fields_mask.0?int = playlists.Object_id_ext fields_mask;
-
----functions---
-
-@readwrite playlists.addObjectLRU owner_id:long playlist_id:int max_lru_size:int object_fields_mask:# object:%(playlists.Object_id_ext object_fields_mask) = Bool;
-
-// comment before request
-@kphp
-curl.request#3f5a4651
-  field_mask: #
-  // comment before
-  method:             string
-  url:                string // comment right
-  headers:            field_mask.0?%(Dictionary string)
-  body:               field_mask.1?string
-  timeout:            field_mask.2?int
-  timeout_connection: field_mask.3?int
-  max_redirs:         field_mask.4?int
-  ssl_version:        field_mask.5?int
-  resolve_ipv:        field_mask.6?int
-  http_proxy:         field_mask.7?string
-  limit:              field_mask.8?int
-  route:              field_mask.9?string
-  version:            field_mask.10?int
-  origin:             field_mask.11?string
-  tls_cert:           field_mask.12?string
-  tls_cert_pk:        field_mask.13?string
-  = curl.Response;---types---
+@read
+videoAdsService.getPromoConfigs#a8bdd93d
+    arg:videoAdsService.checkParams
+    => videoAdsService.CheckParams;

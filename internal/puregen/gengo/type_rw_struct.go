@@ -36,12 +36,12 @@ type TypeRWStruct struct {
 
 var _ TypeRW = &TypeRWStruct{}
 
-func (trw *TypeRWStruct) isTypeDef() bool {
-	return len(trw.Fields) == 1 && trw.Fields[0].OriginalName() == "" && trw.Fields[0].FieldMask() == nil && !trw.Fields[0].recursive
+func (trw *TypeRWStruct) isAlias() bool {
+	return trw.pureTypeStruct.IsAlias() && !trw.Fields[0].recursive
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
-	if !trw.isTypeDef() || trw.wr.preventUnwrap {
+	if !trw.isAlias() || trw.wr.preventUnwrap {
 		return false
 	}
 	return trw.pureTypeStruct.IsUnwrap()
@@ -246,7 +246,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.isTypeDef() {
+	if trw.isAlias() {
 		return trw.Fields[0].t.TypeJSONEmptyCondition(bytesVersion, val, ref)
 	}
 	return ""
