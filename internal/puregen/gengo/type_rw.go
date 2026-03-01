@@ -64,14 +64,10 @@ func formatNatArg(fields []Field, arg pure.ActualNatArg) string {
 		return strconv.FormatUint(uint64(arg.Number()), 10)
 	}
 	if arg.IsField() {
-		// tl2 case
 		if arg.FieldIndex() < 0 {
-			return fmt.Sprintf("item.mask%d", -arg.FieldIndex())
+			panic("should be never, this was used by october kernel to pass TL2 masks")
 		}
 		return "item." + fields[arg.FieldIndex()].goName
-	}
-	if strings.HasPrefix(arg.Name(), "nat_") {
-		panic("aha!") // TODO - remove
 	}
 	return "nat_" + arg.Name()
 }
@@ -79,9 +75,7 @@ func formatNatArg(fields []Field, arg pure.ActualNatArg) string {
 func formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		if !arg.IsNumber() {
-			result = append(result, formatNatArg(fields, arg))
-		}
+		result = append(result, formatNatArg(fields, arg))
 	}
 	return result
 }

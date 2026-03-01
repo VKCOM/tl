@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/vkcom/tl/internal/purelegacy"
 	"github.com/vkcom/tl/internal/tlast"
@@ -167,10 +166,6 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 
 	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 
-	if len(natParams) != 0 {
-		return nil, fmt.Errorf("internal error - TL2 struct %s has natparams %s", canonicalName, strings.Join(natParams, ","))
-	}
-
 	ins := &TypeInstanceStruct{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -178,6 +173,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			tlTag:         tlTag,
 			natParams:     natParams,
 			tip:           tip,
+			resolvedType:  resolvedType,
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        true,

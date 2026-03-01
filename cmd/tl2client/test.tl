@@ -25,45 +25,6 @@ true = True; // this can be used as void type and serialized to empty array in P
 
 map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
-intKeyDictionaryField {t:Type}
-    key:int
-    value:t
-    = IntKeyDictionaryField t;
-
-intKeyDictionary#07bafc42 {t:Type}
-    %(Vector %(intKeyDictionaryField t))
-    = IntKeyDictionary t;
-
-longKeyDictionaryField {t:Type}
-    key:long
-    value:t
-    = LongKeyDictionaryField t;
-
-longKeyDictionary#b424d8f1 {t:Type}
-    %(Vector %(longKeyDictionaryField t))
-    = LongKeyDictionary t;
-
----types---
-
-videoAdsService.fullPostID#4dda7b2f
-    fields_mask:              #
-    owner_id:                 long
-    post_id:                  long
-    bit1:           fields_mask.2?true
-    bool1:          fields_mask.3?Bool
-    = videoAdsService.FullPostID;
-
-videoAdsService.checkParams#6742a1bb videoAdsService.fullPostID = videoAdsService.CheckParams;
-
-videoAdsService.checkFields#cf0cd638
-    fields_mask:                  #
-    can_show_banner:              fields_mask.0?true
-    ads_disabled:                 fields_mask.1?true
-    legal_partner:                fields_mask.2?videoAdsService.checkParams
-    ads_type:                     fields_mask.3?videoAdsService.CheckParams
-    = videoAdsService.CheckFields;
-
-@read
-videoAdsService.getPromoConfigs#a8bdd93d
-    arg:videoAdsService.checkParams
-    => videoAdsService.CheckParams;
+a.inner {I:#} a:I*[int] = a.Inner I;
+a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
+a.top2 n:# m:# c:(a.middle 4 (pair (a.inner 5) (a.inner n)) (a.Inner 3)) = a.Top2;
