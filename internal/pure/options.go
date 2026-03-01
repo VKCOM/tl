@@ -22,6 +22,9 @@ type OptionsKernel struct {
 
 	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 
+	// this cannot be set via command line, set by generators which want it
+	InstantiateConstants bool
+
 	// TODO - remove after migration code stabilized
 	TL2MigrationDevMode bool
 	// TODO - quickly adapt new rules, remove these options

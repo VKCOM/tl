@@ -44,6 +44,9 @@ func (m *migrationTL1RefsTL2Errors) addError(comb *tlast.Combinator, e1 *tlast.P
 // Original file is left, even if it is empty, because user might wish to move
 // remaining comments to the new file.
 func (k *Kernel) Migration() error {
+	if err := k.Compile(); err != nil {
+		return err
+	}
 	typesMigrated := 0
 	allFiles, err := k.migrationImpl(true, &typesMigrated)
 	if err != nil {
