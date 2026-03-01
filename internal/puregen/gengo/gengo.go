@@ -431,7 +431,8 @@ var _ = basictl.NatWrite
 			}
 		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
-		code = fmt.Sprintf(InternalTLCodeHeader, HeaderComment, "internal") + InternalTLCodeBody
+		code = gen.generateHelpers(HeaderComment, "internal")
+
 		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 			return err
 		}
