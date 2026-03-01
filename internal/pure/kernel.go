@@ -402,10 +402,10 @@ func (k *Kernel) Compile() error {
 			for i, field := range ins.fields {
 				natFieldUsage := ins.GetNatFieldUsage(i, true, true)
 				if natFieldUsage.UsedAsSize && natFieldUsage.UsedAsMask {
-					e3 := natFieldUsage.UsedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
+					e3 := natFieldUsage.usedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
 					e3.PrintWarning(k.opts.ErrorWriter, nil)
 					e1 := field.prName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.Name()))
-					e2 := natFieldUsage.UsedAsSizePR.BeautifulError(fmt.Errorf("used as size here"))
+					e2 := natFieldUsage.usedAsSizePR.BeautifulError(fmt.Errorf("used as size here"))
 					return tlast.BeautifulError2(e1, e2)
 				}
 			}
