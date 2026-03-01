@@ -27,18 +27,15 @@ func (DictionaryAnyStringPairIntInt) TLName() string { return "dictionaryAny" }
 func (DictionaryAnyStringPairIntInt) TLTag() uint32  { return 0x1f4c6190 }
 
 func (item *DictionaryAnyStringPairIntInt) Reset() {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReset(*ptr)
+	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReset(*item.ptr())
 }
 
 func (item *DictionaryAnyStringPairIntInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntFillRandom(rg, ptr)
+	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntFillRandom(rg, item.ptr())
 }
 
 func (item *DictionaryAnyStringPairIntInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntRead(w, ptr)
+	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntRead(w, item.ptr())
 }
 
 func (item *DictionaryAnyStringPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -75,8 +72,7 @@ func (item *DictionaryAnyStringPairIntInt) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 func (item *DictionaryAnyStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	if err := tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -93,8 +89,7 @@ func (item *DictionaryAnyStringPairIntInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryAnyStringPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryAnyStringPairIntInt) MarshalJSON() ([]byte, error) {
@@ -113,14 +108,12 @@ func (item *DictionaryAnyStringPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2Wr
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -130,8 +123,7 @@ func (item *DictionaryAnyStringPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2Wr
 }
 
 func (item *DictionaryAnyStringPairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*map[string]tlPairIntInt.PairIntInt)(item)
-	if r, err = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

@@ -311,7 +311,6 @@ type {%s= goName %} struct {
     {%- if struct_.isAlias() -%}
         {%- code
             field := struct_.Fields[0]
-            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -321,8 +320,7 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
-    ptr := (*{%s= fieldTypeString %})(item)
-    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
+    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
     return nil
 }
 
@@ -337,8 +335,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 }
 
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    ptr := (*{%s= fieldTypeString %})(item)
-    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
+    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
     return w{%- if writeNeedsError -%}, nil{%- endif -%}
 }
     {%- else -%}
@@ -1009,12 +1006,6 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)randomFields(bytesVersion bool, directImports *DirectImports) -%}
-    {%- if struct_.isAlias() -%}
-        {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
-        {%- return -%}
-    {%- endif -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
@@ -1145,12 +1136,6 @@ return w
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- return -%}
     {%- endif -%}
-    {%- if struct_.isAlias() -%}
-        {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-{%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), true, true) %}
-        {%- return -%}
-    {%- endif -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
@@ -1173,6 +1158,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
             {%- endif -%}
             {%- continue -%}
         {%- endif -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.FieldMask() != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- if field.MaskTL2Bit() != nil -%}
@@ -1180,7 +1166,7 @@ if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitN
         {%- endif -%}
         {%- endif -%}
 {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-{%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, last) %}
+{%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, last) %}
         {%- if field.FieldMask() != nil -%}
 } else {
         {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
@@ -1199,7 +1185,6 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
 {%- if struct_.isAlias() && struct_.unionParent == nil -%}
         {%- code
             field := struct_.Fields[0]
-            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -1210,13 +1195,11 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
-    ptr := (*{%s= fieldTypeString %})(item)
     var sz int
     var currentSize int
-    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true) %}
-    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true) %}
+    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.ptr()", false, struct_.wr.ins, true) %}
+    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.ptr()", false, struct_.wr.ins, true) %}
 
-    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(currentSize)
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     if ctx != nil {
@@ -1230,8 +1213,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- if !struct_.wr.HasTL2() -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
-    ptr := (*{%s= fieldTypeString %})(item)
-    {%s= field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true) %}
+    {%s= field.t.ReadTL2Call(directImports, bytesVersion, "r", "item.ptr()", false, struct_.wr.ins, true) %}
     return r, nil
     {%- endif -%}
 }
@@ -1249,9 +1231,6 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
         }
         return sizes, 1
     {%- else -%}
-    {%- if struct_.isAlias() -%}
-        ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-    {%- endif -%}
     sizes = append(sizes, {%v= someHash(goName) %})
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1270,25 +1249,16 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
             currentSize++
         {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- code
-            fieldName := fmt.Sprintf("item.%s", field.goName)
-            fieldRecursive := field.recursive
-            fieldAsterisk := fieldRecursive
-            if struct_.isAlias() {
-                fieldName = "ptr"
-                fieldRecursive = true
-                fieldAsterisk = true
-            }
-        -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.MaskTL2Bit() != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
                 {%- if !field.IsBit() -%}
-                    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldAccess, false, struct_.wr.ins, fieldAsterisk) %}
                 {%- endif -%}
         {%- else -%}
             {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
             {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-            {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
+            {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldAccess, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
             lastUsedByte = currentSize
         }
@@ -1317,9 +1287,6 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         w = append(w, 0)
         return w, sizes, 1
     {%- else -%}
-    {%- if struct_.isAlias() -%}
-        ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-    {%- endif -%}
     if sizes[0] != {%v= someHash(goName) %} {
         panic("tl2: tag mismatch between calculate and write")
     }
@@ -1357,23 +1324,16 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
             }
         {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- code
-            fieldName := fmt.Sprintf("item.%s", field.goName)
-            fieldAsterisk := field.recursive
-            if struct_.isAlias() {
-                fieldName = "ptr"
-                fieldAsterisk = true
-            }
-        -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.MaskTL2Bit() != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
                 {%- if !field.IsBit() -%}
-                    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldAccess, false, struct_.wr.ins, fieldAsterisk) %}
                 {%- endif -%}
         {%- else -%}
             {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
             {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-            {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
+            {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldAccess, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
             currentBlock |= {%v 1 << ((fieldIndex + 1) % 8) %}
         }
@@ -1443,19 +1403,8 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
-    {%- if struct_.isAlias() -%}
-    ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-    {%- endif -%}
         {%- for fieldIndex, field := range struct_.Fields -%}
-        {%- code
-            fieldName := fmt.Sprintf("item.%s", field.goName)
-            fieldRecursive := field.recursive
-            fieldAsterisk := fieldRecursive
-            if struct_.isAlias() {
-                fieldName = "ptr"
-                fieldAsterisk = true
-            }
-        -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if (fieldIndex + 1) % 8 == 0 -%}
             // start the next block
     if len(currentR) > 0 {
@@ -1482,15 +1431,9 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             item.{%s= field.TL2MaskForOP("|=") %}
         {%- endif -%}
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.FieldMask() == nil, struct_.wr.ins, fieldAsterisk) %}
+        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldAccess, field.FieldMask() == nil, struct_.wr.ins, fieldAsterisk) %}
     } else {
-        {%- if fieldRecursive -%}
-            if {%s= fieldName %} != nil {
-                {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldAsterisk) %}
-            }
-        {%- else -%}
-            {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldAsterisk) %}
-        {%- endif -%}
+        {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
     }
         {%- endif -%}
     {%- endfor -%}

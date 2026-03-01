@@ -210,18 +210,15 @@ func (DictionaryString) TLName() string { return "dictionary" }
 func (DictionaryString) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryString) Reset() {
-	ptr := (*map[string]string)(item)
-	BuiltinDictStringStringReset(*ptr)
+	BuiltinDictStringStringReset(*item.ptr())
 }
 
 func (item *DictionaryString) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*map[string]string)(item)
-	BuiltinDictStringStringFillRandom(rg, ptr)
+	BuiltinDictStringStringFillRandom(rg, item.ptr())
 }
 
 func (item *DictionaryString) Read(w []byte) (_ []byte, err error) {
-	ptr := (*map[string]string)(item)
-	return BuiltinDictStringStringRead(w, ptr)
+	return BuiltinDictStringStringRead(w, item.ptr())
 }
 
 func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -258,8 +255,7 @@ func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 func (item *DictionaryString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*map[string]string)(item)
-	if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -276,8 +272,7 @@ func (item *DictionaryString) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*map[string]string)(item)
-	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryString) MarshalJSON() ([]byte, error) {
@@ -296,14 +291,12 @@ func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*map[string]string)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictStringStringCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictStringStringCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = BuiltinDictStringStringInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictStringStringInternalWriteTL2(w, sizes, false, item.ptr())
 
-	Unused(ptr)
 	Unused(currentSize)
 	Unused(sz)
 	if ctx != nil {
@@ -313,8 +306,7 @@ func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 }
 
 func (item *DictionaryString) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*map[string]string)(item)
-	if r, err = BuiltinDictStringStringInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictStringStringInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -334,18 +326,15 @@ func (DictionaryStringBytes) TLName() string { return "dictionary" }
 func (DictionaryStringBytes) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryStringBytes) Reset() {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *DictionaryStringBytes) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	BuiltinDictStringStringBytesFillRandom(rg, ptr)
+	BuiltinDictStringStringBytesFillRandom(rg, item.ptr())
 }
 
 func (item *DictionaryStringBytes) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	return BuiltinDictStringStringBytesRead(w, ptr)
+	return BuiltinDictStringStringBytesRead(w, item.ptr())
 }
 
 func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -382,8 +371,7 @@ func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 func (item *DictionaryStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -400,8 +388,7 @@ func (item *DictionaryStringBytes) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryStringBytes) MarshalJSON() ([]byte, error) {
@@ -420,14 +407,12 @@ func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]DictFieldStringStringBytes)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictStringStringBytesCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictStringStringBytesCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = BuiltinDictStringStringBytesInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictStringStringBytesInternalWriteTL2(w, sizes, false, item.ptr())
 
-	Unused(ptr)
 	Unused(currentSize)
 	Unused(sz)
 	if ctx != nil {
@@ -437,8 +422,7 @@ func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 }
 
 func (item *DictionaryStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]DictFieldStringStringBytes)(item)
-	if r, err = BuiltinDictStringStringBytesInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictStringStringBytesInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -458,18 +442,15 @@ func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLName() string { retur
 func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Reset() {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReset(*ptr)
+	BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReset(*item.ptr())
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, ptr, nat_t)
+	BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, item.ptr(), nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	return BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
+	return BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w, item.ptr(), nat_t)
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -498,8 +479,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteBoxed(w []by
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+	if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, item.ptr(), nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -516,8 +496,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byt
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
+	w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *item.ptr(), nat_t)
 	return w
 }
 
@@ -526,14 +505,12 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
+	sizes, sz = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, item.ptr())
 
-	Unused(ptr)
 	Unused(currentSize)
 	Unused(sz)
 	if ctx != nil {
@@ -543,8 +520,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

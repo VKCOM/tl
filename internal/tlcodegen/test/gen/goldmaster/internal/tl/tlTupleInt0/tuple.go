@@ -24,18 +24,15 @@ func (TupleInt0) TLName() string { return "tuple" }
 func (TupleInt0) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleInt0) Reset() {
-	ptr := (*[0]int32)(item)
-	tlBuiltinTuple0Int.BuiltinTuple0IntReset(ptr)
+	tlBuiltinTuple0Int.BuiltinTuple0IntReset(item.ptr())
 }
 
 func (item *TupleInt0) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[0]int32)(item)
-	tlBuiltinTuple0Int.BuiltinTuple0IntFillRandom(rg, ptr)
+	tlBuiltinTuple0Int.BuiltinTuple0IntFillRandom(rg, item.ptr())
 }
 
 func (item *TupleInt0) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[0]int32)(item)
-	return tlBuiltinTuple0Int.BuiltinTuple0IntRead(w, ptr)
+	return tlBuiltinTuple0Int.BuiltinTuple0IntRead(w, item.ptr())
 }
 
 func (item *TupleInt0) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -72,8 +69,7 @@ func (item *TupleInt0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *TupleInt0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[0]int32)(item)
-	if err := tlBuiltinTuple0Int.BuiltinTuple0IntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple0Int.BuiltinTuple0IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -90,8 +86,7 @@ func (item *TupleInt0) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleInt0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[0]int32)(item)
-	w = tlBuiltinTuple0Int.BuiltinTuple0IntWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple0Int.BuiltinTuple0IntWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt0) MarshalJSON() ([]byte, error) {
@@ -110,14 +105,12 @@ func (item *TupleInt0) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[0]int32)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinTuple0Int.BuiltinTuple0IntCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinTuple0Int.BuiltinTuple0IntCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinTuple0Int.BuiltinTuple0IntInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinTuple0Int.BuiltinTuple0IntInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -127,8 +120,7 @@ func (item *TupleInt0) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *TupleInt0) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[0]int32)(item)
-	if r, err = tlBuiltinTuple0Int.BuiltinTuple0IntInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinTuple0Int.BuiltinTuple0IntInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

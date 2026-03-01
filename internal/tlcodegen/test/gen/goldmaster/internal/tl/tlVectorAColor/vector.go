@@ -25,18 +25,15 @@ func (VectorAColor) TLName() string { return "vector" }
 func (VectorAColor) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorAColor) Reset() {
-	ptr := (*[]tlAColor.AColor)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorAColor) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]tlAColor.AColor)(item)
-	tlBuiltinVectorAColor.BuiltinVectorAColorFillRandom(rg, ptr)
+	tlBuiltinVectorAColor.BuiltinVectorAColorFillRandom(rg, item.ptr())
 }
 
 func (item *VectorAColor) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlAColor.AColor)(item)
-	return tlBuiltinVectorAColor.BuiltinVectorAColorRead(w, ptr)
+	return tlBuiltinVectorAColor.BuiltinVectorAColorRead(w, item.ptr())
 }
 
 func (item *VectorAColor) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -73,8 +70,7 @@ func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 func (item *VectorAColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlAColor.AColor)(item)
-	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -91,8 +87,7 @@ func (item *VectorAColor) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorAColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlAColor.AColor)(item)
-	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorAColor) MarshalJSON() ([]byte, error) {
@@ -111,14 +106,12 @@ func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byt
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*[]tlAColor.AColor)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinVectorAColor.BuiltinVectorAColorCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinVectorAColor.BuiltinVectorAColorCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinVectorAColor.BuiltinVectorAColorInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinVectorAColor.BuiltinVectorAColorInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -128,8 +121,7 @@ func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byt
 }
 
 func (item *VectorAColor) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]tlAColor.AColor)(item)
-	if r, err = tlBuiltinVectorAColor.BuiltinVectorAColorInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorAColor.BuiltinVectorAColorInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

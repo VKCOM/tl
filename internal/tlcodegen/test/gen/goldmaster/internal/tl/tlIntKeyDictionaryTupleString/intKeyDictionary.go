@@ -26,18 +26,15 @@ func (IntKeyDictionaryTupleString) TLName() string { return "intKeyDictionary" }
 func (IntKeyDictionaryTupleString) TLTag() uint32  { return 0x07bafc42 }
 
 func (item *IntKeyDictionaryTupleString) Reset() {
-	ptr := (*map[int32][]string)(item)
-	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReset(*ptr)
+	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReset(*item.ptr())
 }
 
 func (item *IntKeyDictionaryTupleString) FillRandom(rg *basictl.RandGenerator, nat_t uint32) {
-	ptr := (*map[int32][]string)(item)
-	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringFillRandom(rg, ptr, nat_t)
+	tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringFillRandom(rg, item.ptr(), nat_t)
 }
 
 func (item *IntKeyDictionaryTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	ptr := (*map[int32][]string)(item)
-	return tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringRead(w, ptr, nat_t)
+	return tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringRead(w, item.ptr(), nat_t)
 }
 
 func (item *IntKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
@@ -68,8 +65,7 @@ func (item *IntKeyDictionaryTupleString) WriteBoxed(w []byte, nat_t uint32) (_ [
 }
 
 func (item *IntKeyDictionaryTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	ptr := (*map[int32][]string)(item)
-	if err := tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
+	if err := tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReadJSONGeneral(tctx, in, item.ptr(), nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -86,8 +82,7 @@ func (item *IntKeyDictionaryTupleString) WriteJSON(w []byte, nat_t uint32) (_ []
 }
 
 func (item *IntKeyDictionaryTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	ptr := (*map[int32][]string)(item)
-	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteJSONOpt(tctx, w, *ptr, nat_t); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteJSONOpt(tctx, w, *item.ptr(), nat_t); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -98,14 +93,12 @@ func (item *IntKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2Writ
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*map[int32][]string)(item)
 	var sz int
 	var currentSize int
-	sizes, sz = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringCalculateLayout(sizes, false, ptr)
+	sizes, sz = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringCalculateLayout(sizes, false, item.ptr())
 	currentSize += sz
-	w, sizes, _ = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalWriteTL2(w, sizes, false, ptr)
+	w, sizes, _ = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalWriteTL2(w, sizes, false, item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -115,8 +108,7 @@ func (item *IntKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2Writ
 }
 
 func (item *IntKeyDictionaryTupleString) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*map[int32][]string)(item)
-	if r, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringInternalReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

@@ -29,18 +29,15 @@ func (AbAlias) TLName() string { return "ab.alias" }
 func (AbAlias) TLTag() uint32  { return 0x944aaa97 }
 
 func (item *AbAlias) Reset() {
-	ptr := (*int32)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *AbAlias) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*int32)(item)
-	*ptr = basictl.RandomInt(rg)
+	*item.ptr() = basictl.RandomInt(rg)
 }
 
 func (item *AbAlias) Read(w []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	return basictl.IntRead(w, ptr)
+	return basictl.IntRead(w, item.ptr())
 }
 
 func (item *AbAlias) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -77,8 +74,7 @@ func (item *AbAlias) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *AbAlias) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*int32)(item)
-	if err := internal.Json2ReadInt32(in, ptr); err != nil {
+	if err := internal.Json2ReadInt32(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -95,8 +91,7 @@ func (item *AbAlias) WriteJSON(w []byte) []byte {
 }
 
 func (item *AbAlias) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*int32)(item)
-	w = basictl.JSONWriteInt32(w, *ptr)
+	w = basictl.JSONWriteInt32(w, *item.ptr())
 	return w
 }
 func (item *AbAlias) MarshalJSON() ([]byte, error) {
@@ -111,7 +106,6 @@ func (item *AbAlias) UnmarshalJSON(b []byte) error {
 }
 
 func (item *AbAlias) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	ptr := (*int32)(item)
 	sizes = append(sizes, 1115561004)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -123,7 +117,7 @@ func (item *AbAlias) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 	// add constructor No for union type in case of non first option
 	currentSize += basictl.TL2CalculateSize(2)
 	lastUsedByte = currentSize
-	if *ptr != 0 {
+	if *item.ptr() != 0 {
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
@@ -143,7 +137,6 @@ func (item *AbAlias) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 }
 
 func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	ptr := (*int32)(item)
 	if sizes[0] != 1115561004 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -164,8 +157,8 @@ func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 2)
 	currentBlock |= 1
-	if *ptr != 0 {
-		w = basictl.IntWrite(w, *ptr)
+	if *item.ptr() != 0 {
+		w = basictl.IntWrite(w, *item.ptr())
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
@@ -196,13 +189,12 @@ func (item *AbAlias) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 func (item *AbAlias) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-	ptr := (*int32)(item)
 	if block&2 != 0 {
-		if currentR, err = basictl.IntRead(currentR, ptr); err != nil {
+		if currentR, err = basictl.IntRead(currentR, item.ptr()); err != nil {
 			return currentR, err
 		}
 	} else {
-		*ptr = 0
+		*item.ptr() = 0
 	}
 	internal.Unused(currentR)
 	return r, nil

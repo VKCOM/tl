@@ -23,18 +23,15 @@ func (Int32s) TLName() string { return "int32s" }
 func (Int32s) TLTag() uint32  { return 0x7934e71f }
 
 func (item *Int32s) Reset() {
-	ptr := (*int32)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *Int32s) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*int32)(item)
-	*ptr = basictl.RandomInt(rg)
+	*item.ptr() = basictl.RandomInt(rg)
 }
 
 func (item *Int32s) Read(w []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	return basictl.IntRead(w, ptr)
+	return basictl.IntRead(w, item.ptr())
 }
 
 func (item *Int32s) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -71,8 +68,7 @@ func (item *Int32s) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *Int32s) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*int32)(item)
-	if err := internal.Json2ReadInt32(in, ptr); err != nil {
+	if err := internal.Json2ReadInt32(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -89,8 +85,7 @@ func (item *Int32s) WriteJSON(w []byte) []byte {
 }
 
 func (item *Int32s) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*int32)(item)
-	w = basictl.JSONWriteInt32(w, *ptr)
+	w = basictl.JSONWriteInt32(w, *item.ptr())
 	return w
 }
 func (item *Int32s) MarshalJSON() ([]byte, error) {
@@ -109,13 +104,11 @@ func (item *Int32s) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*int32)(item)
 	var sz int
 	var currentSize int
 	currentSize += 4
-	w = basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
 
-	internal.Unused(ptr)
 	internal.Unused(currentSize)
 	internal.Unused(sz)
 	if ctx != nil {
@@ -125,8 +118,7 @@ func (item *Int32s) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *Int32s) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	if r, err = basictl.IntRead(r, ptr); err != nil {
+	if r, err = basictl.IntRead(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

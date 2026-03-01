@@ -207,18 +207,15 @@ func (String) TLName() string { return "string" }
 func (String) TLTag() uint32  { return 0xb5286e24 }
 
 func (item *String) Reset() {
-	ptr := (*string)(item)
-	*ptr = ""
+	*item.ptr() = ""
 }
 
 func (item *String) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*string)(item)
-	*ptr = basictl.RandomString(rg)
+	*item.ptr() = basictl.RandomString(rg)
 }
 
 func (item *String) Read(w []byte) (_ []byte, err error) {
-	ptr := (*string)(item)
-	return basictl.StringRead(w, ptr)
+	return basictl.StringRead(w, item.ptr())
 }
 
 func (item *String) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -255,8 +252,7 @@ func (item *String) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *String) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*string)(item)
-	if err := Json2ReadString(in, ptr); err != nil {
+	if err := Json2ReadString(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -273,8 +269,7 @@ func (item *String) WriteJSON(w []byte) []byte {
 }
 
 func (item *String) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*string)(item)
-	w = basictl.JSONWriteString(w, *ptr)
+	w = basictl.JSONWriteString(w, *item.ptr())
 	return w
 }
 func (item *String) MarshalJSON() ([]byte, error) {
@@ -293,13 +288,11 @@ func (item *String) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	ptr := (*string)(item)
 	var sz int
 	var currentSize int
-	currentSize += basictl.TL2CalculateSize(len(*ptr)) + len(*ptr)
-	w = basictl.StringWriteTL2(w, *ptr)
+	currentSize += basictl.TL2CalculateSize(len(*item.ptr())) + len(*item.ptr())
+	w = basictl.StringWriteTL2(w, *item.ptr())
 
-	Unused(ptr)
 	Unused(currentSize)
 	Unused(sz)
 	if ctx != nil {
@@ -309,8 +302,7 @@ func (item *String) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *String) InternalReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*string)(item)
-	if r, err = basictl.StringReadTL2(r, ptr); err != nil {
+	if r, err = basictl.StringReadTL2(r, item.ptr()); err != nil {
 		return r, err
 	}
 	return r, nil

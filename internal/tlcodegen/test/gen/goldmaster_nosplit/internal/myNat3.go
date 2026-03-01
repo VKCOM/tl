@@ -327,18 +327,15 @@ func (MyPlus3) TLName() string { return "myPlus3" }
 func (MyPlus3) TLTag() uint32  { return 0x692c291b }
 
 func (item *MyPlus3) Reset() {
-	ptr := (*MyNat3)(item)
-	ptr.Reset()
+	item.ptr().Reset()
 }
 
 func (item *MyPlus3) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*MyNat3)(item)
-	ptr.FillRandom(rg)
+	item.ptr().FillRandom(rg)
 }
 
 func (item *MyPlus3) Read(w []byte) (_ []byte, err error) {
-	ptr := (*MyNat3)(item)
-	return ptr.ReadBoxed(w)
+	return item.ptr().ReadBoxed(w)
 }
 
 func (item *MyPlus3) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -375,8 +372,7 @@ func (item *MyPlus3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *MyPlus3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*MyNat3)(item)
-	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
+	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -393,8 +389,7 @@ func (item *MyPlus3) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyPlus3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*MyNat3)(item)
-	w = ptr.WriteJSONOpt(tctx, w)
+	w = item.ptr().WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyPlus3) MarshalJSON() ([]byte, error) {
@@ -409,7 +404,6 @@ func (item *MyPlus3) UnmarshalJSON(b []byte) error {
 }
 
 func (item *MyPlus3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-	ptr := (*MyNat3)(item)
 	sizes = append(sizes, 353593085)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -421,7 +415,7 @@ func (item *MyPlus3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 	// add constructor No for union type in case of non first option
 	currentSize += basictl.TL2CalculateSize(1)
 	lastUsedByte = currentSize
-	if sizes, sz = (*ptr).CalculateLayout(sizes, true); sz != 0 {
+	if sizes, sz = item.ptr().CalculateLayout(sizes, true); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
@@ -441,7 +435,6 @@ func (item *MyPlus3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 }
 
 func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-	ptr := (*MyNat3)(item)
 	if sizes[0] != 353593085 {
 		panic("tl2: tag mismatch between calculate and write")
 	}
@@ -462,7 +455,7 @@ func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
-	if w, sizes, sz = ptr.InternalWriteTL2(w, sizes, true); sz != 0 {
+	if w, sizes, sz = item.ptr().InternalWriteTL2(w, sizes, true); sz != 0 {
 		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
@@ -493,13 +486,12 @@ func (item *MyPlus3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 func (item *MyPlus3) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-	ptr := (*MyNat3)(item)
 	if block&2 != 0 {
-		if currentR, err = ptr.InternalReadTL2(currentR); err != nil {
+		if currentR, err = item.ptr().InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
-		ptr.Reset()
+		item.ptr().Reset()
 	}
 	Unused(currentR)
 	return r, nil
