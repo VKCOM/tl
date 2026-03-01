@@ -55,7 +55,7 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
     {%- endfor -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(struct_, bytesVersion, directImports, struct_.wr.ins) -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.MaskTL2Bit() != nil && field.FieldMask() != nil -%}
             if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
@@ -395,6 +395,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             switch key {
         {%- for _, field := range struct_.Fields -%}
             {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
             case "{%s= field.OriginalName() %}":
                 if prop{%s= field.goName %}Presented {
                     return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
@@ -409,7 +410,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                     }
                 {%- else -%}
                     {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
+                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                 {%- endif -%}
                 prop{%s= field.goName %}Presented = true
         {%- endfor -%}
@@ -467,7 +468,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 case "{%s= field.OriginalName() %}":
             {%- code
                 reader := "in"
-                itemField := fmt.Sprintf("item.%s", field.goName)
+                fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
             -%}
             {%- if field.IsBit() -%}
                 {%- if !field.FieldMask().IsField() -%}
@@ -491,7 +492,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                     }
                 {%- endif -%}
                     {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, itemField, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
+                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                     prop{%s= field.goName %}Presented = true
             {%- else -%}
                     if raw{%s= field.goName %} != nil {
@@ -528,7 +529,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
         {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
-        {%- if field.IsAffectingLocalFieldMasks() -%}
+            {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
                 presentCondition := "true"
                 if field.IsBit() {
@@ -610,7 +611,8 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         if raw{%s= field.goName %} != nil {
             in{%s= field.goName %}Pointer = &in{%s= field.goName %}
         }
-        {%- code readingCode := field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in" + field.goName + "Pointer", "item." + field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
+        {%- code readingCode := field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in" + field.goName + "Pointer", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) -%}
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
         {%s= readingCode %}
 {%- endfunc -%}
@@ -635,6 +637,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
     {%- if struct_.wr.originateFromTL2 -%}
         {%- if field.MaskTL2Bit() != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
@@ -643,18 +646,18 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
                     w = append(w, `{%q= field.OriginalName() %}:true`...)
                 {%- else -%}
                     w = append(w, `"{%s field.OriginalName() %}":`...)
-                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods) %}
+                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods) %}
                 {%- endif -%}
             }
         {%- else -%}
             {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
             {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
-                if ({%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) %}) {
+            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk, ) != "" -%}
+                if ({%s= field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk, ) %}) {
             {%- endif -%}
                     w = basictl.JSONAddCommaIfNeeded(w)
                     w = append(w, `"{%s field.OriginalName() %}":`...)
-                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods) %}
+                    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods) %}
             {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
                 }
             {%- endif -%}
@@ -681,14 +684,14 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
 also, below, we need to use backupIndex, because there is tuples, which must be checked for size,
 so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
 {% endcomment -%}
-            {%- if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
+            {%- if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk, ) != "" -%}
                 backupIndex{%s= field.goName %} := len(w)
             {%- endif -%}
                 w = basictl.JSONAddCommaIfNeeded(w)
                 w = append(w, `"{%s field.OriginalName() %}":`...)
-        {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods) %}
-            {%- if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
-                if ({%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) %}) == false {
+        {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods) %}
+            {%- if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk, ) != "" -%}
+                if ({%s= field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk, ) %}) == false {
                         w = w[:backupIndex{%s= field.goName %}]
                 }
             {%- endif -%}
@@ -1022,6 +1025,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- if struct_.wr.originateFromTL2 -%}
         {%- for _, field := range struct_.Fields -%}
             {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
             {%- if field.recursive -%}
                   rg.IncreaseDepth()
             {%- endif -%}
@@ -1029,13 +1033,13 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
                 if basictl.RandomInt(rg) & 1 != 0 {
                     item.{%s= field.TL2MaskForOP("|=") %}
                     {%- if !field.IsBit() -%}
-                            {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
+                            {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                         }else{
                             {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
                     {%- endif -%}
                 }
             {%- else -%}
-                    {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
+                    {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
             {%- endif -%}
             {%- if field.recursive -%}
                   rg.DecreaseDepth()
@@ -1045,6 +1049,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- endif -%}
     {%- for fieldId, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.IsBit() -%}
             {%- if field.MaskTL2Bit() != nil -%}
                 if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
@@ -1079,7 +1084,7 @@ item.{%s= field.goName %} = rg.LimitValue(item.{%s= field.goName %})
 item.{%s= field.goName %} = basictl.RandomSize(rg)
             {%- endif -%}
         {%- else -%}
-{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive) %}
+{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
         {%- endif -%}
         {%- if field.recursive -%}
 rg.DecreaseDepth()
