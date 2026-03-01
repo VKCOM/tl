@@ -990,6 +990,8 @@ func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec 
 //----- Test Multiple native wrappers
 type Int int32
 
+func (item *Int) ptr() *int32 { return (*int32)(item) }
+
 func (Int) TLName() string { return "int" }
 func (Int) TLTag() uint32  { return 0xa8509bda }
 
@@ -1013,8 +1015,8 @@ func (item *Int) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Int) Write(w []byte) []byte {
-	ptr := (*int32)(item)
-	return basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Int) ReadBoxed(w []byte) (_ []byte, err error) {

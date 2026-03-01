@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type VectorInt []int32
 
+func (item *VectorInt) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (VectorInt) TLName() string { return "vector" }
 func (VectorInt) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -41,8 +43,8 @@ func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorInt) Write(w []byte) []byte {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorInt.BuiltinVectorIntWrite(w, *ptr)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorInt) ReadBoxed(w []byte) (_ []byte, err error) {

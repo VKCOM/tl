@@ -19,6 +19,10 @@ var _ = internal.ErrorInvalidEnumTag
 
 type DictionaryUsefulServiceUserEntityPaymentItemBoxed map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
 
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ptr() *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem {
+	return (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
+}
+
 func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLName() string { return "dictionary" }
 func (DictionaryUsefulServiceUserEntityPaymentItemBoxed) TLTag() uint32  { return 0x1f4c618f }
 
@@ -42,8 +46,8 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_t uint32) []byte {
-	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	return tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w, *ptr, nat_t)
+	w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w, *item.ptr(), nat_t)
+	return w
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {

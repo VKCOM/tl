@@ -19,6 +19,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type VectorAColor []tlAColor.AColor
 
+func (item *VectorAColor) ptr() *[]tlAColor.AColor { return (*[]tlAColor.AColor)(item) }
+
 func (VectorAColor) TLName() string { return "vector" }
 func (VectorAColor) TLTag() uint32  { return 0x1cb5c415 }
 
@@ -42,8 +44,8 @@ func (item *VectorAColor) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorAColor) Write(w []byte) []byte {
-	ptr := (*[]tlAColor.AColor)(item)
-	return tlBuiltinVectorAColor.BuiltinVectorAColorWrite(w, *ptr)
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorAColor) ReadBoxed(w []byte) (_ []byte, err error) {

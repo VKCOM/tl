@@ -321,6 +321,8 @@ func (item MyPlus3) AsUnion() MyNat3 {
 // typedef
 type MyPlus3 MyNat3
 
+func (item *MyPlus3) ptr() *MyNat3 { return (*MyNat3)(item) }
+
 func (MyPlus3) TLName() string { return "myPlus3" }
 func (MyPlus3) TLTag() uint32  { return 0x692c291b }
 
@@ -344,8 +346,8 @@ func (item *MyPlus3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyPlus3) Write(w []byte) []byte {
-	ptr := (*MyNat3)(item)
-	return ptr.WriteBoxed(w)
+	w = item.ptr().WriteBoxed(w)
+	return w
 }
 
 func (item *MyPlus3) ReadBoxed(w []byte) (_ []byte, err error) {

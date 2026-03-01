@@ -323,6 +323,8 @@ func BuiltinTuple3Int32sBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 
 type Int32s int32
 
+func (item *Int32s) ptr() *int32 { return (*int32)(item) }
+
 func (Int32s) TLName() string { return "int32s" }
 func (Int32s) TLTag() uint32  { return 0x7934e71f }
 
@@ -346,8 +348,8 @@ func (item *Int32s) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Int32s) Write(w []byte) []byte {
-	ptr := (*int32)(item)
-	return basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Int32s) ReadBoxed(w []byte) (_ []byte, err error) {

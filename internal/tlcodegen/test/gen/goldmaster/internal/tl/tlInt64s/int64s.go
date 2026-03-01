@@ -17,6 +17,8 @@ var _ = internal.ErrorInvalidEnumTag
 
 type Int64s int64
 
+func (item *Int64s) ptr() *int64 { return (*int64)(item) }
+
 func (Int64s) TLName() string { return "int64s" }
 func (Int64s) TLTag() uint32  { return 0xf5609de0 }
 
@@ -40,8 +42,8 @@ func (item *Int64s) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Int64s) Write(w []byte) []byte {
-	ptr := (*int64)(item)
-	return basictl.LongWrite(w, *ptr)
+	w = basictl.LongWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Int64s) ReadBoxed(w []byte) (_ []byte, err error) {

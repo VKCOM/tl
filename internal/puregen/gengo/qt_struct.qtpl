@@ -147,13 +147,15 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
 {%- func (struct_ *TypeRWStruct)typeDefinition(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%s= printCommentsType(struct_.pureTypeStruct) -%} {%- code -%}
-    {%- if struct_.isAlias() -%}
+    {%- if struct_.isAlias() || struct_.isGolangTypedef() -%}
         {%- code
-            asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isAlias()
+            asterisk := ifString(struct_.Fields[0].recursive, "*", "")
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
     {%s= printCommentsField(struct_.Fields[0]) -%} {%- code -%}
 type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
+
+func (item *{%s= goName %}) ptr() *{%s= fieldTypeString %} { return (*{%s= fieldTypeString %})(item) }
         {%- return -%}
     {%- endif -%}
 type {%s= goName %} struct {
@@ -996,12 +998,6 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)resetFields(bytesVersion bool, directImports *DirectImports) -%}
-    {%- if struct_.isAlias() -%}
-        {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-{%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", true) %}
-        {%- return -%}
-    {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.t.IsTrueType() || field.IsBit() -%}{%- continue -%}{%- endif -%}
@@ -1106,12 +1102,6 @@ rg.DecreaseDepth()
         {%- endif -%}
         {%- return -%}
     {%- endif -%}
-    {%- if struct_.isAlias() -%}
-        {%- code field := struct_.Fields[0] -%}
-ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-{%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), true, true, struct_.wr.hasErrorInWriteMethods) %}
-        {%- return -%}
-    {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsBit() -%}
             {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
@@ -1121,15 +1111,16 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
             {%- endif -%}
             {%- continue -%}
         {%- endif -%}
+        {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- code
-            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, false, field.t.hasErrorInWriteMethods)
+            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, false, field.t.hasErrorInWriteMethods)
         -%}
         {%- if field.FieldMask() != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- endif -%}
         {%- if field.recursive -%}
         {%- code /* non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
-        if {%s= fmt.Sprintf("item.%s", field.goName) %} == nil {
+        if {%s= fieldAccess %} == nil {
             var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
             {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
         } else {
