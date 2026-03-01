@@ -135,7 +135,7 @@ func (item *`)
 			if field.IsTL2Omitted() {
 				continue
 			}
-			fieldAccess, fieldAsterisk := field.FieldAccess(struct_, bytesVersion, directImports, struct_.wr.ins)
+			fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
 
 			if field.MaskTL2Bit() != nil && field.FieldMask() != nil {
 				qw422016.N().S(`            if `)
@@ -837,6 +837,8 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 			if field.IsTL2Omitted() {
 				continue
 			}
+			fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
 			qw422016.N().S(`            case "`)
 			qw422016.N().S(field.OriginalName())
 			qw422016.N().S(`":
@@ -869,7 +871,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				qw422016.N().S(`                    `)
 				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 				qw422016.N().S(`                    `)
-				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
+				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 				qw422016.N().S(`
 `)
 			}
@@ -975,7 +977,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				qw422016.N().S(`":
 `)
 				reader := "in"
-				itemField := fmt.Sprintf("item.%s", field.goName)
+				fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
 
 				if field.IsBit() {
 					if !field.FieldMask().IsField() {
@@ -1043,7 +1045,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 					qw422016.N().S(`                    `)
 					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 					qw422016.N().S(`                    `)
-					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, itemField, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
+					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 					qw422016.N().S(`
                     prop`)
 					qw422016.N().S(field.goName)
@@ -1302,7 +1304,9 @@ func (struct_ *TypeRWStruct) streamreadJsonWithResetForRaw(qw422016 *qt422016.Wr
 	qw422016.N().S(`
         }
 `)
-	readingCode := field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in"+field.goName+"Pointer", "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive)
+	fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
+	readingCode := field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in"+field.goName+"Pointer", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk)
 
 	qw422016.N().S(`        `)
 	qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
@@ -1372,6 +1376,8 @@ func (item *`)
 		if field.IsTL2Omitted() || field.OriginalName() == "" {
 			continue
 		}
+		fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
 		if struct_.wr.originateFromTL2 {
 			if field.MaskTL2Bit() != nil {
 				qw422016.N().S(`            if item.`)
@@ -1396,7 +1402,7 @@ func (item *`)
 					qw422016.N().S("`")
 					qw422016.N().S(`...)
                     `)
-					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods))
+					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods))
 					qw422016.N().S(`
 `)
 				}
@@ -1407,9 +1413,9 @@ func (item *`)
 
 				qw422016.N().S(`            `)
 				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-				if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+				if field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk) != "" {
 					qw422016.N().S(`                if (`)
-					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
+					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk))
 					qw422016.N().S(`) {
 `)
 				}
@@ -1422,7 +1428,7 @@ func (item *`)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
                     `)
-				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods))
+				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods))
 				qw422016.N().S(`
 `)
 				if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
@@ -1457,7 +1463,7 @@ func (item *`)
 					qw422016.N().S(`) != 0 {
 `)
 				}
-				if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+				if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk) != "" {
 					qw422016.N().S(`                backupIndex`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(` := len(w)
@@ -1472,12 +1478,12 @@ func (item *`)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
         `)
-				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive, field.t.hasErrorInWriteMethods))
+				qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods))
 				qw422016.N().S(`
 `)
-				if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+				if field.FieldMask() == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk) != "" {
 					qw422016.N().S(`                if (`)
-					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
+					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fieldAccess, fieldAsterisk))
 					qw422016.N().S(`) == false {
                         w = w[:backupIndex`)
 					qw422016.N().S(field.goName)
@@ -2058,6 +2064,8 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 			if field.IsTL2Omitted() {
 				continue
 			}
+			fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
 			if field.recursive {
 				qw422016.N().S(`                  rg.IncreaseDepth()
 `)
@@ -2070,7 +2078,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 				if !field.IsBit() {
 					qw422016.N().S(`                            `)
-					qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
+					qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 					qw422016.N().S(`
                         }else{
                             `)
@@ -2082,7 +2090,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 			} else {
 				qw422016.N().S(`                    `)
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
+				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 				qw422016.N().S(`
 `)
 			}
@@ -2097,6 +2105,8 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		if field.IsTL2Omitted() {
 			continue
 		}
+		fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
+
 		if field.IsBit() {
 			if field.MaskTL2Bit() != nil {
 				qw422016.N().S(`                if `)
@@ -2160,7 +2170,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 			}
 		} else {
-			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.NatArgs()), field.recursive))
+			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 			qw422016.N().S(`
 `)
 		}
