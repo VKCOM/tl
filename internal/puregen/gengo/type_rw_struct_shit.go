@@ -7,22 +7,12 @@
 package gengo
 
 import (
-	"fmt"
 	"sort"
+
+	"github.com/vkcom/tl/internal/pure"
 )
 
-// TODO - this must be rewritten in more clean style...
-
-type FieldNatProperties = int
-
-const (
-	FieldIsNotNat        FieldNatProperties = 0
-	FieldIsNat           FieldNatProperties = 1
-	FieldUsedAsFieldMask FieldNatProperties = 2
-	FieldUsedAsSize      FieldNatProperties = 4
-)
-
-func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties, []uint32) {
+func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (pure.NatFieldUsage, []uint32) {
 	result, affectedIndexes := trw.GetFieldNatPropertiesAsUsageMap(fieldId, true, true)
 	indexes := make([]uint32, 0)
 	for i := range affectedIndexes {
@@ -35,17 +25,11 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 	return result, indexes
 }
 
-func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct bool, inReturnType bool) (FieldNatProperties, map[uint32]BitUsageInfo) {
-	//if fieldId < 0 || fieldId >= len(trw.Fields) {
-	//	fmt.Printf("wrong FieldIndex %d in %s\n", fieldId, trw.pureTypeStruct.CanonicalName())
-	//	return FieldIsNotNat, nil
-	//}
-	linear2 := trw.pureTypeStruct.GetNatFieldUsage(fieldId, inStruct, inReturnType).AffectedFields
-
-	p, u := trw.getFieldNatPropertiesAsUsageMap(fieldId, inStruct, inReturnType)
+func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct bool, inReturnType bool) (pure.NatFieldUsage, map[uint32]BitUsageInfo) {
+	linear2 := trw.pureTypeStruct.GetNatFieldUsage(fieldId, inStruct, inReturnType)
 
 	u2 := map[uint32]BitUsageInfo{}
-	for bit, aff := range linear2 {
+	for bit, aff := range linear2.AffectedFields {
 		if len(aff) == 0 {
 			continue
 		}
@@ -60,188 +44,9 @@ func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct b
 			}
 		}
 	}
-	if len(u2) != len(u) {
-		fmt.Printf("wrong FieldNatProperties lens %d %d in %s fieldIndex %d\n", len(u2), len(u), trw.pureTypeStruct.CanonicalName(), fieldId)
-	}
-	//if trw.pureTypeStruct.CanonicalName() == "curl.request" {
-	//	fmt.Printf("aah")
-	//}
-	return p, u
-}
-
-func (trw *TypeRWStruct) getFieldNatPropertiesAsUsageMap(fieldId int, inStruct, inReturnType bool) (FieldNatProperties, map[uint32]BitUsageInfo) {
-	if fieldId < 0 || len(trw.Fields) <= fieldId {
-		return FieldIsNotNat, nil
-	}
-	targetField := trw.Fields[fieldId]
-	pr, isPr := targetField.t.trw.(*TypeRWPrimitive)
-	if !isPr || pr.tlType != "#" {
-		return FieldIsNotNat, nil
-	}
-	result := FieldIsNat
-	affectedIndexes := make(map[uint32]BitUsageInfo)
-	natParamUsageMap := make(map[VisitedTypeNatParam]VisitResult)
-	if inStruct {
-		for i, f := range trw.Fields {
-			if i == fieldId {
-				continue
-			}
-			if f.FieldMask() != nil &&
-				f.FieldMask().IsField() &&
-				f.FieldMask().FieldIndex() == fieldId {
-				if _, hasBit := affectedIndexes[f.BitNumber()]; !hasBit {
-					affectedIndexes[f.BitNumber()] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
-				}
-				affectedIndexes[f.BitNumber()].AffectedFields[trw] = append(affectedIndexes[f.BitNumber()].AffectedFields[trw], i)
-
-				result |= FieldUsedAsFieldMask
-			}
-			natIndexes := make([]int, 0)
-			for j, natArg := range f.NatArgs() {
-				if natArg.IsField() && natArg.FieldIndex() == fieldId {
-					natIndexes = append(natIndexes, j)
-				}
-			}
-			for _, j := range natIndexes {
-				visit(f.t, j, &natParamUsageMap, &affectedIndexes, &result)
-			}
-		}
-	}
-
-	if inReturnType && (trw.ResultType != nil) {
-		for j, natArg := range trw.ResultNatArgs {
-			if natArg.IsField() && natArg.FieldIndex() == fieldId {
-				visit(trw.ResultType, j, &natParamUsageMap, &affectedIndexes, &result)
-			}
-		}
-	}
-
-	return result, affectedIndexes
+	return linear2, u2
 }
 
 type BitUsageInfo struct {
 	AffectedFields map[*TypeRWStruct][]int
-}
-
-type VisitedTypeNatParam struct {
-	Type_    string
-	NatIndex int
-}
-
-type VisitResult = int
-
-const (
-	VisitSuccess VisitResult = iota
-	VisitFail
-	VisitInProgress
-)
-
-func visit(
-	t *TypeRWWrapper,
-	natIndex int,
-	visitResults *map[VisitedTypeNatParam]VisitResult,
-	affectedIndexes *map[uint32]BitUsageInfo,
-	natProps *FieldNatProperties,
-) VisitResult {
-	if natIndex >= len(t.NatParams) {
-		return VisitSuccess
-	}
-	natParamName := t.NatParams[natIndex]
-	typeName := t.goGlobalName
-	key := VisitedTypeNatParam{typeName, natIndex}
-
-	visitResult, isVisited := (*visitResults)[key]
-	if isVisited {
-		return visitResult
-	}
-	(*visitResults)[key] = VisitInProgress
-
-	switch i := t.trw.(type) {
-	case *TypeRWStruct:
-		{
-			for fId, f := range i.Fields {
-				if f.FieldMask() != nil &&
-					!f.FieldMask().IsField() &&
-					!f.FieldMask().IsNumber() &&
-					natParamName == f.FieldMask().Name() {
-					*natProps |= FieldUsedAsFieldMask
-					if _, hasBit := (*affectedIndexes)[f.BitNumber()]; !hasBit {
-						(*affectedIndexes)[f.BitNumber()] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
-					}
-					(*affectedIndexes)[f.BitNumber()].AffectedFields[i] = append((*affectedIndexes)[f.BitNumber()].AffectedFields[i], fId)
-					(*visitResults)[key] = VisitSuccess
-				}
-				natIndexes := make([]int, 0)
-				for i, natParam := range f.NatArgs() {
-					if natParam.Name() == natParamName {
-						natIndexes = append(natIndexes, i)
-					}
-				}
-				for _, index := range natIndexes {
-					res := visit(f.t, index, visitResults, affectedIndexes, natProps)
-					if res == VisitSuccess {
-						(*visitResults)[key] = VisitSuccess
-					}
-				}
-			}
-		}
-	case *TypeRWUnion:
-		{
-			for _, f := range i.Fields {
-				res := visit(f.t, natIndex, visitResults, affectedIndexes, natProps)
-				if res == VisitSuccess {
-					(*visitResults)[key] = VisitSuccess
-				}
-			}
-		}
-	case *TypeRWMaybe:
-		{
-			res := visit(i.element.t, natIndex, visitResults, affectedIndexes, natProps)
-			if res == VisitSuccess {
-				(*visitResults)[key] = VisitSuccess
-			}
-		}
-	case *TypeRWBrackets:
-		{
-			// tuple
-			if !i.vectorLike && i.dynamicSize && natIndex == 0 {
-				*natProps |= FieldUsedAsSize
-			} else {
-				elementType := i.element.t
-				natIndexes := make([]int, 0)
-				for i, natParam := range i.element.NatArgs() {
-					if !natParam.IsNumber() && natParam.Name() == natParamName {
-						natIndexes = append(natIndexes, i)
-					}
-				}
-				for _, index := range natIndexes {
-					res := visit(elementType, index, visitResults, affectedIndexes, natProps)
-					if res == VisitSuccess {
-						(*visitResults)[key] = VisitSuccess
-					}
-				}
-			}
-		}
-	case *TypeRWDict:
-		{
-			elementType := i.element.t
-			natIndexes := make([]int, 0)
-			for i, natParam := range i.element.NatArgs() {
-				if !natParam.IsNumber() && natParam.Name() == natParamName {
-					natIndexes = append(natIndexes, i)
-				}
-			}
-			for _, index := range natIndexes {
-				res := visit(elementType, index, visitResults, affectedIndexes, natProps)
-				if res == VisitSuccess {
-					(*visitResults)[key] = VisitSuccess
-				}
-			}
-		}
-	}
-
-	if (*visitResults)[key] == VisitInProgress {
-		(*visitResults)[key] = VisitFail
-	}
-	return (*visitResults)[key]
 }
