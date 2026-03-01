@@ -18,95 +18,13 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
-type ActualNatArg struct {
-	isNumber   bool
-	number     uint32
-	isField    bool // otherwise it is # param with name
-	fieldIndex int
-	name       string // param name
-}
-
-func (arg *ActualNatArg) IsNumber() bool {
-	return arg.isNumber
-}
-
-func (arg *ActualNatArg) Number() uint32 {
-	return arg.number
-}
-
-func (arg *ActualNatArg) IsField() bool {
-	return arg.isField
-}
-
-func (arg *ActualNatArg) IsName() bool {
-	return !arg.isField && !arg.isNumber
-}
-
-func (arg *ActualNatArg) FieldIndex() int {
-	return arg.fieldIndex
-}
-
-func (arg *ActualNatArg) Name() string {
-	return arg.name
-}
-
-type Field struct {
-	owner TypeInstance
-	name  string
-	ins   *TypeInstanceRef
-
-	commentBefore string
-	commentRight  string
-
-	// though all TL2 types are bare, we still set Boxed for unions, because we want
-	// vector<Union> and []Union to reference the same generated type
-	bare bool
-
-	fieldMask *ActualNatArg
-	bitNumber uint32 // only used when fieldMask != nil
-
-	maskTL2Bit *int
-
-	natArgs []ActualNatArg // for TL1 only, empty for TL2
-	//rt      tlast.TypeRef  // for TL1 only, empty for TL2
-
-	prName tlast.PositionRange
-	//natFieldUsage NatFieldUsage
-}
-
-func (f Field) OwnerTypeInstance() TypeInstance { return f.owner }
-
-func (f Field) Bare() bool                 { return f.bare }
-func (f Field) Name() string               { return f.name }
-func (f Field) CommentBefore() string      { return f.commentBefore }
-func (f Field) CommentRight() string       { return f.commentRight }
-func (f Field) TypeInstance() TypeInstance { return f.ins.ins }
-func (f Field) FieldMask() *ActualNatArg   { return f.fieldMask }
-func (f Field) BitNumber() uint32          { return f.bitNumber }
-func (f Field) NatArgs() []ActualNatArg    { return f.natArgs }
-
-// we do not know if this object is used by some other TL2 object when we generate this,
-// so we return nil if owner does not marked as one needing TL2
-func (f Field) MaskTL2Bit() *int {
-	if !f.owner.Common().HasTL2() {
-		return nil
-	}
-	return f.maskTL2Bit
-}
-
-func (f Field) IsBit() bool {
-	if f.ins.ins.IsBit() {
-		return true
-	}
-	return f.fieldMask != nil && f.ins.ins.CanonicalName() == "True"
-}
-
 type TypeInstanceStruct struct {
 	TypeInstanceCommon
 	isConstructorFields bool
 	fields              []Field
 	isUnionElement      bool
 	unionIndex          int
+	isAlias             bool
 	isUnwrap            bool
 
 	// if function
@@ -120,6 +38,16 @@ func (ins *TypeInstanceStruct) Fields() []Field {
 	return ins.fields
 }
 
+// Both TL1-style typedef (single anonymous field)
+// And actual TL2-style alias.
+// In both cases, there is no TL2 object wrapping around the aliasing type
+// So TL2 serialization format is the same. TL1 format will differ if the first field is Boxed.
+func (ins *TypeInstanceStruct) IsAlias() bool {
+	return ins.isAlias
+}
+
+// Where this type is used during generation, we must instad use wrapped type.
+// vector<int> is compiled into []int.
 func (ins *TypeInstanceStruct) IsUnwrap() bool {
 	return ins.isUnwrap
 }
@@ -244,6 +172,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
 		resultType:          resultType,
+		isAlias:             false, // TL2 has separate syntax for alias
 		isResultAlias:       resultAlias,
 		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName2(tlName),
 	}
@@ -268,8 +197,8 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			natArgs: fieldNatArgs,
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
-			// commentRight:  fieldDef., CommentRight - TODO
-			prName: fieldDef.PRName,
+			commentRight:  fieldDef.CommentRight,
+			prName:        fieldDef.PRName,
 		}
 		if fieldDef.IsOptional && newField.ins.ins.IsBit() {
 			// we allow optional bit through aliases or template arguments,
@@ -708,5 +637,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		ins.resultNatArgs = natArgs
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}
+	ins.isAlias = !def.IsFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
+
 	return ins, nil
 }

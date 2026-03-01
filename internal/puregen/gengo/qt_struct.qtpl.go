@@ -125,7 +125,7 @@ func (item *`)
 		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
 		qw422016.N().S(`) {
 `)
-		if struct_.isTypeDef() {
+		if struct_.isAlias() {
 			field := struct_.Fields[0]
 
 			qw422016.N().S(`ptr := (*`)
@@ -351,8 +351,8 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(`    `)
 	qw422016.N().S(printCommentsType(struct_.pureTypeStruct))
 
-	if struct_.isTypeDef() {
-		asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
+	if struct_.isAlias() {
+		asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isAlias()
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
 		qw422016.N().S(`    `)
@@ -668,7 +668,7 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
-	if struct_.isTypeDef() {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
@@ -1998,7 +1998,7 @@ func (struct_ *TypeRWStruct) functionCode(bytesVersion bool, directImports *Dire
 }
 
 func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	if struct_.isTypeDef() {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 
 		qw422016.N().S(`ptr := (*`)
@@ -2045,7 +2045,7 @@ func (struct_ *TypeRWStruct) resetFields(bytesVersion bool, directImports *Direc
 }
 
 func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	if struct_.isTypeDef() {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 
 		qw422016.N().S(`ptr := (*`)
@@ -2214,7 +2214,7 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		}
 		return
 	}
-	if struct_.isTypeDef() {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 
 		qw422016.N().S(`ptr := (*`)
@@ -2312,7 +2312,7 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 `)
 		return
 	}
-	if struct_.isTypeDef() {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 
 		qw422016.N().S(`ptr := (*`)
@@ -2417,7 +2417,7 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
 
-	if struct_.isTypeDef() && struct_.unionParent == nil {
+	if struct_.isAlias() && struct_.unionParent == nil {
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
@@ -2511,7 +2511,7 @@ func (item *`)
         return sizes, 1
 `)
 			} else {
-				if struct_.isTypeDef() {
+				if struct_.isAlias() {
 					qw422016.N().S(`        ptr := (*`)
 					qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
 					qw422016.N().S(`)(item)
@@ -2547,7 +2547,7 @@ func (item *`)
 					fieldName := fmt.Sprintf("item.%s", field.goName)
 					fieldRecursive := field.recursive
 					fieldAsterisk := fieldRecursive
-					if struct_.isTypeDef() {
+					if struct_.isAlias() {
 						fieldName = "ptr"
 						fieldRecursive = true
 						fieldAsterisk = true
@@ -2609,7 +2609,7 @@ func (item *`)
         return w, sizes, 1
 `)
 			} else {
-				if struct_.isTypeDef() {
+				if struct_.isAlias() {
 					qw422016.N().S(`        ptr := (*`)
 					qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
 					qw422016.N().S(`)(item)
@@ -2667,7 +2667,7 @@ func (item *`)
 					}
 					fieldName := fmt.Sprintf("item.%s", field.goName)
 					fieldAsterisk := field.recursive
-					if struct_.isTypeDef() {
+					if struct_.isAlias() {
 						fieldName = "ptr"
 						fieldAsterisk = true
 					}
@@ -2791,7 +2791,7 @@ func (item *`)
 				qw422016.N().S(` = 0
 `)
 			}
-			if struct_.isTypeDef() {
+			if struct_.isAlias() {
 				qw422016.N().S(`    ptr := (*`)
 				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
 				qw422016.N().S(`)(item)
@@ -2801,7 +2801,7 @@ func (item *`)
 				fieldName := fmt.Sprintf("item.%s", field.goName)
 				fieldRecursive := field.recursive
 				fieldAsterisk := fieldRecursive
-				if struct_.isTypeDef() {
+				if struct_.isAlias() {
 					fieldName = "ptr"
 					fieldAsterisk = true
 				}
