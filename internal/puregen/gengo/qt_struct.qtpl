@@ -946,24 +946,15 @@ func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteC
 {%- endif -%}
 {%- for fieldId, field := range struct_.Fields -%}
     {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-    {%- if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 -%}
-        {%- code
-            // TODO - remove after moving affected fields into pure kernel
-            // fmt.Printf("AffectedBits: %s %d\n", goName, len(affectedBits) )
-            bits := make([]uint32, 0)
-            for i := range affectedBits {
-                bits = append(bits, i)
-            }
-            sort.Slice(bits, func(i, j int) bool {
-                return bits[i] < bits[j]
-            })
-        -%}
-        {%- for _, bit := range bits -%}
+        {%- code fieldProps := struct_.pureTypeStruct.GetNatFieldUsage(fieldId, false, true) -%}
+        {%- for _, bit := range fieldProps.UsedBits() -%}
             {%- code
-                bitUsage := affectedBits[bit]
+                bitUsage := fieldProps.AffectedFields[bit]
                 affectedTypes := make([]*TypeRWStruct, 0)
-            	for i := range bitUsage.AffectedFields {
-            		affectedTypes = append(affectedTypes, i)
+            	for ins := range bitUsage {
+			        affectedType := struct_.wr.gen.getTypeMust(ins).trw.(*TypeRWStruct)
+
+            		affectedTypes = append(affectedTypes, affectedType)
             	}
             	sort.Slice(affectedTypes, func(i, j int) bool {
             		return TypeRWWrapperLessGlobal(affectedTypes[i].wr, affectedTypes[j].wr) > 0
@@ -971,7 +962,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteC
             -%}
             {%- for _, affectedType := range affectedTypes -%}
                 {%- code
-                    affectedFieldsByBit := bitUsage.AffectedFields[affectedType]
+                    affectedFieldsByBit := bitUsage[affectedType.pureTypeStruct]
                     affectedFieldsByBit = utils.SetToSlice(utils.SliceToSet(affectedFieldsByBit))
                     sort.Slice(affectedFieldsByBit, func(i, j int) bool {
                         return affectedFieldsByBit[i] < affectedFieldsByBit[j]
@@ -1002,7 +993,6 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
 
             {%- endfor -%}
         {%- endfor -%}
-    {%- endif -%}
 {%- endfor -%}
 
 {%- endfunc -%}
@@ -1078,12 +1068,12 @@ if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitN
 rg.IncreaseDepth()
         {%- endif -%}
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%- if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); fieldProps.UsedAsMask || fieldProps.UsedAsSize -%}
+        {%- if fieldProps := struct_.pureTypeStruct.GetNatFieldUsage(fieldId, true, true); fieldProps.UsedAsMask || fieldProps.UsedAsSize -%}
             {%- if fieldProps.UsedAsMask -%}
                 {%- code
                     bitMask := uint32(0)
-                    for _, indexPosition := range indexes {
-                        bitMask |= 1<<indexPosition
+                    for _, indexPosition := range fieldProps.UsedBits() {
+                        bitMask |= 1 << indexPosition
                     }
                 -%}
 item.{%s= field.goName %}= basictl.RandomFieldMask(rg, {%s fmt.Sprintf("0b%b", bitMask) %})

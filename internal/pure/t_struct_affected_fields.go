@@ -21,6 +21,17 @@ type NatFieldUsage struct {
 	AffectedFields [32]map[*TypeInstanceStruct][]int // bit->type->fieldIndexes
 }
 
+func (f *NatFieldUsage) UsedBits() []uint32 {
+	bits := make([]uint32, 0)
+	for bit, aff := range f.AffectedFields {
+		if len(aff) == 0 {
+			continue
+		}
+		bits = append(bits, uint32(bit))
+	}
+	return bits
+}
+
 func (f *NatFieldUsage) appendUsage(bit uint32, Ins *TypeInstanceStruct, FieldIndex int) {
 	if f.AffectedFields[bit] == nil {
 		f.AffectedFields[bit] = map[*TypeInstanceStruct][]int{}
