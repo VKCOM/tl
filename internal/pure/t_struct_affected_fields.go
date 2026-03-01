@@ -15,9 +15,9 @@ import (
 
 type NatFieldUsage struct {
 	UsedAsMask     bool
-	UsedAsMaskPR   tlast.PositionRange
+	usedAsMaskPR   tlast.PositionRange
 	UsedAsSize     bool
-	UsedAsSizePR   tlast.PositionRange
+	usedAsSizePR   tlast.PositionRange
 	AffectedFields [32]map[*TypeInstanceStruct][]int // bit->type->fieldIndexes
 }
 
@@ -57,7 +57,7 @@ func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields b
 				field.FieldMask().IsField() && field.FieldMask().FieldIndex() == fieldIndex {
 				if !natFieldUsage.UsedAsMask {
 					natFieldUsage.UsedAsMask = true
-					natFieldUsage.UsedAsMaskPR = field.prName
+					natFieldUsage.usedAsMaskPR = field.prName
 				}
 				natFieldUsage.appendUsage(field.bitNumber, ins, i)
 			}
@@ -95,7 +95,7 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 			if field.FieldMask() != nil && !field.FieldMask().IsField() && !field.FieldMask().IsNumber() && field.FieldMask().name == natParamName {
 				if !natFieldUsage.UsedAsMask {
 					natFieldUsage.UsedAsMask = true
-					natFieldUsage.UsedAsMaskPR = field.prName
+					natFieldUsage.usedAsMaskPR = field.prName
 				}
 				natFieldUsage.appendUsage(field.bitNumber, ins, fieldIndex)
 			}
@@ -116,7 +116,7 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 		if ins.dynamicSize && natIndex == 0 {
 			if !natFieldUsage.UsedAsSize {
 				natFieldUsage.UsedAsSize = true
-				natFieldUsage.UsedAsSizePR = ins.resolvedType.BracketType.IndexType.PR // TODO - check
+				natFieldUsage.usedAsSizePR = ins.resolvedType.BracketType.IndexType.PR // TODO - check
 			}
 		} else {
 			for argIndex, natArg := range ins.field.NatArgs() {

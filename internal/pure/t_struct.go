@@ -565,7 +565,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	//	localArgs[i].arg.SourceFieldAny = &ins.natFieldUsage[i]
 	//}
 	nextTL2MaskBit := 0
-	fieldsAfterReplace, typesAfterReplace, originalFieldIndices, err := k.replaceTL1Brackets(def)
+	fieldsAfterReplace, typesAfterReplace, _, err := k.replaceTL1Brackets(def)
 	if err != nil {
 		return nil, err
 	}
@@ -579,10 +579,9 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	if isDict {
 		// fmt.Printf("dict detected [%s]%s\n", keyRT.String(), elemRT.String())
 		ins.isUnwrap = true
-		if len(fieldsAfterReplace) != 1 || len(typesAfterReplace) != 1 || len(originalFieldIndices) != 1 {
+		if len(fieldsAfterReplace) != 1 || len(typesAfterReplace) != 1 {
 			return nil, resolvedType.PR.BeautifulError(fmt.Errorf("internal error - during Dict detection"))
 		}
-		originalFieldIndices = []int{0} // TODO - test dict definition with # []
 	}
 
 	for i, fieldDef := range fieldsAfterReplace {
