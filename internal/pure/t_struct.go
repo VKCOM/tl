@@ -49,7 +49,7 @@ func (ins *TypeInstanceStruct) IsAlias() bool {
 // Where this type is used during generation, we must instad use wrapped type.
 // vector<int> is compiled into []int.
 func (ins *TypeInstanceStruct) IsUnwrap() bool {
-	return ins.isUnwrap
+	return ins.isAlias && ins.isUnwrap // isAlias should always be set, if isUnwrap set
 }
 
 func (ins *TypeInstanceStruct) ResultType() TypeInstance {
