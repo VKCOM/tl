@@ -125,9 +125,6 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 
 	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 	// fmt.Printf("natParams for tuple %s: %s\n", canonicalName, strings.Join(natParams, ","))
-	//if len(natParams) != 0 {
-	//	fmt.Printf("tuple natparams %s\n", strings.Join(natParams, ","))
-	//}
 	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
 	if !resolvedType.BracketType.IndexType.IsNumber {

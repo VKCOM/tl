@@ -257,6 +257,8 @@ func (k *Kernel) Compile() error {
 			}
 		} else {
 			kt.templateArguments = comb.TypeDecl.TemplateArguments
+			kt.targs = make([]KernelTypeTarg, len(comb.TypeDecl.TemplateArguments))
+
 			kt.tl1Names = map[string]struct{}{}
 			kt.tl2Names = map[string]struct{}{refName.String(): {}}
 			var nc NameCollision

@@ -51,6 +51,22 @@ func (k *Kernel) resolveArgument(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs
 func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, leftArgs []tlast.TL2TypeTemplate,
 	actualArgs []LocalArg) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	if tr.IsNumber {
+		if !k.opts.InstantiateConstants {
+			tr.IsNumber = false
+			tr.Type = tlast.TL2TypeRef{
+				SomeType: tlast.TL2TypeApplication{
+					Name:        tlast.TL2TypeName{Name: "*"},
+					PR:          tr.PR,
+					PRName:      tr.PR,
+					PRArguments: tr.PR.CollapseToEnd(),
+				},
+				PR: tr.PR,
+			}
+			return tr, []ActualNatArg{{
+				isNumber: true,
+				number:   tr.Number,
+			}}, nil
+		}
 		return tr, nil, nil
 	}
 	if tr.Type.String() == "*" {
