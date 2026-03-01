@@ -1910,80 +1910,72 @@ func (item *`)
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 {
-			// TODO - remove after moving affected fields into pure kernel
-			// fmt.Printf("AffectedBits: %s %d\n", goName, len(affectedBits) )
-			bits := make([]uint32, 0)
-			for i := range affectedBits {
-				bits = append(bits, i)
+		fieldProps := struct_.pureTypeStruct.GetNatFieldUsage(fieldId, false, true)
+
+		for _, bit := range fieldProps.UsedBits() {
+			bitUsage := fieldProps.AffectedFields[bit]
+			affectedTypes := make([]*TypeRWStruct, 0)
+			for ins := range bitUsage {
+				affectedType := struct_.wr.gen.getTypeMust(ins).trw.(*TypeRWStruct)
+
+				affectedTypes = append(affectedTypes, affectedType)
 			}
-			sort.Slice(bits, func(i, j int) bool {
-				return bits[i] < bits[j]
+			sort.Slice(affectedTypes, func(i, j int) bool {
+				return TypeRWWrapperLessGlobal(affectedTypes[i].wr, affectedTypes[j].wr) > 0
 			})
 
-			for _, bit := range bits {
-				bitUsage := affectedBits[bit]
-				affectedTypes := make([]*TypeRWStruct, 0)
-				for i := range bitUsage.AffectedFields {
-					affectedTypes = append(affectedTypes, i)
-				}
-				sort.Slice(affectedTypes, func(i, j int) bool {
-					return TypeRWWrapperLessGlobal(affectedTypes[i].wr, affectedTypes[j].wr) > 0
+			for _, affectedType := range affectedTypes {
+				affectedFieldsByBit := bitUsage[affectedType.pureTypeStruct]
+				affectedFieldsByBit = utils.SetToSlice(utils.SliceToSet(affectedFieldsByBit))
+				sort.Slice(affectedFieldsByBit, func(i, j int) bool {
+					return affectedFieldsByBit[i] < affectedFieldsByBit[j]
 				})
+				fieldNames := make([]string, len(affectedFieldsByBit))
+				fieldNamesForComment := make([]string, len(affectedFieldsByBit))
 
-				for _, affectedType := range affectedTypes {
-					affectedFieldsByBit := bitUsage.AffectedFields[affectedType]
-					affectedFieldsByBit = utils.SetToSlice(utils.SliceToSet(affectedFieldsByBit))
-					sort.Slice(affectedFieldsByBit, func(i, j int) bool {
-						return affectedFieldsByBit[i] < affectedFieldsByBit[j]
-					})
-					fieldNames := make([]string, len(affectedFieldsByBit))
-					fieldNamesForComment := make([]string, len(affectedFieldsByBit))
+				for i := range fieldNames {
+					fieldNames[i] = affectedType.Fields[affectedFieldsByBit[i]].goName
+					fieldNamesForComment[i] = "\"" + affectedType.Fields[affectedFieldsByBit[i]].OriginalName() + "\""
+				}
 
-					for i := range fieldNames {
-						fieldNames[i] = affectedType.Fields[affectedFieldsByBit[i]].goName
-						fieldNamesForComment[i] = "\"" + affectedType.Fields[affectedFieldsByBit[i]].OriginalName() + "\""
-					}
+				mergedFields := strings.Join(fieldNames, "And")
+				mergedFieldsForComment := strings.Join(fieldNamesForComment, ", ")
+				maybeS := ""
+				if len(affectedFieldsByBit) > 1 {
+					maybeS = "s"
+				}
 
-					mergedFields := strings.Join(fieldNames, "And")
-					mergedFieldsForComment := strings.Join(fieldNamesForComment, ", ")
-					maybeS := ""
-					if len(affectedFieldsByBit) > 1 {
-						maybeS = "s"
-					}
-
-					qw422016.N().S(`// Set field`)
-					qw422016.N().S(maybeS)
-					qw422016.N().S(` `)
-					qw422016.N().S(mergedFieldsForComment)
-					qw422016.N().S(` in "`)
-					qw422016.N().S(affectedType.wr.tlName.String())
-					qw422016.N().S(`" by changing fieldMask "`)
-					qw422016.N().S(field.OriginalName())
-					qw422016.N().S(`"
+				qw422016.N().S(`// Set field`)
+				qw422016.N().S(maybeS)
+				qw422016.N().S(` `)
+				qw422016.N().S(mergedFieldsForComment)
+				qw422016.N().S(` in "`)
+				qw422016.N().S(affectedType.wr.tlName.String())
+				qw422016.N().S(`" by changing fieldMask "`)
+				qw422016.N().S(field.OriginalName())
+				qw422016.N().S(`"
 func (item *`)
-					qw422016.N().S(goName)
-					qw422016.N().S(`) Set`)
-					qw422016.N().S(affectedType.wr.goGlobalName)
-					qw422016.N().S(mergedFields)
-					qw422016.N().S(`(value bool) {
+				qw422016.N().S(goName)
+				qw422016.N().S(`) Set`)
+				qw422016.N().S(affectedType.wr.goGlobalName)
+				qw422016.N().S(mergedFields)
+				qw422016.N().S(`(value bool) {
     if value {
         item.`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` |= 1 << `)
-					qw422016.N().D(int(bit))
-					qw422016.N().S(`
+				qw422016.N().S(field.goName)
+				qw422016.N().S(` |= 1 << `)
+				qw422016.N().D(int(bit))
+				qw422016.N().S(`
     } else {
         item.`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` &^= 1 << `)
-					qw422016.N().D(int(bit))
-					qw422016.N().S(`
+				qw422016.N().S(field.goName)
+				qw422016.N().S(` &^= 1 << `)
+				qw422016.N().D(int(bit))
+				qw422016.N().S(`
     }
 }
 
 `)
-				}
 			}
 		}
 	}
@@ -2150,10 +2142,10 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		}
 		qw422016.N().S(`        `)
 		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-		if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); fieldProps.UsedAsMask || fieldProps.UsedAsSize {
+		if fieldProps := struct_.pureTypeStruct.GetNatFieldUsage(fieldId, true, true); fieldProps.UsedAsMask || fieldProps.UsedAsSize {
 			if fieldProps.UsedAsMask {
 				bitMask := uint32(0)
-				for _, indexPosition := range indexes {
+				for _, indexPosition := range fieldProps.UsedBits() {
 					bitMask |= 1 << indexPosition
 				}
 
