@@ -14,7 +14,8 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTL2TestObject struct {
-	N uint32
+	N  uint32
+	Ns uint32
 	// F1 (TrueType) // Conditional: item.N.0
 	F2       bool
 	F3       []bool
@@ -68,6 +69,7 @@ func (item *CasesTL2TestObject) IsSetF7() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTL2TestObject) Reset() {
 	item.N = 0
+	item.Ns = 0
 	item.F2 = false
 	item.F3 = item.F3[:0]
 	item.F4.Reset()
@@ -80,13 +82,13 @@ func (item *CasesTL2TestObject) Reset() {
 func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
 	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b100000000000011)
-	item.N = rg.LimitValue(item.N)
+	item.Ns = basictl.RandomSize(rg)
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
 	item.F2 = basictl.RandomUint(rg)&1 == 1
 	BuiltinVectorBoolFillRandom(rg, &item.F3)
-	item.F4.FillRandom(rg, item.N)
+	item.F4.FillRandom(rg, item.Ns)
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 		item.F5 = basictl.RandomUint(rg)&1 == 1
@@ -111,7 +113,7 @@ func (item *CasesTL2TestObject) RepairMasks() {
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	item.F4.RepairMasks(item.N)
+	item.F4.RepairMasks(item.Ns)
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
 	}
@@ -126,6 +128,9 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
+	if w, err = basictl.NatRead(w, &item.Ns); err != nil {
+		return w, err
+	}
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
@@ -135,7 +140,7 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	if w, err = BuiltinVectorBoolRead(w, &item.F3); err != nil {
 		return w, err
 	}
-	if w, err = item.F4.Read(w, item.N); err != nil {
+	if w, err = item.F4.Read(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -166,9 +171,10 @@ func (item *CasesTL2TestObject) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *CasesTL2TestObject) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
+	w = basictl.NatWrite(w, item.Ns)
 	w = BoolWriteBoxed(w, item.F2)
 	w = BuiltinVectorBoolWrite(w, item.F3)
-	if w, err = item.F4.Write(w, item.N); err != nil {
+	if w, err = item.F4.Write(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -212,6 +218,7 @@ func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propNsPresented bool
 	var trueTypeF1Presented bool
 	var trueTypeF1Value bool
 	var propF2Presented bool
@@ -238,6 +245,14 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return err
 				}
 				propNPresented = true
+			case "ns":
+				if propNsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "ns")
+				}
+				if err := Json2ReadUint32(in, &item.Ns); err != nil {
+					return err
+				}
+				propNsPresented = true
 			case "f1":
 				if trueTypeF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f1")
@@ -307,6 +322,9 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if !propNPresented {
 		item.N = 0
 	}
+	if !propNsPresented {
+		item.Ns = 0
+	}
 	if !propF2Presented {
 		item.F2 = false
 	}
@@ -338,7 +356,7 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if rawF4 != nil {
 		inF4Pointer = &inF4
 	}
-	if err := item.F4.ReadJSONGeneral(tctx, inF4Pointer, item.N); err != nil {
+	if err := item.F4.ReadJSONGeneral(tctx, inF4Pointer, item.Ns); err != nil {
 		return err
 	}
 
@@ -376,6 +394,13 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	if (item.N != 0) == false {
 		w = w[:backupIndexN]
 	}
+	backupIndexNs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"ns":`...)
+	w = basictl.JSONWriteUint32(w, item.Ns)
+	if (item.Ns != 0) == false {
+		w = w[:backupIndexNs]
+	}
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":true`...)
@@ -396,7 +421,7 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f4":`...)
-	if w, err = item.F4.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.F4.WriteJSONOpt(tctx, w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -443,6 +468,10 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int, optimizeEmpty bool)
 		currentSize += 4
 		lastUsedByte = currentSize
 	}
+	if item.Ns != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
 	if item.tl2mask0&1 != 0 {
 		lastUsedByte = currentSize
 	}
@@ -462,11 +491,11 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int, optimizeEmpty bool)
 		currentSize += 1
 		lastUsedByte = currentSize
 	}
+	currentSize++
 	if sizes, sz = BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes, true, &item.F6); sz != 0 {
 		currentSize += sz
 		lastUsedByte = currentSize
 	}
-	currentSize++
 	if item.tl2mask0&4 != 0 {
 		sizes, sz = BuiltinVectorTrueBoxedCalculateLayout(sizes, false, &item.F7)
 		currentSize += sz
@@ -509,24 +538,25 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int, optimize
 		w = basictl.NatWrite(w, item.N)
 		currentBlock |= 2
 	}
-	if item.tl2mask0&1 != 0 {
+	if item.Ns != 0 {
+		w = basictl.NatWrite(w, item.Ns)
 		currentBlock |= 4
+	}
+	if item.tl2mask0&1 != 0 {
+		currentBlock |= 8
 	}
 	if item.F2 {
 		w = basictl.ByteBoolWriteTL2(w, item.F2)
-		currentBlock |= 8
-	}
-	if w, sizes, sz = BuiltinVectorBoolInternalWriteTL2(w, sizes, true, &item.F3); sz != 0 {
 		currentBlock |= 16
 	}
-	if w, sizes, sz = item.F4.InternalWriteTL2(w, sizes, true); sz != 0 {
+	if w, sizes, sz = BuiltinVectorBoolInternalWriteTL2(w, sizes, true, &item.F3); sz != 0 {
 		currentBlock |= 32
+	}
+	if w, sizes, sz = item.F4.InternalWriteTL2(w, sizes, true); sz != 0 {
+		currentBlock |= 64
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.ByteBoolWriteTL2(w, item.F5)
-		currentBlock |= 64
-	}
-	if w, sizes, sz = BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, true, &item.F6); sz != 0 {
 		currentBlock |= 128
 	}
 	if currentBlockPosition < len(w) {
@@ -538,9 +568,12 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int, optimize
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
 	}
+	if w, sizes, sz = BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, true, &item.F6); sz != 0 {
+		currentBlock |= 1
+	}
 	if item.tl2mask0&4 != 0 {
 		w, sizes, _ = BuiltinVectorTrueBoxedInternalWriteTL2(w, sizes, false, &item.F7)
-		currentBlock |= 1
+		currentBlock |= 2
 	}
 	if currentBlockPosition < len(w) {
 		w[currentBlockPosition] = currentBlock
@@ -607,43 +640,43 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 		item.N = 0
 	}
 	if block&4 != 0 {
-		item.tl2mask0 |= 1
+		if currentR, err = basictl.NatRead(currentR, &item.Ns); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Ns = 0
 	}
 	if block&8 != 0 {
+		item.tl2mask0 |= 1
+	}
+	if block&16 != 0 {
 		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.F2); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F2 = false
 	}
-	if block&16 != 0 {
+	if block&32 != 0 {
 		if currentR, err = BuiltinVectorBoolInternalReadTL2(currentR, &item.F3); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F3 = item.F3[:0]
 	}
-	if block&32 != 0 {
+	if block&64 != 0 {
 		if currentR, err = item.F4.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F4.Reset()
 	}
-	if block&64 != 0 {
+	if block&128 != 0 {
 		item.tl2mask0 |= 2
 		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.F5); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F5 = false
-	}
-	if block&128 != 0 {
-		if currentR, err = BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(currentR, &item.F6); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.F6 = item.F6[:0]
 	}
 	// start the next block
 	if len(currentR) > 0 {
@@ -654,6 +687,13 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 		block = 0
 	}
 	if block&1 != 0 {
+		if currentR, err = BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(currentR, &item.F6); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F6 = item.F6[:0]
+	}
+	if block&2 != 0 {
 		item.tl2mask0 |= 4
 		if currentR, err = BuiltinVectorTrueBoxedInternalReadTL2(currentR, &item.F7); err != nil {
 			return currentR, err

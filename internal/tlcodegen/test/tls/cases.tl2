@@ -140,6 +140,7 @@ benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruPosition;
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions;
 casesTL2.testObject = 
 	n:uint32
+	ns:uint32
 	f1:bool
 	f2:bool
 	f3:vector<bool>
