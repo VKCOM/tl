@@ -35,7 +35,6 @@ type TypeInstanceCommon struct {
 	tlName2       tlast.TL2TypeName
 	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
-	natFieldUsage []NatFieldUsage
 	tip           *KernelType
 	isTopLevel    bool
 	resolvedType  tlast.TL2TypeRef

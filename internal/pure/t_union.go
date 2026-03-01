@@ -79,13 +79,13 @@ func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
-	tlTag uint32, def tlast.TL2UnionType,
+	def tlast.TL2UnionType,
 	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
 			tlName:        tip.canonicalName,
-			tlTag:         tlTag,
+			tlTag:         tip.combTL2.TypeDecl.Magic,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
 			argNamespace:  k.getArgNamespace(tr),

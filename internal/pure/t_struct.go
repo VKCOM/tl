@@ -74,6 +74,16 @@ func (ins *TypeInstanceStruct) RPCPreferTL2() bool {
 	return ins.rpcPreferTL2
 }
 
+// TODO - check how this works
+func (ins *TypeInstanceStruct) GoodForMapKey() bool {
+	return ins.isAlias && ins.fields[0].ins.ins.GoodForMapKey()
+}
+
+// TODO - check/decide how this should work
+//func (ins *TypeInstanceAlias) IsBit() bool {
+//	return ins.fieldType.ins.IsBit()
+//}
+
 // most generators will need to add !recursive
 func (trw *TypeInstanceStruct) IsTypeDef() bool {
 	return len(trw.fields) == 1 && trw.fields[0].name == "" && trw.fields[0].fieldMask == nil
@@ -485,7 +495,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tlName:        tlast.TL2TypeName(def.Construct.Name),
 			tlTag:         def.Construct.ID,
 			natParams:     natParams,
-			natFieldUsage: make([]NatFieldUsage, len(natParams)),
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			resolvedType:  resolvedType,
@@ -499,9 +508,6 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		unionIndex:          unionIndex,
 		isUnwrap:            tip.builtinWrappedCanonicalName != "",
 	}
-	//for i := range localArgs {
-	//	localArgs[i].arg.SourceFieldAny = &ins.natFieldUsage[i]
-	//}
 	nextTL2MaskBit := 0
 	fieldsAfterReplace, typesAfterReplace, _, err := k.replaceTL1Brackets(def)
 	if err != nil {
@@ -643,9 +649,64 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		ins.resultNatArgs = natArgs
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}
-	// !isUnionElement &&
 	ins.isTypedef = !def.IsFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
 	ins.isAlias = !isUnionElement && ins.isTypedef
+
+	return ins, nil
+}
+
+func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,
+	def tlast.TL2TypeDeclaration) (TypeInstance, error) {
+
+	leftArgs := append([]tlast.TL2TypeTemplate{}, tip.templateArguments...) // prevent golang aliasing
+
+	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
+	// fmt.Printf("natParams for %s: %s\n", canonicalName, strings.Join(natParams, ","))
+
+	ins := &TypeInstanceStruct{
+		TypeInstanceCommon: TypeInstanceCommon{
+			canonicalName: canonicalName,
+			tlName:        def.Name,
+			tlTag:         def.Magic,
+			natParams:     natParams,
+			tip:           tip,
+			isTopLevel:    tip.isTopLevel, // both single types and union elements
+			resolvedType:  resolvedType,
+			argNamespace:  k.getArgNamespace(resolvedType),
+			hasTL2:        true,
+			commentBefore: tip.combTL2.CommentBefore,
+			commentRight:  "", // there is no comment right in TL2 type
+		},
+		isConstructorFields: false,
+		isUnwrap:            false,
+	}
+
+	var natArgs []ActualNatArg
+	var rt tlast.TL2TypeRef
+
+	rt, natArgs, err := k.resolveType(true, def.Type.TypeAlias, leftArgs, localArgs)
+	if err != nil {
+		return nil, err
+	}
+	// fmt.Printf("resolveTypeTL2 for %s field %s: %s -> %s\n", canonicalName, fieldDef.FieldName, fieldDef.FieldType.String(), rt.String())
+	fieldIns, fieldBare, err := k.getInstance(rt, true)
+	if err != nil {
+		return nil, err
+	}
+	newField := Field{
+		owner:         ins,
+		name:          "",
+		commentBefore: "",
+		commentRight:  "",
+		ins:           fieldIns,
+		natArgs:       natArgs,
+		bare:          fieldBare,
+		prName:        def.Type.TypeAlias.PR,
+	}
+	ins.fields = append(ins.fields, newField)
+
+	ins.isTypedef = true
+	ins.isAlias = true
 
 	return ins, nil
 }

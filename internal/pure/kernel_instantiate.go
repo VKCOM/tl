@@ -64,7 +64,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	if kt.originTL2 {
 		if !kt.combTL2.IsFunction {
 			ref.ins, err = k.createOrdinaryTypeTL2(canonicalName, kt, tr, kt.canonicalName, kt.combTL2.TypeDecl.Magic,
-				kt.combTL2.TypeDecl.Type, kt.combTL2.TypeDecl.TemplateArguments)
+				kt.combTL2.TypeDecl, kt.combTL2.TypeDecl.TemplateArguments)
 			if err != nil {
 				return nil, false, err
 			}
@@ -123,18 +123,18 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 // alias || fields || union
 func (k *Kernel) createOrdinaryTypeTL2(canonicalName string, tip *KernelType, tr tlast.TL2TypeRef,
 	tlName tlast.TL2TypeName, tlTag uint32,
-	definition tlast.TL2TypeDefinition,
+	def tlast.TL2TypeDeclaration,
 	leftArgs []tlast.TL2TypeTemplate) (TypeInstance, error) {
 
 	switch {
-	case definition.IsAlias():
-		return k.createAliasTL2(canonicalName, tip, tr, definition.TypeAlias, leftArgs)
-	case definition.StructType.IsUnionType:
-		return k.createUnionTL2(canonicalName, tip, tr, tlTag, definition.StructType.UnionType, leftArgs)
+	case def.Type.IsAlias():
+		return k.createAliasTL2(canonicalName, tip, tr, def)
+	case def.Type.StructType.IsUnionType:
+		return k.createUnionTL2(canonicalName, tip, tr, def.Type.StructType.UnionType, leftArgs)
 	default:
 		return k.createStructTL2(canonicalName, tip, tr,
 			tlName, tlTag,
-			true, definition.TypeAlias, definition.StructType.ConstructorFields,
+			true, def.Type.TypeAlias, def.Type.StructType.ConstructorFields,
 			leftArgs, false, 0, nil, false)
 	}
 }
