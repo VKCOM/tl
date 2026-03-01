@@ -154,12 +154,13 @@ benchmarks.vrutoyTopLevelContainerWithDependency
 boolFalse#bc799737 = Bool;
 boolTrue#997275b5 = Bool; // bool comment
 
-casesTL2.testObject
+casesTL2.testObject#4f96dd95
     n:#
+    ns:#
     f1:n.0?true
     f2:Bool
     f3:vector<Bool>
-    f4:(benchmarks.vrutoyPositions n)
+    f4:(benchmarks.vrutoyPositions ns)
     f5:n.1?Bool
     f6:vector<benchmarks.VrutoyTopLevelUnion>
     f7:n.14?vector<True>

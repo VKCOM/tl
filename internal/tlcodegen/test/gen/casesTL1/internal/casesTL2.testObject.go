@@ -14,7 +14,8 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTL2TestObject struct {
-	N uint32
+	N  uint32
+	Ns uint32
 	// F1 (TrueType) // Conditional: item.N.0
 	F2 bool
 	F3 []bool
@@ -58,6 +59,7 @@ func (item *CasesTL2TestObject) IsSetF7() bool { return item.N&(1<<14) != 0 }
 
 func (item *CasesTL2TestObject) Reset() {
 	item.N = 0
+	item.Ns = 0
 	item.F2 = false
 	item.F3 = item.F3[:0]
 	item.F4.Reset()
@@ -68,10 +70,10 @@ func (item *CasesTL2TestObject) Reset() {
 
 func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomFieldMask(rg, 0b100000000000011)
-	item.N = rg.LimitValue(item.N)
+	item.Ns = basictl.RandomSize(rg)
 	item.F2 = basictl.RandomUint(rg)&1 == 1
 	BuiltinVectorBoolFillRandom(rg, &item.F3)
-	item.F4.FillRandom(rg, item.N)
+	item.F4.FillRandom(rg, item.Ns)
 	if item.N&(1<<1) != 0 {
 		item.F5 = basictl.RandomUint(rg)&1 == 1
 	} else {
@@ -89,13 +91,16 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
+	if w, err = basictl.NatRead(w, &item.Ns); err != nil {
+		return w, err
+	}
 	if w, err = BoolReadBoxed(w, &item.F2); err != nil {
 		return w, err
 	}
 	if w, err = BuiltinVectorBoolRead(w, &item.F3); err != nil {
 		return w, err
 	}
-	if w, err = item.F4.Read(w, item.N); err != nil {
+	if w, err = item.F4.Read(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -124,9 +129,10 @@ func (item *CasesTL2TestObject) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *CasesTL2TestObject) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
+	w = basictl.NatWrite(w, item.Ns)
 	w = BoolWriteBoxed(w, item.F2)
 	w = BuiltinVectorBoolWrite(w, item.F3)
-	if w, err = item.F4.Write(w, item.N); err != nil {
+	if w, err = item.F4.Write(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -170,6 +176,7 @@ func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propNsPresented bool
 	var trueTypeF1Presented bool
 	var trueTypeF1Value bool
 	var propF2Presented bool
@@ -196,6 +203,14 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return err
 				}
 				propNPresented = true
+			case "ns":
+				if propNsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "ns")
+				}
+				if err := Json2ReadUint32(in, &item.Ns); err != nil {
+					return err
+				}
+				propNsPresented = true
 			case "f1":
 				if trueTypeF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f1")
@@ -265,6 +280,9 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if !propNPresented {
 		item.N = 0
 	}
+	if !propNsPresented {
+		item.Ns = 0
+	}
 	if !propF2Presented {
 		item.F2 = false
 	}
@@ -296,7 +314,7 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if rawF4 != nil {
 		inF4Pointer = &inF4
 	}
-	if err := item.F4.ReadJSONGeneral(tctx, inF4Pointer, item.N); err != nil {
+	if err := item.F4.ReadJSONGeneral(tctx, inF4Pointer, item.Ns); err != nil {
 		return err
 	}
 
@@ -325,6 +343,13 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	if (item.N != 0) == false {
 		w = w[:backupIndexN]
 	}
+	backupIndexNs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"ns":`...)
+	w = basictl.JSONWriteUint32(w, item.Ns)
+	if (item.Ns != 0) == false {
+		w = w[:backupIndexNs]
+	}
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":true`...)
@@ -345,7 +370,7 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f4":`...)
-	if w, err = item.F4.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.F4.WriteJSONOpt(tctx, w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
