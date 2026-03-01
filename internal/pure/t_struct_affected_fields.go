@@ -105,8 +105,6 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 				}
 			}
 		}
-	case *TypeInstanceAlias:
-		// TODO - will it have natParams?
 	case *TypeInstanceUnion:
 		for _, variant := range ins.variantTypes {
 			markAffectedFields(variant, visitedNodes, natFieldUsage, natIndex)
