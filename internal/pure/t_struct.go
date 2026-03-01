@@ -526,6 +526,9 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 		originalFieldIndices = append(originalFieldIndices, i)
 	}
 	for _, f := range fieldsAfterReplace {
+		if f.FieldName == "" && def.IsFunction {
+			return nil, nil, nil, f.PR.BeautifulError(fmt.Errorf("functions cannot have anonymous fields"))
+		}
 		if f.FieldName == "" && (len(fieldsAfterReplace) != 1 || f.Mask != nil) {
 			return nil, nil, nil, f.PR.BeautifulError(fmt.Errorf("anonymous fields are only allowed when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)"))
 		}
