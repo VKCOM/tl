@@ -147,7 +147,7 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
 {%- func (struct_ *TypeRWStruct)typeDefinition(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%s= printCommentsType(struct_.pureTypeStruct) -%} {%- code -%}
-    {%- if struct_.isAlias() || struct_.isGolangTypedef() -%}
+    {%- if struct_.isAlias() || struct_.isTypedef() -%}
         {%- code
             asterisk := ifString(struct_.Fields[0].recursive, "*", "")
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
@@ -308,7 +308,7 @@ type {%s= goName %} struct {
         natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
         writeNeedsError := struct_.wr.hasErrorInWriteMethods
     -%}
-    {%- if struct_.isAlias() -%}
+    {%- if struct_.isTypedef() -%}
         {%- code
             field := struct_.Fields[0]
         -%}
@@ -432,7 +432,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 {%- else -%}
     {%- code needSomeRaw := false -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() -%}
         {%- if field.FieldMask().IsField() -%}
     var trueType{%s= field.goName %}Presented bool
@@ -463,7 +463,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             in.WantColon()
             switch key {
         {%- for _, field := range struct_.Fields -%}
-            {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
                 case "{%s= field.OriginalName() %}":
             {%- code
                 reader := "in"
@@ -516,7 +516,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: reset independent props with they are absent */ -%}
     {%- for _, field := range struct_.Fields -%}
             {%- code /* TODO: skip anonymous names */ -%}
-            {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if field.IsBit() -%} {%- continue -%} {%- endif -%}
             {%- if !field.HasNatArguments() -%}
     if !prop{%s= field.goName %}Presented {
@@ -526,8 +526,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: bit fix */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- code /* TODO: skip anonymous names */ -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
                 presentCondition := "true"
@@ -559,8 +558,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: read rest fields */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- code /* TODO: skip anonymous names */ -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
         {%- code presentCondition := "raw" + field.goName + " != nil" -%}
         {%- if field.FieldMask() != nil -%}
@@ -580,7 +578,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: trueType with false values validation */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if !field.IsBit() || field.FieldMask() == nil || !field.FieldMask().IsField() -%} {%- continue -%} {%- endif -%}
         {%- code
             bit := int(field.BitNumber())
@@ -592,7 +590,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: set tl2 masks */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.FieldMask() != nil && field.MaskTL2Bit() != nil -%}
             if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
@@ -635,7 +633,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() || field.OriginalName() == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
     {%- if struct_.wr.originateFromTL2 -%}
         {%- if field.MaskTL2Bit() != nil -%}
@@ -1182,7 +1180,7 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
     -%}
-{%- if struct_.isAlias() && struct_.unionParent == nil -%}
+{%- if struct_.isAlias() -%}
         {%- code
             field := struct_.Fields[0]
         -%}

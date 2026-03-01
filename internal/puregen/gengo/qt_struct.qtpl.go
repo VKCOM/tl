@@ -341,7 +341,7 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(`    `)
 	qw422016.N().S(printCommentsType(struct_.pureTypeStruct))
 
-	if struct_.isAlias() || struct_.isGolangTypedef() {
+	if struct_.isAlias() || struct_.isTypedef() {
 		asterisk := ifString(struct_.Fields[0].recursive, "*", "")
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
@@ -666,7 +666,7 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
-	if struct_.isAlias() {
+	if struct_.isTypedef() {
 		field := struct_.Fields[0]
 
 		if len(struct_.wr.NatParams) == 0 {
@@ -915,7 +915,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		needSomeRaw := false
 
 		for _, field := range struct_.Fields {
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.IsBit() {
@@ -970,7 +970,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
             switch key {
 `)
 			for _, field := range struct_.Fields {
-				if field.IsTL2Omitted() || field.OriginalName() == "" {
+				if field.IsTL2Omitted() {
 					continue
 				}
 				qw422016.N().S(`                case "`)
@@ -1094,7 +1094,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		for _, field := range struct_.Fields {
 			/* TODO: skip anonymous names */
 
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.IsBit() {
@@ -1114,9 +1114,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		/* BLOCK: bit fix */
 
 		for _, field := range struct_.Fields {
-			/* TODO: skip anonymous names */
-
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.IsAffectingLocalFieldMasks() {
@@ -1166,9 +1164,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		/* BLOCK: read rest fields */
 
 		for _, field := range struct_.Fields {
-			/* TODO: skip anonymous names */
-
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.IsBit() || !field.HasNatArguments() {
@@ -1216,7 +1212,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		/* BLOCK: trueType with false values validation */
 
 		for _, field := range struct_.Fields {
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if !field.IsBit() || field.FieldMask() == nil || !field.FieldMask().IsField() {
@@ -1249,7 +1245,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		/* BLOCK: set tl2 masks */
 
 		for _, field := range struct_.Fields {
-			if field.IsTL2Omitted() || field.OriginalName() == "" {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.FieldMask() != nil && field.MaskTL2Bit() != nil {
@@ -1374,7 +1370,7 @@ func (item *`)
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() || field.OriginalName() == "" {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
@@ -2374,7 +2370,7 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
 
-	if struct_.isAlias() && struct_.unionParent == nil {
+	if struct_.isAlias() {
 		field := struct_.Fields[0]
 
 		qw422016.N().S(`

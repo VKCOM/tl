@@ -36,8 +36,8 @@ type TypeRWStruct struct {
 
 var _ TypeRW = &TypeRWStruct{}
 
-func (trw *TypeRWStruct) isGolangTypedef() bool {
-	return len(trw.Fields) == 1 && trw.Fields[0].pureField.Name() == ""
+func (trw *TypeRWStruct) isTypedef() bool {
+	return trw.pureTypeStruct.IsTypedef()
 }
 
 func (trw *TypeRWStruct) isAlias() bool {
@@ -247,7 +247,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.isAlias() {
+	if trw.isTypedef() {
 		return trw.Fields[0].t.TypeJSONEmptyCondition(bytesVersion, val, ref)
 	}
 	return ""
