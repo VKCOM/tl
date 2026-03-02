@@ -1233,18 +1233,8 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 			firstArgument := newFunction.Fields[0]
 			if firstArgument.FieldType.Type.String() != "#" {
 				return &tlast.ParseError{
-					Err: fmt.Errorf("new functions with arguments must have as a first argument field with type # which used as a fieldmask for other fields"),
+					Err: fmt.Errorf("new functions with arguments must have as a first argument field with type # which used as a fieldmask for other future fields"),
 					Pos: firstArgument.PR,
-				}
-			} else {
-				for i := 1; i < len(newFunction.Fields); i++ {
-					newArg := newFunction.Fields[i]
-					if newArg.Mask == nil {
-						return &tlast.ParseError{
-							Err: fmt.Errorf("arguments, except first, of new functions must have field mask"),
-							Pos: newArg.PR,
-						}
-					}
 				}
 			}
 		}
