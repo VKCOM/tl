@@ -559,6 +559,7 @@ const TLSwitcherPHP = `<?php
 
 use VK\TL;
 
+
 class tl_switcher {
   /** @var int[] */
   public static $tl_namespaces_info = [];
@@ -566,16 +567,15 @@ class tl_switcher {
   /** @var string */
   public static $tl_platform = "";
 
+  /** @var int[] */
+  private static $tl_generated_namespaces_info = [];
+
   /**
    * @param string $tl_namespace
    * @return int
    */
   public static function tl_get_namespace_methods_mode($tl_namespace) {
-    $mode = 0;
-    if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
-      $mode = self::$tl_namespaces_info[$tl_namespace];
-    }
-    return $mode;
+    return self::tl_get_and_set_namespace_methods_mode($tl_namespace, true);
   }
 
   /**
@@ -588,7 +588,10 @@ class tl_switcher {
     if (is_array($exploded) && count($exploded) == 2) {
       $tl_namespace = $exploded[0];
     }
-    return self::tl_get_namespace_methods_mode($tl_namespace);
+    if (array_key_exists($tl_namespace, self::$tl_generated_namespaces_info)) {
+      return self::tl_get_and_set_namespace_methods_mode($tl_namespace, false);
+    }
+    return 0;
   }
 
   /**
@@ -596,6 +599,22 @@ class tl_switcher {
    */
   public static function tl_get_platform() {
     return self::$tl_platform;
+  }
+
+  /**
+   * @param string $tl_namespace
+   * @param bool $change_state
+   * @return int
+   */
+  private static function tl_get_and_set_namespace_methods_mode($tl_namespace, $change_state) {
+    $mode = 0;
+    if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
+      $mode = self::$tl_namespaces_info[$tl_namespace];
+    }
+    if ($change_state) {
+      self::$tl_generated_namespaces_info[$tl_namespace] = $mode;
+    }
+    return $mode;
   }
 }
 `
