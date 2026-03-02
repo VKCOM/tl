@@ -1163,6 +1163,13 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 			}
 		}
 
+		if len(oldCombinators) > len(newCombinators) && len(newCombinators) != 0 {
+			return &tlast.ParseError{
+				Err: fmt.Errorf("any constructors for type %q can't be removed", typeName),
+				Pos: newCombinators[0].Construct.NamePR,
+			}
+		}
+
 		// some type "evolve" to union, then we must check it's used everywhere boxed (redundant due to another check before)
 		if len(oldCombinators) == 1 && len(newCombinators) > 1 {
 			combinator := oldCombinators[0]
