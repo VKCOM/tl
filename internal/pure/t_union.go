@@ -109,7 +109,7 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 		}
 		element, err := k.createStructTL2(canonicalName+"__"+variantDef.Name, tip, tr,
 			tlName, 0,
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, true, i, nil, false)
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, true, i, false, tlast.TL2FuncDeclaration{})
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}

@@ -71,35 +71,9 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 			return ref, bare, nil
 		}
 		funcDecl := kt.combTL2.FuncDecl
-		resultAlias := false
-		var resultType TypeInstance
-		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
-			resultAlias = true
-			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = resultIns.ins // function cannot be referenced so no recursion
-		} else if funcDecl.ReturnType.IsTypeAlias {
-			resultAlias = true
-			resultIns, _, err := k.getInstance(funcDecl.ReturnType.TypeAlias, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = resultIns.ins // function cannot be referenced so no recursion
-		} else {
-			fieldReturnType := funcDecl.ReturnType.StructType.ConstructorFields[0].Type
-			// this is special case because we want no diff during migration to TL2,
-			// and all TL1 functions return exactly this kind of result
-			resultIns, _, err := k.getInstance(fieldReturnType, true)
-			if err != nil {
-				return nil, false, err
-			}
-			resultType = resultIns.ins // function cannotbe referenced so no recursion
-		}
 		ref.ins, err = k.createStructTL2(canonicalName, kt, tr, kt.canonicalName, funcDecl.Magic, true,
 			tlast.TL2TypeRef{}, funcDecl.Arguments, nil, false, 0,
-			resultType, resultAlias)
+			true, funcDecl)
 		if err != nil {
 			return nil, false, err
 		}
@@ -135,6 +109,6 @@ func (k *Kernel) createOrdinaryTypeTL2(canonicalName string, tip *KernelType, tr
 		return k.createStructTL2(canonicalName, tip, tr,
 			tlName, tlTag,
 			true, def.Type.TypeAlias, def.Type.StructType.ConstructorFields,
-			leftArgs, false, 0, nil, false)
+			leftArgs, false, 0, false, tlast.TL2FuncDeclaration{})
 	}
 }

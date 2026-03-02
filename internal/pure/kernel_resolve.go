@@ -141,6 +141,9 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 		}
 		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific and cannot be used from TL1", tName))
 	}
+	if ctxTL2 && someType.Name != kt.canonicalName {
+		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s must be referenced from TL2 by its canonical name %s", tName, kt.canonicalName))
+	}
 	if someType.Bare && kt.builtinWrappedCanonicalName != "" {
 		tName = kt.builtinWrappedCanonicalName
 		kt, ok = k.tips[tName]
