@@ -11,18 +11,17 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
-const TestSamplesDir = "../../tls/backward_compatibility_samples"
-const CorrectSample = "schema-correct.tl"
+const SamplesDir = "../../tls/backward_compatibility_samples"
+const CorrectSamplesDir = SamplesDir + "/correct-changes"
+const IncorrectSamplesDir = SamplesDir + "/incorrect-changes"
+const PrototypeSample = "prototype.tl"
 
 func RunCompatibilityTest(t *testing.T, prevStateFile, newStateFile string) *tlast.ParseError {
-	prevPath := filepath.Join(TestSamplesDir, prevStateFile)
-	newPath := filepath.Join(TestSamplesDir, newStateFile)
-
-	prevTL, err := readTL(prevPath)
+	prevTL, err := readTL(prevStateFile)
 	if err != nil {
 		t.Fatal(err)
 	}
-	newTL, err := readTL(newPath)
+	newTL, err := readTL(newStateFile)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,27 +40,44 @@ func readTL(file string) (tlast.TL, error) {
 }
 
 func TestCompatibilityLinter(t *testing.T) {
-	entries, err := os.ReadDir(TestSamplesDir)
+	protoPath := filepath.Join(SamplesDir, PrototypeSample)
+
+	t.Run("correct-changes", func(t *testing.T) {
+		generalCheckTest(t, protoPath, CorrectSamplesDir, func(t *testing.T, parseError *tlast.ParseError) bool {
+			return assert.Nil(t, parseError)
+		})
+	})
+	t.Run("incorrect-changes", func(t *testing.T) {
+		generalCheckTest(t, protoPath, IncorrectSamplesDir, func(t *testing.T, parseError *tlast.ParseError) bool {
+			return assert.NotNil(t, parseError)
+		})
+	})
+}
+
+func generalCheckTest(t *testing.T, protoPath string, samplesDir string, assertion func(*testing.T, *tlast.ParseError) bool) {
+	entries, err := os.ReadDir(samplesDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	for _, e := range entries {
 		sampleFileName := e.Name()
+		samplePath := filepath.Join(samplesDir, sampleFileName)
 
-		if e.IsDir() || sampleFileName == CorrectSample {
+		if e.IsDir() {
 			continue
 		}
 
 		t.Run(e.Name(), func(t *testing.T) {
-			checkErr := RunCompatibilityTest(t, CorrectSample, sampleFileName)
-			notNil := assert.NotNil(t, checkErr)
-			if !notNil {
-				correctData, err := os.ReadFile(filepath.Join(TestSamplesDir, CorrectSample))
+			checkErr := RunCompatibilityTest(t, protoPath, samplePath)
+			assertResult := assertion(t, checkErr)
+			if !assertResult {
+				t.Logf("provided assertion failed\n")
+				correctData, err := os.ReadFile(protoPath)
 				if err != nil {
 					t.Fatal(err)
 				}
-				incorrectData, err := os.ReadFile(filepath.Join(TestSamplesDir, sampleFileName))
+				incorrectData, err := os.ReadFile(samplePath)
 				if err != nil {
 					t.Fatal(err)
 				}
