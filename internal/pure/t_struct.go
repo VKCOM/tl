@@ -28,10 +28,11 @@ type TypeInstanceStruct struct {
 	isUnwrap            bool
 
 	// if function
-	resultType    TypeInstance
-	resultNatArgs []ActualNatArg // for TL1 only, empty for TL2
-	isResultAlias bool           // false for TL1 functions and TL2 functions with single unnamed field
-	rpcPreferTL2  bool
+	resultType     TypeInstance
+	resultTypeBare bool
+	resultNatArgs  []ActualNatArg // for TL1 only, empty for TL2
+	isResultAlias  bool           // false for TL1 functions and TL2 functions with single unnamed field
+	rpcPreferTL2   bool
 }
 
 func (ins *TypeInstanceStruct) Fields() []Field {
@@ -59,6 +60,12 @@ func (ins *TypeInstanceStruct) IsUnwrap() bool {
 
 func (ins *TypeInstanceStruct) ResultType() TypeInstance {
 	return ins.resultType
+}
+
+// In TL1, this is always boxed, but in TL2 references to unions are boxed,
+// and other references are bare
+func (ins *TypeInstanceStruct) ResultTypeBare() bool {
+	return ins.resultTypeBare
 }
 
 func (ins *TypeInstanceStruct) ResultNatArgs() []ActualNatArg {
@@ -162,7 +169,8 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 	tlName tlast.TL2TypeName, tlTag uint32,
 	isConstructorFields bool, alias tlast.TL2TypeRef, constructorFields []tlast.TL2Field,
 	leftArgs []tlast.TL2TypeTemplate,
-	isUnionElement bool, unionIndex int, resultType TypeInstance, resultAlias bool) (*TypeInstanceStruct, error) {
+	isUnionElement bool, unionIndex int,
+	isFunction bool, funcDecl tlast.TL2FuncDeclaration) (*TypeInstanceStruct, error) {
 
 	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
 
@@ -183,10 +191,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 		isConstructorFields: isConstructorFields,
 		isUnionElement:      isUnionElement,
 		unionIndex:          unionIndex,
-		resultType:          resultType,
 		isAlias:             false, // TL2 has separate syntax for alias
-		isResultAlias:       resultAlias,
-		rpcPreferTL2:        resultType != nil && k.rpcPreferTL2WhiteList.HasName2(tlName),
 	}
 	if !isConstructorFields { // if we are here, this is union variant or function result, where alias is field 1
 		constructorFields = append(constructorFields, tlast.TL2Field{Type: alias})
@@ -223,6 +228,36 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			nextTL2MaskBit++
 		}
 		ins.fields = append(ins.fields, newField)
+	}
+	if isFunction {
+		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
+			ins.isResultAlias = true
+			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
+			if err != nil {
+				return nil, err
+			}
+			ins.resultType = resultIns.ins // function cannot be referenced so no recursion
+		} else {
+			var funcType tlast.TL2TypeRef
+			if funcDecl.ReturnType.IsTypeAlias {
+				ins.isResultAlias = true
+				funcType = funcDecl.ReturnType.TypeAlias
+			} else {
+				funcType = funcDecl.ReturnType.StructType.ConstructorFields[0].Type
+			}
+			rt, fieldNatArgs, err := k.resolveType(true, funcType, leftArgs, localArgs)
+			if err != nil {
+				return nil, err
+			}
+			resultIns, fieldBare, err := k.getInstance(rt, true)
+			if err != nil {
+				return nil, err
+			}
+			ins.resultType = resultIns.ins // function cannot be referenced so no recursion
+			ins.resultTypeBare = fieldBare
+			ins.resultNatArgs = fieldNatArgs
+		}
+		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName2(tlName)
 	}
 	return ins, nil
 }
@@ -639,9 +674,10 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		if fieldBare {
 			// @read a.TypeA = int;
 			// @read a.TypeB = %Int;
-			return nil, def.FuncDecl.PR.BeautifulError(fmt.Errorf("function %q result cannot be bare", def.Construct.Name.String()))
+			return nil, def.FuncDecl.PR.BeautifulError(fmt.Errorf("TL1 function %q result cannot be bare", def.Construct.Name.String()))
 		}
 		ins.resultType = fieldIns.ins
+		ins.resultTypeBare = fieldBare
 		ins.resultNatArgs = natArgs
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName(def.Construct.Name)
 	}

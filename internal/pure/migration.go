@@ -157,7 +157,7 @@ outer:
 		return b
 	}
 	// Note - tl2 files with comments only will be overwritten completely.
-	// there is little values in fixing this.
+	// there is little value in fixing this.
 	for _, typ := range k.filesTL2 {
 		_ = getBB(typ.PR.Begin.FileName(), typ.PR.Begin.FileContent())
 	}
