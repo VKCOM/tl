@@ -207,33 +207,31 @@ func (item *TlsExpr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	}
 	switch _tag {
 	case "tls.exprType#ecc9da78", "tls.exprType", "#ecc9da78":
-		if tctx.IsTL2 && _tag != "tls.exprType" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.exprType#ecc9da78" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "tls.exprType#ecc9da78")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#ecc9da78" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "#ecc9da78")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueType.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.exprNat#dcb49bd8", "tls.exprNat", "#dcb49bd8":
-		if tctx.IsTL2 && _tag != "tls.exprNat" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.exprNat#dcb49bd8" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "tls.exprNat#dcb49bd8")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#dcb49bd8" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "#dcb49bd8")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueNat.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -256,14 +254,10 @@ func (item *TlsExpr) WriteJSON(w []byte) (_ []byte, err error) {
 func (item *TlsExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.exprType"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.exprType#ecc9da78"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.exprType#ecc9da78"`...)
-			} else {
-				w = append(w, `{"type":"tls.exprType"`...)
-			}
+			w = append(w, `{"type":"tls.exprType"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueType.WriteJSONOpt(tctx, w); err != nil {
@@ -271,14 +265,10 @@ func (item *TlsExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ [
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.exprNat"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.exprNat#dcb49bd8"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.exprNat#dcb49bd8"`...)
-			} else {
-				w = append(w, `{"type":"tls.exprNat"`...)
-			}
+			w = append(w, `{"type":"tls.exprNat"`...)
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueNat.WriteJSONOpt(tctx, w)

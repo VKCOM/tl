@@ -13,40 +13,53 @@ import (
 )
 
 func CreateFunction(tag uint32) meta.Function {
-	return meta.CreateFunction(tag)
+	item := meta.FactoryItemByTLTag(tag)
+	if item == nil || !item.IsFunction() {
+		return nil
+	}
+	return item.CreateFunction()
 }
 
 func CreateObject(tag uint32) meta.Object {
-	return meta.CreateObject(tag)
+	item := meta.FactoryItemByTLTag(tag)
+	if item == nil {
+		return nil
+	}
+	return item.CreateObject()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateFunctionFromName(name string) meta.Function {
-	return meta.CreateFunctionFromName(name)
+	item := meta.FactoryItemByTLName(name)
+	if item == nil || !item.IsFunction() {
+		return nil
+	}
+	return item.CreateFunction()
 }
 
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateObjectFromName(name string) meta.Object {
-	return meta.CreateObjectFromName(name)
+	item := meta.FactoryItemByTLName(name)
+	if item == nil {
+		return nil
+	}
+	return item.CreateObject()
 }
 
 func init() {
-	// TL
-	meta.SetGlobalFactoryCreateForObject(0x29dfe61b, func() meta.Object { var ret internal.TlsArg; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xd9fb20de, func() meta.Object { var ret internal.TlsArray; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x5c0a1ed5, func() meta.Object { var ret internal.TlsCombinator0; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x4c12c6d9, func() meta.Object { var ret internal.TlsCombinatorLeft0; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xcd211f63, func() meta.Object { var ret internal.TlsCombinatorLeftBuiltin; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x2c064372, func() meta.Object { var ret internal.TlsCombinatorRight; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xe91692d5, func() meta.Object { var ret internal.TlsCombinatorV4; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xdcb49bd8, func() meta.Object { var ret internal.TlsExprNat; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xecc9da78, func() meta.Object { var ret internal.TlsExprType; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x8ce940b1, func() meta.Object { var ret internal.TlsNatConst; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x4e8a14f0, func() meta.Object { var ret internal.TlsNatVar; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x3a2f9be2, func() meta.Object { var ret internal.TlsSchemaV2; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xe4a8604b, func() meta.Object { var ret internal.TlsSchemaV3; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x90ac88d7, func() meta.Object { var ret internal.TlsSchemaV4; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x12eb4386, func() meta.Object { var ret internal.TlsType; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xc1863d08, func() meta.Object { var ret internal.TlsTypeExpr0; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x0142ceae, func() meta.Object { var ret internal.TlsTypeVar; return &ret })
+	meta.SetGlobalFactoryCreateForObject("tls.arg", func() meta.Object { return new(internal.TlsArg) })
+	meta.SetGlobalFactoryCreateForObject("tls.array", func() meta.Object { return new(internal.TlsArray) })
+	meta.SetGlobalFactoryCreateForObject("tls.combinator", func() meta.Object { return new(internal.TlsCombinator0) })
+	meta.SetGlobalFactoryCreateForObject("tls.combinatorLeft", func() meta.Object { return new(internal.TlsCombinatorLeft0) })
+	meta.SetGlobalFactoryCreateForObject("tls.combinatorLeftBuiltin", func() meta.Object { return new(internal.TlsCombinatorLeftBuiltin) })
+	meta.SetGlobalFactoryCreateForObject("tls.combinatorRight", func() meta.Object { return new(internal.TlsCombinatorRight) })
+	meta.SetGlobalFactoryCreateForObject("tls.combinator_v4", func() meta.Object { return new(internal.TlsCombinatorV4) })
+	meta.SetGlobalFactoryCreateForObject("tls.exprNat", func() meta.Object { return new(internal.TlsExprNat) })
+	meta.SetGlobalFactoryCreateForObject("tls.exprType", func() meta.Object { return new(internal.TlsExprType) })
+	meta.SetGlobalFactoryCreateForObject("tls.natConst", func() meta.Object { return new(internal.TlsNatConst) })
+	meta.SetGlobalFactoryCreateForObject("tls.natVar", func() meta.Object { return new(internal.TlsNatVar) })
+	meta.SetGlobalFactoryCreateForObject("tls.schema_v2", func() meta.Object { return new(internal.TlsSchemaV2) })
+	meta.SetGlobalFactoryCreateForObject("tls.schema_v3", func() meta.Object { return new(internal.TlsSchemaV3) })
+	meta.SetGlobalFactoryCreateForObject("tls.schema_v4", func() meta.Object { return new(internal.TlsSchemaV4) })
+	meta.SetGlobalFactoryCreateForObject("tls.type", func() meta.Object { return new(internal.TlsType) })
+	meta.SetGlobalFactoryCreateForObject("tls.typeExpr", func() meta.Object { return new(internal.TlsTypeExpr0) })
+	meta.SetGlobalFactoryCreateForObject("tls.typeVar", func() meta.Object { return new(internal.TlsTypeVar) })
 }

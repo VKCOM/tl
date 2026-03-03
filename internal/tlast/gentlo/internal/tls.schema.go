@@ -140,49 +140,46 @@ func (item *TlsSchema) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	}
 	switch _tag {
 	case "tls.schema_v2#3a2f9be2", "tls.schema_v2", "#3a2f9be2":
-		if tctx.IsTL2 && _tag != "tls.schema_v2" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.schema_v2#3a2f9be2" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v2#3a2f9be2")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#3a2f9be2" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "#3a2f9be2")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueV2.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.schema_v3#e4a8604b", "tls.schema_v3", "#e4a8604b":
-		if tctx.IsTL2 && _tag != "tls.schema_v3" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.schema_v3#e4a8604b" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v3#e4a8604b")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#e4a8604b" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "#e4a8604b")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueV3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.schema_v4#90ac88d7", "tls.schema_v4", "#90ac88d7":
-		if tctx.IsTL2 && _tag != "tls.schema_v4" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.schema_v4#90ac88d7" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v4#90ac88d7")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#90ac88d7" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "#90ac88d7")
 		}
 		item.index = 2
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueV4.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -205,14 +202,10 @@ func (item *TlsSchema) WriteJSON(w []byte) (_ []byte, err error) {
 func (item *TlsSchema) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.schema_v2"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.schema_v2#3a2f9be2"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.schema_v2#3a2f9be2"`...)
-			} else {
-				w = append(w, `{"type":"tls.schema_v2"`...)
-			}
+			w = append(w, `{"type":"tls.schema_v2"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueV2.WriteJSONOpt(tctx, w); err != nil {
@@ -220,14 +213,10 @@ func (item *TlsSchema) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.schema_v3"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.schema_v3#e4a8604b"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.schema_v3#e4a8604b"`...)
-			} else {
-				w = append(w, `{"type":"tls.schema_v3"`...)
-			}
+			w = append(w, `{"type":"tls.schema_v3"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueV3.WriteJSONOpt(tctx, w); err != nil {
@@ -235,14 +224,10 @@ func (item *TlsSchema) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 		}
 		return append(w, '}'), nil
 	case 2:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.schema_v4"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.schema_v4#90ac88d7"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.schema_v4#90ac88d7"`...)
-			} else {
-				w = append(w, `{"type":"tls.schema_v4"`...)
-			}
+			w = append(w, `{"type":"tls.schema_v4"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueV4.WriteJSONOpt(tctx, w); err != nil {

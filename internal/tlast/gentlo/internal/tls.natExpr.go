@@ -232,33 +232,31 @@ func (item *TlsNatExpr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	}
 	switch _tag {
 	case "tls.natConst#8ce940b1", "tls.natConst", "#8ce940b1":
-		if tctx.IsTL2 && _tag != "tls.natConst" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.natConst#8ce940b1" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", "tls.natConst#8ce940b1")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#8ce940b1" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", "#8ce940b1")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueNatConst.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.natVar#4e8a14f0", "tls.natVar", "#4e8a14f0":
-		if tctx.IsTL2 && _tag != "tls.natVar" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.natVar#4e8a14f0" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", "tls.natVar#4e8a14f0")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#4e8a14f0" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.NatExpr", "#4e8a14f0")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueNatVar.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -281,27 +279,19 @@ func (item *TlsNatExpr) WriteJSON(w []byte) []byte {
 func (item *TlsNatExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.natConst"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.natConst#8ce940b1"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.natConst#8ce940b1"`...)
-			} else {
-				w = append(w, `{"type":"tls.natConst"`...)
-			}
+			w = append(w, `{"type":"tls.natConst"`...)
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueNatConst.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.natVar"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.natVar#4e8a14f0"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.natVar#4e8a14f0"`...)
-			} else {
-				w = append(w, `{"type":"tls.natVar"`...)
-			}
+			w = append(w, `{"type":"tls.natVar"`...)
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueNatVar.WriteJSONOpt(tctx, w)

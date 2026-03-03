@@ -101,25 +101,24 @@ func (item *TlsCombinatorLeft) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	}
 	switch _tag {
 	case "tls.combinatorLeftBuiltin#cd211f63", "tls.combinatorLeftBuiltin", "#cd211f63":
-		if tctx.IsTL2 && _tag != "tls.combinatorLeftBuiltin" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.combinatorLeftBuiltin#cd211f63" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "tls.combinatorLeftBuiltin#cd211f63")
 		}
+		if !tctx.LegacyTypeNames && _tag == "#cd211f63" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "#cd211f63")
+		}
 		item.index = 0
 	case "tls.combinatorLeft#4c12c6d9", "tls.combinatorLeft", "#4c12c6d9":
-		if tctx.IsTL2 && _tag != "tls.combinatorLeft" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.combinatorLeft#4c12c6d9" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "tls.combinatorLeft#4c12c6d9")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#4c12c6d9" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "#4c12c6d9")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueCombinatorLeft.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -142,25 +141,17 @@ func (item *TlsCombinatorLeft) WriteJSON(w []byte) (_ []byte, err error) {
 func (item *TlsCombinatorLeft) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.combinatorLeftBuiltin"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.combinatorLeftBuiltin#cd211f63"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.combinatorLeftBuiltin#cd211f63"`...)
-			} else {
-				w = append(w, `{"type":"tls.combinatorLeftBuiltin"`...)
-			}
+			w = append(w, `{"type":"tls.combinatorLeftBuiltin"`...)
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.combinatorLeft"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.combinatorLeft#4c12c6d9"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.combinatorLeft#4c12c6d9"`...)
-			} else {
-				w = append(w, `{"type":"tls.combinatorLeft"`...)
-			}
+			w = append(w, `{"type":"tls.combinatorLeft"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueCombinatorLeft.WriteJSONOpt(tctx, w); err != nil {
