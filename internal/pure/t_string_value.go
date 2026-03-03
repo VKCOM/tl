@@ -8,7 +8,7 @@ package pure
 
 import (
 	"cmp"
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
@@ -28,7 +28,7 @@ func (v *KernelValueString) Reset() {
 func (v *KernelValueString) Random(rg *rand.Rand) {
 	count := 0
 	if (rg.Uint32() & 3) != 0 { // many strings empty
-		count = 1 + rg.Intn(8)
+		count = 1 + rg.IntN(8)
 	}
 	res := make([]byte, count)
 	const letters = "abcdefghijklmnopqrstuvwxyz0123456789"

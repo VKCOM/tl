@@ -10,7 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"strings"
 	"time"
@@ -180,7 +180,7 @@ func main() {
 	}
 	//	tlt := kernel.TopLevelTypeInstances()
 	tlt := kernel.AllTypeInstances()
-	rnd := rand.New(rand.NewSource(1))
+	rnd := rand.New(rand.NewPCG(rand.Uint64(), rand.Uint64()))
 	for _, t := range tlt {
 		log.Printf("type instance: %v", t.CanonicalName())
 		for i := 0; i < 5; i++ {

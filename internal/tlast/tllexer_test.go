@@ -8,7 +8,7 @@ package tlast
 
 import (
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 	"testing"
 
@@ -116,8 +116,8 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
 	t.Run("From random to random byte", func(t *testing.T) {
 		for j := 1; j <= 400; j++ {
-			from := rand.Intn(len(combinedBytes))
-			to := from + rand.Intn(len(combinedBytes)-from)
+			from := rand.IntN(len(combinedBytes))
+			to := from + rand.IntN(len(combinedBytes)-from)
 			str := combinedBytes[from:to]
 			lex := newLexer(str, "", LexerOptions{})
 			_, _ = lex.generateTokens() // returns errors, but recombination still works

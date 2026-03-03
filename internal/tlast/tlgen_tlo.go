@@ -10,6 +10,7 @@ package tlast
 import (
 	"errors"
 	"fmt"
+	"math/rand/v2"
 	"sort"
 	"time"
 
@@ -301,9 +302,11 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 	nameMap := map[int32]string{}
 	for _, typ := range types {
 		if prevTyp, ok := nameMap[typ.Name]; ok {
-			return tls.SchemaV4{}, fmt.Errorf("collision in internal TLO hash for types with id=\"%[1]s\" and \"%[2]s\", do not generate magics manually, use 'openssl rand -hex 4'",
+			magic := rand.Uint32()
+			return tls.SchemaV4{}, fmt.Errorf("collision in internal TLO hash for types with id=\"%[1]s\" and \"%[2]s\", do not generate magics manually, use 'openssl rand -hex 4' or this random value #%08x I've generated",
 				prevTyp,
 				typ.Id,
+				magic,
 			)
 		} else {
 			nameMap[typ.Name] = typ.Id
