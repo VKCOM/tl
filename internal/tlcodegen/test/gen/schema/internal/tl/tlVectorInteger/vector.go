@@ -17,19 +17,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorInteger []tlInteger.Integer
+
+func (item *VectorInteger) ptr() *[]tlInteger.Integer { return (*[]tlInteger.Integer)(item) }
 
 func (VectorInteger) TLName() string { return "vector" }
 func (VectorInteger) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorInteger) Reset() {
-	ptr := (*[]tlInteger.Integer)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorInteger) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlInteger.Integer)(item)
-	return tlBuiltinVectorInteger.BuiltinVectorIntegerRead(w, ptr)
+	return tlBuiltinVectorInteger.BuiltinVectorIntegerRead(w, item.ptr())
 }
 
 func (item *VectorInteger) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +38,8 @@ func (item *VectorInteger) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorInteger) Write(w []byte) []byte {
-	ptr := (*[]tlInteger.Integer)(item)
-	return tlBuiltinVectorInteger.BuiltinVectorIntegerWrite(w, *ptr)
+	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorInteger) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +67,7 @@ func (item *VectorInteger) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 func (item *VectorInteger) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlInteger.Integer)(item)
-	if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +84,7 @@ func (item *VectorInteger) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorInteger) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlInteger.Integer)(item)
-	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorInteger) MarshalJSON() ([]byte, error) {

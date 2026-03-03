@@ -9,7 +9,7 @@ package tlDictionaryDictionaryInt
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorDictionaryFieldDictionaryInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinDictStringDictionaryInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,17 +18,19 @@ var _ = internal.ErrorInvalidEnumTag
 
 type DictionaryDictionaryInt map[string]map[string]int32
 
+func (item *DictionaryDictionaryInt) ptr() *map[string]map[string]int32 {
+	return (*map[string]map[string]int32)(item)
+}
+
 func (DictionaryDictionaryInt) TLName() string { return "dictionary" }
 func (DictionaryDictionaryInt) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryDictionaryInt) Reset() {
-	ptr := (*map[string]map[string]int32)(item)
-	tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReset(*ptr)
+	tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReset(*item.ptr())
 }
 
 func (item *DictionaryDictionaryInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*map[string]map[string]int32)(item)
-	return tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntRead(w, ptr)
+	return tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntRead(w, item.ptr())
 }
 
 func (item *DictionaryDictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +38,8 @@ func (item *DictionaryDictionaryInt) WriteGeneral(w []byte) (_ []byte, err error
 }
 
 func (item *DictionaryDictionaryInt) Write(w []byte) []byte {
-	ptr := (*map[string]map[string]int32)(item)
-	return tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntWrite(w, *ptr)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryDictionaryInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +67,7 @@ func (item *DictionaryDictionaryInt) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 func (item *DictionaryDictionaryInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*map[string]map[string]int32)(item)
-	if err := tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +84,7 @@ func (item *DictionaryDictionaryInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryDictionaryInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*map[string]map[string]int32)(item)
-	w = tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryDictionaryInt) MarshalJSON() ([]byte, error) {

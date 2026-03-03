@@ -9,9 +9,9 @@ package tlService6MultiFindWithBounds
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_ea8339e8d6257cc96a27be3f42a07a87"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherIntVectorService6FindWithBoundsResult"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -58,20 +58,20 @@ func (item *Service6MultiFindWithBounds) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service6MultiFindWithBounds) ReadResult(w []byte, ret *[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func (item *Service6MultiFindWithBounds) ReadResult(w []byte, ret *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
 	return tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w, ret)
 }
 
-func (item *Service6MultiFindWithBounds) WriteResult(w []byte, ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func (item *Service6MultiFindWithBounds) WriteResult(w []byte, ret []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(w, ret)
 	return w, nil
 }
 
-func (item *Service6MultiFindWithBounds) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) error {
+func (item *Service6MultiFindWithBounds) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
@@ -79,18 +79,18 @@ func (item *Service6MultiFindWithBounds) ReadResultJSON(legacyTypeNames bool, in
 	return nil
 }
 
-func (item *Service6MultiFindWithBounds) WriteResultJSON(w []byte, ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func (item *Service6MultiFindWithBounds) WriteResultJSON(w []byte, ret []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service6MultiFindWithBounds) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func (item *Service6MultiFindWithBounds) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, ret)
 	return w, nil
 }
 
 func (item *Service6MultiFindWithBounds) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult
+	var ret []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -98,22 +98,13 @@ func (item *Service6MultiFindWithBounds) ReadResultWriteResultJSON(tctx *basictl
 	return r, w, err
 }
 
-func (item *Service6MultiFindWithBounds) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *Service6MultiFindWithBounds) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service6MultiFindWithBounds) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFindWithBounds")
-}
-
-func (item *Service6MultiFindWithBounds) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFindWithBounds")
 }
 
 func (item Service6MultiFindWithBounds) String() string {

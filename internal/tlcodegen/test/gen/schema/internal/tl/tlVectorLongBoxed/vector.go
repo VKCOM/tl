@@ -16,19 +16,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorLongBoxed []int64
+
+func (item *VectorLongBoxed) ptr() *[]int64 { return (*[]int64)(item) }
 
 func (VectorLongBoxed) TLName() string { return "vector" }
 func (VectorLongBoxed) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorLongBoxed) Reset() {
-	ptr := (*[]int64)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorLongBoxed) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]int64)(item)
-	return tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedRead(w, ptr)
+	return tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedRead(w, item.ptr())
 }
 
 func (item *VectorLongBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +37,8 @@ func (item *VectorLongBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorLongBoxed) Write(w []byte) []byte {
-	ptr := (*[]int64)(item)
-	return tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWrite(w, *ptr)
+	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorLongBoxed) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +66,7 @@ func (item *VectorLongBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *VectorLongBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]int64)(item)
-	if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +83,7 @@ func (item *VectorLongBoxed) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorLongBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]int64)(item)
-	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorLongBoxed) MarshalJSON() ([]byte, error) {

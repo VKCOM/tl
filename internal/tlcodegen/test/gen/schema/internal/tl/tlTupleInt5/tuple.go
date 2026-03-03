@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleInt5 [5]int32
 
+func (item *TupleInt5) ptr() *[5]int32 { return (*[5]int32)(item) }
+
 func (TupleInt5) TLName() string { return "tuple" }
 func (TupleInt5) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleInt5) Reset() {
-	ptr := (*[5]int32)(item)
-	tlBuiltinTuple5Int.BuiltinTuple5IntReset(ptr)
+	tlBuiltinTuple5Int.BuiltinTuple5IntReset(item.ptr())
 }
 
 func (item *TupleInt5) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[5]int32)(item)
-	return tlBuiltinTuple5Int.BuiltinTuple5IntRead(w, ptr)
+	return tlBuiltinTuple5Int.BuiltinTuple5IntRead(w, item.ptr())
 }
 
 func (item *TupleInt5) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +36,8 @@ func (item *TupleInt5) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt5) Write(w []byte) []byte {
-	ptr := (*[5]int32)(item)
-	return tlBuiltinTuple5Int.BuiltinTuple5IntWrite(w, ptr)
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt5) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +65,7 @@ func (item *TupleInt5) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *TupleInt5) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[5]int32)(item)
-	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +82,7 @@ func (item *TupleInt5) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleInt5) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[5]int32)(item)
-	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt5) MarshalJSON() ([]byte, error) {

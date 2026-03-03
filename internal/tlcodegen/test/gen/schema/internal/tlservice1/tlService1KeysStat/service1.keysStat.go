@@ -9,7 +9,7 @@ package tlService1KeysStat
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorDictionaryFieldDictionaryInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinDictStringDictionaryInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,8 +17,10 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type Service1KeysStat struct {
+	//Timestamp of last enable request
 	StartTime int32
-	KeysTops  map[string]map[string]int32
+	//Possible tops: send_bytes, receive_bytes, read_count, write_count
+	KeysTops map[string]map[string]int32
 }
 
 func (Service1KeysStat) TLName() string { return "service1.keysStat" }
@@ -26,14 +28,14 @@ func (Service1KeysStat) TLTag() uint32  { return 0xf0f6bc68 }
 
 func (item *Service1KeysStat) Reset() {
 	item.StartTime = 0
-	tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReset(item.KeysTops)
+	tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReset(item.KeysTops)
 }
 
 func (item *Service1KeysStat) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.StartTime); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntRead(w, &item.KeysTops)
+	return tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntRead(w, &item.KeysTops)
 }
 
 func (item *Service1KeysStat) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -42,7 +44,7 @@ func (item *Service1KeysStat) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *Service1KeysStat) Write(w []byte) []byte {
 	w = basictl.IntWrite(w, item.StartTime)
-	w = tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntWrite(w, item.KeysTops)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWrite(w, item.KeysTops)
 	return w
 }
 
@@ -96,7 +98,7 @@ func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propKeysTopsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.keysStat", "keys_tops")
 				}
-				if err := tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReadJSONGeneral(tctx, in, &item.KeysTops); err != nil {
+				if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(tctx, in, &item.KeysTops); err != nil {
 					return err
 				}
 				propKeysTopsPresented = true
@@ -114,7 +116,7 @@ func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		item.StartTime = 0
 	}
 	if !propKeysTopsPresented {
-		tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReset(item.KeysTops)
+		tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReset(item.KeysTops)
 	}
 	return nil
 }
@@ -140,7 +142,7 @@ func (item *Service1KeysStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	backupIndexKeysTops := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"keys_tops":`...)
-	w = tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntWriteJSONOpt(tctx, w, item.KeysTops)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(tctx, w, item.KeysTops)
 	if (len(item.KeysTops) != 0) == false {
 		w = w[:backupIndexKeysTops]
 	}

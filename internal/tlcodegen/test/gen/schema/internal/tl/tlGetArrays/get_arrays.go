@@ -111,22 +111,13 @@ func (item *GetArrays) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext,
 	return r, w, err
 }
 
-func (item *GetArrays) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *GetArrays) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret [5]int32
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *GetArrays) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("get_arrays")
-}
-
-func (item *GetArrays) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("get_arrays")
 }
 
 func (item GetArrays) String() string {

@@ -99,22 +99,13 @@ func (item *Service3GetScheduledProducts) ReadResultWriteResultJSON(tctx *basict
 	return r, w, err
 }
 
-func (item *Service3GetScheduledProducts) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service3GetScheduledProducts) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3Product0Maybe.VectorService3Product0Maybe
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service3GetScheduledProducts) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getScheduledProducts")
-}
-
-func (item *Service3GetScheduledProducts) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getScheduledProducts")
 }
 
 func (item Service3GetScheduledProducts) String() string {

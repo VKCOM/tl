@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorService3GroupSizeLimit []tlService3GroupSizeLimit.Service3GroupSizeLimit
+
+func (item *VectorService3GroupSizeLimit) ptr() *[]tlService3GroupSizeLimit.Service3GroupSizeLimit {
+	return (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
+}
 
 func (VectorService3GroupSizeLimit) TLName() string { return "vector" }
 func (VectorService3GroupSizeLimit) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorService3GroupSizeLimit) Reset() {
-	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorService3GroupSizeLimit) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	return tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitRead(w, ptr)
+	return tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitRead(w, item.ptr())
 }
 
 func (item *VectorService3GroupSizeLimit) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorService3GroupSizeLimit) WriteGeneral(w []byte) (_ []byte, err 
 }
 
 func (item *VectorService3GroupSizeLimit) Write(w []byte) []byte {
-	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	return tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWrite(w, *ptr)
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorService3GroupSizeLimit) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorService3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 func (item *VectorService3GroupSizeLimit) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorService3GroupSizeLimit) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorService3GroupSizeLimit) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService3GroupSizeLimit) MarshalJSON() ([]byte, error) {

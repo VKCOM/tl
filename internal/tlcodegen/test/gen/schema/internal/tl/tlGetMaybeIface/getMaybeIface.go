@@ -9,8 +9,8 @@ package tlGetMaybeIface
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlService1ValueBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlService1ValueMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,7 +18,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type GetMaybeIface struct {
-	X cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	X tlService1Value.Service1Value
 }
 
 func (GetMaybeIface) TLName() string { return "getMaybeIface" }
@@ -57,16 +57,16 @@ func (item *GetMaybeIface) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *GetMaybeIface) ReadResult(w []byte, ret *tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
+func (item *GetMaybeIface) ReadResult(w []byte, ret *tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *GetMaybeIface) WriteResult(w []byte, ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
+func (item *GetMaybeIface) WriteResult(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *GetMaybeIface) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) error {
+func (item *GetMaybeIface) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService1ValueMaybe.Service1ValueMaybe) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -74,18 +74,18 @@ func (item *GetMaybeIface) ReadResultJSON(legacyTypeNames bool, in *basictl.Json
 	return nil
 }
 
-func (item *GetMaybeIface) WriteResultJSON(w []byte, ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
+func (item *GetMaybeIface) WriteResultJSON(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *GetMaybeIface) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
+func (item *GetMaybeIface) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *GetMaybeIface) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe
+	var ret tlService1ValueMaybe.Service1ValueMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -93,22 +93,13 @@ func (item *GetMaybeIface) ReadResultWriteResultJSON(tctx *basictl.JSONWriteCont
 	return r, w, err
 }
 
-func (item *GetMaybeIface) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *GetMaybeIface) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlService1ValueMaybe.Service1ValueMaybe
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *GetMaybeIface) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("getMaybeIface")
-}
-
-func (item *GetMaybeIface) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("getMaybeIface")
 }
 
 func (item GetMaybeIface) String() string {

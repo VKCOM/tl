@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// See BACK-4784
 type WithFloat struct {
 	X float32
 	Y float32

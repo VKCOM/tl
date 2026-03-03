@@ -9,14 +9,14 @@ package tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_e0e20d17984738a60e3bf741bd7db2e9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherService6ErrorVectorService6FindResultRow"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, vec *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, vec *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -25,7 +25,7 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, v
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {
-		*vec = make([]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow, l)
+		*vec = make([]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow, l)
 	} else {
 		*vec = (*vec)[:l]
 	}
@@ -37,7 +37,7 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, v
 	return w, nil
 }
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w []byte, vec []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = elem.WriteBoxed(w)
@@ -45,17 +45,17 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w []byte, 
 	return w
 }
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) error {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow", "expected json array")
+			return internal.ErrorInvalidJSON("[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if len(*vec) <= index {
-				var newValue cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow
+				var newValue tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
@@ -66,18 +66,18 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow", "expected json array's end")
+			return internal.ErrorInvalidJSON("[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow", "expected json array's end")
 		}
 	}
 	*vec = (*vec)[:index]
 	return nil
 }
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(w []byte, vec []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

@@ -9,8 +9,8 @@ package tlIssue3498
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_e0e20d17984738a60e3bf741bd7db2e9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherService6ErrorVectorService6FindResultRow"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,7 +18,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type Issue3498 struct {
-	X []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow
+	X []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow
 }
 
 func (Issue3498) TLName() string { return "issue3498" }

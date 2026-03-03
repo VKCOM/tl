@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorTasksQueueTypeInfo []tlTasksQueueTypeInfo.TasksQueueTypeInfo
+
+func (item *VectorTasksQueueTypeInfo) ptr() *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo {
+	return (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
+}
 
 func (VectorTasksQueueTypeInfo) TLName() string { return "vector" }
 func (VectorTasksQueueTypeInfo) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorTasksQueueTypeInfo) Reset() {
-	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorTasksQueueTypeInfo) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	return tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoRead(w, ptr)
+	return tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoRead(w, item.ptr())
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorTasksQueueTypeInfo) WriteGeneral(w []byte) (_ []byte, err erro
 }
 
 func (item *VectorTasksQueueTypeInfo) Write(w []byte) []byte {
-	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	return tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWrite(w, *ptr)
+	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorTasksQueueTypeInfo) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorTasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 func (item *VectorTasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorTasksQueueTypeInfo) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorTasksQueueTypeInfo) MarshalJSON() ([]byte, error) {

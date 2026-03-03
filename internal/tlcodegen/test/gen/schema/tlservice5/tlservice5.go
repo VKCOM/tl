@@ -8,19 +8,19 @@
 package tlservice5
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Insert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Output"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Params"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5PerformQuery"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Query"
 )
 
 type (
-	EmptyOutput  = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput
+	EmptyOutput  = tlService5Output.Service5EmptyOutput
 	Insert       = tlService5Insert.Service5Insert
-	Output       = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
+	Output       = tlService5Output.Service5Output
 	Params       = tlService5Params.Service5Params
 	PerformQuery = tlService5PerformQuery.Service5PerformQuery
 	Query        = tlService5Query.Service5Query
-	StringOutput = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5StringOutput
+	StringOutput = tlService5Output.Service5StringOutput
 )

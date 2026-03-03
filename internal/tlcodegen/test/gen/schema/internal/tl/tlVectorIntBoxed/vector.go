@@ -16,19 +16,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorIntBoxed []int32
+
+func (item *VectorIntBoxed) ptr() *[]int32 { return (*[]int32)(item) }
 
 func (VectorIntBoxed) TLName() string { return "vector" }
 func (VectorIntBoxed) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorIntBoxed) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorIntBoxed) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedRead(w, ptr)
+	return tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedRead(w, item.ptr())
 }
 
 func (item *VectorIntBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +37,8 @@ func (item *VectorIntBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorIntBoxed) Write(w []byte) []byte {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWrite(w, *ptr)
+	w = tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorIntBoxed) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +66,7 @@ func (item *VectorIntBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func (item *VectorIntBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]int32)(item)
-	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +83,7 @@ func (item *VectorIntBoxed) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorIntBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]int32)(item)
-	w = tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorIntBoxed) MarshalJSON() ([]byte, error) {

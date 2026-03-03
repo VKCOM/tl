@@ -99,22 +99,13 @@ func (item *Service3GetProductStats) ReadResultWriteResultJSON(tctx *basictl.JSO
 	return r, w, err
 }
 
-func (item *Service3GetProductStats) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service3GetProductStats) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service3GetProductStats) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getProductStats")
-}
-
-func (item *Service3GetProductStats) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getProductStats")
 }
 
 func (item Service3GetProductStats) String() string {

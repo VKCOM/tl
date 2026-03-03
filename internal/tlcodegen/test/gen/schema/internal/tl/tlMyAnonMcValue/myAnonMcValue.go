@@ -9,26 +9,28 @@ package tlMyAnonMcValue
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type MyAnonMcValue cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+type MyAnonMcValue tlService1Value.Service1Value
+
+func (item *MyAnonMcValue) ptr() *tlService1Value.Service1Value {
+	return (*tlService1Value.Service1Value)(item)
+}
 
 func (MyAnonMcValue) TLName() string { return "myAnonMcValue" }
 func (MyAnonMcValue) TLTag() uint32  { return 0x569310db }
 
 func (item *MyAnonMcValue) Reset() {
-	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	ptr.Reset()
+	item.ptr().Reset()
 }
 
 func (item *MyAnonMcValue) Read(w []byte) (_ []byte, err error) {
-	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return ptr.ReadBoxed(w)
+	return item.ptr().ReadBoxed(w)
 }
 
 func (item *MyAnonMcValue) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +38,8 @@ func (item *MyAnonMcValue) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyAnonMcValue) Write(w []byte) []byte {
-	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return ptr.WriteBoxed(w)
+	w = item.ptr().WriteBoxed(w)
+	return w
 }
 
 func (item *MyAnonMcValue) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +67,7 @@ func (item *MyAnonMcValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 func (item *MyAnonMcValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
+	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +84,7 @@ func (item *MyAnonMcValue) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyAnonMcValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = ptr.WriteJSONOpt(tctx, w)
+	w = item.ptr().WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyAnonMcValue) MarshalJSON() ([]byte, error) {

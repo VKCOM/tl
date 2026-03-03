@@ -16,14 +16,21 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// If days_of_week and days are specified then if ANY of them is correct, task will be added to queue
 type TasksCronTime struct {
 	FieldsMask uint32
-	Seconds    []int32 // Conditional: item.FieldsMask.0
-	Minutes    []int32 // Conditional: item.FieldsMask.1
-	Hours      []int32 // Conditional: item.FieldsMask.2
+	// [0..59]
+	Seconds []int32 // Conditional: item.FieldsMask.0
+	// [0..59]
+	Minutes []int32 // Conditional: item.FieldsMask.1
+	// [0..23]
+	Hours []int32 // Conditional: item.FieldsMask.2
+	// [0..7], 0 - Sunday, 6 - Saturday, 7 - Sunday
 	DaysOfWeek []int32 // Conditional: item.FieldsMask.3
-	Days       []int32 // Conditional: item.FieldsMask.4
-	Months     []int32 // Conditional: item.FieldsMask.5
+	// [1..31]
+	Days []int32 // Conditional: item.FieldsMask.4
+	// [1..12]
+	Months []int32 // Conditional: item.FieldsMask.5
 }
 
 func (TasksCronTime) TLName() string { return "tasks.cronTime" }

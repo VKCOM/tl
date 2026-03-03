@@ -8,13 +8,13 @@
 package tlantispam
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_4174bfee82ee7ea4902a121c2642c5ff"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamGetPattern"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamPatternFull"
 )
 
 type (
 	GetPattern      = tlAntispamGetPattern.AntispamGetPattern
-	PatternFound    = cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFound
-	PatternFull     = cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
-	PatternNotFound = cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternNotFound
+	PatternFound    = tlAntispamPatternFull.AntispamPatternFound
+	PatternFull     = tlAntispamPatternFull.AntispamPatternFull
+	PatternNotFound = tlAntispamPatternFull.AntispamPatternNotFound
 )

@@ -17,17 +17,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type Double float64
 
+func (item *Double) ptr() *float64 { return (*float64)(item) }
+
 func (Double) TLName() string { return "double" }
 func (Double) TLTag() uint32  { return 0x2210c154 }
 
 func (item *Double) Reset() {
-	ptr := (*float64)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *Double) Read(w []byte) (_ []byte, err error) {
-	ptr := (*float64)(item)
-	return basictl.DoubleRead(w, ptr)
+	return basictl.DoubleRead(w, item.ptr())
 }
 
 func (item *Double) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -35,8 +35,8 @@ func (item *Double) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Double) Write(w []byte) []byte {
-	ptr := (*float64)(item)
-	return basictl.DoubleWrite(w, *ptr)
+	w = basictl.DoubleWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Double) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -64,8 +64,7 @@ func (item *Double) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *Double) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*float64)(item)
-	if err := internal.Json2ReadFloat64(in, ptr); err != nil {
+	if err := internal.Json2ReadFloat64(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -82,8 +81,7 @@ func (item *Double) WriteJSON(w []byte) []byte {
 }
 
 func (item *Double) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*float64)(item)
-	w = basictl.JSONWriteFloat64(w, *ptr)
+	w = basictl.JSONWriteFloat64(w, *item.ptr())
 	return w
 }
 func (item *Double) MarshalJSON() ([]byte, error) {

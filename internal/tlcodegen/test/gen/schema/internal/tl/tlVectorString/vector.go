@@ -16,19 +16,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorString []string
+
+func (item *VectorString) ptr() *[]string { return (*[]string)(item) }
 
 func (VectorString) TLName() string { return "vector" }
 func (VectorString) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorString) Reset() {
-	ptr := (*[]string)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorString) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]string)(item)
-	return tlBuiltinVectorString.BuiltinVectorStringRead(w, ptr)
+	return tlBuiltinVectorString.BuiltinVectorStringRead(w, item.ptr())
 }
 
 func (item *VectorString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +37,8 @@ func (item *VectorString) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorString) Write(w []byte) []byte {
-	ptr := (*[]string)(item)
-	return tlBuiltinVectorString.BuiltinVectorStringWrite(w, *ptr)
+	w = tlBuiltinVectorString.BuiltinVectorStringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +66,7 @@ func (item *VectorString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 func (item *VectorString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]string)(item)
-	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +83,7 @@ func (item *VectorString) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]string)(item)
-	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorString) MarshalJSON() ([]byte, error) {

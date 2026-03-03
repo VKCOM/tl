@@ -9,14 +9,14 @@ package tlBuiltinVectorService1Value
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorService1ValueRead(w []byte, vec *[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func BuiltinVectorService1ValueRead(w []byte, vec *[]tlService1Value.Service1Value) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -25,7 +25,7 @@ func BuiltinVectorService1ValueRead(w []byte, vec *[]cycle_6ca945392bbf8b14f24e5
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {
-		*vec = make([]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value, l)
+		*vec = make([]tlService1Value.Service1Value, l)
 	} else {
 		*vec = (*vec)[:l]
 	}
@@ -37,7 +37,7 @@ func BuiltinVectorService1ValueRead(w []byte, vec *[]cycle_6ca945392bbf8b14f24e5
 	return w, nil
 }
 
-func BuiltinVectorService1ValueWrite(w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
+func BuiltinVectorService1ValueWrite(w []byte, vec []tlService1Value.Service1Value) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = elem.WriteBoxed(w)
@@ -45,17 +45,17 @@ func BuiltinVectorService1ValueWrite(w []byte, vec []cycle_6ca945392bbf8b14f24e5
 	return w
 }
 
-func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService1Value.Service1Value) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value", "expected json array")
+			return internal.ErrorInvalidJSON("[]tlService1Value.Service1Value", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if len(*vec) <= index {
-				var newValue cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+				var newValue tlService1Value.Service1Value
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
@@ -66,18 +66,18 @@ func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value", "expected json array's end")
+			return internal.ErrorInvalidJSON("[]tlService1Value.Service1Value", "expected json array's end")
 		}
 	}
 	*vec = (*vec)[:index]
 	return nil
 }
 
-func BuiltinVectorService1ValueWriteJSON(w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
+func BuiltinVectorService1ValueWriteJSON(w []byte, vec []tlService1Value.Service1Value) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return BuiltinVectorService1ValueWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
+func BuiltinVectorService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService1Value.Service1Value) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

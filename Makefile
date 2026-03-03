@@ -28,7 +28,7 @@ tlo-bootstrap: build
 
 .PHONY: gen_check
 gen_check: build
-	@./target/bin/tlgen --split-internal -v --language=go \
+	@./target/bin/tl2gen --split-internal -v --language=go \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/schema \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/schema/tl \

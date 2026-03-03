@@ -67,75 +67,21 @@ func GetTLName(tag uint32, notFoundName string) string {
 	return notFoundName
 }
 
-func CreateFunction(tag uint32) Function {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createFunction != nil {
-		return item.createFunction()
-	}
-	return nil
-}
-
-func CreateObject(tag uint32) Object {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createObject != nil {
-		return item.createObject()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateFunctionFromName(name string) Function {
-	if item := FactoryItemByTLName(name); item != nil && item.createFunction != nil {
-		return item.createFunction()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateObjectFromName(name string) Object {
-	if item := FactoryItemByTLName(name); item != nil && item.createObject != nil {
-		return item.createObject()
-	}
-	return nil
-}
-
-func CreateFunctionBytes(tag uint32) Function {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createFunctionBytes != nil {
-		return item.createFunctionBytes()
-	}
-	return nil
-}
-
-func CreateObjectBytes(tag uint32) Object {
-	if item := FactoryItemByTLTag(tag); item != nil && item.createObjectBytes != nil {
-		return item.createObjectBytes()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateFunctionFromNameBytes(name string) Function {
-	if item := FactoryItemByTLName(name); item != nil && item.createFunctionBytes != nil {
-		return item.createFunctionBytes()
-	}
-	return nil
-}
-
-// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
-func CreateObjectFromNameBytes(name string) Object {
-	if item := FactoryItemByTLName(name); item != nil && item.createObjectBytes != nil {
-		return item.createObjectBytes()
-	}
-	return nil
-}
-
 type TLItem struct {
 	tag         uint32
 	annotations uint32
 	tlName      string
-	isTL2       bool
+
+	hasTL1 bool
+	hasTL2 bool
 
 	resultTypeContainsUnionTypes    bool
 	argumentsTypesContainUnionTypes bool
 
+	// either createObject != nil or createFunction != nil for object/function respectively
+	// also, createFunctionLong can be != nil if there is long adapter (legacy to be removed soon)
+	// also, createObjectBytes, createFunctionBytes, createFunctionLongBytes
+	// can be != nil independently, if factory_bytes is imported
 	createFunction          func() Function
 	createFunctionLong      func() Function
 	createObject            func() Object
@@ -144,12 +90,45 @@ type TLItem struct {
 	createObjectBytes       func() Object
 }
 
-func (item TLItem) TLTag() uint32            { return item.tag }
-func (item TLItem) TLName() string           { return item.tlName }
-func (item TLItem) IsTL2() bool              { return item.isTL2 }
-func (item TLItem) CreateObject() Object     { return item.createObject() }
+func (item TLItem) TLTag() uint32  { return item.tag }
+func (item TLItem) TLName() string { return item.tlName }
+
+// true for TL1-originated types
+func (item TLItem) HasTL1() bool { return item.hasTL1 }
+
+// true for TL2-originated types and for TL1-originated types if in TL2 generation whitelist
+func (item TLItem) HasTL2() bool { return item.hasTL2 }
+func (item TLItem) CreateObject() Object {
+	if item.createFunction != nil {
+		return item.createFunction()
+	}
+	return item.createObject()
+}
+
+// used in TL generator tests only, do not use in product code
+func (item TLItem) CreateObjectBytes() Object {
+	if item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	if item.createFunction != nil {
+		return item.createFunction()
+	}
+	if item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	return item.createObject()
+}
+
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
+
+// used in TL generator tests only, do not use in product code
+func (item TLItem) CreateFunctionBytes() Function {
+	if item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return item.createFunction()
+}
 
 func (item TLItem) HasUnionTypesInResult() bool    { return item.resultTypeContainsUnionTypes }
 func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
@@ -157,6 +136,15 @@ func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesC
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
+
+// we simplify interface by commenting this method no one yet needs.
+// hopefully it will be removed together with long adapters code
+// func (item TLItem) CreateFunctionLongBytes() Function {
+//     if item.createFunctionLongBytes != nil {
+//         return item.createFunctionLongBytes()
+//     }
+//     return item.createFunctionLong()
+// }
 
 // Annotations
 func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
@@ -166,7 +154,7 @@ func (item TLItem) AnnotationRead() bool      { return item.annotations&0x8 != 0
 func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 0 }
 func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
-// TLItem serves as a single type for all enum values
+// TLItem serves as a single type for all TL1 enum values
 func (item *TLItem) Reset()                                {}
 func (item *TLItem) Read(w []byte) ([]byte, error)         { return w, nil }
 func (item *TLItem) WriteGeneral(w []byte) ([]byte, error) { return w, nil }
@@ -222,80 +210,51 @@ var itemsByTag = map[uint32]*TLItem{}
 
 var itemsByName = map[string]*TLItem{}
 
-func SetGlobalFactoryCreateForFunction(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForFunction(name string, createFunction func() Function, createFunctionLong func() Function) {
+	item := itemsByName[name]
+	if item == nil || item.createFunction == nil { // only replace !nil createFunction
+		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
-	item.createObject = createObject
 	item.createFunction = createFunction
 	item.createFunctionLong = createFunctionLong
 }
 
-func SetGlobalFactoryCreateForObject(itemTag uint32, createObject func() Object) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
+	item := itemsByName[name]
+	if item == nil || item.createObject == nil { // only replace !nil createObject
+		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
 	item.createObject = createObject
 }
 
-func SetGlobalFactoryCreateForObjectTL2(itemName string, createObject func() Object) {
-	item := itemsByName[itemName]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
-	}
-	item.createObject = createObject
-}
-
-func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForEnumElement(name string) {
+	item := itemsByName[name]
+	if item == nil || item.createObject == nil { // only replace !nil createObject
+		panic(fmt.Sprintf("factory cannot find enum %s to set", name))
 	}
 	item.createObject = func() Object { return item }
 }
 
-func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForFunctionBytes(name string, createFunctionBytes func() Function, createFunctionLongBytes func() Function) {
+	item := itemsByName[name]
+	if item == nil || item.createFunction == nil { // only replace !nil createFunction
+		panic(fmt.Sprintf("factory cannot find function %s to set", name))
 	}
-	item.createObjectBytes = createObject
-	item.createFunctionBytes = createFunction
-	item.createFunctionLongBytes = createFunctionLong
+	item.createFunctionBytes = createFunctionBytes
+	item.createFunctionLongBytes = createFunctionLongBytes
 }
 
-func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Object) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForObjectBytes(name string, createObjectBytes func() Object) {
+	item := itemsByName[name]
+	if item == nil || item.createObject == nil { // only replace !nil createObject
+		panic(fmt.Sprintf("factory cannot find object %s to set", name))
 	}
-	item.createObjectBytes = createObject
-}
-
-func SetGlobalFactoryCreateForObjectBytesTL2(itemName string, createObject func() Object) {
-	item := itemsByName[itemName]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
-	}
-	item.createObjectBytes = createObject
-}
-
-func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
-	item := itemsByTag[itemTag]
-	if item == nil {
-		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
-	}
-	item.createObjectBytes = func() Object { return item }
-}
-
-func pleaseImportFactoryBytesObject() Object {
-	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
-}
-
-func pleaseImportFactoryBytesFunction() Function {
-	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
+	item.createObjectBytes = createObjectBytes
 }
 
 func pleaseImportFactoryObject() Object {
@@ -306,178 +265,72 @@ func pleaseImportFactoryFunction() Function {
 	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
 }
 
-func fillObject(n1 string, n2 string, item *TLItem) {
-	itemsByTag[item.tag] = item
-	itemsByName[item.tlName] = item
-	itemsByName[n1] = item
-	itemsByName[n2] = item
-	item.createObject = pleaseImportFactoryObject
-	item.createObjectBytes = pleaseImportFactoryBytesObject
-	// code below is as fast, but allocates some extra strings which are already in binary const segment due to JSON code
-	// itemsByName[fmt.Sprintf("%s#%08x", item.tlName, item.tag)] = item
-	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
-}
-
-func fillObjectTL2(item *TLItem) {
+func fillObject(item *TLItem) {
 	itemsByName[item.tlName] = item
 	if item.tag != 0 {
 		itemsByTag[item.tag] = item
 	}
 	item.createObject = pleaseImportFactoryObject
-	item.createObjectBytes = pleaseImportFactoryBytesObject
 }
 
-func fillFunction(n1 string, n2 string, item *TLItem) {
-	fillObject(n1, n2, item)
+func fillFunction(item *TLItem) {
+	itemsByName[item.tlName] = item
+	if item.tag != 0 {
+		itemsByTag[item.tag] = item
+	}
 	item.createFunction = pleaseImportFactoryFunction
-	item.createFunctionBytes = pleaseImportFactoryBytesFunction
 }
 
 func init() {
-	// TL
-	fillFunction("antispam.getPattern#3de14136", "#3de14136", &TLItem{tag: 0x3de14136, annotations: 0x1, tlName: "antispam.getPattern", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("antispam.patternFound#a7688492", "#a7688492", &TLItem{tag: 0xa7688492, annotations: 0x0, tlName: "antispam.patternFound", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("antispam.patternNotFound#2c22e225", "#2c22e225", &TLItem{tag: 0x2c22e225, annotations: 0x0, tlName: "antispam.patternNotFound", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("benchObject#b697e865", "#b697e865", &TLItem{tag: 0xb697e865, annotations: 0x0, tlName: "benchObject", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("boolStat#92cbcbfa", "#92cbcbfa", &TLItem{tag: 0x92cbcbfa, annotations: 0x0, tlName: "boolStat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedArray#95dcc8b7", "#95dcc8b7", &TLItem{tag: 0x95dcc8b7, annotations: 0x1, tlName: "boxedArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedInt#5688ebaf", "#5688ebaf", &TLItem{tag: 0x5688ebaf, annotations: 0x1, tlName: "boxedInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedString#548994db", "#548994db", &TLItem{tag: 0x548994db, annotations: 0x1, tlName: "boxedString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedTuple#30c9d533", "#30c9d533", &TLItem{tag: 0x30c9d533, annotations: 0x1, tlName: "boxedTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedTupleSlice1#25230d40", "#25230d40", &TLItem{tag: 0x25230d40, annotations: 0x1, tlName: "boxedTupleSlice1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedTupleSlice2#1cdf4705", "#1cdf4705", &TLItem{tag: 0x1cdf4705, annotations: 0x1, tlName: "boxedTupleSlice2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedTupleSlice3#a19b8106", "#a19b8106", &TLItem{tag: 0xa19b8106, annotations: 0x1, tlName: "boxedTupleSlice3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedVector32#bbadef07", "#bbadef07", &TLItem{tag: 0xbbadef07, annotations: 0x1, tlName: "boxedVector32", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedVector32BoxedElem#591cecd4", "#591cecd4", &TLItem{tag: 0x591cecd4, annotations: 0x1, tlName: "boxedVector32BoxedElem", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("boxedVector64#83659ba8", "#83659ba8", &TLItem{tag: 0x83659ba8, annotations: 0x1, tlName: "boxedVector64", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("double#2210c154", "#2210c154", &TLItem{tag: 0x2210c154, annotations: 0x0, tlName: "double", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("fieldConflict1#f314bd09", "#f314bd09", &TLItem{tag: 0xf314bd09, annotations: 0x0, tlName: "fieldConflict1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("fieldConflict2#1bba76b8", "#1bba76b8", &TLItem{tag: 0x1bba76b8, annotations: 0x0, tlName: "fieldConflict2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("fieldConflict3#2cf6e157", "#2cf6e157", &TLItem{tag: 0x2cf6e157, annotations: 0x0, tlName: "fieldConflict3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("fieldConflict4#d93c186a", "#d93c186a", &TLItem{tag: 0xd93c186a, annotations: 0x0, tlName: "fieldConflict4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("float#824dab22", "#824dab22", &TLItem{tag: 0x824dab22, annotations: 0x0, tlName: "float", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("get_arrays#90658cdb", "#90658cdb", &TLItem{tag: 0x90658cdb, annotations: 0x1, tlName: "get_arrays", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getDouble#39711d7b", "#39711d7b", &TLItem{tag: 0x39711d7b, annotations: 0x1, tlName: "getDouble", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getFloat#25a7bc68", "#25a7bc68", &TLItem{tag: 0x25a7bc68, annotations: 0x1, tlName: "getFloat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getMaybeIface#6b055ae4", "#6b055ae4", &TLItem{tag: 0x6b055ae4, annotations: 0x1, tlName: "getMaybeIface", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: true})
-	fillFunction("getMyDictOfInt#166f962c", "#166f962c", &TLItem{tag: 0x166f962c, annotations: 0x1, tlName: "getMyDictOfInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getMyDouble#b660ad10", "#b660ad10", &TLItem{tag: 0xb660ad10, annotations: 0x1, tlName: "getMyDouble", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getMyValue#b3df27fe", "#b3df27fe", &TLItem{tag: 0xb3df27fe, annotations: 0x1, tlName: "getMyValue", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: true})
-	fillFunction("getNonOptNat#67665961", "#67665961", &TLItem{tag: 0x67665961, annotations: 0x1, tlName: "getNonOptNat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("getStats#baa6da35", "#baa6da35", &TLItem{tag: 0xbaa6da35, annotations: 0x1, tlName: "getStats", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("int#a8509bda", "#a8509bda", &TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("integer#7e194796", "#7e194796", &TLItem{tag: 0x7e194796, annotations: 0x0, tlName: "integer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("issue3498#f54b7b0a", "#f54b7b0a", &TLItem{tag: 0xf54b7b0a, annotations: 0x0, tlName: "issue3498", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("long#22076cba", "#22076cba", &TLItem{tag: 0x22076cba, annotations: 0x0, tlName: "long", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myAnonMcValue#569310db", "#569310db", &TLItem{tag: 0x569310db, annotations: 0x0, tlName: "myAnonMcValue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myBoxedArray#288f64f0", "#288f64f0", &TLItem{tag: 0x288f64f0, annotations: 0x0, tlName: "myBoxedArray", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myBoxedTupleSlice#25d1a1be", "#25d1a1be", &TLItem{tag: 0x25d1a1be, annotations: 0x0, tlName: "myBoxedTupleSlice", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myBoxedVectorSlice#57d164bb", "#57d164bb", &TLItem{tag: 0x57d164bb, annotations: 0x0, tlName: "myBoxedVectorSlice", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myDictOfInt#b8019a3d", "#b8019a3d", &TLItem{tag: 0xb8019a3d, annotations: 0x0, tlName: "myDictOfInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myDouble#90a6c726", "#90a6c726", &TLItem{tag: 0x90a6c726, annotations: 0x0, tlName: "myDouble", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myInt#c12375b7", "#c12375b7", &TLItem{tag: 0xc12375b7, annotations: 0x0, tlName: "myInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myMaybe1#32c541fe", "#32c541fe", &TLItem{tag: 0x32c541fe, annotations: 0x0, tlName: "myMaybe1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myMaybe2#ef6d355c", "#ef6d355c", &TLItem{tag: 0xef6d355c, annotations: 0x0, tlName: "myMaybe2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myMcValue#e2ffd978", "#e2ffd978", &TLItem{tag: 0xe2ffd978, annotations: 0x0, tlName: "myMcValue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myMcValueTuple#1287d116", "#1287d116", &TLItem{tag: 0x1287d116, annotations: 0x0, tlName: "myMcValueTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myMcValueVector#761d6d58", "#761d6d58", &TLItem{tag: 0x761d6d58, annotations: 0x0, tlName: "myMcValueVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myString#c8bfa969", "#c8bfa969", &TLItem{tag: 0xc8bfa969, annotations: 0x0, tlName: "myString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("myTwoDicts#a859581d", "#a859581d", &TLItem{tag: 0xa859581d, annotations: 0x0, tlName: "myTwoDicts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("nonOptNat#45366605", "#45366605", &TLItem{tag: 0x45366605, annotations: 0x0, tlName: "nonOptNat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("pkg2.foo#e144703d", "#e144703d", &TLItem{tag: 0xe144703d, annotations: 0x0, tlName: "pkg2.foo", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("pkg2.t1#638206ec", "#638206ec", &TLItem{tag: 0x638206ec, annotations: 0x0, tlName: "pkg2.t1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("pkg2.t2#d6e5af9c", "#d6e5af9c", &TLItem{tag: 0xd6e5af9c, annotations: 0x0, tlName: "pkg2.t2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("rpcInvokeReqExtra#f3ef81a9", "#f3ef81a9", &TLItem{tag: 0xf3ef81a9, annotations: 0x0, tlName: "rpcInvokeReqExtra", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.add#481df8be", "#481df8be", &TLItem{tag: 0x481df8be, annotations: 0x1, tlName: "service1.add", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.addOrGet#6a42faad", "#6a42faad", &TLItem{tag: 0x6a42faad, annotations: 0x1, tlName: "service1.addOrGet", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.addOrIncr#90c4b402", "#90c4b402", &TLItem{tag: 0x90c4b402, annotations: 0x1, tlName: "service1.addOrIncr", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.append#04dec671", "#04dec671", &TLItem{tag: 0x04dec671, annotations: 0x1, tlName: "service1.append", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.cas#51851964", "#51851964", &TLItem{tag: 0x51851964, annotations: 0x1, tlName: "service1.cas", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.decr#eb179ce7", "#eb179ce7", &TLItem{tag: 0xeb179ce7, annotations: 0x1, tlName: "service1.decr", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.delete#83277767", "#83277767", &TLItem{tag: 0x83277767, annotations: 0x1, tlName: "service1.delete", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.disableExpiration#f1c39c2d", "#f1c39c2d", &TLItem{tag: 0xf1c39c2d, annotations: 0x1, tlName: "service1.disableExpiration", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.disableKeysStat#79d6160f", "#79d6160f", &TLItem{tag: 0x79d6160f, annotations: 0x1, tlName: "service1.disableKeysStat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.enableExpiration#2b51ad67", "#2b51ad67", &TLItem{tag: 0x2b51ad67, annotations: 0x1, tlName: "service1.enableExpiration", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.enableKeysStat#29a7090e", "#29a7090e", &TLItem{tag: 0x29a7090e, annotations: 0x1, tlName: "service1.enableKeysStat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.exists#e0284c9e", "#e0284c9e", &TLItem{tag: 0xe0284c9e, annotations: 0x1, tlName: "service1.exists", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.get#29099b19", "#29099b19", &TLItem{tag: 0x29099b19, annotations: 0x1, tlName: "service1.get", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getExpireTime#5a731070", "#5a731070", &TLItem{tag: 0x5a731070, annotations: 0x1, tlName: "service1.getExpireTime", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getKeysStat#06cecd58", "#06cecd58", &TLItem{tag: 0x06cecd58, annotations: 0x1, tlName: "service1.getKeysStat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getKeysStatPeriods#8cdf39e3", "#8cdf39e3", &TLItem{tag: 0x8cdf39e3, annotations: 0x1, tlName: "service1.getKeysStatPeriods", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getWildcard#2f2abf13", "#2f2abf13", &TLItem{tag: 0x2f2abf13, annotations: 0x1, tlName: "service1.getWildcard", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getWildcardDict#72bbc81b", "#72bbc81b", &TLItem{tag: 0x72bbc81b, annotations: 0x1, tlName: "service1.getWildcardDict", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getWildcardList#56b6ead4", "#56b6ead4", &TLItem{tag: 0x56b6ead4, annotations: 0x1, tlName: "service1.getWildcardList", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.getWildcardWithFlags#5f6a1f78", "#5f6a1f78", &TLItem{tag: 0x5f6a1f78, annotations: 0x1, tlName: "service1.getWildcardWithFlags", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.incr#0f96b56e", "#0f96b56e", &TLItem{tag: 0x0f96b56e, annotations: 0x1, tlName: "service1.incr", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.keysStat#f0f6bc68", "#f0f6bc68", &TLItem{tag: 0xf0f6bc68, annotations: 0x0, tlName: "service1.keysStat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.longvalue#082e0945", "#082e0945", &TLItem{tag: 0x082e0945, annotations: 0x0, tlName: "service1.longvalue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.longvalueWithTime#a04606ec", "#a04606ec", &TLItem{tag: 0xa04606ec, annotations: 0x0, tlName: "service1.longvalueWithTime", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.not_found#1d670b96", "#1d670b96", &TLItem{tag: 0x1d670b96, annotations: 0x0, tlName: "service1.not_found", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.replace#7f2c447d", "#7f2c447d", &TLItem{tag: 0x7f2c447d, annotations: 0x1, tlName: "service1.replace", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.replaceOrIncr#9d1bdcfd", "#9d1bdcfd", &TLItem{tag: 0x9d1bdcfd, annotations: 0x1, tlName: "service1.replaceOrIncr", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.set#05ae5f66", "#05ae5f66", &TLItem{tag: 0x05ae5f66, annotations: 0x1, tlName: "service1.set", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.setOrIncr#772e390d", "#772e390d", &TLItem{tag: 0x772e390d, annotations: 0x1, tlName: "service1.setOrIncr", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.strvalue#5faa0c52", "#5faa0c52", &TLItem{tag: 0x5faa0c52, annotations: 0x0, tlName: "service1.strvalue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service1.strvalueWithTime#98b1a484", "#98b1a484", &TLItem{tag: 0x98b1a484, annotations: 0x0, tlName: "service1.strvalueWithTime", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service1.touch#b737aa03", "#b737aa03", &TLItem{tag: 0xb737aa03, annotations: 0x1, tlName: "service1.touch", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service2.addOrIncrMany#5aa52489", "#5aa52489", &TLItem{tag: 0x5aa52489, annotations: 0x10, tlName: "service2.addOrIncrMany", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service2.set#0d31f63d", "#0d31f63d", &TLItem{tag: 0x0d31f63d, annotations: 0x20, tlName: "service2.set", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service2.setObjectTtl#6f98f025", "#6f98f025", &TLItem{tag: 0x6f98f025, annotations: 0x20, tlName: "service2.setObjectTtl", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.createProduct#b7d92bd9", "#b7d92bd9", &TLItem{tag: 0xb7d92bd9, annotations: 0x1, tlName: "service3.createProduct", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.deleteAllProducts#4494acc2", "#4494acc2", &TLItem{tag: 0x4494acc2, annotations: 0x1, tlName: "service3.deleteAllProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.deleteGroupedProducts#e468e614", "#e468e614", &TLItem{tag: 0xe468e614, annotations: 0x1, tlName: "service3.deleteGroupedProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.deleteProduct#6867e707", "#6867e707", &TLItem{tag: 0x6867e707, annotations: 0x1, tlName: "service3.deleteProduct", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.getLastVisitTimestamp#9a4c788d", "#9a4c788d", &TLItem{tag: 0x9a4c788d, annotations: 0x1, tlName: "service3.getLastVisitTimestamp", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.getLimits#eb399467", "#eb399467", &TLItem{tag: 0xeb399467, annotations: 0x1, tlName: "service3.getLimits", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.getProductStats#261f6898", "#261f6898", &TLItem{tag: 0x261f6898, annotations: 0x1, tlName: "service3.getProductStats", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.getProducts#eb306233", "#eb306233", &TLItem{tag: 0xeb306233, annotations: 0x1, tlName: "service3.getProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.getScheduledProducts#f53ad7bd", "#f53ad7bd", &TLItem{tag: 0xf53ad7bd, annotations: 0x1, tlName: "service3.getScheduledProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service3.groupCountLimit#8c04ea7f", "#8c04ea7f", &TLItem{tag: 0x8c04ea7f, annotations: 0x0, tlName: "service3.groupCountLimit", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service3.groupSizeLimit#90e59396", "#90e59396", &TLItem{tag: 0x90e59396, annotations: 0x0, tlName: "service3.groupSizeLimit", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service3.limits#80ee61ca", "#80ee61ca", &TLItem{tag: 0x80ee61ca, annotations: 0x0, tlName: "service3.limits", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service3.productStatsOld#6319810b", "#6319810b", &TLItem{tag: 0x6319810b, annotations: 0x0, tlName: "service3.productStatsOld", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.restoreAllProducts#4d839ed0", "#4d839ed0", &TLItem{tag: 0x4d839ed0, annotations: 0x1, tlName: "service3.restoreAllProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.restoreGroupedProducts#1f17bfac", "#1f17bfac", &TLItem{tag: 0x1f17bfac, annotations: 0x1, tlName: "service3.restoreGroupedProducts", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.restoreProduct#6170d515", "#6170d515", &TLItem{tag: 0x6170d515, annotations: 0x1, tlName: "service3.restoreProduct", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.setLastVisitTimestamp#7909b020", "#7909b020", &TLItem{tag: 0x7909b020, annotations: 0x1, tlName: "service3.setLastVisitTimestamp", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service3.setLimits#3ad5c19c", "#3ad5c19c", &TLItem{tag: 0x3ad5c19c, annotations: 0x1, tlName: "service3.setLimits", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service4.modifiedNewsEntry#da19832a", "#da19832a", &TLItem{tag: 0xda19832a, annotations: 0x0, tlName: "service4.modifiedNewsEntry", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service4.object#a6eeca4f", "#a6eeca4f", &TLItem{tag: 0xa6eeca4f, annotations: 0x0, tlName: "service4.object", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service5.emptyOutput#11e46879", "#11e46879", &TLItem{tag: 0x11e46879, annotations: 0x0, tlName: "service5.emptyOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5.insert#c911ee2c", "#c911ee2c", &TLItem{tag: 0xc911ee2c, annotations: 0x1, tlName: "service5.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("service5.params#12ae5cb5", "#12ae5cb5", &TLItem{tag: 0x12ae5cb5, annotations: 0x0, tlName: "service5.params", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5.performQuery#019d80a5", "#019d80a5", &TLItem{tag: 0x019d80a5, annotations: 0x1, tlName: "service5.performQuery", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5.query#b3b62513", "#b3b62513", &TLItem{tag: 0xb3b62513, annotations: 0x1, tlName: "service5.query", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("service5.stringOutput#179e9863", "#179e9863", &TLItem{tag: 0x179e9863, annotations: 0x0, tlName: "service5.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service6.error#738553ef", "#738553ef", &TLItem{tag: 0x738553ef, annotations: 0x0, tlName: "service6.error", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service6.findResultRow#bd3946e3", "#bd3946e3", &TLItem{tag: 0xbd3946e3, annotations: 0x0, tlName: "service6.findResultRow", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("service6.findWithBoundsResult#3ded850a", "#3ded850a", &TLItem{tag: 0x3ded850a, annotations: 0x0, tlName: "service6.findWithBoundsResult", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service6.multiFind#e62178d8", "#e62178d8", &TLItem{tag: 0xe62178d8, annotations: 0x1, tlName: "service6.multiFind", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service6.multiFindWithBounds#84b168cf", "#84b168cf", &TLItem{tag: 0x84b168cf, annotations: 0x1, tlName: "service6.multiFindWithBounds", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("statOne#74b0604b", "#74b0604b", &TLItem{tag: 0x74b0604b, annotations: 0x0, tlName: "statOne", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("tasks.addTask#2ca073d5", "#2ca073d5", &TLItem{tag: 0x2ca073d5, annotations: 0x1, tlName: "tasks.addTask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.cronTask#c90cf28a", "#c90cf28a", &TLItem{tag: 0xc90cf28a, annotations: 0x0, tlName: "tasks.cronTask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.cronTaskWithId#3a958001", "#3a958001", &TLItem{tag: 0x3a958001, annotations: 0x0, tlName: "tasks.cronTaskWithId", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.cronTime#d4177d7f", "#d4177d7f", &TLItem{tag: 0xd4177d7f, annotations: 0x0, tlName: "tasks.cronTime", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.fullFilledCron#d4177d7e", "#d4177d7e", &TLItem{tag: 0xd4177d7e, annotations: 0x0, tlName: "tasks.fullFilledCron", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("tasks.getAnyTask#4a9c7dbb", "#4a9c7dbb", &TLItem{tag: 0x4a9c7dbb, annotations: 0x1, tlName: "tasks.getAnyTask", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("tasks.getQueueSize#6abbb057", "#6abbb057", &TLItem{tag: 0x6abbb057, annotations: 0x1, tlName: "tasks.getQueueSize", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("tasks.getQueueTypes#5434457a", "#5434457a", &TLItem{tag: 0x5434457a, annotations: 0x1, tlName: "tasks.getQueueTypes", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("tasks.getTaskFromQueue#6a52b698", "#6a52b698", &TLItem{tag: 0x6a52b698, annotations: 0x1, tlName: "tasks.getTaskFromQueue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.queueTypeInfo#38d38d3e", "#38d38d3e", &TLItem{tag: 0x38d38d3e, annotations: 0x0, tlName: "tasks.queueTypeInfo", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.queueTypeSettings#561fbc09", "#561fbc09", &TLItem{tag: 0x561fbc09, annotations: 0x0, tlName: "tasks.queueTypeSettings", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.queueTypeStats#e1b785f2", "#e1b785f2", &TLItem{tag: 0xe1b785f2, annotations: 0x0, tlName: "tasks.queueTypeStats", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.task#7c23bc2c", "#7c23bc2c", &TLItem{tag: 0x7c23bc2c, annotations: 0x0, tlName: "tasks.task", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.taskInfo#06f0c6a6", "#06f0c6a6", &TLItem{tag: 0x06f0c6a6, annotations: 0x0, tlName: "tasks.taskInfo", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.taskStatusInProgress#06ef70e7", "#06ef70e7", &TLItem{tag: 0x06ef70e7, annotations: 0x0, tlName: "tasks.taskStatusInProgress", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.taskStatusNotCurrentlyInEngine#b207caaa", "#b207caaa", &TLItem{tag: 0xb207caaa, annotations: 0x0, tlName: "tasks.taskStatusNotCurrentlyInEngine", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.taskStatusScheduled#0aca80a9", "#0aca80a9", &TLItem{tag: 0x0aca80a9, annotations: 0x0, tlName: "tasks.taskStatusScheduled", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tasks.taskStatusWaiting#16739c2c", "#16739c2c", &TLItem{tag: 0x16739c2c, annotations: 0x0, tlName: "tasks.taskStatusWaiting", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tree_stats.objectLimitValueDouble#5dfb8816", "#5dfb8816", &TLItem{tag: 0x5dfb8816, annotations: 0x0, tlName: "tree_stats.objectLimitValueDouble", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tree_stats.objectLimitValueLong#73111993", "#73111993", &TLItem{tag: 0x73111993, annotations: 0x0, tlName: "tree_stats.objectLimitValueLong", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("true#3fedd339", "#3fedd339", &TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("unique.get#ce89bbf2", "#ce89bbf2", &TLItem{tag: 0xce89bbf2, annotations: 0x1, tlName: "unique.get", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("unique.stringToInt#0f766c35", "#0f766c35", &TLItem{tag: 0x0f766c35, annotations: 0x1, tlName: "unique.stringToInt", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("withFloat#071b8685", "#071b8685", &TLItem{tag: 0x071b8685, annotations: 0x0, tlName: "withFloat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject(&TLItem{tlName: "benchObject", tag: 0xb697e865, hasTL1: true})
+	fillObject(&TLItem{tlName: "boolStat", tag: 0x92cbcbfa, hasTL1: true})
+	fillFunction(&TLItem{tlName: "boxedArray", tag: 0x95dcc8b7, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedInt", tag: 0x5688ebaf, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedString", tag: 0x548994db, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedTuple", tag: 0x30c9d533, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedTupleSlice1", tag: 0x25230d40, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedTupleSlice2", tag: 0x1cdf4705, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedTupleSlice3", tag: 0xa19b8106, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedVector32", tag: 0xbbadef07, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedVector32BoxedElem", tag: 0x591cecd4, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "boxedVector64", tag: 0x83659ba8, hasTL1: true, annotations: 0x1})
+	fillObject(&TLItem{tlName: "double", tag: 0x2210c154, hasTL1: true})
+	fillObject(&TLItem{tlName: "fieldConflict1", tag: 0xf314bd09, hasTL1: true})
+	fillObject(&TLItem{tlName: "fieldConflict2", tag: 0x1bba76b8, hasTL1: true})
+	fillObject(&TLItem{tlName: "fieldConflict3", tag: 0x2cf6e157, hasTL1: true})
+	fillObject(&TLItem{tlName: "fieldConflict4", tag: 0xd93c186a, hasTL1: true})
+	fillObject(&TLItem{tlName: "float", tag: 0x824dab22, hasTL1: true})
+	fillFunction(&TLItem{tlName: "get_arrays", tag: 0x90658cdb, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getDouble", tag: 0x39711d7b, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getFloat", tag: 0x25a7bc68, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getMaybeIface", tag: 0x6b055ae4, hasTL1: true, annotations: 0x1, argumentsTypesContainUnionTypes: true, resultTypeContainsUnionTypes: true})
+	fillFunction(&TLItem{tlName: "getMyDictOfInt", tag: 0x166f962c, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getMyDouble", tag: 0xb660ad10, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getMyValue", tag: 0xb3df27fe, hasTL1: true, annotations: 0x1, argumentsTypesContainUnionTypes: true, resultTypeContainsUnionTypes: true})
+	fillFunction(&TLItem{tlName: "getNonOptNat", tag: 0x67665961, hasTL1: true, annotations: 0x1})
+	fillFunction(&TLItem{tlName: "getStats", tag: 0xbaa6da35, hasTL1: true, annotations: 0x1})
+	fillObject(&TLItem{tlName: "int", tag: 0xa8509bda, hasTL1: true})
+	fillObject(&TLItem{tlName: "integer", tag: 0x7e194796, hasTL1: true})
+	fillObject(&TLItem{tlName: "issue3498", tag: 0xf54b7b0a, hasTL1: true})
+	fillObject(&TLItem{tlName: "long", tag: 0x22076cba, hasTL1: true})
+	fillObject(&TLItem{tlName: "myAnonMcValue", tag: 0x569310db, hasTL1: true})
+	fillObject(&TLItem{tlName: "myBoxedArray", tag: 0x288f64f0, hasTL1: true})
+	fillObject(&TLItem{tlName: "myBoxedTupleSlice", tag: 0x25d1a1be, hasTL1: true})
+	fillObject(&TLItem{tlName: "myBoxedVectorSlice", tag: 0x57d164bb, hasTL1: true})
+	fillObject(&TLItem{tlName: "myDictOfInt", tag: 0xb8019a3d, hasTL1: true})
+	fillObject(&TLItem{tlName: "myDouble", tag: 0x90a6c726, hasTL1: true})
+	fillObject(&TLItem{tlName: "myInt", tag: 0xc12375b7, hasTL1: true})
+	fillObject(&TLItem{tlName: "myMaybe1", tag: 0x32c541fe, hasTL1: true})
+	fillObject(&TLItem{tlName: "myMaybe2", tag: 0xef6d355c, hasTL1: true})
+	fillObject(&TLItem{tlName: "myMcValue", tag: 0xe2ffd978, hasTL1: true})
+	fillObject(&TLItem{tlName: "myMcValueTuple", tag: 0x1287d116, hasTL1: true})
+	fillObject(&TLItem{tlName: "myMcValueVector", tag: 0x761d6d58, hasTL1: true})
+	fillObject(&TLItem{tlName: "myString", tag: 0xc8bfa969, hasTL1: true})
+	fillObject(&TLItem{tlName: "myTwoDicts", tag: 0xa859581d, hasTL1: true})
+	fillObject(&TLItem{tlName: "nonOptNat", tag: 0x45366605, hasTL1: true})
+	fillObject(&TLItem{tlName: "rpcInvokeReqExtra", tag: 0xf3ef81a9, hasTL1: true})
+	fillObject(&TLItem{tlName: "statOne", tag: 0x74b0604b, hasTL1: true})
+	fillObject(&TLItem{tlName: "string", tag: 0xb5286e24, hasTL1: true})
+	fillObject(&TLItem{tlName: "true", tag: 0x3fedd339, hasTL1: true})
+	fillObject(&TLItem{tlName: "withFloat", tag: 0x071b8685, hasTL1: true})
 }

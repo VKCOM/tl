@@ -18,17 +18,19 @@ var _ = internal.ErrorInvalidEnumTag
 
 type MyMaybe2 tlMyTuple10Maybe.MyTuple10Maybe
 
+func (item *MyMaybe2) ptr() *tlMyTuple10Maybe.MyTuple10Maybe {
+	return (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
+}
+
 func (MyMaybe2) TLName() string { return "myMaybe2" }
 func (MyMaybe2) TLTag() uint32  { return 0xef6d355c }
 
 func (item *MyMaybe2) Reset() {
-	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	ptr.Reset()
+	item.ptr().Reset()
 }
 
 func (item *MyMaybe2) Read(w []byte) (_ []byte, err error) {
-	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	return ptr.ReadBoxed(w)
+	return item.ptr().ReadBoxed(w)
 }
 
 func (item *MyMaybe2) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +38,8 @@ func (item *MyMaybe2) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyMaybe2) Write(w []byte) []byte {
-	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	return ptr.WriteBoxed(w)
+	w = item.ptr().WriteBoxed(w)
+	return w
 }
 
 func (item *MyMaybe2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +67,7 @@ func (item *MyMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 func (item *MyMaybe2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
+	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +84,7 @@ func (item *MyMaybe2) WriteJSON(w []byte) []byte {
 }
 
 func (item *MyMaybe2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	w = ptr.WriteJSONOpt(tctx, w)
+	w = item.ptr().WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyMaybe2) MarshalJSON() ([]byte, error) {

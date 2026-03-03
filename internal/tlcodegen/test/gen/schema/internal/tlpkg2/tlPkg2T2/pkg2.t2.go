@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type Pkg2T2 tlPkg2Foo.Pkg2Foo
 
+func (item *Pkg2T2) ptr() *tlPkg2Foo.Pkg2Foo { return (*tlPkg2Foo.Pkg2Foo)(item) }
+
 func (Pkg2T2) TLName() string { return "pkg2.t2" }
 func (Pkg2T2) TLTag() uint32  { return 0xd6e5af9c }
 
 func (item *Pkg2T2) Reset() {
-	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	ptr.Reset()
+	item.ptr().Reset()
 }
 
 func (item *Pkg2T2) Read(w []byte) (_ []byte, err error) {
-	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	return ptr.Read(w)
+	return item.ptr().Read(w)
 }
 
 func (item *Pkg2T2) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +36,8 @@ func (item *Pkg2T2) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Pkg2T2) Write(w []byte) []byte {
-	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	return ptr.Write(w)
+	w = item.ptr().Write(w)
+	return w
 }
 
 func (item *Pkg2T2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +65,7 @@ func (item *Pkg2T2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 func (item *Pkg2T2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
+	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +82,7 @@ func (item *Pkg2T2) WriteJSON(w []byte) []byte {
 }
 
 func (item *Pkg2T2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	w = ptr.WriteJSONOpt(tctx, w)
+	w = item.ptr().WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *Pkg2T2) MarshalJSON() ([]byte, error) {

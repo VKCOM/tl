@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorMapStringString []tlMapStringString.MapStringString
+
+func (item *VectorMapStringString) ptr() *[]tlMapStringString.MapStringString {
+	return (*[]tlMapStringString.MapStringString)(item)
+}
 
 func (VectorMapStringString) TLName() string { return "vector" }
 func (VectorMapStringString) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorMapStringString) Reset() {
-	ptr := (*[]tlMapStringString.MapStringString)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorMapStringString) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlMapStringString.MapStringString)(item)
-	return tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringRead(w, ptr)
+	return tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringRead(w, item.ptr())
 }
 
 func (item *VectorMapStringString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorMapStringString) WriteGeneral(w []byte) (_ []byte, err error) 
 }
 
 func (item *VectorMapStringString) Write(w []byte) []byte {
-	ptr := (*[]tlMapStringString.MapStringString)(item)
-	return tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWrite(w, *ptr)
+	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorMapStringString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorMapStringString) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 func (item *VectorMapStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlMapStringString.MapStringString)(item)
-	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorMapStringString) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorMapStringString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlMapStringString.MapStringString)(item)
-	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorMapStringString) MarshalJSON() ([]byte, error) {

@@ -9,9 +9,9 @@ package tlService6MultiFind
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_e0e20d17984738a60e3bf741bd7db2e9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherService6ErrorVectorService6FindResultRow"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -70,20 +70,20 @@ func (item *Service6MultiFind) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service6MultiFind) ReadResult(w []byte, ret *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func (item *Service6MultiFind) ReadResult(w []byte, ret *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
 	return tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w, ret)
 }
 
-func (item *Service6MultiFind) WriteResult(w []byte, ret []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func (item *Service6MultiFind) WriteResult(w []byte, ret []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w, ret)
 	return w, nil
 }
 
-func (item *Service6MultiFind) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) error {
+func (item *Service6MultiFind) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
@@ -91,18 +91,18 @@ func (item *Service6MultiFind) ReadResultJSON(legacyTypeNames bool, in *basictl.
 	return nil
 }
 
-func (item *Service6MultiFind) WriteResultJSON(w []byte, ret []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func (item *Service6MultiFind) WriteResultJSON(w []byte, ret []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service6MultiFind) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func (item *Service6MultiFind) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx, w, ret)
 	return w, nil
 }
 
 func (item *Service6MultiFind) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow
+	var ret []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -110,22 +110,13 @@ func (item *Service6MultiFind) ReadResultWriteResultJSON(tctx *basictl.JSONWrite
 	return r, w, err
 }
 
-func (item *Service6MultiFind) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *Service6MultiFind) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service6MultiFind) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFind")
-}
-
-func (item *Service6MultiFind) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service6.multiFind")
 }
 
 func (item Service6MultiFind) String() string {
