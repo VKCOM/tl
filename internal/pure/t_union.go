@@ -62,18 +62,6 @@ func (ins *TypeInstanceUnion) GetChildren(children []TypeInstance, withReturnTyp
 	return children
 }
 
-func (ins *TypeInstanceUnion) CreateValue() KernelValue {
-	value := &KernelValueUnion{
-		instance: ins,
-		index:    0,
-		variants: make([]KernelValueStruct, len(ins.variantTypes)),
-	}
-	for i, vt := range ins.variantTypes {
-		value.variants[i] = vt.CreateValueObject()
-	}
-	return value
-}
-
 func (ins *TypeInstanceUnion) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }

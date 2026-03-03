@@ -4,26 +4,27 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type KernelValueStruct struct {
-	instance *TypeInstanceStruct
+	instance *pure.TypeInstanceStruct
 	fields   []KernelValue // nil if optional field not set, to break recursion
 }
 
 var _ KernelValue = &KernelValueStruct{}
 
 func (v *KernelValueStruct) Reset() {
-	for i, ft := range v.instance.fields {
-		if ft.fieldMask != nil {
+	for i, ft := range v.instance.Fields() {
+		if ft.FieldMask() != nil {
 			v.fields[i] = nil
 			continue
 		}
@@ -32,15 +33,15 @@ func (v *KernelValueStruct) Reset() {
 }
 
 func (v *KernelValueStruct) Random(rg *rand.Rand) {
-	for i, ft := range v.instance.fields {
-		if ft.fieldMask != nil {
+	for i, ft := range v.instance.Fields() {
+		if ft.FieldMask() != nil {
 			set := rg.Uint32()&1 != 0
 			if !set {
 				v.fields[i] = nil
 				continue
 			}
 			if v.fields[i] == nil {
-				v.fields[i] = ft.ins.ins.CreateValue()
+				v.fields[i] = CreateValue(ft.TypeInstance())
 			}
 		}
 		v.fields[i].Random(rg)
@@ -55,15 +56,15 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	currentBlockPosition := w.Len()
 	w.WriteFieldmask()
 
-	if v.instance.isUnionElement && v.instance.unionIndex != 0 {
-		w.WriteVariantIndex(v.instance.unionIndex)
+	if v.instance.IsUnionElement() && v.instance.UnionIndex() != 0 {
+		w.WriteVariantIndex(v.instance.UnionIndex())
 		lastUsedByte = w.Len()
 		currentBlock |= 1
 	}
 
 	for i, field := range v.fields {
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		fieldDef := v.instance.fields[i]
+		fieldDef := v.instance.Fields()[i]
 		if (i+1)%8 == 0 {
 			w.buf[currentBlockPosition] = currentBlock
 			currentBlock = 0
@@ -71,10 +72,10 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 			currentBlockPosition = w.Len()
 			w.WriteFieldmask()
 		}
-		if strings.HasPrefix(fieldDef.name, "_") { // IsOmitted
+		if strings.HasPrefix(fieldDef.Name(), "_") { // IsOmitted
 			continue
 		}
-		if fieldDef.fieldMask != nil {
+		if fieldDef.FieldMask() != nil {
 			if field != nil {
 				if fieldOnPath {
 					field.WriteTL2(w, false, true, level+1, model)
@@ -103,11 +104,11 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 
 func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
 	for i, ft := range v.fields {
-		fieldDef := v.instance.fields[i]
+		fieldDef := v.instance.Fields()[i]
 		if (i+1)%8 == 0 {
 			// start the next block
 			if len(currentR) == 0 {
-				for ; i < len(v.instance.fields); i++ {
+				for ; i < len(v.instance.Fields()); i++ {
 					ft.Reset()
 				}
 				return nil
@@ -122,7 +123,7 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2C
 				return err
 			}
 		} else {
-			if fieldDef.fieldMask != nil {
+			if fieldDef.FieldMask() != nil {
 				v.fields[i] = nil
 			} else {
 				ft.Reset()
@@ -158,31 +159,31 @@ func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err er
 			return currentR, err
 		}
 		if index != 0 {
-			return currentR, basictl.TL2Error("unexpected variant index %d, expected %d", index, v.instance.unionIndex)
+			return currentR, basictl.TL2Error("unexpected variant index %d, expected %d", index, v.instance.UnionIndex())
 		}
 	}
 	return r, v.ReadFieldsTL2(block, currentR, ctx)
 }
 
 func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TL2Context) []byte {
-	if !v.instance.isConstructorFields {
+	if v.instance.IsTypedef() {
 		return v.fields[0].WriteJSON(w, ctx)
 	}
 	w = append(w, '{')
 	first := true
 	for i, ft := range v.fields {
-		fieldDef := v.instance.fields[i]
+		fieldDef := v.instance.Fields()[i]
 		if !first {
 			w = append(w, ',')
 		}
-		if fieldDef.fieldMask != nil {
+		if fieldDef.FieldMask() != nil {
 			if v.fields[i] == nil {
 				continue
 			}
 		}
 		first = false
 		w = append(w, `"`...)
-		w = append(w, fieldDef.name...)
+		w = append(w, fieldDef.Name()...)
 		w = append(w, `":`...)
 		w = ft.WriteJSON(w, ctx)
 	}
@@ -198,15 +199,15 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 	}
 	first := true
 	for i, ft := range v.fields {
-		fieldDef := v.instance.fields[i]
+		fieldDef := v.instance.Fields()[i]
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		if fieldDef.fieldMask != nil {
+		if fieldDef.FieldMask() != nil {
 			if ft == nil {
 				if onPath && len(model.Path) > level {
 					if !first {
 						sb.WriteString(",")
 					}
-					sb.WriteString(color.InGray(fieldDef.name))
+					sb.WriteString(color.InGray(fieldDef.Name()))
 					if fieldOnPath {
 						sb.WriteString(color.InBlue("?"))
 					}
@@ -220,9 +221,9 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 		}
 		first = false
 		sb.WriteString(`"`)
-		sb.WriteString(fieldDef.name)
+		sb.WriteString(fieldDef.Name())
 		sb.WriteString(`":`)
-		if fieldDef.fieldMask != nil {
+		if fieldDef.FieldMask() != nil {
 			if ft == nil {
 				sb.WriteString("_")
 				continue
@@ -246,7 +247,7 @@ func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
 		panic("unexpected path invariant")
 	}
 	minimalIndex := 0
-	if v.instance.isUnionElement {
+	if v.instance.IsUnionElement() {
 		minimalIndex = -1
 	}
 	if len(model.Path) == level {
@@ -306,7 +307,7 @@ func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode in
 		if createMode == 0 { // require Enter to insert element
 			return
 		}
-		v.fields[selectedIndex] = v.instance.fields[selectedIndex].ins.ins.CreateValue()
+		v.fields[selectedIndex] = CreateValue(v.instance.Fields()[selectedIndex].TypeInstance())
 		if createMode == 1 {
 			createMode = 0
 		}
@@ -320,8 +321,8 @@ func (v *KernelValueStruct) UIKey(level int, model *UIModel, insert bool, delete
 	}
 	selectedIndex := model.Path[level]
 	if len(model.Path) == level+1 {
-		fieldDef := v.instance.fields[selectedIndex]
-		if fieldDef.fieldMask != nil && v.fields[selectedIndex] != nil {
+		fieldDef := v.instance.Fields()[selectedIndex]
+		if fieldDef.FieldMask() != nil && v.fields[selectedIndex] != nil {
 			v.fields[selectedIndex] = nil
 		}
 		return

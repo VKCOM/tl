@@ -76,6 +76,15 @@ func (ins *TypeInstanceStruct) IsResultAlias() bool {
 	return ins.isResultAlias
 }
 
+func (ins *TypeInstanceStruct) IsUnionElement() bool {
+	return ins.isUnionElement
+}
+
+// zero if not IsUnionElement()
+func (ins *TypeInstanceStruct) UnionIndex() int {
+	return ins.unionIndex
+}
+
 func (ins *TypeInstanceStruct) RPCPreferTL2() bool {
 	return ins.rpcPreferTL2
 }
@@ -143,26 +152,8 @@ func (ins *TypeInstanceStruct) GetChildren(children []TypeInstance, withReturnTy
 	return children
 }
 
-func (ins *TypeInstanceStruct) CreateValue() KernelValue {
-	v := ins.CreateValueObject()
-	return &v
-}
-
 func (ins *TypeInstanceStruct) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
-}
-
-func (ins *TypeInstanceStruct) CreateValueObject() KernelValueStruct {
-	value := KernelValueStruct{
-		instance: ins,
-		fields:   make([]KernelValue, len(ins.fields)),
-	}
-	for i, ft := range ins.fields {
-		if ft.fieldMask == nil {
-			value.fields[i] = ft.ins.ins.CreateValue()
-		}
-	}
-	return value
 }
 
 func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolvedType tlast.TL2TypeRef,

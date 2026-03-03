@@ -4,18 +4,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type KernelValueUnion struct {
-	instance *TypeInstanceUnion
+	instance *pure.TypeInstanceUnion
 	index    int
 	variants []KernelValueStruct // we remember state of all variants to improve editing experience
 }
@@ -73,8 +74,8 @@ func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 
 func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
 	w = append(w, `{"type":"`...)
-	w = append(w, v.instance.variantNames[v.index]...)
-	if len(v.instance.variantTypes[v.index].fields) == 0 {
+	w = append(w, v.instance.VariantNames()[v.index]...)
+	if len(v.instance.VariantTypes()[v.index].Fields()) == 0 {
 		return append(w, `"}`...)
 	}
 	w = append(w, `","value":`...)
@@ -94,10 +95,10 @@ func (v *KernelValueUnion) UIWrite(sb *strings.Builder, onPath bool, level int, 
 		model.CurrentEditor.UIWrite(sb, model)
 	} else {
 		sb.WriteString(`"`)
-		sb.WriteString(v.instance.variantNames[v.index])
+		sb.WriteString(v.instance.VariantNames()[v.index])
 		sb.WriteString(`"`)
 	}
-	if len(v.instance.variantTypes[v.index].fields) == 0 {
+	if len(v.instance.VariantTypes()[v.index].Fields()) == 0 {
 		sb.WriteString(`}`)
 		return
 	}

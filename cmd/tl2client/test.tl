@@ -29,6 +29,6 @@ map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 //a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
 //a.top2 n:# m:# c:(a.middle 4 (pair (a.inner 5) (a.inner n)) (a.Inner 3)) = a.Top2;
 
-@read a.call1#12345678 x:int => Int;
+//@read a.call1#12345678 x:int => Int;
 
-@read a.call2#12345679 x:int => True;
+//@read a.call2#12345679 x:int => True;

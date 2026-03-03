@@ -4,18 +4,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"math/rand/v2"
 	"slices"
 	"strings"
 
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type KernelValueDict struct {
-	instance *TypeInstanceDict
+	instance *pure.TypeInstanceDict
 	elements []KernelValueStruct // cap contains created elements
 }
 
@@ -24,7 +25,7 @@ var _ KernelValue = &KernelValueDict{}
 func (v *KernelValueDict) resize(count int) {
 	v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
-		v.elements = append(v.elements, v.instance.fieldType.CreateValueObject())
+		v.elements = append(v.elements, CreateValueStruct(v.instance.FieldType()))
 	}
 	if len(v.elements) > count {
 		v.elements = v.elements[:count]

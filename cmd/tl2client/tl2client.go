@@ -17,12 +17,13 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/vkcom/tl/internal/pure"
+	"github.com/vkcom/tl/internal/pure/vkext"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 )
 
 type model struct {
-	impl *pure.UIModel
+	impl *vkext.UIModel
 }
 
 func (m model) Init() tea.Cmd {
@@ -32,7 +33,7 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case pure.UIBlinkMsg:
+	case vkext.UIBlinkMsg:
 		m.impl.Blink = msg
 	case tea.WindowSizeMsg:
 		m.impl.Width = msg.Width
@@ -184,9 +185,9 @@ func main() {
 	for _, t := range tlt {
 		log.Printf("type instance: %v", t.CanonicalName())
 		for i := 0; i < 5; i++ {
-			val := t.CreateValue()
+			val := vkext.CreateValue(t)
 			val.Random(rnd)
-			var bb pure.ByteBuilder
+			var bb vkext.ByteBuilder
 			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
 			log.Printf(".   TL2: %s", bb.Print())
@@ -208,8 +209,8 @@ func main() {
 		return
 	}
 
-	uiModel := &pure.UIModel{
-		Fun:           fun.CreateValueObject(),
+	uiModel := &vkext.UIModel{
+		Fun:           vkext.CreateValueStruct(fun),
 		Path:          nil,
 		CurrentEditor: nil,
 		LastError:     nil,
@@ -220,9 +221,9 @@ func main() {
 	p := tea.NewProgram(model{impl: uiModel})
 	go func() {
 		for {
-			p.Send(pure.UIBlinkMsg{On: true})
+			p.Send(vkext.UIBlinkMsg{On: true})
 			time.Sleep(500 * time.Millisecond)
-			p.Send(pure.UIBlinkMsg{On: false})
+			p.Send(vkext.UIBlinkMsg{On: false})
 			time.Sleep(500 * time.Millisecond)
 		}
 	}()

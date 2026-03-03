@@ -30,13 +30,6 @@ func (ins *TypeInstanceDict) GetChildren(children []TypeInstance, withReturnType
 	return append(children, ins.field.ins.ins)
 }
 
-func (ins *TypeInstanceDict) CreateValue() KernelValue {
-	value := &KernelValueDict{
-		instance: ins,
-	}
-	return value
-}
-
 func (ins *TypeInstanceDict) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }

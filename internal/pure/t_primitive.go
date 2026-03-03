@@ -8,15 +8,18 @@ package pure
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type TypeInstancePrimitive struct {
 	TypeInstanceCommon
 	goodForMapKey bool
-	clone         KernelValue
+	isString      bool
+	fixedSize     int // bytes, 0 for bit and string
 }
 
 func (ins *TypeInstancePrimitive) GoodForMapKey() bool {
@@ -34,12 +37,14 @@ func (ins *TypeInstancePrimitive) GetChildren(children []TypeInstance, withRetur
 	return children
 }
 
-func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
-	return ins.clone.Clone()
-}
-
 func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
-	return ins.clone.ReadTL2(r, nil)
+	if ins.isString {
+		return basictl.SkipSizedValue(r)
+	}
+	if len(r) < ins.fixedSize {
+		return r, io.ErrUnexpectedEOF
+	}
+	return r[ins.fixedSize:], nil
 }
 
 func (ins *TypeInstancePrimitive) IsTL1Bool() (ok bool, falseTag uint32, trueTag uint32) {
@@ -49,7 +54,7 @@ func (ins *TypeInstancePrimitive) IsTL1Bool() (ok bool, falseTag uint32, trueTag
 	return false, 0, 0
 }
 
-func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, clone KernelValue, goodForMapKey bool) {
+func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, fixedSize int, goodForMapKey bool) {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
@@ -70,7 +75,8 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 			canonicalName: name,
 			tlName:        tlast.TL2TypeName{Name: historicalName},
 		},
-		clone:         clone,
+		isString:      name == "string",
+		fixedSize:     fixedSize,
 		goodForMapKey: goodForMapKey,
 	}
 	ref := &TypeInstanceRef{

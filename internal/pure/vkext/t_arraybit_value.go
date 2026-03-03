@@ -4,17 +4,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"math/rand/v2"
 	"strings"
 
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type KernelValueArrayBit struct {
-	instance *TypeInstanceArrayBit
+	instance *pure.TypeInstanceArray
 	elements []bool
 }
 
@@ -31,7 +32,7 @@ func (v *KernelValueArrayBit) resize(count int) {
 }
 
 func (v *KernelValueArrayBit) Reset() {
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		v.elements = v.elements[:0]
 		return
 	}
@@ -39,7 +40,7 @@ func (v *KernelValueArrayBit) Reset() {
 }
 
 func (v *KernelValueArrayBit) Random(rg *rand.Rand) {
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		count := 0
 		if (rg.Uint32() & 3) != 0 { // many vectors empty
 			count = 1 + rg.IntN(4)
@@ -83,11 +84,11 @@ func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err 
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if !v.instance.isTuple && elementCount/8 > len(currentR) { // this is relaxed check, +7 could overflow
+		if !v.instance.IsTuple() && elementCount/8 > len(currentR) { // this is relaxed check, +7 could overflow
 			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		v.resize(elementCount)
 	}
 	lastIndex := min(elementCount, elementCount)
