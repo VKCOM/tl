@@ -26,6 +26,14 @@ tlo-bootstrap: build
 		--outdir=./internal/tlast/gentlo \
 		./internal/tlast/tls.tl
 
+.PHONY: gen_tlo
+gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating basictl
+	@./target/bin/tlgen --language=go \
+		--copyrightPath=./COPYRIGHT \
+		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
+		--outdir=./internal/tlast/gentlo \
+		./internal/tlast/tls.tl
+
 .PHONY: gen_check
 gen_check: build
 	@./target/bin/tl2gen --split-internal -v --language=go \
@@ -141,15 +149,6 @@ goldmaster: goldmaster_nocompile goldmaster_tl2_nocompile
 	# $(GO) build ./$(GEN_PATH)/casesTL2/...
 	$(GO) build ./$(GEN_PATH)/goldmaster/...
 	$(GO) build ./$(GEN_PATH)/goldmaster_nosplit/...
-
-.PHONY: gen_tlo
-gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating basictl
-	@./target/bin/tlgen --language=go \
-		--copyrightPath=./COPYRIGHT \
-		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
-		--outdir=./internal/tlast/gentlo \
-		./internal/tlast/tls.tl
-
 
 .PHONY: gen_all
 gen_all: tlo-bootstrap gen goldmaster
