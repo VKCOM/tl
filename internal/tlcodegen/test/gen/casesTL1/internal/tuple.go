@@ -215,22 +215,21 @@ func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteC
 
 type TupleInt []int32
 
+func (item *TupleInt) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (TupleInt) TLName() string { return "tuple" }
 func (TupleInt) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleInt) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleInt) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
-	ptr := (*[]int32)(item)
-	BuiltinTupleIntFillRandom(rg, ptr, nat_n)
+	BuiltinTupleIntFillRandom(rg, item.ptr(), nat_n)
 }
 
 func (item *TupleInt) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return BuiltinTupleIntRead(w, ptr, nat_n)
+	return BuiltinTupleIntRead(w, item.ptr(), nat_n)
 }
 
 func (item *TupleInt) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -238,8 +237,10 @@ func (item *TupleInt) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error)
 }
 
 func (item *TupleInt) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return BuiltinTupleIntWrite(w, *ptr, nat_n)
+	if w, err = BuiltinTupleIntWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleInt) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -259,8 +260,7 @@ func (item *TupleInt) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 }
 
 func (item *TupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	ptr := (*[]int32)(item)
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, in, ptr, nat_n); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
@@ -277,8 +277,7 @@ func (item *TupleInt) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
 }
 
 func (item *TupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, *ptr, nat_n); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -286,22 +285,21 @@ func (item *TupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat
 
 type TupleInt2 [2]int32
 
+func (item *TupleInt2) ptr() *[2]int32 { return (*[2]int32)(item) }
+
 func (TupleInt2) TLName() string { return "tuple" }
 func (TupleInt2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleInt2) Reset() {
-	ptr := (*[2]int32)(item)
-	BuiltinTuple2IntReset(ptr)
+	BuiltinTuple2IntReset(item.ptr())
 }
 
 func (item *TupleInt2) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[2]int32)(item)
-	BuiltinTuple2IntFillRandom(rg, ptr)
+	BuiltinTuple2IntFillRandom(rg, item.ptr())
 }
 
 func (item *TupleInt2) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[2]int32)(item)
-	return BuiltinTuple2IntRead(w, ptr)
+	return BuiltinTuple2IntRead(w, item.ptr())
 }
 
 func (item *TupleInt2) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -309,8 +307,8 @@ func (item *TupleInt2) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt2) Write(w []byte) []byte {
-	ptr := (*[2]int32)(item)
-	return BuiltinTuple2IntWrite(w, ptr)
+	w = BuiltinTuple2IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -338,8 +336,7 @@ func (item *TupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[2]int32)(item)
-	if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -356,8 +353,7 @@ func (item *TupleInt2) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[2]int32)(item)
-	w = BuiltinTuple2IntWriteJSONOpt(tctx, w, ptr)
+	w = BuiltinTuple2IntWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt2) MarshalJSON() ([]byte, error) {
@@ -373,22 +369,21 @@ func (item *TupleInt2) UnmarshalJSON(b []byte) error {
 
 type TupleInt4 [4]int32
 
+func (item *TupleInt4) ptr() *[4]int32 { return (*[4]int32)(item) }
+
 func (TupleInt4) TLName() string { return "tuple" }
 func (TupleInt4) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleInt4) Reset() {
-	ptr := (*[4]int32)(item)
-	BuiltinTuple4IntReset(ptr)
+	BuiltinTuple4IntReset(item.ptr())
 }
 
 func (item *TupleInt4) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[4]int32)(item)
-	BuiltinTuple4IntFillRandom(rg, ptr)
+	BuiltinTuple4IntFillRandom(rg, item.ptr())
 }
 
 func (item *TupleInt4) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[4]int32)(item)
-	return BuiltinTuple4IntRead(w, ptr)
+	return BuiltinTuple4IntRead(w, item.ptr())
 }
 
 func (item *TupleInt4) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -396,8 +391,8 @@ func (item *TupleInt4) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleInt4) Write(w []byte) []byte {
-	ptr := (*[4]int32)(item)
-	return BuiltinTuple4IntWrite(w, ptr)
+	w = BuiltinTuple4IntWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleInt4) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -425,8 +420,7 @@ func (item *TupleInt4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *TupleInt4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[4]int32)(item)
-	if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -443,8 +437,7 @@ func (item *TupleInt4) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleInt4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[4]int32)(item)
-	w = BuiltinTuple4IntWriteJSONOpt(tctx, w, ptr)
+	w = BuiltinTuple4IntWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt4) MarshalJSON() ([]byte, error) {
@@ -460,22 +453,23 @@ func (item *TupleInt4) UnmarshalJSON(b []byte) error {
 
 type TuplePairTupleIntTupleInt2 [2]PairTupleIntTupleInt
 
+func (item *TuplePairTupleIntTupleInt2) ptr() *[2]PairTupleIntTupleInt {
+	return (*[2]PairTupleIntTupleInt)(item)
+}
+
 func (TuplePairTupleIntTupleInt2) TLName() string { return "tuple" }
 func (TuplePairTupleIntTupleInt2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TuplePairTupleIntTupleInt2) Reset() {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	BuiltinTuple2PairTupleIntTupleIntReset(ptr)
+	BuiltinTuple2PairTupleIntTupleIntReset(item.ptr())
 }
 
 func (item *TuplePairTupleIntTupleInt2) FillRandom(rg *basictl.RandGenerator, nat_tXn uint32, nat_tYn uint32) {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	BuiltinTuple2PairTupleIntTupleIntFillRandom(rg, ptr, nat_tXn, nat_tYn)
+	BuiltinTuple2PairTupleIntTupleIntFillRandom(rg, item.ptr(), nat_tXn, nat_tYn)
 }
 
 func (item *TuplePairTupleIntTupleInt2) Read(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	return BuiltinTuple2PairTupleIntTupleIntRead(w, ptr, nat_tXn, nat_tYn)
+	return BuiltinTuple2PairTupleIntTupleIntRead(w, item.ptr(), nat_tXn, nat_tYn)
 }
 
 func (item *TuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
@@ -483,8 +477,10 @@ func (item *TuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_tXn uint32, n
 }
 
 func (item *TuplePairTupleIntTupleInt2) Write(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	return BuiltinTuple2PairTupleIntTupleIntWrite(w, ptr, nat_tXn, nat_tYn)
+	if w, err = BuiltinTuple2PairTupleIntTupleIntWrite(w, item.ptr(), nat_tXn, nat_tYn); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TuplePairTupleIntTupleInt2) ReadBoxed(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
@@ -504,8 +500,7 @@ func (item *TuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_tXn uint32, nat
 }
 
 func (item *TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tXn uint32, nat_tYn uint32) error {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx, in, ptr, nat_tXn, nat_tYn); err != nil {
+	if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx, in, item.ptr(), nat_tXn, nat_tYn); err != nil {
 		return err
 	}
 	return nil
@@ -522,8 +517,7 @@ func (item *TuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_tXn uint32, nat_
 }
 
 func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	ptr := (*[2]PairTupleIntTupleInt)(item)
-	if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx, w, ptr, nat_tXn, nat_tYn); err != nil {
+	if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx, w, item.ptr(), nat_tXn, nat_tYn); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -531,22 +525,21 @@ func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteCont
 
 type TupleString4 [4]string
 
+func (item *TupleString4) ptr() *[4]string { return (*[4]string)(item) }
+
 func (TupleString4) TLName() string { return "tuple" }
 func (TupleString4) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleString4) Reset() {
-	ptr := (*[4]string)(item)
-	BuiltinTuple4StringReset(ptr)
+	BuiltinTuple4StringReset(item.ptr())
 }
 
 func (item *TupleString4) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[4]string)(item)
-	BuiltinTuple4StringFillRandom(rg, ptr)
+	BuiltinTuple4StringFillRandom(rg, item.ptr())
 }
 
 func (item *TupleString4) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[4]string)(item)
-	return BuiltinTuple4StringRead(w, ptr)
+	return BuiltinTuple4StringRead(w, item.ptr())
 }
 
 func (item *TupleString4) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -554,8 +547,8 @@ func (item *TupleString4) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleString4) Write(w []byte) []byte {
-	ptr := (*[4]string)(item)
-	return BuiltinTuple4StringWrite(w, ptr)
+	w = BuiltinTuple4StringWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleString4) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -583,8 +576,7 @@ func (item *TupleString4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 func (item *TupleString4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[4]string)(item)
-	if err := BuiltinTuple4StringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinTuple4StringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -601,8 +593,7 @@ func (item *TupleString4) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleString4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[4]string)(item)
-	w = BuiltinTuple4StringWriteJSONOpt(tctx, w, ptr)
+	w = BuiltinTuple4StringWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleString4) MarshalJSON() ([]byte, error) {
@@ -618,22 +609,21 @@ func (item *TupleString4) UnmarshalJSON(b []byte) error {
 
 type TupleString4Bytes [4][]byte
 
+func (item *TupleString4Bytes) ptr() *[4][]byte { return (*[4][]byte)(item) }
+
 func (TupleString4Bytes) TLName() string { return "tuple" }
 func (TupleString4Bytes) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleString4Bytes) Reset() {
-	ptr := (*[4][]byte)(item)
-	BuiltinTuple4StringBytesReset(ptr)
+	BuiltinTuple4StringBytesReset(item.ptr())
 }
 
 func (item *TupleString4Bytes) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[4][]byte)(item)
-	BuiltinTuple4StringBytesFillRandom(rg, ptr)
+	BuiltinTuple4StringBytesFillRandom(rg, item.ptr())
 }
 
 func (item *TupleString4Bytes) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[4][]byte)(item)
-	return BuiltinTuple4StringBytesRead(w, ptr)
+	return BuiltinTuple4StringBytesRead(w, item.ptr())
 }
 
 func (item *TupleString4Bytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -641,8 +631,8 @@ func (item *TupleString4Bytes) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleString4Bytes) Write(w []byte) []byte {
-	ptr := (*[4][]byte)(item)
-	return BuiltinTuple4StringBytesWrite(w, ptr)
+	w = BuiltinTuple4StringBytesWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleString4Bytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -670,8 +660,7 @@ func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 func (item *TupleString4Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[4][]byte)(item)
-	if err := BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -688,8 +677,7 @@ func (item *TupleString4Bytes) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleString4Bytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[4][]byte)(item)
-	w = BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, ptr)
+	w = BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleString4Bytes) MarshalJSON() ([]byte, error) {
@@ -705,22 +693,21 @@ func (item *TupleString4Bytes) UnmarshalJSON(b []byte) error {
 
 type TupleTupleInt2 [][2]int32
 
+func (item *TupleTupleInt2) ptr() *[][2]int32 { return (*[][2]int32)(item) }
+
 func (TupleTupleInt2) TLName() string { return "tuple" }
 func (TupleTupleInt2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleTupleInt2) Reset() {
-	ptr := (*[][2]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleTupleInt2) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
-	ptr := (*[][2]int32)(item)
-	BuiltinTupleTupleInt2FillRandom(rg, ptr, nat_n)
+	BuiltinTupleTupleInt2FillRandom(rg, item.ptr(), nat_n)
 }
 
 func (item *TupleTupleInt2) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]int32)(item)
-	return BuiltinTupleTupleInt2Read(w, ptr, nat_n)
+	return BuiltinTupleTupleInt2Read(w, item.ptr(), nat_n)
 }
 
 func (item *TupleTupleInt2) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -728,8 +715,10 @@ func (item *TupleTupleInt2) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err 
 }
 
 func (item *TupleTupleInt2) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]int32)(item)
-	return BuiltinTupleTupleInt2Write(w, *ptr, nat_n)
+	if w, err = BuiltinTupleTupleInt2Write(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleTupleInt2) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -749,8 +738,7 @@ func (item *TupleTupleInt2) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err er
 }
 
 func (item *TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	ptr := (*[][2]int32)(item)
-	if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, in, ptr, nat_n); err != nil {
+	if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
@@ -767,8 +755,7 @@ func (item *TupleTupleInt2) WriteJSON(w []byte, nat_n uint32) (_ []byte, err err
 }
 
 func (item *TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]int32)(item)
-	if w, err = BuiltinTupleTupleInt2WriteJSONOpt(tctx, w, *ptr, nat_n); err != nil {
+	if w, err = BuiltinTupleTupleInt2WriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -776,22 +763,23 @@ func (item *TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 
 type TupleTuplePairTupleIntTupleInt2 [][2]PairTupleIntTupleInt
 
+func (item *TupleTuplePairTupleIntTupleInt2) ptr() *[][2]PairTupleIntTupleInt {
+	return (*[][2]PairTupleIntTupleInt)(item)
+}
+
 func (TupleTuplePairTupleIntTupleInt2) TLName() string { return "tuple" }
 func (TupleTuplePairTupleIntTupleInt2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleTuplePairTupleIntTupleInt2) Reset() {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) FillRandom(rg *basictl.RandGenerator, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	BuiltinTupleTuplePairTupleIntTupleInt2FillRandom(rg, ptr, nat_n, nat_ttXn, nat_ttYn)
+	BuiltinTupleTuplePairTupleIntTupleInt2FillRandom(rg, item.ptr(), nat_n, nat_ttXn, nat_ttYn)
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) Read(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	return BuiltinTupleTuplePairTupleIntTupleInt2Read(w, ptr, nat_n, nat_ttXn, nat_ttYn)
+	return BuiltinTupleTuplePairTupleIntTupleInt2Read(w, item.ptr(), nat_n, nat_ttXn, nat_ttYn)
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
@@ -799,8 +787,10 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_ttXn uin
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) Write(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	return BuiltinTupleTuplePairTupleIntTupleInt2Write(w, *ptr, nat_n, nat_ttXn, nat_ttYn)
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2Write(w, *item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) ReadBoxed(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
@@ -820,8 +810,7 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_ttXn uint3
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) error {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, in, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
+	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, in, item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return err
 	}
 	return nil
@@ -838,8 +827,7 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_ttXn uint32
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]PairTupleIntTupleInt)(item)
-	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, *ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, *item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return w, err
 	}
 	return w, nil

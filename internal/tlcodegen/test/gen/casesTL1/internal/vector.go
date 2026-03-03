@@ -15,22 +15,23 @@ var _ = basictl.NatWrite
 
 type VectorBenchmarksVruposition []BenchmarksVruposition
 
+func (item *VectorBenchmarksVruposition) ptr() *[]BenchmarksVruposition {
+	return (*[]BenchmarksVruposition)(item)
+}
+
 func (VectorBenchmarksVruposition) TLName() string { return "vector" }
 func (VectorBenchmarksVruposition) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorBenchmarksVruposition) Reset() {
-	ptr := (*[]BenchmarksVruposition)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorBenchmarksVruposition) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]BenchmarksVruposition)(item)
-	BuiltinVectorBenchmarksVrupositionFillRandom(rg, ptr)
+	BuiltinVectorBenchmarksVrupositionFillRandom(rg, item.ptr())
 }
 
 func (item *VectorBenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]BenchmarksVruposition)(item)
-	return BuiltinVectorBenchmarksVrupositionRead(w, ptr)
+	return BuiltinVectorBenchmarksVrupositionRead(w, item.ptr())
 }
 
 func (item *VectorBenchmarksVruposition) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -38,8 +39,8 @@ func (item *VectorBenchmarksVruposition) WriteGeneral(w []byte) (_ []byte, err e
 }
 
 func (item *VectorBenchmarksVruposition) Write(w []byte) []byte {
-	ptr := (*[]BenchmarksVruposition)(item)
-	return BuiltinVectorBenchmarksVrupositionWrite(w, *ptr)
+	w = BuiltinVectorBenchmarksVrupositionWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorBenchmarksVruposition) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -67,8 +68,7 @@ func (item *VectorBenchmarksVruposition) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 func (item *VectorBenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]BenchmarksVruposition)(item)
-	if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -85,8 +85,7 @@ func (item *VectorBenchmarksVruposition) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorBenchmarksVruposition) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]BenchmarksVruposition)(item)
-	w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorBenchmarksVruposition) MarshalJSON() ([]byte, error) {
@@ -102,22 +101,23 @@ func (item *VectorBenchmarksVruposition) UnmarshalJSON(b []byte) error {
 
 type VectorBenchmarksVrutoyTopLevelUnion []BenchmarksVrutoyTopLevelUnion
 
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ptr() *[]BenchmarksVrutoyTopLevelUnion {
+	return (*[]BenchmarksVrutoyTopLevelUnion)(item)
+}
+
 func (VectorBenchmarksVrutoyTopLevelUnion) TLName() string { return "vector" }
 func (VectorBenchmarksVrutoyTopLevelUnion) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) Reset() {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg, ptr)
+	BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg, item.ptr())
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	return BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(w, ptr)
+	return BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(w, item.ptr())
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -125,8 +125,8 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteGeneral(w []byte) (_ []byt
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) Write(w []byte) []byte {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	return BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(w, *ptr)
+	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -154,8 +154,7 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, 
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	if err := BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -172,8 +171,7 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]BenchmarksVrutoyTopLevelUnion)(item)
-	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorBenchmarksVrutoyTopLevelUnion) MarshalJSON() ([]byte, error) {
@@ -189,22 +187,21 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) UnmarshalJSON(b []byte) error {
 
 type VectorBool []bool
 
+func (item *VectorBool) ptr() *[]bool { return (*[]bool)(item) }
+
 func (VectorBool) TLName() string { return "vector" }
 func (VectorBool) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorBool) Reset() {
-	ptr := (*[]bool)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorBool) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]bool)(item)
-	BuiltinVectorBoolFillRandom(rg, ptr)
+	BuiltinVectorBoolFillRandom(rg, item.ptr())
 }
 
 func (item *VectorBool) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]bool)(item)
-	return BuiltinVectorBoolRead(w, ptr)
+	return BuiltinVectorBoolRead(w, item.ptr())
 }
 
 func (item *VectorBool) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -212,8 +209,8 @@ func (item *VectorBool) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorBool) Write(w []byte) []byte {
-	ptr := (*[]bool)(item)
-	return BuiltinVectorBoolWrite(w, *ptr)
+	w = BuiltinVectorBoolWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorBool) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -241,8 +238,7 @@ func (item *VectorBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 func (item *VectorBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]bool)(item)
-	if err := BuiltinVectorBoolReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorBoolReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -259,8 +255,7 @@ func (item *VectorBool) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]bool)(item)
-	w = BuiltinVectorBoolWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorBoolWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorBool) MarshalJSON() ([]byte, error) {
@@ -276,22 +271,23 @@ func (item *VectorBool) UnmarshalJSON(b []byte) error {
 
 type VectorDictionaryAnyFieldDoubleInt []DictionaryAnyFieldDoubleInt
 
+func (item *VectorDictionaryAnyFieldDoubleInt) ptr() *[]DictionaryAnyFieldDoubleInt {
+	return (*[]DictionaryAnyFieldDoubleInt)(item)
+}
+
 func (VectorDictionaryAnyFieldDoubleInt) TLName() string { return "vector" }
 func (VectorDictionaryAnyFieldDoubleInt) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) Reset() {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	BuiltinVectorDictionaryAnyFieldDoubleIntFillRandom(rg, ptr)
+	BuiltinVectorDictionaryAnyFieldDoubleIntFillRandom(rg, item.ptr())
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	return BuiltinVectorDictionaryAnyFieldDoubleIntRead(w, ptr)
+	return BuiltinVectorDictionaryAnyFieldDoubleIntRead(w, item.ptr())
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -299,8 +295,8 @@ func (item *VectorDictionaryAnyFieldDoubleInt) WriteGeneral(w []byte) (_ []byte,
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) Write(w []byte) []byte {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	return BuiltinVectorDictionaryAnyFieldDoubleIntWrite(w, *ptr)
+	w = BuiltinVectorDictionaryAnyFieldDoubleIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -328,8 +324,7 @@ func (item *VectorDictionaryAnyFieldDoubleInt) ReadJSON(legacyTypeNames bool, in
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	if err := BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -346,8 +341,7 @@ func (item *VectorDictionaryAnyFieldDoubleInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorDictionaryAnyFieldDoubleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]DictionaryAnyFieldDoubleInt)(item)
-	w = BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorDictionaryAnyFieldDoubleInt) MarshalJSON() ([]byte, error) {
@@ -363,22 +357,21 @@ func (item *VectorDictionaryAnyFieldDoubleInt) UnmarshalJSON(b []byte) error {
 
 type VectorInt []int32
 
+func (item *VectorInt) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (VectorInt) TLName() string { return "vector" }
 func (VectorInt) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorInt) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorInt) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]int32)(item)
-	BuiltinVectorIntFillRandom(rg, ptr)
+	BuiltinVectorIntFillRandom(rg, item.ptr())
 }
 
 func (item *VectorInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return BuiltinVectorIntRead(w, ptr)
+	return BuiltinVectorIntRead(w, item.ptr())
 }
 
 func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -386,8 +379,8 @@ func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorInt) Write(w []byte) []byte {
-	ptr := (*[]int32)(item)
-	return BuiltinVectorIntWrite(w, *ptr)
+	w = BuiltinVectorIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -415,8 +408,7 @@ func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *VectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]int32)(item)
-	if err := BuiltinVectorIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -433,8 +425,7 @@ func (item *VectorInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]int32)(item)
-	w = BuiltinVectorIntWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorInt) MarshalJSON() ([]byte, error) {
@@ -450,22 +441,21 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 
 type VectorString []string
 
+func (item *VectorString) ptr() *[]string { return (*[]string)(item) }
+
 func (VectorString) TLName() string { return "vector" }
 func (VectorString) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorString) Reset() {
-	ptr := (*[]string)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorString) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]string)(item)
-	BuiltinVectorStringFillRandom(rg, ptr)
+	BuiltinVectorStringFillRandom(rg, item.ptr())
 }
 
 func (item *VectorString) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]string)(item)
-	return BuiltinVectorStringRead(w, ptr)
+	return BuiltinVectorStringRead(w, item.ptr())
 }
 
 func (item *VectorString) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -473,8 +463,8 @@ func (item *VectorString) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorString) Write(w []byte) []byte {
-	ptr := (*[]string)(item)
-	return BuiltinVectorStringWrite(w, *ptr)
+	w = BuiltinVectorStringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorString) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -502,8 +492,7 @@ func (item *VectorString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 func (item *VectorString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]string)(item)
-	if err := BuiltinVectorStringReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -520,8 +509,7 @@ func (item *VectorString) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]string)(item)
-	w = BuiltinVectorStringWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorStringWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorString) MarshalJSON() ([]byte, error) {
@@ -537,22 +525,21 @@ func (item *VectorString) UnmarshalJSON(b []byte) error {
 
 type VectorStringBytes [][]byte
 
+func (item *VectorStringBytes) ptr() *[][]byte { return (*[][]byte)(item) }
+
 func (VectorStringBytes) TLName() string { return "vector" }
 func (VectorStringBytes) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorStringBytes) Reset() {
-	ptr := (*[][]byte)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorStringBytes) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[][]byte)(item)
-	BuiltinVectorStringBytesFillRandom(rg, ptr)
+	BuiltinVectorStringBytesFillRandom(rg, item.ptr())
 }
 
 func (item *VectorStringBytes) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[][]byte)(item)
-	return BuiltinVectorStringBytesRead(w, ptr)
+	return BuiltinVectorStringBytesRead(w, item.ptr())
 }
 
 func (item *VectorStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -560,8 +547,8 @@ func (item *VectorStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorStringBytes) Write(w []byte) []byte {
-	ptr := (*[][]byte)(item)
-	return BuiltinVectorStringBytesWrite(w, *ptr)
+	w = BuiltinVectorStringBytesWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -589,8 +576,7 @@ func (item *VectorStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 func (item *VectorStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[][]byte)(item)
-	if err := BuiltinVectorStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorStringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -607,8 +593,7 @@ func (item *VectorStringBytes) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[][]byte)(item)
-	w = BuiltinVectorStringBytesWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorStringBytesWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorStringBytes) MarshalJSON() ([]byte, error) {
@@ -624,22 +609,21 @@ func (item *VectorStringBytes) UnmarshalJSON(b []byte) error {
 
 type VectorTrueBoxed []True
 
+func (item *VectorTrueBoxed) ptr() *[]True { return (*[]True)(item) }
+
 func (VectorTrueBoxed) TLName() string { return "vector" }
 func (VectorTrueBoxed) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorTrueBoxed) Reset() {
-	ptr := (*[]True)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorTrueBoxed) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*[]True)(item)
-	BuiltinVectorTrueBoxedFillRandom(rg, ptr)
+	BuiltinVectorTrueBoxedFillRandom(rg, item.ptr())
 }
 
 func (item *VectorTrueBoxed) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]True)(item)
-	return BuiltinVectorTrueBoxedRead(w, ptr)
+	return BuiltinVectorTrueBoxedRead(w, item.ptr())
 }
 
 func (item *VectorTrueBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -647,8 +631,8 @@ func (item *VectorTrueBoxed) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorTrueBoxed) Write(w []byte) []byte {
-	ptr := (*[]True)(item)
-	return BuiltinVectorTrueBoxedWrite(w, *ptr)
+	w = BuiltinVectorTrueBoxedWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorTrueBoxed) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -676,8 +660,7 @@ func (item *VectorTrueBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *VectorTrueBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]True)(item)
-	if err := BuiltinVectorTrueBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := BuiltinVectorTrueBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -694,8 +677,7 @@ func (item *VectorTrueBoxed) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorTrueBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]True)(item)
-	w = BuiltinVectorTrueBoxedWriteJSONOpt(tctx, w, *ptr)
+	w = BuiltinVectorTrueBoxedWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorTrueBoxed) MarshalJSON() ([]byte, error) {
