@@ -19,7 +19,6 @@ type TypeInstance interface {
 	GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance
 	BoxedOnly() bool
 
-	CreateValue() KernelValue
 	SkipTL2(r []byte) ([]byte, error)
 }
 

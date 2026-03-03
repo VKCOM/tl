@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"fmt"
@@ -27,7 +27,7 @@ func (e *UIEditorUnion) SetValue(v *KernelValueUnion) {
 	e.prefixRunes = e.prefixRunes[:0]
 	e.names = e.names[:0]
 	e.lowerNames = e.lowerNames[:0]
-	for _, vaName := range v.instance.variantNames {
+	for _, vaName := range v.instance.VariantNames() {
 		e.names = append(e.names, vaName)
 		e.lowerNames = append(e.lowerNames, strings.ToLower(vaName))
 	}

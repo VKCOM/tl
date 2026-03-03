@@ -41,16 +41,6 @@ func (ins *TypeInstanceArray) GetChildren(children []TypeInstance, withReturnTyp
 	return append(children, ins.field.ins.ins)
 }
 
-func (ins *TypeInstanceArray) CreateValue() KernelValue {
-	value := &KernelValueArray{
-		instance: ins,
-	}
-	if ins.isTuple {
-		value.resize(int(ins.count))
-	}
-	return value
-}
-
 func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 	return basictl.SkipSizedValue(r)
 }

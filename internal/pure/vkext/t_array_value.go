@@ -4,18 +4,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/internal/pure"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 type KernelValueArray struct {
-	instance *TypeInstanceArray
+	instance *pure.TypeInstanceArray
 	elements []KernelValue
 }
 
@@ -24,7 +25,7 @@ var _ KernelValue = &KernelValueArray{}
 func (v *KernelValueArray) resize(count int) {
 	v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
-		v.elements = append(v.elements, v.instance.field.ins.ins.CreateValue())
+		v.elements = append(v.elements, CreateValue(v.instance.Field().TypeInstance()))
 	}
 	if len(v.elements) > count {
 		v.elements = v.elements[:count]
@@ -40,7 +41,7 @@ func (v *KernelValueArray) Clone() KernelValue {
 }
 
 func (v *KernelValueArray) Reset() {
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		v.elements = v.elements[:0]
 		return
 	}
@@ -50,7 +51,7 @@ func (v *KernelValueArray) Reset() {
 }
 
 func (v *KernelValueArray) Random(rg *rand.Rand) {
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		count := 0
 		if (rg.Uint32() & 3) != 0 { // many vectors empty
 			count = 1 + rg.IntN(4)
@@ -100,11 +101,11 @@ func (v *KernelValueArray) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if !v.instance.isTuple && elementCount > len(currentR) {
+		if !v.instance.IsTuple() && elementCount > len(currentR) {
 			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		v.resize(elementCount)
 	}
 	lastIndex := min(elementCount, elementCount)
@@ -168,7 +169,7 @@ func (v *KernelValueArray) UIFixPath(side int, level int, model *UIModel) int {
 		panic("unexpected path invariant")
 	}
 	maximumIndex := len(v.elements) - 1
-	if !v.instance.isTuple {
+	if !v.instance.IsTuple() {
 		maximumIndex++
 	}
 	if len(model.Path) == level {
@@ -224,13 +225,13 @@ func (v *KernelValueArray) UIStartEdit(level int, model *UIModel, createMode int
 	}
 	selectedIndex := model.Path[level]
 	if selectedIndex == len(v.elements) {
-		if v.instance.isTuple {
+		if v.instance.IsTuple() {
 			panic("unexpected path invariant for tuple")
 		}
 		if createMode == 0 { // require Enter or Rune to insert element
 			return
 		}
-		v.elements = append(v.elements, v.instance.field.ins.ins.CreateValue())
+		v.elements = append(v.elements, CreateValue(v.instance.Field().TypeInstance()))
 		if createMode == 1 {
 			createMode = 0
 		}
@@ -243,7 +244,7 @@ func (v *KernelValueArray) UIKey(level int, model *UIModel, insert bool, delete 
 		return
 	}
 	selectedIndex := model.Path[level]
-	if v.instance.isTuple || selectedIndex == len(v.elements) {
+	if v.instance.IsTuple() || selectedIndex == len(v.elements) {
 		return
 	}
 	if len(model.Path) == level+1 {

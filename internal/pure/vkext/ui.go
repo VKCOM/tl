@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package pure
+package vkext
 
 import (
 	"fmt"
@@ -95,7 +95,7 @@ func (m *UIModel) View() string {
 		sb.WriteString("\n")
 	}
 	//sb.WriteString(m.colorButtonComment("Extra"))
-	sb.WriteString(m.Fun.instance.canonicalName)
+	sb.WriteString(m.Fun.instance.CanonicalName())
 	//if m.Fun.instance.comb.FuncDecl.Magic != 0 {
 	//	sb.WriteString("#")
 	//	sb.WriteString(fmt.Sprintf("%08x", m.Fun.instance.comb.FuncDecl.Magic))

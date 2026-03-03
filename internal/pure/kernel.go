@@ -55,16 +55,16 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
-	k.addPrimitive("uint32", "#", "nat", &KernelValueUint32{}, true)
-	k.addPrimitive("int32", "int", "int", &KernelValueInt32{}, true)
-	k.addPrimitive("float32", "float", "float", &KernelValueInt32{}, false)
-	k.addPrimitive("uint64", "", "uint64", &KernelValueUint64{}, true)
-	k.addPrimitive("int64", "long", "long", &KernelValueInt64{}, true)
-	k.addPrimitive("float64", "double", "double", &KernelValueInt64{}, false)
-	k.addPrimitive("byte", "", "byte", &KernelValueByte{}, true)
-	k.addPrimitive("bool", "", "bool", &KernelValueBool{}, true)
-	k.addPrimitive("bit", "", "bit", &KernelValueBit{}, true)
-	k.addPrimitive("string", "string", "string", &KernelValueString{}, true)
+	k.addPrimitive("uint32", "#", "nat", 4, true)
+	k.addPrimitive("int32", "int", "int", 4, true)
+	k.addPrimitive("float32", "float", "float", 4, false)
+	k.addPrimitive("uint64", "", "uint64", 8, true)
+	k.addPrimitive("int64", "long", "long", 8, true)
+	k.addPrimitive("float64", "double", "double", 8, false)
+	k.addPrimitive("byte", "", "byte", 1, true)
+	k.addPrimitive("bool", "", "bool", 1, true)
+	k.addPrimitive("bit", "", "bit", 0, true)
+	k.addPrimitive("string", "string", "string", 0, true)
 	//k.addString()
 	k.addTL1Brackets()
 
