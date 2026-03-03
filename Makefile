@@ -18,17 +18,9 @@ build: # build static binary to run on many linux variants
 	CGO_ENABLED=0 $(GO) build -buildvcs=$(BUILD_VCS) -o target/bin/tl2gen ./cmd/tl2gen
 	CGO_ENABLED=0 $(GO) build -buildvcs=$(BUILD_VCS) -o target/bin/tl2client ./cmd/tl2client
 
-tlo-bootstrap: build
-	@./target/bin/tlgen -v --language=go \
-		--copyrightPath=./COPYRIGHT \
-		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--outdir=./internal/tlast/gentlo \
-		./internal/tlast/tls.tl
-
-.PHONY: gen_tlo
-gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating basictl
-	@./target/bin/tlgen --language=go \
+.PHONY: gen_bootstrap
+gen_bootstrap: build # do not set --basicPkgPath, or you'll have hard time updating basictl
+	@./target/bin/tl2gen --language=go \
 		--copyrightPath=./COPYRIGHT \
 		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
 		--outdir=./internal/tlast/gentlo \

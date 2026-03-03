@@ -321,49 +321,46 @@ func (item *TlsTypeExpr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	}
 	switch _tag {
 	case "tls.typeVar#0142ceae", "tls.typeVar", "#0142ceae":
-		if tctx.IsTL2 && _tag != "tls.typeVar" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.typeVar#0142ceae" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.typeVar#0142ceae")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#0142ceae" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "#0142ceae")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueTypeVar.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.array#d9fb20de", "tls.array", "#d9fb20de":
-		if tctx.IsTL2 && _tag != "tls.array" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.array#d9fb20de" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.array#d9fb20de")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#d9fb20de" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "#d9fb20de")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueArray.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.typeExpr#c1863d08", "tls.typeExpr", "#c1863d08":
-		if tctx.IsTL2 && _tag != "tls.typeExpr" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.typeExpr#c1863d08" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.typeExpr#c1863d08")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#c1863d08" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "#c1863d08")
 		}
 		item.index = 2
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueTypeExpr.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -386,27 +383,19 @@ func (item *TlsTypeExpr) WriteJSON(w []byte) (_ []byte, err error) {
 func (item *TlsTypeExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.typeVar"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.typeVar#0142ceae"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.typeVar#0142ceae"`...)
-			} else {
-				w = append(w, `{"type":"tls.typeVar"`...)
-			}
+			w = append(w, `{"type":"tls.typeVar"`...)
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueTypeVar.WriteJSONOpt(tctx, w)
 		return append(w, '}'), nil
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.array"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.array#d9fb20de"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.array#d9fb20de"`...)
-			} else {
-				w = append(w, `{"type":"tls.array"`...)
-			}
+			w = append(w, `{"type":"tls.array"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueArray.WriteJSONOpt(tctx, w); err != nil {
@@ -414,14 +403,10 @@ func (item *TlsTypeExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 		}
 		return append(w, '}'), nil
 	case 2:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.typeExpr"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.typeExpr#c1863d08"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.typeExpr#c1863d08"`...)
-			} else {
-				w = append(w, `{"type":"tls.typeExpr"`...)
-			}
+			w = append(w, `{"type":"tls.typeExpr"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueTypeExpr.WriteJSONOpt(tctx, w); err != nil {

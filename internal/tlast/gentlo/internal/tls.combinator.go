@@ -209,33 +209,31 @@ func (item *TlsCombinator) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 	}
 	switch _tag {
 	case "tls.combinator#5c0a1ed5", "tls.combinator", "#5c0a1ed5":
-		if tctx.IsTL2 && _tag != "tls.combinator" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.combinator#5c0a1ed5" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", "tls.combinator#5c0a1ed5")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#5c0a1ed5" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", "#5c0a1ed5")
 		}
 		item.index = 0
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueCombinator.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.combinator_v4#e91692d5", "tls.combinator_v4", "#e91692d5":
-		if tctx.IsTL2 && _tag != "tls.combinator_v4" {
-			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", _tag)
-		}
 		if !tctx.LegacyTypeNames && _tag == "tls.combinator_v4#e91692d5" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", "tls.combinator_v4#e91692d5")
+		}
+		if !tctx.LegacyTypeNames && _tag == "#e91692d5" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Combinator", "#e91692d5")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
 		if _value != nil {
-			in2 := basictl.JsonLexer{Data: _value}
-			in2Pointer = &in2
+			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
 		if err := item.valueV4.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
@@ -258,14 +256,10 @@ func (item *TlsCombinator) WriteJSON(w []byte) (_ []byte, err error) {
 func (item *TlsCombinator) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.combinator"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.combinator#5c0a1ed5"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.combinator#5c0a1ed5"`...)
-			} else {
-				w = append(w, `{"type":"tls.combinator"`...)
-			}
+			w = append(w, `{"type":"tls.combinator"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueCombinator.WriteJSONOpt(tctx, w); err != nil {
@@ -273,14 +267,10 @@ func (item *TlsCombinator) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.IsTL2 {
-			w = append(w, `{"type":"tls.combinator_v4"`...)
+		if tctx.LegacyTypeNames {
+			w = append(w, `{"type":"tls.combinator_v4#e91692d5"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"tls.combinator_v4#e91692d5"`...)
-			} else {
-				w = append(w, `{"type":"tls.combinator_v4"`...)
-			}
+			w = append(w, `{"type":"tls.combinator_v4"`...)
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.valueV4.WriteJSONOpt(tctx, w); err != nil {
