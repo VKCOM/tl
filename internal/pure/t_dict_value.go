@@ -7,7 +7,7 @@
 package pure
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"slices"
 	"strings"
 
@@ -47,7 +47,7 @@ func (v *KernelValueDict) Reset() {
 func (v *KernelValueDict) Random(rg *rand.Rand) {
 	count := 0
 	if (rg.Uint32() & 3) != 0 { // many vectors empty
-		count = 1 + rg.Intn(4)
+		count = 1 + rg.IntN(4)
 	}
 	v.resize(count)
 	for _, el := range v.elements {

@@ -10,7 +10,7 @@ import (
 	"cmp"
 	"encoding/binary"
 	"io"
-	"math/rand"
+	"math/rand/v2"
 	"strconv"
 	"strings"
 

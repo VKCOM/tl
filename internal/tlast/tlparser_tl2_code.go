@@ -3,6 +3,7 @@ package tlast
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 	"strconv"
 	"strings"
 )
@@ -212,13 +213,15 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 			return
 		}
 		if value == 0 {
-			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0"), crcToken, position))
+			magic := rand.Uint32()
+			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0, use 'openssl rand -hex 4' or this random value #%08x I've generated", magic), crcToken, position))
 			return
 		}
 		result.Magic = uint32(value)
 		result.PRID.End = restTokens.front().pos
 	} else {
-		state.FailWithError(parseErrToken(fmt.Errorf("function must have magic"), restTokens.front(), position))
+		magic := rand.Uint32()
+		state.FailWithError(parseErrToken(fmt.Errorf("function must have magic, use 'openssl rand -hex 4' or this random value #%08x I've generated", magic), tokens.front(), position))
 		return
 	}
 
@@ -298,7 +301,8 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 			return
 		}
 		if value == 0 {
-			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0"), crcToken, position))
+			magic := rand.Uint32()
+			state.FailWithError(parseErrToken(fmt.Errorf("magic should not be 0, use 'openssl rand -hex 4' or this random value #%08x I've generated", magic), crcToken, position))
 			return
 		}
 		result.Magic = uint32(value)

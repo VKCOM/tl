@@ -7,7 +7,7 @@
 package pure
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 
 	"github.com/vkcom/tl/pkg/basictl"
@@ -42,7 +42,7 @@ func (v *KernelValueArrayBit) Random(rg *rand.Rand) {
 	if !v.instance.isTuple {
 		count := 0
 		if (rg.Uint32() & 3) != 0 { // many vectors empty
-			count = 1 + rg.Intn(4)
+			count = 1 + rg.IntN(4)
 		}
 		v.resize(count)
 	}

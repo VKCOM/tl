@@ -1035,19 +1035,21 @@ x:int // comment1
 			)
 		})
 
-		t.Run("zero magic", func(t *testing.T) {
-			BeautifulErrorTL2Test(t,
-				`testNs.testName#00000000 x:int => `,
-				"magic should not be 0",
-			)
-		})
-
-		t.Run("function without magic", func(t *testing.T) {
-			BeautifulErrorTL2Test(t,
-				`testNs.testName x:int => `,
-				"function must have magic",
-			)
-		})
+		// We've added random value for our users, so tests are non-deterministic now,
+		// We could set generator in an option, but there is no options passed to parser,
+		// or (worse) tinker with global seed later.
+		//t.Run("zero magic", func(t *testing.T) {
+		//	BeautifulErrorTL2Test(t,
+		//		`testNs.testName#00000000 x:int => `,
+		//		"magic should not be 0",
+		//	)
+		//})
+		//t.Run("function without magic", func(t *testing.T) {
+		//	BeautifulErrorTL2Test(t,
+		//		`testNs.testName x:int => `,
+		//		"function must have magic",
+		//	)
+		//})
 
 		t.Run("zero generics", func(t *testing.T) {
 			BeautifulErrorTL2Test(t,

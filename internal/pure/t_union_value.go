@@ -7,7 +7,7 @@
 package pure
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
@@ -28,7 +28,7 @@ func (v *KernelValueUnion) Reset() {
 }
 
 func (v *KernelValueUnion) Random(rg *rand.Rand) {
-	v.index = rg.Intn(len(v.variants))
+	v.index = rg.IntN(len(v.variants))
 	v.variants[v.index].Random(rg)
 }
 

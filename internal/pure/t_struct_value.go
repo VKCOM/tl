@@ -7,7 +7,7 @@
 package pure
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 
 	"github.com/TwiN/go-color"
