@@ -9,7 +9,7 @@ package tlMyTwoDicts
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorDictionaryFieldInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinDictStringInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -25,15 +25,15 @@ func (MyTwoDicts) TLName() string { return "myTwoDicts" }
 func (MyTwoDicts) TLTag() uint32  { return 0xa859581d }
 
 func (item *MyTwoDicts) Reset() {
-	tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReset(item.A)
-	tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReset(item.B)
+	tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.A)
+	tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.B)
 }
 
 func (item *MyTwoDicts) Read(w []byte) (_ []byte, err error) {
-	if w, err = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntRead(w, &item.A); err != nil {
+	if w, err = tlBuiltinDictStringInt.BuiltinDictStringIntRead(w, &item.A); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntRead(w, &item.B)
+	return tlBuiltinDictStringInt.BuiltinDictStringIntRead(w, &item.B)
 }
 
 func (item *MyTwoDicts) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -41,8 +41,8 @@ func (item *MyTwoDicts) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MyTwoDicts) Write(w []byte) []byte {
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWrite(w, item.A)
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWrite(w, item.B)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWrite(w, item.A)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWrite(w, item.B)
 	return w
 }
 
@@ -88,7 +88,7 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "a")
 				}
-				if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -96,7 +96,7 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "b")
 				}
-				if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -111,10 +111,10 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		}
 	}
 	if !propAPresented {
-		tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReset(item.A)
+		tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.A)
 	}
 	if !propBPresented {
-		tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReset(item.B)
+		tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.B)
 	}
 	return nil
 }
@@ -133,14 +133,14 @@ func (item *MyTwoDicts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) [
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWriteJSONOpt(tctx, w, item.A)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(tctx, w, item.A)
 	if (len(item.A) != 0) == false {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWriteJSONOpt(tctx, w, item.B)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(tctx, w, item.B)
 	if (len(item.B) != 0) == false {
 		w = w[:backupIndexB]
 	}

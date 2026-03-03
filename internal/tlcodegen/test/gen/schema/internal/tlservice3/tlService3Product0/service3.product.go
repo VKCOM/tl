@@ -23,7 +23,8 @@ type Service3Product0 struct {
 	Info           []int32
 	Date           int32
 	ExpirationDate int32
-	Removed        bool // Conditional: 0.0
+	// tlgen:nolint
+	Removed bool // Conditional: 0.0
 }
 
 func (Service3Product0) TLName() string { return "service3.product" }

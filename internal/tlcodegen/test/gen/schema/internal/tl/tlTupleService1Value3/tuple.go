@@ -9,27 +9,29 @@ package tlTupleService1Value3
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinTuple3Service1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type TupleService1Value3 [3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+type TupleService1Value3 [3]tlService1Value.Service1Value
+
+func (item *TupleService1Value3) ptr() *[3]tlService1Value.Service1Value {
+	return (*[3]tlService1Value.Service1Value)(item)
+}
 
 func (TupleService1Value3) TLName() string { return "tuple" }
 func (TupleService1Value3) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleService1Value3) Reset() {
-	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReset(ptr)
+	tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReset(item.ptr())
 }
 
 func (item *TupleService1Value3) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueRead(w, ptr)
+	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueRead(w, item.ptr())
 }
 
 func (item *TupleService1Value3) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +39,8 @@ func (item *TupleService1Value3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleService1Value3) Write(w []byte) []byte {
-	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWrite(w, ptr)
+	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleService1Value3) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +68,7 @@ func (item *TupleService1Value3) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func (item *TupleService1Value3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +85,7 @@ func (item *TupleService1Value3) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleService1Value3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleService1Value3) MarshalJSON() ([]byte, error) {

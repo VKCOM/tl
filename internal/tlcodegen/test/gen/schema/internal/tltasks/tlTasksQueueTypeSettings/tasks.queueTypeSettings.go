@@ -17,16 +17,24 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type TasksQueueTypeSettings struct {
-	FieldsMask             uint32
-	IsEnabled              bool   // Conditional: item.FieldsMask.0
-	IsPersistent           bool   // Conditional: item.FieldsMask.1
-	Priority               int32  // Conditional: item.FieldsMask.2
-	DefaultRetryTime       int32  // Conditional: item.FieldsMask.3
-	DefaultRetryNum        int32  // Conditional: item.FieldsMask.3
+	FieldsMask uint32
+	// tlgen:nolint default is false
+	IsEnabled bool // Conditional: item.FieldsMask.0
+	// tlgen:nolint default is false
+	IsPersistent bool // Conditional: item.FieldsMask.1
+	// default priority is 10, should be in range [1..100], task with priority 100 has bigger probability to be executed than task with priority 1
+	Priority         int32 // Conditional: item.FieldsMask.2
+	DefaultRetryTime int32 // Conditional: item.FieldsMask.3
+	DefaultRetryNum  int32 // Conditional: item.FieldsMask.3
+	// empty string for doing nothing
 	MoveToQueueTypeOnError string // Conditional: item.FieldsMask.4
-	IsBlocking             bool   // Conditional: item.FieldsMask.5
-	Timelimit              int32  // Conditional: item.FieldsMask.6
-	MaxQueueSize           int32  // Conditional: item.FieldsMask.7
+	// tlgen:nolint default is true, you can't get task from queue_id before previous is done
+	IsBlocking bool // Conditional: item.FieldsMask.5
+	// if engine doesn't receive responseTask{Done/Retry/Failed} in timelimit, it automatically do responseTaskRetry
+	// default is 60
+	Timelimit int32 // Conditional: item.FieldsMask.6
+	// maximum number of tasks in one queue_id, older tasks will be removed
+	MaxQueueSize int32 // Conditional: item.FieldsMask.7
 }
 
 func (TasksQueueTypeSettings) TLName() string { return "tasks.queueTypeSettings" }

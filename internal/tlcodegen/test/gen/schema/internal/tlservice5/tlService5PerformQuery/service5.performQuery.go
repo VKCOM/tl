@@ -9,7 +9,7 @@ package tlService5PerformQuery
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Output"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -56,16 +56,16 @@ func (item *Service5PerformQuery) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service5PerformQuery) ReadResult(w []byte, ret *cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
+func (item *Service5PerformQuery) ReadResult(w []byte, ret *tlService5Output.Service5Output) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *Service5PerformQuery) WriteResult(w []byte, ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
+func (item *Service5PerformQuery) WriteResult(w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *Service5PerformQuery) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) error {
+func (item *Service5PerformQuery) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService5Output.Service5Output) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -73,18 +73,18 @@ func (item *Service5PerformQuery) ReadResultJSON(legacyTypeNames bool, in *basic
 	return nil
 }
 
-func (item *Service5PerformQuery) WriteResultJSON(w []byte, ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
+func (item *Service5PerformQuery) WriteResultJSON(w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service5PerformQuery) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
+func (item *Service5PerformQuery) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *Service5PerformQuery) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
+	var ret tlService5Output.Service5Output
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -92,22 +92,13 @@ func (item *Service5PerformQuery) ReadResultWriteResultJSON(tctx *basictl.JSONWr
 	return r, w, err
 }
 
-func (item *Service5PerformQuery) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *Service5PerformQuery) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlService5Output.Service5Output
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service5PerformQuery) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service5.performQuery")
-}
-
-func (item *Service5PerformQuery) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service5.performQuery")
 }
 
 func (item Service5PerformQuery) String() string {

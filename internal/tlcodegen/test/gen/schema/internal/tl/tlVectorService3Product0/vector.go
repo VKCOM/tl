@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorService3Product0 []tlService3Product0.Service3Product0
+
+func (item *VectorService3Product0) ptr() *[]tlService3Product0.Service3Product0 {
+	return (*[]tlService3Product0.Service3Product0)(item)
+}
 
 func (VectorService3Product0) TLName() string { return "vector" }
 func (VectorService3Product0) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorService3Product0) Reset() {
-	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorService3Product0) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	return tlBuiltinVectorService3Product0.BuiltinVectorService3Product0Read(w, ptr)
+	return tlBuiltinVectorService3Product0.BuiltinVectorService3Product0Read(w, item.ptr())
 }
 
 func (item *VectorService3Product0) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorService3Product0) WriteGeneral(w []byte) (_ []byte, err error)
 }
 
 func (item *VectorService3Product0) Write(w []byte) []byte {
-	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	return tlBuiltinVectorService3Product0.BuiltinVectorService3Product0Write(w, *ptr)
+	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0Write(w, *item.ptr())
+	return w
 }
 
 func (item *VectorService3Product0) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorService3Product0) ReadJSON(legacyTypeNames bool, in *basictl.J
 }
 
 func (item *VectorService3Product0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	if err := tlBuiltinVectorService3Product0.BuiltinVectorService3Product0ReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorService3Product0.BuiltinVectorService3Product0ReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorService3Product0) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorService3Product0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0WriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0WriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService3Product0) MarshalJSON() ([]byte, error) {

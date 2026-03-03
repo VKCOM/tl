@@ -19,17 +19,19 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleService2CounterSet []tlService2CounterSet.Service2CounterSet
 
+func (item *TupleService2CounterSet) ptr() *[]tlService2CounterSet.Service2CounterSet {
+	return (*[]tlService2CounterSet.Service2CounterSet)(item)
+}
+
 func (TupleService2CounterSet) TLName() string { return "tuple" }
 func (TupleService2CounterSet) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleService2CounterSet) Reset() {
-	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleService2CounterSet) Read(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
-	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetRead(w, ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
+	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetRead(w, item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 
 func (item *TupleService2CounterSet) WriteGeneral(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
@@ -37,8 +39,10 @@ func (item *TupleService2CounterSet) WriteGeneral(w []byte, nat_tintCountersNum 
 }
 
 func (item *TupleService2CounterSet) Write(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
-	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWrite(w, *ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
+	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWrite(w, *item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleService2CounterSet) ReadBoxed(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
@@ -58,8 +62,7 @@ func (item *TupleService2CounterSet) WriteBoxed(w []byte, nat_tintCountersNum ui
 }
 
 func (item *TupleService2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {
-	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
-	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSONGeneral(tctx, in, ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSONGeneral(tctx, in, item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return err
 	}
 	return nil
@@ -76,8 +79,7 @@ func (item *TupleService2CounterSet) WriteJSON(w []byte, nat_tintCountersNum uin
 }
 
 func (item *TupleService2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
-	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(tctx, w, *ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(tctx, w, *item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil

@@ -17,6 +17,8 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// All wildcard quries are parsed by hand in php. Be carefull changing them
+// returns all entries. The prefix is removed from keys
 type Service1GetWildcard struct {
 	Prefix string
 }
@@ -97,22 +99,13 @@ func (item *Service1GetWildcard) ReadResultWriteResultJSON(tctx *basictl.JSONWri
 	return r, w, err
 }
 
-func (item *Service1GetWildcard) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service1GetWildcard) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []tlMapStringString.MapStringString
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1GetWildcard) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcard")
-}
-
-func (item *Service1GetWildcard) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcard")
 }
 
 func (item Service1GetWildcard) String() string {

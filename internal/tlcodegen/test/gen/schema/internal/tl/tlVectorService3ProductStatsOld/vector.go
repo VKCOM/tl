@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorService3ProductStatsOld []tlService3ProductStatsOld.Service3ProductStatsOld
+
+func (item *VectorService3ProductStatsOld) ptr() *[]tlService3ProductStatsOld.Service3ProductStatsOld {
+	return (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
+}
 
 func (VectorService3ProductStatsOld) TLName() string { return "vector" }
 func (VectorService3ProductStatsOld) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorService3ProductStatsOld) Reset() {
-	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorService3ProductStatsOld) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	return tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldRead(w, ptr)
+	return tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldRead(w, item.ptr())
 }
 
 func (item *VectorService3ProductStatsOld) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorService3ProductStatsOld) WriteGeneral(w []byte) (_ []byte, err
 }
 
 func (item *VectorService3ProductStatsOld) Write(w []byte) []byte {
-	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	return tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldWrite(w, *ptr)
+	w = tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorService3ProductStatsOld) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorService3ProductStatsOld) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 func (item *VectorService3ProductStatsOld) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	if err := tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorService3ProductStatsOld) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorService3ProductStatsOld) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	w = tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService3ProductStatsOld) MarshalJSON() ([]byte, error) {

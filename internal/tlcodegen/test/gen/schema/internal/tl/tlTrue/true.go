@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// this can be used as void type and serialized to empty array in PHP
 type True struct {
 }
 

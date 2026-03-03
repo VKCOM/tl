@@ -9,27 +9,30 @@ package tlVectorService1Value
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type VectorService1Value []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+// Vector
+type VectorService1Value []tlService1Value.Service1Value
+
+func (item *VectorService1Value) ptr() *[]tlService1Value.Service1Value {
+	return (*[]tlService1Value.Service1Value)(item)
+}
 
 func (VectorService1Value) TLName() string { return "vector" }
 func (VectorService1Value) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorService1Value) Reset() {
-	ptr := (*[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorService1Value) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinVectorService1Value.BuiltinVectorService1ValueRead(w, ptr)
+	return tlBuiltinVectorService1Value.BuiltinVectorService1ValueRead(w, item.ptr())
 }
 
 func (item *VectorService1Value) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorService1Value) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorService1Value) Write(w []byte) []byte {
-	ptr := (*[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinVectorService1Value.BuiltinVectorService1ValueWrite(w, *ptr)
+	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorService1Value) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorService1Value) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func (item *VectorService1Value) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := tlBuiltinVectorService1Value.BuiltinVectorService1ValueReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorService1Value.BuiltinVectorService1ValueReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorService1Value) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorService1Value) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService1Value) MarshalJSON() ([]byte, error) {

@@ -17,6 +17,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// id is returned
 type TasksAddTask struct {
 	TypeName string
 	QueueId  []int32
@@ -108,22 +109,13 @@ func (item *TasksAddTask) ReadResultWriteResultJSON(tctx *basictl.JSONWriteConte
 	return r, w, err
 }
 
-func (item *TasksAddTask) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *TasksAddTask) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret int64
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *TasksAddTask) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.addTask")
-}
-
-func (item *TasksAddTask) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.addTask")
 }
 
 func (item TasksAddTask) String() string {

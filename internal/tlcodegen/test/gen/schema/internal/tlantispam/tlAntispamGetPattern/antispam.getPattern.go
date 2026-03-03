@@ -9,7 +9,7 @@ package tlAntispamGetPattern
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_4174bfee82ee7ea4902a121c2642c5ff"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamPatternFull"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -56,16 +56,16 @@ func (item *AntispamGetPattern) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AntispamGetPattern) ReadResult(w []byte, ret *cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
+func (item *AntispamGetPattern) ReadResult(w []byte, ret *tlAntispamPatternFull.AntispamPatternFull) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *AntispamGetPattern) WriteResult(w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
+func (item *AntispamGetPattern) WriteResult(w []byte, ret tlAntispamPatternFull.AntispamPatternFull) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *AntispamGetPattern) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) error {
+func (item *AntispamGetPattern) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlAntispamPatternFull.AntispamPatternFull) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -73,18 +73,18 @@ func (item *AntispamGetPattern) ReadResultJSON(legacyTypeNames bool, in *basictl
 	return nil
 }
 
-func (item *AntispamGetPattern) WriteResultJSON(w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
+func (item *AntispamGetPattern) WriteResultJSON(w []byte, ret tlAntispamPatternFull.AntispamPatternFull) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *AntispamGetPattern) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
+func (item *AntispamGetPattern) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlAntispamPatternFull.AntispamPatternFull) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *AntispamGetPattern) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
+	var ret tlAntispamPatternFull.AntispamPatternFull
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -92,22 +92,13 @@ func (item *AntispamGetPattern) ReadResultWriteResultJSON(tctx *basictl.JSONWrit
 	return r, w, err
 }
 
-func (item *AntispamGetPattern) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *AntispamGetPattern) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlAntispamPatternFull.AntispamPatternFull
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *AntispamGetPattern) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("antispam.getPattern")
-}
-
-func (item *AntispamGetPattern) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("antispam.getPattern")
 }
 
 func (item AntispamGetPattern) String() string {

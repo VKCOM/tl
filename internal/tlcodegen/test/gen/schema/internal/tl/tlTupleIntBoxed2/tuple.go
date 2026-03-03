@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleIntBoxed2 [2]int32
 
+func (item *TupleIntBoxed2) ptr() *[2]int32 { return (*[2]int32)(item) }
+
 func (TupleIntBoxed2) TLName() string { return "tuple" }
 func (TupleIntBoxed2) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleIntBoxed2) Reset() {
-	ptr := (*[2]int32)(item)
-	tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReset(ptr)
+	tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReset(item.ptr())
 }
 
 func (item *TupleIntBoxed2) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[2]int32)(item)
-	return tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedRead(w, ptr)
+	return tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedRead(w, item.ptr())
 }
 
 func (item *TupleIntBoxed2) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +36,8 @@ func (item *TupleIntBoxed2) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleIntBoxed2) Write(w []byte) []byte {
-	ptr := (*[2]int32)(item)
-	return tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWrite(w, ptr)
+	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleIntBoxed2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +65,7 @@ func (item *TupleIntBoxed2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func (item *TupleIntBoxed2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[2]int32)(item)
-	if err := tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +82,7 @@ func (item *TupleIntBoxed2) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleIntBoxed2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[2]int32)(item)
-	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleIntBoxed2) MarshalJSON() ([]byte, error) {

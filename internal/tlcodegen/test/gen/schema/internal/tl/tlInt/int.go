@@ -15,19 +15,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Builtin types
 type Int int32
+
+func (item *Int) ptr() *int32 { return (*int32)(item) }
 
 func (Int) TLName() string { return "int" }
 func (Int) TLTag() uint32  { return 0xa8509bda }
 
 func (item *Int) Reset() {
-	ptr := (*int32)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *Int) Read(w []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	return basictl.IntRead(w, ptr)
+	return basictl.IntRead(w, item.ptr())
 }
 
 func (item *Int) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -35,8 +36,8 @@ func (item *Int) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Int) Write(w []byte) []byte {
-	ptr := (*int32)(item)
-	return basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *Int) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -64,8 +65,7 @@ func (item *Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 func (item *Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*int32)(item)
-	if err := internal.Json2ReadInt32(in, ptr); err != nil {
+	if err := internal.Json2ReadInt32(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -82,8 +82,7 @@ func (item *Int) WriteJSON(w []byte) []byte {
 }
 
 func (item *Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*int32)(item)
-	w = basictl.JSONWriteInt32(w, *ptr)
+	w = basictl.JSONWriteInt32(w, *item.ptr())
 	return w
 }
 func (item *Int) MarshalJSON() ([]byte, error) {

@@ -18,13 +18,14 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type Service3GetProducts struct {
-	UserId       int32
-	Mode         uint32
-	Types        []int32
-	StartDate    int32
-	EndDate      int32
-	Offset       int32
-	Limit        int32
+	UserId    int32
+	Mode      uint32
+	Types     []int32
+	StartDate int32
+	EndDate   int32
+	Offset    int32
+	Limit     int32
+	// be ignored if it is empty
 	AllowedInfo0 []int32
 }
 
@@ -135,22 +136,13 @@ func (item *Service3GetProducts) ReadResultWriteResultJSON(tctx *basictl.JSONWri
 	return r, w, err
 }
 
-func (item *Service3GetProducts) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service3GetProducts) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3ProductMaybe.VectorService3ProductMaybe
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service3GetProducts) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getProducts")
-}
-
-func (item *Service3GetProducts) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service3.getProducts")
 }
 
 // Set field "removed" in "service3.product" by changing fieldMask "mode"

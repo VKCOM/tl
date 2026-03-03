@@ -33,24 +33,24 @@ import (
 )
 
 type (
-	AddTask                  = tlTasksAddTask.TasksAddTask
-	CronTask                 = tlTasksCronTask.TasksCronTask
-	CronTaskWithId           = tlTasksCronTaskWithId.TasksCronTaskWithId
-	CronTime                 = tlTasksCronTime.TasksCronTime
-	FullFilledCron           = tlTasksFullFilledCron.TasksFullFilledCron
-	GetAnyTask               = tlTasksGetAnyTask.TasksGetAnyTask
-	GetQueueSize             = tlTasksGetQueueSize.TasksGetQueueSize
-	GetQueueTypes            = tlTasksGetQueueTypes.TasksGetQueueTypes
-	GetTaskFromQueue         = tlTasksGetTaskFromQueue.TasksGetTaskFromQueue
-	QueueStats               = tlTasksQueueStats.TasksQueueStats
-	QueueTypeInfo            = tlTasksQueueTypeInfo.TasksQueueTypeInfo
-	QueueTypeSettings        = tlTasksQueueTypeSettings.TasksQueueTypeSettings
-	QueueTypeStats           = tlTasksQueueTypeStats.TasksQueueTypeStats
-	Task                     = tlTasksTask.TasksTask
-	TaskInfo                 = tlTasksTaskInfo.TasksTaskInfo
-	TaskInfoMaybe            = tlTasksTaskInfoMaybe.TasksTaskInfoMaybe
-	TaskStatus               = tlTasksTaskStatus.TasksTaskStatus
-	VectorTasksQueueTypeInfo = tlVectorTasksQueueTypeInfo.VectorTasksQueueTypeInfo
+	AddTask             = tlTasksAddTask.TasksAddTask
+	CronTask            = tlTasksCronTask.TasksCronTask
+	CronTaskWithId      = tlTasksCronTaskWithId.TasksCronTaskWithId
+	CronTime            = tlTasksCronTime.TasksCronTime
+	FullFilledCron      = tlTasksFullFilledCron.TasksFullFilledCron
+	GetAnyTask          = tlTasksGetAnyTask.TasksGetAnyTask
+	GetQueueSize        = tlTasksGetQueueSize.TasksGetQueueSize
+	GetQueueTypes       = tlTasksGetQueueTypes.TasksGetQueueTypes
+	GetTaskFromQueue    = tlTasksGetTaskFromQueue.TasksGetTaskFromQueue
+	QueueStats          = tlTasksQueueStats.TasksQueueStats
+	QueueTypeInfo       = tlTasksQueueTypeInfo.TasksQueueTypeInfo
+	QueueTypeSettings   = tlTasksQueueTypeSettings.TasksQueueTypeSettings
+	QueueTypeStats      = tlTasksQueueTypeStats.TasksQueueTypeStats
+	Task                = tlTasksTask.TasksTask
+	TaskInfo            = tlTasksTaskInfo.TasksTaskInfo
+	TaskInfoMaybe       = tlTasksTaskInfoMaybe.TasksTaskInfoMaybe
+	TaskStatus          = tlTasksTaskStatus.TasksTaskStatus
+	VectorQueueTypeInfo = tlVectorTasksQueueTypeInfo.VectorTasksQueueTypeInfo
 )
 
 func TaskStatusInProgress() TaskStatus {

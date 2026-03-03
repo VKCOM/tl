@@ -8,11 +8,11 @@
 package tltree_stats
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_49caccaceef1b58bbbff030c58394129"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltree_stats/tlTreeStatsObjectLimitValue"
 )
 
 type (
-	ObjectLimitValue       = cycle_49caccaceef1b58bbbff030c58394129.TreeStatsObjectLimitValue
-	ObjectLimitValueDouble = cycle_49caccaceef1b58bbbff030c58394129.TreeStatsObjectLimitValueDouble
-	ObjectLimitValueLong   = cycle_49caccaceef1b58bbbff030c58394129.TreeStatsObjectLimitValueLong
+	ObjectLimitValue       = tlTreeStatsObjectLimitValue.TreeStatsObjectLimitValue
+	ObjectLimitValueDouble = tlTreeStatsObjectLimitValue.TreeStatsObjectLimitValueDouble
+	ObjectLimitValueLong   = tlTreeStatsObjectLimitValue.TreeStatsObjectLimitValueLong
 )

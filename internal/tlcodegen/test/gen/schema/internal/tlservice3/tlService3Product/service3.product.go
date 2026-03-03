@@ -23,7 +23,8 @@ type Service3Product struct {
 	Info           []int32
 	Date           int32
 	ExpirationDate int32
-	Removed        bool // Conditional: nat_mode.0
+	// tlgen:nolint
+	Removed bool // Conditional: nat_mode.0
 }
 
 func (Service3Product) TLName() string { return "service3.product" }

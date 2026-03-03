@@ -9,27 +9,29 @@ package tlDictionaryService1Value
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorDictionaryFieldService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinDictStringService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-type DictionaryService1Value map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+type DictionaryService1Value map[string]tlService1Value.Service1Value
+
+func (item *DictionaryService1Value) ptr() *map[string]tlService1Value.Service1Value {
+	return (*map[string]tlService1Value.Service1Value)(item)
+}
 
 func (DictionaryService1Value) TLName() string { return "dictionary" }
 func (DictionaryService1Value) TLTag() uint32  { return 0x1f4c618f }
 
 func (item *DictionaryService1Value) Reset() {
-	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueReset(*ptr)
+	tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueReset(*item.ptr())
 }
 
 func (item *DictionaryService1Value) Read(w []byte) (_ []byte, err error) {
-	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueRead(w, ptr)
+	return tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueRead(w, item.ptr())
 }
 
 func (item *DictionaryService1Value) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +39,8 @@ func (item *DictionaryService1Value) WriteGeneral(w []byte) (_ []byte, err error
 }
 
 func (item *DictionaryService1Value) Write(w []byte) []byte {
-	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	return tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWrite(w, *ptr)
+	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWrite(w, *item.ptr())
+	return w
 }
 
 func (item *DictionaryService1Value) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +68,7 @@ func (item *DictionaryService1Value) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 func (item *DictionaryService1Value) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +85,7 @@ func (item *DictionaryService1Value) WriteJSON(w []byte) []byte {
 }
 
 func (item *DictionaryService1Value) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryService1Value) MarshalJSON() ([]byte, error) {

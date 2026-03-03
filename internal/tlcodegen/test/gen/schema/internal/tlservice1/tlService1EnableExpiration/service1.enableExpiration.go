@@ -91,22 +91,13 @@ func (item *Service1EnableExpiration) ReadResultWriteResultJSON(tctx *basictl.JS
 	return r, w, err
 }
 
-func (item *Service1EnableExpiration) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service1EnableExpiration) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1EnableExpiration) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.enableExpiration")
-}
-
-func (item *Service1EnableExpiration) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.enableExpiration")
 }
 
 func (item Service1EnableExpiration) String() string {

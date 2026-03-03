@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleIntBoxed []int32
 
+func (item *TupleIntBoxed) ptr() *[]int32 { return (*[]int32)(item) }
+
 func (TupleIntBoxed) TLName() string { return "tuple" }
 func (TupleIntBoxed) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleIntBoxed) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleIntBoxed) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedRead(w, ptr, nat_n)
+	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedRead(w, item.ptr(), nat_n)
 }
 
 func (item *TupleIntBoxed) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -36,8 +36,10 @@ func (item *TupleIntBoxed) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err e
 }
 
 func (item *TupleIntBoxed) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWrite(w, *ptr, nat_n)
+	if w, err = tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleIntBoxed) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -57,8 +59,7 @@ func (item *TupleIntBoxed) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err err
 }
 
 func (item *TupleIntBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	ptr := (*[]int32)(item)
-	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSONGeneral(tctx, in, ptr, nat_n); err != nil {
+	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
@@ -75,8 +76,7 @@ func (item *TupleIntBoxed) WriteJSON(w []byte, nat_n uint32) (_ []byte, err erro
 }
 
 func (item *TupleIntBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	if w, err = tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWriteJSONOpt(tctx, w, *ptr, nat_n); err != nil {
+	if w, err = tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil

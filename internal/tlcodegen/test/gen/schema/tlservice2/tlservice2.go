@@ -19,12 +19,12 @@ import (
 )
 
 type (
-	AddOrIncrMany           = tlService2AddOrIncrMany.Service2AddOrIncrMany
-	CounterSet              = tlService2CounterSet.Service2CounterSet
-	DeltaSet                = tlService2DeltaSet.Service2DeltaSet
-	ObjectId                = tlService2ObjectId.Service2ObjectId
-	Set                     = tlService2Set.Service2Set
-	SetObjectTtl            = tlService2SetObjectTtl.Service2SetObjectTtl
-	TupleService2CounterSet = tlTupleService2CounterSet.TupleService2CounterSet
-	TupleService2DeltaSet   = tlTupleService2DeltaSet.TupleService2DeltaSet
+	AddOrIncrMany   = tlService2AddOrIncrMany.Service2AddOrIncrMany
+	CounterSet      = tlService2CounterSet.Service2CounterSet
+	DeltaSet        = tlService2DeltaSet.Service2DeltaSet
+	ObjectId        = tlService2ObjectId.Service2ObjectId
+	Set             = tlService2Set.Service2Set
+	SetObjectTtl    = tlService2SetObjectTtl.Service2SetObjectTtl
+	TupleCounterSet = tlTupleService2CounterSet.TupleService2CounterSet
+	TupleDeltaSet   = tlTupleService2DeltaSet.TupleService2DeltaSet
 )

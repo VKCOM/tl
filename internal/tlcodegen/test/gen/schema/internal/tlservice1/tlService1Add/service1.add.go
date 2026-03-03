@@ -16,6 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// sets value iff the key is absent
 type Service1Add struct {
 	Key   string
 	Flags int32
@@ -109,22 +110,13 @@ func (item *Service1Add) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContex
 	return r, w, err
 }
 
-func (item *Service1Add) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service1Add) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1Add) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.add")
-}
-
-func (item *Service1Add) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.add")
 }
 
 func (item Service1Add) String() string {

@@ -9,14 +9,14 @@ package tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_ea8339e8d6257cc96a27be3f42a07a87"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherIntVectorService6FindWithBoundsResult"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w []byte, vec *[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w []byte, vec *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -25,7 +25,7 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w []byte, vec 
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {
-		*vec = make([]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult, l)
+		*vec = make([]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult, l)
 	} else {
 		*vec = (*vec)[:l]
 	}
@@ -37,7 +37,7 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w []byte, vec 
 	return w, nil
 }
 
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(w []byte, vec []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) []byte {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = elem.WriteBoxed(w)
@@ -45,17 +45,17 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(w []byte, vec
 	return w
 }
 
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) error {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
 		in.Delim('[')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult", "expected json array")
+			return internal.ErrorInvalidJSON("[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult", "expected json array")
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if len(*vec) <= index {
-				var newValue cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult
+				var newValue tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
@@ -66,18 +66,18 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tct
 		}
 		in.Delim(']')
 		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult", "expected json array's end")
+			return internal.ErrorInvalidJSON("[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult", "expected json array's end")
 		}
 	}
 	*vec = (*vec)[:index]
 	return nil
 }
 
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSON(w []byte, vec []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) []byte {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSON(w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) []byte {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

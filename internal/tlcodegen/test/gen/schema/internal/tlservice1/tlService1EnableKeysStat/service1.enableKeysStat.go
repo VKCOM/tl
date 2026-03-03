@@ -16,6 +16,12 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Enable stat for period specified.
+// Result stored till engine restart.
+// It is allowed to store maximum 5 different periods.
+// Returns false if there are maximum periods stored.
+// Subsequent request with already stored period resets all stat of this period.
+// period - 1..86400
 type Service1EnableKeysStat struct {
 	Period int32
 }
@@ -91,22 +97,13 @@ func (item *Service1EnableKeysStat) ReadResultWriteResultJSON(tctx *basictl.JSON
 	return r, w, err
 }
 
-func (item *Service1EnableKeysStat) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service1EnableKeysStat) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1EnableKeysStat) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.enableKeysStat")
-}
-
-func (item *Service1EnableKeysStat) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.enableKeysStat")
 }
 
 func (item Service1EnableKeysStat) String() string {

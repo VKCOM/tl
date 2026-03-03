@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleDouble []float64
 
+func (item *TupleDouble) ptr() *[]float64 { return (*[]float64)(item) }
+
 func (TupleDouble) TLName() string { return "tuple" }
 func (TupleDouble) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleDouble) Reset() {
-	ptr := (*[]float64)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *TupleDouble) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]float64)(item)
-	return tlBuiltinTupleDouble.BuiltinTupleDoubleRead(w, ptr, nat_n)
+	return tlBuiltinTupleDouble.BuiltinTupleDoubleRead(w, item.ptr(), nat_n)
 }
 
 func (item *TupleDouble) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -36,8 +36,10 @@ func (item *TupleDouble) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err err
 }
 
 func (item *TupleDouble) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]float64)(item)
-	return tlBuiltinTupleDouble.BuiltinTupleDoubleWrite(w, *ptr, nat_n)
+	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWrite(w, *item.ptr(), nat_n); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TupleDouble) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
@@ -57,8 +59,7 @@ func (item *TupleDouble) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error
 }
 
 func (item *TupleDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	ptr := (*[]float64)(item)
-	if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, in, ptr, nat_n); err != nil {
+	if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
@@ -75,8 +76,7 @@ func (item *TupleDouble) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error)
 }
 
 func (item *TupleDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[]float64)(item)
-	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(tctx, w, *ptr, nat_n); err != nil {
+	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil

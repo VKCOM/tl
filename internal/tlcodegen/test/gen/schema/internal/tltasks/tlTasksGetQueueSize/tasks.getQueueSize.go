@@ -130,22 +130,13 @@ func (item *TasksGetQueueSize) ReadResultWriteResultJSON(tctx *basictl.JSONWrite
 	return r, w, err
 }
 
-func (item *TasksGetQueueSize) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *TasksGetQueueSize) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTasksQueueStats.TasksQueueStats
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *TasksGetQueueSize) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getQueueSize")
-}
-
-func (item *TasksGetQueueSize) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("tasks.getQueueSize")
 }
 
 // Set field "waiting_size" in "tasks.queueStats" by changing fieldMask "fields_mask"

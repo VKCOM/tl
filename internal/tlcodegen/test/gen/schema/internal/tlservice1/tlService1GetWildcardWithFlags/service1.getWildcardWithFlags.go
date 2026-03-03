@@ -9,8 +9,8 @@ package tlService1GetWildcardWithFlags
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorDictionaryFieldService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinDictStringService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -57,39 +57,39 @@ func (item *Service1GetWildcardWithFlags) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResult(w []byte, ret *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) ReadResult(w []byte, ret *map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueRead(w, ret)
+	return tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueRead(w, ret)
 }
 
-func (item *Service1GetWildcardWithFlags) WriteResult(w []byte, ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) WriteResult(w []byte, ret map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1f4c618f)
-	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWrite(w, ret)
+	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWrite(w, ret)
 	return w, nil
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func (item *Service1GetWildcardWithFlags) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *map[string]tlService1Value.Service1Value) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueReadJSONGeneral(tctx, in, ret); err != nil {
+	if err := tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (item *Service1GetWildcardWithFlags) WriteResultJSON(w []byte, ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) WriteResultJSON(w []byte, ret map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service1GetWildcardWithFlags) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
-	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx, w, ret)
+func (item *Service1GetWildcardWithFlags) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret map[string]tlService1Value.Service1Value) (_ []byte, err error) {
+	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWriteJSONOpt(tctx, w, ret)
 	return w, nil
 }
 
 func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	var ret map[string]tlService1Value.Service1Value
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -97,22 +97,13 @@ func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSON(tctx *basict
 	return r, w, err
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *Service1GetWildcardWithFlags) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret map[string]tlService1Value.Service1Value
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1GetWildcardWithFlags) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardWithFlags")
-}
-
-func (item *Service1GetWildcardWithFlags) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardWithFlags")
 }
 
 func (item Service1GetWildcardWithFlags) String() string {

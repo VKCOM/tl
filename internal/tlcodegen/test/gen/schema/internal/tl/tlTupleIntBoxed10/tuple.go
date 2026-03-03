@@ -18,17 +18,17 @@ var _ = internal.ErrorInvalidEnumTag
 
 type TupleIntBoxed10 [10]int32
 
+func (item *TupleIntBoxed10) ptr() *[10]int32 { return (*[10]int32)(item) }
+
 func (TupleIntBoxed10) TLName() string { return "tuple" }
 func (TupleIntBoxed10) TLTag() uint32  { return 0x9770768a }
 
 func (item *TupleIntBoxed10) Reset() {
-	ptr := (*[10]int32)(item)
-	tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedReset(ptr)
+	tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedReset(item.ptr())
 }
 
 func (item *TupleIntBoxed10) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[10]int32)(item)
-	return tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedRead(w, ptr)
+	return tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedRead(w, item.ptr())
 }
 
 func (item *TupleIntBoxed10) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +36,8 @@ func (item *TupleIntBoxed10) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TupleIntBoxed10) Write(w []byte) []byte {
-	ptr := (*[10]int32)(item)
-	return tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedWrite(w, ptr)
+	w = tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedWrite(w, item.ptr())
+	return w
 }
 
 func (item *TupleIntBoxed10) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +65,7 @@ func (item *TupleIntBoxed10) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *TupleIntBoxed10) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[10]int32)(item)
-	if err := tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +82,7 @@ func (item *TupleIntBoxed10) WriteJSON(w []byte) []byte {
 }
 
 func (item *TupleIntBoxed10) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[10]int32)(item)
-	w = tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedWriteJSONOpt(tctx, w, ptr)
+	w = tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedWriteJSONOpt(tctx, w, item.ptr())
 	return w
 }
 func (item *TupleIntBoxed10) MarshalJSON() ([]byte, error) {

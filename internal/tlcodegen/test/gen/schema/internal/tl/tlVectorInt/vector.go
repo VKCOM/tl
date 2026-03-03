@@ -16,19 +16,20 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorInt []int32
+
+func (item *VectorInt) ptr() *[]int32 { return (*[]int32)(item) }
 
 func (VectorInt) TLName() string { return "vector" }
 func (VectorInt) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorInt) Reset() {
-	ptr := (*[]int32)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorInt) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, ptr)
+	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, item.ptr())
 }
 
 func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -36,8 +37,8 @@ func (item *VectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *VectorInt) Write(w []byte) []byte {
-	ptr := (*[]int32)(item)
-	return tlBuiltinVectorInt.BuiltinVectorIntWrite(w, *ptr)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorInt) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -65,8 +66,7 @@ func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 func (item *VectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]int32)(item)
-	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -83,8 +83,7 @@ func (item *VectorInt) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]int32)(item)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorInt) MarshalJSON() ([]byte, error) {

@@ -18,12 +18,14 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type Service4ModifiedNewsEntry struct {
-	Object          tlService4Object.Service4Object
-	CreationDate    int32
+	Object       tlService4Object.Service4Object
+	CreationDate int32
+	// type = (fields_mask & 3) (0 - not modified, 1 - restored, 2 - deleted)
 	FieldsMask      uint32
 	RestorationDate int32 // Conditional: item.FieldsMask.0
 	DeletionDate    int32 // Conditional: item.FieldsMask.1
-	HiddenByPrivacy bool  // Conditional: item.FieldsMask.16
+	// tlgen:nolint
+	HiddenByPrivacy bool // Conditional: item.FieldsMask.16
 }
 
 func (Service4ModifiedNewsEntry) TLName() string { return "service4.modifiedNewsEntry" }

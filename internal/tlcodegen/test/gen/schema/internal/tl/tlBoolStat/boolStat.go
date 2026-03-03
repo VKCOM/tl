@@ -15,6 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Boolean for diagonal queries
 type BoolStat struct {
 	StatTrue    int32
 	StatFalse   int32

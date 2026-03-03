@@ -16,6 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// list of keys
 type Service1GetWildcardList struct {
 	Prefix string
 }
@@ -96,22 +97,13 @@ func (item *Service1GetWildcardList) ReadResultWriteResultJSON(tctx *basictl.JSO
 	return r, w, err
 }
 
-func (item *Service1GetWildcardList) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
+func (item *Service1GetWildcardList) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []string
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1GetWildcardList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardList")
-}
-
-func (item *Service1GetWildcardList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.getWildcardList")
 }
 
 func (item Service1GetWildcardList) String() string {

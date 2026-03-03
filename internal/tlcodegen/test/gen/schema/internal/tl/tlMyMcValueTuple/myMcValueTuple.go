@@ -9,8 +9,8 @@ package tlMyMcValueTuple
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinTuple3Service1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -18,7 +18,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type MyMcValueTuple struct {
-	Xs [3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	Xs [3]tlService1Value.Service1Value
 }
 
 func (MyMcValueTuple) TLName() string { return "myMcValueTuple" }

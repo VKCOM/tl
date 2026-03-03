@@ -17,19 +17,22 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// Vector
 type VectorService6FindWithBoundsResult []tlService6FindWithBoundsResult.Service6FindWithBoundsResult
+
+func (item *VectorService6FindWithBoundsResult) ptr() *[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult {
+	return (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
+}
 
 func (VectorService6FindWithBoundsResult) TLName() string { return "vector" }
 func (VectorService6FindWithBoundsResult) TLTag() uint32  { return 0x1cb5c415 }
 
 func (item *VectorService6FindWithBoundsResult) Reset() {
-	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	*ptr = (*ptr)[:0]
+	*item.ptr() = (*item.ptr())[:0]
 }
 
 func (item *VectorService6FindWithBoundsResult) Read(w []byte) (_ []byte, err error) {
-	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultRead(w, ptr)
+	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultRead(w, item.ptr())
 }
 
 func (item *VectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -37,8 +40,8 @@ func (item *VectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte
 }
 
 func (item *VectorService6FindWithBoundsResult) Write(w []byte) []byte {
-	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWrite(w, *ptr)
+	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWrite(w, *item.ptr())
+	return w
 }
 
 func (item *VectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -66,8 +69,7 @@ func (item *VectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames bool, i
 }
 
 func (item *VectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	if err := tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, ptr); err != nil {
+	if err := tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -84,8 +86,7 @@ func (item *VectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 }
 
 func (item *VectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, *ptr)
+	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService6FindWithBoundsResult) MarshalJSON() ([]byte, error) {

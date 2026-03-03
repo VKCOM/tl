@@ -8,7 +8,6 @@
 package tl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_2383fe3e154dfb1e44c2ac7759547e8a"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBenchObject"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBoolStat"
@@ -22,10 +21,10 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBoxedVector32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBoxedVector32BoxedElem"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBoxedVector64"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictFieldStringDictionaryInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictFieldStringInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictFieldStringString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryDictionaryInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryFieldDictionaryInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryFieldInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDouble"
@@ -63,6 +62,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyTuple10"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyTuple10Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyTwoDicts"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyValue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlNonOptNat"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlRpcInvokeReqExtra"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlStatOne"
@@ -75,9 +75,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleIntBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleIntBoxed10"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleIntBoxed2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorDictionaryFieldDictionaryInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorDictionaryFieldInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorIntBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorInteger"
@@ -88,84 +85,81 @@ import (
 )
 
 type (
-	BenchObject                        = tlBenchObject.BenchObject
-	BoolStat                           = tlBoolStat.BoolStat
-	BoxedArray                         = tlBoxedArray.BoxedArray
-	BoxedInt                           = tlBoxedInt.BoxedInt
-	BoxedString                        = tlBoxedString.BoxedString
-	BoxedTuple                         = tlBoxedTuple.BoxedTuple
-	BoxedTupleSlice1                   = tlBoxedTupleSlice1.BoxedTupleSlice1
-	BoxedTupleSlice2                   = tlBoxedTupleSlice2.BoxedTupleSlice2
-	BoxedTupleSlice3                   = tlBoxedTupleSlice3.BoxedTupleSlice3
-	BoxedVector32                      = tlBoxedVector32.BoxedVector32
-	BoxedVector32BoxedElem             = tlBoxedVector32BoxedElem.BoxedVector32BoxedElem
-	BoxedVector64                      = tlBoxedVector64.BoxedVector64
-	DictionaryDictionaryInt            = tlDictionaryDictionaryInt.DictionaryDictionaryInt
-	DictionaryFieldDictionaryInt       = tlDictionaryFieldDictionaryInt.DictionaryFieldDictionaryInt
-	DictionaryFieldInt                 = tlDictionaryFieldInt.DictionaryFieldInt
-	DictionaryFieldString              = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryInt                      = tlDictionaryInt.DictionaryInt
-	DictionaryString                   = tlDictionaryString.DictionaryString
-	Double                             = tlDouble.Double
-	FieldConflict1                     = tlFieldConflict1.FieldConflict1
-	FieldConflict2                     = tlFieldConflict2.FieldConflict2
-	FieldConflict3                     = tlFieldConflict3.FieldConflict3
-	FieldConflict4                     = tlFieldConflict4.FieldConflict4
-	Float                              = tlFloat.Float
-	GetArrays                          = tlGetArrays.GetArrays
-	GetDouble                          = tlGetDouble.GetDouble
-	GetFloat                           = tlGetFloat.GetFloat
-	GetMaybeIface                      = tlGetMaybeIface.GetMaybeIface
-	GetMyDictOfInt                     = tlGetMyDictOfInt.GetMyDictOfInt
-	GetMyDouble                        = tlGetMyDouble.GetMyDouble
-	GetMyValue                         = tlGetMyValue.GetMyValue
-	GetNonOptNat                       = tlGetNonOptNat.GetNonOptNat
-	GetStats                           = tlGetStats.GetStats
-	Int                                = tlInt.Int
-	IntMaybe                           = tlIntMaybe.IntMaybe
-	Integer                            = tlInteger.Integer
-	Issue3498                          = tlIssue3498.Issue3498
-	Long                               = tlLong.Long
-	MapStringString                    = tlMapStringString.MapStringString
-	MyAnonMcValue                      = tlMyAnonMcValue.MyAnonMcValue
-	MyBoxedArray                       = tlMyBoxedArray.MyBoxedArray
-	MyBoxedTupleSlice                  = tlMyBoxedTupleSlice.MyBoxedTupleSlice
-	MyBoxedVectorSlice                 = tlMyBoxedVectorSlice.MyBoxedVectorSlice
-	MyDictOfInt                        = tlMyDictOfInt.MyDictOfInt
-	MyDouble                           = tlMyDouble.MyDouble
-	MyInt                              = cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyInt
-	MyMaybe1                           = tlMyMaybe1.MyMaybe1
-	MyMaybe2                           = tlMyMaybe2.MyMaybe2
-	MyMcValue                          = tlMyMcValue.MyMcValue
-	MyMcValueTuple                     = tlMyMcValueTuple.MyMcValueTuple
-	MyMcValueVector                    = tlMyMcValueVector.MyMcValueVector
-	MyString                           = cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyString
-	MyTuple10                          = tlMyTuple10.MyTuple10
-	MyTuple10Maybe                     = tlMyTuple10Maybe.MyTuple10Maybe
-	MyTwoDicts                         = tlMyTwoDicts.MyTwoDicts
-	MyValue                            = cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyValue
-	NonOptNat                          = tlNonOptNat.NonOptNat
-	RpcInvokeReqExtra                  = tlRpcInvokeReqExtra.RpcInvokeReqExtra
-	StatOne                            = tlStatOne.StatOne
-	String                             = tlString.String
-	True                               = tlTrue.True
-	TupleDouble                        = tlTupleDouble.TupleDouble
-	TupleInt                           = tlTupleInt.TupleInt
-	TupleInt3                          = tlTupleInt3.TupleInt3
-	TupleInt5                          = tlTupleInt5.TupleInt5
-	TupleIntBoxed                      = tlTupleIntBoxed.TupleIntBoxed
-	TupleIntBoxed10                    = tlTupleIntBoxed10.TupleIntBoxed10
-	TupleIntBoxed2                     = tlTupleIntBoxed2.TupleIntBoxed2
-	VectorDictionaryFieldDictionaryInt = tlVectorDictionaryFieldDictionaryInt.VectorDictionaryFieldDictionaryInt
-	VectorDictionaryFieldInt           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
-	VectorDictionaryFieldString        = tlVectorDictionaryFieldString.VectorDictionaryFieldString
-	VectorInt                          = tlVectorInt.VectorInt
-	VectorIntBoxed                     = tlVectorIntBoxed.VectorIntBoxed
-	VectorInteger                      = tlVectorInteger.VectorInteger
-	VectorLongBoxed                    = tlVectorLongBoxed.VectorLongBoxed
-	VectorMapStringString              = tlVectorMapStringString.VectorMapStringString
-	VectorString                       = tlVectorString.VectorString
-	WithFloat                          = tlWithFloat.WithFloat
+	BenchObject                  = tlBenchObject.BenchObject
+	BoolStat                     = tlBoolStat.BoolStat
+	BoxedArray                   = tlBoxedArray.BoxedArray
+	BoxedInt                     = tlBoxedInt.BoxedInt
+	BoxedString                  = tlBoxedString.BoxedString
+	BoxedTuple                   = tlBoxedTuple.BoxedTuple
+	BoxedTupleSlice1             = tlBoxedTupleSlice1.BoxedTupleSlice1
+	BoxedTupleSlice2             = tlBoxedTupleSlice2.BoxedTupleSlice2
+	BoxedTupleSlice3             = tlBoxedTupleSlice3.BoxedTupleSlice3
+	BoxedVector32                = tlBoxedVector32.BoxedVector32
+	BoxedVector32BoxedElem       = tlBoxedVector32BoxedElem.BoxedVector32BoxedElem
+	BoxedVector64                = tlBoxedVector64.BoxedVector64
+	DictFieldStringDictionaryInt = tlDictFieldStringDictionaryInt.DictFieldStringDictionaryInt
+	DictFieldStringInt           = tlDictFieldStringInt.DictFieldStringInt
+	DictFieldStringString        = tlDictFieldStringString.DictFieldStringString
+	DictionaryDictionaryInt      = tlDictionaryDictionaryInt.DictionaryDictionaryInt
+	DictionaryInt                = tlDictionaryInt.DictionaryInt
+	DictionaryString             = tlDictionaryString.DictionaryString
+	Double                       = tlDouble.Double
+	FieldConflict1               = tlFieldConflict1.FieldConflict1
+	FieldConflict2               = tlFieldConflict2.FieldConflict2
+	FieldConflict3               = tlFieldConflict3.FieldConflict3
+	FieldConflict4               = tlFieldConflict4.FieldConflict4
+	Float                        = tlFloat.Float
+	GetArrays                    = tlGetArrays.GetArrays
+	GetDouble                    = tlGetDouble.GetDouble
+	GetFloat                     = tlGetFloat.GetFloat
+	GetMaybeIface                = tlGetMaybeIface.GetMaybeIface
+	GetMyDictOfInt               = tlGetMyDictOfInt.GetMyDictOfInt
+	GetMyDouble                  = tlGetMyDouble.GetMyDouble
+	GetMyValue                   = tlGetMyValue.GetMyValue
+	GetNonOptNat                 = tlGetNonOptNat.GetNonOptNat
+	GetStats                     = tlGetStats.GetStats
+	Int                          = tlInt.Int
+	IntMaybe                     = tlIntMaybe.IntMaybe
+	Integer                      = tlInteger.Integer
+	Issue3498                    = tlIssue3498.Issue3498
+	Long                         = tlLong.Long
+	MapStringString              = tlMapStringString.MapStringString
+	MyAnonMcValue                = tlMyAnonMcValue.MyAnonMcValue
+	MyBoxedArray                 = tlMyBoxedArray.MyBoxedArray
+	MyBoxedTupleSlice            = tlMyBoxedTupleSlice.MyBoxedTupleSlice
+	MyBoxedVectorSlice           = tlMyBoxedVectorSlice.MyBoxedVectorSlice
+	MyDictOfInt                  = tlMyDictOfInt.MyDictOfInt
+	MyDouble                     = tlMyDouble.MyDouble
+	MyInt                        = tlMyValue.MyInt
+	MyMaybe1                     = tlMyMaybe1.MyMaybe1
+	MyMaybe2                     = tlMyMaybe2.MyMaybe2
+	MyMcValue                    = tlMyMcValue.MyMcValue
+	MyMcValueTuple               = tlMyMcValueTuple.MyMcValueTuple
+	MyMcValueVector              = tlMyMcValueVector.MyMcValueVector
+	MyString                     = tlMyValue.MyString
+	MyTuple10                    = tlMyTuple10.MyTuple10
+	MyTuple10Maybe               = tlMyTuple10Maybe.MyTuple10Maybe
+	MyTwoDicts                   = tlMyTwoDicts.MyTwoDicts
+	MyValue                      = tlMyValue.MyValue
+	NonOptNat                    = tlNonOptNat.NonOptNat
+	RpcInvokeReqExtra            = tlRpcInvokeReqExtra.RpcInvokeReqExtra
+	StatOne                      = tlStatOne.StatOne
+	String                       = tlString.String
+	True                         = tlTrue.True
+	TupleDouble                  = tlTupleDouble.TupleDouble
+	TupleInt                     = tlTupleInt.TupleInt
+	TupleInt3                    = tlTupleInt3.TupleInt3
+	TupleInt5                    = tlTupleInt5.TupleInt5
+	TupleIntBoxed                = tlTupleIntBoxed.TupleIntBoxed
+	TupleIntBoxed10              = tlTupleIntBoxed10.TupleIntBoxed10
+	TupleIntBoxed2               = tlTupleIntBoxed2.TupleIntBoxed2
+	VectorInt                    = tlVectorInt.VectorInt
+	VectorIntBoxed               = tlVectorIntBoxed.VectorIntBoxed
+	VectorInteger                = tlVectorInteger.VectorInteger
+	VectorLongBoxed              = tlVectorLongBoxed.VectorLongBoxed
+	VectorMapStringString        = tlVectorMapStringString.VectorMapStringString
+	VectorString                 = tlVectorString.VectorString
+	WithFloat                    = tlWithFloat.WithFloat
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

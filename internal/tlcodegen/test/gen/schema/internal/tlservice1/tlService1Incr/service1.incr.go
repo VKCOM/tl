@@ -9,13 +9,14 @@ package tlService1Incr
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Value"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
+// returns service1.longvalue after executing
 type Service1Incr struct {
 	Key   string
 	Value int64
@@ -62,16 +63,16 @@ func (item *Service1Incr) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service1Incr) ReadResult(w []byte, ret *cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1Incr) ReadResult(w []byte, ret *tlService1Value.Service1Value) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
 
-func (item *Service1Incr) WriteResult(w []byte, ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1Incr) WriteResult(w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
 
-func (item *Service1Incr) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func (item *Service1Incr) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService1Value.Service1Value) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
@@ -79,18 +80,18 @@ func (item *Service1Incr) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonL
 	return nil
 }
 
-func (item *Service1Incr) WriteResultJSON(w []byte, ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1Incr) WriteResultJSON(w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
 	tctx := basictl.JSONWriteContext{}
 	return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *Service1Incr) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1Incr) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
 func (item *Service1Incr) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	var ret tlService1Value.Service1Value
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
@@ -98,22 +99,13 @@ func (item *Service1Incr) ReadResultWriteResultJSON(tctx *basictl.JSONWriteConte
 	return r, w, err
 }
 
-func (item *Service1Incr) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
-	var ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
-	if err != nil {
+func (item *Service1Incr) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlService1Value.Service1Value
+	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
 	return r, w, err
-}
-
-func (item *Service1Incr) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.incr")
-}
-
-func (item *Service1Incr) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	return r, w, internal.ErrorTL2SerializersNotGenerated("service1.incr")
 }
 
 func (item Service1Incr) String() string {
