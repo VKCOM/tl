@@ -575,22 +575,21 @@ func (item CasesTestUnion3) AsUnion() CasesTestUnion {
 
 type CasesTestUnion3 int32
 
+func (item *CasesTestUnion3) ptr() *int32 { return (*int32)(item) }
+
 func (CasesTestUnion3) TLName() string { return "cases.testUnion3" }
 func (CasesTestUnion3) TLTag() uint32  { return 0x9b8c9e4c }
 
 func (item *CasesTestUnion3) Reset() {
-	ptr := (*int32)(item)
-	*ptr = 0
+	*item.ptr() = 0
 }
 
 func (item *CasesTestUnion3) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*int32)(item)
-	*ptr = basictl.RandomInt(rg)
+	*item.ptr() = basictl.RandomInt(rg)
 }
 
 func (item *CasesTestUnion3) Read(w []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	return basictl.IntRead(w, ptr)
+	return basictl.IntRead(w, item.ptr())
 }
 
 func (item *CasesTestUnion3) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -598,8 +597,8 @@ func (item *CasesTestUnion3) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestUnion3) Write(w []byte) []byte {
-	ptr := (*int32)(item)
-	return basictl.IntWrite(w, *ptr)
+	w = basictl.IntWrite(w, *item.ptr())
+	return w
 }
 
 func (item *CasesTestUnion3) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -627,8 +626,7 @@ func (item *CasesTestUnion3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *CasesTestUnion3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*int32)(item)
-	if err := Json2ReadInt32(in, ptr); err != nil {
+	if err := Json2ReadInt32(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -645,8 +643,7 @@ func (item *CasesTestUnion3) WriteJSON(w []byte) []byte {
 }
 
 func (item *CasesTestUnion3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*int32)(item)
-	w = basictl.JSONWriteInt32(w, *ptr)
+	w = basictl.JSONWriteInt32(w, *item.ptr())
 	return w
 }
 func (item *CasesTestUnion3) MarshalJSON() ([]byte, error) {
@@ -668,22 +665,21 @@ func (item CasesTestUnion4) AsUnion() CasesTestUnion {
 
 type CasesTestUnion4 string
 
+func (item *CasesTestUnion4) ptr() *string { return (*string)(item) }
+
 func (CasesTestUnion4) TLName() string { return "cases.testUnion4" }
 func (CasesTestUnion4) TLTag() uint32  { return 0xd6e28ad9 }
 
 func (item *CasesTestUnion4) Reset() {
-	ptr := (*string)(item)
-	*ptr = ""
+	*item.ptr() = ""
 }
 
 func (item *CasesTestUnion4) FillRandom(rg *basictl.RandGenerator) {
-	ptr := (*string)(item)
-	*ptr = basictl.RandomString(rg)
+	*item.ptr() = basictl.RandomString(rg)
 }
 
 func (item *CasesTestUnion4) Read(w []byte) (_ []byte, err error) {
-	ptr := (*string)(item)
-	return basictl.StringRead(w, ptr)
+	return basictl.StringRead(w, item.ptr())
 }
 
 func (item *CasesTestUnion4) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -691,8 +687,8 @@ func (item *CasesTestUnion4) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestUnion4) Write(w []byte) []byte {
-	ptr := (*string)(item)
-	return basictl.StringWrite(w, *ptr)
+	w = basictl.StringWrite(w, *item.ptr())
+	return w
 }
 
 func (item *CasesTestUnion4) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -720,8 +716,7 @@ func (item *CasesTestUnion4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *CasesTestUnion4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	ptr := (*string)(item)
-	if err := Json2ReadString(in, ptr); err != nil {
+	if err := Json2ReadString(in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
@@ -738,8 +733,7 @@ func (item *CasesTestUnion4) WriteJSON(w []byte) []byte {
 }
 
 func (item *CasesTestUnion4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	ptr := (*string)(item)
-	w = basictl.JSONWriteString(w, *ptr)
+	w = basictl.JSONWriteString(w, *item.ptr())
 	return w
 }
 func (item *CasesTestUnion4) MarshalJSON() ([]byte, error) {

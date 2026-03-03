@@ -40,8 +40,8 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 
 	fmt.Println("Seed: ", seed)
 
-	for sId, success := range mt.samples.Successes {
-		t.Run(fmt.Sprintf("Object %d - bytes [%s]", sId, success.Bytes), func(t *testing.T) {
+	for _, success := range mt.samples.Successes {
+		t.Run(fmt.Sprintf("TL1: %s", success.Bytes), func(t *testing.T) {
 			mt.object.FillRandom(rg)
 
 			trueBytes := utils.ParseHexToBytes(success.Bytes)
@@ -63,6 +63,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 		})
 
 		if t.Failed() {
+			t.Logf(">>>> BYTES: %q <<<<\n", success.Bytes)
 			return
 		}
 	}
@@ -315,7 +316,7 @@ func TestGeneralCasesBytes(t *testing.T) {
 	}
 
 	for testName, testValues := range tests.Tests {
-		t.Run(testName, func(t *testing.T) {
+		t.Run(testValues.TestingType, func(t *testing.T) {
 			testObject := factory.CreateObjectFromName(testValues.TestingType)
 			if testObject == nil {
 				t.Fatalf("No testing object for test \"%s\"", testName)
