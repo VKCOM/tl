@@ -64,117 +64,11 @@ func (item *CasesTL2TestFunctionNoDep2) WriteResult(w []byte, ret tlTrue.True) (
 }
 
 func (item *CasesTL2TestFunctionNoDep2) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *tlTrue.True) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if currentSize == 0 {
-		ret.Reset()
-		return r, nil
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return r, err
-	}
-	if block&1 != 0 {
-		var index int
-		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
-			return r, err
-		}
-		if index != 0 {
-			return currentR, basictl.TL2Error("function result must not use variant type field")
-		}
-	}
-
-	if block&2 != 0 {
-		if currentR, err = ret.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		ret.Reset()
-	}
-	return r, nil
-}
-
-func (item *CasesTL2TestFunctionNoDep2) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret tlTrue.True) ([]int, int) {
-	sizes = append(sizes, 450873092)
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-
-	currentSize := 1
-	lastUsedByte := 0
-	var sz int
-	if false {
-		lastUsedByte = currentSize
-	}
-	if lastUsedByte < currentSize {
-		currentSize = lastUsedByte
-	}
-	sizes[sizePosition] = currentSize
-	if currentSize == 0 {
-		sizes = sizes[:sizePosition+1]
-	}
-	if !optimizeEmpty || currentSize != 0 {
-		currentSize += basictl.TL2CalculateSize(currentSize)
-	}
-	internal.Unused(sz)
-	return sizes, currentSize
-}
-
-func (item *CasesTL2TestFunctionNoDep2) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret tlTrue.True) ([]byte, []int, int) {
-	if sizes[0] != 450873092 {
-		panic("tl2: tag mismatch between calculate and write")
-	}
-	currentSize := sizes[1]
-	sizes = sizes[2:]
-
-	if optimizeEmpty && currentSize == 0 {
-		return w, sizes, 0
-	}
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes, 1
-	}
-	oldLen := len(w)
-	var sz int
-	var currentBlock byte
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-
-	if false {
-		currentBlock |= 2
-	}
-	if currentBlockPosition < len(w) {
-		w[currentBlockPosition] = currentBlock
-	}
-	if len(w)-oldLen != currentSize {
-		panic("tl2: mismatch between calculate and write")
-	}
-	internal.Unused(sz)
-	return w, sizes, currentSize
+	return ret.ReadTL2(r, ctx)
 }
 
 func (item *CasesTL2TestFunctionNoDep2) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlTrue.True) []byte {
-	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
-	}
-	sizes, _ = item.calculateLayoutResult(sizes, false, ret)
-	w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
-	if len(sizes2) != 0 {
-		panic("tl2: internal write did not consume all size data")
-	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
-	}
-	return w
+	return ret.WriteTL2(w, ctx)
 }
 
 func (item *CasesTL2TestFunctionNoDep2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlTrue.True) error {

@@ -224,13 +224,12 @@ outer:
 					return nil, err
 				}
 				bb.WriteString("\n    => ")
-				// TODO - add this code after empty result is supported
-				//if !k.IsTrueType(comb.FuncDecl) { // otherwise returns nothing
-				fieldType := k.convertTypeRef(comb.FuncDecl)
-				if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldType, leftArgs); err != nil {
-					return nil, err
+				if !k.IsTrueTypeRef(comb.FuncDecl) { // otherwise returns nothing
+					fieldType := k.convertTypeRef(comb.FuncDecl)
+					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldType, leftArgs); err != nil {
+						return nil, err
+					}
 				}
-				//}
 				bb.WriteString(";")
 			} else {
 				// migrate struct. we decided that migrating tags should be done manually, if ever needed
@@ -402,7 +401,7 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 		//	bb.WriteString(" ")
 		//}
 		bb.WriteString(fieldDef.FieldName)
-		if fieldDef.Mask != nil && k.IsTrueType2(fieldType) {
+		if fieldDef.Mask != nil && k.IsTrueTypeRef2(fieldType) {
 			bb.WriteString(":bit")
 		} else {
 			if fieldDef.Mask != nil {

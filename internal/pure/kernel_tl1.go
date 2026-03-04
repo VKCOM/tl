@@ -270,6 +270,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				// also they have no TL1 names or TL2 names set.
 				canonicalName:  tlast.TL2TypeName(cName),
 				historicalName: tlast.TL2TypeName(cName),
+				namePR:         comb.Construct.NamePR,
 				canBeBare:      true,
 			}
 			for _, m := range comb.Modifiers {
@@ -322,6 +323,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				canonicalName:     tlast.TL2TypeName(cName),
 				historicalName:    tlast.TL2TypeName(cName),
 				tl1BoxedName:      tlast.TL2TypeName(tName),
+				namePR:            comb.Construct.NamePR,
 				canBeBare:         true,
 				templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
 				targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
@@ -359,6 +361,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			canonicalName:     tlast.TL2TypeName(tName),
 			historicalName:    tlast.TL2TypeName(tName),
 			tl1BoxedName:      tlast.TL2TypeName(tName),
+			namePR:            comb.TypeDecl.NamePR,
 			templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
 			targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 		}

@@ -44,12 +44,13 @@ type KernelType struct {
 	// for TL1-defined types, if function, Constructor.Name (left name)
 	// for primitive types, TL2 name (int32, uint32, etc).
 	canonicalName tlast.TL2TypeName
-
 	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
 	// for TL1 Bool, Bool
 	tl1BoxedName   tlast.TL2TypeName
 	canBeBare      bool
 	historicalName tlast.TL2TypeName // go gen historically uses TL1-style names for builtin types
+
+	namePR tlast.PositionRange // for "see here" in beautiful errors
 
 	// usage tracking for migration/compilcation.
 	// common for union types, so cannot be in combinator itself

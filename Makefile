@@ -122,7 +122,7 @@ migrate_to_tl2: build
 	git checkout ./$(TLS_PATH)/cases.tl # restore cases, which would contain only TL1 Bool/vector/etc.
 
 .PHONY: goldmaster_tl2_nocompile
-goldmaster_tl2_nocompile: build # migrate_to_tl2
+goldmaster_tl2_nocompile: build migrate_to_tl2
 	@./target/bin/tl2gen --language=go --split-internal -v \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
