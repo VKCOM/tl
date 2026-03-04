@@ -14,13 +14,6 @@ type TypeRWMaybe struct {
 	okTag    uint32
 }
 
-func (trw *TypeRWMaybe) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if isLocal {
-		return addBytes(trw.wr.goLocalName, bytesVersion)
-	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWMaybe) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.element.t.MarkHasBytesVersion(visitedNodes)
 }

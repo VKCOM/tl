@@ -178,7 +178,6 @@ type TypeRWWrapper struct {
 	gen *Gen2 // options and packages are here
 
 	ns        *Namespace
-	ins       *InternalNamespace
 	trw       TypeRW
 	NatParams []string // external params of type Read/Write method, with nat_ prefix
 
@@ -480,12 +479,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	return canonicalGoName(typeName, insideNamespace), b.String()
 }
 
-// for golang cycle detection
-type DirectImports struct {
-	ns         map[*InternalNamespace]struct{}
-	importSort bool
-}
-
 type CppIncludeInfo struct {
 	componentId int
 	namespace   string
@@ -592,12 +585,6 @@ func stringCompare(a string, b string) int {
 	return 0
 }
 
-func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
-	an := a.TypeString2(false, nil, nil, true, true)
-	bn := b.TypeString2(false, nil, nil, true, true)
-	return stringCompare(an, bn)
-}
-
 func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 	// return stringCompare(a.CanonicalString(), b.CanonicalString()) TODO - better idea after everything is stabilized
 	return stringCompare(a.goGlobalName, b.goGlobalName)
@@ -670,11 +657,6 @@ func (w *TypeRWWrapper) MarkWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 	w.wantsTL2 = true
 	visitedNodes[w] = true
 	w.trw.markWantsTL2(visitedNodes)
-}
-
-func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
 }
 
 func (w *TypeRWWrapper) IsTrueType() bool {
@@ -1268,7 +1250,6 @@ type TypeRW interface {
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
 	CanBeBareBoxed() (canBare bool, canBoxed bool)
-	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
 

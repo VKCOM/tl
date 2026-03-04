@@ -29,16 +29,6 @@ func (trw *TypeRWPrimitive) isFloat() bool {
 	return trw.tlType == "float" || trw.tlType == "double"
 }
 
-func (trw *TypeRWPrimitive) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if isLocal {
-		return addBytes(trw.goType, bytesVersion)
-	}
-	if bytesVersion {
-		return "[]byte"
-	}
-	return trw.goType
-}
-
 func (trw *TypeRWPrimitive) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return trw.tlType == "string"
 }
@@ -90,8 +80,4 @@ func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWPrimitive) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return true, false
-}
-
-func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *DirectImports) string {
-	return ""
 }

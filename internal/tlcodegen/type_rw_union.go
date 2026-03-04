@@ -15,13 +15,6 @@ type TypeRWUnion struct {
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
 }
 
-func (trw *TypeRWUnion) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if isLocal {
-		return addBytes(trw.wr.goLocalName, bytesVersion)
-	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWUnion) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	result := false
 	for _, f := range trw.Fields {
