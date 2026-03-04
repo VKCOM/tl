@@ -17,16 +17,6 @@ type TypeRWBool struct {
 	isBit bool
 }
 
-func (trw *TypeRWBool) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if !skipAlias {
-		return "bool"
-	}
-	if isLocal {
-		return addBytes(trw.wr.goLocalName, bytesVersion)
-	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWBool) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }

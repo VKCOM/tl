@@ -60,16 +60,6 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	return false
 }
 
-func (trw *TypeRWStruct) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if !skipAlias && trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
-	}
-	if isLocal {
-		return addBytes(trw.wr.goLocalName, bytesVersion)
-	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	result := false
 	for _, f := range trw.Fields {

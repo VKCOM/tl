@@ -7,7 +7,6 @@
 package tlcodegen
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -24,18 +23,6 @@ type TypeRWBrackets struct {
 	dictKeyString  bool
 	dictKeyField   Field
 	dictValueField Field
-}
-
-func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	if trw.dictLike && !bytesVersion {
-		return fmt.Sprintf("map[%s]%s",
-			trw.dictKeyField.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias),
-			trw.dictValueField.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias))
-	}
-	if trw.vectorLike || trw.dynamicSize {
-		return fmt.Sprintf("[]%s", trw.element.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias))
-	}
-	return fmt.Sprintf("[%d]%s", trw.size, trw.element.t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias))
 }
 
 func (trw *TypeRWBrackets) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
