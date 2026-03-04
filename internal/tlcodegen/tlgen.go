@@ -154,12 +154,6 @@ type Gen2Options struct {
 	AddFactoryData    bool
 
 	// TL2
-	GenerateTL2 bool
-
-	TL2MigrationFile       string
-	TL2MigrateByNamespaces bool
-	TL2ContinuousMigration bool
-	TL2MigratingWhitelist  string
 
 	TL2WhiteList string
 
@@ -214,6 +208,10 @@ type Gen2Options struct {
 	// .tlo
 	TLOPath           string
 	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
+}
+
+func (opt *Gen2Options) GenerateTL2() bool {
+	return opt.TL2WhiteList != ""
 }
 
 type Gen2 struct {
@@ -1878,9 +1876,6 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	default:
 		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
-	if !options.GenerateTL2 {
-		options.TL2WhiteList = "" // so if we do not generate TL2, all wantsTL flags are false
-	}
 	typesWhiteList := prepareNameFilter(options.TypesWhiteList)
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
@@ -1980,7 +1975,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			readValue:         "basictl.StringRead",
 		},
 	}
-	if gen.options.GenerateTL2 {
+	if gen.options.GenerateTL2() {
 		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
 			gen:               gen,
 			tlType:            "uint32",

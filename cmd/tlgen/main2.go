@@ -45,19 +45,6 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
-	// General TL2
-	generateTL2 := false
-	flag.BoolVar(&generateTL2, "tl2-generate", false,
-		"this option is ignored, use tl2WhiteList instead")
-	flag.StringVar(&opt.TL2MigrationFile, "tl2-migration-file", "",
-		"file to create .tl2 file with migrated files (if --tl2-migration-by-namespaces=true then it is path to common folder)")
-	flag.BoolVar(&opt.TL2MigrateByNamespaces, "tl2-migration-by-namespaces", false,
-		"whenever to migrate namespaces to separate files (this option requires --tl2-migration-file)")
-	flag.BoolVar(&opt.TL2ContinuousMigration, "tl2-continuous-migration", false,
-		"whenever current migration is part of the series which means old files will not be deleted (this option requires --tl2-migration-by-namespaces=true)")
-	flag.StringVar(&opt.TL2MigratingWhitelist, "tl2-migration-whitelist", "*",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to create migration file. Empty means none, '*' means all (this option requires --tl2-migration-file)")
-
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
 		`path to old version TL schema to compare on backward compatibility`)
@@ -161,10 +148,6 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	if opt.AddFactoryData {
 		opt.AddMetaData = true
 		opt.AddFunctionBodies = true
-	}
-
-	if opt.TL2WhiteList != "" {
-		opt.GenerateTL2 = true
 	}
 }
 
@@ -275,12 +258,6 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 			return err // Context is already in err
 		}
 	}
-	if opt.TL2MigrationFile != "" {
-		migrationErr := runTL2Migration(opt, gen)
-		if migrationErr != nil {
-			return migrationErr
-		}
-	}
 
 	//if opt.Language == "go" {
 	//	return fmt.Errorf("plesae run tl2gen, tlgen does not support go generation and will be deleted soon.")
@@ -356,58 +333,6 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		fullAst.WriteGenerate2TL(&buf)
 		if err := os.WriteFile(opt.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
 			return err
-		}
-	}
-	return nil
-}
-
-func runTL2Migration(opt *tlcodegen.Gen2Options, gen *tlcodegen.Gen2) error {
-	prevState := make([]tlcodegen.FileToWrite, 0)
-	prevStateFolder := filepath.Join(opt.TL2MigrationFile, "namespaces")
-	if opt.TL2MigrateByNamespaces && opt.TL2ContinuousMigration {
-		files, err := os.ReadDir(prevStateFolder)
-		if err != nil {
-			return fmt.Errorf("error reading folder with previous state of tl2 migration: %s", err)
-		}
-		for _, file := range files {
-			if file.IsDir() || !strings.HasSuffix(file.Name(), ".tl2") {
-				continue
-			}
-			path := filepath.Join(prevStateFolder, file.Name())
-			body, err := os.ReadFile(path)
-			if err != nil {
-				return fmt.Errorf("error reading body for file \"%s\" in previous state: %s", file.Name(), err)
-			}
-			ast, err := tlast.ParseTL2(string(body))
-			if err != nil {
-				return fmt.Errorf("error parsing previous state of \"%s\": %s", file.Name(), err)
-			}
-			prevState = append(prevState, tlcodegen.FileToWrite{Path: path, Ast: ast})
-		}
-	}
-	files, err := gen.MigrateToTL2(prevState)
-	if err != nil {
-		return fmt.Errorf("error migrating to tl2: %s", err)
-	}
-	options := tlast.NewDefaultFormatOptions()
-	if opt.TL2MigrateByNamespaces && !opt.TL2ContinuousMigration {
-		err := os.RemoveAll(prevStateFolder)
-		if err != nil {
-			return err
-		}
-	}
-	for _, file := range files {
-		sb := strings.Builder{}
-		file.Ast.Print(&sb, options)
-		if opt.Verbose {
-			log.Printf("generating TL2 file \"%s\"...\n", file.Path)
-		}
-		err := os.MkdirAll(filepath.Dir(file.Path), 0755)
-		if err != nil && !os.IsExist(err) {
-			return err
-		}
-		if err := os.WriteFile(file.Path, []byte(sb.String()), 0644); err != nil {
-			return fmt.Errorf("error writing tl2 file: %w", err)
 		}
 	}
 	return nil
