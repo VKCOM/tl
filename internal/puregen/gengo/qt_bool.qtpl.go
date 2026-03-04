@@ -20,6 +20,9 @@ func (trw *TypeRWBool) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersio
 	if trw.isBit {
 		return
 	}
+	// we generate ReadBoxed/WriteBoxed methods, because vector and other mixed types will call it in their Read*/Write* methods
+	// TODO - fix later by propagating hasTL1 property through type recursion, and not generating Read*/Write* in users
+
 	if !trw.wr.originateFromTL2 {
 		qw422016.N().S(`const (
     `)
