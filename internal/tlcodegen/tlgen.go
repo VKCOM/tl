@@ -165,13 +165,9 @@ type Gen2Options struct {
 	LinterPHPNonPolymorphicBoxedRef bool
 
 	// Go
-	BasicPackageNameFull   string // if empty, will be created
-	TLPackageNameFull      string
 	GenerateRPCCode        bool
-	BasicRPCPath           string
 	BytesWhiteList         string
 	TypesWhiteList         string
-	RawHandlerWhileList    string
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
@@ -216,15 +212,7 @@ func (opt *Gen2Options) GenerateTL2() bool {
 
 type Gen2 struct {
 	// options
-	options             *Gen2Options // pointer so code modifying options in GenerateCode refers to the same structure
-	rawHandlerWhileList []string
-
-	// golang specific
-	BasicPackageNameFull     string // basic types are in separate namespace to minimize conflicts
-	BasicPackageRelativePath string // if cannot determine relative path, will not be written
-	GlobalPackageName        string // we generate all go types in this package, because we need circular dependencies
-	FactoryPackageName       string
-	MetaPackageName          string
+	options *Gen2Options // pointer so code modifying options in GenerateCode refers to the same structure
 
 	// c++ specific
 	RootCPPNamespaceElements    []string
@@ -1880,7 +1868,6 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
 	gen.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
-	gen.rawHandlerWhileList = prepareNameFilter(options.RawHandlerWhileList)
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{

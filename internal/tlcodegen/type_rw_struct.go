@@ -183,13 +183,6 @@ func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]i
 }
 
 func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
-	if trw.wr.gen.options.Language == "go" {
-		for i, f := range trw.Fields {
-			visitedNodes := map[*TypeRWWrapper]bool{}
-			f.t.trw.fillRecursiveChildren(visitedNodes)
-			trw.Fields[i].recursive = visitedNodes[trw.wr]
-		}
-	}
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))

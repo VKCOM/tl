@@ -62,13 +62,6 @@ func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
-	if trw.wr.gen.options.Language == "go" {
-		for i, f := range trw.Fields {
-			visitedNodes := map[*TypeRWWrapper]bool{}
-			f.t.trw.fillRecursiveChildren(visitedNodes)
-			trw.Fields[i].recursive = visitedNodes[trw.wr]
-		}
-	}
 	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
 	//	var nf []Field
 	//	for _, f := range trw.Fields {
