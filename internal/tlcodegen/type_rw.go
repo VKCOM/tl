@@ -676,33 +676,10 @@ func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImpo
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
 }
-func (w *TypeRWWrapper) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeResettingCode(bytesVersion, directImports, ins, val, ref)
-}
-func (w *TypeRWWrapper) TypeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeRandomCode(bytesVersion, directImports, ins, val, natArgs, ref)
-}
-func (w *TypeRWWrapper) TypeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeWritingCode(bytesVersion, directImports, ins, val, bare, natArgs, ref, last, needError)
-}
-func (w *TypeRWWrapper) TypeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeReadingCode(bytesVersion, directImports, ins, val, bare, natArgs, ref, last)
-}
+
 func (w *TypeRWWrapper) TypeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeJSONEmptyCondition(bytesVersion, val, ref)
-}
-func (w *TypeRWWrapper) TypeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSONWritingCode(bytesVersion, directImports, ins, val, natArgs, ref, needError)
-}
-func (w *TypeRWWrapper) TypeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
 }
 
 func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
@@ -1308,13 +1285,7 @@ type TypeRW interface {
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
-	typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string
-	typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string
-	typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string
-	typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string
 	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string
-	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string
-	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingRequiresContext() bool
 
@@ -1513,14 +1484,6 @@ func addAsteriskAndBrackets(ref bool, val string) string {
 
 func wrapLast(last bool, code string) string {
 	return ifString(last, "return "+code+"", "if err := "+code+"; err != nil { return err }")
-}
-
-func wrapLastW(last bool, code string, needError bool) string {
-	if needError {
-		return ifString(last, "return "+code+"", "if w, err = "+code+"; err != nil { return w, err }")
-	} else {
-		return ifString(last, "return "+code+"", "w = "+code)
-	}
 }
 
 func ifString(value bool, t string, f string) string {
