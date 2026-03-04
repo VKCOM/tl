@@ -8,8 +8,6 @@
 package constants
 
 const (
-	BoolFalse                    = 0xbc799737 // boolFalse
-	BoolTrue                     = 0x997275b5 // boolTrue
 	CasesTL2TestFunctionNoDep1   = 0x1b8b9feb // casesTL2.testFunctionNoDep1
 	CasesTL2TestFunctionNoDep2   = 0x0a2c0bf9 // casesTL2.testFunctionNoDep2
 	CasesTL2TestFunctionNoDep3   = 0xf020849b // casesTL2.testFunctionNoDep3

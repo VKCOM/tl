@@ -115,10 +115,11 @@ goldmaster_nocompile: build
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
+	rm ./$(TLS_PATH)/cases.tl2
 	@./target/bin/tl2gen --language=tl2migration -v \
-		--tl2migrationDevMode \
   		--tl2WhiteList=* \
 		./$(TLS_PATH)/cases.tl
+	git checkout ./$(TLS_PATH)/cases.tl # restore cases, which would contain only TL1 Bool/vector/etc.
 
 .PHONY: goldmaster_tl2_nocompile
 goldmaster_tl2_nocompile: build # migrate_to_tl2
@@ -132,7 +133,7 @@ goldmaster_tl2_nocompile: build # migrate_to_tl2
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
-		./$(TLS_PATH)/cases_migr.tl ./$(TLS_PATH)/cases_migr.tl2
+		./$(TLS_PATH)/cases.tl2
 
 .PHONY: goldmaster
 goldmaster: goldmaster_nocompile goldmaster_tl2_nocompile
