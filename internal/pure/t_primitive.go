@@ -54,7 +54,7 @@ func (ins *TypeInstancePrimitive) IsTL1Bool() (ok bool, falseTag uint32, trueTag
 	return false, 0, 0
 }
 
-func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, fixedSize int, goodForMapKey bool) {
+func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string, fixedSize int, goodForMapKey bool) *KernelType {
 	// for the purpose of type check, this is object with no fields, like uint32 = ;
 	combTL1 := &tlast.Combinator{
 		Construct: tlast.Constructor{
@@ -107,4 +107,5 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 	}
 	k.instances[name] = ref
 	k.instancesOrdered = append(k.instancesOrdered, ref)
+	return kt
 }

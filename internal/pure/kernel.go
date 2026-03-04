@@ -55,16 +55,23 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 		tips:      map[string]*KernelType{},
 		instances: map[string]*TypeInstanceRef{},
 	}
-	k.addPrimitive("uint32", "#", "nat", 4, true)
-	k.addPrimitive("int32", "int", "int", 4, true)
-	k.addPrimitive("float32", "float", "float", 4, false)
-	k.addPrimitive("uint64", "", "uint64", 8, true)
-	k.addPrimitive("int64", "long", "long", 8, true)
-	k.addPrimitive("float64", "double", "double", 8, false)
-	k.addPrimitive("byte", "", "byte", 1, true)
-	k.addPrimitive("bool", "", "bool", 1, true)
-	k.addPrimitive("bit", "", "bit", 0, true)
-	k.addPrimitive("string", "string", "string", 0, true)
+	_ = k.addPrimitive("uint32", "#", "nat", 4, true)
+	_ = k.addPrimitive("int32", "int", "int", 4, true)
+	_ = k.addPrimitive("float32", "float", "float", 4, false)
+	_ = k.addPrimitive("uint64", "", "uint64", 8, true)
+	_ = k.addPrimitive("int64", "long", "long", 8, true)
+	_ = k.addPrimitive("float64", "double", "double", 8, false)
+	_ = k.addPrimitive("byte", "", "byte", 1, true)
+	{
+		ktBool := k.addPrimitive("bool", "", "bool", 1, true)
+		//ktBool.originTL2 = false
+		ktBool.canBeBare = false
+		ktBool.tl1BoxedName = tlast.TL2TypeName{Name: "bool"}
+		// Bool is special, we treat as unions, they are boxed in TL1, therefore we are making them boxed in TL2
+		// so that type references are generated exactly same from TL1 and TL2 files.
+	}
+	_ = k.addPrimitive("bit", "", "bit", 0, true)
+	_ = k.addPrimitive("string", "string", "string", 0, true)
 	//k.addString()
 	k.addTL1Brackets()
 
