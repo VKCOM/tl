@@ -60,17 +60,6 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	return false
 }
 
-func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	result := false
-	for _, f := range trw.Fields {
-		result = result || f.t.MarkHasBytesVersion(visitedNodes)
-	}
-	if trw.ResultType != nil {
-		result = result || trw.ResultType.MarkHasBytesVersion(visitedNodes)
-	}
-	return result
-}
-
 func (trw *TypeRWWrapper) replaceUnwrapHalfResolvedName(topHalfResolved HalfResolvedArgument, name string) string {
 	if name == "" {
 		return ""
@@ -99,40 +88,11 @@ func (trw *TypeRWWrapper) replaceUnwrapHalfResolved(topHalfResolved HalfResolved
 	return result
 }
 
-func (trw *TypeRWStruct) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	result := false
-	for _, f := range trw.Fields {
-		result = result || f.t.MarkWriteHasError(visitedNodes)
-	}
-	if trw.ResultType != nil {
-		result = result || trw.ResultType.MarkWriteHasError(visitedNodes)
-	}
-	return result
-}
-
 func (trw *TypeRWStruct) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 	if !trw.isTypeDef() {
 		return
 	}
 	trw.Fields[0].t.FillRecursiveUnwrap(visitedNodes)
-}
-
-func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsBytesVersion(visitedNodes)
-	}
-	if trw.ResultType != nil {
-		trw.ResultType.MarkWantsBytesVersion(visitedNodes)
-	}
-}
-
-func (trw *TypeRWStruct) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsTL2(visitedNodes)
-	}
-	if trw.ResultType != nil {
-		trw.ResultType.MarkWantsTL2(visitedNodes)
-	}
 }
 
 func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {

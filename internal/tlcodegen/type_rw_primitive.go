@@ -29,21 +29,7 @@ func (trw *TypeRWPrimitive) isFloat() bool {
 	return trw.tlType == "float" || trw.tlType == "double"
 }
 
-func (trw *TypeRWPrimitive) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.tlType == "string"
-}
-
-func (trw *TypeRWPrimitive) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return false
-}
-
 func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWPrimitive) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWPrimitive) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
 func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
