@@ -257,9 +257,12 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 					state.Inherit(tryRefState)
 					return
 				} else if tryRefState.IsOmitted() {
-					state.Inherit(localState)
-					state.FailWithError(parseErrToken(fmt.Errorf("can't parse type declaration"), restTokens.front(), position))
-					return
+					if localState.IsFailed() {
+						state.Inherit(localState)
+						state.FailWithError(parseErrToken(fmt.Errorf("can't parse type declaration"), restTokens.front(), position))
+
+						return
+					}
 				}
 
 				// found ref
@@ -390,19 +393,12 @@ func parseTL2StructTypeDefinition(tokens tokenIterator, position Position) (stat
 		var fieldsState OptionalState
 		fieldsState, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
 		if fieldsState.IsFailed() {
-			//state.Inherit(fieldsState)
 			state.Error = fieldsState.Error
 			restTokens = tokens
-			//state.FailWithError(parseErrToken(fmt.Errorf("expected type field declaration"), restTokens.front(), position))
 		} else {
 			state = fieldsState
 		}
 	}
-	//if state.StartProcessing {
-	//	result.IsUnionType = true
-	//} else {
-	//	state, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
-	//}
 
 	result.PR.End = restTokens.front().pos
 	return
