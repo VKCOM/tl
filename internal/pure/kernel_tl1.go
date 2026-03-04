@@ -89,6 +89,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 			historicalName: tlast.TL2TypeName(typ.TypeDecl.Name),
 			tl1BoxedName:   tlast.TL2TypeName(typ.TypeDecl.Name),
 			isTopLevel:     true,
+			canBeBare:      true, // actually is will never be bare due to builtinWrappedCanonicalName replacement
 
 			builtinWrappedCanonicalName: typ.Construct.Name.String(),
 		}

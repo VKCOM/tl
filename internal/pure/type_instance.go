@@ -103,6 +103,9 @@ func (ins *TypeInstanceCommon) CommentRight() string {
 }
 
 func (ins *TypeInstanceCommon) BoxedOnly() bool {
+	if ins.tip != nil {
+		return !ins.tip.CanBeBare()
+	}
 	return false
 }
 

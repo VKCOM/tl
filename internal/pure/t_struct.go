@@ -662,7 +662,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		// fmt.Printf("resolveTypeTL2 for function %s result type: %s -> %s\n", canonicalName, def.FuncDecl.String(), rt.String())
 		fieldIns, fieldBare, err := k.getInstance(rt, true)
 		if err != nil {
-			return nil, fmt.Errorf("fail to instantiate function %s result type: %w", canonicalName, err)
+			return nil, err
 		}
 		if fieldBare {
 			// @read a.TypeA = int;

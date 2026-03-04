@@ -49,7 +49,9 @@ func (k *Kernel) canonicalString(tr tlast.TL2TypeRef, top bool) (_ string, bare 
 		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
 	bare = someType.Bare
-	if someType.Name != kt.tl1BoxedName {
+	// Special case, Bool is boxed in TL1, but bare in TL2, so we make it boxed always, from the
+	// type resolution point of view.
+	if someType.Name != kt.tl1BoxedName && kt.canonicalName.String() != "bool" {
 		bare = true
 	}
 	if bare && !kt.CanBeBare() {
@@ -71,6 +73,7 @@ func (k *Kernel) canonicalString(tr tlast.TL2TypeRef, top bool) (_ string, bare 
 		e2 := kt.combTL1[0].Construct.NamePR.BeautifulError(errSeeHere)
 		return "", false, tlast.BeautifulError2(e1, e2)
 	}
+	//}
 	if !top && !bare && kt.CanBeBare() {
 		s.WriteString("+")
 	}

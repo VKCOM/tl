@@ -131,9 +131,8 @@ func (w *TypeRWWrapper) resolvedT2GoNameArg(b *strings.Builder, arg tlast.TL2Typ
 	fieldType, fieldBare := w.gen.getTypeWrapperMust(arg.Type)
 	head, tail := fieldType.resolvedT2GoName(insideNamespace)
 	b.WriteString(head)
-	if head != "Bool" && !fieldBare && !fieldType.pureType.BoxedOnly() {
+	if !fieldBare && !fieldType.pureType.BoxedOnly() {
 		// If it cannot be bare, save on redundant suffix
-		// Bool is exception, because it is bare in TL2, but boxed in TL1
 		b.WriteString("Boxed")
 	}
 	b.WriteString(tail)
