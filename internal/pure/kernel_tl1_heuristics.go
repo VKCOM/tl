@@ -15,13 +15,26 @@ import (
 	"github.com/vkcom/tl/internal/utils"
 )
 
-func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
+func (k *Kernel) IsTrueTypeRef(rt tlast.TypeRef) bool {
 	return rt.String() == "true" || rt.String() == "True"
 }
 
-func (k *Kernel) IsTrueType2(rt tlast.TL2TypeRef) bool {
+func (k *Kernel) IsTrueTypeRef2(rt tlast.TL2TypeRef) bool {
 	rt.SomeType.Bare = false // %True will not compare below
 	return rt.String() == "true" || rt.String() == "True"
+}
+
+// All functions which have empty result  => ;
+// will reference true-type instead, if defined
+func (k *Kernel) IsTrueType(ktTrue *KernelType) bool {
+	if ktTrue.isFunction || len(ktTrue.templateArguments) != 0 {
+		return false
+	}
+	if ktTrue.originTL2 {
+		tp := ktTrue.combTL2.TypeDecl.Type // not function, checked above
+		return !tp.IsTypeAlias && !tp.StructType.IsUnionType && len(tp.StructType.ConstructorFields) == 0
+	}
+	return len(ktTrue.combTL1) == 1 && len(ktTrue.combTL1[0].Fields) == 0
 }
 
 func (k *Kernel) IsDictWrapper(kt *KernelType, resolvedType tlast.TL2TypeRef) (bool, tlast.TL2TypeArgument, tlast.TL2TypeRef, error) {

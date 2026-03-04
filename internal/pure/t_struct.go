@@ -221,7 +221,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 		ins.fields = append(ins.fields, newField)
 	}
 	if isFunction {
-		if resultTlName, ok := k.functionNeedsGeneratedResultType(funcDecl); ok {
+		if resultTlName, needsCustom, _ := k.functionNeedsCustomResultType(funcDecl); needsCustom {
 			ins.isResultAlias = true
 			resultIns, _, err := k.getInstance(tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: resultTlName}}, true)
 			if err != nil {
@@ -247,12 +247,35 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			ins.resultType = resultIns.ins // function cannot be referenced so no recursion
 			ins.resultTypeBare = fieldBare
 			ins.resultNatArgs = fieldNatArgs
+			resultTypeStruct := k.findLastAliasStruct(resultIns.ins)
+			if ins.isResultAlias && resultTypeStruct == nil {
+				pr := funcDecl.ReturnType.PR
+				if pr == (tlast.PositionRange{}) { // TODO - remove after ReturnType.PR is always set in parser
+					pr = funcDecl.ReturnType.TypeAlias.PR
+				}
+				return nil, pr.BeautifulError(fmt.Errorf("function can only return struct or union via alias"))
+			}
 		}
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName2(tlName)
 	}
 	ins.isTypedef = !isFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
 	ins.isAlias = !isUnionElement && ins.isTypedef
 	return ins, nil
+}
+
+func (k *Kernel) findLastAliasStruct(ins TypeInstance) *TypeInstanceStruct {
+	for {
+		typeStruct, ok := ins.(*TypeInstanceStruct)
+		if !ok {
+			return nil
+		}
+		if !typeStruct.isAlias {
+			return typeStruct
+		}
+		// called during type resolving, but function result cannot be in recursive cycle with function,
+		// so ins.ins must not be nil here
+		ins = typeStruct.fields[0].ins.ins
+	}
 }
 
 // we want the same naming convention for nat params, as in old kernel,

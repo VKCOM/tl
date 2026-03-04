@@ -85,14 +85,30 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 }
 
 func (k *Kernel) addTip(kt *KernelType, name1 string, name2 string) error {
-	_, ok := k.tips[name1]
+	existing, ok := k.tips[name1]
 	if ok {
-		return fmt.Errorf("type %v already exists", name1)
+		if kt.namePR == (tlast.PositionRange{}) { // various built-ins
+			return fmt.Errorf("type %v already exists", name1)
+		}
+		e1 := kt.namePR.BeautifulError(fmt.Errorf("type %v already exists", name1))
+		if existing.namePR == (tlast.PositionRange{}) {
+			return e1
+		}
+		e2 := existing.namePR.BeautifulError(errSeeHere)
+		return tlast.BeautifulError2(e1, e2)
 	}
 	if name2 != "" {
-		_, ok := k.tips[name2]
+		existing, ok := k.tips[name2]
 		if ok {
-			return fmt.Errorf("type %v already exists", name2)
+			if kt.namePR == (tlast.PositionRange{}) { // various built-ins
+				return fmt.Errorf("type %v already exists", name2)
+			}
+			e1 := kt.namePR.BeautifulError(fmt.Errorf("type %v already exists", name2))
+			if existing.namePR == (tlast.PositionRange{}) {
+				return e1
+			}
+			e2 := existing.namePR.BeautifulError(errSeeHere)
+			return tlast.BeautifulError2(e1, e2)
 		}
 		k.tips[name2] = kt
 	}
@@ -203,16 +219,25 @@ func (k *Kernel) AddFileTL2(file string) error {
 	return nil
 }
 
-func (k *Kernel) functionNeedsGeneratedResultType(funcDecl tlast.TL2FuncDeclaration) (tlast.TL2TypeName, bool) {
+func (k *Kernel) functionNeedsCustomResultType(funcDecl tlast.TL2FuncDeclaration) (_ tlast.TL2TypeName, needsCustom bool, customTrue bool) {
 	if funcDecl.ReturnType.IsTypeAlias {
-		return tlast.TL2TypeName{}, false
+		return tlast.TL2TypeName{}, false, false
 	}
-	resultTlName := funcDecl.Name
-	resultTlName.Name += "__Result"
-	return resultTlName, funcDecl.ReturnType.StructType.IsUnionType ||
+	structType := funcDecl.ReturnType.StructType
+	if !structType.IsUnionType && len(structType.ConstructorFields) == 0 {
+		if ktTrue, ok := k.tips["true"]; ok && k.IsTrueType(ktTrue) {
+			return tlast.TL2TypeName{Name: "true"}, true, true
+		}
+	}
+	if funcDecl.ReturnType.StructType.IsUnionType ||
 		len(funcDecl.ReturnType.StructType.ConstructorFields) != 1 ||
 		funcDecl.ReturnType.StructType.ConstructorFields[0].Name != "" ||
-		funcDecl.ReturnType.StructType.ConstructorFields[0].IsOptional
+		funcDecl.ReturnType.StructType.ConstructorFields[0].IsOptional {
+		resultTlName := funcDecl.Name
+		resultTlName.Name += "__Result"
+		return resultTlName, true, false
+	}
+	return tlast.TL2TypeName{}, false, false
 }
 
 func (k *Kernel) Compile() error {
@@ -240,7 +265,8 @@ func (k *Kernel) Compile() error {
 			historicalName: refName,
 		}
 		if comb.IsFunction {
-			if resultTlName, ok := k.functionNeedsGeneratedResultType(comb.FuncDecl); ok {
+			kt.namePR = comb.FuncDecl.PRName
+			if resultTlName, needsCustom, customTrue := k.functionNeedsCustomResultType(comb.FuncDecl); needsCustom && !customTrue {
 				resultKt := &KernelType{
 					originTL2: true,
 					combTL2: tlast.TL2Combinator{
@@ -261,11 +287,16 @@ func (k *Kernel) Compile() error {
 					canonicalName:  resultTlName,
 					historicalName: resultTlName,
 				}
+				// TODO - we must not receive errors here, function
 				if err := k.addTip(resultKt, resultTlName.String(), ""); err != nil {
-					return fmt.Errorf("error adding function result type %s: %w", resultTlName, err)
+					return fmt.Errorf("internal error when creating function result type %s: %w", resultTlName, err)
 				}
 			}
+			if err := k.addTip(kt, refName.String(), ""); err != nil {
+				return err
+			}
 		} else {
+			kt.namePR = comb.TypeDecl.PRName
 			kt.templateArguments = comb.TypeDecl.TemplateArguments
 			kt.targs = make([]KernelTypeTarg, len(comb.TypeDecl.TemplateArguments))
 
@@ -277,9 +308,9 @@ func (k *Kernel) Compile() error {
 					return err
 				}
 			}
-		}
-		if err := k.addTip(kt, refName.String(), ""); err != nil {
-			return err
+			if err := k.addTip(kt, refName.String(), ""); err != nil {
+				return err
+			}
 		}
 	}
 	// type all declarations by comparing type ref with actual type definition
