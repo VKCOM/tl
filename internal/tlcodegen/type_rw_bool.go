@@ -17,20 +17,7 @@ type TypeRWBool struct {
 	isBit bool
 }
 
-func (trw *TypeRWBool) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return false
-}
-
-func (trw *TypeRWBool) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return false
-}
-
 func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWBool) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-}
-func (trw *TypeRWBool) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
 func (trw *TypeRWBool) AllPossibleRecursionProducers() []*TypeRWWrapper {

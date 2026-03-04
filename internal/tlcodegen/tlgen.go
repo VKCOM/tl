@@ -2399,22 +2399,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 
 	purelegacy.PrintGlobalMap()
 
-	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
-	for _, v := range gen.generatedTypesList {
-		if inNameFilter(v.tlName, bytesWhiteList) {
-			v.MarkWantsBytesVersion(bytesChildren)
-			typesCounterMarkBytes++
-		}
-	}
-	tl2Children := map[*TypeRWWrapper]bool{}
 	typesCounterMarkTL2 := 0
-	for _, v := range gen.generatedTypesList {
-		if inNameFilter(v.tlName, tl2WhiteList) {
-			v.MarkWantsTL2(tl2Children)
-			typesCounterMarkTL2++
-		}
-	}
 	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
 		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
 			for i := range str.Fields {
@@ -2485,13 +2471,6 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		}
 
 		v.trw.BeforeCodeGenerationStep2()
-	}
-	// Order of these 2 loops is important, for example see TypeRWTuple where bytes version depends on whether it is dict_like
-	for _, v := range sortedTypes {
-		visitedNodes := map[*TypeRWWrapper]bool{}
-		v.hasBytesVersion = v.MarkHasBytesVersion(visitedNodes)
-		visitedNodes = map[*TypeRWWrapper]bool{}
-		v.hasErrorInWriteMethods = v.MarkWriteHasError(visitedNodes)
 	}
 
 	// additional php check

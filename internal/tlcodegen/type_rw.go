@@ -191,9 +191,6 @@ type TypeRWWrapper struct {
 	wantsTL2          bool
 	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
-	hasBytesVersion        bool
-	hasErrorInWriteMethods bool
-
 	fileName string
 
 	originateFromTL2 bool
@@ -609,22 +606,6 @@ func (w *TypeRWWrapper) ShouldWriteEnumElementAlias() bool {
 	return w.unionParent != nil && w.unionParent.IsEnum
 }
 
-func (w *TypeRWWrapper) MarkHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if visitedNodes[w] {
-		return false // We OR results of fields, so if we visited field, and it returned true, this true is already recorded
-	}
-	visitedNodes[w] = true
-	return w.trw.markHasBytesVersion(visitedNodes)
-}
-
-func (w *TypeRWWrapper) MarkWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if visitedNodes[w] {
-		return false // We OR results of fields, so if we visited field, and it returned true, this true is already recorded
-	}
-	visitedNodes[w] = true
-	return w.trw.markWriteHasError(visitedNodes)
-}
-
 func (w *TypeRWWrapper) FillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return
@@ -639,24 +620,6 @@ func (w *TypeRWWrapper) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 	}
 	visitedNodes[w] = true
 	w.trw.fillRecursiveChildren(visitedNodes)
-}
-
-func (w *TypeRWWrapper) MarkWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
-	}
-	w.wantsBytesVersion = true
-	visitedNodes[w] = true
-	w.trw.markWantsBytesVersion(visitedNodes)
-}
-
-func (w *TypeRWWrapper) MarkWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
-	}
-	w.wantsTL2 = true
-	visitedNodes[w] = true
-	w.trw.markWantsTL2(visitedNodes)
 }
 
 func (w *TypeRWWrapper) IsTrueType() bool {
@@ -1233,8 +1196,6 @@ outer:
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
-	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
-	markWantsTL2(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
@@ -1250,8 +1211,6 @@ type TypeRW interface {
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
 	CanBeBareBoxed() (canBare bool, canBoxed bool)
-	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
-	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
 
 	TypeRWCPPData
 	TypeRWPHPData

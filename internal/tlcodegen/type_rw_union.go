@@ -15,35 +15,7 @@ type TypeRWUnion struct {
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
 }
 
-func (trw *TypeRWUnion) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	result := false
-	for _, f := range trw.Fields {
-		result = result || f.t.MarkHasBytesVersion(visitedNodes)
-	}
-	return result
-}
-
-func (trw *TypeRWUnion) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	result := false
-	for _, f := range trw.Fields {
-		result = result || f.t.MarkWriteHasError(visitedNodes)
-	}
-	return result
-}
-
 func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsBytesVersion(visitedNodes)
-	}
-}
-
-func (trw *TypeRWUnion) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		f.t.MarkWantsTL2(visitedNodes)
-	}
 }
 
 func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {

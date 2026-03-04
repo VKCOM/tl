@@ -14,23 +14,7 @@ type TypeRWMaybe struct {
 	okTag    uint32
 }
 
-func (trw *TypeRWMaybe) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.element.t.MarkHasBytesVersion(visitedNodes)
-}
-
-func (trw *TypeRWMaybe) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.element.t.MarkWriteHasError(visitedNodes)
-}
-
 func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWMaybe) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsBytesVersion(visitedNodes)
-}
-
-func (trw *TypeRWMaybe) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsTL2(visitedNodes)
 }
 
 func (trw *TypeRWMaybe) AllPossibleRecursionProducers() []*TypeRWWrapper {

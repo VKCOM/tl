@@ -25,30 +25,8 @@ type TypeRWBrackets struct {
 	dictValueField Field
 }
 
-func (trw *TypeRWBrackets) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if trw.dictLike {
-		return true
-	}
-	return trw.element.t.MarkHasBytesVersion(visitedNodes)
-}
-
-func (trw *TypeRWBrackets) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if trw.dynamicSize {
-		return true
-	}
-	return trw.element.t.MarkWriteHasError(visitedNodes)
-}
-
 func (trw *TypeRWBrackets) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 	trw.element.t.FillRecursiveUnwrap(visitedNodes)
-}
-
-func (trw *TypeRWBrackets) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsBytesVersion(visitedNodes)
-}
-
-func (trw *TypeRWBrackets) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.MarkWantsTL2(visitedNodes)
 }
 
 func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
