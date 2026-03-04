@@ -519,6 +519,45 @@ testNs.testName = Green x:int |
 			assert.Equal(t, "int", comb.FuncDecl.ReturnType.TypeAlias.String())
 		})
 
+		t.Run("func with empty return type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => ; `)
+			comb, newIt, err := parseTL2Combinator(it)
+			assert.Nil(t, err)
+			assert.True(t, newIt.expect(eof))
+
+			assert.True(t, comb.IsFunction)
+
+			returnType := comb.FuncDecl.ReturnType
+
+			assert.False(t, returnType.IsTypeAlias)
+			assert.False(t, returnType.StructType.IsUnionType)
+			assert.Equal(t, 0, len(returnType.StructType.ConstructorFields))
+		})
+
+		t.Run("func with incorrect return type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => _int; `)
+			_, _, err := parseTL2Combinator(it)
+			assert.NotNil(t, err)
+		})
+
+		t.Run("func with incorrect type in field declaration", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => y:_int; `)
+			_, _, err := parseTL2Combinator(it)
+			assert.NotNil(t, err)
+		})
+
+		t.Run("func with incorrect empty union type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => |; `)
+			_, _, err := parseTL2Combinator(it)
+			assert.NotNil(t, err)
+		})
+
+		t.Run("func with incorrect one constructor union type", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName#09123456 x:int => con |; `)
+			_, _, err := parseTL2Combinator(it)
+			assert.NotNil(t, err)
+		})
+
 		t.Run("func with anonymous return type", func(t *testing.T) {
 			it, _ := setupIterator(`testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
