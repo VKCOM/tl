@@ -56,20 +56,12 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"prohibit due to php generator issues boxed ref to non-polymorphic types (requires --linter-php-check=true)")
 
 	// Go
-	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
-		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
-	flag.StringVar(&opt.TLPackageNameFull, "pkgPath", "",
-		"package path to be used inside generated code")
 	flag.BoolVar(&opt.GenerateRPCCode, "generateRPCCode", false,
 		"whether to generate *_server.go files")
-	flag.StringVar(&opt.BasicRPCPath, "basicRPCPath", "",
-		"path to rpc package")
 	flag.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
 	flag.StringVar(&opt.TypesWhiteList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
-	flag.StringVar(&opt.RawHandlerWhileList, "rawHandlerWhiteList", "",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate RAW function handlers. Empty means none, '*' means all")
 	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
