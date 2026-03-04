@@ -12,13 +12,10 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictFieldStringInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictFieldStringString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyFieldDoubleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairBuiltinVectorIntBuiltinVectorInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTrue"
 )
 
@@ -29,12 +26,9 @@ type (
 	DictFieldStringString                                                                                                            = tlDictFieldStringString.DictFieldStringString
 	DictFieldStringStringBytes                                                                                                       = tlDictFieldStringString.DictFieldStringStringBytes
 	DictionaryAnyFieldDoubleInt                                                                                                      = tlDictionaryAnyFieldDoubleInt.DictionaryAnyFieldDoubleInt
-	Int                                                                                                                              = tlInt.Int
-	Long                                                                                                                             = tlLong.Long
 	Maybe                                                                                                                            = tlMaybe.Maybe
 	PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int                                                                   = tlPairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int.PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int
 	PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt = tlPairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt
 	PairBuiltinVectorIntBuiltinVectorInt                                                                                             = tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt
-	String                                                                                                                           = tlString.String
 	True                                                                                                                             = tlTrue.True
 )

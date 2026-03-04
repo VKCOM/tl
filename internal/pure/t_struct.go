@@ -563,7 +563,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 	if tip.canonicalName.String() == "vector" || tip.canonicalName.String() == "tuple" {
 		ins.isUnwrap = true
 	}
-	isDict, keyRT, elemRT, err := k.IsDictWrapper(tip, resolvedType)
+	isDict, keyRT, elemRT, err := k.IsDictWrapperResolved(tip, resolvedType)
 	if err != nil {
 		return nil, err
 	}

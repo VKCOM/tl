@@ -1,11 +1,4 @@
-// BASE TYPES
-Int <=> int32;
-Long <=> int64;
 
-String <=> string;
-
-vector<t:Type> <=> []t;
-tuple<t:Type> <=> []t;
 
 dictionaryField<t:Type> = key:string value:t ;
 dictionary<t:Type> <=> []dictionaryField<t>;

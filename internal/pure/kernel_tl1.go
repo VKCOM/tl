@@ -23,10 +23,6 @@ var (
 	// errTypeParamNameCollision = fmt.Errorf("type-parameter name collision ")
 )
 
-//func (k *Kernel) shouldSkipDefinition(typ *tlast.Combinator) bool {
-//	return typ.Construct.Name.String() == "vector" || typ.Construct.Name.String() == "tuple"
-//}
-
 func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 	// if type is
 	// 1. enum with 2 elements, 0 template arguments
@@ -331,7 +327,12 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			for _, m := range comb.Modifiers {
 				kt.annotations = append(kt.annotations, m.Name)
 			}
-			//if tName.String() == "Vector" || tName.String() == "Tuple" {
+			if tName.String() == "Vector" || tName.String() == "Tuple" ||
+				cName.String() == "vector" || cName.String() == "tuple" {
+				// We want to force using new [] syntax in TL2, otherwise ppl will continue
+				// using vector and tuple wrappers forever.
+				kt.tl2Names = nil
+			}
 			//	kt.canonicalName = tName
 			//	kt.historicalName = tName
 			//	kt.tl1Names = map[string]struct{}{tName.String(): {}}
@@ -372,6 +373,15 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			return err
 		}
 	}
+	// we need both dictionaries and fields defined before checking relations between them
+	for _, kt := range k.tipsOrdered {
+		if _, _, ok := k.IsDictWrapper(kt); ok {
+			// We want to force using new [] syntax in TL2, otherwise ppl will continue
+			// using dictionary wrappers forever.
+			kt.tl2Names = nil
+		}
+	}
+
 	//for _, comb := range k.filesTL1 {
 	//	fmt.Printf("tl2pure: compiling %s\n", comb)
 	//	kt := &KernelType{

@@ -302,8 +302,5 @@ func fillFunction(item *TLItem) {
 }
 
 func init() {
-	fillObject(&TLItem{tlName: "Int", hasTL2: true})
-	fillObject(&TLItem{tlName: "Long", hasTL2: true})
-	fillObject(&TLItem{tlName: "String", hasTL2: true})
 	fillObject(&TLItem{tlName: "true", hasTL2: true})
 }

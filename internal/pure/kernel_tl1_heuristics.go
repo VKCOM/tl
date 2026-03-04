@@ -37,7 +37,7 @@ func (k *Kernel) IsTrueType(ktTrue *KernelType) bool {
 	return len(ktTrue.combTL1) == 1 && len(ktTrue.combTL1[0].Fields) == 0
 }
 
-func (k *Kernel) IsDictWrapper(kt *KernelType, resolvedType tlast.TL2TypeRef) (bool, tlast.TL2TypeArgument, tlast.TL2TypeRef, error) {
+func (k *Kernel) IsDictWrapper(kt *KernelType) (fieldT *KernelType, targs []tlast.TemplateArgument, _ bool) {
 	//dictionaryField {t:Type} key:string value:t = DictionaryField t;
 	//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	//
@@ -51,26 +51,34 @@ func (k *Kernel) IsDictWrapper(kt *KernelType, resolvedType tlast.TL2TypeRef) (b
 	// instantiate their first field as Dict<K,V> and set their isUnwrapped to true
 	if kt.originTL2 || len(kt.combTL1) != 1 ||
 		!strings.Contains(strings.ToLower(kt.canonicalName.Name), "dictionary") {
-		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
+		return nil, nil, false
 	}
 	// we do not check for len(kt.combTL1[0].Fields) != 1, because it could be dict # [] = Dict;
 	fieldT, fieldOk := k.tips[kt.canonicalName.String()+"Field"]
 	if !fieldOk || fieldT.originTL2 || len(fieldT.combTL1) != 1 {
-		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
+		return nil, nil, false
 	}
 	if len(fieldT.combTL1[0].TemplateArguments) == 0 ||
 		len(fieldT.combTL1[0].TemplateArguments) > 2 ||
 		len(fieldT.combTL1[0].TemplateArguments) != len(kt.combTL1[0].TemplateArguments) ||
 		len(fieldT.combTL1[0].Fields) != 2 {
-		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
+		return nil, nil, false
 	}
-	targs := kt.combTL1[0].TemplateArguments
+	targs = kt.combTL1[0].TemplateArguments
 	// This only checks some type properties, they are enough for us for now
 	for i, targ := range targs {
 		farg := fieldT.combTL1[0].TemplateArguments[i]
 		if targ.IsNat || farg.IsNat || targ.FieldName != farg.FieldName {
-			return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
+			return nil, nil, false
 		}
+	}
+	return fieldT, targs, true
+}
+
+func (k *Kernel) IsDictWrapperResolved(kt *KernelType, resolvedType tlast.TL2TypeRef) (bool, tlast.TL2TypeArgument, tlast.TL2TypeRef, error) {
+	fieldT, targs, ok := k.IsDictWrapper(kt)
+	if !ok {
+		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, nil
 	}
 	if resolvedType.IsBracket() {
 		return false, tlast.TL2TypeArgument{}, tlast.TL2TypeRef{}, resolvedType.PR.BeautifulError(errors.New("internal error - Dict resolved type is bracket type"))
