@@ -15,18 +15,10 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-const (
-	BoolFalse uint32 = 0xbc799737
-	BoolTrue  uint32 = 0x997275b5
-)
-
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return basictl.ReadBool(w, v, BoolFalse, BoolTrue)
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func BoolWriteBoxed(w []byte, v bool) []byte {
-	if v {
-		return basictl.NatWrite(w, 0x997275b5)
-	}
-	return basictl.NatWrite(w, 0xbc799737)
+	panic(basictl.TL2Error("not implemented for tl2 type"))
 }

@@ -1,0 +1,224 @@
+// BASE TYPES
+Int <=> int32;
+Long <=> int64;
+
+String <=> string;
+
+vector<t:Type> <=> []t;
+tuple<t:Type> <=> []t;
+
+dictionaryField<t:Type> = key:string value:t ;
+dictionary<t:Type> <=> []dictionaryField<t>;
+dictionaryAnyField<k:Type, v:Type> = key:k value:v ;
+dictionaryAny<k:Type, v:Type> <=> []dictionaryAnyField<k,v>;
+
+true = ;
+
+Maybe<t:Type> = 
+    // tlgen:tl1name:"resultFalse"
+    | resultFalse 
+    // tlgen:tl1name:"resultTrue"
+    | resultTrue t;
+
+pair<X:Type, Y:Type> = x:X y:Y ;
+
+// BLOCK: TEST RECURSIVE TYPES
+cases.myCycle1 = fields_mask:uint32 a?:cases.myCycle2 ;
+cases.myCycle2 = fields_mask:uint32 a?:cases.myCycle3 ;
+cases.myCycle3 = fields_mask:uint32 a?:cases.myCycle1 ;
+
+// BLOCK: TEST BRACKETS (arrays, vectors, dicitinaries etc.)
+cases.testArray = n:uint32 arr:[]int32 ;
+cases.testVector = arr:[]int32 ;
+cases.testTuple = tpl:[4]int32 ;
+
+// will be map
+cases.testDictString = dict:[string]int32 ;
+// will be map
+cases.testDictInt = dict:[int32]int32 ;
+// will be array of tuples
+cases.testDictAny = dict:[]dictionaryAnyField<float64,int32> ;
+
+cases.testAllDicts = f1:cases.testDictString
+    f2:cases.testDictInt
+    f3:cases.testDictAny
+    ;
+
+// BLOCK: TEST UNIONS
+cases.testMaybe = value:Maybe<int32> ;
+
+cases.TestUnion = 
+    // tlgen:tl1name:"cases.testUnion1"
+    | v1 value:int32 
+    // tlgen:tl1name:"cases.testUnion2"
+    | v2 value:string 
+    // tlgen:tl1name:"cases.testUnion3"
+    | v3 int32
+    // tlgen:tl1name:"cases.testUnion4"
+    | v4 string;
+// cases.testUnion5 bool = cases.TestUnion;
+// cases.testUnion6 bit = cases.TestUnion;
+
+cases.testUnionContainer = value:cases.TestUnion ;
+
+cases.TestEnum = 
+    // tlgen:tl1name:"cases.testEnum1"
+    | v1 
+    // tlgen:tl1name:"cases.testEnum2"
+    | v2 
+    // tlgen:tl1name:"cases.testEnum3"
+    | v3 ;
+
+cases.testEnumContainer = value:cases.TestEnum ;
+
+// BLOCK: TEST FIELD MASKS
+cases.testRecursiveFieldMask = f0:uint32 f1?:uint32 f2?:uint32 t1:bit t2:bit t3:bit ;
+cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bit f4:bit ;
+
+cases.testOutFieldMask = f1?:uint32 f2:bit f3:[]int32 ;
+cases.testOutFieldMaskContainer = f:uint32 fs:uint32 inner:cases.testOutFieldMask ;
+cases.testBeforeReadBitValidation = n:uint32 ns:uint32 a?:[]int32 b?:[]int32 ;
+
+cases.testAllPossibleFieldConfigs = local:uint32 locals:uint32
+    f00:int32 // no fieldmask, no nat dependencies in type
+    f01:true // no fieldmask, true type
+    f02:[]int32 // no fieldmask, have some local nat dependencies in type
+    f03:[]int32 // no fieldmask, have only external nat dependencies in type
+    f10?:int32 // local fieldmask, no nat dependencies in type
+    f11:bit // local fieldmask, true type
+    f12?:[]int32 // local fieldmask, have some local nat dependencies in type
+    f13?:[]int32 // local fieldmask, have only external nat dependencies in type
+    f20?:int32 // outer fieldmask, no nat dependencies in type
+    f21:bit // outer fieldmask, true type
+    f22?:[]int32 // outer fieldmask, have some local nat dependencies in type
+    f23?:[]int32 // outer fieldmask, have only external nat dependencies in type
+    ;
+
+cases.testAllPossibleFieldConfigsContainer = outer:uint32 outers:uint32
+    value:cases.testAllPossibleFieldConfigs
+    ;
+
+// BLOCK: TEST INPLACING ARGUMENTS
+cases.testInplaceStructArgs = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<int32> ;
+cases.testInplaceStructArgs2 = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<pair<[]int32,[]int32>> ;
+
+cases.inplace1<X:Type> = value:cases.inplace2<X> ;
+cases.inplace2<X:Type> = value:cases.inplace3<[2]X> ;
+cases.inplace3<X:Type> = value:pair<[]X,[]X> ;
+
+// BLOCK: Bytes vesrion
+cases_bytes.testArray = n:uint32 arr:[]string ;
+cases_bytes.testVector = arr:[]string ;
+cases_bytes.testTuple = tpl:[4]string ;
+
+// will be map
+cases_bytes.testDictStringString = dict:[string]string ;
+// will be map
+cases_bytes.testDictString = dict:[string]int32 ;
+// will be map
+cases_bytes.testDictInt = dict:[int32]int32 ;
+// will be array of tuples
+cases_bytes.testDictAny = dict:[]dictionaryAnyField<float64,int32> ;
+
+cases_bytes.TestEnum = 
+    // tlgen:tl1name:"cases_bytes.testEnum1"
+    | v1 
+    // tlgen:tl1name:"cases_bytes.testEnum2"
+    | v2 
+    // tlgen:tl1name:"cases_bytes.testEnum3"
+    | v3 ;
+cases_bytes.testEnumContainer = value:cases.TestEnum ;
+
+
+// BLOCK: BENCHMARKS
+benchmarks.vruhash = low:int64 high:int64 ;
+
+benchmarks.vruposition = fields_mask:uint32
+    commit_bit:bit // we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
+    meta_block:bit // this block contains meta data of VR protocol
+    split_payload:bit // this position splits payload. If this set, meta_block and commit_bit are both not set
+    rotation_block:bit // If set, binlog should rotate and this block should be in new file
+    canonical_hash:bit // If set, hash is stored in canonical byte order.
+    payload_offset:int64 // Motivation for storing it in each block - when random seeking into the middle of file, we must be sure without scanning from beginning
+    block_time_nano:int64 // Only for debug, not used in any logic
+    hash:benchmarks.vruhash
+    file_offset:int64
+    seq_number?:int64 // incremented after each block.
+    ;
+
+benchmarks.VrutoyTopLevelUnion = 
+    // tlgen:tl1name:"benchmarks.vrutoytopLevelUnionBig"
+    | Big next_positions:[]benchmarks.vruposition
+        
+    // tlgen:tl1name:"benchmarks.vrutoytopLevelUnionEmpty"
+    | Empty ;
+
+benchmarks.vrutoyTopLevelContainer = value:benchmarks.VrutoyTopLevelUnion
+    ;
+
+benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruposition
+    ;
+
+benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions
+    ;
+
+casesTL2.testObject = n:uint32
+    ns:uint32
+    f1:bit
+    f2:bool
+    f3:[]bool
+    f4:benchmarks.vrutoyPositions
+    f5?:bool
+    f6:[]benchmarks.VrutoyTopLevelUnion
+    f7?:[]true
+    ;
+
+casesTL2.testVectorBool = x:[]bool ;
+casesTL2.testArrayFixedBool = a1:[1]bool
+    a2:[0]bool
+    a3:[7]bool
+    a4:[8]bool
+    a5:[11]bool
+    a6:[16]bool ;
+
+casesTL2.testArrayFlexibleBool = n:uint32
+    arr:[]bool ;
+
+casesTL2.testFixedParam = x:casesTL2.testObjectWithParam ;
+
+casesTL2.testObjectWithParam = x?:int32
+    y:[]int32 ;
+
+casesTL2.testParamsGeneration = n1:uint32
+    n2:uint32
+    x1:casesTL2.testObjectWithMuiltiParams
+    x2:casesTL2.testObjectWithMuiltiParams
+    x3:casesTL2.testObjectWithMuiltiParams
+    x4:casesTL2.testObjectWithMuiltiParams
+    ;
+
+casesTL2.testObjectWithMuiltiParams = f1?:[]int32
+    f2?:[]int32 ;
+
+
+casesTL2.testFunctionNoDep1#1b8b9feb x:int32 
+    => int32;
+casesTL2.testFunctionNoDep2#0a2c0bf9 x:int32 
+    => true;
+casesTL2.testFunctionNoDep3#f020849b x:int32 
+    => []int32;
+casesTL2.testFunctionNoDep4#5a933a50 x:int32 
+    => bool;
+casesTL2.testFunctionNoDep5#2b47b925 x:int32 
+    => casesTL2.testObject;
+casesTL2.testFunctionNoDep6#9a316c2e x:int32 
+    => casesTL2.testArrayFixedBool;
+casesTL2.testFunctionNoDep7#08824518 x:int32 
+    => cases.testAllDicts;
+
+casesTL2.testFunctionWithDep1#b6c63b07 n:uint32 
+    => []int32;
+casesTL2.testFunctionWithDep2#9d44a2fd n:uint32 
+    => benchmarks.vrutoyPositions;
+
+casesGo.testNames = write:int32 read:int32 ;

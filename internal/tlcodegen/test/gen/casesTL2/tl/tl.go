@@ -8,7 +8,6 @@
 package tl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictFieldIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictFieldStringInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictFieldStringString"
@@ -39,10 +38,3 @@ type (
 	String                                                                                                                           = tlString.String
 	True                                                                                                                             = tlTrue.True
 )
-
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return tlBool.BoolReadBoxed(w, v)
-}
-func BoolWriteBoxed(w []byte, v bool) []byte {
-	return tlBool.BoolWriteBoxed(w, v)
-}
