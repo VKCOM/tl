@@ -209,9 +209,8 @@ outer:
 		if len(tip.combTL1) == 1 {
 			if comb.IsFunction {
 				// migrate function
-				if comb.Construct.IDExplicit {
-					_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
-				}
+				// we do not care if magic was explicit or not, it will be migrated
+				_, _ = fmt.Fprintf(bb, "#%08x", comb.Construct.ID)
 				if len(comb.TemplateArguments) != 0 {
 					return nil, comb.Construct.NamePR.BeautifulError(errors.New("internal error: function with template arguments cannot be migrated"))
 				}
@@ -225,12 +224,13 @@ outer:
 					return nil, err
 				}
 				bb.WriteString("\n    => ")
-				if !k.IsTrueType(comb.FuncDecl) { // otherwise returns nothing
-					fieldType := k.convertTypeRef(comb.FuncDecl)
-					if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldType, leftArgs); err != nil {
-						return nil, err
-					}
+				// TODO - add this code after empty result is supported
+				//if !k.IsTrueType(comb.FuncDecl) { // otherwise returns nothing
+				fieldType := k.convertTypeRef(comb.FuncDecl)
+				if err := k.MigrationTypeRef(bb, migrateTips, tip, comb, fieldType, leftArgs); err != nil {
+					return nil, err
 				}
+				//}
 				bb.WriteString(";")
 			} else {
 				// migrate struct. we decided that migrating tags should be done manually, if ever needed
@@ -558,7 +558,7 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 		//tr.T.Type = tlast.Name{Name: tName}
 		//tr.T.Bare = false // not required
 	}
-	isDict, keyRT, elemRT, err := k.IsDictWrapper(tip, tra.Type)
+	isDict, keyRT, elemRT, err := k.IsDictWrapper(kt, tra.Type)
 	if err != nil {
 		return tlast.TL2TypeArgument{}, false, err
 	}

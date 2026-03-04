@@ -20,6 +20,7 @@ func (k *Kernel) IsTrueType(rt tlast.TypeRef) bool {
 }
 
 func (k *Kernel) IsTrueType2(rt tlast.TL2TypeRef) bool {
+	rt.SomeType.Bare = false // %True will not compare below
 	return rt.String() == "true" || rt.String() == "True"
 }
 

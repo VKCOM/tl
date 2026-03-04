@@ -208,7 +208,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			commentRight:  fieldDef.CommentRight,
 			prName:        fieldDef.PRName,
 		}
-		if fieldDef.IsOptional && newField.ins.ins.IsBit() {
+		if fieldDef.IsOptional && newField.IsBit() {
 			// we allow optional bit through aliases or template arguments,
 			// but we warn if used directly
 			return nil, fieldDef.PR.BeautifulError(errors.New("bit field cannot be explicitly marked optional (despite being optional void internally)"))
@@ -250,6 +250,8 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 		}
 		ins.rpcPreferTL2 = k.rpcPreferTL2WhiteList.HasName2(tlName)
 	}
+	ins.isTypedef = !isFunction && len(ins.fields) == 1 && ins.fields[0].name == "" && ins.fields[0].FieldMask() == nil
+	ins.isAlias = !isUnionElement && ins.isTypedef
 	return ins, nil
 }
 
@@ -283,8 +285,8 @@ func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]stri
 		panic("resolved type not found in global type map")
 	}
 	for i, arg := range rt.Type.SomeType.Arguments {
-		leftArg := tip.combTL1[0].TemplateArguments[i]
-		k.fillNatParamFromArg(arg, natParams, prefix+leftArg.FieldName)
+		leftArg := tip.templateArguments[i]
+		k.fillNatParamFromArg(arg, natParams, prefix+leftArg.Name)
 	}
 }
 
