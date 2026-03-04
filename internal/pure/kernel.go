@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 // TODO - name collision checks
@@ -72,12 +71,16 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	}
 	_ = k.addPrimitive("bit", "", "bit", 0, true)
 	_ = k.addPrimitive("string", "string", "string", 0, true)
-	//k.addString()
 	k.addTL1Brackets()
 
 	k.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
-	// TODO - add from options
-
+	for _, ann := range strings.Split(k.opts.Annotations, ",") {
+		// TODO - validate here
+		ann = strings.TrimSpace(ann)
+		if ann != "" {
+			k.supportedAnnotations[ann] = struct{}{}
+		}
+	}
 	return k
 }
 
@@ -353,8 +356,8 @@ func (k *Kernel) Compile() error {
 					return m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
 				}
 				if _, ok := allAnnotations[m.Name]; !ok {
-					if _, ok := k.supportedAnnotations[m.Name]; !ok && utils.DoLint(typ.CommentRight) {
-						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
+					if _, ok := k.supportedAnnotations[m.Name]; !ok {
+						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen, please add to --annotations command line argument", m.Name))
 						if k.opts.WarningsAreErrors {
 							return e1
 						}
@@ -373,7 +376,7 @@ func (k *Kernel) Compile() error {
 				for _, m := range combinator.Annotations {
 					if _, ok := allAnnotations[m.Name]; !ok {
 						if _, ok := k.supportedAnnotations[m.Name]; !ok {
-							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
+							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen, please add to --annotations command line argument", m.Name))
 							if k.opts.WarningsAreErrors {
 								return e1
 							}
