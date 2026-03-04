@@ -101,9 +101,16 @@ func (k *Kernel) migrationImpl(tryOpenEmptyTL2Files bool, typesMigrated *int) (m
 	migrateNames := map[tlast.Name]struct{}{}
 outer:
 	for _, tip := range k.tipsOrdered {
-		if tip.originTL2 || tip.builtin {
+		if tip.originTL2 || tip.builtin || tip.builtinWrappedCanonicalName != "" ||
+			tip.canonicalName.String() == "vector" || tip.canonicalName.String() == "tuple" {
 			continue
 		}
+		// this might leave TL1->TL2 reference to fields, preventing migration.
+		// let's consider this, when we are close to full migration
+		// to TL2 (year 2035?)
+		// if _, _, ok := k.IsDictWrapper(tip); ok {
+		//	continue
+		// }
 		migrate := false
 		for _, comb := range tip.combTL1 {
 			if k.tl2WhiteList.HasName(comb.Construct.Name) {
@@ -557,7 +564,7 @@ func (k *Kernel) MigrationArgument(migrateTips map[*KernelType]struct{}, tip *Ke
 		//tr.T.Type = tlast.Name{Name: tName}
 		//tr.T.Bare = false // not required
 	}
-	isDict, keyRT, elemRT, err := k.IsDictWrapper(kt, tra.Type)
+	isDict, keyRT, elemRT, err := k.IsDictWrapperResolved(kt, tra.Type)
 	if err != nil {
 		return tlast.TL2TypeArgument{}, false, err
 	}

@@ -8,9 +8,6 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/meta"
 )
@@ -48,8 +45,5 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
-	meta.SetGlobalFactoryCreateForObject("Int", func() meta.Object { return new(tlInt.Int) })
-	meta.SetGlobalFactoryCreateForObject("Long", func() meta.Object { return new(tlLong.Long) })
-	meta.SetGlobalFactoryCreateForObject("String", func() meta.Object { return new(tlString.String) })
 	meta.SetGlobalFactoryCreateForObject("true", func() meta.Object { return new(tlTrue.True) })
 }
