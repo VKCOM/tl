@@ -1267,7 +1267,7 @@ func (w *TypeRWWrapper) helpString2(bare bool, fields []Field, natArgs *[]Actual
 }
 
 // same code as in func (trw *TypeRWStruct) replaceUnwrapArgs
-func (w *TypeRWWrapper) transformNatArgsToChild(natArgs []ActualNatArg, childNatArgs []ActualNatArg) []ActualNatArg {
+func (w *TypeRWWrapper) TransformNatArgsToChild(natArgs []ActualNatArg, childNatArgs []ActualNatArg) []ActualNatArg {
 	var result []ActualNatArg
 outer:
 	for _, arg := range childNatArgs {
@@ -1317,7 +1317,6 @@ type TypeRW interface {
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingRequiresContext() bool
-	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
 	TypeRWCPPData
 	TypeRWPHPData
@@ -1393,13 +1392,6 @@ func (f *Field) IsBit() bool {
 
 func (f *Field) TL2MaskForOP(op string) string {
 	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
-}
-
-func wrapWithError(wrap bool, wrappedType string) string {
-	if !wrap {
-		return wrappedType
-	}
-	return "(_ " + wrappedType + ", err error)"
 }
 
 func formatNatArg(fields []Field, arg ActualNatArg) string {
@@ -1480,18 +1472,6 @@ func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 //	return result
 //}
 
-func formatNatArgsDecl(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
-	}
-	return s.String()
-}
-
-func formatNatArgsDeclNoComma(natArgs []string) string {
-	return strings.TrimPrefix(formatNatArgsDecl(natArgs), ",")
-}
-
 // if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
 // and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
 func formatNatArgsDeclCall(natArgs []string) string {
@@ -1556,29 +1536,6 @@ func ToUpperFirst(str string) string {
 
 func ToLowerFirst(str string) string {
 	return utils.ToLowerFirst(str)
-}
-
-func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
-	if !f.recursive {
-		return ""
-	}
-	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	// new(X) does not work for some types IIRC
-	return fmt.Sprintf(`	if item.%s == nil {
-		var value %s
-		item.%s = &value
-	}
-`, f.goName, myType, f.goName)
-}
-
-func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
-	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, ins, fmt.Sprintf("item.%s", f.goName), f.recursive)
-	if f.recursive {
-		return fmt.Sprintf(`	if item.%s != nil {
-		%s
-	}`, f.goName, resetCode)
-	}
-	return resetCode
 }
 
 func (wr *TypeRWWrapper) CPPNamespaceParts() []string {
