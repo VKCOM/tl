@@ -6,10 +6,6 @@
 
 package tlcodegen
 
-import (
-	"fmt"
-)
-
 type TypeRWUnion struct {
 	wr     *TypeRWWrapper
 	Fields []Field
@@ -136,18 +132,6 @@ func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWUnion) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return false, true
-}
-
-func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	return ""
-}
-
-func (trw *TypeRWUnion) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
-}
-
-func (trw *TypeRWUnion) typeJSON2ReadingRequiresContext() bool {
-	return true
 }
 
 func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {

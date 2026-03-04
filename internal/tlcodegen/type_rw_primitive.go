@@ -6,10 +6,6 @@
 
 package tlcodegen
 
-import (
-	"fmt"
-)
-
 type TypeRWPrimitive struct {
 	gen    *Gen2
 	tlType string
@@ -94,25 +90,6 @@ func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWPrimitive) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return true, false
-}
-
-func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.tlType == "string" {
-		return fmt.Sprintf("len(%s) != 0", addAsterisk(ref, val))
-	}
-	return fmt.Sprintf("%s != 0", addAsterisk(ref, val))
-}
-
-func (trw *TypeRWPrimitive) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	readJSONValue := trw.readJSON2Value
-	if bytesVersion {
-		readJSONValue += "Bytes"
-	}
-	return wrapLast(false, fmt.Sprintf("%s(%s, %s)", readJSONValue, jvalue, addAmpersand(ref, val)))
-}
-
-func (trw *TypeRWPrimitive) typeJSON2ReadingRequiresContext() bool {
-	return false
 }
 
 func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *DirectImports) string {

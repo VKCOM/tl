@@ -677,20 +677,6 @@ func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImpo
 	return w.trw.typeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
 }
 
-func (w *TypeRWWrapper) TypeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSONEmptyCondition(bytesVersion, val, ref)
-}
-
-func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
-}
-
-func (w *TypeRWWrapper) TypeJSON2ReadingRequiresContext() bool {
-	return w.trw.typeJSON2ReadingRequiresContext()
-}
-
 func (w *TypeRWWrapper) IsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if !ok {
@@ -1285,9 +1271,6 @@ type TypeRW interface {
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
-	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string
-	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
-	typeJSON2ReadingRequiresContext() bool
 
 	TypeRWCPPData
 	TypeRWPHPData
@@ -1470,20 +1453,12 @@ func addBare(bare bool) string {
 	return ifString(bare, "", "Boxed")
 }
 
-func addAmpersand(ref bool, val string) string {
-	return ifString(ref, val, "&"+val)
-}
-
 func addAsterisk(ref bool, val string) string {
 	return ifString(ref, "*"+val, val)
 }
 
 func addAsteriskAndBrackets(ref bool, val string) string {
 	return ifString(ref, "(*"+val+")", val)
-}
-
-func wrapLast(last bool, code string) string {
-	return ifString(last, "return "+code+"", "if err := "+code+"; err != nil { return err }")
 }
 
 func ifString(value bool, t string, f string) string {
