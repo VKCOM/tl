@@ -6,10 +6,6 @@
 
 package tlcodegen
 
-import (
-	"fmt"
-)
-
 type TypeRWBool struct {
 	wr          *TypeRWWrapper
 	falseGoName string
@@ -81,16 +77,4 @@ func (trw *TypeRWBool) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWBool) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return false, true
-}
-
-func (trw *TypeRWBool) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	return addAsterisk(ref, val)
-}
-
-func (trw *TypeRWBool) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	return wrapLast(false, fmt.Sprintf("%sJson2ReadBool(%s, %s)", trw.wr.gen.InternalPrefix(), jvalue, addAmpersand(ref, val)))
-}
-
-func (trw *TypeRWBool) typeJSON2ReadingRequiresContext() bool {
-	return false
 }

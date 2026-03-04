@@ -178,19 +178,3 @@ func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {
 func (trw *TypeRWBrackets) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return true, false
 }
-
-func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.dictLike || trw.vectorLike || trw.dynamicSize {
-		return fmt.Sprintf("len(%s) != 0", addAsterisk(ref, val))
-	}
-	return ""
-}
-
-func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %sReadJSONGeneral(tctx, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
-}
-
-func (trw *TypeRWBrackets) typeJSON2ReadingRequiresContext() bool {
-	return true
-}

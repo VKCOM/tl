@@ -6,10 +6,6 @@
 
 package tlcodegen
 
-import (
-	"fmt"
-)
-
 type TypeRWMaybe struct {
 	wr      *TypeRWWrapper
 	element Field
@@ -85,19 +81,4 @@ func (trw *TypeRWMaybe) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWMaybe) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return false, true
-}
-
-func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if ref {
-		return val + "!= nil && " + val + ".Ok"
-	}
-	return val + ".Ok"
-}
-
-func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
-}
-
-func (trw *TypeRWMaybe) typeJSON2ReadingRequiresContext() bool {
-	return true
 }

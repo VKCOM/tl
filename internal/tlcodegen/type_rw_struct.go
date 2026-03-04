@@ -7,7 +7,6 @@
 package tlcodegen
 
 import (
-	"fmt"
 	"log"
 	"sort"
 )
@@ -532,25 +531,4 @@ outer:
 		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg.name, trw.wr.goGlobalName)
 	}
 	return result
-}
-
-func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.isTypeDef() {
-		return trw.Fields[0].t.TypeJSONEmptyCondition(bytesVersion, val, ref)
-	}
-	return ""
-}
-
-func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.replaceUnwrapArgs(natArgs), ref)
-	}
-	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
-}
-
-func (trw *TypeRWStruct) typeJSON2ReadingRequiresContext() bool {
-	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSON2ReadingRequiresContext()
-	}
-	return true
 }
