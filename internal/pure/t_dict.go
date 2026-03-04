@@ -55,48 +55,12 @@ func (k *Kernel) createDict(canonicalName string,
 
 	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
-	//ktField, ok := k.tips["__dict_field"]
-	//if !ok {
-	//	panic(fmt.Errorf("internal error - built in __dict_field type not found"))
-	//}
-	//
-	//fieldIns := &TypeInstanceStruct{
-	//	TypeInstanceCommon: TypeInstanceCommon{
-	//		canonicalName: canonicalName,
-	//		tlName:        ktField.canonicalName,
-	//		tlTag:         0,
-	//		natParams:     natParams,
-	//		tip:           ktField,
-	//		isTopLevel:    false,
-	//		resolvedType:  resolvedType,
-	//		argNamespace:  k.getArgNamespace(resolvedType),
-	//		hasTL2:        false, // could be marked later
-	//	},
-	//	isConstructorFields: true,
-	//	isUnionElement:      isUnionElement,
-	//	unionIndex:          unionIndex,
-	//	isUnwrap:            tip.builtinWrappedCanonicalName != "",
-	//}
-
-	//localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
-	//fmt.Printf("natParams for dict %s: %s\n", canonicalName, strings.Join(natParams, ","))
-
-	//fieldT := tlast.TypeRef{
-	//	Type: tlast.Name{Name: "__dict_field"},
-	//	Args: []tlast.ArithmeticOrType{{
-	//		T: tlast.TypeRef{Type: tlast.Name{Name: "k"}},
-	//	}, {
-	//		T: tlast.TypeRef{Type: tlast.Name{Name: "v"}},
-	//	}},
-	//}
-	//rt, fieldNatArgs, err := k.resolveType(false, k.convertTypeRef(fieldT), ktField.templateArguments, localArgs)
-	//if err != nil {
-	//	return nil, err
-	//}
-	////fmt.Printf("resolveTypeTL2 of dict for %s element: %s -> %s\n", canonicalName, fieldT, rt.String())
 	fieldIns, fieldBare, err := k.getInstance(fieldRt, true)
 	if err != nil {
 		return nil, fmt.Errorf("fail to instantiate type of dict %s element: %w", canonicalName, err)
+	}
+	if fieldIns.ins == nil {
+		return nil, fmt.Errorf("internal error: recursive dict %s element not supported", canonicalName)
 	}
 	fieldInsStruct, ok := fieldIns.ins.(*TypeInstanceStruct)
 	if !ok {
@@ -125,25 +89,4 @@ func (k *Kernel) createDict(canonicalName string,
 		natArgs: fieldNatArgs,
 	}
 	return ins, nil
-	//ins := &TypeInstanceDict{
-	//	TypeInstanceCommon: TypeInstanceCommon{
-	//		canonicalName: canonicalName,
-	//		tip:           nil, // TODO - dicts have no corresponding type
-	//	},
-	//	fieldType: &TypeInstanceStruct{
-	//		TypeInstanceCommon: TypeInstanceCommon{
-	//			canonicalName: canonicalName + "__elem",
-	//			tip:           nil, //  TODO - TL2 dict elements have no corresponding type
-	//		},
-	//		isConstructorFields: true,
-	//		fields: []Field{{
-	//			name: "k",
-	//			ins:  keyType,
-	//		}, {
-	//			name: "v",
-	//			ins:  fieldType,
-	//			bare: fieldBare,
-	//		}},
-	//	},
-	//}
 }

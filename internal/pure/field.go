@@ -85,6 +85,11 @@ func (f Field) MaskTL2Bit() *int {
 }
 
 func (f Field) IsBit() bool {
+	if f.ins.ins == nil {
+		// recursive type, this check allows IsBit to be called even during type resolution
+		// bit is never recursive, so this case always works correctly
+		return false
+	}
 	if f.ins.ins.IsBit() {
 		return true
 	}

@@ -32,7 +32,7 @@ gen_check: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/schema \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/schema/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/schema.tl
@@ -55,7 +55,7 @@ goldmaster_nocompile: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/casesTL1 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -66,7 +66,7 @@ goldmaster_nocompile: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/cases \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -80,7 +80,7 @@ goldmaster_nocompile: build
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -94,7 +94,7 @@ goldmaster_nocompile: build
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -115,30 +115,31 @@ goldmaster_nocompile: build
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
-	@./target/bin/tlgen -v \
-		--tl2-migration-file=./$(TLS_PATH)/cases.tl2 \
+	@./target/bin/tl2gen --language=tl2migration -v \
+		--tl2migrationDevMode \
+  		--tl2WhiteList=* \
 		./$(TLS_PATH)/cases.tl
 
 .PHONY: goldmaster_tl2_nocompile
-goldmaster_tl2_nocompile: build migrate_to_tl2
-	#	@./target/bin/tlgen --language=go --split-internal -v \
-	#		--tl2WhiteList=* \
-	#		--copyrightPath=./COPYRIGHT \
-	#		--outdir=./$(GEN_PATH)/casesTL2 \
-	#		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL2/tl \
-	#		--basicPkgPath=$(BASIC_TL_PATH) \
-	#		--generateByteVersions=cases_bytes. \
-	#		--generateRandomCode \
-	#		--generateLegacyJsonRead=false \
-	#		--checkLengthSanity=false \
-	#		./$(TLS_PATH)/cases.tl2
+goldmaster_tl2_nocompile: build # migrate_to_tl2
+	@./target/bin/tl2gen --language=go --split-internal -v \
+		--tl2WhiteList=* \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./internal/tlcodegen/test/gen/casesTL2 \
+		--pkgPath=github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/tl \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--generateByteVersions=cases_bytes. \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		--checkLengthSanity=false \
+		./$(TLS_PATH)/cases_migr.tl ./$(TLS_PATH)/cases_migr.tl2
 
 .PHONY: goldmaster
 goldmaster: goldmaster_nocompile goldmaster_tl2_nocompile
 	@echo "Checking that generated code actually compiles..."
 	$(GO) build ./$(GEN_PATH)/cases/...
 	$(GO) build ./$(GEN_PATH)/casesTL1/...
-	# $(GO) build ./$(GEN_PATH)/casesTL2/...
+	$(GO) build ./$(GEN_PATH)/casesTL2/...
 	$(GO) build ./$(GEN_PATH)/goldmaster/...
 	$(GO) build ./$(GEN_PATH)/goldmaster_nosplit/...
 
