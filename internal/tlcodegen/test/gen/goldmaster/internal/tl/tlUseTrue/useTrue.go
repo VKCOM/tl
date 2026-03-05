@@ -295,26 +295,20 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	if !propEPresented {
 		item.E = false
 	}
-	if propAPresented {
-		if trueTypeAValue {
-			item.Fm |= 1 << 0
-		}
+	if trueTypeAValue {
+		item.Fm |= 1 << 0
 	}
-	if propBPresented {
-		if trueTypeBValue {
-			item.Fm |= 1 << 1
-		}
+	if trueTypeBValue {
+		item.Fm |= 1 << 1
 	}
 	if propEPresented {
 		item.Fm |= 1 << 2
 	}
-	// tries to set bit to zero if it is 1
 	if propAPresented && !trueTypeAValue && (item.Fm&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("useTrue", "fieldmask bit item.Fm.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("useTrue", "field 'a' is explicitly set to false, but corresponding fieldmask item.Fm bit 0 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propBPresented && !trueTypeBValue && (item.Fm&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("useTrue", "fieldmask bit item.Fm.1 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("useTrue", "field 'b' is explicitly set to false, but corresponding fieldmask item.Fm bit 1 is 1")
 	}
 	if item.Fm&(1<<0) != 0 {
 		item.tl2mask0 |= 1

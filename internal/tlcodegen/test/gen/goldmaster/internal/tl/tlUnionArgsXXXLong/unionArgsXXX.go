@@ -410,7 +410,6 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, optimizeE
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.A != 0 {

@@ -194,6 +194,19 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if !propF3Presented {
 		item.F3 = item.F3[:0]
 	}
+	if propF1Presented {
+		if nat_f&(1<<0) == 0 {
+			return ErrorInvalidJSON("cases.testOutFieldMask", "field 'f1' is set, but will be ignored, because corresponding fieldmask nat_f bit 0 is 0")
+		}
+	}
+	if trueTypeF2Value {
+		if nat_f&(1<<3) == 0 {
+			return ErrorInvalidJSON("cases.testOutFieldMask", "field 'f2' is set, but will be ignored, because corresponding fieldmask nat_f bit 3 is 0")
+		}
+	}
+	if propF2Presented && !trueTypeF2Value && (nat_f&(1<<3) != 0) {
+		return ErrorInvalidJSON("cases.testOutFieldMask", "field 'f2' is explicitly set to false, but corresponding fieldmask nat_f bit 3 is 1")
+	}
 	if nat_f&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}

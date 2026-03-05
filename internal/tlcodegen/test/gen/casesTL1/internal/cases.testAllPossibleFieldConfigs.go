@@ -510,16 +510,40 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if propF10Presented {
 		item.Local |= 1 << 0
 	}
-	if propF11Presented {
-		if trueTypeF11Value {
-			item.Local |= 1 << 1
-		}
+	if trueTypeF11Value {
+		item.Local |= 1 << 1
 	}
 	if propF12Presented {
 		item.Local |= 1 << 2
 	}
 	if propF13Presented {
 		item.Local |= 1 << 3
+	}
+	if propF20Presented {
+		if nat_outer&(1<<0) == 0 {
+			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f20' is set, but will be ignored, because corresponding fieldmask nat_outer bit 0 is 0")
+		}
+	}
+	if trueTypeF21Value {
+		if nat_outer&(1<<1) == 0 {
+			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f21' is set, but will be ignored, because corresponding fieldmask nat_outer bit 1 is 0")
+		}
+	}
+	if propF22Presented {
+		if nat_outer&(1<<2) == 0 {
+			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f22' is set, but will be ignored, because corresponding fieldmask nat_outer bit 2 is 0")
+		}
+	}
+	if propF23Presented {
+		if nat_outer&(1<<3) == 0 {
+			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f23' is set, but will be ignored, because corresponding fieldmask nat_outer bit 3 is 0")
+		}
+	}
+	if propF11Presented && !trueTypeF11Value && (item.Local&(1<<1) != 0) {
+		return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f11' is explicitly set to false, but corresponding fieldmask item.Local bit 1 is 1")
+	}
+	if propF21Presented && !trueTypeF21Value && (nat_outer&(1<<1) != 0) {
+		return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f21' is explicitly set to false, but corresponding fieldmask nat_outer bit 1 is 1")
 	}
 	var inF02Pointer *basictl.JsonLexer
 	inF02 := basictl.JsonLexer{Data: rawF02}
@@ -544,9 +568,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 
 	}
 	if nat_outer&(1<<2) == 0 {
-		if propF22Presented {
-			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f22' is defined, while corresponding implicit fieldmask bit is 0")
-		}
 		item.F22 = item.F22[:0]
 	} else {
 		var inF22Pointer *basictl.JsonLexer
@@ -558,10 +579,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 			return err
 		}
 
-	}
-	// tries to set bit to zero if it is 1
-	if propF11Presented && !trueTypeF11Value && (item.Local&(1<<1) != 0) {
-		return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "fieldmask bit item.Local.1 is indefinite because of the contradictions in values")
 	}
 	return nil
 }

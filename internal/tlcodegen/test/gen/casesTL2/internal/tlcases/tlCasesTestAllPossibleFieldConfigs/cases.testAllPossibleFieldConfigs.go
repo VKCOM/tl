@@ -666,7 +666,6 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

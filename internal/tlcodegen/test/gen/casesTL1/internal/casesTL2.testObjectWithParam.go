@@ -145,6 +145,11 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 	if !propYPresented {
 		BuiltinTuple4IntReset(&item.Y)
 	}
+	if propXPresented {
+		if 4&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithParam", "field 'x' is set, but will be ignored, because corresponding fieldmask 4 bit 0 is 0")
+		}
+	}
 	return nil
 }
 

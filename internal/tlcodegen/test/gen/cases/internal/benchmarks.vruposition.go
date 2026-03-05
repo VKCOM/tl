@@ -432,53 +432,38 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if !propSeqNumberPresented {
 		item.SeqNumber = 0
 	}
-	if propCommitBitPresented {
-		if trueTypeCommitBitValue {
-			item.FieldsMask |= 1 << 0
-		}
+	if trueTypeCommitBitValue {
+		item.FieldsMask |= 1 << 0
 	}
-	if propMetaBlockPresented {
-		if trueTypeMetaBlockValue {
-			item.FieldsMask |= 1 << 1
-		}
+	if trueTypeMetaBlockValue {
+		item.FieldsMask |= 1 << 1
 	}
-	if propSplitPayloadPresented {
-		if trueTypeSplitPayloadValue {
-			item.FieldsMask |= 1 << 3
-		}
+	if trueTypeSplitPayloadValue {
+		item.FieldsMask |= 1 << 3
 	}
-	if propRotationBlockPresented {
-		if trueTypeRotationBlockValue {
-			item.FieldsMask |= 1 << 5
-		}
+	if trueTypeRotationBlockValue {
+		item.FieldsMask |= 1 << 5
 	}
-	if propCanonicalHashPresented {
-		if trueTypeCanonicalHashValue {
-			item.FieldsMask |= 1 << 15
-		}
+	if trueTypeCanonicalHashValue {
+		item.FieldsMask |= 1 << 15
 	}
 	if propSeqNumberPresented {
 		item.FieldsMask |= 1 << 14
 	}
-	// tries to set bit to zero if it is 1
 	if propCommitBitPresented && !trueTypeCommitBitValue && (item.FieldsMask&(1<<0) != 0) {
-		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.0 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("benchmarks.vruposition", "field 'commit_bit' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 0 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propMetaBlockPresented && !trueTypeMetaBlockValue && (item.FieldsMask&(1<<1) != 0) {
-		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.1 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("benchmarks.vruposition", "field 'meta_block' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 1 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propSplitPayloadPresented && !trueTypeSplitPayloadValue && (item.FieldsMask&(1<<3) != 0) {
-		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.3 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("benchmarks.vruposition", "field 'split_payload' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 3 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propRotationBlockPresented && !trueTypeRotationBlockValue && (item.FieldsMask&(1<<5) != 0) {
-		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.5 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("benchmarks.vruposition", "field 'rotation_block' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 5 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propCanonicalHashPresented && !trueTypeCanonicalHashValue && (item.FieldsMask&(1<<15) != 0) {
-		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.15 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("benchmarks.vruposition", "field 'canonical_hash' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 15 is 1")
 	}
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -691,7 +676,6 @@ func (item *BenchmarksVruposition) InternalWriteTL2(w []byte, sizes []int, optim
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

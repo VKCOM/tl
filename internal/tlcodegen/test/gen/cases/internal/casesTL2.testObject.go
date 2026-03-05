@@ -360,16 +360,17 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if !propF7Presented {
 		item.F7 = item.F7[:0]
 	}
-	if propF1Presented {
-		if trueTypeF1Value {
-			item.N |= 1 << 0
-		}
+	if trueTypeF1Value {
+		item.N |= 1 << 0
 	}
 	if propF5Presented {
 		item.N |= 1 << 1
 	}
 	if propF7Presented {
 		item.N |= 1 << 14
+	}
+	if propF1Presented && !trueTypeF1Value && (item.N&(1<<0) != 0) {
+		return ErrorInvalidJSON("casesTL2.testObject", "field 'f1' is explicitly set to false, but corresponding fieldmask item.N bit 0 is 1")
 	}
 	var inF4Pointer *basictl.JsonLexer
 	inF4 := basictl.JsonLexer{Data: rawF4}
@@ -380,10 +381,6 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		return err
 	}
 
-	// tries to set bit to zero if it is 1
-	if propF1Presented && !trueTypeF1Value && (item.N&(1<<0) != 0) {
-		return ErrorInvalidJSON("casesTL2.testObject", "fieldmask bit item.N.0 is indefinite because of the contradictions in values")
-	}
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
@@ -583,7 +580,6 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int, optimize
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

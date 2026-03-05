@@ -375,14 +375,11 @@ func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	if !propFlagsPresented {
 		item.Flags = 0
 	}
-	if propPersistentPresented {
-		if trueTypePersistentValue {
-			item.Flags |= 1 << 0
-		}
+	if trueTypePersistentValue {
+		item.Flags |= 1 << 0
 	}
-	// tries to set bit to zero if it is 1
 	if propPersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("service5.insert", "fieldmask bit item.Flags.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("service5.insert", "field 'persistent' is explicitly set to false, but corresponding fieldmask item.Flags bit 0 is 1")
 	}
 	if item.Flags&(1<<0) != 0 {
 		item.tl2mask0 |= 1

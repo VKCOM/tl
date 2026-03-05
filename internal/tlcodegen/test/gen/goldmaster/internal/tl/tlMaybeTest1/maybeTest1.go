@@ -546,7 +546,6 @@ func (item *MaybeTest1) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

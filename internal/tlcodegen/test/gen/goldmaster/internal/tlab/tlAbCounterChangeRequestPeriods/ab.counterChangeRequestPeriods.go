@@ -802,7 +802,6 @@ func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes [
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.Period != 0 {

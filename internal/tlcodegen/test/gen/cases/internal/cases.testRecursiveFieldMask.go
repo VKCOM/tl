@@ -334,35 +334,26 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 		item.F1 |= 1 << 1
 		item.F0 |= 1 << 0
 	}
-	if propT1Presented {
-		if trueTypeT1Value {
-			item.F0 |= 1 << 0
-		}
-	}
-	if propT2Presented {
-		if trueTypeT2Value {
-			item.F1 |= 1 << 1
-		}
+	if trueTypeT1Value {
 		item.F0 |= 1 << 0
 	}
-	if propT3Presented {
-		if trueTypeT3Value {
-			item.F2 |= 1 << 2
-		}
+	if trueTypeT2Value {
 		item.F1 |= 1 << 1
 		item.F0 |= 1 << 0
 	}
-	// tries to set bit to zero if it is 1
+	if trueTypeT3Value {
+		item.F2 |= 1 << 2
+		item.F1 |= 1 << 1
+		item.F0 |= 1 << 0
+	}
 	if propT1Presented && !trueTypeT1Value && (item.F0&(1<<0) != 0) {
-		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F0.0 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "field 't1' is explicitly set to false, but corresponding fieldmask item.F0 bit 0 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propT2Presented && !trueTypeT2Value && (item.F1&(1<<1) != 0) {
-		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F1.1 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "field 't2' is explicitly set to false, but corresponding fieldmask item.F1 bit 1 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propT3Presented && !trueTypeT3Value && (item.F2&(1<<2) != 0) {
-		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F2.2 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "field 't3' is explicitly set to false, but corresponding fieldmask item.F2 bit 2 is 1")
 	}
 	if item.F0&(1<<0) != 0 {
 		item.tl2mask0 |= 1

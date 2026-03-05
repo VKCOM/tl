@@ -196,6 +196,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 	if !propF2Presented {
 		item.F2 = item.F2[:0]
 	}
+	if propF1Presented {
+		if nat_n&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask nat_n bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if nat_n&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask nat_n bit 1 is 0")
+		}
+	}
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
@@ -553,6 +563,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 	if !propF2Presented {
 		BuiltinTuple2IntReset(&item.F2)
 	}
+	if propF1Presented {
+		if nat_n&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask nat_n bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if nat_n&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask nat_n bit 1 is 0")
+		}
+	}
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
@@ -877,6 +897,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 	}
 	if !propF2Presented {
 		item.F2 = item.F2[:0]
+	}
+	if propF1Presented {
+		if 3&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask 3 bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if 3&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask 3 bit 1 is 0")
+		}
 	}
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -1225,6 +1255,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 	}
 	if !propF2Presented {
 		BuiltinTuple1IntReset(&item.F2)
+	}
+	if propF1Presented {
+		if 4&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask 4 bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if 4&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask 4 bit 1 is 0")
+		}
 	}
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1

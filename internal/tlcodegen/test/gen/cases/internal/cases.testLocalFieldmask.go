@@ -249,25 +249,19 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	if propF2Presented {
 		item.F1 |= 1 << 0
 	}
-	if propF3Presented {
-		if trueTypeF3Value {
-			item.F2 |= 1 << 1
-		}
+	if trueTypeF3Value {
+		item.F2 |= 1 << 1
 		item.F1 |= 1 << 0
 	}
-	if propF4Presented {
-		if trueTypeF4Value {
-			item.F2 |= 1 << 1
-		}
+	if trueTypeF4Value {
+		item.F2 |= 1 << 1
 		item.F1 |= 1 << 0
 	}
-	// tries to set bit to zero if it is 1
 	if propF3Presented && !trueTypeF3Value && (item.F2&(1<<1) != 0) {
-		return ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("cases.testLocalFieldmask", "field 'f3' is explicitly set to false, but corresponding fieldmask item.F2 bit 1 is 1")
 	}
-	// tries to set bit to zero if it is 1
 	if propF4Presented && !trueTypeF4Value && (item.F2&(1<<1) != 0) {
-		return ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("cases.testLocalFieldmask", "field 'f4' is explicitly set to false, but corresponding fieldmask item.F2 bit 1 is 1")
 	}
 	if item.F1&(1<<0) != 0 {
 		item.tl2mask0 |= 1

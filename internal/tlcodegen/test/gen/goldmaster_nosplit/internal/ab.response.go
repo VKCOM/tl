@@ -170,7 +170,6 @@ func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 2)
 	currentBlock |= 1
 	if *item.ptr() != 0 {
@@ -442,7 +441,6 @@ func (item *AbCode) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.X != 0 {
@@ -1958,7 +1956,6 @@ func (item *CdResponse) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 3)
 	currentBlock |= 1
 	if item.X != 0 {
@@ -2272,7 +2269,6 @@ func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 3)
 	currentBlock |= 1
 	if item.X != 0 {

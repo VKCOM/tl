@@ -1378,7 +1378,6 @@ func (item *CurlRequest) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
@@ -1419,7 +1418,6 @@ func (item *CurlRequest) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

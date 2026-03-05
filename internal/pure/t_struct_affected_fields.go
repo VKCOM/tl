@@ -100,7 +100,7 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 				natFieldUsage.appendUsage(field.bitNumber, ins, fieldIndex)
 			}
 			for argIndex, natArg := range field.NatArgs() {
-				if natArg.IsName() && natArg.Name() == natParamName {
+				if natArg.IsNatParam() && natArg.Name() == natParamName {
 					markAffectedFields(field.ins.ins, visitedNodes, natFieldUsage, argIndex)
 				}
 			}
@@ -118,14 +118,14 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 			}
 		} else {
 			for argIndex, natArg := range ins.field.NatArgs() {
-				if natArg.IsName() && natArg.Name() == natParamName {
+				if natArg.IsNatParam() && natArg.Name() == natParamName {
 					markAffectedFields(ins.field.ins.ins, visitedNodes, natFieldUsage, argIndex)
 				}
 			}
 		}
 	case *TypeInstanceDict:
 		for argIndex, natArg := range ins.field.NatArgs() {
-			if natArg.IsName() && natArg.Name() == natParamName {
+			if natArg.IsNatParam() && natArg.Name() == natParamName {
 				markAffectedFields(ins.field.ins.ins, visitedNodes, natFieldUsage, argIndex)
 			}
 		}

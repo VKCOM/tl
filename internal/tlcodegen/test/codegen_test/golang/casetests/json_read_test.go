@@ -73,6 +73,9 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 					writeData, writeErr := mt.object.MarshalJSON()
 
 					assert.Nil(t, writeErr)
+					//if success.GoldenInput != string(writeData) {
+					//	fmt.Printf("aha")
+					//}
 					assert.Equal(t, success.GoldenInput, string(writeData))
 
 					readAgainErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
@@ -97,6 +100,10 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 				mt.object.FillRandom(rg)
 				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
 
+				if readErr == nil {
+					fmt.Printf("aha")
+					readErr = mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
+				}
 				assert.NotNil(t, readErr)
 			})
 
