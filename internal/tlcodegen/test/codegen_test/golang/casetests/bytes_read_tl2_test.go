@@ -46,7 +46,7 @@ func runMappingTestBytesTL2(t *testing.T, mt mappingTestBytes) {
 			mt.object.FillRandom(rg)
 
 			trueBytes := utils.ParseHexToBytes(success.Bytes)
-			_, readErr := mt.object.Read(trueBytes)
+			_, readErr := mt.object.ReadTL1(trueBytes)
 
 			assert.Nil(t, readErr)
 			resultTL2 := mt.object.WriteTL2(nil, nil)
@@ -160,7 +160,7 @@ func TestExactTestCasesTL2Random(t *testing.T) {
 	}
 
 	cleanBytes := utils.ParseHexToBytes(strings.ReplaceAll(objectData, "_", " "))
-	_, err := dst.Read(cleanBytes)
+	_, err := dst.ReadTL1(cleanBytes)
 	if err != nil {
 		t.Fatalf("can't read %s", objectData)
 	}

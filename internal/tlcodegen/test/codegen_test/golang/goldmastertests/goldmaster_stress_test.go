@@ -42,12 +42,12 @@ func TestGoldmasterStressTest(t *testing.T) {
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-						writeFunc := dst.WriteGeneral
-						readFunc := dst.Read
+						writeFunc := dst.WriteTL1General
+						readFunc := dst.ReadTL1
 
 						if success.IsTLBytesBoxed {
-							writeFunc = dst.WriteBoxedGeneral
-							readFunc = dst.ReadBoxed
+							writeFunc = dst.WriteTL1BoxedGeneral
+							readFunc = dst.ReadTL1Boxed
 						}
 
 						_, err := readFunc(utils.ParseHexToBytes(success.Bytes))
@@ -112,7 +112,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 								t.Fatalf("read tl1 error: %s", err.Error())
 							}
 						} else {
-							_, err := newDst.Read(utils.ParseHexToBytes(success.Bytes))
+							_, err := newDst.ReadTL1(utils.ParseHexToBytes(success.Bytes))
 							if err != nil {
 								t.Fatalf("read tl1 error: %s", err.Error())
 							}
@@ -153,7 +153,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 				if testCase.IsTLBytesBoxed {
 					_, _ = obj.ReadTL1Boxed(tl1Data)
 				} else {
-					_, _ = obj.Read(tl1Data)
+					_, _ = obj.ReadTL1(tl1Data)
 				}
 				writeBuffer = obj.WriteTL2(writeBuffer[0:0], &context)
 				if testCase.BytesTL2 != utils.SprintHexDumpTL2(writeBuffer) {

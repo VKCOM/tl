@@ -45,7 +45,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 			mt.object.FillRandom(rg)
 
 			trueBytes := utils.ParseHexToBytes(success.Bytes)
-			_, readErr := mt.object.Read(trueBytes)
+			_, readErr := mt.object.ReadTL1(trueBytes)
 
 			assert.Nil(t, readErr)
 			writeData, writeErr := mt.object.WriteTL1General(nil)
@@ -53,7 +53,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 			assert.Nil(t, writeErr)
 			assert.Equal(t, utils.SprintHexDump(trueBytes), utils.SprintHexDump(writeData))
 
-			_, readAgainErr := mt.object.Read(trueBytes)
+			_, readAgainErr := mt.object.ReadTL1(trueBytes)
 			assert.Nil(t, readAgainErr)
 
 			writeAgainData, writeAgainErr := mt.object.WriteTL1General(nil)
@@ -109,7 +109,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 						t.Fatal("first serialization wasn't succeeded", err.Error())
 						return
 					}
-					_, err = obj.Read(buf1)
+					_, err = obj.ReadTL1(buf1)
 					if err != nil {
 						t.Logf("Seed: %d\n", seed)
 						t.Fatal("first deserialization wasn't succeeded", err.Error())
@@ -122,7 +122,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 						t.Fatal("second serialization wasn't succeeded", err.Error())
 						return
 					}
-					_, err = obj.Read(buf2)
+					_, err = obj.ReadTL1(buf2)
 					if err != nil {
 						t.Logf("Seed: %d\n", seed)
 						t.Fatal("second deserialization wasn't succeeded", err.Error())
@@ -420,7 +420,7 @@ func updateTestData(t *testing.T) {
 						return
 					}
 					bytes := utils.ParseHexToBytes(success.Bytes)
-					_, readErr := testObject.Read(bytes)
+					_, readErr := testObject.ReadTL1(bytes)
 					if readErr != nil {
 						t.Logf(">>> BYTES \"%s\" <<<<", success.Bytes)
 						t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
