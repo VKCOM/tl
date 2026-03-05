@@ -160,8 +160,8 @@ func (item *BoxedTupleSlice1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 
 func (item *BoxedTupleSlice1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propXPresented bool
 	var rawX []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -175,14 +175,15 @@ func (item *BoxedTupleSlice1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedTupleSlice1", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedTupleSlice1", "x")
 				}
+				propXPresented = true
 				rawX = in.Raw()
 				if !in.Ok() {
 					return in.Error()

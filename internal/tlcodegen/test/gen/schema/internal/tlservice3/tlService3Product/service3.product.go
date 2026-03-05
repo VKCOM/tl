@@ -122,7 +122,6 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 	var propDatePresented bool
 	var propExpirationDatePresented bool
 	var propRemovedPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -136,53 +135,50 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "id":
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "id")
 				}
+				propIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "info":
 				if propInfoPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "info")
 				}
+				propInfoPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Info); err != nil {
 					return err
 				}
-				propInfoPresented = true
 			case "date":
 				if propDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "date")
 				}
+				propDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Date); err != nil {
 					return err
 				}
-				propDatePresented = true
 			case "expiration_date":
 				if propExpirationDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "expiration_date")
 				}
+				propExpirationDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ExpirationDate); err != nil {
 					return err
 				}
-				propExpirationDatePresented = true
 			case "removed":
 				if propRemovedPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "removed")
 				}
-				if nat_mode&(1<<0) == 0 {
-					return internal.ErrorInvalidJSON("service3.product", "field 'removed' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propRemovedPresented = true
 				if err := internal.Json2ReadBool(in, &item.Removed); err != nil {
 					return err
 				}
-				propRemovedPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.product", key)
 			}
@@ -210,6 +206,11 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 	}
 	if !propRemovedPresented {
 		item.Removed = false
+	}
+	if propRemovedPresented {
+		if nat_mode&(1<<0) == 0 {
+			return internal.ErrorInvalidJSON("service3.product", "field 'removed' is set, but will be ignored, because corresponding fieldmask nat_mode bit 0 is 0")
+		}
 	}
 	return nil
 }

@@ -108,7 +108,6 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 	var propQueueIdPresented bool
 	var propTaskPresented bool
 	var propTimePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -122,34 +121,34 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 				if propTypeNamePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "type_name")
 				}
+				propTypeNamePresented = true
 				if err := internal.Json2ReadString(in, &item.TypeName); err != nil {
 					return err
 				}
-				propTypeNamePresented = true
 			case "queue_id":
 				if propQueueIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "queue_id")
 				}
+				propQueueIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
 					return err
 				}
-				propQueueIdPresented = true
 			case "task":
 				if propTaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "task")
 				}
+				propTaskPresented = true
 				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTaskPresented = true
 			case "time":
 				if propTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "time")
 				}
+				propTimePresented = true
 				if err := item.Time.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTimePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.cronTask", key)
 			}

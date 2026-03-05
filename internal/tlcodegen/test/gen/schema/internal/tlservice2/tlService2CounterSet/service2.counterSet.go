@@ -72,9 +72,8 @@ func (item *Service2CounterSet) WriteTL1Boxed(w []byte, nat_intCountersNum uint3
 }
 
 func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
-	var rawIntCounters []byte
-	var rawFloatCounters []byte
-
+	var propIntCountersPresented bool
+	var propFloatCountersPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -85,20 +84,20 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			in.WantColon()
 			switch key {
 			case "intCounters":
-				if rawIntCounters != nil {
+				if propIntCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.counterSet", "intCounters")
 				}
-				rawIntCounters = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propIntCountersPresented = true
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.IntCounters, nat_intCountersNum); err != nil {
+					return err
 				}
 			case "floatCounters":
-				if rawFloatCounters != nil {
+				if propFloatCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.counterSet", "floatCounters")
 				}
-				rawFloatCounters = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propFloatCountersPresented = true
+				if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, in, &item.FloatCounters, nat_floatCountersNum); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service2.counterSet", key)
@@ -110,24 +109,12 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return in.Error()
 		}
 	}
-	var inIntCountersPointer *basictl.JsonLexer
-	inIntCounters := basictl.JsonLexer{Data: rawIntCounters}
-	if rawIntCounters != nil {
-		inIntCountersPointer = &inIntCounters
+	if !propIntCountersPresented {
+		item.IntCounters = item.IntCounters[:0]
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIntCountersPointer, &item.IntCounters, nat_intCountersNum); err != nil {
-		return err
+	if !propFloatCountersPresented {
+		item.FloatCounters = item.FloatCounters[:0]
 	}
-
-	var inFloatCountersPointer *basictl.JsonLexer
-	inFloatCounters := basictl.JsonLexer{Data: rawFloatCounters}
-	if rawFloatCounters != nil {
-		inFloatCountersPointer = &inFloatCounters
-	}
-	if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, inFloatCountersPointer, &item.FloatCounters, nat_floatCountersNum); err != nil {
-		return err
-	}
-
 	return nil
 }
 

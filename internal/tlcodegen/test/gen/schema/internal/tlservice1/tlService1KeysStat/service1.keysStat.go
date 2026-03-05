@@ -94,7 +94,6 @@ func (item *Service1KeysStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propStartTimePresented bool
 	var propKeysTopsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -108,18 +107,18 @@ func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propStartTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.keysStat", "start_time")
 				}
+				propStartTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StartTime); err != nil {
 					return err
 				}
-				propStartTimePresented = true
 			case "keys_tops":
 				if propKeysTopsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.keysStat", "keys_tops")
 				}
+				propKeysTopsPresented = true
 				if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(tctx, in, &item.KeysTops); err != nil {
 					return err
 				}
-				propKeysTopsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.keysStat", key)
 			}

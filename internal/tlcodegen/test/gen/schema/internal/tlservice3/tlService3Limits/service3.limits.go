@@ -109,7 +109,6 @@ func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propCustomGroupSizeLimitsPresented bool
 	var propDefaultGroupCountLimitPresented bool
 	var propCustomGroupCountLimitsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -123,34 +122,34 @@ func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propDefaultGroupSizeLimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "default_group_size_limit")
 				}
+				propDefaultGroupSizeLimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.DefaultGroupSizeLimit); err != nil {
 					return err
 				}
-				propDefaultGroupSizeLimitPresented = true
 			case "custom_group_size_limits":
 				if propCustomGroupSizeLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_size_limits")
 				}
+				propCustomGroupSizeLimitsPresented = true
 				if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, &item.CustomGroupSizeLimits); err != nil {
 					return err
 				}
-				propCustomGroupSizeLimitsPresented = true
 			case "default_group_count_limit":
 				if propDefaultGroupCountLimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "default_group_count_limit")
 				}
+				propDefaultGroupCountLimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.DefaultGroupCountLimit); err != nil {
 					return err
 				}
-				propDefaultGroupCountLimitPresented = true
 			case "custom_group_count_limits":
 				if propCustomGroupCountLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_count_limits")
 				}
+				propCustomGroupCountLimitsPresented = true
 				if err := tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx, in, &item.CustomGroupCountLimits); err != nil {
 					return err
 				}
-				propCustomGroupCountLimitsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.limits", key)
 			}

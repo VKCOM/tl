@@ -178,7 +178,6 @@ func (item *Service4ModifiedNewsEntry) ReadJSONGeneral(tctx *basictl.JSONReadCon
 	var propRestorationDatePresented bool
 	var propDeletionDatePresented bool
 	var propHiddenByPrivacyPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -192,50 +191,50 @@ func (item *Service4ModifiedNewsEntry) ReadJSONGeneral(tctx *basictl.JSONReadCon
 				if propObjectPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "object")
 				}
+				propObjectPresented = true
 				if err := item.Object.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propObjectPresented = true
 			case "creation_date":
 				if propCreationDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "creation_date")
 				}
+				propCreationDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.CreationDate); err != nil {
 					return err
 				}
-				propCreationDatePresented = true
 			case "fields_mask":
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "restoration_date":
 				if propRestorationDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "restoration_date")
 				}
+				propRestorationDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.RestorationDate); err != nil {
 					return err
 				}
-				propRestorationDatePresented = true
 			case "deletion_date":
 				if propDeletionDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "deletion_date")
 				}
+				propDeletionDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.DeletionDate); err != nil {
 					return err
 				}
-				propDeletionDatePresented = true
 			case "hidden_by_privacy":
 				if propHiddenByPrivacyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "hidden_by_privacy")
 				}
+				propHiddenByPrivacyPresented = true
 				if err := internal.Json2ReadBool(in, &item.HiddenByPrivacy); err != nil {
 					return err
 				}
-				propHiddenByPrivacyPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service4.modifiedNewsEntry", key)
 			}

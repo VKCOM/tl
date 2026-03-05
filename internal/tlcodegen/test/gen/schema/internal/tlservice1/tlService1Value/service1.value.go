@@ -97,7 +97,6 @@ func (item *Service1Longvalue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 func (item *Service1Longvalue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	var propFlagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -111,18 +110,18 @@ func (item *Service1Longvalue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.longvalue", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt64(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.longvalue", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.longvalue", key)
 			}
@@ -270,7 +269,6 @@ func (item *Service1LongvalueWithTime) ReadJSONGeneral(tctx *basictl.JSONReadCon
 	var propValuePresented bool
 	var propFlagsPresented bool
 	var propModificationTimePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -284,26 +282,26 @@ func (item *Service1LongvalueWithTime) ReadJSONGeneral(tctx *basictl.JSONReadCon
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.longvalueWithTime", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt64(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.longvalueWithTime", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "modificationTime":
 				if propModificationTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.longvalueWithTime", "modificationTime")
 				}
+				propModificationTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ModificationTime); err != nil {
 					return err
 				}
-				propModificationTimePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.longvalueWithTime", key)
 			}
@@ -565,7 +563,6 @@ func (item *Service1Strvalue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 func (item *Service1Strvalue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	var propFlagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -579,18 +576,18 @@ func (item *Service1Strvalue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.strvalue", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.strvalue", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.strvalue", key)
 			}
@@ -738,7 +735,6 @@ func (item *Service1StrvalueWithTime) ReadJSONGeneral(tctx *basictl.JSONReadCont
 	var propValuePresented bool
 	var propFlagsPresented bool
 	var propModificationTimePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -752,26 +748,26 @@ func (item *Service1StrvalueWithTime) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.strvalueWithTime", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.strvalueWithTime", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "modificationTime":
 				if propModificationTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.strvalueWithTime", "modificationTime")
 				}
+				propModificationTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ModificationTime); err != nil {
 					return err
 				}
-				propModificationTimePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.strvalueWithTime", key)
 			}

@@ -89,7 +89,6 @@ func (item *MyBoxedVectorSlice) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *MyBoxedVectorSlice) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDataPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -103,10 +102,10 @@ func (item *MyBoxedVectorSlice) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propDataPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myBoxedVectorSlice", "data")
 				}
+				propDataPresented = true
 				if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, &item.Data); err != nil {
 					return err
 				}
-				propDataPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("myBoxedVectorSlice", key)
 			}

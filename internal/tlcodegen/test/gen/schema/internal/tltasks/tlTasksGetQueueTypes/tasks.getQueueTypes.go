@@ -148,7 +148,6 @@ func (item *TasksGetQueueTypes) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 func (item *TasksGetQueueTypes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propSettingsMaskPresented bool
 	var propStatsMaskPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -162,18 +161,18 @@ func (item *TasksGetQueueTypes) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propSettingsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueTypes", "settings_mask")
 				}
+				propSettingsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.SettingsMask); err != nil {
 					return err
 				}
-				propSettingsMaskPresented = true
 			case "stats_mask":
 				if propStatsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueTypes", "stats_mask")
 				}
+				propStatsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.StatsMask); err != nil {
 					return err
 				}
-				propStatsMaskPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.getQueueTypes", key)
 			}

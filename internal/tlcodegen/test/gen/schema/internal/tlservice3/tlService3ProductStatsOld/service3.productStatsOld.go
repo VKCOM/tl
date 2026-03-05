@@ -112,7 +112,6 @@ func (item *Service3ProductStatsOld) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	var propCountTotalPresented bool
 	var propCountScheduledPresented bool
 	var propNextScheduledAtPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -126,42 +125,42 @@ func (item *Service3ProductStatsOld) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.productStatsOld", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "count_new":
 				if propCountNewPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.productStatsOld", "count_new")
 				}
+				propCountNewPresented = true
 				if err := internal.Json2ReadInt32(in, &item.CountNew); err != nil {
 					return err
 				}
-				propCountNewPresented = true
 			case "count_total":
 				if propCountTotalPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.productStatsOld", "count_total")
 				}
+				propCountTotalPresented = true
 				if err := internal.Json2ReadInt32(in, &item.CountTotal); err != nil {
 					return err
 				}
-				propCountTotalPresented = true
 			case "count_scheduled":
 				if propCountScheduledPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.productStatsOld", "count_scheduled")
 				}
+				propCountScheduledPresented = true
 				if err := internal.Json2ReadInt32(in, &item.CountScheduled); err != nil {
 					return err
 				}
-				propCountScheduledPresented = true
 			case "next_scheduled_at":
 				if propNextScheduledAtPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.productStatsOld", "next_scheduled_at")
 				}
+				propNextScheduledAtPresented = true
 				if err := internal.Json2ReadInt32(in, &item.NextScheduledAt); err != nil {
 					return err
 				}
-				propNextScheduledAtPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.productStatsOld", key)
 			}

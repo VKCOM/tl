@@ -91,7 +91,6 @@ func (item *StatOne) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 func (item *StatOne) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -105,18 +104,18 @@ func (item *StatOne) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("statOne", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("statOne", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("statOne", key)
 			}

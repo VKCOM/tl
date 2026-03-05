@@ -137,7 +137,6 @@ func (item *Service1DisableKeysStat) ReadJSON(legacyTypeNames bool, in *basictl.
 
 func (item *Service1DisableKeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPeriodPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -151,10 +150,10 @@ func (item *Service1DisableKeysStat) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propPeriodPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.disableKeysStat", "period")
 				}
+				propPeriodPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Period); err != nil {
 					return err
 				}
-				propPeriodPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.disableKeysStat", key)
 			}

@@ -136,7 +136,6 @@ func (item *Service1Get) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *Service1Get) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *Service1Get) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.get", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.get", key)
 			}

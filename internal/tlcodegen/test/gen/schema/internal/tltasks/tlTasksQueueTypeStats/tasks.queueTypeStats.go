@@ -179,7 +179,6 @@ func (item *TasksQueueTypeStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 	var propScheduledSizePresented bool
 	var propInProgressSizePresented bool
 	var propNumQueuesPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -193,42 +192,42 @@ func (item *TasksQueueTypeStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeStats", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "waiting_size":
 				if propWaitingSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeStats", "waiting_size")
 				}
+				propWaitingSizePresented = true
 				if err := internal.Json2ReadInt64(in, &item.WaitingSize); err != nil {
 					return err
 				}
-				propWaitingSizePresented = true
 			case "scheduled_size":
 				if propScheduledSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeStats", "scheduled_size")
 				}
+				propScheduledSizePresented = true
 				if err := internal.Json2ReadInt64(in, &item.ScheduledSize); err != nil {
 					return err
 				}
-				propScheduledSizePresented = true
 			case "in_progress_size":
 				if propInProgressSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeStats", "in_progress_size")
 				}
+				propInProgressSizePresented = true
 				if err := internal.Json2ReadInt64(in, &item.InProgressSize); err != nil {
 					return err
 				}
-				propInProgressSizePresented = true
 			case "num_queues":
 				if propNumQueuesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeStats", "num_queues")
 				}
+				propNumQueuesPresented = true
 				if err := internal.Json2ReadInt32(in, &item.NumQueues); err != nil {
 					return err
 				}
-				propNumQueuesPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.queueTypeStats", key)
 			}

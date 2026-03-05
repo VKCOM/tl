@@ -144,7 +144,6 @@ func (item *Service1Decr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 func (item *Service1Decr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -158,18 +157,18 @@ func (item *Service1Decr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.decr", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.decr", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt64(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.decr", key)
 			}

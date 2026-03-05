@@ -197,10 +197,12 @@ func (item *Service2AddOrIncrMany) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	var propIntCountersNumPresented bool
 	var propFloatCountersNumPresented bool
 	var propObjectsNumPresented bool
+	var propIntCountersPresented bool
 	var rawIntCounters []byte
+	var propFloatCountersPresented bool
 	var rawFloatCounters []byte
+	var propDeltasPresented bool
 	var rawDeltas []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -214,54 +216,57 @@ func (item *Service2AddOrIncrMany) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propObjectIdLengthPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "objectIdLength")
 				}
+				propObjectIdLengthPresented = true
 				if err := internal.Json2ReadUint32(in, &item.ObjectIdLength); err != nil {
 					return err
 				}
-				propObjectIdLengthPresented = true
 			case "intCountersNum":
 				if propIntCountersNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "intCountersNum")
 				}
+				propIntCountersNumPresented = true
 				if err := internal.Json2ReadUint32(in, &item.IntCountersNum); err != nil {
 					return err
 				}
-				propIntCountersNumPresented = true
 			case "floatCountersNum":
 				if propFloatCountersNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "floatCountersNum")
 				}
+				propFloatCountersNumPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FloatCountersNum); err != nil {
 					return err
 				}
-				propFloatCountersNumPresented = true
 			case "objectsNum":
 				if propObjectsNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "objectsNum")
 				}
+				propObjectsNumPresented = true
 				if err := internal.Json2ReadUint32(in, &item.ObjectsNum); err != nil {
 					return err
 				}
-				propObjectsNumPresented = true
 			case "intCounters":
-				if rawIntCounters != nil {
+				if propIntCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "intCounters")
 				}
+				propIntCountersPresented = true
 				rawIntCounters = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "floatCounters":
-				if rawFloatCounters != nil {
+				if propFloatCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "floatCounters")
 				}
+				propFloatCountersPresented = true
 				rawFloatCounters = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "deltas":
-				if rawDeltas != nil {
+				if propDeltasPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.addOrIncrMany", "deltas")
 				}
+				propDeltasPresented = true
 				rawDeltas = in.Raw()
 				if !in.Ok() {
 					return in.Error()

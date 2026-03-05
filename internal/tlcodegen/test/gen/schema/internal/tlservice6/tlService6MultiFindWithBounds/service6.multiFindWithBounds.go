@@ -142,7 +142,6 @@ func (item *Service6MultiFindWithBounds) ReadJSON(legacyTypeNames bool, in *basi
 
 func (item *Service6MultiFindWithBounds) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propClustersPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -156,10 +155,10 @@ func (item *Service6MultiFindWithBounds) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propClustersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.multiFindWithBounds", "clusters")
 				}
+				propClustersPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Clusters); err != nil {
 					return err
 				}
-				propClustersPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service6.multiFindWithBounds", key)
 			}

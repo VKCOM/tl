@@ -196,7 +196,6 @@ func (item *Service3GetProducts) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 	var propOffsetPresented bool
 	var propLimitPresented bool
 	var propAllowedInfo0Presented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -210,66 +209,66 @@ func (item *Service3GetProducts) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "mode":
 				if propModePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "mode")
 				}
+				propModePresented = true
 				if err := internal.Json2ReadUint32(in, &item.Mode); err != nil {
 					return err
 				}
-				propModePresented = true
 			case "types":
 				if propTypesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "types")
 				}
+				propTypesPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Types); err != nil {
 					return err
 				}
-				propTypesPresented = true
 			case "start_date":
 				if propStartDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "start_date")
 				}
+				propStartDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StartDate); err != nil {
 					return err
 				}
-				propStartDatePresented = true
 			case "end_date":
 				if propEndDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "end_date")
 				}
+				propEndDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.EndDate); err != nil {
 					return err
 				}
-				propEndDatePresented = true
 			case "offset":
 				if propOffsetPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "offset")
 				}
+				propOffsetPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Offset); err != nil {
 					return err
 				}
-				propOffsetPresented = true
 			case "limit":
 				if propLimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "limit")
 				}
+				propLimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Limit); err != nil {
 					return err
 				}
-				propLimitPresented = true
 			case "allowed_info0":
 				if propAllowedInfo0Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProducts", "allowed_info0")
 				}
+				propAllowedInfo0Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.AllowedInfo0); err != nil {
 					return err
 				}
-				propAllowedInfo0Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.getProducts", key)
 			}

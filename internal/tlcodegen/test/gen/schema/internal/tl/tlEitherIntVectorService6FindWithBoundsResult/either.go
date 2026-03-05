@@ -278,7 +278,6 @@ func (item *LeftIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames 
 
 func (item *LeftIntVectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -292,10 +291,10 @@ func (item *LeftIntVectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *bas
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("left", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("left", key)
 			}
@@ -419,7 +418,6 @@ func (item *RightIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames
 
 func (item *RightIntVectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -433,10 +431,10 @@ func (item *RightIntVectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *ba
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("right", "value")
 				}
+				propValuePresented = true
 				if err := tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("right", key)
 			}

@@ -86,7 +86,6 @@ func (item *MyMcValueTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 func (item *MyMcValueTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -100,10 +99,10 @@ func (item *MyMcValueTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propXsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myMcValueTuple", "xs")
 				}
+				propXsPresented = true
 				if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSONGeneral(tctx, in, &item.Xs); err != nil {
 					return err
 				}
-				propXsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("myMcValueTuple", key)
 			}

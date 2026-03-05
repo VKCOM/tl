@@ -180,10 +180,12 @@ func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propObjectIdLengthPresented bool
 	var propIntCountersNumPresented bool
 	var propFloatCountersNumPresented bool
+	var propIntCountersPresented bool
 	var rawIntCounters []byte
+	var propFloatCountersPresented bool
 	var rawFloatCounters []byte
+	var propNewValuesPresented bool
 	var rawNewValues []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -197,46 +199,49 @@ func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propObjectIdLengthPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "objectIdLength")
 				}
+				propObjectIdLengthPresented = true
 				if err := internal.Json2ReadUint32(in, &item.ObjectIdLength); err != nil {
 					return err
 				}
-				propObjectIdLengthPresented = true
 			case "intCountersNum":
 				if propIntCountersNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "intCountersNum")
 				}
+				propIntCountersNumPresented = true
 				if err := internal.Json2ReadUint32(in, &item.IntCountersNum); err != nil {
 					return err
 				}
-				propIntCountersNumPresented = true
 			case "floatCountersNum":
 				if propFloatCountersNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "floatCountersNum")
 				}
+				propFloatCountersNumPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FloatCountersNum); err != nil {
 					return err
 				}
-				propFloatCountersNumPresented = true
 			case "intCounters":
-				if rawIntCounters != nil {
+				if propIntCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "intCounters")
 				}
+				propIntCountersPresented = true
 				rawIntCounters = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "floatCounters":
-				if rawFloatCounters != nil {
+				if propFloatCountersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "floatCounters")
 				}
+				propFloatCountersPresented = true
 				rawFloatCounters = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "newValues":
-				if rawNewValues != nil {
+				if propNewValuesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.set", "newValues")
 				}
+				propNewValuesPresented = true
 				rawNewValues = in.Raw()
 				if !in.Ok() {
 					return in.Error()

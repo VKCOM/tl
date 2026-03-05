@@ -88,7 +88,6 @@ func (item *TlsNatConst) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *TlsNatConst) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -102,10 +101,10 @@ func (item *TlsNatConst) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.natConst", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.natConst", key)
 			}
@@ -418,7 +417,6 @@ func (item *TlsNatVar) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 func (item *TlsNatVar) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDifPresented bool
 	var propVarNumPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -432,18 +430,18 @@ func (item *TlsNatVar) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propDifPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.natVar", "dif")
 				}
+				propDifPresented = true
 				if err := Json2ReadInt32(in, &item.Dif); err != nil {
 					return err
 				}
-				propDifPresented = true
 			case "var_num":
 				if propVarNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.natVar", "var_num")
 				}
+				propVarNumPresented = true
 				if err := Json2ReadInt32(in, &item.VarNum); err != nil {
 					return err
 				}
-				propVarNumPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.natVar", key)
 			}

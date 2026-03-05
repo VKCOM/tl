@@ -233,7 +233,6 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 	var propDaysOfWeekPresented bool
 	var propDaysPresented bool
 	var propMonthsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -247,58 +246,58 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "seconds":
 				if propSecondsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "seconds")
 				}
+				propSecondsPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Seconds); err != nil {
 					return err
 				}
-				propSecondsPresented = true
 			case "minutes":
 				if propMinutesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "minutes")
 				}
+				propMinutesPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Minutes); err != nil {
 					return err
 				}
-				propMinutesPresented = true
 			case "hours":
 				if propHoursPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "hours")
 				}
+				propHoursPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Hours); err != nil {
 					return err
 				}
-				propHoursPresented = true
 			case "days_of_week":
 				if propDaysOfWeekPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days_of_week")
 				}
+				propDaysOfWeekPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.DaysOfWeek); err != nil {
 					return err
 				}
-				propDaysOfWeekPresented = true
 			case "days":
 				if propDaysPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days")
 				}
+				propDaysPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Days); err != nil {
 					return err
 				}
-				propDaysPresented = true
 			case "months":
 				if propMonthsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "months")
 				}
+				propMonthsPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Months); err != nil {
 					return err
 				}
-				propMonthsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.cronTime", key)
 			}

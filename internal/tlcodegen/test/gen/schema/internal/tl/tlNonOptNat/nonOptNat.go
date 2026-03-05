@@ -101,8 +101,8 @@ func (item *NonOptNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 
 func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propXsPresented bool
 	var rawXs []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -116,14 +116,15 @@ func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nonOptNat", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "xs":
-				if rawXs != nil {
+				if propXsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nonOptNat", "xs")
 				}
+				propXsPresented = true
 				rawXs = in.Raw()
 				if !in.Ok() {
 					return in.Error()

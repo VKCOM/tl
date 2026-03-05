@@ -164,7 +164,6 @@ func (item *Service1Cas) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propDelayPresented bool
 	var propCasTokenPresented bool
 	var propNewValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -178,42 +177,42 @@ func (item *Service1Cas) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.cas", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.cas", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "delay":
 				if propDelayPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.cas", "delay")
 				}
+				propDelayPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Delay); err != nil {
 					return err
 				}
-				propDelayPresented = true
 			case "casToken":
 				if propCasTokenPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.cas", "casToken")
 				}
+				propCasTokenPresented = true
 				if err := internal.Json2ReadString(in, &item.CasToken); err != nil {
 					return err
 				}
-				propCasTokenPresented = true
 			case "newValue":
 				if propNewValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.cas", "newValue")
 				}
+				propNewValuePresented = true
 				if err := internal.Json2ReadString(in, &item.NewValue); err != nil {
 					return err
 				}
-				propNewValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.cas", key)
 			}

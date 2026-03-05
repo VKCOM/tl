@@ -91,7 +91,6 @@ func (item *FieldConflict2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 func (item *FieldConflict2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propSetXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -105,18 +104,18 @@ func (item *FieldConflict2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("fieldConflict2", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "setX":
 				if propSetXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("fieldConflict2", "setX")
 				}
+				propSetXPresented = true
 				if err := internal.Json2ReadInt32(in, &item.SetX); err != nil {
 					return err
 				}
-				propSetXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("fieldConflict2", key)
 			}

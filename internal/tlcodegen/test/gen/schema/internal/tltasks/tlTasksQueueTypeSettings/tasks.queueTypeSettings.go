@@ -305,7 +305,6 @@ func (item *TasksQueueTypeSettings) ReadJSONGeneral(tctx *basictl.JSONReadContex
 	var propIsBlockingPresented bool
 	var propTimelimitPresented bool
 	var propMaxQueueSizePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -319,82 +318,82 @@ func (item *TasksQueueTypeSettings) ReadJSONGeneral(tctx *basictl.JSONReadContex
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "is_enabled":
 				if propIsEnabledPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "is_enabled")
 				}
+				propIsEnabledPresented = true
 				if err := internal.Json2ReadBool(in, &item.IsEnabled); err != nil {
 					return err
 				}
-				propIsEnabledPresented = true
 			case "is_persistent":
 				if propIsPersistentPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "is_persistent")
 				}
+				propIsPersistentPresented = true
 				if err := internal.Json2ReadBool(in, &item.IsPersistent); err != nil {
 					return err
 				}
-				propIsPersistentPresented = true
 			case "priority":
 				if propPriorityPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "priority")
 				}
+				propPriorityPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Priority); err != nil {
 					return err
 				}
-				propPriorityPresented = true
 			case "default_retry_time":
 				if propDefaultRetryTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "default_retry_time")
 				}
+				propDefaultRetryTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.DefaultRetryTime); err != nil {
 					return err
 				}
-				propDefaultRetryTimePresented = true
 			case "default_retry_num":
 				if propDefaultRetryNumPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "default_retry_num")
 				}
+				propDefaultRetryNumPresented = true
 				if err := internal.Json2ReadInt32(in, &item.DefaultRetryNum); err != nil {
 					return err
 				}
-				propDefaultRetryNumPresented = true
 			case "move_to_queue_type_on_error":
 				if propMoveToQueueTypeOnErrorPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "move_to_queue_type_on_error")
 				}
+				propMoveToQueueTypeOnErrorPresented = true
 				if err := internal.Json2ReadString(in, &item.MoveToQueueTypeOnError); err != nil {
 					return err
 				}
-				propMoveToQueueTypeOnErrorPresented = true
 			case "is_blocking":
 				if propIsBlockingPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "is_blocking")
 				}
+				propIsBlockingPresented = true
 				if err := internal.Json2ReadBool(in, &item.IsBlocking); err != nil {
 					return err
 				}
-				propIsBlockingPresented = true
 			case "timelimit":
 				if propTimelimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "timelimit")
 				}
+				propTimelimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Timelimit); err != nil {
 					return err
 				}
-				propTimelimitPresented = true
 			case "max_queue_size":
 				if propMaxQueueSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeSettings", "max_queue_size")
 				}
+				propMaxQueueSizePresented = true
 				if err := internal.Json2ReadInt32(in, &item.MaxQueueSize); err != nil {
 					return err
 				}
-				propMaxQueueSizePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.queueTypeSettings", key)
 			}

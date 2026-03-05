@@ -144,7 +144,6 @@ func (item *TasksQueueStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 	var propWaitingSizePresented bool
 	var propScheduledSizePresented bool
 	var propInProgressSizePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -158,35 +157,26 @@ func (item *TasksQueueStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propWaitingSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueStats", "waiting_size")
 				}
-				if nat_fields_mask&(1<<0) == 0 {
-					return internal.ErrorInvalidJSON("tasks.queueStats", "field 'waiting_size' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propWaitingSizePresented = true
 				if err := internal.Json2ReadInt32(in, &item.WaitingSize); err != nil {
 					return err
 				}
-				propWaitingSizePresented = true
 			case "scheduled_size":
 				if propScheduledSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueStats", "scheduled_size")
 				}
-				if nat_fields_mask&(1<<1) == 0 {
-					return internal.ErrorInvalidJSON("tasks.queueStats", "field 'scheduled_size' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propScheduledSizePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ScheduledSize); err != nil {
 					return err
 				}
-				propScheduledSizePresented = true
 			case "in_progress_size":
 				if propInProgressSizePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueStats", "in_progress_size")
 				}
-				if nat_fields_mask&(1<<2) == 0 {
-					return internal.ErrorInvalidJSON("tasks.queueStats", "field 'in_progress_size' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propInProgressSizePresented = true
 				if err := internal.Json2ReadInt32(in, &item.InProgressSize); err != nil {
 					return err
 				}
-				propInProgressSizePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.queueStats", key)
 			}
@@ -205,6 +195,21 @@ func (item *TasksQueueStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 	}
 	if !propInProgressSizePresented {
 		item.InProgressSize = 0
+	}
+	if propWaitingSizePresented {
+		if nat_fields_mask&(1<<0) == 0 {
+			return internal.ErrorInvalidJSON("tasks.queueStats", "field 'waiting_size' is set, but will be ignored, because corresponding fieldmask nat_fields_mask bit 0 is 0")
+		}
+	}
+	if propScheduledSizePresented {
+		if nat_fields_mask&(1<<1) == 0 {
+			return internal.ErrorInvalidJSON("tasks.queueStats", "field 'scheduled_size' is set, but will be ignored, because corresponding fieldmask nat_fields_mask bit 1 is 0")
+		}
+	}
+	if propInProgressSizePresented {
+		if nat_fields_mask&(1<<2) == 0 {
+			return internal.ErrorInvalidJSON("tasks.queueStats", "field 'in_progress_size' is set, but will be ignored, because corresponding fieldmask nat_fields_mask bit 2 is 0")
+		}
 	}
 	return nil
 }

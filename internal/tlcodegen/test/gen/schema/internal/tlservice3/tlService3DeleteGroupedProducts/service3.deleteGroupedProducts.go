@@ -164,7 +164,6 @@ func (item *Service3DeleteGroupedProducts) ReadJSONGeneral(tctx *basictl.JSONRea
 	var propIdPresented bool
 	var propStartDatePresented bool
 	var propEndDatePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -178,42 +177,42 @@ func (item *Service3DeleteGroupedProducts) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteGroupedProducts", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "type":
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteGroupedProducts", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "id":
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteGroupedProducts", "id")
 				}
+				propIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "start_date":
 				if propStartDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteGroupedProducts", "start_date")
 				}
+				propStartDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StartDate); err != nil {
 					return err
 				}
-				propStartDatePresented = true
 			case "end_date":
 				if propEndDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteGroupedProducts", "end_date")
 				}
+				propEndDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.EndDate); err != nil {
 					return err
 				}
-				propEndDatePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.deleteGroupedProducts", key)
 			}

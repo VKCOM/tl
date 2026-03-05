@@ -374,7 +374,6 @@ func (item *TlsExprNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 
 func (item *TlsExprNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propExprPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -388,10 +387,10 @@ func (item *TlsExprNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propExprPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.exprNat", "expr")
 				}
+				propExprPresented = true
 				if err := item.Expr.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propExprPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.exprNat", key)
 			}
@@ -517,7 +516,6 @@ func (item *TlsExprType) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *TlsExprType) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propExprPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -531,10 +529,10 @@ func (item *TlsExprType) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propExprPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.exprType", "expr")
 				}
+				propExprPresented = true
 				if err := item.Expr.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propExprPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.exprType", key)
 			}

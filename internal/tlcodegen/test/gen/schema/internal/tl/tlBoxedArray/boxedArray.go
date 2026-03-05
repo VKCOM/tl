@@ -136,7 +136,6 @@ func (item *BoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 
 func (item *BoxedArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *BoxedArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedArray", "x")
 				}
+				propXPresented = true
 				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("boxedArray", key)
 			}

@@ -155,9 +155,9 @@ func (item *Service2SetObjectTtl) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 
 func (item *Service2SetObjectTtl) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectIdLengthPresented bool
+	var propObjectIdPresented bool
 	var rawObjectId []byte
 	var propTtlPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -171,14 +171,15 @@ func (item *Service2SetObjectTtl) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propObjectIdLengthPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.setObjectTtl", "objectIdLength")
 				}
+				propObjectIdLengthPresented = true
 				if err := internal.Json2ReadUint32(in, &item.ObjectIdLength); err != nil {
 					return err
 				}
-				propObjectIdLengthPresented = true
 			case "objectId":
-				if rawObjectId != nil {
+				if propObjectIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.setObjectTtl", "objectId")
 				}
+				propObjectIdPresented = true
 				rawObjectId = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -187,10 +188,10 @@ func (item *Service2SetObjectTtl) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propTtlPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.setObjectTtl", "ttl")
 				}
+				propTtlPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Ttl); err != nil {
 					return err
 				}
-				propTtlPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service2.setObjectTtl", key)
 			}

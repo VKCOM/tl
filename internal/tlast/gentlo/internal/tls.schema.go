@@ -389,12 +389,14 @@ func (item *TlsSchemaV2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propVersionPresented bool
 	var propDatePresented bool
 	var propTypesNumPresented bool
+	var propTypesPresented bool
 	var rawTypes []byte
 	var propConstructorNumPresented bool
+	var propConstructorsPresented bool
 	var rawConstructors []byte
 	var propFunctionsNumPresented bool
+	var propFunctionsPresented bool
 	var rawFunctions []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -408,30 +410,31 @@ func (item *TlsSchemaV2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propVersionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "version")
 				}
+				propVersionPresented = true
 				if err := Json2ReadInt32(in, &item.Version); err != nil {
 					return err
 				}
-				propVersionPresented = true
 			case "date":
 				if propDatePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "date")
 				}
+				propDatePresented = true
 				if err := Json2ReadInt32(in, &item.Date); err != nil {
 					return err
 				}
-				propDatePresented = true
 			case "types_num":
 				if propTypesNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "types_num")
 				}
+				propTypesNumPresented = true
 				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
 					return err
 				}
-				propTypesNumPresented = true
 			case "types":
-				if rawTypes != nil {
+				if propTypesPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "types")
 				}
+				propTypesPresented = true
 				rawTypes = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -440,14 +443,15 @@ func (item *TlsSchemaV2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propConstructorNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "constructor_num")
 				}
+				propConstructorNumPresented = true
 				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
 					return err
 				}
-				propConstructorNumPresented = true
 			case "constructors":
-				if rawConstructors != nil {
+				if propConstructorsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "constructors")
 				}
+				propConstructorsPresented = true
 				rawConstructors = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -456,14 +460,15 @@ func (item *TlsSchemaV2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFunctionsNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "functions_num")
 				}
+				propFunctionsNumPresented = true
 				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
 					return err
 				}
-				propFunctionsNumPresented = true
 			case "functions":
-				if rawFunctions != nil {
+				if propFunctionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "functions")
 				}
+				propFunctionsPresented = true
 				rawFunctions = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -739,12 +744,14 @@ func (item *TlsSchemaV3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propVersionPresented bool
 	var propDatePresented bool
 	var propTypesNumPresented bool
+	var propTypesPresented bool
 	var rawTypes []byte
 	var propConstructorNumPresented bool
+	var propConstructorsPresented bool
 	var rawConstructors []byte
 	var propFunctionsNumPresented bool
+	var propFunctionsPresented bool
 	var rawFunctions []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -758,30 +765,31 @@ func (item *TlsSchemaV3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propVersionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "version")
 				}
+				propVersionPresented = true
 				if err := Json2ReadInt32(in, &item.Version); err != nil {
 					return err
 				}
-				propVersionPresented = true
 			case "date":
 				if propDatePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "date")
 				}
+				propDatePresented = true
 				if err := Json2ReadInt32(in, &item.Date); err != nil {
 					return err
 				}
-				propDatePresented = true
 			case "types_num":
 				if propTypesNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "types_num")
 				}
+				propTypesNumPresented = true
 				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
 					return err
 				}
-				propTypesNumPresented = true
 			case "types":
-				if rawTypes != nil {
+				if propTypesPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "types")
 				}
+				propTypesPresented = true
 				rawTypes = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -790,14 +798,15 @@ func (item *TlsSchemaV3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propConstructorNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "constructor_num")
 				}
+				propConstructorNumPresented = true
 				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
 					return err
 				}
-				propConstructorNumPresented = true
 			case "constructors":
-				if rawConstructors != nil {
+				if propConstructorsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "constructors")
 				}
+				propConstructorsPresented = true
 				rawConstructors = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -806,14 +815,15 @@ func (item *TlsSchemaV3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFunctionsNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "functions_num")
 				}
+				propFunctionsNumPresented = true
 				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
 					return err
 				}
-				propFunctionsNumPresented = true
 			case "functions":
-				if rawFunctions != nil {
+				if propFunctionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "functions")
 				}
+				propFunctionsPresented = true
 				rawFunctions = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -1089,12 +1099,14 @@ func (item *TlsSchemaV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propVersionPresented bool
 	var propDatePresented bool
 	var propTypesNumPresented bool
+	var propTypesPresented bool
 	var rawTypes []byte
 	var propConstructorNumPresented bool
+	var propConstructorsPresented bool
 	var rawConstructors []byte
 	var propFunctionsNumPresented bool
+	var propFunctionsPresented bool
 	var rawFunctions []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1108,30 +1120,31 @@ func (item *TlsSchemaV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propVersionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "version")
 				}
+				propVersionPresented = true
 				if err := Json2ReadInt32(in, &item.Version); err != nil {
 					return err
 				}
-				propVersionPresented = true
 			case "date":
 				if propDatePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "date")
 				}
+				propDatePresented = true
 				if err := Json2ReadInt32(in, &item.Date); err != nil {
 					return err
 				}
-				propDatePresented = true
 			case "types_num":
 				if propTypesNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "types_num")
 				}
+				propTypesNumPresented = true
 				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
 					return err
 				}
-				propTypesNumPresented = true
 			case "types":
-				if rawTypes != nil {
+				if propTypesPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "types")
 				}
+				propTypesPresented = true
 				rawTypes = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -1140,14 +1153,15 @@ func (item *TlsSchemaV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propConstructorNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "constructor_num")
 				}
+				propConstructorNumPresented = true
 				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
 					return err
 				}
-				propConstructorNumPresented = true
 			case "constructors":
-				if rawConstructors != nil {
+				if propConstructorsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "constructors")
 				}
+				propConstructorsPresented = true
 				rawConstructors = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -1156,14 +1170,15 @@ func (item *TlsSchemaV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFunctionsNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "functions_num")
 				}
+				propFunctionsNumPresented = true
 				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
 					return err
 				}
-				propFunctionsNumPresented = true
 			case "functions":
-				if rawFunctions != nil {
+				if propFunctionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "functions")
 				}
+				propFunctionsPresented = true
 				rawFunctions = in.Raw()
 				if !in.Ok() {
 					return in.Error()

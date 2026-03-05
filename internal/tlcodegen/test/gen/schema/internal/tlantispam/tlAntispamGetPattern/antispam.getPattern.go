@@ -136,7 +136,6 @@ func (item *AntispamGetPattern) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *AntispamGetPattern) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propIdPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *AntispamGetPattern) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.getPattern", "id")
 				}
+				propIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("antispam.getPattern", key)
 			}

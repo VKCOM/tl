@@ -144,7 +144,6 @@ func (item *BoxedVector32BoxedElem) ReadJSON(legacyTypeNames bool, in *basictl.J
 
 func (item *BoxedVector32BoxedElem) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -158,10 +157,10 @@ func (item *BoxedVector32BoxedElem) ReadJSONGeneral(tctx *basictl.JSONReadContex
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedVector32BoxedElem", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("boxedVector32BoxedElem", key)
 			}

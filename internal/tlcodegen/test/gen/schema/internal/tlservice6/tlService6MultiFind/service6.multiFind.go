@@ -156,7 +156,6 @@ func (item *Service6MultiFind) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	var propClustersPresented bool
 	var propLimitPresented bool
 	var propEqThresholdPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -170,26 +169,26 @@ func (item *Service6MultiFind) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propClustersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.multiFind", "clusters")
 				}
+				propClustersPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Clusters); err != nil {
 					return err
 				}
-				propClustersPresented = true
 			case "limit":
 				if propLimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.multiFind", "limit")
 				}
+				propLimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Limit); err != nil {
 					return err
 				}
-				propLimitPresented = true
 			case "eq_threshold":
 				if propEqThresholdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.multiFind", "eq_threshold")
 				}
+				propEqThresholdPresented = true
 				if err := internal.Json2ReadFloat64(in, &item.EqThreshold); err != nil {
 					return err
 				}
-				propEqThresholdPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service6.multiFind", key)
 			}

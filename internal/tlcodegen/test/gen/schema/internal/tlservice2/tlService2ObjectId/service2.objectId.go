@@ -63,8 +63,7 @@ func (item *Service2ObjectId) WriteTL1Boxed(w []byte, nat_objectIdLength uint32)
 }
 
 func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32) error {
-	var rawId []byte
-
+	var propIdPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -75,12 +74,12 @@ func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			in.WantColon()
 			switch key {
 			case "id":
-				if rawId != nil {
+				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.objectId", "id")
 				}
-				rawId = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propIdPresented = true
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.Id, nat_objectIdLength); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service2.objectId", key)
@@ -92,15 +91,9 @@ func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			return in.Error()
 		}
 	}
-	var inIdPointer *basictl.JsonLexer
-	inId := basictl.JsonLexer{Data: rawId}
-	if rawId != nil {
-		inIdPointer = &inId
+	if !propIdPresented {
+		item.Id = item.Id[:0]
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIdPointer, &item.Id, nat_objectIdLength); err != nil {
-		return err
-	}
-
 	return nil
 }
 

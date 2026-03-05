@@ -92,7 +92,6 @@ func (item *Service3GroupCountLimit) ReadJSON(legacyTypeNames bool, in *basictl.
 func (item *Service3GroupCountLimit) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypesPresented bool
 	var propLimitPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -106,18 +105,18 @@ func (item *Service3GroupCountLimit) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propTypesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.groupCountLimit", "types")
 				}
+				propTypesPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Types); err != nil {
 					return err
 				}
-				propTypesPresented = true
 			case "limit":
 				if propLimitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.groupCountLimit", "limit")
 				}
+				propLimitPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Limit); err != nil {
 					return err
 				}
-				propLimitPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.groupCountLimit", key)
 			}

@@ -157,7 +157,6 @@ func (item *Service3DeleteProduct) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	var propTypePresented bool
 	var propIdPresented bool
 	var propInfoPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -171,34 +170,34 @@ func (item *Service3DeleteProduct) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteProduct", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "type":
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteProduct", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "id":
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteProduct", "id")
 				}
+				propIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "info":
 				if propInfoPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.deleteProduct", "info")
 				}
+				propInfoPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Info); err != nil {
 					return err
 				}
-				propInfoPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.deleteProduct", key)
 			}

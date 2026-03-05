@@ -103,7 +103,6 @@ func (item *WithFloat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	var propXPresented bool
 	var propYPresented bool
 	var propZPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -117,26 +116,26 @@ func (item *WithFloat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("withFloat", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadFloat32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("withFloat", "y")
 				}
+				propYPresented = true
 				if err := internal.Json2ReadFloat32(in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			case "z":
 				if propZPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("withFloat", "z")
 				}
+				propZPresented = true
 				if err := internal.Json2ReadFloat32(in, &item.Z); err != nil {
 					return err
 				}
-				propZPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("withFloat", key)
 			}

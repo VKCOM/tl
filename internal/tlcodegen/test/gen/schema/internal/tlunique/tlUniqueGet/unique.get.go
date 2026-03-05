@@ -136,7 +136,6 @@ func (item *UniqueGet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 
 func (item *UniqueGet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *UniqueGet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("unique.get", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("unique.get", key)
 			}

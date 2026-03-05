@@ -107,8 +107,8 @@ func (item *TlsArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 func (item *TlsArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propMultiplicityPresented bool
 	var propArgsNumPresented bool
+	var propArgsPresented bool
 	var rawArgs []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -122,22 +122,23 @@ func (item *TlsArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propMultiplicityPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.array", "multiplicity")
 				}
+				propMultiplicityPresented = true
 				if err := item.Multiplicity.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propMultiplicityPresented = true
 			case "args_num":
 				if propArgsNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.array", "args_num")
 				}
+				propArgsNumPresented = true
 				if err := Json2ReadUint32(in, &item.ArgsNum); err != nil {
 					return err
 				}
-				propArgsNumPresented = true
 			case "args":
-				if rawArgs != nil {
+				if propArgsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.array", "args")
 				}
+				propArgsPresented = true
 				rawArgs = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -558,8 +559,8 @@ func (item *TlsTypeExpr0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 	var propNamePresented bool
 	var propFlagsPresented bool
 	var propChildrenNumPresented bool
+	var propChildrenPresented bool
 	var rawChildren []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -573,30 +574,31 @@ func (item *TlsTypeExpr0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 				if propNamePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeExpr", "name")
 				}
+				propNamePresented = true
 				if err := Json2ReadInt32(in, &item.Name); err != nil {
 					return err
 				}
-				propNamePresented = true
 			case "flags":
 				if propFlagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeExpr", "flags")
 				}
+				propFlagsPresented = true
 				if err := Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "children_num":
 				if propChildrenNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeExpr", "children_num")
 				}
+				propChildrenNumPresented = true
 				if err := Json2ReadUint32(in, &item.ChildrenNum); err != nil {
 					return err
 				}
-				propChildrenNumPresented = true
 			case "children":
-				if rawChildren != nil {
+				if propChildrenPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeExpr", "children")
 				}
+				propChildrenPresented = true
 				rawChildren = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -769,7 +771,6 @@ func (item *TlsTypeVar) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 func (item *TlsTypeVar) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propVarNumPresented bool
 	var propFlagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -783,18 +784,18 @@ func (item *TlsTypeVar) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propVarNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeVar", "var_num")
 				}
+				propVarNumPresented = true
 				if err := Json2ReadInt32(in, &item.VarNum); err != nil {
 					return err
 				}
-				propVarNumPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.typeVar", "flags")
 				}
+				propFlagsPresented = true
 				if err := Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.typeVar", key)
 			}
