@@ -99,8 +99,8 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSON(legacyTypeNames bool, in *ba
 
 func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propArrPresented bool
 	var rawArr []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -114,14 +114,15 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFlexibleBool", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
-				if rawArr != nil {
+				if propArrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFlexibleBool", "arr")
 				}
+				propArrPresented = true
 				rawArr = in.Raw()
 				if !in.Ok() {
 					return in.Error()

@@ -488,10 +488,10 @@ func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testUnion1", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testUnion1", key)
 			}
@@ -746,10 +746,10 @@ func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testUnion2", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testUnion2", key)
 			}

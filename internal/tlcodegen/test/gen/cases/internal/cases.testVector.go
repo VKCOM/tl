@@ -86,7 +86,6 @@ func (item *CasesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 
 func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -100,10 +99,10 @@ func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propArrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testVector", "arr")
 				}
+				propArrPresented = true
 				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testVector", key)
 			}

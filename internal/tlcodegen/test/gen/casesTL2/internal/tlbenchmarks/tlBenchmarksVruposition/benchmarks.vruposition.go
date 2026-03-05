@@ -214,14 +214,15 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "commit_bit":
 				if propCommitBitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "commit_bit")
 				}
+				propCommitBitPresented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -229,11 +230,11 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if bitValue {
 					item.tl2mask0 |= 1
 				}
-				propCommitBitPresented = true
 			case "meta_block":
 				if propMetaBlockPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "meta_block")
 				}
+				propMetaBlockPresented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -241,11 +242,11 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if bitValue {
 					item.tl2mask0 |= 2
 				}
-				propMetaBlockPresented = true
 			case "split_payload":
 				if propSplitPayloadPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "split_payload")
 				}
+				propSplitPayloadPresented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -253,11 +254,11 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if bitValue {
 					item.tl2mask0 |= 4
 				}
-				propSplitPayloadPresented = true
 			case "rotation_block":
 				if propRotationBlockPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "rotation_block")
 				}
+				propRotationBlockPresented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -265,11 +266,11 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if bitValue {
 					item.tl2mask0 |= 8
 				}
-				propRotationBlockPresented = true
 			case "canonical_hash":
 				if propCanonicalHashPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "canonical_hash")
 				}
+				propCanonicalHashPresented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -277,47 +278,47 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if bitValue {
 					item.tl2mask0 |= 16
 				}
-				propCanonicalHashPresented = true
 			case "payload_offset":
 				if propPayloadOffsetPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "payload_offset")
 				}
+				propPayloadOffsetPresented = true
 				if err := internal.Json2ReadInt64(in, &item.PayloadOffset); err != nil {
 					return err
 				}
-				propPayloadOffsetPresented = true
 			case "block_time_nano":
 				if propBlockTimeNanoPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "block_time_nano")
 				}
+				propBlockTimeNanoPresented = true
 				if err := internal.Json2ReadInt64(in, &item.BlockTimeNano); err != nil {
 					return err
 				}
-				propBlockTimeNanoPresented = true
 			case "hash":
 				if propHashPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "hash")
 				}
+				propHashPresented = true
 				if err := item.Hash.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propHashPresented = true
 			case "file_offset":
 				if propFileOffsetPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "file_offset")
 				}
+				propFileOffsetPresented = true
 				if err := internal.Json2ReadInt64(in, &item.FileOffset); err != nil {
 					return err
 				}
-				propFileOffsetPresented = true
 			case "seq_number":
 				if propSeqNumberPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "seq_number")
 				}
+				propSeqNumberPresented = true
 				if err := internal.Json2ReadInt64(in, &item.SeqNumber); err != nil {
 					return err
 				}
-				propSeqNumberPresented = true
+				item.tl2mask0 |= 32
 			default:
 				return internal.ErrorInvalidJSONExcessElement("benchmarks.vruposition", key)
 			}

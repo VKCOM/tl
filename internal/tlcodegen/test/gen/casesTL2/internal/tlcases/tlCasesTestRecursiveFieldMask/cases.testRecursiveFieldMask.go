@@ -181,30 +181,33 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propF0Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f0")
 				}
+				propF0Presented = true
 				if err := internal.Json2ReadUint32(in, &item.F0); err != nil {
 					return err
 				}
-				propF0Presented = true
 			case "f1":
 				if propF1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f1")
 				}
+				propF1Presented = true
 				if err := internal.Json2ReadUint32(in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
+				item.tl2mask0 |= 1
 			case "f2":
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f2")
 				}
+				propF2Presented = true
 				if err := internal.Json2ReadUint32(in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
+				item.tl2mask0 |= 2
 			case "t1":
 				if propT1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t1")
 				}
+				propT1Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -212,11 +215,11 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if bitValue {
 					item.tl2mask0 |= 4
 				}
-				propT1Presented = true
 			case "t2":
 				if propT2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t2")
 				}
+				propT2Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -224,11 +227,11 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if bitValue {
 					item.tl2mask0 |= 8
 				}
-				propT2Presented = true
 			case "t3":
 				if propT3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t3")
 				}
+				propT3Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -236,7 +239,6 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if bitValue {
 					item.tl2mask0 |= 16
 				}
-				propT3Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testRecursiveFieldMask", key)
 			}

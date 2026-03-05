@@ -122,50 +122,50 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propA1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a1")
 				}
+				propA1Presented = true
 				if err := tlBuiltinTuple1Bool.BuiltinTuple1BoolReadJSONGeneral(tctx, in, &item.A1); err != nil {
 					return err
 				}
-				propA1Presented = true
 			case "a2":
 				if propA2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a2")
 				}
+				propA2Presented = true
 				if err := tlBuiltinTuple0Bool.BuiltinTuple0BoolReadJSONGeneral(tctx, in, &item.A2); err != nil {
 					return err
 				}
-				propA2Presented = true
 			case "a3":
 				if propA3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a3")
 				}
+				propA3Presented = true
 				if err := tlBuiltinTuple7Bool.BuiltinTuple7BoolReadJSONGeneral(tctx, in, &item.A3); err != nil {
 					return err
 				}
-				propA3Presented = true
 			case "a4":
 				if propA4Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a4")
 				}
+				propA4Presented = true
 				if err := tlBuiltinTuple8Bool.BuiltinTuple8BoolReadJSONGeneral(tctx, in, &item.A4); err != nil {
 					return err
 				}
-				propA4Presented = true
 			case "a5":
 				if propA5Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a5")
 				}
+				propA5Presented = true
 				if err := tlBuiltinTuple11Bool.BuiltinTuple11BoolReadJSONGeneral(tctx, in, &item.A5); err != nil {
 					return err
 				}
-				propA5Presented = true
 			case "a6":
 				if propA6Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a6")
 				}
+				propA6Presented = true
 				if err := tlBuiltinTuple16Bool.BuiltinTuple16BoolReadJSONGeneral(tctx, in, &item.A6); err != nil {
 					return err
 				}
-				propA6Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testArrayFixedBool", key)
 			}

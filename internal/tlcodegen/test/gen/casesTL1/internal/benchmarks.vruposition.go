@@ -202,22 +202,21 @@ func (item *BenchmarksVruposition) ReadJSON(legacyTypeNames bool, in *basictl.Js
 
 func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
-	var trueTypeCommitBitPresented bool
+	var propCommitBitPresented bool
 	var trueTypeCommitBitValue bool
-	var trueTypeMetaBlockPresented bool
+	var propMetaBlockPresented bool
 	var trueTypeMetaBlockValue bool
-	var trueTypeSplitPayloadPresented bool
+	var propSplitPayloadPresented bool
 	var trueTypeSplitPayloadValue bool
-	var trueTypeRotationBlockPresented bool
+	var propRotationBlockPresented bool
 	var trueTypeRotationBlockValue bool
-	var trueTypeCanonicalHashPresented bool
+	var propCanonicalHashPresented bool
 	var trueTypeCanonicalHashValue bool
 	var propPayloadOffsetPresented bool
 	var propBlockTimeNanoPresented bool
 	var propHashPresented bool
 	var propFileOffsetPresented bool
 	var propSeqNumberPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -231,90 +230,90 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "commit_bit":
-				if trueTypeCommitBitPresented {
+				if propCommitBitPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "commit_bit")
 				}
+				propCommitBitPresented = true
 				if err := Json2ReadBool(in, &trueTypeCommitBitValue); err != nil {
 					return err
 				}
-				trueTypeCommitBitPresented = true
 			case "meta_block":
-				if trueTypeMetaBlockPresented {
+				if propMetaBlockPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "meta_block")
 				}
+				propMetaBlockPresented = true
 				if err := Json2ReadBool(in, &trueTypeMetaBlockValue); err != nil {
 					return err
 				}
-				trueTypeMetaBlockPresented = true
 			case "split_payload":
-				if trueTypeSplitPayloadPresented {
+				if propSplitPayloadPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "split_payload")
 				}
+				propSplitPayloadPresented = true
 				if err := Json2ReadBool(in, &trueTypeSplitPayloadValue); err != nil {
 					return err
 				}
-				trueTypeSplitPayloadPresented = true
 			case "rotation_block":
-				if trueTypeRotationBlockPresented {
+				if propRotationBlockPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "rotation_block")
 				}
+				propRotationBlockPresented = true
 				if err := Json2ReadBool(in, &trueTypeRotationBlockValue); err != nil {
 					return err
 				}
-				trueTypeRotationBlockPresented = true
 			case "canonical_hash":
-				if trueTypeCanonicalHashPresented {
+				if propCanonicalHashPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "canonical_hash")
 				}
+				propCanonicalHashPresented = true
 				if err := Json2ReadBool(in, &trueTypeCanonicalHashValue); err != nil {
 					return err
 				}
-				trueTypeCanonicalHashPresented = true
 			case "payload_offset":
 				if propPayloadOffsetPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "payload_offset")
 				}
+				propPayloadOffsetPresented = true
 				if err := Json2ReadInt64(in, &item.PayloadOffset); err != nil {
 					return err
 				}
-				propPayloadOffsetPresented = true
 			case "block_time_nano":
 				if propBlockTimeNanoPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "block_time_nano")
 				}
+				propBlockTimeNanoPresented = true
 				if err := Json2ReadInt64(in, &item.BlockTimeNano); err != nil {
 					return err
 				}
-				propBlockTimeNanoPresented = true
 			case "hash":
 				if propHashPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "hash")
 				}
+				propHashPresented = true
 				if err := item.Hash.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propHashPresented = true
 			case "file_offset":
 				if propFileOffsetPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "file_offset")
 				}
+				propFileOffsetPresented = true
 				if err := Json2ReadInt64(in, &item.FileOffset); err != nil {
 					return err
 				}
-				propFileOffsetPresented = true
 			case "seq_number":
 				if propSeqNumberPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "seq_number")
 				}
+				propSeqNumberPresented = true
 				if err := Json2ReadInt64(in, &item.SeqNumber); err != nil {
 					return err
 				}
-				propSeqNumberPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("benchmarks.vruposition", key)
 			}
@@ -343,27 +342,27 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if !propSeqNumberPresented {
 		item.SeqNumber = 0
 	}
-	if trueTypeCommitBitPresented {
+	if propCommitBitPresented {
 		if trueTypeCommitBitValue {
 			item.FieldsMask |= 1 << 0
 		}
 	}
-	if trueTypeMetaBlockPresented {
+	if propMetaBlockPresented {
 		if trueTypeMetaBlockValue {
 			item.FieldsMask |= 1 << 1
 		}
 	}
-	if trueTypeSplitPayloadPresented {
+	if propSplitPayloadPresented {
 		if trueTypeSplitPayloadValue {
 			item.FieldsMask |= 1 << 3
 		}
 	}
-	if trueTypeRotationBlockPresented {
+	if propRotationBlockPresented {
 		if trueTypeRotationBlockValue {
 			item.FieldsMask |= 1 << 5
 		}
 	}
-	if trueTypeCanonicalHashPresented {
+	if propCanonicalHashPresented {
 		if trueTypeCanonicalHashValue {
 			item.FieldsMask |= 1 << 15
 		}
@@ -372,23 +371,23 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 		item.FieldsMask |= 1 << 14
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeCommitBitPresented && !trueTypeCommitBitValue && (item.FieldsMask&(1<<0) != 0) {
+	if propCommitBitPresented && !trueTypeCommitBitValue && (item.FieldsMask&(1<<0) != 0) {
 		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.0 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeMetaBlockPresented && !trueTypeMetaBlockValue && (item.FieldsMask&(1<<1) != 0) {
+	if propMetaBlockPresented && !trueTypeMetaBlockValue && (item.FieldsMask&(1<<1) != 0) {
 		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeSplitPayloadPresented && !trueTypeSplitPayloadValue && (item.FieldsMask&(1<<3) != 0) {
+	if propSplitPayloadPresented && !trueTypeSplitPayloadValue && (item.FieldsMask&(1<<3) != 0) {
 		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.3 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeRotationBlockPresented && !trueTypeRotationBlockValue && (item.FieldsMask&(1<<5) != 0) {
+	if propRotationBlockPresented && !trueTypeRotationBlockValue && (item.FieldsMask&(1<<5) != 0) {
 		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.5 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeCanonicalHashPresented && !trueTypeCanonicalHashValue && (item.FieldsMask&(1<<15) != 0) {
+	if propCanonicalHashPresented && !trueTypeCanonicalHashValue && (item.FieldsMask&(1<<15) != 0) {
 		return ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.15 is indefinite because of the contradictions in values")
 	}
 	return nil

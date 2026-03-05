@@ -107,26 +107,26 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *bas
 				if propOuterPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "outer")
 				}
+				propOuterPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Outer); err != nil {
 					return err
 				}
-				propOuterPresented = true
 			case "outers":
 				if propOutersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "outers")
 				}
+				propOutersPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Outers); err != nil {
 					return err
 				}
-				propOutersPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testAllPossibleFieldConfigsContainer", key)
 			}

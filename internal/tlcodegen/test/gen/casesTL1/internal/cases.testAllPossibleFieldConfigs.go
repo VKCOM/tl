@@ -331,17 +331,21 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	var propLocalsPresented bool
 	var propF00Presented bool
 	var propF01Presented bool
+	var propF02Presented bool
 	var rawF02 []byte
-	var rawF03 []byte
+	var propF03Presented bool
 	var propF10Presented bool
-	var trueTypeF11Presented bool
+	var propF11Presented bool
 	var trueTypeF11Value bool
+	var propF12Presented bool
 	var rawF12 []byte
-	var rawF13 []byte
+	var propF13Presented bool
 	var propF20Presented bool
+	var propF21Presented bool
+	var trueTypeF21Value bool
+	var propF22Presented bool
 	var rawF22 []byte
-	var rawF23 []byte
-
+	var propF23Presented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -355,110 +359,116 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				if propLocalPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "local")
 				}
+				propLocalPresented = true
 				if err := Json2ReadUint32(in, &item.Local); err != nil {
 					return err
 				}
-				propLocalPresented = true
 			case "locals":
 				if propLocalsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "locals")
 				}
+				propLocalsPresented = true
 				if err := Json2ReadUint32(in, &item.Locals); err != nil {
 					return err
 				}
-				propLocalsPresented = true
 			case "f00":
 				if propF00Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f00")
 				}
+				propF00Presented = true
 				if err := Json2ReadInt32(in, &item.F00); err != nil {
 					return err
 				}
-				propF00Presented = true
 			case "f01":
 				if propF01Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f01")
 				}
+				propF01Presented = true
 				if err := item.F01.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propF01Presented = true
 			case "f02":
-				if rawF02 != nil {
+				if propF02Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f02")
 				}
+				propF02Presented = true
 				rawF02 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "f03":
-				if rawF03 != nil {
+				if propF03Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f03")
 				}
-				rawF03 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF03Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F03, nat_outers); err != nil {
+					return err
 				}
 			case "f10":
 				if propF10Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f10")
 				}
+				propF10Presented = true
 				if err := Json2ReadInt32(in, &item.F10); err != nil {
 					return err
 				}
-				propF10Presented = true
 			case "f11":
-				if trueTypeF11Presented {
+				if propF11Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f11")
 				}
+				propF11Presented = true
 				if err := Json2ReadBool(in, &trueTypeF11Value); err != nil {
 					return err
 				}
-				trueTypeF11Presented = true
 			case "f12":
-				if rawF12 != nil {
+				if propF12Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f12")
 				}
+				propF12Presented = true
 				rawF12 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "f13":
-				if rawF13 != nil {
+				if propF13Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f13")
 				}
-				rawF13 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF13Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F13, nat_outers); err != nil {
+					return err
 				}
 			case "f20":
 				if propF20Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f20")
 				}
-				if nat_outer&(1<<0) == 0 {
-					return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f20' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF20Presented = true
 				if err := Json2ReadInt32(in, &item.F20); err != nil {
 					return err
 				}
-				propF20Presented = true
 			case "f21":
-				return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "implicit true field 'f21' cannot be defined, set fieldmask instead")
+				if propF21Presented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f21")
+				}
+				propF21Presented = true
+				if err := Json2ReadBool(in, &trueTypeF21Value); err != nil {
+					return err
+				}
 			case "f22":
-				if rawF22 != nil {
+				if propF22Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f22")
 				}
+				propF22Presented = true
 				rawF22 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "f23":
-				if rawF23 != nil {
+				if propF23Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f23")
 				}
-				rawF23 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF23Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F23, nat_outers); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testAllPossibleFieldConfigs", key)
@@ -482,24 +492,33 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if !propF01Presented {
 		item.F01.Reset()
 	}
+	if !propF03Presented {
+		item.F03 = item.F03[:0]
+	}
 	if !propF10Presented {
 		item.F10 = 0
+	}
+	if !propF13Presented {
+		item.F13 = item.F13[:0]
 	}
 	if !propF20Presented {
 		item.F20 = 0
 	}
+	if !propF23Presented {
+		item.F23 = item.F23[:0]
+	}
 	if propF10Presented {
 		item.Local |= 1 << 0
 	}
-	if trueTypeF11Presented {
+	if propF11Presented {
 		if trueTypeF11Value {
 			item.Local |= 1 << 1
 		}
 	}
-	if rawF12 != nil {
+	if propF12Presented {
 		item.Local |= 1 << 2
 	}
-	if rawF13 != nil {
+	if propF13Presented {
 		item.Local |= 1 << 3
 	}
 	var inF02Pointer *basictl.JsonLexer
@@ -508,15 +527,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		inF02Pointer = &inF02
 	}
 	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF02Pointer, &item.F02, item.Locals); err != nil {
-		return err
-	}
-
-	var inF03Pointer *basictl.JsonLexer
-	inF03 := basictl.JsonLexer{Data: rawF03}
-	if rawF03 != nil {
-		inF03Pointer = &inF03
-	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF03Pointer, &item.F03, nat_outers); err != nil {
 		return err
 	}
 
@@ -533,21 +543,8 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		}
 
 	}
-	if item.Local&(1<<3) == 0 {
-		item.F13 = item.F13[:0]
-	} else {
-		var inF13Pointer *basictl.JsonLexer
-		inF13 := basictl.JsonLexer{Data: rawF13}
-		if rawF13 != nil {
-			inF13Pointer = &inF13
-		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF13Pointer, &item.F13, nat_outers); err != nil {
-			return err
-		}
-
-	}
 	if nat_outer&(1<<2) == 0 {
-		if rawF22 != nil {
+		if propF22Presented {
 			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f22' is defined, while corresponding implicit fieldmask bit is 0")
 		}
 		item.F22 = item.F22[:0]
@@ -562,24 +559,8 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 		}
 
 	}
-	if nat_outer&(1<<3) == 0 {
-		if rawF23 != nil {
-			return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "field 'f23' is defined, while corresponding implicit fieldmask bit is 0")
-		}
-		item.F23 = item.F23[:0]
-	} else {
-		var inF23Pointer *basictl.JsonLexer
-		inF23 := basictl.JsonLexer{Data: rawF23}
-		if rawF23 != nil {
-			inF23Pointer = &inF23
-		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF23Pointer, &item.F23, nat_outers); err != nil {
-			return err
-		}
-
-	}
 	// tries to set bit to zero if it is 1
-	if trueTypeF11Presented && !trueTypeF11Value && (item.Local&(1<<1) != 0) {
+	if propF11Presented && !trueTypeF11Value && (item.Local&(1<<1) != 0) {
 		return ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "fieldmask bit item.Local.1 is indefinite because of the contradictions in values")
 	}
 	return nil

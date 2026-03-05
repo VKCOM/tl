@@ -98,7 +98,6 @@ func (item *AbUseDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -112,18 +111,18 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "tags":
 				if propTagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
+				propTagsPresented = true
 				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
-				propTagsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.useDictString", key)
 			}
@@ -398,7 +397,6 @@ func (item *AbUseDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -412,18 +410,18 @@ func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "tags":
 				if propTagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
+				propTagsPresented = true
 				if err := tlBuiltinDictStringString.BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
-				propTagsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.useDictString", key)
 			}

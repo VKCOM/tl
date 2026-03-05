@@ -102,7 +102,6 @@ func (item *TestMaybe2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	var propNPresented bool
 	var propAPresented bool
 	var propGPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -116,26 +115,26 @@ func (item *TestMaybe2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("testMaybe2", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("testMaybe2", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "g":
 				if propGPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("testMaybe2", "g")
 				}
+				propGPresented = true
 				if err := item.G.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propGPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("testMaybe2", key)
 			}

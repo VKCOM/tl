@@ -143,34 +143,36 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "ns":
 				if propNsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "ns")
 				}
+				propNsPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Ns); err != nil {
 					return err
 				}
-				propNsPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "a")
 				}
+				propAPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
+				item.tl2mask0 |= 1
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "b")
 				}
+				propBPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
+				item.tl2mask0 |= 2
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testBeforeReadBitValidation", key)
 			}

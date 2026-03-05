@@ -101,18 +101,18 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFlexibleBool", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFlexibleBool", "arr")
 				}
+				propArrPresented = true
 				if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testArrayFlexibleBool", key)
 			}

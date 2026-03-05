@@ -209,14 +209,13 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFmPresented bool
-	var trueTypeAPresented bool
+	var propAPresented bool
 	var trueTypeAValue bool
-	var trueTypeBPresented bool
+	var propBPresented bool
 	var trueTypeBValue bool
 	var propCPresented bool
 	var propDPresented bool
 	var propEPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -230,50 +229,50 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propFmPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "fm")
 				}
+				propFmPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Fm); err != nil {
 					return err
 				}
-				propFmPresented = true
 			case "a":
-				if trueTypeAPresented {
+				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "a")
 				}
+				propAPresented = true
 				if err := internal.Json2ReadBool(in, &trueTypeAValue); err != nil {
 					return err
 				}
-				trueTypeAPresented = true
 			case "b":
-				if trueTypeBPresented {
+				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "b")
 				}
+				propBPresented = true
 				if err := internal.Json2ReadBool(in, &trueTypeBValue); err != nil {
 					return err
 				}
-				trueTypeBPresented = true
 			case "c":
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "c")
 				}
+				propCPresented = true
 				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "d")
 				}
+				propDPresented = true
 				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propDPresented = true
 			case "e":
 				if propEPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "e")
 				}
+				propEPresented = true
 				if err := internal.Json2ReadBool(in, &item.E); err != nil {
 					return err
 				}
-				propEPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("useTrue", key)
 			}
@@ -296,12 +295,12 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	if !propEPresented {
 		item.E = false
 	}
-	if trueTypeAPresented {
+	if propAPresented {
 		if trueTypeAValue {
 			item.Fm |= 1 << 0
 		}
 	}
-	if trueTypeBPresented {
+	if propBPresented {
 		if trueTypeBValue {
 			item.Fm |= 1 << 1
 		}
@@ -310,11 +309,11 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 		item.Fm |= 1 << 2
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeAPresented && !trueTypeAValue && (item.Fm&(1<<0) != 0) {
+	if propAPresented && !trueTypeAValue && (item.Fm&(1<<0) != 0) {
 		return internal.ErrorInvalidJSON("useTrue", "fieldmask bit item.Fm.0 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeBPresented && !trueTypeBValue && (item.Fm&(1<<1) != 0) {
+	if propBPresented && !trueTypeBValue && (item.Fm&(1<<1) != 0) {
 		return internal.ErrorInvalidJSON("useTrue", "fieldmask bit item.Fm.1 is indefinite because of the contradictions in values")
 	}
 	if item.Fm&(1<<0) != 0 {

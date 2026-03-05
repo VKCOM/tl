@@ -416,7 +416,6 @@ func (item *AUNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *AUNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -430,10 +429,10 @@ func (item *AUNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("a.uNionA", "a")
 				}
+				propAPresented = true
 				if err := Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("a.uNionA", key)
 			}
@@ -682,7 +681,6 @@ func (item *AuNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *AuNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -696,10 +694,10 @@ func (item *AuNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("au.nionA", "b")
 				}
+				propBPresented = true
 				if err := Json2ReadInt32(in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("au.nionA", key)
 			}

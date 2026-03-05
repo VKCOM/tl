@@ -64,8 +64,7 @@ func (item *InnerMaybe) WriteTL1Boxed(w []byte, nat_X uint32) (_ []byte, err err
 }
 
 func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32) error {
-	var rawA []byte
-
+	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -76,12 +75,12 @@ func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 			in.WantColon()
 			switch key {
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("innerMaybe", "a")
 				}
-				rawA = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propAPresented = true
+				if err := item.A.ReadJSONGeneral(tctx, in, nat_X); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("innerMaybe", key)
@@ -93,15 +92,9 @@ func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 			return in.Error()
 		}
 	}
-	var inAPointer *basictl.JsonLexer
-	inA := basictl.JsonLexer{Data: rawA}
-	if rawA != nil {
-		inAPointer = &inA
+	if !propAPresented {
+		item.A.Reset()
 	}
-	if err := item.A.ReadJSONGeneral(tctx, inAPointer, nat_X); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -321,7 +314,6 @@ func (item *InnerMaybe0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -335,10 +327,10 @@ func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("innerMaybe", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("innerMaybe", key)
 			}

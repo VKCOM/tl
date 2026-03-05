@@ -109,34 +109,34 @@ func (item *CasesTestInplaceStructArgs2) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propA1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs2", "a1")
 				}
+				propA1Presented = true
 				if err := internal.Json2ReadUint32(in, &item.A1); err != nil {
 					return err
 				}
-				propA1Presented = true
 			case "a2":
 				if propA2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs2", "a2")
 				}
+				propA2Presented = true
 				if err := internal.Json2ReadUint32(in, &item.A2); err != nil {
 					return err
 				}
-				propA2Presented = true
 			case "a3":
 				if propA3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs2", "a3")
 				}
+				propA3Presented = true
 				if err := internal.Json2ReadUint32(in, &item.A3); err != nil {
 					return err
 				}
-				propA3Presented = true
 			case "arg":
 				if propArgPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs2", "arg")
 				}
+				propArgPresented = true
 				if err := item.Arg.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propArgPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testInplaceStructArgs2", key)
 			}

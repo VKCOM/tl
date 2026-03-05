@@ -343,7 +343,6 @@ func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadCo
 	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propStageIdPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -357,18 +356,18 @@ func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.getUserEntity", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "stage_id":
 				if propStageIdPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.getUserEntity", "stage_id")
 				}
+				propStageIdPresented = true
 				if err := Json2ReadString(in, &item.StageId); err != nil {
 					return err
 				}
-				propStageIdPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("usefulService.getUserEntity", key)
 			}

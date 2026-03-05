@@ -86,7 +86,6 @@ func (item *CasesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 func (item *CasesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -100,10 +99,10 @@ func (item *CasesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propTplPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testTuple", "tpl")
 				}
+				propTplPresented = true
 				if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
 					return err
 				}
-				propTplPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testTuple", key)
 			}

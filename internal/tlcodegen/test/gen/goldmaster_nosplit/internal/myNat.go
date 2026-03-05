@@ -165,7 +165,6 @@ func (item *MyNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -179,21 +178,21 @@ func (item *MyNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("myNat", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "a":
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("myNat", "a")
 				}
+				propAPresented = true
 				if item.A == nil {
 					item.A = new(MyNat)
 				}
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("myNat", key)
 			}

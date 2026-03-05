@@ -164,9 +164,6 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
 	curField := f
 	for curField.IsAffectingLocalFieldMasks() {
-		if curField.FieldMask().FieldIndex() < 0 {
-			return
-		}
 		ancestor := trw.Fields[curField.FieldMask().FieldIndex()]
 		nats = append(nats, ancestor)
 		bits = append(bits, curField.BitNumber())

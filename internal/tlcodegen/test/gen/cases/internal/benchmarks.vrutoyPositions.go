@@ -72,8 +72,7 @@ func (item *BenchmarksVrutoyPositions) WriteTL1Boxed(w []byte, nat_n uint32) (_ 
 }
 
 func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	var rawNextPositions []byte
-
+	var propNextPositionsPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -84,12 +83,12 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 			in.WantColon()
 			switch key {
 			case "next_positions":
-				if rawNextPositions != nil {
+				if propNextPositionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyPositions", "next_positions")
 				}
-				rawNextPositions = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propNextPositionsPresented = true
+				if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions, nat_n); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("benchmarks.vrutoyPositions", key)
@@ -101,15 +100,9 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 			return in.Error()
 		}
 	}
-	var inNextPositionsPointer *basictl.JsonLexer
-	inNextPositions := basictl.JsonLexer{Data: rawNextPositions}
-	if rawNextPositions != nil {
-		inNextPositionsPointer = &inNextPositions
+	if !propNextPositionsPresented {
+		item.NextPositions = item.NextPositions[:0]
 	}
-	if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx, inNextPositionsPointer, &item.NextPositions, nat_n); err != nil {
-		return err
-	}
-
 	return nil
 }
 

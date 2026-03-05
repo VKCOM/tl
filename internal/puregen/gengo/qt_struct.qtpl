@@ -423,6 +423,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 if prop{%s= field.goName %}Presented {
                     return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
                 }
+                prop{%s= field.goName %}Presented = true
                 {%- if field.IsBit() -%}
                     var bitValue bool
                     if err := {%s= struct_.wr.gen.InternalPrefix()%}Json2ReadBool(in, &bitValue); err != nil {
@@ -434,8 +435,10 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                 {%- else -%}
                     {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
                     {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                    {%- if field.MaskTL2Bit() != nil -%}
+                        item.{%s= field.TL2MaskForOP("|=") %}
+                    {%- endif -%}
                 {%- endif -%}
-                prop{%s= field.goName %}Presented = true
         {%- endfor -%}
                 default: return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= tlName %}, key)
             }
@@ -454,25 +457,15 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         }
     {%- endfor -%}
 {%- else -%}
-    {%- code needSomeRaw := false -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        var prop{%s= field.goName %}Presented bool
         {%- if field.IsBit() -%}
-        {%- if field.FieldMask().IsField() -%}
-    var trueType{%s= field.goName %}Presented bool
-    var trueType{%s= field.goName %}Value     bool
+            var trueType{%s= field.goName %}Value     bool
+        {%- elseif field.IsTypeDependsFromLocalFields() -%}
+            var raw{%s= field.goName %} []byte
         {%- endif -%}
-        {%- elseif !field.HasNatArguments() -%}
-            {%- code /* TODO: can be optimized to read with only external nats */ -%}
-    var prop{%s= field.goName %}Presented bool
-        {%- else -%}
-    var raw{%s= field.goName %} []byte
-        {%- endif -%}
-        {%- code needSomeRaw = true -%}
     {%- endfor -%}
-    {%- if needSomeRaw -%}
-
-    {%- endif -%}
     {%- code /* BLOCK: main read */ -%}
     if in != nil {
         in.Delim('{')
@@ -488,43 +481,27 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             switch key {
         {%- for _, field := range struct_.Fields -%}
             {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-                case "{%s= field.OriginalName() %}":
             {%- code
                 reader := "in"
                 fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
             -%}
+            case "{%s= field.OriginalName() %}":
+                if prop{%s= field.goName %}Presented {
+                    return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
+                }
+                prop{%s= field.goName %}Presented = true
             {%- if field.IsBit() -%}
-                {%- if !field.FieldMask().IsField() -%}
-                    return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "implicit true field '{%s= field.OriginalName() %}' cannot be defined, set fieldmask instead")
-                {%- else -%}
-                    if trueType{%s= field.goName %}Presented {
-                        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
-                    }
-                    if err := {%s= struct_.wr.gen.InternalPrefix()%}Json2ReadBool(in, &trueType{%s= field.goName %}Value); err != nil {
-                        return err
-                    }
-                    trueType{%s= field.goName %}Presented = true
-                {%- endif -%}
-            {%- elseif !field.HasNatArguments() -%}
-                    if prop{%s= field.goName %}Presented {
-                        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
-                    }
-                {%- if field.IsAffectedByExternalFieldMask() -%}
-                    if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v field.BitNumber() %}) == 0 {
-                        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "field '{%s= field.OriginalName() %}' is defined, while corresponding implicit fieldmask bit is 0")
-                    }
-                {%- endif -%}
-                    {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
-                    prop{%s= field.goName %}Presented = true
+                if err := {%s= struct_.wr.gen.InternalPrefix()%}Json2ReadBool(in, &trueType{%s= field.goName %}Value); err != nil {
+                    return err
+                }
+            {%- elseif field.IsTypeDependsFromLocalFields() -%}
+                raw{%s= field.goName %} = in.Raw()
+                if !in.Ok() {
+                    return in.Error()
+                }
             {%- else -%}
-                    if raw{%s= field.goName %} != nil {
-                        return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONWithDuplicatingKeys({%q= tlName %}, {%q= field.OriginalName() %})
-                    }
-                    raw{%s= field.goName %} = in.Raw()
-                    if !in.Ok() {
-                        return in.Error()
-                    }
+                {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
+                {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
             {%- endif -%}
         {%- endfor -%}
                 default: return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= tlName %}, key)
@@ -539,31 +516,20 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     }
     {%- code /* BLOCK: reset independent props with they are absent */ -%}
     {%- for _, field := range struct_.Fields -%}
-            {%- code /* TODO: skip anonymous names */ -%}
             {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-            {%- if field.IsBit() -%} {%- continue -%} {%- endif -%}
-            {%- if !field.HasNatArguments() -%}
-    if !prop{%s= field.goName %}Presented {
-            {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
-    }
-            {%- endif -%}
+            {%- if field.IsBit() || field.IsTypeDependsFromLocalFields() -%} {%- continue -%} {%- endif -%}
+            if !prop{%s= field.goName %}Presented {
+                    {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
+            }
     {%- endfor -%}
     {%- code /* BLOCK: bit fix */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
-                presentCondition := "true"
-                if field.IsBit() {
-                    presentCondition = "trueType" + field.goName + "Presented"
-                } else if !field.HasNatArguments() {
-                    presentCondition = "prop" + field.goName + "Presented"
-                } else {
-                    presentCondition = "raw" + field.goName + " != nil"
-                }
                 affectedFields, bits := struct_.AllAffectedFieldMasks(field)
             -%}
-    if {%s= presentCondition %} {
+    if prop{%s= field.goName %}Presented {
         {%- code firstAffectedNat := 0 -%}
         {%- if field.IsBit() -%}
             {%- code
@@ -583,12 +549,11 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: read rest fields */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.IsBit() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
-        {%- code presentCondition := "raw" + field.goName + " != nil" -%}
+        {%- if field.IsBit() || !field.IsTypeDependsFromLocalFields() -%} {%- continue -%} {%- endif -%}
         {%- if field.FieldMask() != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v field.BitNumber() %}) == 0 {
             {%- if field.IsAffectedByExternalFieldMask() -%}
-            if {%s= presentCondition %} {
+            if prop{%s= field.goName %}Presented {
                 return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "field '{%s= field.OriginalName() %}' is defined, while corresponding implicit fieldmask bit is 0")
             }
             {%- endif -%}
@@ -608,7 +573,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             bit := int(field.BitNumber())
         -%}
         // tries to set bit to zero if it is 1
-        if trueType{%s= field.goName %}Presented && !trueType{%s= field.goName %}Value && ({%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v bit %}) != 0) {
+        if prop{%s= field.goName %}Presented && !trueType{%s= field.goName %}Value && ({%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v bit %}) != 0) {
             return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "fieldmask bit {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %}.{%d= bit %} is indefinite because of the contradictions in values")
         }
     {%- endfor -%}

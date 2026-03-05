@@ -922,6 +922,9 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 			qw422016.N().Q(field.OriginalName())
 			qw422016.N().S(`)
                 }
+                prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented = true
 `)
 			if field.IsBit() {
 				qw422016.N().S(`                    var bitValue bool
@@ -943,11 +946,13 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
 				qw422016.N().S(`
 `)
-			}
-			qw422016.N().S(`                prop`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(`Presented = true
+				if field.MaskTL2Bit() != nil {
+					qw422016.N().S(`                        item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
+					qw422016.N().S(`
 `)
+				}
+			}
 		}
 		qw422016.N().S(`                default: return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
@@ -980,41 +985,25 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 `)
 		}
 	} else {
-		needSomeRaw := false
-
 		for _, field := range struct_.Fields {
 			if field.IsTL2Omitted() {
 				continue
 			}
+			qw422016.N().S(`        var prop`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`Presented bool
+`)
 			if field.IsBit() {
-				if field.FieldMask().IsField() {
-					qw422016.N().S(`    var trueType`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`Presented bool
-    var trueType`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`Value     bool
-`)
-				}
-			} else if !field.HasNatArguments() {
-				/* TODO: can be optimized to read with only external nats */
-
-				qw422016.N().S(`    var prop`)
+				qw422016.N().S(`            var trueType`)
 				qw422016.N().S(field.goName)
-				qw422016.N().S(`Presented bool
+				qw422016.N().S(`Value     bool
 `)
-			} else {
-				qw422016.N().S(`    var raw`)
+			} else if field.IsTypeDependsFromLocalFields() {
+				qw422016.N().S(`            var raw`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(` []byte
 `)
 			}
-			needSomeRaw = true
-
-		}
-		if needSomeRaw {
-			qw422016.N().S(`
-`)
 		}
 		/* BLOCK: main read */
 
@@ -1043,103 +1032,50 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				if field.IsTL2Omitted() {
 					continue
 				}
-				qw422016.N().S(`                case "`)
-				qw422016.N().S(field.OriginalName())
-				qw422016.N().S(`":
-`)
 				reader := "in"
 				fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins)
 
+				qw422016.N().S(`            case "`)
+				qw422016.N().S(field.OriginalName())
+				qw422016.N().S(`":
+                if prop`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Presented {
+                    return `)
+				qw422016.N().S(struct_.wr.gen.InternalPrefix())
+				qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
+				qw422016.N().Q(tlName)
+				qw422016.N().S(`, `)
+				qw422016.N().Q(field.OriginalName())
+				qw422016.N().S(`)
+                }
+                prop`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Presented = true
+`)
 				if field.IsBit() {
-					if !field.FieldMask().IsField() {
-						qw422016.N().S(`                    return `)
-						qw422016.N().S(struct_.wr.gen.InternalPrefix())
-						qw422016.N().S(`ErrorInvalidJSON(`)
-						qw422016.N().Q(tlName)
-						qw422016.N().S(`, "implicit true field '`)
-						qw422016.N().S(field.OriginalName())
-						qw422016.N().S(`' cannot be defined, set fieldmask instead")
-`)
-					} else {
-						qw422016.N().S(`                    if trueType`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(`Presented {
-                        return `)
-						qw422016.N().S(struct_.wr.gen.InternalPrefix())
-						qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-						qw422016.N().Q(tlName)
-						qw422016.N().S(`, `)
-						qw422016.N().Q(field.OriginalName())
-						qw422016.N().S(`)
-                    }
-                    if err := `)
-						qw422016.N().S(struct_.wr.gen.InternalPrefix())
-						qw422016.N().S(`Json2ReadBool(in, &trueType`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(`Value); err != nil {
-                        return err
-                    }
-                    trueType`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(`Presented = true
-`)
-					}
-				} else if !field.HasNatArguments() {
-					qw422016.N().S(`                    if prop`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`Presented {
-                        return `)
+					qw422016.N().S(`                if err := `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-					qw422016.N().Q(tlName)
-					qw422016.N().S(`, `)
-					qw422016.N().Q(field.OriginalName())
-					qw422016.N().S(`)
-                    }
-`)
-					if field.IsAffectedByExternalFieldMask() {
-						qw422016.N().S(`                    if `)
-						qw422016.N().S(formatNatArg(struct_.Fields, *field.FieldMask()))
-						qw422016.N().S(` & (1 << `)
-						qw422016.E().V(field.BitNumber())
-						qw422016.N().S(`) == 0 {
-                        return `)
-						qw422016.N().S(struct_.wr.gen.InternalPrefix())
-						qw422016.N().S(`ErrorInvalidJSON(`)
-						qw422016.N().Q(tlName)
-						qw422016.N().S(`, "field '`)
-						qw422016.N().S(field.OriginalName())
-						qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
-                    }
-`)
-					}
-					qw422016.N().S(`                    `)
-					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
-					qw422016.N().S(`                    `)
-					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
-					qw422016.N().S(`
-                    prop`)
+					qw422016.N().S(`Json2ReadBool(in, &trueType`)
 					qw422016.N().S(field.goName)
-					qw422016.N().S(`Presented = true
+					qw422016.N().S(`Value); err != nil {
+                    return err
+                }
 `)
-				} else {
-					qw422016.N().S(`                    if raw`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` != nil {
-                        return `)
-					qw422016.N().S(struct_.wr.gen.InternalPrefix())
-					qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-					qw422016.N().Q(tlName)
-					qw422016.N().S(`, `)
-					qw422016.N().Q(field.OriginalName())
-					qw422016.N().S(`)
-                    }
-                    raw`)
+				} else if field.IsTypeDependsFromLocalFields() {
+					qw422016.N().S(`                raw`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(` = in.Raw()
-                    if !in.Ok() {
-                        return in.Error()
-                    }
+                if !in.Ok() {
+                    return in.Error()
+                }
+`)
+				} else {
+					qw422016.N().S(`                `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
+					qw422016.N().S(`                `)
+					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk))
+					qw422016.N().S(`
 `)
 				}
 			}
@@ -1162,22 +1098,20 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		/* BLOCK: reset independent props with they are absent */
 
 		for _, field := range struct_.Fields {
-			/* TODO: skip anonymous names */
-
 			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.IsBit() {
 				continue
 			}
-			if !field.HasNatArguments() {
-				qw422016.N().S(`    if !prop`)
+			if !field.IsTypeDependsFromLocalFields() {
+				qw422016.N().S(`                if !prop`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`Presented {
-            `)
+                        `)
 				qw422016.N().S(field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins))
 				qw422016.N().S(`
-    }
+                }
 `)
 			}
 		}
@@ -1188,19 +1122,11 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				continue
 			}
 			if field.IsAffectingLocalFieldMasks() {
-				presentCondition := "true"
-				if field.IsBit() {
-					presentCondition = "trueType" + field.goName + "Presented"
-				} else if !field.HasNatArguments() {
-					presentCondition = "prop" + field.goName + "Presented"
-				} else {
-					presentCondition = "raw" + field.goName + " != nil"
-				}
 				affectedFields, bits := struct_.AllAffectedFieldMasks(field)
 
-				qw422016.N().S(`    if `)
-				qw422016.N().S(presentCondition)
-				qw422016.N().S(` {
+				qw422016.N().S(`    if prop`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Presented {
 `)
 				firstAffectedNat := 0
 
@@ -1237,11 +1163,9 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 			if field.IsTL2Omitted() {
 				continue
 			}
-			if field.IsBit() || !field.HasNatArguments() {
+			if field.IsBit() || !field.IsTypeDependsFromLocalFields() {
 				continue
 			}
-			presentCondition := "raw" + field.goName + " != nil"
-
 			if field.FieldMask() != nil {
 				qw422016.N().S(`        if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.FieldMask()))
@@ -1250,9 +1174,9 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 				qw422016.N().S(`) == 0 {
 `)
 				if field.IsAffectedByExternalFieldMask() {
-					qw422016.N().S(`            if `)
-					qw422016.N().S(presentCondition)
-					qw422016.N().S(` {
+					qw422016.N().S(`            if prop`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`Presented {
                 return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
@@ -1291,7 +1215,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 			bit := int(field.BitNumber())
 
 			qw422016.N().S(`        // tries to set bit to zero if it is 1
-        if trueType`)
+        if prop`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(`Presented && !trueType`)
 			qw422016.N().S(field.goName)

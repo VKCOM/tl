@@ -88,7 +88,6 @@ func (item *UseStr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 
 func (item *UseStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -102,10 +101,10 @@ func (item *UseStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useStr", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadString(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("useStr", key)
 			}
@@ -348,7 +347,6 @@ func (item *UseStrBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *UseStrBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -362,10 +360,10 @@ func (item *UseStrBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useStr", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadStringBytes(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("useStr", key)
 			}

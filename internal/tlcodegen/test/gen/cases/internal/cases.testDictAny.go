@@ -87,7 +87,6 @@ func (item *CasesTestDictAny) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 
 func (item *CasesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -101,10 +100,10 @@ func (item *CasesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propDictPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testDictAny", "dict")
 				}
+				propDictPresented = true
 				if err := BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
-				propDictPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testDictAny", key)
 			}

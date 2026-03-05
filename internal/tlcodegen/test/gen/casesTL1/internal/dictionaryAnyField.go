@@ -170,7 +170,6 @@ func (item *DictionaryAnyFieldDoubleInt) ReadJSON(legacyTypeNames bool, in *basi
 func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -184,18 +183,18 @@ func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryAnyField", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadFloat64(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryAnyField", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("dictionaryAnyField", key)
 			}

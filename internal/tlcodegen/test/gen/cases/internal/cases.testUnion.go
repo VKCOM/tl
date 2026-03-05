@@ -548,7 +548,6 @@ func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 
 func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -562,10 +561,10 @@ func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testUnion1", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testUnion1", key)
 			}
@@ -814,7 +813,6 @@ func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 
 func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -828,10 +826,10 @@ func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testUnion2", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testUnion2", key)
 			}

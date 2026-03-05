@@ -107,26 +107,26 @@ func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propF1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f1")
 				}
+				propF1Presented = true
 				if err := item.F1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f2")
 				}
+				propF2Presented = true
 				if err := item.F2.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propF2Presented = true
 			case "f3":
 				if propF3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f3")
 				}
+				propF3Presented = true
 				if err := item.F3.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propF3Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testAllDicts", key)
 			}

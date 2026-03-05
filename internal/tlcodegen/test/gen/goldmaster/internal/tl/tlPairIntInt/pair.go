@@ -96,7 +96,6 @@ func (item *PairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 func (item *PairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -110,18 +109,18 @@ func (item *PairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
 				}
+				propAPresented = true
 				if err := internal.Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
 				}
+				propBPresented = true
 				if err := internal.Json2ReadInt32(in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("pair", key)
 			}

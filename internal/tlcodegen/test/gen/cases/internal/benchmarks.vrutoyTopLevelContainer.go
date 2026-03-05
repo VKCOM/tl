@@ -94,7 +94,6 @@ func (item *BenchmarksVrutoyTopLevelContainer) ReadJSON(legacyTypeNames bool, in
 
 func (item *BenchmarksVrutoyTopLevelContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -108,10 +107,10 @@ func (item *BenchmarksVrutoyTopLevelContainer) ReadJSONGeneral(tctx *basictl.JSO
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainer", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("benchmarks.vrutoyTopLevelContainer", key)
 			}

@@ -105,7 +105,6 @@ func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	var propXPresented bool
 	var propAPresented bool
 	var propYPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -119,26 +118,26 @@ func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace17", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace17", "a")
 				}
+				propAPresented = true
 				if err := internal.Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace17", "y")
 				}
+				propYPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("replace17", key)
 			}

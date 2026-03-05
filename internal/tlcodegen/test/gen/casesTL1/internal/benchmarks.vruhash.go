@@ -96,7 +96,6 @@ func (item *BenchmarksVruhash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 func (item *BenchmarksVruhash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLowPresented bool
 	var propHighPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -110,18 +109,18 @@ func (item *BenchmarksVruhash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propLowPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruhash", "low")
 				}
+				propLowPresented = true
 				if err := Json2ReadInt64(in, &item.Low); err != nil {
 					return err
 				}
-				propLowPresented = true
 			case "high":
 				if propHighPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruhash", "high")
 				}
+				propHighPresented = true
 				if err := Json2ReadInt64(in, &item.High); err != nil {
 					return err
 				}
-				propHighPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("benchmarks.vruhash", key)
 			}

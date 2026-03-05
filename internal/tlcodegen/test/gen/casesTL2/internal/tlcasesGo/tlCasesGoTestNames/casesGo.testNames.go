@@ -100,18 +100,18 @@ func (item *CasesGoTestNames) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propWrite0Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesGo.testNames", "write")
 				}
+				propWrite0Presented = true
 				if err := internal.Json2ReadInt32(in, &item.Write0); err != nil {
 					return err
 				}
-				propWrite0Presented = true
 			case "read":
 				if propRead0Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesGo.testNames", "read")
 				}
+				propRead0Presented = true
 				if err := internal.Json2ReadInt32(in, &item.Read0); err != nil {
 					return err
 				}
-				propRead0Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesGo.testNames", key)
 			}

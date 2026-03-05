@@ -103,18 +103,18 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainerWithDependency", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainerWithDependency", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("benchmarks.vrutoyTopLevelContainerWithDependency", key)
 			}

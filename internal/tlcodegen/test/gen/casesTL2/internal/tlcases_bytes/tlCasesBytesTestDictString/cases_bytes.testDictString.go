@@ -99,10 +99,10 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
+				propDictPresented = true
 				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
-				propDictPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testDictString", key)
 			}
@@ -351,10 +351,10 @@ func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
+				propDictPresented = true
 				if err := tlBuiltinDictStringInt.BuiltinDictStringIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
-				propDictPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testDictString", key)
 			}

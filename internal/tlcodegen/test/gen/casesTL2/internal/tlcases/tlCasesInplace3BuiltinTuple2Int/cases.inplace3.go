@@ -97,10 +97,10 @@ func (item *CasesInplace3BuiltinTuple2Int) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.inplace3", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.inplace3", key)
 			}

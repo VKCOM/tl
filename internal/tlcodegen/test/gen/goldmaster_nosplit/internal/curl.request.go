@@ -820,7 +820,6 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propOriginPresented bool
 	var propTlsCertPresented bool
 	var propTlsCertPkPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -834,138 +833,138 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFieldMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "field_mask")
 				}
+				propFieldMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldMask); err != nil {
 					return err
 				}
-				propFieldMaskPresented = true
 			case "method":
 				if propMethodPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "method")
 				}
+				propMethodPresented = true
 				if err := Json2ReadString(in, &item.Method); err != nil {
 					return err
 				}
-				propMethodPresented = true
 			case "url":
 				if propUrlPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "url")
 				}
+				propUrlPresented = true
 				if err := Json2ReadString(in, &item.Url); err != nil {
 					return err
 				}
-				propUrlPresented = true
 			case "headers":
 				if propHeadersPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "headers")
 				}
+				propHeadersPresented = true
 				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Headers); err != nil {
 					return err
 				}
-				propHeadersPresented = true
 			case "body":
 				if propBodyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "body")
 				}
+				propBodyPresented = true
 				if err := Json2ReadString(in, &item.Body); err != nil {
 					return err
 				}
-				propBodyPresented = true
 			case "timeout":
 				if propTimeoutPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "timeout")
 				}
+				propTimeoutPresented = true
 				if err := Json2ReadInt32(in, &item.Timeout); err != nil {
 					return err
 				}
-				propTimeoutPresented = true
 			case "timeout_connection":
 				if propTimeoutConnectionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "timeout_connection")
 				}
+				propTimeoutConnectionPresented = true
 				if err := Json2ReadInt32(in, &item.TimeoutConnection); err != nil {
 					return err
 				}
-				propTimeoutConnectionPresented = true
 			case "max_redirs":
 				if propMaxRedirsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "max_redirs")
 				}
+				propMaxRedirsPresented = true
 				if err := Json2ReadInt32(in, &item.MaxRedirs); err != nil {
 					return err
 				}
-				propMaxRedirsPresented = true
 			case "ssl_version":
 				if propSslVersionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "ssl_version")
 				}
+				propSslVersionPresented = true
 				if err := Json2ReadInt32(in, &item.SslVersion); err != nil {
 					return err
 				}
-				propSslVersionPresented = true
 			case "resolve_ipv":
 				if propResolveIpvPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "resolve_ipv")
 				}
+				propResolveIpvPresented = true
 				if err := Json2ReadInt32(in, &item.ResolveIpv); err != nil {
 					return err
 				}
-				propResolveIpvPresented = true
 			case "http_proxy":
 				if propHttpProxyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "http_proxy")
 				}
+				propHttpProxyPresented = true
 				if err := Json2ReadString(in, &item.HttpProxy); err != nil {
 					return err
 				}
-				propHttpProxyPresented = true
 			case "limit":
 				if propLimitPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "limit")
 				}
+				propLimitPresented = true
 				if err := Json2ReadInt32(in, &item.Limit); err != nil {
 					return err
 				}
-				propLimitPresented = true
 			case "route":
 				if propRoutePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "route")
 				}
+				propRoutePresented = true
 				if err := Json2ReadString(in, &item.Route); err != nil {
 					return err
 				}
-				propRoutePresented = true
 			case "version":
 				if propVersionPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "version")
 				}
+				propVersionPresented = true
 				if err := Json2ReadInt32(in, &item.Version); err != nil {
 					return err
 				}
-				propVersionPresented = true
 			case "origin":
 				if propOriginPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "origin")
 				}
+				propOriginPresented = true
 				if err := Json2ReadString(in, &item.Origin); err != nil {
 					return err
 				}
-				propOriginPresented = true
 			case "tls_cert":
 				if propTlsCertPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "tls_cert")
 				}
+				propTlsCertPresented = true
 				if err := Json2ReadString(in, &item.TlsCert); err != nil {
 					return err
 				}
-				propTlsCertPresented = true
 			case "tls_cert_pk":
 				if propTlsCertPkPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.request", "tls_cert_pk")
 				}
+				propTlsCertPkPresented = true
 				if err := Json2ReadString(in, &item.TlsCertPk); err != nil {
 					return err
 				}
-				propTlsCertPkPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("curl.request", key)
 			}

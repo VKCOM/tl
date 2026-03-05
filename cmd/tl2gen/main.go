@@ -25,9 +25,7 @@ import (
 	"github.com/vkcom/tl/internal/puregen/gentljsonhtml"
 	"github.com/vkcom/tl/internal/puregen/gentlo"
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/tlcases"
 	"github.com/vkcom/tl/internal/utils"
-	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
@@ -51,10 +49,10 @@ func languagesString() string {
 func main() {
 	fmt.Printf("tl2gen version: %s\n", utils.AppVersion())
 
-	fun := tlcases.TestRecursiveFieldMask{}
-	in := basictl.JsonLexer{Data: []byte(`{"f2":1,"f0":0}`)}
-	err := fun.ReadJSON(true, &in)
-	fmt.Printf("%s %v\n", fun.String(), err)
+	//fun := tlcases.TestRecursiveFieldMask{}
+	//in := basictl.JsonLexer{Data: []byte(`{"f2":1,"f0":0}`)}
+	//err := fun.ReadJSON(true, &in)
+	//fmt.Printf("%s %v\n", fun.String(), err)
 
 	//runtime.SetMutexProfileFraction(1)
 	//runtime.SetBlockProfileRate(1)

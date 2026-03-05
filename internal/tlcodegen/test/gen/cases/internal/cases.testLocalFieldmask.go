@@ -185,11 +185,10 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
-	var trueTypeF3Presented bool
+	var propF3Presented bool
 	var trueTypeF3Value bool
-	var trueTypeF4Presented bool
+	var propF4Presented bool
 	var trueTypeF4Value bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -203,34 +202,34 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f1")
 				}
+				propF1Presented = true
 				if err := Json2ReadUint32(in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f2")
 				}
+				propF2Presented = true
 				if err := Json2ReadUint32(in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
 			case "f3":
-				if trueTypeF3Presented {
+				if propF3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f3")
 				}
+				propF3Presented = true
 				if err := Json2ReadBool(in, &trueTypeF3Value); err != nil {
 					return err
 				}
-				trueTypeF3Presented = true
 			case "f4":
-				if trueTypeF4Presented {
+				if propF4Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f4")
 				}
+				propF4Presented = true
 				if err := Json2ReadBool(in, &trueTypeF4Value); err != nil {
 					return err
 				}
-				trueTypeF4Presented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testLocalFieldmask", key)
 			}
@@ -250,24 +249,24 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	if propF2Presented {
 		item.F1 |= 1 << 0
 	}
-	if trueTypeF3Presented {
+	if propF3Presented {
 		if trueTypeF3Value {
 			item.F2 |= 1 << 1
 		}
 		item.F1 |= 1 << 0
 	}
-	if trueTypeF4Presented {
+	if propF4Presented {
 		if trueTypeF4Value {
 			item.F2 |= 1 << 1
 		}
 		item.F1 |= 1 << 0
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeF3Presented && !trueTypeF3Value && (item.F2&(1<<1) != 0) {
+	if propF3Presented && !trueTypeF3Value && (item.F2&(1<<1) != 0) {
 		return ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeF4Presented && !trueTypeF4Value && (item.F2&(1<<1) != 0) {
+	if propF4Presented && !trueTypeF4Value && (item.F2&(1<<1) != 0) {
 		return ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
 	}
 	if item.F1&(1<<0) != 0 {

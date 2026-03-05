@@ -86,7 +86,6 @@ func (item *CasesTestUnionContainer) ReadJSON(legacyTypeNames bool, in *basictl.
 
 func (item *CasesTestUnionContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -100,10 +99,10 @@ func (item *CasesTestUnionContainer) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testUnionContainer", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testUnionContainer", key)
 			}

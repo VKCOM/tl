@@ -592,7 +592,6 @@ func (item *Service5LongStringOutput) ReadJSON(legacyTypeNames bool, in *basictl
 func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propHttpCodePresented bool
 	var propResponsePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -606,18 +605,18 @@ func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propHttpCodePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("service5Long.stringOutput", "http_code")
 				}
+				propHttpCodePresented = true
 				if err := Json2ReadInt64(in, &item.HttpCode); err != nil {
 					return err
 				}
-				propHttpCodePresented = true
 			case "response":
 				if propResponsePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("service5Long.stringOutput", "response")
 				}
+				propResponsePresented = true
 				if err := Json2ReadString(in, &item.Response); err != nil {
 					return err
 				}
-				propResponsePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("service5Long.stringOutput", key)
 			}

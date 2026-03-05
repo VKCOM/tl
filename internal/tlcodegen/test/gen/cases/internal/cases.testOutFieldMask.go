@@ -142,8 +142,9 @@ func (item *CasesTestOutFieldMask) WriteTL1Boxed(w []byte, nat_f uint32, nat_fs 
 func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_f uint32, nat_fs uint32) error {
 	item.tl2mask0 = 0
 	var propF1Presented bool
-	var rawF3 []byte
-
+	var propF2Presented bool
+	var trueTypeF2Value bool
+	var propF3Presented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -157,22 +158,25 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f1")
 				}
-				if nat_f&(1<<0) == 0 {
-					return ErrorInvalidJSON("cases.testOutFieldMask", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF1Presented = true
 				if err := Json2ReadUint32(in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
-				return ErrorInvalidJSON("cases.testOutFieldMask", "implicit true field 'f2' cannot be defined, set fieldmask instead")
+				if propF2Presented {
+					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f2")
+				}
+				propF2Presented = true
+				if err := Json2ReadBool(in, &trueTypeF2Value); err != nil {
+					return err
+				}
 			case "f3":
-				if rawF3 != nil {
+				if propF3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f3")
 				}
-				rawF3 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF3Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F3, nat_fs); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testOutFieldMask", key)
@@ -187,15 +191,9 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if !propF1Presented {
 		item.F1 = 0
 	}
-	var inF3Pointer *basictl.JsonLexer
-	inF3 := basictl.JsonLexer{Data: rawF3}
-	if rawF3 != nil {
-		inF3Pointer = &inF3
+	if !propF3Presented {
+		item.F3 = item.F3[:0]
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inF3Pointer, &item.F3, nat_fs); err != nil {
-		return err
-	}
-
 	if nat_f&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}

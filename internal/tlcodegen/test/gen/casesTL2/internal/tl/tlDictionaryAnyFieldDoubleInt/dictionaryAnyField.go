@@ -100,18 +100,18 @@ func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("dictionaryAnyField", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadFloat64(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("dictionaryAnyField", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("dictionaryAnyField", key)
 			}

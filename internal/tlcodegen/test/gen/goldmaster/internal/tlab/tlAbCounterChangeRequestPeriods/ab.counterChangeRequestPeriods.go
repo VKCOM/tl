@@ -424,7 +424,6 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSON(legacyTypeNames bool, in
 
 func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectsPeridosPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -438,10 +437,10 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSO
 				if propObjectsPeridosPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.counterChangeRequestPeriodsMany", "objects_peridos")
 				}
+				propObjectsPeridosPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.ObjectsPeridos); err != nil {
 					return err
 				}
-				propObjectsPeridosPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.counterChangeRequestPeriodsMany", key)
 			}
@@ -689,7 +688,6 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadJSON(legacyTypeNames bool, in 
 
 func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPeriodPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -703,10 +701,10 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(tctx *basictl.JSON
 				if propPeriodPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.counterChangeRequestPeriodsOne", "period")
 				}
+				propPeriodPresented = true
 				if err := internal.Json2ReadInt64(in, &item.Period); err != nil {
 					return err
 				}
-				propPeriodPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.counterChangeRequestPeriodsOne", key)
 			}

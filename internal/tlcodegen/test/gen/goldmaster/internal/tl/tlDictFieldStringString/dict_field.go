@@ -68,7 +68,6 @@ func (item *DictFieldStringString) ReadJSON(legacyTypeNames bool, in *basictl.Js
 func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -82,18 +81,18 @@ func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("__dict_field", key)
 			}
@@ -341,7 +340,6 @@ func (item *DictFieldStringStringBytes) ReadJSON(legacyTypeNames bool, in *basic
 func (item *DictFieldStringStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -355,18 +353,18 @@ func (item *DictFieldStringStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadStringBytes(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadStringBytes(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("__dict_field", key)
 			}

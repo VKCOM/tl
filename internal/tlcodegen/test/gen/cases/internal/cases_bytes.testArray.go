@@ -100,8 +100,8 @@ func (item *CasesBytesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.Json
 
 func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propArrPresented bool
 	var rawArr []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -115,14 +115,15 @@ func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
-				if rawArr != nil {
+				if propArrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
+				propArrPresented = true
 				rawArr = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -415,8 +416,8 @@ func (item *CasesBytesTestArrayBytes) ReadJSON(legacyTypeNames bool, in *basictl
 
 func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propArrPresented bool
 	var rawArr []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -430,14 +431,15 @@ func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
-				if rawArr != nil {
+				if propArrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
+				propArrPresented = true
 				rawArr = in.Raw()
 				if !in.Ok() {
 					return in.Error()

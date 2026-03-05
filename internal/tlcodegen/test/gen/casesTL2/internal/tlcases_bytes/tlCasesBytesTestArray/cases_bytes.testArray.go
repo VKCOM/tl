@@ -102,18 +102,18 @@ func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
+				propArrPresented = true
 				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testArray", key)
 			}
@@ -389,18 +389,18 @@ func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "arr":
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
+				propArrPresented = true
 				if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testArray", key)
 			}

@@ -110,8 +110,8 @@ func (item *ATop2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 func (item *ATop2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propMPresented bool
+	var propCPresented bool
 	var rawC []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -125,22 +125,23 @@ func (item *ATop2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.top2", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "m":
 				if propMPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.top2", "m")
 				}
+				propMPresented = true
 				if err := internal.Json2ReadUint32(in, &item.M); err != nil {
 					return err
 				}
-				propMPresented = true
 			case "c":
-				if rawC != nil {
+				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.top2", "c")
 				}
+				propCPresented = true
 				rawC = in.Raw()
 				if !in.Ok() {
 					return in.Error()

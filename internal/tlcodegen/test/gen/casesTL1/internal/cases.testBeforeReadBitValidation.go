@@ -159,9 +159,10 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in 
 func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propNsPresented bool
+	var propAPresented bool
 	var rawA []byte
+	var propBPresented bool
 	var rawB []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -175,30 +176,32 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "ns":
 				if propNsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "ns")
 				}
+				propNsPresented = true
 				if err := Json2ReadUint32(in, &item.Ns); err != nil {
 					return err
 				}
-				propNsPresented = true
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "a")
 				}
+				propAPresented = true
 				rawA = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "b":
-				if rawB != nil {
+				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "b")
 				}
+				propBPresented = true
 				rawB = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -219,10 +222,10 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 	if !propNsPresented {
 		item.Ns = 0
 	}
-	if rawA != nil {
+	if propAPresented {
 		item.N |= 1 << 0
 	}
-	if rawB != nil {
+	if propBPresented {
 		item.N |= 1 << 1
 	}
 	if item.N&(1<<0) == 0 {

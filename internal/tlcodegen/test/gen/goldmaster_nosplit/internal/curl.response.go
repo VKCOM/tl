@@ -439,7 +439,6 @@ func (item *CurlResponseError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	var propFieldMaskPresented bool
 	var propErrorCodePresented bool
 	var propErrorStringPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -453,26 +452,26 @@ func (item *CurlResponseError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propFieldMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseError", "field_mask")
 				}
+				propFieldMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldMask); err != nil {
 					return err
 				}
-				propFieldMaskPresented = true
 			case "error_code":
 				if propErrorCodePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseError", "error_code")
 				}
+				propErrorCodePresented = true
 				if err := Json2ReadInt32(in, &item.ErrorCode); err != nil {
 					return err
 				}
-				propErrorCodePresented = true
 			case "error_string":
 				if propErrorStringPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseError", "error_string")
 				}
+				propErrorStringPresented = true
 				if err := Json2ReadString(in, &item.ErrorString); err != nil {
 					return err
 				}
-				propErrorStringPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("curl.responseError", key)
 			}
@@ -844,7 +843,6 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propHttpCodePresented bool
 	var propHttpHeadersPresented bool
 	var propHttpBodyPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -858,34 +856,34 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propFieldMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "field_mask")
 				}
+				propFieldMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldMask); err != nil {
 					return err
 				}
-				propFieldMaskPresented = true
 			case "http_code":
 				if propHttpCodePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_code")
 				}
+				propHttpCodePresented = true
 				if err := Json2ReadInt32(in, &item.HttpCode); err != nil {
 					return err
 				}
-				propHttpCodePresented = true
 			case "http_headers":
 				if propHttpHeadersPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_headers")
 				}
+				propHttpHeadersPresented = true
 				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
 					return err
 				}
-				propHttpHeadersPresented = true
 			case "http_body":
 				if propHttpBodyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_body")
 				}
+				propHttpBodyPresented = true
 				if err := Json2ReadString(in, &item.HttpBody); err != nil {
 					return err
 				}
-				propHttpBodyPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("curl.responseOk", key)
 			}

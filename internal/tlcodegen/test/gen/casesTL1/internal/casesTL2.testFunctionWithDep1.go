@@ -155,7 +155,6 @@ func (item *CasesTL2TestFunctionWithDep1) ReadJSON(legacyTypeNames bool, in *bas
 
 func (item *CasesTL2TestFunctionWithDep1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -169,10 +168,10 @@ func (item *CasesTL2TestFunctionWithDep1) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testFunctionWithDep1", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testFunctionWithDep1", key)
 			}

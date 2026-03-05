@@ -71,8 +71,7 @@ func (item *UnionArgsXXX1Int) WriteTL1Boxed(w []byte, nat_Y uint32) (_ []byte, e
 }
 
 func (item *UnionArgsXXX1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
-	var rawX []byte
-
+	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -83,12 +82,12 @@ func (item *UnionArgsXXX1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX1", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.X, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("unionArgsXXX1", key)
@@ -100,15 +99,9 @@ func (item *UnionArgsXXX1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inXPointer, &item.X, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -313,8 +306,7 @@ func (item *UnionArgsXXX1Long) WriteTL1Boxed(w []byte, nat_Y uint32) (_ []byte, 
 }
 
 func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
-	var rawX []byte
-
+	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -325,12 +317,12 @@ func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX1", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := BuiltinTupleLongReadJSONGeneral(tctx, in, &item.X, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("unionArgsXXX1", key)
@@ -342,15 +334,9 @@ func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := BuiltinTupleLongReadJSONGeneral(tctx, inXPointer, &item.X, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -553,7 +539,6 @@ func (item *UnionArgsXXX2Int) WriteTL1Boxed(w []byte, nat_Y uint32) []byte {
 
 func (item *UnionArgsXXX2Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -567,10 +552,10 @@ func (item *UnionArgsXXX2Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX2", "a")
 				}
+				propAPresented = true
 				if err := Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("unionArgsXXX2", key)
 			}
@@ -791,7 +776,6 @@ func (item *UnionArgsXXX2Long) WriteTL1Boxed(w []byte, nat_Y uint32) []byte {
 
 func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -805,10 +789,10 @@ func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX2", "a")
 				}
+				propAPresented = true
 				if err := Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("unionArgsXXX2", key)
 			}

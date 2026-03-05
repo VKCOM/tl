@@ -302,10 +302,10 @@ func (item *CasesTL2TestFunctionWithDep1) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testFunctionWithDep1", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testFunctionWithDep1", key)
 			}

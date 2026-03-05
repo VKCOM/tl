@@ -117,50 +117,50 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propN1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "n1")
 				}
+				propN1Presented = true
 				if err := internal.Json2ReadUint32(in, &item.N1); err != nil {
 					return err
 				}
-				propN1Presented = true
 			case "n2":
 				if propN2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "n2")
 				}
+				propN2Presented = true
 				if err := internal.Json2ReadUint32(in, &item.N2); err != nil {
 					return err
 				}
-				propN2Presented = true
 			case "x1":
 				if propX1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x1")
 				}
+				propX1Presented = true
 				if err := item.X1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propX1Presented = true
 			case "x2":
 				if propX2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x2")
 				}
+				propX2Presented = true
 				if err := item.X2.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propX2Presented = true
 			case "x3":
 				if propX3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x3")
 				}
+				propX3Presented = true
 				if err := item.X3.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propX3Presented = true
 			case "x4":
 				if propX4Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x4")
 				}
+				propX4Presented = true
 				if err := item.X4.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propX4Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testParamsGeneration", key)
 			}

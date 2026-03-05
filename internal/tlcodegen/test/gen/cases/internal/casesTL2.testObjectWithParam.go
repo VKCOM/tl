@@ -122,7 +122,6 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 	item.tl2mask0 = 0
 	var propXPresented bool
 	var propYPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -136,21 +135,18 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "x")
 				}
-				if 4&(1<<0) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithParam", "field 'x' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propXPresented = true
 				if err := Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "y")
 				}
+				propYPresented = true
 				if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObjectWithParam", key)
 			}

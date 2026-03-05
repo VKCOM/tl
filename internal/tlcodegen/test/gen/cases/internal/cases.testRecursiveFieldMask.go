@@ -245,13 +245,12 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 	var propF0Presented bool
 	var propF1Presented bool
 	var propF2Presented bool
-	var trueTypeT1Presented bool
+	var propT1Presented bool
 	var trueTypeT1Value bool
-	var trueTypeT2Presented bool
+	var propT2Presented bool
 	var trueTypeT2Value bool
-	var trueTypeT3Presented bool
+	var propT3Presented bool
 	var trueTypeT3Value bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -265,50 +264,50 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propF0Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f0")
 				}
+				propF0Presented = true
 				if err := Json2ReadUint32(in, &item.F0); err != nil {
 					return err
 				}
-				propF0Presented = true
 			case "f1":
 				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f1")
 				}
+				propF1Presented = true
 				if err := Json2ReadUint32(in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "f2")
 				}
+				propF2Presented = true
 				if err := Json2ReadUint32(in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
 			case "t1":
-				if trueTypeT1Presented {
+				if propT1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t1")
 				}
+				propT1Presented = true
 				if err := Json2ReadBool(in, &trueTypeT1Value); err != nil {
 					return err
 				}
-				trueTypeT1Presented = true
 			case "t2":
-				if trueTypeT2Presented {
+				if propT2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t2")
 				}
+				propT2Presented = true
 				if err := Json2ReadBool(in, &trueTypeT2Value); err != nil {
 					return err
 				}
-				trueTypeT2Presented = true
 			case "t3":
-				if trueTypeT3Presented {
+				if propT3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testRecursiveFieldMask", "t3")
 				}
+				propT3Presented = true
 				if err := Json2ReadBool(in, &trueTypeT3Value); err != nil {
 					return err
 				}
-				trueTypeT3Presented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cases.testRecursiveFieldMask", key)
 			}
@@ -335,18 +334,18 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 		item.F1 |= 1 << 1
 		item.F0 |= 1 << 0
 	}
-	if trueTypeT1Presented {
+	if propT1Presented {
 		if trueTypeT1Value {
 			item.F0 |= 1 << 0
 		}
 	}
-	if trueTypeT2Presented {
+	if propT2Presented {
 		if trueTypeT2Value {
 			item.F1 |= 1 << 1
 		}
 		item.F0 |= 1 << 0
 	}
-	if trueTypeT3Presented {
+	if propT3Presented {
 		if trueTypeT3Value {
 			item.F2 |= 1 << 2
 		}
@@ -354,15 +353,15 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 		item.F0 |= 1 << 0
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeT1Presented && !trueTypeT1Value && (item.F0&(1<<0) != 0) {
+	if propT1Presented && !trueTypeT1Value && (item.F0&(1<<0) != 0) {
 		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F0.0 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeT2Presented && !trueTypeT2Value && (item.F1&(1<<1) != 0) {
+	if propT2Presented && !trueTypeT2Value && (item.F1&(1<<1) != 0) {
 		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F1.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
-	if trueTypeT3Presented && !trueTypeT3Value && (item.F2&(1<<2) != 0) {
+	if propT3Presented && !trueTypeT3Value && (item.F2&(1<<2) != 0) {
 		return ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F2.2 is indefinite because of the contradictions in values")
 	}
 	if item.F0&(1<<0) != 0 {

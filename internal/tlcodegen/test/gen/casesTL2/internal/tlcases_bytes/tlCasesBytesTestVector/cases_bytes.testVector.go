@@ -97,10 +97,10 @@ func (item *CasesBytesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
+				propArrPresented = true
 				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testVector", key)
 			}
@@ -348,10 +348,10 @@ func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(tctx *basictl.JSONReadCon
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
+				propArrPresented = true
 				if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
-				propArrPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testVector", key)
 			}
