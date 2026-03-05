@@ -839,6 +839,7 @@ func (item *CurlResponseOk) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFieldMaskPresented bool
 	var propHttpCodePresented bool
 	var propHttpHeadersPresented bool

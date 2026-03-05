@@ -235,6 +235,7 @@ func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
 	var trueTypeF1Presented bool

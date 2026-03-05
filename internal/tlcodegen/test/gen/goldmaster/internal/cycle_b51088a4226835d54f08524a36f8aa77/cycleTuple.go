@@ -590,6 +590,7 @@ func (item *CycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
 	var propAPresented bool

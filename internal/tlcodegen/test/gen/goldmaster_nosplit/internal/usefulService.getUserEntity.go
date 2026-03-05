@@ -340,6 +340,7 @@ func (item *UsefulServiceGetUserEntity) ReadJSON(legacyTypeNames bool, in *basic
 }
 
 func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propStageIdPresented bool
 

@@ -182,6 +182,7 @@ func (item *CasesTestLocalFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
 	var trueTypeF3Presented bool

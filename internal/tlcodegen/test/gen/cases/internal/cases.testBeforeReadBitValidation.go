@@ -183,6 +183,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in 
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
 	var rawA []byte

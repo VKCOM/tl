@@ -397,10 +397,12 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
-{%- if struct_.wr.originateFromTL2 -%}
+{%- if struct_.wr.HasTL2() -%}
     {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
          item.{%s= tl2mask %} = 0
     {%- endfor -%}
+{%- endif -%}
+{%- if struct_.wr.originateFromTL2 -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         var prop{%s= field.goName %}Presented bool
@@ -478,7 +480,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             return in.Error()
         }
         for !in.IsDelim('}') {
-    {%- if len(struct_.Fields) == 0 -%}
+    {%- if len(struct_.Fields) == 0 -%} {%- code // do not generate switch with only default -%}
             return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "this object can't have properties")
     {%- else -%}
             key := in.UnsafeFieldName(true)

@@ -203,6 +203,7 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFmPresented bool
 	var trueTypeAPresented bool
 	var trueTypeAValue bool

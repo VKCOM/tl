@@ -290,6 +290,7 @@ func (item *BenchmarksVruposition) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var trueTypeCommitBitPresented bool
 	var trueTypeCommitBitValue bool

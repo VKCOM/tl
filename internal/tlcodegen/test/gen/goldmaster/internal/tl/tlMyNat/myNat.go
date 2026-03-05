@@ -164,6 +164,7 @@ func (item *MyNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 func (item *MyNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 

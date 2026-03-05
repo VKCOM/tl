@@ -874,13 +874,15 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.HasTL2() {
 		for _, tl2mask := range struct_.AllNewTL2Masks() {
 			qw422016.N().S(`         item.`)
 			qw422016.N().S(tl2mask)
 			qw422016.N().S(` = 0
 `)
 		}
+	}
+	if struct_.wr.originateFromTL2 {
 		for _, field := range struct_.Fields {
 			if field.IsTL2Omitted() {
 				continue
@@ -1024,6 +1026,8 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
         for !in.IsDelim('}') {
 `)
 		if len(struct_.Fields) == 0 {
+			// do not generate switch with only default
+
 			qw422016.N().S(`            return `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSON(`)

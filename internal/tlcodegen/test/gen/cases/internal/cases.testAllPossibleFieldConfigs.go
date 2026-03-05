@@ -401,6 +401,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteTL1Boxed(w []byte, nat_outer 
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32, nat_outers uint32) error {
+	item.tl2mask0 = 0
 	var propLocalPresented bool
 	var propLocalsPresented bool
 	var propF00Presented bool

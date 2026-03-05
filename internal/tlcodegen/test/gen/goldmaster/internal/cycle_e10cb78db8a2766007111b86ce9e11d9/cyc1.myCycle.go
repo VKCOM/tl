@@ -305,6 +305,7 @@ func (item *Cyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 

@@ -199,6 +199,7 @@ func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFlagPresented bool
 	var propHeadPresented bool
 	var propTailPresented bool

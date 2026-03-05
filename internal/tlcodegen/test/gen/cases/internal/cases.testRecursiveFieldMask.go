@@ -241,6 +241,7 @@ func (item *CasesTestRecursiveFieldMask) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propF0Presented bool
 	var propF1Presented bool
 	var propF2Presented bool

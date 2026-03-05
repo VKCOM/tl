@@ -152,6 +152,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1Boxed(w []byte, nat_n ui
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
+	item.tl2mask0 = 0
 	var rawF1 []byte
 	var rawF2 []byte
 
@@ -535,6 +536,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1Boxed(w []byte, nat_n u
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
 
@@ -866,6 +868,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1Boxed(w []byte, nat_m u
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_m uint32) error {
+	item.tl2mask0 = 0
 	var rawF1 []byte
 	var rawF2 []byte
 
@@ -1240,6 +1243,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
 

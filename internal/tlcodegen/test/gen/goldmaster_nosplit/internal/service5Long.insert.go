@@ -330,6 +330,7 @@ func (item *Service5LongInsert) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *Service5LongInsert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFlagsPresented bool
 	var trueTypePersistentPresented bool
 	var trueTypePersistentValue bool
