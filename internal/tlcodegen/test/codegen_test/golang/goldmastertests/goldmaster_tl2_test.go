@@ -26,7 +26,7 @@ func TestExactCases(t *testing.T) {
 	testingBytesChanged := strings.ReplaceAll(TestingBytes, "_", " ")
 
 	dst := factory.CreateObjectFromName(TestingName)
-	_, _ = dst.Read(utils.ParseHexToBytes(testingBytesChanged))
+	_, _ = dst.ReadTL1(utils.ParseHexToBytes(testingBytesChanged))
 
 	json, _ := dst.WriteJSONGeneral(&basictl.JSONWriteContext{}, nil)
 	fmt.Println(string(json))
@@ -48,7 +48,7 @@ func TestExactCases(t *testing.T) {
 func TestGoldmasterTL2Random(t *testing.T) {
 	//str := utils.ParseHexToBytes("00000000 bc799737 00000000 00000002 ce27c770 ef556bee 00000000")
 	//ddst := tlcasesTL2.TestObject{}
-	//str, err := ddst.Read(str)
+	//str, err := ddst.ReadTL1(str)
 	//if err != nil {
 	//	t.Fatalf("can't read: %s", err)
 	//}

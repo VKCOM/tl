@@ -1,11 +1,12 @@
 package casetests
 
 import (
+	"math/rand"
+	"testing"
+
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlbenchmarks"
 	"github.com/vkcom/tl/pkg/basictl"
-	"math/rand"
-	"testing"
 )
 
 const seed int64 = 11234567
@@ -40,7 +41,7 @@ func BenchmarkTL1ReadRandomVector(b *testing.B) {
 	dst := tlbenchmarks.VrutoyTopLevelContainer{}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := dst.Read(valuesBytes[i%NumberOfSamples])
+		_, err := dst.ReadTL1(valuesBytes[i%NumberOfSamples])
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -74,7 +75,7 @@ func BenchmarkTL1ReadRandomArray(b *testing.B) {
 		b.StopTimer()
 		value := valueGen(i)
 		b.StartTimer()
-		_, err := dst.Read(value)
+		_, err := dst.ReadTL1(value)
 		if err != nil {
 			b.Fail()
 		}
@@ -111,7 +112,7 @@ func BenchmarkTL1WriteRandomVector(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		value := valueGen(i)
-		_, err2 := dst.Read(value)
+		_, err2 := dst.ReadTL1(value)
 		if err2 != nil {
 			b.Fail()
 		}
@@ -132,7 +133,7 @@ func BenchmarkTL1WriteRandomVectorWithWriteBuffer(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		value := valueGen(i)
-		_, err2 := dst.Read(value)
+		_, err2 := dst.ReadTL1(value)
 		if err2 != nil {
 			b.Fail()
 		}
@@ -154,7 +155,7 @@ func BenchmarkTL2WriteRandomVectorWithWriteBuffer(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		value := valueGen(i)
-		_, err2 := dst.Read(value)
+		_, err2 := dst.ReadTL1(value)
 		if err2 != nil {
 			b.Fail()
 		}
@@ -212,7 +213,7 @@ func generateBenchmarkTestObjects(b *testing.B) []tlbenchmarks.VrutoyTopLevelCon
 
 	for i := 0; i < NumberOfSamples; i++ {
 		value := valueGen(i)
-		_, err2 := dsts[i].Read(value)
+		_, err2 := dsts[i].ReadTL1(value)
 		if err2 != nil {
 			b.Fail()
 		}
