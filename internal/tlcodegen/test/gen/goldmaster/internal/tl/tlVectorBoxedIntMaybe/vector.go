@@ -34,6 +34,10 @@ func (item *VectorBoxedIntMaybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *VectorBoxedIntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+
+func (item *VectorBoxedIntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
@@ -41,20 +45,20 @@ func (item *VectorBoxedIntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 		if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 			return w, err
 		}
-		return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Value)
+		return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Value)
 	}
 	return w, nil
 }
 
-func (item *VectorBoxedIntMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+func (item *VectorBoxedIntMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
 }
 
-func (item *VectorBoxedIntMaybe) WriteBoxed(w []byte) []byte {
+func (item *VectorBoxedIntMaybe) WriteTL1Boxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		w = basictl.NatWrite(w, 0x1cb5c415)
-		return tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Value)
+		return tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Value)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }

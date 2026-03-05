@@ -29,7 +29,7 @@ func BuiltinTuple4StringFillRandom(rg *basictl.RandGenerator, vec *[4]string) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple4StringRead(w []byte, vec *[4]string) (_ []byte, err error) {
+func BuiltinTuple4StringReadTL1(w []byte, vec *[4]string) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.StringRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -38,7 +38,7 @@ func BuiltinTuple4StringRead(w []byte, vec *[4]string) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple4StringWrite(w []byte, vec *[4]string) []byte {
+func BuiltinTuple4StringWriteTL1(w []byte, vec *[4]string) []byte {
 	for _, elem := range *vec {
 		w = basictl.StringWrite(w, elem)
 	}
@@ -183,7 +183,7 @@ func BuiltinTuple4StringBytesFillRandom(rg *basictl.RandGenerator, vec *[4][]byt
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple4StringBytesRead(w []byte, vec *[4][]byte) (_ []byte, err error) {
+func BuiltinTuple4StringBytesReadTL1(w []byte, vec *[4][]byte) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.StringReadBytes(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -192,7 +192,7 @@ func BuiltinTuple4StringBytesRead(w []byte, vec *[4][]byte) (_ []byte, err error
 	return w, nil
 }
 
-func BuiltinTuple4StringBytesWrite(w []byte, vec *[4][]byte) []byte {
+func BuiltinTuple4StringBytesWriteTL1(w []byte, vec *[4][]byte) []byte {
 	for _, elem := range *vec {
 		w = basictl.StringWriteBytes(w, elem)
 	}

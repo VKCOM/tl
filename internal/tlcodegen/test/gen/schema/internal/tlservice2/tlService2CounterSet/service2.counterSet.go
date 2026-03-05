@@ -31,40 +31,44 @@ func (item *Service2CounterSet) Reset() {
 }
 
 func (item *Service2CounterSet) Read(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.IntCounters, nat_intCountersNum); err != nil {
+	return item.ReadTL1(w, nat_intCountersNum, nat_floatCountersNum)
+}
+func (item *Service2CounterSet) ReadTL1(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL1(w, &item.IntCounters, nat_intCountersNum); err != nil {
 		return w, err
 	}
-	return tlBuiltinTupleDouble.BuiltinTupleDoubleRead(w, &item.FloatCounters, nat_floatCountersNum)
-}
-
-func (item *Service2CounterSet) WriteGeneral(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.Write(w, nat_intCountersNum, nat_floatCountersNum)
+	return tlBuiltinTupleDouble.BuiltinTupleDoubleReadTL1(w, &item.FloatCounters, nat_floatCountersNum)
 }
 
 func (item *Service2CounterSet) Write(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWrite(w, item.IntCounters, nat_intCountersNum); err != nil {
+	return item.WriteTL1(w, nat_intCountersNum, nat_floatCountersNum)
+}
+func (item *Service2CounterSet) WriteTL1(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteTL1(w, item.IntCounters, nat_intCountersNum); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWrite(w, item.FloatCounters, nat_floatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteTL1(w, item.FloatCounters, nat_floatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *Service2CounterSet) ReadBoxed(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_intCountersNum, nat_floatCountersNum)
+}
+func (item *Service2CounterSet) ReadTL1Boxed(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf5403fd9); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_intCountersNum, nat_floatCountersNum)
-}
-
-func (item *Service2CounterSet) WriteBoxedGeneral(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_intCountersNum, nat_floatCountersNum)
+	return item.ReadTL1(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2CounterSet) WriteBoxed(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_intCountersNum, nat_floatCountersNum)
+}
+func (item *Service2CounterSet) WriteTL1Boxed(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xf5403fd9)
-	return item.Write(w, nat_intCountersNum, nat_floatCountersNum)
+	return item.WriteTL1(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {

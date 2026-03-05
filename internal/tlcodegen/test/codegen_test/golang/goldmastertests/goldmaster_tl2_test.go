@@ -38,7 +38,7 @@ func TestExactCases(t *testing.T) {
 	if err != nil {
 		t.Fatalf("can't readTL2: %s", err)
 	}
-	newData, err := newDst.WriteGeneral(nil)
+	newData, err := newDst.WriteTL1General(nil)
 	if err != nil {
 		t.Fatalf("can't write")
 	}
@@ -82,7 +82,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 
 			for i := 0; i < NumberOfSamples; i++ {
 				dst.FillRandom(rg)
-				data, err := dst.WriteGeneral(nil)
+				data, err := dst.WriteTL1General(nil)
 				if err != nil {
 					t.Fatalf("can't seriliaze %d-th object", i)
 				}
@@ -99,7 +99,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 						//_, _ = newDst2.ReadTL2(writeBuffer, nil)
 						t.Fatalf("can't readTL2 %d-th object", i)
 					}
-					newData, err := newDst.WriteGeneral(nil)
+					newData, err := newDst.WriteTL1General(nil)
 					if err != nil {
 						t.Fatalf("can't write %d-th object", i)
 					}

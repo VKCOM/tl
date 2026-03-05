@@ -54,56 +54,74 @@ func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UseDictUgly) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringRead(w, &item.D, item.N); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReadTL1(w, &item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringRead(w, &item.E, item.N); err != nil {
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringReadTL1(w, &item.E, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntRead(w, &item.X); err != nil {
+	if w, err = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntReadTL1(w, &item.X); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntRead(w, &item.Y); err != nil {
+	if w, err = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntReadTL1(w, &item.Y); err != nil {
 		return w, err
 	}
-	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntRead(w, &item.Z)
+	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadTL1(w, &item.Z)
 }
 
 func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *UseDictUgly) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *UseDictUgly) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWrite(w, item.D, item.N); err != nil {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteTL1(w, item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWrite(w, item.E, item.N); err != nil {
+	if w, err = tlBuiltinDictLongTupleString.BuiltinDictLongTupleStringWriteTL1(w, item.E, item.N); err != nil {
 		return w, err
 	}
-	w = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntWrite(w, item.X)
-	w = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWrite(w, item.Y)
-	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWrite(w, item.Z)
+	w = tlBuiltinDictIntPairIntInt.BuiltinDictIntPairIntIntWriteTL1(w, item.X)
+	w = tlBuiltinDictLongPairIntInt.BuiltinDictLongPairIntIntWriteTL1(w, item.Y)
+	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteTL1(w, item.Z)
 	return w, nil
 }
 
 func (item *UseDictUgly) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UseDictUgly) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xfb9ce817); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UseDictUgly) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UseDictUgly) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *UseDictUgly) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UseDictUgly) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xfb9ce817)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item UseDictUgly) String() string {

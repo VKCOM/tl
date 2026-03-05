@@ -33,7 +33,7 @@ func BuiltinDictIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]int32) 
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictIntIntRead(w []byte, m *map[int32]int32) (_ []byte, err error) {
+func BuiltinDictIntIntReadTL1(w []byte, m *map[int32]int32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -48,7 +48,7 @@ func BuiltinDictIntIntRead(w []byte, m *map[int32]int32) (_ []byte, err error) {
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldIntInt.DictFieldIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -56,7 +56,7 @@ func BuiltinDictIntIntRead(w []byte, m *map[int32]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinDictIntIntWrite(w []byte, m map[int32]int32) []byte {
+func BuiltinDictIntIntWriteTL1(w []byte, m map[int32]int32) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -71,7 +71,7 @@ func BuiltinDictIntIntWrite(w []byte, m map[int32]int32) []byte {
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldIntInt.DictFieldIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -260,7 +260,7 @@ func BuiltinDictIntIntBytesFillRandom(rg *basictl.RandGenerator, vec *[]tlDictFi
 	rg.DecreaseDepth()
 }
 
-func BuiltinDictIntIntBytesRead(w []byte, vec *[]tlDictFieldIntInt.DictFieldIntInt) (_ []byte, err error) {
+func BuiltinDictIntIntBytesReadTL1(w []byte, vec *[]tlDictFieldIntInt.DictFieldIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -271,17 +271,17 @@ func BuiltinDictIntIntBytesRead(w []byte, vec *[]tlDictFieldIntInt.DictFieldIntI
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinDictIntIntBytesWrite(w []byte, vec []tlDictFieldIntInt.DictFieldIntInt) []byte {
+func BuiltinDictIntIntBytesWriteTL1(w []byte, vec []tlDictFieldIntInt.DictFieldIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

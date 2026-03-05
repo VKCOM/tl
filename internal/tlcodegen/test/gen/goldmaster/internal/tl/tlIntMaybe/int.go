@@ -33,6 +33,10 @@ func (item *IntMaybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *IntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+
+func (item *IntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
@@ -42,11 +46,11 @@ func (item *IntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *IntMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+func (item *IntMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
 }
 
-func (item *IntMaybe) WriteBoxed(w []byte) []byte {
+func (item *IntMaybe) WriteTL1Boxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		return basictl.IntWrite(w, item.Value)

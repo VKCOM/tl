@@ -36,38 +36,56 @@ func (item *UseResponse) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UseResponse) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UseResponse) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	return tlBuiltinTupleAbResponse.BuiltinTupleAbResponseRead(w, &item.X, item.N)
+	return tlBuiltinTupleAbResponse.BuiltinTupleAbResponseReadTL1(w, &item.X, item.N)
 }
 
 func (item *UseResponse) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *UseResponse) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *UseResponse) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *UseResponse) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = tlBuiltinTupleAbResponse.BuiltinTupleAbResponseWrite(w, item.X, item.N); err != nil {
+	if w, err = tlBuiltinTupleAbResponse.BuiltinTupleAbResponseWriteTL1(w, item.X, item.N); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *UseResponse) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UseResponse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0a63ec5f); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UseResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UseResponse) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *UseResponse) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UseResponse) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x0a63ec5f)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item UseResponse) String() string {

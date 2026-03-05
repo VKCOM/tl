@@ -16,7 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinTupleService2CounterSetRead(w []byte, vec *[]tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
+func BuiltinTupleService2CounterSetReadTL1(w []byte, vec *[]tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
 		return w, err
 	}
@@ -26,19 +26,19 @@ func BuiltinTupleService2CounterSetRead(w []byte, vec *[]tlService2CounterSet.Se
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleService2CounterSetWrite(w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
+func BuiltinTupleService2CounterSetWriteTL1(w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlService2CounterSet.Service2CounterSet", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		if w, err = elem.Write(w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		if w, err = elem.WriteTL1(w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 			return w, err
 		}
 	}

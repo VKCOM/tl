@@ -44,52 +44,70 @@ func (item *CasesTL2TestArrayFixedBool) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTL2TestArrayFixedBool) Read(w []byte) (_ []byte, err error) {
-	if w, err = BuiltinTuple1BoolRead(w, &item.A1); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *CasesTL2TestArrayFixedBool) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = BuiltinTuple1BoolReadTL1(w, &item.A1); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTuple0BoolRead(w, &item.A2); err != nil {
+	if w, err = BuiltinTuple0BoolReadTL1(w, &item.A2); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTuple7BoolRead(w, &item.A3); err != nil {
+	if w, err = BuiltinTuple7BoolReadTL1(w, &item.A3); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTuple8BoolRead(w, &item.A4); err != nil {
+	if w, err = BuiltinTuple8BoolReadTL1(w, &item.A4); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTuple11BoolRead(w, &item.A5); err != nil {
+	if w, err = BuiltinTuple11BoolReadTL1(w, &item.A5); err != nil {
 		return w, err
 	}
-	return BuiltinTuple16BoolRead(w, &item.A6)
+	return BuiltinTuple16BoolReadTL1(w, &item.A6)
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CasesTL2TestArrayFixedBool) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CasesTL2TestArrayFixedBool) Write(w []byte) []byte {
-	w = BuiltinTuple1BoolWrite(w, &item.A1)
-	w = BuiltinTuple0BoolWrite(w, &item.A2)
-	w = BuiltinTuple7BoolWrite(w, &item.A3)
-	w = BuiltinTuple8BoolWrite(w, &item.A4)
-	w = BuiltinTuple11BoolWrite(w, &item.A5)
-	w = BuiltinTuple16BoolWrite(w, &item.A6)
+	return item.WriteTL1(w)
+}
+func (item *CasesTL2TestArrayFixedBool) WriteTL1(w []byte) []byte {
+	w = BuiltinTuple1BoolWriteTL1(w, &item.A1)
+	w = BuiltinTuple0BoolWriteTL1(w, &item.A2)
+	w = BuiltinTuple7BoolWriteTL1(w, &item.A3)
+	w = BuiltinTuple8BoolWriteTL1(w, &item.A4)
+	w = BuiltinTuple11BoolWriteTL1(w, &item.A5)
+	w = BuiltinTuple16BoolWriteTL1(w, &item.A6)
 	return w
 }
 
 func (item *CasesTL2TestArrayFixedBool) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTL2TestArrayFixedBool) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf704cf4e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTL2TestArrayFixedBool) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTL2TestArrayFixedBool) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf704cf4e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTL2TestArrayFixedBool) String() string {

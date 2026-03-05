@@ -27,7 +27,7 @@ func BuiltinVectorCyc1MyCycleRepairMasks(vec *[]Cyc1MyCycle) {
 		(*vec)[i].RepairMasks()
 	}
 }
-func BuiltinVectorCyc1MyCycleRead(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err error) {
+func BuiltinVectorCyc1MyCycleReadTL1(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -41,17 +41,17 @@ func BuiltinVectorCyc1MyCycleRead(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err e
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorCyc1MyCycleWrite(w []byte, vec []Cyc1MyCycle) []byte {
+func BuiltinVectorCyc1MyCycleWriteTL1(w []byte, vec []Cyc1MyCycle) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -235,13 +235,16 @@ func (item *Cyc1MyCycle) RepairMasks() {
 }
 
 func (item *Cyc1MyCycle) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Cyc1MyCycle) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = item.A.Read(w); err != nil {
+		if w, err = item.A.ReadTL1(w); err != nil {
 			return w, err
 		}
 	} else {
@@ -251,31 +254,46 @@ func (item *Cyc1MyCycle) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Cyc1MyCycle) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Cyc1MyCycle) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Cyc1MyCycle) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Cyc1MyCycle) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
-		w = item.A.Write(w)
+		w = item.A.WriteTL1(w)
 	}
 	return w
 }
 
 func (item *Cyc1MyCycle) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Cyc1MyCycle) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x136ecc9e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Cyc1MyCycle) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Cyc1MyCycle) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Cyc1MyCycle) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Cyc1MyCycle) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x136ecc9e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Cyc1MyCycle) String() string {

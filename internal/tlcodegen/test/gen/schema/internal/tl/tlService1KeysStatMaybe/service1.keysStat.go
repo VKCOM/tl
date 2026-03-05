@@ -26,23 +26,27 @@ func (item *Service1KeysStatMaybe) Reset() {
 }
 
 func (item *Service1KeysStatMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+
+func (item *Service1KeysStatMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
 	if item.Ok {
-		return item.Value.Read(w)
+		return item.Value.ReadTL1(w)
 	}
 	return w, nil
 }
 
-func (item *Service1KeysStatMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+func (item *Service1KeysStatMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
 }
 
-func (item *Service1KeysStatMaybe) WriteBoxed(w []byte) []byte {
+func (item *Service1KeysStatMaybe) WriteTL1Boxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		return item.Value.Write(w)
+		return item.Value.WriteTL1(w)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }

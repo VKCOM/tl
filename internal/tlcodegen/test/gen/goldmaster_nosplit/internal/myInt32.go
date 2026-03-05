@@ -27,18 +27,18 @@ func BuiltinTuple3MyInt32FillRandom(rg *basictl.RandGenerator, vec *[3]MyInt32) 
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3MyInt32Read(w []byte, vec *[3]MyInt32) (_ []byte, err error) {
+func BuiltinTuple3MyInt32ReadTL1(w []byte, vec *[3]MyInt32) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple3MyInt32Write(w []byte, vec *[3]MyInt32) []byte {
+func BuiltinTuple3MyInt32WriteTL1(w []byte, vec *[3]MyInt32) []byte {
 	for _, elem := range *vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -181,18 +181,18 @@ func BuiltinTuple3MyInt32BoxedFillRandom(rg *basictl.RandGenerator, vec *[3]MyIn
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3MyInt32BoxedRead(w []byte, vec *[3]MyInt32) (_ []byte, err error) {
+func BuiltinTuple3MyInt32BoxedReadTL1(w []byte, vec *[3]MyInt32) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple3MyInt32BoxedWrite(w []byte, vec *[3]MyInt32) []byte {
+func BuiltinTuple3MyInt32BoxedWriteTL1(w []byte, vec *[3]MyInt32) []byte {
 	for _, elem := range *vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }
@@ -337,32 +337,50 @@ func (item *MyInt32) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *MyInt32) Read(w []byte) (_ []byte, err error) {
-	return item.ptr().Read(w)
+	return item.ReadTL1(w)
+}
+func (item *MyInt32) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.ptr().ReadTL1(w)
 }
 
 func (item *MyInt32) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *MyInt32) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *MyInt32) Write(w []byte) []byte {
-	w = item.ptr().Write(w)
+	return item.WriteTL1(w)
+}
+func (item *MyInt32) WriteTL1(w []byte) []byte {
+	w = item.ptr().WriteTL1(w)
 	return w
 }
 
 func (item *MyInt32) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *MyInt32) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xba59e151); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *MyInt32) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *MyInt32) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *MyInt32) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *MyInt32) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xba59e151)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item MyInt32) String() string {

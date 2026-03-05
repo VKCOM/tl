@@ -198,17 +198,17 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *genGo, anyTypeAlias bool, 
 			qw422016.N().S(`
 func `)
 			qw422016.N().S(localTypeString)
-			qw422016.N().S(`ReadBoxed(w []byte, v *bool) ([]byte, error) {
+			qw422016.N().S(`ReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
     return `)
 			qw422016.N().S(globalTypeString)
-			qw422016.N().S(`ReadBoxed(w, v)
+			qw422016.N().S(`ReadTL1Boxed(w, v)
 }
 func `)
 			qw422016.N().S(localTypeString)
-			qw422016.N().S(`WriteBoxed(w []byte, v bool) []byte {
+			qw422016.N().S(`WriteTL1Boxed(w []byte, v bool) []byte {
     return `)
 			qw422016.N().S(globalTypeString)
-			qw422016.N().S(`WriteBoxed(w, v)
+			qw422016.N().S(`WriteTL1Boxed(w, v)
 }
 `)
 		}
@@ -327,7 +327,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
         tctx := basictl.TL2WriteContext{}
         req.Body = args.WriteTL2(req.Body, &tctx)
     } else {
-        req.Body, err = args.WriteBoxedGeneral(req.Body)
+        req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
         if err != nil {
             return internal.ErrorClientWrite("`)
 		qw422016.N().S(tlName)
@@ -342,7 +342,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     req.Body = args.WriteTL2(req.Body, &tctx)
 `)
 	} else {
-		qw422016.N().S(`    req.Body, err = args.WriteBoxedGeneral(req.Body)
+		qw422016.N().S(`    req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("`)
 		qw422016.N().S(tlName)
@@ -366,14 +366,14 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 		} else {
-			resp.Body, err = args.ReadResult(resp.Body, ret)
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
 		}
 `)
 	} else if fun.wr.HasTL2() {
 		qw422016.N().S(`			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 `)
 	} else {
-		qw422016.N().S(`			resp.Body, err = args.ReadResult(resp.Body, ret)
+		qw422016.N().S(`			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
 `)
 	}
 	qw422016.N().S(`		if err != nil {
@@ -516,7 +516,7 @@ switch tag {
 		} else {
 `)
 			}
-			qw422016.N().S(`            _, err = args.Read(r)
+			qw422016.N().S(`            _, err = args.ReadTL1(r)
 `)
 			if fun.wr.gen.options.GenerateTL2() {
 				qw422016.N().S(`        }
@@ -546,7 +546,7 @@ switch tag {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
             hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
         } else {
-            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+            hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
             if err != nil {
                 return internal.ErrorServerWriteResult("`)
 				qw422016.N().S(tlName)
@@ -558,7 +558,7 @@ switch tag {
 				qw422016.N().S(`        hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
 `)
 			} else {
-				qw422016.N().S(`        hctx.Response, err = args.WriteResult(hctx.Response, ret)
+				qw422016.N().S(`        hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
         if err != nil {
             return internal.ErrorServerWriteResult("`)
 				qw422016.N().S(tlName)

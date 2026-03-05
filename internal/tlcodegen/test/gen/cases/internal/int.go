@@ -27,7 +27,7 @@ func BuiltinTuple1IntFillRandom(rg *basictl.RandGenerator, vec *[1]int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple1IntRead(w []byte, vec *[1]int32) (_ []byte, err error) {
+func BuiltinTuple1IntReadTL1(w []byte, vec *[1]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.IntRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -36,7 +36,7 @@ func BuiltinTuple1IntRead(w []byte, vec *[1]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple1IntWrite(w []byte, vec *[1]int32) []byte {
+func BuiltinTuple1IntWriteTL1(w []byte, vec *[1]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.IntWrite(w, elem)
 	}
@@ -181,7 +181,7 @@ func BuiltinTuple2IntFillRandom(rg *basictl.RandGenerator, vec *[2]int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple2IntRead(w []byte, vec *[2]int32) (_ []byte, err error) {
+func BuiltinTuple2IntReadTL1(w []byte, vec *[2]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.IntRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -190,7 +190,7 @@ func BuiltinTuple2IntRead(w []byte, vec *[2]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple2IntWrite(w []byte, vec *[2]int32) []byte {
+func BuiltinTuple2IntWriteTL1(w []byte, vec *[2]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.IntWrite(w, elem)
 	}
@@ -335,7 +335,7 @@ func BuiltinTuple4IntFillRandom(rg *basictl.RandGenerator, vec *[4]int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple4IntRead(w []byte, vec *[4]int32) (_ []byte, err error) {
+func BuiltinTuple4IntReadTL1(w []byte, vec *[4]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.IntRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -344,7 +344,7 @@ func BuiltinTuple4IntRead(w []byte, vec *[4]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple4IntWrite(w []byte, vec *[4]int32) []byte {
+func BuiltinTuple4IntWriteTL1(w []byte, vec *[4]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.IntWrite(w, elem)
 	}
@@ -484,7 +484,7 @@ func BuiltinTupleIntFillRandom(rg *basictl.RandGenerator, vec *[]int32, nat_n ui
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleIntRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntReadTL1(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int32, nat_n)
 	} else {
@@ -498,7 +498,7 @@ func BuiltinTupleIntRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err er
 	return w, nil
 }
 
-func BuiltinTupleIntWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntWriteTL1(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]int32", len(vec), nat_n)
 	}
@@ -667,7 +667,7 @@ func BuiltinVectorIntFillRandom(rg *basictl.RandGenerator, vec *[]int32) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorIntRead(w []byte, vec *[]int32) (_ []byte, err error) {
+func BuiltinVectorIntReadTL1(w []byte, vec *[]int32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -685,7 +685,7 @@ func BuiltinVectorIntRead(w []byte, vec *[]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
+func BuiltinVectorIntWriteTL1(w []byte, vec []int32) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.IntWrite(w, elem)
@@ -836,32 +836,50 @@ func (item *Int) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Int) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Int) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, item.ptr())
 }
 
 func (item *Int) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Int) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Int) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Int) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, *item.ptr())
 	return w
 }
 
 func (item *Int) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Int) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa8509bda); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Int) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Int) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Int) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Int) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa8509bda)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Int) String() string {
@@ -951,6 +969,10 @@ func (item *IntMaybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *IntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+
+func (item *IntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
@@ -960,11 +982,11 @@ func (item *IntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *IntMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+func (item *IntMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
 }
 
-func (item *IntMaybe) WriteBoxed(w []byte) []byte {
+func (item *IntMaybe) WriteTL1Boxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
 		return basictl.IntWrite(w, item.Value)

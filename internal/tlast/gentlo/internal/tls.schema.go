@@ -86,6 +86,9 @@ func (item *TlsSchema) SetV4(value TlsSchemaV4) {
 }
 
 func (item *TlsSchema) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsSchema) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -93,35 +96,34 @@ func (item *TlsSchema) ReadBoxed(w []byte) (_ []byte, err error) {
 	switch tag {
 	case 0x3a2f9be2:
 		item.index = 0
-		return item.valueV2.Read(w)
+		return item.valueV2.ReadTL1(w)
 	case 0xe4a8604b:
 		item.index = 1
-		return item.valueV3.Read(w)
+		return item.valueV3.ReadTL1(w)
 	case 0x90ac88d7:
 		item.index = 2
-		return item.valueV4.Read(w)
+		return item.valueV4.ReadTL1(w)
 	default:
 		return w, ErrorInvalidUnionTag("tls.Schema", tag)
 	}
 }
 
-func (item *TlsSchema) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
-}
-
 func (item *TlsSchema) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsSchema) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsSchema[item.index].TLTag)
 	switch item.index {
 	case 0:
-		if w, err = item.valueV2.Write(w); err != nil {
+		if w, err = item.valueV2.WriteTL1(w); err != nil {
 			return w, err
 		}
 	case 1:
-		if w, err = item.valueV3.Write(w); err != nil {
+		if w, err = item.valueV3.WriteTL1(w); err != nil {
 			return w, err
 		}
 	case 2:
-		if w, err = item.valueV4.Write(w); err != nil {
+		if w, err = item.valueV4.WriteTL1(w); err != nil {
 			return w, err
 		}
 	}
@@ -290,6 +292,9 @@ func (item *TlsSchemaV2) Reset() {
 }
 
 func (item *TlsSchemaV2) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsSchemaV2) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Version); err != nil {
 		return w, err
 	}
@@ -299,57 +304,72 @@ func (item *TlsSchemaV2) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.TypesNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsTypeBoxedRead(w, &item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedReadTL1(w, &item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorReadTL1(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorReadTL1(w, &item.Functions, item.FunctionsNum)
 }
 
 func (item *TlsSchemaV2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TlsSchemaV2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TlsSchemaV2) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *TlsSchemaV2) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Version)
 	w = basictl.IntWrite(w, item.Date)
 	w = basictl.NatWrite(w, item.TypesNum)
-	if w, err = BuiltinTupleTlsTypeBoxedWrite(w, item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedWriteTL1(w, item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Functions, item.FunctionsNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TlsSchemaV2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsSchemaV2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3a2f9be2); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsSchemaV2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsSchemaV2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TlsSchemaV2) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsSchemaV2) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x3a2f9be2)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsSchemaV2) String() string {
@@ -622,6 +642,9 @@ func (item *TlsSchemaV3) Reset() {
 }
 
 func (item *TlsSchemaV3) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsSchemaV3) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Version); err != nil {
 		return w, err
 	}
@@ -631,57 +654,72 @@ func (item *TlsSchemaV3) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.TypesNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsTypeBoxedRead(w, &item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedReadTL1(w, &item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorReadTL1(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorReadTL1(w, &item.Functions, item.FunctionsNum)
 }
 
 func (item *TlsSchemaV3) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TlsSchemaV3) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TlsSchemaV3) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *TlsSchemaV3) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Version)
 	w = basictl.IntWrite(w, item.Date)
 	w = basictl.NatWrite(w, item.TypesNum)
-	if w, err = BuiltinTupleTlsTypeBoxedWrite(w, item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedWriteTL1(w, item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Functions, item.FunctionsNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TlsSchemaV3) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsSchemaV3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe4a8604b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsSchemaV3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsSchemaV3) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TlsSchemaV3) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsSchemaV3) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xe4a8604b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsSchemaV3) String() string {
@@ -954,6 +992,9 @@ func (item *TlsSchemaV4) Reset() {
 }
 
 func (item *TlsSchemaV4) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsSchemaV4) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Version); err != nil {
 		return w, err
 	}
@@ -963,57 +1004,72 @@ func (item *TlsSchemaV4) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.TypesNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsTypeBoxedRead(w, &item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedReadTL1(w, &item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorReadTL1(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorReadTL1(w, &item.Functions, item.FunctionsNum)
 }
 
 func (item *TlsSchemaV4) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TlsSchemaV4) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TlsSchemaV4) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *TlsSchemaV4) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Version)
 	w = basictl.IntWrite(w, item.Date)
 	w = basictl.NatWrite(w, item.TypesNum)
-	if w, err = BuiltinTupleTlsTypeBoxedWrite(w, item.Types, item.TypesNum); err != nil {
+	if w, err = BuiltinTupleTlsTypeBoxedWriteTL1(w, item.Types, item.TypesNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWriteTL1(w, item.Functions, item.FunctionsNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TlsSchemaV4) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsSchemaV4) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x90ac88d7); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsSchemaV4) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsSchemaV4) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TlsSchemaV4) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsSchemaV4) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x90ac88d7)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsSchemaV4) String() string {

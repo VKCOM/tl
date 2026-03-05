@@ -55,56 +55,74 @@ func (item *CasesTL2TestParamsGeneration) RepairMasks() {
 }
 
 func (item *CasesTL2TestParamsGeneration) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTL2TestParamsGeneration) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N1); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.N2); err != nil {
 		return w, err
 	}
-	if w, err = item.X1.Read(w); err != nil {
+	if w, err = item.X1.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.X2.Read(w, item.N1); err != nil {
+	if w, err = item.X2.ReadTL1(w, item.N1); err != nil {
 		return w, err
 	}
-	if w, err = item.X3.Read(w, item.N2); err != nil {
+	if w, err = item.X3.ReadTL1(w, item.N2); err != nil {
 		return w, err
 	}
-	return item.X4.Read(w, item.N1, item.N2)
+	return item.X4.ReadTL1(w, item.N1, item.N2)
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTL2TestParamsGeneration) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestParamsGeneration) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTL2TestParamsGeneration) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N1)
 	w = basictl.NatWrite(w, item.N2)
-	w = item.X1.Write(w)
-	w = item.X2.Write(w, item.N1)
-	if w, err = item.X3.Write(w, item.N2); err != nil {
+	w = item.X1.WriteTL1(w)
+	w = item.X2.WriteTL1(w, item.N1)
+	if w, err = item.X3.WriteTL1(w, item.N2); err != nil {
 		return w, err
 	}
-	if w, err = item.X4.Write(w, item.N1, item.N2); err != nil {
+	if w, err = item.X4.WriteTL1(w, item.N1, item.N2); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *CasesTL2TestParamsGeneration) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTL2TestParamsGeneration) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xaac2f033); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTL2TestParamsGeneration) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTL2TestParamsGeneration) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xaac2f033)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTL2TestParamsGeneration) String() string {

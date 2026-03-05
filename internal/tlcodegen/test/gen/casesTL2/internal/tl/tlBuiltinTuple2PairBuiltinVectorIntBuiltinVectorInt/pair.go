@@ -30,18 +30,18 @@ func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntFillRandom(rg *basictl.Ran
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntRead(w []byte, vec *[2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) (_ []byte, err error) {
+func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadTL1(w []byte, vec *[2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWrite(w []byte, vec *[2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) []byte {
+func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteTL1(w []byte, vec *[2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) []byte {
 	for _, elem := range *vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

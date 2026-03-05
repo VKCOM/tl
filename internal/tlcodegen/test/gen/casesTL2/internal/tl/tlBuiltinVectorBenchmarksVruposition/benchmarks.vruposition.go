@@ -25,7 +25,7 @@ func BuiltinVectorBenchmarksVrupositionFillRandom(rg *basictl.RandGenerator, vec
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]tlBenchmarksVruposition.BenchmarksVruposition) (_ []byte, err error) {
+func BuiltinVectorBenchmarksVrupositionReadTL1(w []byte, vec *[]tlBenchmarksVruposition.BenchmarksVruposition) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -36,17 +36,17 @@ func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]tlBenchmarksVruposi
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorBenchmarksVrupositionWrite(w []byte, vec []tlBenchmarksVruposition.BenchmarksVruposition) []byte {
+func BuiltinVectorBenchmarksVrupositionWriteTL1(w []byte, vec []tlBenchmarksVruposition.BenchmarksVruposition) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

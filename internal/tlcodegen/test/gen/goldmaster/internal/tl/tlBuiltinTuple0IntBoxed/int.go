@@ -29,7 +29,7 @@ func BuiltinTuple0IntBoxedFillRandom(rg *basictl.RandGenerator, vec *[0]int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple0IntBoxedRead(w []byte, vec *[0]int32) (_ []byte, err error) {
+func BuiltinTuple0IntBoxedReadTL1(w []byte, vec *[0]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.NatReadExactTag(w, 0xa8509bda); err != nil {
 			return w, err
@@ -41,7 +41,7 @@ func BuiltinTuple0IntBoxedRead(w []byte, vec *[0]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple0IntBoxedWrite(w []byte, vec *[0]int32) []byte {
+func BuiltinTuple0IntBoxedWriteTL1(w []byte, vec *[0]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.NatWrite(w, 0xa8509bda)
 		w = basictl.IntWrite(w, elem)

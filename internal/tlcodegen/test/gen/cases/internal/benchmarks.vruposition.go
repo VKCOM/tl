@@ -188,6 +188,9 @@ func (item *BenchmarksVruposition) RepairMasks() {
 }
 
 func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *BenchmarksVruposition) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -213,7 +216,7 @@ func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.BlockTimeNano); err != nil {
 		return w, err
 	}
-	if w, err = item.Hash.Read(w); err != nil {
+	if w, err = item.Hash.ReadTL1(w); err != nil {
 		return w, err
 	}
 	if w, err = basictl.LongRead(w, &item.FileOffset); err != nil {
@@ -231,14 +234,20 @@ func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *BenchmarksVruposition) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *BenchmarksVruposition) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *BenchmarksVruposition) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *BenchmarksVruposition) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = basictl.LongWrite(w, item.PayloadOffset)
 	w = basictl.LongWrite(w, item.BlockTimeNano)
-	w = item.Hash.Write(w)
+	w = item.Hash.WriteTL1(w)
 	w = basictl.LongWrite(w, item.FileOffset)
 	if item.FieldsMask&(1<<14) != 0 {
 		w = basictl.LongWrite(w, item.SeqNumber)
@@ -247,19 +256,28 @@ func (item *BenchmarksVruposition) Write(w []byte) []byte {
 }
 
 func (item *BenchmarksVruposition) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *BenchmarksVruposition) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x32792c04); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *BenchmarksVruposition) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *BenchmarksVruposition) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *BenchmarksVruposition) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *BenchmarksVruposition) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x32792c04)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item BenchmarksVruposition) String() string {
@@ -838,26 +856,26 @@ func BuiltinTupleBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition, 
 	}
 }
 
-func BuiltinTupleBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionReadTL1(w []byte, vec *[]BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]BenchmarksVruposition, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleBenchmarksVrupositionWrite(w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVrupositionWriteTL1(w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]BenchmarksVruposition", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w, nil
 }
@@ -1027,7 +1045,7 @@ func BuiltinVectorBenchmarksVrupositionRepairMasks(vec *[]BenchmarksVruposition)
 		(*vec)[i].RepairMasks()
 	}
 }
-func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
+func BuiltinVectorBenchmarksVrupositionReadTL1(w []byte, vec *[]BenchmarksVruposition) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -1038,17 +1056,17 @@ func BuiltinVectorBenchmarksVrupositionRead(w []byte, vec *[]BenchmarksVrupositi
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorBenchmarksVrupositionWrite(w []byte, vec []BenchmarksVruposition) []byte {
+func BuiltinVectorBenchmarksVrupositionWriteTL1(w []byte, vec []BenchmarksVruposition) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

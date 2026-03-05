@@ -30,36 +30,54 @@ func (item *Service3GroupCountLimit) Reset() {
 }
 
 func (item *Service3GroupCountLimit) Read(w []byte) (_ []byte, err error) {
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Types); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *Service3GroupCountLimit) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Types); err != nil {
 		return w, err
 	}
 	return basictl.IntRead(w, &item.Limit)
 }
 
 func (item *Service3GroupCountLimit) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service3GroupCountLimit) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service3GroupCountLimit) Write(w []byte) []byte {
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Types)
+	return item.WriteTL1(w)
+}
+func (item *Service3GroupCountLimit) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Types)
 	w = basictl.IntWrite(w, item.Limit)
 	return w
 }
 
 func (item *Service3GroupCountLimit) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service3GroupCountLimit) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x8c04ea7f); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service3GroupCountLimit) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service3GroupCountLimit) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service3GroupCountLimit) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service3GroupCountLimit) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x8c04ea7f)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service3GroupCountLimit) String() string {

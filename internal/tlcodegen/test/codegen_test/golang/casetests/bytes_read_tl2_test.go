@@ -56,7 +56,7 @@ func runMappingTestBytesTL2(t *testing.T, mt mappingTestBytes) {
 			_, readTL2Err := mt.object.ReadTL2(resultTL2, nil)
 			assert.Nil(t, readTL2Err)
 
-			newBytes, writeErr := mt.object.WriteGeneral(nil)
+			newBytes, writeErr := mt.object.WriteTL1General(nil)
 			assert.Nil(t, writeErr)
 			assert.Equal(t, success.Bytes, utils.SprintHexDump(newBytes))
 		})
@@ -98,13 +98,13 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 
 			for i := 0; i < NumberOfSamples; i++ {
 				dst.FillRandom(rg)
-				data, err := dst.WriteGeneral(nil)
+				data, err := dst.WriteTL1General(nil)
 				if err != nil {
 					t.Fatalf("can't seriliaze %d-th object", i)
 				}
 				var resultData []byte
 				if dstFun != nil {
-					resultData, err = dstFun.FillRandomResult(rg, resultData[:0])
+					resultData, err = dstFun.FillRandomResultTL1(rg, resultData[:0])
 					if err != nil {
 						t.Fatalf("can't serialize %d-th function result", i)
 					}
@@ -119,7 +119,7 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 						_, err = newDst.ReadTL2(writeBuffer, nil)
 						t.Fatalf("can't readTL2 %d-th object", i)
 					}
-					newData, err := newDst.WriteGeneral(nil)
+					newData, err := newDst.WriteTL1General(nil)
 					if err != nil {
 						t.Fatalf("can't write %d-th object", i)
 					}
@@ -130,11 +130,11 @@ func TestGeneralCasesTL2Random(t *testing.T) {
 					if dstFun == nil {
 						return
 					}
-					_, writeBuffer, err = dstFun.ReadResultWriteResultTL2(nil, resultData, writeBuffer[:0])
+					_, writeBuffer, err = dstFun.ReadResultTL1WriteResultTL2(nil, resultData, writeBuffer[:0])
 					if err != nil {
 						t.Fatalf("can't readTL2 %d-th result", i)
 					}
-					_, newData, err = dstFun.ReadResultTL2WriteResult(nil, writeBuffer, newData[:0])
+					_, newData, err = dstFun.ReadResultTL2WriteResultTL1(nil, writeBuffer, newData[:0])
 					if err != nil {
 						t.Fatalf("can't write %d-th result", i)
 					}
@@ -171,7 +171,7 @@ func TestExactTestCasesTL2Random(t *testing.T) {
 	if err != nil {
 		t.Fatalf("can't readTL2 object")
 	}
-	newData, err := newDst.WriteGeneral(nil)
+	newData, err := newDst.WriteTL1General(nil)
 	if err != nil {
 		t.Fatalf("can't write object")
 	}

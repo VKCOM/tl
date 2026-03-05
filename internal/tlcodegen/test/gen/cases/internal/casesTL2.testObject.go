@@ -124,6 +124,9 @@ func (item *CasesTL2TestObject) RepairMasks() {
 }
 
 func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTL2TestObject) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -134,29 +137,29 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	if item.N&(1<<0) != 0 {
 		item.tl2mask0 |= 1
 	}
-	if w, err = BoolReadBoxed(w, &item.F2); err != nil {
+	if w, err = BoolReadTL1Boxed(w, &item.F2); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinVectorBoolRead(w, &item.F3); err != nil {
+	if w, err = BuiltinVectorBoolReadTL1(w, &item.F3); err != nil {
 		return w, err
 	}
-	if w, err = item.F4.Read(w, item.Ns); err != nil {
+	if w, err = item.F4.ReadTL1(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
 		item.tl2mask0 |= 2
-		if w, err = BoolReadBoxed(w, &item.F5); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &item.F5); err != nil {
 			return w, err
 		}
 	} else {
 		item.F5 = false
 	}
-	if w, err = BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(w, &item.F6); err != nil {
+	if w, err = BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL1(w, &item.F6); err != nil {
 		return w, err
 	}
 	if item.N&(1<<14) != 0 {
 		item.tl2mask0 |= 4
-		if w, err = BuiltinVectorTrueBoxedRead(w, &item.F7); err != nil {
+		if w, err = BuiltinVectorTrueBoxedReadTL1(w, &item.F7); err != nil {
 			return w, err
 		}
 	} else {
@@ -166,41 +169,56 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTL2TestObject) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTL2TestObject) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestObject) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTL2TestObject) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	w = basictl.NatWrite(w, item.Ns)
-	w = BoolWriteBoxed(w, item.F2)
-	w = BuiltinVectorBoolWrite(w, item.F3)
-	if w, err = item.F4.Write(w, item.Ns); err != nil {
+	w = BoolWriteTL1Boxed(w, item.F2)
+	w = BuiltinVectorBoolWriteTL1(w, item.F3)
+	if w, err = item.F4.WriteTL1(w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
-		w = BoolWriteBoxed(w, item.F5)
+		w = BoolWriteTL1Boxed(w, item.F5)
 	}
-	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(w, item.F6)
+	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteTL1(w, item.F6)
 	if item.N&(1<<14) != 0 {
-		w = BuiltinVectorTrueBoxedWrite(w, item.F7)
+		w = BuiltinVectorTrueBoxedWriteTL1(w, item.F7)
 	}
 	return w, nil
 }
 
 func (item *CasesTL2TestObject) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTL2TestObject) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4f96dd95); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTL2TestObject) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTL2TestObject) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTL2TestObject) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTL2TestObject) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x4f96dd95)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTL2TestObject) String() string {

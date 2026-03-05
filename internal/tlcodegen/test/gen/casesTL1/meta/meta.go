@@ -31,6 +31,11 @@ type Object interface {
 	WriteGeneral(w []byte) ([]byte, error)      // same as Write, but has common signature (with error) for all objects, so can be called through interface
 	WriteBoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
 
+	ReadTL1(w []byte) ([]byte, error)              // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
+	ReadTL1Boxed(w []byte) ([]byte, error)         // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
+	WriteTL1General(w []byte) ([]byte, error)      // same as Write, but has common signature (with error) for all objects, so can be called through interface
+	WriteTL1BoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
+
 	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error
 	UnmarshalJSON([]byte) error   // reads type's JSON representation
 
@@ -43,12 +48,12 @@ type Object interface {
 type Function interface {
 	Object
 
-	FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error)
+	FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error)
 
 	// tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
 	// pass empty basictl.JSONWriteContext{} if you do not know which options you need
-	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
-	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error)                                 // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
+	ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
+	ReadResultJSONWriteResultTL1(r []byte, w []byte) ([]byte, []byte, error)                                 // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 
 }
 
@@ -158,16 +163,22 @@ func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 
 func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
 // TLItem serves as a single type for all TL1 enum values
-func (item *TLItem) Reset()                                {}
-func (item *TLItem) FillRandom(rg *basictl.RandGenerator)  {}
-func (item *TLItem) Read(w []byte) ([]byte, error)         { return w, nil }
-func (item *TLItem) WriteGeneral(w []byte) ([]byte, error) { return w, nil }
-func (item *TLItem) Write(w []byte) []byte                 { return w }
-func (item *TLItem) ReadBoxed(w []byte) ([]byte, error)    { return basictl.NatReadExactTag(w, item.tag) }
+func (item *TLItem) Reset()                               {}
+func (item *TLItem) FillRandom(rg *basictl.RandGenerator) {}
+func (item *TLItem) Read(w []byte) ([]byte, error)        { return w, nil }
+func (item *TLItem) ReadTL1(w []byte) ([]byte, error)     { return w, nil }
+func (item *TLItem) ReadBoxed(w []byte) ([]byte, error)   { return basictl.NatReadExactTag(w, item.tag) }
+func (item *TLItem) ReadTL1Boxed(w []byte) ([]byte, error) {
+	return basictl.NatReadExactTag(w, item.tag)
+}
+func (item *TLItem) WriteGeneral(w []byte) ([]byte, error)    { return w, nil }
+func (item *TLItem) WriteTL1General(w []byte) ([]byte, error) { return w, nil }
 func (item *TLItem) WriteBoxedGeneral(w []byte) ([]byte, error) {
 	return basictl.NatWrite(w, item.tag), nil
 }
-func (item *TLItem) WriteBoxed(w []byte) []byte { return basictl.NatWrite(w, item.tag) }
+func (item *TLItem) WriteTL1BoxedGeneral(w []byte) ([]byte, error) {
+	return basictl.NatWrite(w, item.tag), nil
+}
 func (item TLItem) String() string {
 	return string(item.WriteJSON(nil))
 }

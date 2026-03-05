@@ -25,7 +25,7 @@ func BuiltinVectorBoolFillRandom(rg *basictl.RandGenerator, vec *[]bool) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorBoolRead(w []byte, vec *[]bool) (_ []byte, err error) {
+func BuiltinVectorBoolReadTL1(w []byte, vec *[]bool) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -36,17 +36,17 @@ func BuiltinVectorBoolRead(w []byte, vec *[]bool) (_ []byte, err error) {
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = tlBool.BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorBoolWrite(w []byte, vec []bool) []byte {
+func BuiltinVectorBoolWriteTL1(w []byte, vec []bool) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = tlBool.BoolWriteBoxed(w, elem)
+		w = tlBool.BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }

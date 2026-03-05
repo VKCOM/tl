@@ -18,11 +18,11 @@ const (
 	BoolTrue  uint32 = 0x997275b5
 )
 
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
+func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 	return basictl.ReadBool(w, v, BoolFalse, BoolTrue)
 }
 
-func BoolWriteBoxed(w []byte, v bool) []byte {
+func BoolWriteTL1Boxed(w []byte, v bool) []byte {
 	if v {
 		return basictl.NatWrite(w, 0x997275b5)
 	}
@@ -43,18 +43,18 @@ func BuiltinTuple0BoolFillRandom(rg *basictl.RandGenerator, vec *[0]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple0BoolRead(w []byte, vec *[0]bool) (_ []byte, err error) {
+func BuiltinTuple0BoolReadTL1(w []byte, vec *[0]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple0BoolWrite(w []byte, vec *[0]bool) []byte {
+func BuiltinTuple0BoolWriteTL1(w []byte, vec *[0]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -197,18 +197,18 @@ func BuiltinTuple11BoolFillRandom(rg *basictl.RandGenerator, vec *[11]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple11BoolRead(w []byte, vec *[11]bool) (_ []byte, err error) {
+func BuiltinTuple11BoolReadTL1(w []byte, vec *[11]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple11BoolWrite(w []byte, vec *[11]bool) []byte {
+func BuiltinTuple11BoolWriteTL1(w []byte, vec *[11]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -351,18 +351,18 @@ func BuiltinTuple16BoolFillRandom(rg *basictl.RandGenerator, vec *[16]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple16BoolRead(w []byte, vec *[16]bool) (_ []byte, err error) {
+func BuiltinTuple16BoolReadTL1(w []byte, vec *[16]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple16BoolWrite(w []byte, vec *[16]bool) []byte {
+func BuiltinTuple16BoolWriteTL1(w []byte, vec *[16]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -505,18 +505,18 @@ func BuiltinTuple1BoolFillRandom(rg *basictl.RandGenerator, vec *[1]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple1BoolRead(w []byte, vec *[1]bool) (_ []byte, err error) {
+func BuiltinTuple1BoolReadTL1(w []byte, vec *[1]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple1BoolWrite(w []byte, vec *[1]bool) []byte {
+func BuiltinTuple1BoolWriteTL1(w []byte, vec *[1]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -659,18 +659,18 @@ func BuiltinTuple7BoolFillRandom(rg *basictl.RandGenerator, vec *[7]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple7BoolRead(w []byte, vec *[7]bool) (_ []byte, err error) {
+func BuiltinTuple7BoolReadTL1(w []byte, vec *[7]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple7BoolWrite(w []byte, vec *[7]bool) []byte {
+func BuiltinTuple7BoolWriteTL1(w []byte, vec *[7]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -813,18 +813,18 @@ func BuiltinTuple8BoolFillRandom(rg *basictl.RandGenerator, vec *[8]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple8BoolRead(w []byte, vec *[8]bool) (_ []byte, err error) {
+func BuiltinTuple8BoolReadTL1(w []byte, vec *[8]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple8BoolWrite(w []byte, vec *[8]bool) []byte {
+func BuiltinTuple8BoolWriteTL1(w []byte, vec *[8]bool) []byte {
 	for _, elem := range *vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }
@@ -962,26 +962,26 @@ func BuiltinTupleBoolFillRandom(rg *basictl.RandGenerator, vec *[]bool, nat_n ui
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleBoolRead(w []byte, vec *[]bool, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBoolReadTL1(w []byte, vec *[]bool, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]bool, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleBoolWrite(w []byte, vec []bool, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBoolWriteTL1(w []byte, vec []bool, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]bool", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w, nil
 }
@@ -1145,7 +1145,7 @@ func BuiltinVectorBoolFillRandom(rg *basictl.RandGenerator, vec *[]bool) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorBoolRead(w []byte, vec *[]bool) (_ []byte, err error) {
+func BuiltinVectorBoolReadTL1(w []byte, vec *[]bool) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -1156,17 +1156,17 @@ func BuiltinVectorBoolRead(w []byte, vec *[]bool) (_ []byte, err error) {
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorBoolWrite(w []byte, vec []bool) []byte {
+func BuiltinVectorBoolWriteTL1(w []byte, vec []bool) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = BoolWriteBoxed(w, elem)
+		w = BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }

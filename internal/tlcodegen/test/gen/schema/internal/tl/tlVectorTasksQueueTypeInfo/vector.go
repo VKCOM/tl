@@ -32,32 +32,50 @@ func (item *VectorTasksQueueTypeInfo) Reset() {
 }
 
 func (item *VectorTasksQueueTypeInfo) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoRead(w, item.ptr())
+	return item.ReadTL1(w)
+}
+func (item *VectorTasksQueueTypeInfo) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadTL1(w, item.ptr())
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *VectorTasksQueueTypeInfo) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *VectorTasksQueueTypeInfo) Write(w []byte) []byte {
-	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWrite(w, *item.ptr())
+	return item.WriteTL1(w)
+}
+func (item *VectorTasksQueueTypeInfo) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteTL1(w, *item.ptr())
 	return w
 }
 
 func (item *VectorTasksQueueTypeInfo) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *VectorTasksQueueTypeInfo) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *VectorTasksQueueTypeInfo) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *VectorTasksQueueTypeInfo) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item VectorTasksQueueTypeInfo) String() string {

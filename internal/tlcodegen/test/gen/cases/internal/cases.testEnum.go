@@ -52,10 +52,16 @@ func (item CasesTestEnum) IsV3() bool { return item.index == 2 }
 func (item *CasesTestEnum) SetV3()    { item.index = 2 }
 
 func (item *CasesTestEnum) Read(w []byte) (_ []byte, err error) {
-	return item.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *CasesTestEnum) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
 }
 
 func (item *CasesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTestEnum) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -76,14 +82,23 @@ func (item *CasesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesTestEnum) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxedGeneral(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTestEnum) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
 }
 
 func (item *CasesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTestEnum) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesTestEnum) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTestEnum) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _CasesTestEnum[item.index].TLTag)
 	return w
 }

@@ -24,42 +24,66 @@ func (Service1GetKeysStatPeriods) TLTag() uint32  { return 0x8cdf39e3 }
 
 func (item *Service1GetKeysStatPeriods) Reset() {}
 
-func (item *Service1GetKeysStatPeriods) Read(w []byte) (_ []byte, err error) { return w, nil }
+func (item *Service1GetKeysStatPeriods) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1GetKeysStatPeriods) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
 func (item *Service1GetKeysStatPeriods) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1GetKeysStatPeriods) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1GetKeysStatPeriods) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1GetKeysStatPeriods) WriteTL1(w []byte) []byte {
 	return w
 }
 
 func (item *Service1GetKeysStatPeriods) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1GetKeysStatPeriods) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x8cdf39e3); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1GetKeysStatPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1GetKeysStatPeriods) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1GetKeysStatPeriods) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1GetKeysStatPeriods) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x8cdf39e3)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service1GetKeysStatPeriods) ReadResult(w []byte, ret *[]int32) (_ []byte, err error) {
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service1GetKeysStatPeriods) ReadResultTL1(w []byte, ret *[]int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, ret)
+	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, ret)
 }
 
 func (item *Service1GetKeysStatPeriods) WriteResult(w []byte, ret []int32) (_ []byte, err error) {
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service1GetKeysStatPeriods) WriteResultTL1(w []byte, ret []int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, ret)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, ret)
 	return w, nil
 }
 
@@ -81,21 +105,21 @@ func (item *Service1GetKeysStatPeriods) writeResultJSON(tctx *basictl.JSONWriteC
 	return w, nil
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetKeysStatPeriods) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetKeysStatPeriods) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

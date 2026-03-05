@@ -63,72 +63,90 @@ func (item *Replace) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Replace) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Replace) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.A.Read(w, item.N); err != nil {
+	if w, err = item.A.ReadTL1(w, item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.A1.Read(w); err != nil {
+	if w, err = item.A1.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.B.Read(w); err != nil {
+	if w, err = item.B.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.C.Read(w); err != nil {
+	if w, err = item.C.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.D.Read(w, item.N); err != nil {
+	if w, err = item.D.ReadTL1(w, item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.D1.Read(w); err != nil {
+	if w, err = item.D1.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.E.Read(w); err != nil {
+	if w, err = item.E.ReadTL1(w); err != nil {
 		return w, err
 	}
-	return item.G.Read(w)
+	return item.G.ReadTL1(w)
 }
 
 func (item *Replace) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *Replace) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *Replace) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *Replace) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = item.A.Write(w, item.N); err != nil {
+	if w, err = item.A.WriteTL1(w, item.N); err != nil {
 		return w, err
 	}
-	w = item.A1.Write(w)
-	if w, err = item.B.Write(w); err != nil {
+	w = item.A1.WriteTL1(w)
+	if w, err = item.B.WriteTL1(w); err != nil {
 		return w, err
 	}
-	w = item.C.Write(w)
-	if w, err = item.D.Write(w, item.N); err != nil {
+	w = item.C.WriteTL1(w)
+	if w, err = item.D.WriteTL1(w, item.N); err != nil {
 		return w, err
 	}
-	w = item.D1.Write(w)
-	if w, err = item.E.Write(w); err != nil {
+	w = item.D1.WriteTL1(w)
+	if w, err = item.E.WriteTL1(w); err != nil {
 		return w, err
 	}
-	w = item.G.Write(w)
+	w = item.G.WriteTL1(w)
 	return w, nil
 }
 
 func (item *Replace) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Replace) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xebb26b29); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Replace) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Replace) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *Replace) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Replace) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xebb26b29)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Replace) String() string {

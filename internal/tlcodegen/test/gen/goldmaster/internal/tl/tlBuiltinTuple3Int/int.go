@@ -29,7 +29,7 @@ func BuiltinTuple3IntFillRandom(rg *basictl.RandGenerator, vec *[3]int32) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3IntRead(w []byte, vec *[3]int32) (_ []byte, err error) {
+func BuiltinTuple3IntReadTL1(w []byte, vec *[3]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.IntRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -38,7 +38,7 @@ func BuiltinTuple3IntRead(w []byte, vec *[3]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple3IntWrite(w []byte, vec *[3]int32) []byte {
+func BuiltinTuple3IntWriteTL1(w []byte, vec *[3]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.IntWrite(w, elem)
 	}

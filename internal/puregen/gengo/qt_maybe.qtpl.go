@@ -90,6 +90,16 @@ func (item *`)
 	qw422016.N().S(`) ReadBoxed(w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)
+}
+
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadTL1Boxed(w []byte`)
+	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if maybe.wr.originateFromTL2 {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
@@ -112,35 +122,25 @@ func (item *`)
 	}
 	qw422016.N().S(`}
 
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if maybe.wr.originateFromTL2 {
-		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
-`)
-	} else {
-		if writeElementNeedsError {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`), nil
-`)
-		}
-	}
-	qw422016.N().S(`}
-
+	qw422016.N().S(`
 `)
 	if !maybe.wr.originateFromTL2 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteBoxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) `)
+		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
+		qw422016.N().S(` {
+    return item.WriteTL1Boxed(w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
+}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))

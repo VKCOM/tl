@@ -32,32 +32,50 @@ func (item *VectorService6FindResultRow) Reset() {
 }
 
 func (item *VectorService6FindResultRow) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowRead(w, item.ptr())
+	return item.ReadTL1(w)
+}
+func (item *VectorService6FindResultRow) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadTL1(w, item.ptr())
 }
 
 func (item *VectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *VectorService6FindResultRow) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *VectorService6FindResultRow) Write(w []byte) []byte {
-	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWrite(w, *item.ptr())
+	return item.WriteTL1(w)
+}
+func (item *VectorService6FindResultRow) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteTL1(w, *item.ptr())
 	return w
 }
 
 func (item *VectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *VectorService6FindResultRow) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *VectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *VectorService6FindResultRow) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *VectorService6FindResultRow) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *VectorService6FindResultRow) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item VectorService6FindResultRow) String() string {

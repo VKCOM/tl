@@ -13,7 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
-func BuiltinTupleTlsArgBoxedRead(w []byte, vec *[]TlsArg, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsArgBoxedReadTL1(w []byte, vec *[]TlsArg, nat_n uint32) (_ []byte, err error) {
 	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
 		return w, err
 	}
@@ -23,19 +23,19 @@ func BuiltinTupleTlsArgBoxedRead(w []byte, vec *[]TlsArg, nat_n uint32) (_ []byt
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleTlsArgBoxedWrite(w []byte, vec []TlsArg, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsArgBoxedWriteTL1(w []byte, vec []TlsArg, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]TlsArg", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		if w, err = elem.WriteBoxed(w); err != nil {
+		if w, err = elem.WriteTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
@@ -161,6 +161,9 @@ func (item *TlsArg) Reset() {
 }
 
 func (item *TlsArg) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsArg) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Id); err != nil {
 		return w, err
 	}
@@ -188,14 +191,20 @@ func (item *TlsArg) Read(w []byte) (_ []byte, err error) {
 	} else {
 		item.ExistVarBit = 0
 	}
-	return item.Type.ReadBoxed(w)
+	return item.Type.ReadTL1Boxed(w)
 }
 
 func (item *TlsArg) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TlsArg) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TlsArg) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *TlsArg) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.StringWrite(w, item.Id)
 	w = basictl.NatWrite(w, item.Flags)
 	if item.Flags&(1<<1) != 0 {
@@ -207,26 +216,35 @@ func (item *TlsArg) Write(w []byte) (_ []byte, err error) {
 	if item.Flags&(1<<2) != 0 {
 		w = basictl.IntWrite(w, item.ExistVarBit)
 	}
-	if w, err = item.Type.WriteBoxed(w); err != nil {
+	if w, err = item.Type.WriteTL1Boxed(w); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TlsArg) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsArg) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x29dfe61b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsArg) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsArg) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TlsArg) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsArg) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x29dfe61b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsArg) String() string {

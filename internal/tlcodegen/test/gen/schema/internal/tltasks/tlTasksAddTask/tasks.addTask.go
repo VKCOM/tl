@@ -34,43 +34,64 @@ func (item *TasksAddTask) Reset() {
 }
 
 func (item *TasksAddTask) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TasksAddTask) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.TypeName); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.QueueId); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.QueueId); err != nil {
 		return w, err
 	}
-	return item.Task.Read(w)
+	return item.Task.ReadTL1(w)
 }
 
 func (item *TasksAddTask) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *TasksAddTask) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *TasksAddTask) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *TasksAddTask) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.QueueId)
-	w = item.Task.Write(w)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.QueueId)
+	w = item.Task.WriteTL1(w)
 	return w
 }
 
 func (item *TasksAddTask) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TasksAddTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2ca073d5); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TasksAddTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TasksAddTask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *TasksAddTask) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TasksAddTask) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2ca073d5)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *TasksAddTask) ReadResult(w []byte, ret *int64) (_ []byte, err error) {
+	return item.ReadResultTL1(w, ret)
+}
+func (item *TasksAddTask) ReadResultTL1(w []byte, ret *int64) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x22076cba); err != nil {
 		return w, err
 	}
@@ -78,6 +99,9 @@ func (item *TasksAddTask) ReadResult(w []byte, ret *int64) (_ []byte, err error)
 }
 
 func (item *TasksAddTask) WriteResult(w []byte, ret int64) (_ []byte, err error) {
+	return item.WriteResultTL1(w, ret)
+}
+func (item *TasksAddTask) WriteResultTL1(w []byte, ret int64) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x22076cba)
 	w = basictl.LongWrite(w, ret)
 	return w, nil
@@ -100,21 +124,21 @@ func (item *TasksAddTask) writeResultJSON(tctx *basictl.JSONWriteContext, w []by
 	return w, nil
 }
 
-func (item *TasksAddTask) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *TasksAddTask) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret int64
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *TasksAddTask) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *TasksAddTask) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret int64
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

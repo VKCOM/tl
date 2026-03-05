@@ -32,6 +32,9 @@ func (item *BoolStat) Reset() {
 }
 
 func (item *BoolStat) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *BoolStat) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.StatTrue); err != nil {
 		return w, err
 	}
@@ -42,10 +45,16 @@ func (item *BoolStat) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *BoolStat) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *BoolStat) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *BoolStat) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *BoolStat) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.StatTrue)
 	w = basictl.IntWrite(w, item.StatFalse)
 	w = basictl.IntWrite(w, item.StatUnknown)
@@ -53,19 +62,28 @@ func (item *BoolStat) Write(w []byte) []byte {
 }
 
 func (item *BoolStat) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *BoolStat) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x92cbcbfa); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *BoolStat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *BoolStat) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *BoolStat) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *BoolStat) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x92cbcbfa)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item BoolStat) String() string {

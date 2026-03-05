@@ -77,39 +77,61 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
 }
         {%- endif -%}
 
-func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
+func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.ReadTL1(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) ReadTL1(w []byte {%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
 
+{%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteTL1General(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) WriteTL1General(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    return item.Write(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
+    return item.WriteTL1(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
     {%- endif -%}
 }
+{%- endif -%}
 
-func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} { {%= struct_.writeFields(bytesVersion, directImports) %} }
+func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    return item.WriteTL1(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) WriteTL1(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} { {%= struct_.writeFields(bytesVersion, directImports) %} }
 
     {%- if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 -%}
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
         return w, err
     }
-    return item.Read(w{%s= natArgsCall %})
+    return item.ReadTL1(w{%s= natArgsCall %})
     {%- endif -%}
 }
 
+{%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteTL1BoxedGeneral(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    return item.WriteBoxed(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
+    return item.WriteTL1Boxed(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
     {%- endif -%}
 }
+{%- endif -%}
 
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    return item.WriteTL1Boxed(w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     {%- if struct_.wr.originateFromTL2 -%}
         {%- if writeNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -118,7 +140,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
         {%- endif -%}
     {%- else -%}
     w = basictl.NatWrite(w, {%s= tlTag %})
-    return item.Write(w{%s= natArgsCall %})
+    return item.WriteTL1(w{%s= natArgsCall %})
     {%- endif -%}
 }
 
@@ -709,6 +731,9 @@ so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
         retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
     -%}
 func (item *{%s= goName %}) ReadResult(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
+    return item.ReadResultTL1(w, ret)
+}
+func (item *{%s= goName %}) ReadResultTL1(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -717,6 +742,9 @@ func (item *{%s= goName %}) ReadResult(w []byte, ret *{%s= retArg %}) (_ []byte,
 }
 
 func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte, err error) {
+    return item.WriteResultTL1(w, ret)
+}
+func (item *{%s= goName %}) WriteResultTL1(w []byte, ret {%s= retArg %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -863,45 +891,45 @@ func (item *{%s= goName %}) writeResultJSON(tctx *basictl.JSONWriteContext, w []
 }
 {%- if struct_.wr.gen.options.GenerateRandomCode -%}
 
-func (item *{%s= goName %}) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+func (item *{%s= goName %}) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
     var ret {%s= retArg %}
     {%s= struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false) %}
-    return item.WriteResult(w, ret)
+    return item.WriteResultTL1(w, ret)
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}
-  if r, err = item.ReadResult(r, &ret); err != nil {
+  if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
   w, err = item.writeResultJSON(tctx, w, ret)
   return r, w, err
 }
 
-func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}
   if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResult(w, ret)
+  w, err = item.WriteResultTL1(w, ret)
   return r, w, err
 }
 
 {%- if struct_.wr.gen.options.GenerateTL2() -%}
-func (item *{%s= goName %}) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
-  if r, err = item.ReadResult(r, &ret); err != nil {
+  if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
   return r, item.WriteResultTL2(w, tctx, ret), nil
   {%- endif -%}
 }
 
-func (item *{%s= goName %}) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
@@ -909,7 +937,7 @@ func (item *{%s= goName %}) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContex
   if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResult(w, ret)
+  w, err = item.WriteResultTL1(w, ret)
   return r, w, err
   {%- endif -%}
 }

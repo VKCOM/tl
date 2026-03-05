@@ -24,7 +24,7 @@ func BuiltinVectorStringFillRandom(rg *basictl.RandGenerator, vec *[]string) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorStringRead(w []byte, vec *[]string) (_ []byte, err error) {
+func BuiltinVectorStringReadTL1(w []byte, vec *[]string) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -42,7 +42,7 @@ func BuiltinVectorStringRead(w []byte, vec *[]string) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinVectorStringWrite(w []byte, vec []string) []byte {
+func BuiltinVectorStringWriteTL1(w []byte, vec []string) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.StringWrite(w, elem)
@@ -185,7 +185,7 @@ func BuiltinVectorStringBytesFillRandom(rg *basictl.RandGenerator, vec *[][]byte
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorStringBytesRead(w []byte, vec *[][]byte) (_ []byte, err error) {
+func BuiltinVectorStringBytesReadTL1(w []byte, vec *[][]byte) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -203,7 +203,7 @@ func BuiltinVectorStringBytesRead(w []byte, vec *[][]byte) (_ []byte, err error)
 	return w, nil
 }
 
-func BuiltinVectorStringBytesWrite(w []byte, vec [][]byte) []byte {
+func BuiltinVectorStringBytesWriteTL1(w []byte, vec [][]byte) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.StringWriteBytes(w, elem)

@@ -46,56 +46,74 @@ func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UseDictUgly) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictIntTupleStringRead(w, &item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringReadTL1(w, &item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictLongTupleStringRead(w, &item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringReadTL1(w, &item.E, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictIntPairIntIntRead(w, &item.X); err != nil {
+	if w, err = BuiltinDictIntPairIntIntReadTL1(w, &item.X); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictLongPairIntIntRead(w, &item.Y); err != nil {
+	if w, err = BuiltinDictLongPairIntIntReadTL1(w, &item.Y); err != nil {
 		return w, err
 	}
-	return BuiltinDictStringPairIntIntRead(w, &item.Z)
+	return BuiltinDictStringPairIntIntReadTL1(w, &item.Z)
 }
 
 func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *UseDictUgly) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *UseDictUgly) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = BuiltinDictIntTupleStringWrite(w, item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringWriteTL1(w, item.D, item.N); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinDictLongTupleStringWrite(w, item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringWriteTL1(w, item.E, item.N); err != nil {
 		return w, err
 	}
-	w = BuiltinDictIntPairIntIntWrite(w, item.X)
-	w = BuiltinDictLongPairIntIntWrite(w, item.Y)
-	w = BuiltinDictStringPairIntIntWrite(w, item.Z)
+	w = BuiltinDictIntPairIntIntWriteTL1(w, item.X)
+	w = BuiltinDictLongPairIntIntWriteTL1(w, item.Y)
+	w = BuiltinDictStringPairIntIntWriteTL1(w, item.Z)
 	return w, nil
 }
 
 func (item *UseDictUgly) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UseDictUgly) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xfb9ce817); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UseDictUgly) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UseDictUgly) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *UseDictUgly) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UseDictUgly) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xfb9ce817)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item UseDictUgly) String() string {

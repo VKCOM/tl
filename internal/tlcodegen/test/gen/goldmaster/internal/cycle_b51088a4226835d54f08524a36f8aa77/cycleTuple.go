@@ -35,18 +35,18 @@ func BuiltinTuple2CycleTupleRepairMasks(vec *[2]CycleTuple) {
 	}
 }
 
-func BuiltinTuple2CycleTupleRead(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
+func BuiltinTuple2CycleTupleReadTL1(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple2CycleTupleWrite(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
+func BuiltinTuple2CycleTupleWriteTL1(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
 	for _, elem := range *vec {
-		if w, err = elem.Write(w); err != nil {
+		if w, err = elem.WriteTL1(w); err != nil {
 			return w, err
 		}
 	}
@@ -194,26 +194,26 @@ func BuiltinTupleCycleTupleRepairMasks(vec *[]CycleTuple, nat_n uint32) {
 	}
 }
 
-func BuiltinTupleCycleTupleRead(w []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleCycleTupleReadTL1(w []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]CycleTuple, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleCycleTupleWrite(w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleCycleTupleWriteTL1(w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]CycleTuple", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		if w, err = elem.Write(w); err != nil {
+		if w, err = elem.WriteTL1(w); err != nil {
 			return w, err
 		}
 	}
@@ -471,6 +471,9 @@ func (item *CycleTuple) RepairMasks() {
 }
 
 func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CycleTuple) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -486,7 +489,7 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 		if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 			return w, err
 		}
-		if w, err = BuiltinTuple2CycleTupleRead(w, item.A); err != nil {
+		if w, err = BuiltinTuple2CycleTupleReadTL1(w, item.A); err != nil {
 			return w, err
 		}
 	} else {
@@ -497,12 +500,12 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleCycleTupleRead(w, &item.B, item.Ns); err != nil {
+	if w, err = BuiltinTupleCycleTupleReadTL1(w, &item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<2) != 0 {
 		item.tl2mask0 |= 2
-		if w, err = tlBuiltinTuple3Int.BuiltinTuple3IntRead(w, &item.C); err != nil {
+		if w, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL1(w, &item.C); err != nil {
 			return w, err
 		}
 	} else {
@@ -512,50 +515,65 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *CycleTuple) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CycleTuple) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CycleTuple) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	w = basictl.NatWrite(w, item.Ns)
 	if item.N&(1<<0) != 0 {
 		if item.A == nil {
 			var tmpValue [2]CycleTuple
 			w = basictl.NatWrite(w, 0x9770768a)
-			if w, err = BuiltinTuple2CycleTupleWrite(w, &tmpValue); err != nil {
+			if w, err = BuiltinTuple2CycleTupleWriteTL1(w, &tmpValue); err != nil {
 				return w, err
 			}
 		} else {
 			w = basictl.NatWrite(w, 0x9770768a)
-			if w, err = BuiltinTuple2CycleTupleWrite(w, item.A); err != nil {
+			if w, err = BuiltinTuple2CycleTupleWriteTL1(w, item.A); err != nil {
 				return w, err
 			}
 		}
 	}
 	w = basictl.NatWrite(w, 0x9770768a)
-	if w, err = BuiltinTupleCycleTupleWrite(w, item.B, item.Ns); err != nil {
+	if w, err = BuiltinTupleCycleTupleWriteTL1(w, item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<2) != 0 {
-		w = tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, &item.C)
+		w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteTL1(w, &item.C)
 	}
 	return w, nil
 }
 
 func (item *CycleTuple) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CycleTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9cf61870); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CycleTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CycleTuple) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CycleTuple) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CycleTuple) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9cf61870)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CycleTuple) String() string {

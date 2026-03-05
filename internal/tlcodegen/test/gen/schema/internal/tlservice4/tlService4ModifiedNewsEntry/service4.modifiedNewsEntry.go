@@ -75,7 +75,10 @@ func (item *Service4ModifiedNewsEntry) Reset() {
 }
 
 func (item *Service4ModifiedNewsEntry) Read(w []byte) (_ []byte, err error) {
-	if w, err = item.Object.Read(w); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *Service4ModifiedNewsEntry) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = item.Object.ReadTL1(w); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.CreationDate); err != nil {
@@ -99,7 +102,7 @@ func (item *Service4ModifiedNewsEntry) Read(w []byte) (_ []byte, err error) {
 		item.DeletionDate = 0
 	}
 	if item.FieldsMask&(1<<16) != 0 {
-		if w, err = tlBool.BoolReadBoxed(w, &item.HiddenByPrivacy); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &item.HiddenByPrivacy); err != nil {
 			return w, err
 		}
 	} else {
@@ -109,11 +112,17 @@ func (item *Service4ModifiedNewsEntry) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service4ModifiedNewsEntry) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service4ModifiedNewsEntry) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service4ModifiedNewsEntry) Write(w []byte) []byte {
-	w = item.Object.Write(w)
+	return item.WriteTL1(w)
+}
+func (item *Service4ModifiedNewsEntry) WriteTL1(w []byte) []byte {
+	w = item.Object.WriteTL1(w)
 	w = basictl.IntWrite(w, item.CreationDate)
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -123,25 +132,34 @@ func (item *Service4ModifiedNewsEntry) Write(w []byte) []byte {
 		w = basictl.IntWrite(w, item.DeletionDate)
 	}
 	if item.FieldsMask&(1<<16) != 0 {
-		w = tlBool.BoolWriteBoxed(w, item.HiddenByPrivacy)
+		w = tlBool.BoolWriteTL1Boxed(w, item.HiddenByPrivacy)
 	}
 	return w
 }
 
 func (item *Service4ModifiedNewsEntry) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service4ModifiedNewsEntry) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xda19832a); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service4ModifiedNewsEntry) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service4ModifiedNewsEntry) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service4ModifiedNewsEntry) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service4ModifiedNewsEntry) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xda19832a)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service4ModifiedNewsEntry) String() string {

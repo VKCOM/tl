@@ -37,7 +37,7 @@ func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
     }
 }
             {%- endif -%}
-func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}ReadTL1(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     {%- if tuple.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -62,7 +62,7 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     {%- endif -%}
 }
 
-func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteTL1(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     {%- if tuple.wr.originateFromTL2 -%}
         {%- if writeElementNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -299,7 +299,7 @@ func {%s= goName %}RepairMasks(m *map[{%s= keyTypeString %}]{%s= valueTypeString
     }
 }
             {%- endif -%}
-func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}ReadTL1(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
     {%- if tuple.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -329,7 +329,7 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
     {%- endif -%}
 }
 
-func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteTL1(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     {%- if tuple.wr.originateFromTL2 -%}
         {%- if writeElementNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")

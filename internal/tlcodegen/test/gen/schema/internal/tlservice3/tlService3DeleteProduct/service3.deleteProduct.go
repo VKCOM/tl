@@ -35,52 +35,76 @@ func (item *Service3DeleteProduct) Reset() {
 }
 
 func (item *Service3DeleteProduct) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service3DeleteProduct) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.UserId); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Id); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Id); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Info)
+	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Info)
 }
 
 func (item *Service3DeleteProduct) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service3DeleteProduct) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service3DeleteProduct) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service3DeleteProduct) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.UserId)
 	w = basictl.IntWrite(w, item.Type)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Id)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Info)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Id)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Info)
 	return w
 }
 
 func (item *Service3DeleteProduct) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service3DeleteProduct) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6867e707); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service3DeleteProduct) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service3DeleteProduct) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service3DeleteProduct) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service3DeleteProduct) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6867e707)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service3DeleteProduct) ReadResult(w []byte, ret *bool) (_ []byte, err error) {
-	return tlBool.BoolReadBoxed(w, ret)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service3DeleteProduct) ReadResultTL1(w []byte, ret *bool) (_ []byte, err error) {
+	return tlBool.BoolReadTL1Boxed(w, ret)
 }
 
 func (item *Service3DeleteProduct) WriteResult(w []byte, ret bool) (_ []byte, err error) {
-	w = tlBool.BoolWriteBoxed(w, ret)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service3DeleteProduct) WriteResultTL1(w []byte, ret bool) (_ []byte, err error) {
+	w = tlBool.BoolWriteTL1Boxed(w, ret)
 	return w, nil
 }
 
@@ -101,21 +125,21 @@ func (item *Service3DeleteProduct) writeResultJSON(tctx *basictl.JSONWriteContex
 	return w, nil
 }
 
-func (item *Service3DeleteProduct) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3DeleteProduct) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service3DeleteProduct) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3DeleteProduct) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

@@ -93,7 +93,7 @@ func (trw *TypeRWDict) typeWritingCode(bytesVersion bool, directImports *DirectI
 	refVal := addAsterisk(ref, val)
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	//return prefix + wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite(w, %s%s)", goGlobalName, refVal, joinWithCommas(natArgs)), needError)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWDict) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -103,7 +103,7 @@ func (trw *TypeRWDict) typeReadingCode(bytesVersion bool, directImports *DirectI
 	//}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	//return prefix + wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead(w, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs)), true)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWDict) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

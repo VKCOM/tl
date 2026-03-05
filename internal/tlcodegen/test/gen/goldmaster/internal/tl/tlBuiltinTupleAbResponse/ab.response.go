@@ -25,26 +25,26 @@ func BuiltinTupleAbResponseFillRandom(rg *basictl.RandGenerator, vec *[]tlAbResp
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleAbResponseRead(w []byte, vec *[]tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleAbResponseReadTL1(w []byte, vec *[]tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlAbResponse.AbResponse, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTupleAbResponseWrite(w []byte, vec []tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleAbResponseWriteTL1(w []byte, vec []tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlAbResponse.AbResponse", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w, nil
 }

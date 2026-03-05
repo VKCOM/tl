@@ -26,7 +26,7 @@ func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntFillRandom(rg
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntRead(w []byte, vec *[][2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) (_ []byte, err error) {
+func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadTL1(w []byte, vec *[][2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -37,17 +37,17 @@ func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntRead(w []byte
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = tlBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntRead(w, &(*vec)[i]); err != nil {
+		if w, err = tlBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadTL1(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWrite(w []byte, vec [][2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) []byte {
+func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteTL1(w []byte, vec [][2]tlPairBuiltinVectorIntBuiltinVectorInt.PairBuiltinVectorIntBuiltinVectorInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = tlBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWrite(w, &elem)
+		w = tlBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteTL1(w, &elem)
 	}
 	return w
 }

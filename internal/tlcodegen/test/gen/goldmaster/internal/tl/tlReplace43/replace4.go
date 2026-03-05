@@ -32,32 +32,50 @@ func (item *Replace43) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Replace43) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinTuple3Int.BuiltinTuple3IntRead(w, &item.A)
+	return item.ReadTL1(w)
+}
+func (item *Replace43) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinTuple3Int.BuiltinTuple3IntReadTL1(w, &item.A)
 }
 
 func (item *Replace43) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Replace43) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Replace43) Write(w []byte) []byte {
-	w = tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, &item.A)
+	return item.WriteTL1(w)
+}
+func (item *Replace43) WriteTL1(w []byte) []byte {
+	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteTL1(w, &item.A)
 	return w
 }
 
 func (item *Replace43) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Replace43) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x87995fb4); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Replace43) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Replace43) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Replace43) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Replace43) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x87995fb4)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Replace43) String() string {

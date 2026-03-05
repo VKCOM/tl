@@ -61,9 +61,9 @@ func TestWriteArgs(t *testing.T) {
 			obj := factory.CreateObjectFromName(test.TLType)
 
 			bytes_ := utils.ParseHexToBytes(test.ExpectedOutput)
-			_, _ = obj.ReadBoxed(bytes_)
+			_, _ = obj.ReadTL1Boxed(bytes_)
 
-			objBytes, err := obj.WriteBoxedGeneral(nil)
+			objBytes, err := obj.WriteTL1BoxedGeneral(nil)
 			if err != nil {
 				t.Fatalf("%s: error: %v\n", test.TestName, err)
 			}
@@ -81,7 +81,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 		return
 	}
 
-	_, jsonResult, jsonErr := fn.ReadResultWriteResultJSON(&basictl.JSONWriteContext{}, utils.ParseHexToBytes(resultBytesValue), nil)
+	_, jsonResult, jsonErr := fn.ReadResultTL1WriteResultJSON(&basictl.JSONWriteContext{}, utils.ParseHexToBytes(resultBytesValue), nil)
 	if jsonErr != nil {
 		t.Fatalf("Write json error: %v\n", jsonErr)
 		return
@@ -89,7 +89,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 	if !assert.Equal(t, resultJsonValue, string(jsonResult)) {
 		t.Fatalf("Write json failed, difference:v\n%s\n", cmp.Diff(resultJsonValue, jsonResult))
 	}
-	_, bytesResult, bytesErr := fn.ReadResultJSONWriteResult([]byte(resultJsonValue), nil)
+	_, bytesResult, bytesErr := fn.ReadResultJSONWriteResultTL1([]byte(resultJsonValue), nil)
 	if bytesErr != nil {
 		t.Fatalf("Write bytes error: %v\n", jsonErr)
 		return

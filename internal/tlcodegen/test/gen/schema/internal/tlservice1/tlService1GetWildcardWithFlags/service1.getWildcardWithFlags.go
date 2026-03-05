@@ -29,44 +29,68 @@ func (item *Service1GetWildcardWithFlags) Reset() {
 }
 
 func (item *Service1GetWildcardWithFlags) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1GetWildcardWithFlags) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Prefix)
 }
 
 func (item *Service1GetWildcardWithFlags) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1GetWildcardWithFlags) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1GetWildcardWithFlags) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1GetWildcardWithFlags) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Prefix)
 	return w
 }
 
 func (item *Service1GetWildcardWithFlags) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1GetWildcardWithFlags) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5f6a1f78); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1GetWildcardWithFlags) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1GetWildcardWithFlags) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1GetWildcardWithFlags) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1GetWildcardWithFlags) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x5f6a1f78)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service1GetWildcardWithFlags) ReadResult(w []byte, ret *map[string]tlService1Value.Service1Value) (_ []byte, err error) {
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service1GetWildcardWithFlags) ReadResultTL1(w []byte, ret *map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 		return w, err
 	}
-	return tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueRead(w, ret)
+	return tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueReadTL1(w, ret)
 }
 
 func (item *Service1GetWildcardWithFlags) WriteResult(w []byte, ret map[string]tlService1Value.Service1Value) (_ []byte, err error) {
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service1GetWildcardWithFlags) WriteResultTL1(w []byte, ret map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1f4c618f)
-	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWrite(w, ret)
+	w = tlBuiltinDictStringService1Value.BuiltinDictStringService1ValueWriteTL1(w, ret)
 	return w, nil
 }
 
@@ -88,21 +112,21 @@ func (item *Service1GetWildcardWithFlags) writeResultJSON(tctx *basictl.JSONWrit
 	return w, nil
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret map[string]tlService1Value.Service1Value
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret map[string]tlService1Value.Service1Value
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

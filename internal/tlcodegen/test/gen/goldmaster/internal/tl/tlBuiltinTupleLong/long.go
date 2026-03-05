@@ -24,7 +24,7 @@ func BuiltinTupleLongFillRandom(rg *basictl.RandGenerator, vec *[]int64, nat_n u
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleLongRead(w []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleLongReadTL1(w []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int64, nat_n)
 	} else {
@@ -38,7 +38,7 @@ func BuiltinTupleLongRead(w []byte, vec *[]int64, nat_n uint32) (_ []byte, err e
 	return w, nil
 }
 
-func BuiltinTupleLongWrite(w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleLongWriteTL1(w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int64", len(vec), nat_n)
 	}

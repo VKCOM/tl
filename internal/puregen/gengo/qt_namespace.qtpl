@@ -114,11 +114,11 @@ func {%s= typeString %}() {%s= wr.UnionParent().wr.TypeString2(false, directImpo
                 globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
             -%}
 
-func {%s= localTypeString %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
-    return {%s= globalTypeString %}ReadBoxed(w, v)
+func {%s= localTypeString %}ReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
+    return {%s= globalTypeString %}ReadTL1Boxed(w, v)
 }
-func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
-    return {%s= globalTypeString %}WriteBoxed(w, v)
+func {%s= localTypeString %}WriteTL1Boxed(w []byte, v bool) []byte {
+    return {%s= globalTypeString %}WriteTL1Boxed(w, v)
 }
         {%- endif -%}
     {%- endfor -%}
@@ -182,7 +182,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         tctx := basictl.TL2WriteContext{}
         req.Body = args.WriteTL2(req.Body, &tctx)
     } else {
-        req.Body, err = args.WriteBoxedGeneral(req.Body)
+        req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
         if err != nil {
             return internal.ErrorClientWrite("{%s= tlName %}", err)
         }
@@ -193,7 +193,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     tctx := basictl.TL2WriteContext{}
     req.Body = args.WriteTL2(req.Body, &tctx)
 {%- else -%}
-    req.Body, err = args.WriteBoxedGeneral(req.Body)
+    req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("{%s= tlName %}", err)
     }
@@ -211,12 +211,12 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
 		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 		} else {
-			resp.Body, err = args.ReadResult(resp.Body, ret)
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
 		}
 {%- elseif fun.wr.HasTL2() -%}
 			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 {%- else -%}
-			resp.Body, err = args.ReadResult(resp.Body, ret)
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
 {%- endif -%}
 		if err != nil {
             return internal.ErrorClientReadResult("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
@@ -293,7 +293,7 @@ case {%s= tlTag %}: // {%s= tlName %}
    			_, err = args.ReadTL2(r, nil)
 		} else {
 {%- endif -%}
-            _, err = args.Read(r)
+            _, err = args.ReadTL1(r)
 {%- if fun.wr.gen.options.GenerateTL2() -%}
         }
 {%- endif -%}
@@ -313,7 +313,7 @@ case {%s= tlTag %}: // {%s= tlName %}
         if hctx.BodyFormatTL2() {
             hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
         } else {
-            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+            hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
             if err != nil {
                 return internal.ErrorServerWriteResult("{%s= tlName %}", err)
             }
@@ -321,7 +321,7 @@ case {%s= tlTag %}: // {%s= tlName %}
 {%- elseif fun.wr.HasTL2() -%}
         hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
 {%- else -%}
-        hctx.Response, err = args.WriteResult(hctx.Response, ret)
+        hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
         if err != nil {
             return internal.ErrorServerWriteResult("{%s= tlName %}", err)
         }

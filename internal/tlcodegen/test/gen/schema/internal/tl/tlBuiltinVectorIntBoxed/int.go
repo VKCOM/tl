@@ -15,7 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorIntBoxedRead(w []byte, vec *[]int32) (_ []byte, err error) {
+func BuiltinVectorIntBoxedReadTL1(w []byte, vec *[]int32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -39,7 +39,7 @@ func BuiltinVectorIntBoxedRead(w []byte, vec *[]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinVectorIntBoxedWrite(w []byte, vec []int32) []byte {
+func BuiltinVectorIntBoxedWriteTL1(w []byte, vec []int32) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.NatWrite(w, 0xa8509bda)

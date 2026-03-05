@@ -36,38 +36,42 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) FillRandom(rg *basictl.RandGenerat
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) Read(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	if w, err = item.A.Read(w, nat_XXI, nat_XYI); err != nil {
+	return item.ReadTL1(w, nat_XXI, nat_XYI)
+}
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	if w, err = item.A.ReadTL1(w, nat_XXI, nat_XYI); err != nil {
 		return w, err
 	}
-	return item.B.ReadBoxed(w)
-}
-
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteGeneral(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.Write(w, nat_XXI, nat_XYI)
+	return item.B.ReadTL1Boxed(w)
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) Write(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	if w, err = item.A.Write(w, nat_XXI, nat_XYI); err != nil {
+	return item.WriteTL1(w, nat_XXI, nat_XYI)
+}
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	if w, err = item.A.WriteTL1(w, nat_XXI, nat_XYI); err != nil {
 		return w, err
 	}
-	w = item.B.WriteBoxed(w)
+	w = item.B.WriteTL1Boxed(w)
 	return w, nil
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_XXI, nat_XYI)
+}
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1Boxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_XXI, nat_XYI)
-}
-
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxedGeneral(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_XXI, nat_XYI)
+	return item.ReadTL1(w, nat_XXI, nat_XYI)
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_XXI, nat_XYI)
+}
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1Boxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x0f3c47ab)
-	return item.Write(w, nat_XXI, nat_XYI)
+	return item.WriteTL1(w, nat_XXI, nat_XYI)
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XXI uint32, nat_XYI uint32) error {

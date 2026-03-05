@@ -57,52 +57,70 @@ func (item *MultiPoint) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *MultiPoint) Read(w []byte) (_ []byte, err error) {
-	if w, err = tlBuiltinTuple3Int.BuiltinTuple3IntRead(w, &item.A); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *MultiPoint) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL1(w, &item.A); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedRead(w, &item.B); err != nil {
+	if w, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadTL1(w, &item.B); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sRead(w, &item.C); err != nil {
+	if w, err = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReadTL1(w, &item.C); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedRead(w, &item.D); err != nil {
+	if w, err = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReadTL1(w, &item.D); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Read(w, &item.E); err != nil {
+	if w, err = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32ReadTL1(w, &item.E); err != nil {
 		return w, err
 	}
-	return tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedRead(w, &item.F)
+	return tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedReadTL1(w, &item.F)
 }
 
 func (item *MultiPoint) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *MultiPoint) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *MultiPoint) Write(w []byte) []byte {
-	w = tlBuiltinTuple3Int.BuiltinTuple3IntWrite(w, &item.A)
-	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWrite(w, &item.B)
-	w = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sWrite(w, &item.C)
-	w = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedWrite(w, &item.D)
-	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Write(w, &item.E)
-	w = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedWrite(w, &item.F)
+	return item.WriteTL1(w)
+}
+func (item *MultiPoint) WriteTL1(w []byte) []byte {
+	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteTL1(w, &item.A)
+	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteTL1(w, &item.B)
+	w = tlBuiltinTuple3Int32s.BuiltinTuple3Int32sWriteTL1(w, &item.C)
+	w = tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedWriteTL1(w, &item.D)
+	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32WriteTL1(w, &item.E)
+	w = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedWriteTL1(w, &item.F)
 	return w
 }
 
 func (item *MultiPoint) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *MultiPoint) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0e1ae81e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *MultiPoint) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *MultiPoint) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *MultiPoint) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *MultiPoint) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x0e1ae81e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item MultiPoint) String() string {

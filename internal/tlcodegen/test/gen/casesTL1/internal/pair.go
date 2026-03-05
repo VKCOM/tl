@@ -27,18 +27,18 @@ func BuiltinTuple2PairTupleIntTupleIntFillRandom(rg *basictl.RandGenerator, vec 
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple2PairTupleIntTupleIntRead(w []byte, vec *[2]PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+func BuiltinTuple2PairTupleIntTupleIntReadTL1(w []byte, vec *[2]PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w, nat_tXn, nat_tYn); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w, nat_tXn, nat_tYn); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+func BuiltinTuple2PairTupleIntTupleIntWriteTL1(w []byte, vec *[2]PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	for _, elem := range *vec {
-		if w, err = elem.Write(w, nat_tXn, nat_tYn); err != nil {
+		if w, err = elem.WriteTL1(w, nat_tXn, nat_tYn); err != nil {
 			return w, err
 		}
 	}
@@ -106,40 +106,44 @@ func (item *PairTupleIntTupleInt) FillRandom(rg *basictl.RandGenerator, nat_X ui
 }
 
 func (item *PairTupleIntTupleInt) Read(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleIntRead(w, &item.X, nat_X); err != nil {
+	return item.ReadTL1(w, nat_X, nat_Y)
+}
+func (item *PairTupleIntTupleInt) ReadTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleIntReadTL1(w, &item.X, nat_X); err != nil {
 		return w, err
 	}
-	return BuiltinTupleIntRead(w, &item.Y, nat_Y)
-}
-
-func (item *PairTupleIntTupleInt) WriteGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.Write(w, nat_X, nat_Y)
+	return BuiltinTupleIntReadTL1(w, &item.Y, nat_Y)
 }
 
 func (item *PairTupleIntTupleInt) Write(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleIntWrite(w, item.X, nat_X); err != nil {
+	return item.WriteTL1(w, nat_X, nat_Y)
+}
+func (item *PairTupleIntTupleInt) WriteTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleIntWriteTL1(w, item.X, nat_X); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntWrite(w, item.Y, nat_Y); err != nil {
+	if w, err = BuiltinTupleIntWriteTL1(w, item.Y, nat_Y); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *PairTupleIntTupleInt) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_X, nat_Y)
+}
+func (item *PairTupleIntTupleInt) ReadTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf01604df); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_X, nat_Y)
-}
-
-func (item *PairTupleIntTupleInt) WriteBoxedGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_X, nat_Y)
+	return item.ReadTL1(w, nat_X, nat_Y)
 }
 
 func (item *PairTupleIntTupleInt) WriteBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_X, nat_Y)
+}
+func (item *PairTupleIntTupleInt) WriteTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xf01604df)
-	return item.Write(w, nat_X, nat_Y)
+	return item.WriteTL1(w, nat_X, nat_Y)
 }
 
 func (item *PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
@@ -253,40 +257,44 @@ func (item *PairTupleTupleInt2TupleTupleInt2) FillRandom(rg *basictl.RandGenerat
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) Read(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTupleInt2Read(w, &item.X, nat_X); err != nil {
+	return item.ReadTL1(w, nat_X, nat_Y)
+}
+func (item *PairTupleTupleInt2TupleTupleInt2) ReadTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTupleInt2ReadTL1(w, &item.X, nat_X); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTupleInt2Read(w, &item.Y, nat_Y)
-}
-
-func (item *PairTupleTupleInt2TupleTupleInt2) WriteGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.Write(w, nat_X, nat_Y)
+	return BuiltinTupleTupleInt2ReadTL1(w, &item.Y, nat_Y)
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) Write(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTupleInt2Write(w, item.X, nat_X); err != nil {
+	return item.WriteTL1(w, nat_X, nat_Y)
+}
+func (item *PairTupleTupleInt2TupleTupleInt2) WriteTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTupleInt2WriteTL1(w, item.X, nat_X); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTupleInt2Write(w, item.Y, nat_Y); err != nil {
+	if w, err = BuiltinTupleTupleInt2WriteTL1(w, item.Y, nat_Y); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_X, nat_Y)
+}
+func (item *PairTupleTupleInt2TupleTupleInt2) ReadTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf01604df); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_X, nat_Y)
-}
-
-func (item *PairTupleTupleInt2TupleTupleInt2) WriteBoxedGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_X, nat_Y)
+	return item.ReadTL1(w, nat_X, nat_Y)
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) WriteBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_X, nat_Y)
+}
+func (item *PairTupleTupleInt2TupleTupleInt2) WriteTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xf01604df)
-	return item.Write(w, nat_X, nat_Y)
+	return item.WriteTL1(w, nat_X, nat_Y)
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
@@ -404,40 +412,44 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) Read(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2Read(w, &item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
+	return item.ReadTL1(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+}
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadTL1(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2ReadTL1(w, &item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTuplePairTupleIntTupleInt2Read(w, &item.Y, nat_Yn, nat_YttXn, nat_YttYn)
-}
-
-func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	return item.Write(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	return BuiltinTupleTuplePairTupleIntTupleInt2ReadTL1(w, &item.Y, nat_Yn, nat_YttXn, nat_YttYn)
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) Write(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2Write(w, item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
+	return item.WriteTL1(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+}
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteTL1(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteTL1(w, item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2Write(w, item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteTL1(w, item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadBoxed(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+}
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadTL1Boxed(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf01604df); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
-}
-
-func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteBoxedGeneral(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	return item.ReadTL1(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+}
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteTL1Boxed(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xf01604df)
-	return item.Write(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	return item.WriteTL1(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) error {

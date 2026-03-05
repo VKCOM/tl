@@ -74,6 +74,9 @@ func (item *EitherIntVectorService6FindWithBoundsResult) SetRight(value RightInt
 }
 
 func (item *EitherIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *EitherIntVectorService6FindWithBoundsResult) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -81,26 +84,25 @@ func (item *EitherIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ 
 	switch tag {
 	case 0x0a29cd5d:
 		item.index = 0
-		return item.valueLeft.Read(w)
+		return item.valueLeft.ReadTL1(w)
 	case 0xdf3ecb3b:
 		item.index = 1
-		return item.valueRight.Read(w)
+		return item.valueRight.ReadTL1(w)
 	default:
 		return w, internal.ErrorInvalidUnionTag("Either", tag)
 	}
 }
 
-func (item *EitherIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
 func (item *EitherIntVectorService6FindWithBoundsResult) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *EitherIntVectorService6FindWithBoundsResult) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _EitherIntVectorService6FindWithBoundsResult[item.index].TLTag)
 	switch item.index {
 	case 0:
-		w = item.valueLeft.Write(w)
+		w = item.valueLeft.WriteTL1(w)
 	case 1:
-		w = item.valueRight.Write(w)
+		w = item.valueRight.WriteTL1(w)
 	}
 	return w
 }
@@ -219,32 +221,50 @@ func (item *LeftIntVectorService6FindWithBoundsResult) Reset() {
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Value)
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Value)
 	return w
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0a29cd5d); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x0a29cd5d)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item LeftIntVectorService6FindWithBoundsResult) String() string {
@@ -342,32 +362,50 @@ func (item *RightIntVectorService6FindWithBoundsResult) Reset() {
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultRead(w, &item.Value)
+	return item.ReadTL1(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadTL1(w, &item.Value)
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) Write(w []byte) []byte {
-	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWrite(w, item.Value)
+	return item.WriteTL1(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteTL1(w, item.Value)
 	return w
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xdf3ecb3b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *RightIntVectorService6FindWithBoundsResult) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdf3ecb3b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item RightIntVectorService6FindWithBoundsResult) String() string {

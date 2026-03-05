@@ -36,36 +36,54 @@ func (item *AbTopLevel2) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AbTopLevel2) Read(w []byte) (_ []byte, err error) {
-	if w, err = item.A.Read(w); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *AbTopLevel2) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = item.A.ReadTL1(w); err != nil {
 		return w, err
 	}
-	return item.B.Read(w)
+	return item.B.ReadTL1(w)
 }
 
 func (item *AbTopLevel2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *AbTopLevel2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *AbTopLevel2) Write(w []byte) []byte {
-	w = item.A.Write(w)
-	w = item.B.Write(w)
+	return item.WriteTL1(w)
+}
+func (item *AbTopLevel2) WriteTL1(w []byte) []byte {
+	w = item.A.WriteTL1(w)
+	w = item.B.WriteTL1(w)
 	return w
 }
 
 func (item *AbTopLevel2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AbTopLevel2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xcef933fb); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *AbTopLevel2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AbTopLevel2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AbTopLevel2) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AbTopLevel2) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xcef933fb)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item AbTopLevel2) String() string {
@@ -309,36 +327,54 @@ func (item *AbTopLevel2Bytes) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AbTopLevel2Bytes) Read(w []byte) (_ []byte, err error) {
-	if w, err = item.A.Read(w); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *AbTopLevel2Bytes) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = item.A.ReadTL1(w); err != nil {
 		return w, err
 	}
-	return item.B.Read(w)
+	return item.B.ReadTL1(w)
 }
 
 func (item *AbTopLevel2Bytes) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *AbTopLevel2Bytes) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *AbTopLevel2Bytes) Write(w []byte) []byte {
-	w = item.A.Write(w)
-	w = item.B.Write(w)
+	return item.WriteTL1(w)
+}
+func (item *AbTopLevel2Bytes) WriteTL1(w []byte) []byte {
+	w = item.A.WriteTL1(w)
+	w = item.B.WriteTL1(w)
 	return w
 }
 
 func (item *AbTopLevel2Bytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AbTopLevel2Bytes) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xcef933fb); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *AbTopLevel2Bytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AbTopLevel2Bytes) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AbTopLevel2Bytes) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AbTopLevel2Bytes) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xcef933fb)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item AbTopLevel2Bytes) String() string {

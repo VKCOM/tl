@@ -77,11 +77,11 @@ func (trw *TypeRWMaybe) typeRepairMasksCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWMaybe) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

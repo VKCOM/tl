@@ -35,6 +35,9 @@ func (item *Service3ProductStatsOld) Reset() {
 }
 
 func (item *Service3ProductStatsOld) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service3ProductStatsOld) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
 	}
@@ -51,10 +54,16 @@ func (item *Service3ProductStatsOld) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service3ProductStatsOld) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service3ProductStatsOld) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service3ProductStatsOld) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service3ProductStatsOld) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Type)
 	w = basictl.IntWrite(w, item.CountNew)
 	w = basictl.IntWrite(w, item.CountTotal)
@@ -64,19 +73,28 @@ func (item *Service3ProductStatsOld) Write(w []byte) []byte {
 }
 
 func (item *Service3ProductStatsOld) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service3ProductStatsOld) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6319810b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service3ProductStatsOld) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service3ProductStatsOld) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service3ProductStatsOld) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service3ProductStatsOld) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6319810b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service3ProductStatsOld) String() string {

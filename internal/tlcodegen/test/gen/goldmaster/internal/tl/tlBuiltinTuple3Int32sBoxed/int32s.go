@@ -30,18 +30,18 @@ func BuiltinTuple3Int32sBoxedFillRandom(rg *basictl.RandGenerator, vec *[3]tlInt
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple3Int32sBoxedRead(w []byte, vec *[3]tlInt32s.Int32s) (_ []byte, err error) {
+func BuiltinTuple3Int32sBoxedReadTL1(w []byte, vec *[3]tlInt32s.Int32s) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple3Int32sBoxedWrite(w []byte, vec *[3]tlInt32s.Int32s) []byte {
+func BuiltinTuple3Int32sBoxedWriteTL1(w []byte, vec *[3]tlInt32s.Int32s) []byte {
 	for _, elem := range *vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }

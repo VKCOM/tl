@@ -82,6 +82,9 @@ func (item *RpcInvokeReqExtra) Reset() {
 }
 
 func (item *RpcInvokeReqExtra) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *RpcInvokeReqExtra) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
@@ -93,7 +96,7 @@ func (item *RpcInvokeReqExtra) Read(w []byte) (_ []byte, err error) {
 		item.WaitBinlogPos = 0
 	}
 	if item.FieldsMask&(1<<18) != 0 {
-		if w, err = tlBuiltinVectorString.BuiltinVectorStringRead(w, &item.StringForwardKeys); err != nil {
+		if w, err = tlBuiltinVectorString.BuiltinVectorStringReadTL1(w, &item.StringForwardKeys); err != nil {
 			return w, err
 		}
 	} else {
@@ -103,34 +106,49 @@ func (item *RpcInvokeReqExtra) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *RpcInvokeReqExtra) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *RpcInvokeReqExtra) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *RpcInvokeReqExtra) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *RpcInvokeReqExtra) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<16) != 0 {
 		w = basictl.LongWrite(w, item.WaitBinlogPos)
 	}
 	if item.FieldsMask&(1<<18) != 0 {
-		w = tlBuiltinVectorString.BuiltinVectorStringWrite(w, item.StringForwardKeys)
+		w = tlBuiltinVectorString.BuiltinVectorStringWriteTL1(w, item.StringForwardKeys)
 	}
 	return w
 }
 
 func (item *RpcInvokeReqExtra) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *RpcInvokeReqExtra) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf3ef81a9); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *RpcInvokeReqExtra) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *RpcInvokeReqExtra) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *RpcInvokeReqExtra) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *RpcInvokeReqExtra) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf3ef81a9)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item RpcInvokeReqExtra) String() string {

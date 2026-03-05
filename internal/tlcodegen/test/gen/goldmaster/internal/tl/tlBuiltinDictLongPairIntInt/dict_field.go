@@ -34,7 +34,7 @@ func BuiltinDictLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]tlPairIntInt.PairIntInt) (_ []byte, err error) {
+func BuiltinDictLongPairIntIntReadTL1(w []byte, m *map[int64]tlPairIntInt.PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -49,7 +49,7 @@ func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]tlPairIntInt.PairIntIn
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldLongPairIntInt.DictFieldLongPairIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -57,7 +57,7 @@ func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]tlPairIntInt.PairIntIn
 	return w, nil
 }
 
-func BuiltinDictLongPairIntIntWrite(w []byte, m map[int64]tlPairIntInt.PairIntInt) []byte {
+func BuiltinDictLongPairIntIntWriteTL1(w []byte, m map[int64]tlPairIntInt.PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -72,7 +72,7 @@ func BuiltinDictLongPairIntIntWrite(w []byte, m map[int64]tlPairIntInt.PairIntIn
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldLongPairIntInt.DictFieldLongPairIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

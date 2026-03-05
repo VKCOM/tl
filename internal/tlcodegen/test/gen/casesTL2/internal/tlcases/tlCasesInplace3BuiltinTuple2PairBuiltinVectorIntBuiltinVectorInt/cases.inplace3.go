@@ -36,26 +36,44 @@ func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Fill
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1General(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 

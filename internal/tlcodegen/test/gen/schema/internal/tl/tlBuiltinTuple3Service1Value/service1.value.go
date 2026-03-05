@@ -22,18 +22,18 @@ func BuiltinTuple3Service1ValueReset(vec *[3]tlService1Value.Service1Value) {
 	}
 }
 
-func BuiltinTuple3Service1ValueRead(w []byte, vec *[3]tlService1Value.Service1Value) (_ []byte, err error) {
+func BuiltinTuple3Service1ValueReadTL1(w []byte, vec *[3]tlService1Value.Service1Value) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple3Service1ValueWrite(w []byte, vec *[3]tlService1Value.Service1Value) []byte {
+func BuiltinTuple3Service1ValueWriteTL1(w []byte, vec *[3]tlService1Value.Service1Value) []byte {
 	for _, elem := range *vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }

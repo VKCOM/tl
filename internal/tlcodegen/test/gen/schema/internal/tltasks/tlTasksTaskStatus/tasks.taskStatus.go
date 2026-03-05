@@ -46,6 +46,9 @@ func (item TasksTaskStatus) IsInProgress() bool { return item.index == 3 }
 func (item *TasksTaskStatus) SetInProgress()    { item.index = 3 }
 
 func (item *TasksTaskStatus) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TasksTaskStatus) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -68,11 +71,10 @@ func (item *TasksTaskStatus) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *TasksTaskStatus) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
 func (item *TasksTaskStatus) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TasksTaskStatus) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _TasksTaskStatus[item.index].TLTag)
 	return w
 }

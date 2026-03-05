@@ -247,8 +247,8 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			ins.resultType = resultIns.ins // function cannot be referenced so no recursion
 			ins.resultTypeBare = fieldBare
 			ins.resultNatArgs = fieldNatArgs
-			resultTypeStruct := k.findLastAliasStruct(resultIns.ins)
-			if ins.isResultAlias && resultTypeStruct == nil {
+			resultTypeSU := k.findLastAliasStructOrUnion(resultIns.ins)
+			if ins.isResultAlias && resultTypeSU == nil {
 				pr := funcDecl.ReturnType.PR
 				if pr == (tlast.PositionRange{}) { // TODO - remove after ReturnType.PR is always set in parser
 					pr = funcDecl.ReturnType.TypeAlias.PR
@@ -263,8 +263,12 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 	return ins, nil
 }
 
-func (k *Kernel) findLastAliasStruct(ins TypeInstance) *TypeInstanceStruct {
+func (k *Kernel) findLastAliasStructOrUnion(ins TypeInstance) TypeInstance {
 	for {
+		typeUnion, ok := ins.(*TypeInstanceUnion)
+		if ok { // this is the end of recursion
+			return typeUnion
+		}
 		typeStruct, ok := ins.(*TypeInstanceStruct)
 		if !ok {
 			return nil

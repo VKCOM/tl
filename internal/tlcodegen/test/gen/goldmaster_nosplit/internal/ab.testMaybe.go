@@ -41,48 +41,66 @@ func (item *AbTestMaybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AbTestMaybe) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *AbTestMaybe) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.A.ReadBoxed(w); err != nil {
+	if w, err = item.A.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.B.ReadBoxed(w); err != nil {
+	if w, err = item.B.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.C.ReadBoxed(w); err != nil {
+	if w, err = item.C.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	return item.D.ReadBoxed(w)
+	return item.D.ReadTL1Boxed(w)
 }
 
 func (item *AbTestMaybe) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *AbTestMaybe) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *AbTestMaybe) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *AbTestMaybe) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.N)
-	w = item.A.WriteBoxed(w)
-	w = item.B.WriteBoxed(w)
-	w = item.C.WriteBoxed(w)
-	w = item.D.WriteBoxed(w)
+	w = item.A.WriteTL1Boxed(w)
+	w = item.B.WriteTL1Boxed(w)
+	w = item.C.WriteTL1Boxed(w)
+	w = item.D.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *AbTestMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AbTestMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4dac492a); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *AbTestMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AbTestMaybe) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AbTestMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AbTestMaybe) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x4dac492a)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item AbTestMaybe) String() string {

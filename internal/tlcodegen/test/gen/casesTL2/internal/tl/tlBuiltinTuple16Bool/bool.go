@@ -30,18 +30,18 @@ func BuiltinTuple16BoolFillRandom(rg *basictl.RandGenerator, vec *[16]bool) {
 	rg.DecreaseDepth()
 }
 
-func BuiltinTuple16BoolRead(w []byte, vec *[16]bool) (_ []byte, err error) {
+func BuiltinTuple16BoolReadTL1(w []byte, vec *[16]bool) (_ []byte, err error) {
 	for i := range *vec {
-		if w, err = tlBool.BoolReadBoxed(w, &(*vec)[i]); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &(*vec)[i]); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinTuple16BoolWrite(w []byte, vec *[16]bool) []byte {
+func BuiltinTuple16BoolWriteTL1(w []byte, vec *[16]bool) []byte {
 	for _, elem := range *vec {
-		w = tlBool.BoolWriteBoxed(w, elem)
+		w = tlBool.BoolWriteTL1Boxed(w, elem)
 	}
 	return w
 }

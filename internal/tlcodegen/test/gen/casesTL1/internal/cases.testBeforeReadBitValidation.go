@@ -66,6 +66,9 @@ func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerat
 }
 
 func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTestBeforeReadBitValidation) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
@@ -73,14 +76,14 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 		return w, err
 	}
 	if item.N&(1<<0) != 0 {
-		if w, err = BuiltinTupleIntRead(w, &item.A, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.A, item.Ns); err != nil {
 			return w, err
 		}
 	} else {
 		item.A = item.A[:0]
 	}
 	if item.N&(1<<1) != 0 {
-		if w, err = BuiltinTupleIntRead(w, &item.B, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.B, item.Ns); err != nil {
 			return w, err
 		}
 	} else {
@@ -90,19 +93,25 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTestBeforeReadBitValidation) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTestBeforeReadBitValidation) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTestBeforeReadBitValidation) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	w = basictl.NatWrite(w, item.Ns)
 	if item.N&(1<<0) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.A, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.A, item.Ns); err != nil {
 			return w, err
 		}
 	}
 	if item.N&(1<<1) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.B, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.B, item.Ns); err != nil {
 			return w, err
 		}
 	}
@@ -110,19 +119,28 @@ func (item *CasesTestBeforeReadBitValidation) Write(w []byte) (_ []byte, err err
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTestBeforeReadBitValidation) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc81cf91b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTestBeforeReadBitValidation) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTestBeforeReadBitValidation) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc81cf91b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTestBeforeReadBitValidation) String() string {

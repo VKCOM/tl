@@ -56,6 +56,9 @@ func (item *TlsCombinatorLeft) SetCombinatorLeft(value TlsCombinatorLeft0) {
 }
 
 func (item *TlsCombinatorLeft) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsCombinatorLeft) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -66,23 +69,22 @@ func (item *TlsCombinatorLeft) ReadBoxed(w []byte) (_ []byte, err error) {
 		return w, nil
 	case 0x4c12c6d9:
 		item.index = 1
-		return item.valueCombinatorLeft.Read(w)
+		return item.valueCombinatorLeft.ReadTL1(w)
 	default:
 		return w, ErrorInvalidUnionTag("tls.CombinatorLeft", tag)
 	}
 }
 
-func (item *TlsCombinatorLeft) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
-}
-
 func (item *TlsCombinatorLeft) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsCombinatorLeft) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsCombinatorLeft[item.index].TLTag)
 	switch item.index {
 	case 0:
 		return w, nil
 	case 1:
-		if w, err = item.valueCombinatorLeft.Write(w); err != nil {
+		if w, err = item.valueCombinatorLeft.WriteTL1(w); err != nil {
 			return w, err
 		}
 	}
@@ -202,38 +204,56 @@ func (item *TlsCombinatorLeft0) Reset() {
 }
 
 func (item *TlsCombinatorLeft0) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsCombinatorLeft0) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ArgsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsArgBoxedRead(w, &item.Args, item.ArgsNum)
+	return BuiltinTupleTlsArgBoxedReadTL1(w, &item.Args, item.ArgsNum)
 }
 
 func (item *TlsCombinatorLeft0) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TlsCombinatorLeft0) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TlsCombinatorLeft0) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *TlsCombinatorLeft0) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.ArgsNum)
-	if w, err = BuiltinTupleTlsArgBoxedWrite(w, item.Args, item.ArgsNum); err != nil {
+	if w, err = BuiltinTupleTlsArgBoxedWriteTL1(w, item.Args, item.ArgsNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TlsCombinatorLeft0) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsCombinatorLeft0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4c12c6d9); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsCombinatorLeft0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsCombinatorLeft0) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TlsCombinatorLeft0) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsCombinatorLeft0) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x4c12c6d9)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsCombinatorLeft0) String() string {
@@ -358,30 +378,48 @@ func (TlsCombinatorLeftBuiltin) TLTag() uint32  { return 0xcd211f63 }
 
 func (item *TlsCombinatorLeftBuiltin) Reset() {}
 
-func (item *TlsCombinatorLeftBuiltin) Read(w []byte) (_ []byte, err error) { return w, nil }
+func (item *TlsCombinatorLeftBuiltin) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TlsCombinatorLeftBuiltin) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
 func (item *TlsCombinatorLeftBuiltin) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *TlsCombinatorLeftBuiltin) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *TlsCombinatorLeftBuiltin) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *TlsCombinatorLeftBuiltin) WriteTL1(w []byte) []byte {
 	return w
 }
 
 func (item *TlsCombinatorLeftBuiltin) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TlsCombinatorLeftBuiltin) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xcd211f63); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TlsCombinatorLeftBuiltin) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TlsCombinatorLeftBuiltin) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *TlsCombinatorLeftBuiltin) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TlsCombinatorLeftBuiltin) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xcd211f63)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TlsCombinatorLeftBuiltin) String() string {

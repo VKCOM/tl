@@ -110,6 +110,9 @@ func (item *UseTrue) RepairMasks() {
 }
 
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UseTrue) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {
 		return w, err
@@ -125,15 +128,15 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 			return w, err
 		}
 	}
-	if w, err = item.C.Read(w); err != nil {
+	if w, err = item.C.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.D.ReadBoxed(w); err != nil {
+	if w, err = item.D.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
 	if item.Fm&(1<<2) != 0 {
 		item.tl2mask0 |= 4
-		if w, err = BoolReadBoxed(w, &item.E); err != nil {
+		if w, err = BoolReadTL1Boxed(w, &item.E); err != nil {
 			return w, err
 		}
 	} else {
@@ -143,36 +146,51 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *UseTrue) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *UseTrue) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *UseTrue) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *UseTrue) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.Fm)
 	if item.Fm&(1<<1) != 0 {
 		w = basictl.NatWrite(w, 0x3fedd339)
 	}
-	w = item.C.Write(w)
-	w = item.D.WriteBoxed(w)
+	w = item.C.WriteTL1(w)
+	w = item.D.WriteTL1Boxed(w)
 	if item.Fm&(1<<2) != 0 {
-		w = BoolWriteBoxed(w, item.E)
+		w = BoolWriteTL1Boxed(w, item.E)
 	}
 	return w
 }
 
 func (item *UseTrue) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UseTrue) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xdfdd4180); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UseTrue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UseTrue) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *UseTrue) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UseTrue) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdfdd4180)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item UseTrue) String() string {

@@ -29,6 +29,9 @@ func (item *StatOne) Reset() {
 }
 
 func (item *StatOne) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *StatOne) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
 	}
@@ -36,29 +39,44 @@ func (item *StatOne) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *StatOne) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *StatOne) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *StatOne) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *StatOne) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	w = basictl.StringWrite(w, item.Value)
 	return w
 }
 
 func (item *StatOne) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *StatOne) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x74b0604b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *StatOne) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *StatOne) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *StatOne) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *StatOne) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x74b0604b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item StatOne) String() string {
