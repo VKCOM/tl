@@ -27,7 +27,7 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading file %s: %v", os.Args[1], err)
 	}
 	var v4 tls.SchemaV4
-	if _, err := v4.ReadBoxed(buf); err != nil {
+	if _, err := v4.ReadTL1Boxed(buf); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading schema: %v", err)
 	}
 	slices.SortFunc(v4.Constructors, func(a, b tls.Combinator) int {

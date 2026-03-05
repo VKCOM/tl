@@ -177,32 +177,65 @@ func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) Read(w []byte`)
 	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(`) (_ []byte, err error) {
+    return item.ReadTL1(w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)
+}
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadTL1(w []byte `)
+	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) { `)
 	struct_.streamreadFields(qw422016, bytesVersion, directImports)
 	qw422016.N().S(` }
 
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteGeneral(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if struct_.wr.originateFromTL2 {
-		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
-`)
-	} else {
-		qw422016.N().S(`    return item.Write(w`)
+	if len(struct_.wr.NatParams) == 0 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteGeneral(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteTL1General(w`)
 		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)`)
-		if !writeNeedsError {
-			qw422016.N().S(`, nil`)
+		qw422016.N().S(`)
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteTL1General(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			qw422016.N().S(`    return item.WriteTL1(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)`)
+			if !writeNeedsError {
+				qw422016.N().S(`, nil`)
+			}
 		}
+		qw422016.N().S(`}
+`)
 	}
-	qw422016.N().S(`}
-
+	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) Write(w []byte`)
+	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(`) `)
+	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
+	qw422016.N().S(` {
+    return item.WriteTL1(w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)
+}
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) WriteTL1(w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -217,6 +250,15 @@ func (item *`)
 		qw422016.N().S(`) ReadBoxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadTL1Boxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if struct_.wr.originateFromTL2 {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
@@ -227,35 +269,59 @@ func (item *`)
 			qw422016.N().S(`); err != nil {
         return w, err
     }
-    return item.Read(w`)
+    return item.ReadTL1(w`)
 			qw422016.N().S(natArgsCall)
 			qw422016.N().S(`)
 `)
 		}
 		qw422016.N().S(`}
 
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if struct_.wr.originateFromTL2 {
-			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
-`)
-		} else {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
+		if len(struct_.wr.NatParams) == 0 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteTL1BoxedGeneral(w`)
 			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)`)
-			if !writeNeedsError {
-				qw422016.N().S(`, nil`)
+			qw422016.N().S(`)
+}
+func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteTL1BoxedGeneral(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+`)
+			if struct_.wr.originateFromTL2 {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    return item.WriteTL1Boxed(w`)
+				qw422016.N().S(natArgsCall)
+				qw422016.N().S(`)`)
+				if !writeNeedsError {
+					qw422016.N().S(`, nil`)
+				}
 			}
+			qw422016.N().S(`}
+`)
 		}
-		qw422016.N().S(`}
-
+		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteBoxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) `)
+		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
+		qw422016.N().S(` {
+    return item.WriteTL1Boxed(w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
+}
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -273,7 +339,7 @@ func (item *`)
 			qw422016.N().S(`    w = basictl.NatWrite(w, `)
 			qw422016.N().S(tlTag)
 			qw422016.N().S(`)
-    return item.Write(w`)
+    return item.WriteTL1(w`)
 			qw422016.N().S(natArgsCall)
 			qw422016.N().S(`)
 `)
@@ -1529,6 +1595,13 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(`) ReadResult(w []byte, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.ReadResultTL1(w, ret)
+}
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadResultTL1(w []byte, ret *`)
+	qw422016.N().S(retArg)
+	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if struct_.wr.originateFromTL2 {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
@@ -1544,6 +1617,13 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteResult(w []byte, ret `)
+	qw422016.N().S(retArg)
+	qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteResultTL1(w, ret)
+}
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) WriteResultTL1(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
@@ -1764,25 +1844,25 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+		qw422016.N().S(`) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
     var ret `)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`
     `)
 		qw422016.N().S(struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false))
 		qw422016.N().S(`
-    return item.WriteResult(w, ret)
+    return item.WriteResultTL1(w, ret)
 }
 `)
 	}
 	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	qw422016.N().S(`) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
-  if r, err = item.ReadResult(r, &ret); err != nil {
+  if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
   w, err = item.writeResultJSON(tctx, w, ret)
@@ -1791,14 +1871,14 @@ func (item *`)
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	qw422016.N().S(`) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
   if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResult(w, ret)
+  w, err = item.WriteResultTL1(w, ret)
   return r, w, err
 }
 
@@ -1806,7 +1886,7 @@ func (item *`)
 	if struct_.wr.gen.options.GenerateTL2() {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+		qw422016.N().S(`) ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`  return r, w, `)
@@ -1819,7 +1899,7 @@ func (item *`)
 			qw422016.N().S(`  var ret `)
 			qw422016.N().S(retArg)
 			qw422016.N().S(`
-  if r, err = item.ReadResult(r, &ret); err != nil {
+  if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
   return r, item.WriteResultTL2(w, tctx, ret), nil
@@ -1829,7 +1909,7 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+		qw422016.N().S(`) ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`  return r, w, `)
@@ -1845,7 +1925,7 @@ func (item *`)
   if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResult(w, ret)
+  w, err = item.WriteResultTL1(w, ret)
   return r, w, err
 `)
 		}

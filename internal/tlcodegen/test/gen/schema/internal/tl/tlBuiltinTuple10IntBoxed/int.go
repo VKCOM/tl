@@ -21,7 +21,7 @@ func BuiltinTuple10IntBoxedReset(vec *[10]int32) {
 	}
 }
 
-func BuiltinTuple10IntBoxedRead(w []byte, vec *[10]int32) (_ []byte, err error) {
+func BuiltinTuple10IntBoxedReadTL1(w []byte, vec *[10]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.NatReadExactTag(w, 0xa8509bda); err != nil {
 			return w, err
@@ -33,7 +33,7 @@ func BuiltinTuple10IntBoxedRead(w []byte, vec *[10]int32) (_ []byte, err error) 
 	return w, nil
 }
 
-func BuiltinTuple10IntBoxedWrite(w []byte, vec *[10]int32) []byte {
+func BuiltinTuple10IntBoxedWriteTL1(w []byte, vec *[10]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.NatWrite(w, 0xa8509bda)
 		w = basictl.IntWrite(w, elem)

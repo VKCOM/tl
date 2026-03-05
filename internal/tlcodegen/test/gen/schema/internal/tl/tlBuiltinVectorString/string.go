@@ -15,7 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorStringRead(w []byte, vec *[]string) (_ []byte, err error) {
+func BuiltinVectorStringReadTL1(w []byte, vec *[]string) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -36,7 +36,7 @@ func BuiltinVectorStringRead(w []byte, vec *[]string) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinVectorStringWrite(w []byte, vec []string) []byte {
+func BuiltinVectorStringWriteTL1(w []byte, vec []string) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.StringWrite(w, elem)

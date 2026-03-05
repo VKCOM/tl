@@ -42,34 +42,52 @@ func (item *TupleCycleTuple2) RepairMasks() {
 }
 
 func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {
-	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleRead(w, item.ptr())
+	return item.ReadTL1(w)
+}
+func (item *TupleCycleTuple2) ReadTL1(w []byte) (_ []byte, err error) {
+	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReadTL1(w, item.ptr())
 }
 
 func (item *TupleCycleTuple2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *TupleCycleTuple2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *TupleCycleTuple2) Write(w []byte) (_ []byte, err error) {
-	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleWrite(w, item.ptr()); err != nil {
+	return item.WriteTL1(w)
+}
+func (item *TupleCycleTuple2) WriteTL1(w []byte) (_ []byte, err error) {
+	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleWriteTL1(w, item.ptr()); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TupleCycleTuple2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TupleCycleTuple2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TupleCycleTuple2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TupleCycleTuple2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *TupleCycleTuple2) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TupleCycleTuple2) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TupleCycleTuple2) String() string {

@@ -32,40 +32,58 @@ func (item *Service4Object) Reset() {
 }
 
 func (item *Service4Object) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service4Object) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.JointId); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.JointId); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.ObjectId)
+	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.ObjectId)
 }
 
 func (item *Service4Object) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service4Object) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service4Object) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service4Object) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Type)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.JointId)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.ObjectId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.JointId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.ObjectId)
 	return w
 }
 
 func (item *Service4Object) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service4Object) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa6eeca4f); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service4Object) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service4Object) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service4Object) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service4Object) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa6eeca4f)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service4Object) String() string {

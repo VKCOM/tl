@@ -20,11 +20,11 @@ const (
 	BoolTrue  uint32 = 0x997275b5
 )
 
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
+func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 	return basictl.ReadBool(w, v, BoolFalse, BoolTrue)
 }
 
-func BoolWriteBoxed(w []byte, v bool) []byte {
+func BoolWriteTL1Boxed(w []byte, v bool) []byte {
 	if v {
 		return basictl.NatWrite(w, 0x997275b5)
 	}

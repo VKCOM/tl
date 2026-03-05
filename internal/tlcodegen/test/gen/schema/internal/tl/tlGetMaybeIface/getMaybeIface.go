@@ -29,40 +29,64 @@ func (item *GetMaybeIface) Reset() {
 }
 
 func (item *GetMaybeIface) Read(w []byte) (_ []byte, err error) {
-	return item.X.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *GetMaybeIface) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.X.ReadTL1Boxed(w)
 }
 
 func (item *GetMaybeIface) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *GetMaybeIface) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *GetMaybeIface) Write(w []byte) []byte {
-	w = item.X.WriteBoxed(w)
+	return item.WriteTL1(w)
+}
+func (item *GetMaybeIface) WriteTL1(w []byte) []byte {
+	w = item.X.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *GetMaybeIface) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *GetMaybeIface) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6b055ae4); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *GetMaybeIface) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *GetMaybeIface) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *GetMaybeIface) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *GetMaybeIface) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6b055ae4)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *GetMaybeIface) ReadResult(w []byte, ret *tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *GetMaybeIface) ReadResultTL1(w []byte, ret *tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *GetMaybeIface) WriteResult(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *GetMaybeIface) WriteResultTL1(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -84,21 +108,21 @@ func (item *GetMaybeIface) writeResultJSON(tctx *basictl.JSONWriteContext, w []b
 	return w, nil
 }
 
-func (item *GetMaybeIface) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMaybeIface) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1ValueMaybe.Service1ValueMaybe
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *GetMaybeIface) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMaybeIface) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1ValueMaybe.Service1ValueMaybe
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

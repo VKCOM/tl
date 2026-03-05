@@ -34,34 +34,38 @@ func (item *IntKeyDictionaryTupleString) FillRandom(rg *basictl.RandGenerator, n
 }
 
 func (item *IntKeyDictionaryTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	return tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringRead(w, item.ptr(), nat_t)
+	return item.ReadTL1(w, nat_t)
 }
-
-func (item *IntKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.Write(w, nat_t)
+func (item *IntKeyDictionaryTupleString) ReadTL1(w []byte, nat_t uint32) (_ []byte, err error) {
+	return tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringReadTL1(w, item.ptr(), nat_t)
 }
 
 func (item *IntKeyDictionaryTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWrite(w, *item.ptr(), nat_t); err != nil {
+	return item.WriteTL1(w, nat_t)
+}
+func (item *IntKeyDictionaryTupleString) WriteTL1(w []byte, nat_t uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteTL1(w, *item.ptr(), nat_t); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *IntKeyDictionaryTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+func (item *IntKeyDictionaryTupleString) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x07bafc42); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_t)
-}
-
-func (item *IntKeyDictionaryTupleString) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t)
+	return item.ReadTL1(w, nat_t)
 }
 
 func (item *IntKeyDictionaryTupleString) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_t)
+}
+func (item *IntKeyDictionaryTupleString) WriteTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x07bafc42)
-	return item.Write(w, nat_t)
+	return item.WriteTL1(w, nat_t)
 }
 
 func (item *IntKeyDictionaryTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {

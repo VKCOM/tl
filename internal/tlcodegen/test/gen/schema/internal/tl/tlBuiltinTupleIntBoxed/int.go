@@ -15,7 +15,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinTupleIntBoxedRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntBoxedReadTL1(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
 	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
 		return w, err
 	}
@@ -35,7 +35,7 @@ func BuiltinTupleIntBoxedRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, e
 	return w, nil
 }
 
-func BuiltinTupleIntBoxedWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntBoxedWriteTL1(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int32", len(vec), nat_n)
 	}

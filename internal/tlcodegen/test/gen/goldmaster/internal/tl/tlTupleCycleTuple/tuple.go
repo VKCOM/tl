@@ -42,34 +42,38 @@ func (item *TupleCycleTuple) RepairMasks(nat_n uint32) {
 }
 
 func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRead(w, item.ptr(), nat_n)
+	return item.ReadTL1(w, nat_n)
 }
-
-func (item *TupleCycleTuple) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.Write(w, nat_n)
+func (item *TupleCycleTuple) ReadTL1(w []byte, nat_n uint32) (_ []byte, err error) {
+	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleReadTL1(w, item.ptr(), nat_n)
 }
 
 func (item *TupleCycleTuple) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWrite(w, *item.ptr(), nat_n); err != nil {
+	return item.WriteTL1(w, nat_n)
+}
+func (item *TupleCycleTuple) WriteTL1(w []byte, nat_n uint32) (_ []byte, err error) {
+	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWriteTL1(w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_n)
+}
+func (item *TupleCycleTuple) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_n)
-}
-
-func (item *TupleCycleTuple) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_n)
+	return item.ReadTL1(w, nat_n)
 }
 
 func (item *TupleCycleTuple) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_n)
+}
+func (item *TupleCycleTuple) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
-	return item.Write(w, nat_n)
+	return item.WriteTL1(w, nat_n)
 }
 
 func (item *TupleCycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {

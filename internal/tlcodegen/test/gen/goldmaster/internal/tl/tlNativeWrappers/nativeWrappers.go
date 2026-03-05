@@ -49,6 +49,9 @@ func (item *NativeWrappers) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *NativeWrappers) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *NativeWrappers) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.A); err != nil {
 		return w, err
 	}
@@ -58,47 +61,62 @@ func (item *NativeWrappers) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.B); err != nil {
 		return w, err
 	}
-	if w, err = item.C.Read(w); err != nil {
+	if w, err = item.C.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = item.D.ReadBoxed(w); err != nil {
+	if w, err = item.D.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.E.Read(w); err != nil {
+	if w, err = item.E.ReadTL1(w); err != nil {
 		return w, err
 	}
-	return item.F.ReadBoxed(w)
+	return item.F.ReadTL1Boxed(w)
 }
 
 func (item *NativeWrappers) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *NativeWrappers) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *NativeWrappers) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *NativeWrappers) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.A)
 	w = basictl.NatWrite(w, 0xa8509bda)
 	w = basictl.IntWrite(w, item.B)
-	w = item.C.Write(w)
-	w = item.D.WriteBoxed(w)
-	w = item.E.Write(w)
-	w = item.F.WriteBoxed(w)
+	w = item.C.WriteTL1(w)
+	w = item.D.WriteTL1Boxed(w)
+	w = item.E.WriteTL1(w)
+	w = item.F.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *NativeWrappers) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *NativeWrappers) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x344ddf50); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *NativeWrappers) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *NativeWrappers) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *NativeWrappers) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *NativeWrappers) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x344ddf50)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item NativeWrappers) String() string {

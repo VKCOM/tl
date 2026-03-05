@@ -64,6 +64,9 @@ func (item *Service5InsertList) RepairMasks() {
 }
 
 func (item *Service5InsertList) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service5InsertList) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flags); err != nil {
 		return w, err
@@ -75,36 +78,57 @@ func (item *Service5InsertList) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service5InsertList) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service5InsertList) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service5InsertList) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service5InsertList) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.Flags)
 	return w
 }
 
 func (item *Service5InsertList) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service5InsertList) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7cf362bc); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service5InsertList) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service5InsertList) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service5InsertList) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service5InsertList) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7cf362bc)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service5InsertList) ReadResult(w []byte, ret *tlListService5Output.ListService5Output) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service5InsertList) ReadResultTL1(w []byte, ret *tlListService5Output.ListService5Output) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *Service5InsertList) WriteResult(w []byte, ret tlListService5Output.ListService5Output) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service5InsertList) WriteResultTL1(w []byte, ret tlListService5Output.ListService5Output) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -241,44 +265,44 @@ func (item *Service5InsertList) writeResultJSON(tctx *basictl.JSONWriteContext, 
 	return w, nil
 }
 
-func (item *Service5InsertList) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+func (item *Service5InsertList) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
 	var ret tlListService5Output.ListService5Output
 	ret.FillRandom(rg)
-	return item.WriteResult(w, ret)
+	return item.WriteResultTL1(w, ret)
 }
 
-func (item *Service5InsertList) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service5InsertList) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 
-func (item *Service5InsertList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
-func (item *Service5InsertList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

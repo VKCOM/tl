@@ -32,32 +32,50 @@ func (item *InnerMaybe0) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *InnerMaybe0) Read(w []byte) (_ []byte, err error) {
-	return item.A.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *InnerMaybe0) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.A.ReadTL1Boxed(w)
 }
 
 func (item *InnerMaybe0) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *InnerMaybe0) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *InnerMaybe0) Write(w []byte) []byte {
-	w = item.A.WriteBoxed(w)
+	return item.WriteTL1(w)
+}
+func (item *InnerMaybe0) WriteTL1(w []byte) []byte {
+	w = item.A.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *InnerMaybe0) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *InnerMaybe0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0a7d3b9e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *InnerMaybe0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *InnerMaybe0) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *InnerMaybe0) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *InnerMaybe0) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x0a7d3b9e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item InnerMaybe0) String() string {

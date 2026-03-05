@@ -41,7 +41,7 @@ func (trw *TypeRWBool) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersio
 	qw422016.N().S(`
 func `)
 	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
-	qw422016.N().S(`ReadBoxed(w []byte, v *bool) ([]byte, error) {
+	qw422016.N().S(`ReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 `)
 	if trw.wr.originateFromTL2 {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
@@ -58,7 +58,7 @@ func `)
 
 func `)
 	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
-	qw422016.N().S(`WriteBoxed(w []byte, v bool) []byte {
+	qw422016.N().S(`WriteTL1Boxed(w []byte, v bool) []byte {
 `)
 	if trw.wr.originateFromTL2 {
 		qw422016.N().S(`        panic(basictl.TL2Error("not implemented for tl2 type"))

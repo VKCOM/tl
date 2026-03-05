@@ -16,7 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, vec *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadTL1(w []byte, vec *[]tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -30,17 +30,17 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(w []byte, v
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w []byte, vec []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) []byte {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteTL1(w []byte, vec []tlEitherService6ErrorVectorService6FindResultRow.EitherService6ErrorVectorService6FindResultRow) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }

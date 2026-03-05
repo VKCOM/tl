@@ -35,6 +35,9 @@ func (item *Service1Longvalue) Reset() {
 }
 
 func (item *Service1Longvalue) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1Longvalue) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Value); err != nil {
 		return w, err
 	}
@@ -42,29 +45,44 @@ func (item *Service1Longvalue) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1Longvalue) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1Longvalue) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1Longvalue) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1Longvalue) WriteTL1(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Value)
 	w = basictl.IntWrite(w, item.Flags)
 	return w
 }
 
 func (item *Service1Longvalue) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1Longvalue) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x082e0945); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1Longvalue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1Longvalue) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1Longvalue) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1Longvalue) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x082e0945)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1Longvalue) String() string {
@@ -185,6 +203,9 @@ func (item *Service1LongvalueWithTime) Reset() {
 }
 
 func (item *Service1LongvalueWithTime) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1LongvalueWithTime) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Value); err != nil {
 		return w, err
 	}
@@ -195,10 +216,16 @@ func (item *Service1LongvalueWithTime) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1LongvalueWithTime) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1LongvalueWithTime) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1LongvalueWithTime) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1LongvalueWithTime) WriteTL1(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Value)
 	w = basictl.IntWrite(w, item.Flags)
 	w = basictl.IntWrite(w, item.ModificationTime)
@@ -206,19 +233,28 @@ func (item *Service1LongvalueWithTime) Write(w []byte) []byte {
 }
 
 func (item *Service1LongvalueWithTime) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1LongvalueWithTime) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa04606ec); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1LongvalueWithTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1LongvalueWithTime) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1LongvalueWithTime) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1LongvalueWithTime) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa04606ec)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1LongvalueWithTime) String() string {
@@ -350,30 +386,48 @@ func (Service1NotFound) TLTag() uint32  { return 0x1d670b96 }
 
 func (item *Service1NotFound) Reset() {}
 
-func (item *Service1NotFound) Read(w []byte) (_ []byte, err error) { return w, nil }
+func (item *Service1NotFound) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1NotFound) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
 func (item *Service1NotFound) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1NotFound) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1NotFound) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1NotFound) WriteTL1(w []byte) []byte {
 	return w
 }
 
 func (item *Service1NotFound) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1NotFound) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1d670b96); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1NotFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1NotFound) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1NotFound) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1NotFound) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1d670b96)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1NotFound) String() string {
@@ -449,6 +503,9 @@ func (item *Service1Strvalue) Reset() {
 }
 
 func (item *Service1Strvalue) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1Strvalue) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Value); err != nil {
 		return w, err
 	}
@@ -456,29 +513,44 @@ func (item *Service1Strvalue) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1Strvalue) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1Strvalue) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1Strvalue) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1Strvalue) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Value)
 	w = basictl.IntWrite(w, item.Flags)
 	return w
 }
 
 func (item *Service1Strvalue) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1Strvalue) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5faa0c52); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1Strvalue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1Strvalue) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1Strvalue) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1Strvalue) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x5faa0c52)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1Strvalue) String() string {
@@ -599,6 +671,9 @@ func (item *Service1StrvalueWithTime) Reset() {
 }
 
 func (item *Service1StrvalueWithTime) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1StrvalueWithTime) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Value); err != nil {
 		return w, err
 	}
@@ -609,10 +684,16 @@ func (item *Service1StrvalueWithTime) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1StrvalueWithTime) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1StrvalueWithTime) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1StrvalueWithTime) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1StrvalueWithTime) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Value)
 	w = basictl.IntWrite(w, item.Flags)
 	w = basictl.IntWrite(w, item.ModificationTime)
@@ -620,19 +701,28 @@ func (item *Service1StrvalueWithTime) Write(w []byte) []byte {
 }
 
 func (item *Service1StrvalueWithTime) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1StrvalueWithTime) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x98b1a484); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1StrvalueWithTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1StrvalueWithTime) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1StrvalueWithTime) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1StrvalueWithTime) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x98b1a484)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1StrvalueWithTime) String() string {
@@ -853,6 +943,9 @@ func (item *Service1Value) SetLongvalueWithTime(value Service1LongvalueWithTime)
 }
 
 func (item *Service1Value) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1Value) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -863,38 +956,37 @@ func (item *Service1Value) ReadBoxed(w []byte) (_ []byte, err error) {
 		return w, nil
 	case 0x5faa0c52:
 		item.index = 1
-		return item.valueStrvalue.Read(w)
+		return item.valueStrvalue.ReadTL1(w)
 	case 0x082e0945:
 		item.index = 2
-		return item.valueLongvalue.Read(w)
+		return item.valueLongvalue.ReadTL1(w)
 	case 0x98b1a484:
 		item.index = 3
-		return item.valueStrvalueWithTime.Read(w)
+		return item.valueStrvalueWithTime.ReadTL1(w)
 	case 0xa04606ec:
 		item.index = 4
-		return item.valueLongvalueWithTime.Read(w)
+		return item.valueLongvalueWithTime.ReadTL1(w)
 	default:
 		return w, internal.ErrorInvalidUnionTag("service1.Value", tag)
 	}
 }
 
-func (item *Service1Value) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
-}
-
 func (item *Service1Value) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1Value) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _Service1Value[item.index].TLTag)
 	switch item.index {
 	case 0:
 		return w
 	case 1:
-		w = item.valueStrvalue.Write(w)
+		w = item.valueStrvalue.WriteTL1(w)
 	case 2:
-		w = item.valueLongvalue.Write(w)
+		w = item.valueLongvalue.WriteTL1(w)
 	case 3:
-		w = item.valueStrvalueWithTime.Write(w)
+		w = item.valueStrvalueWithTime.WriteTL1(w)
 	case 4:
-		w = item.valueLongvalueWithTime.Write(w)
+		w = item.valueLongvalueWithTime.WriteTL1(w)
 	}
 	return w
 }

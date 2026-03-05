@@ -32,19 +32,21 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) FillRandom(r
 }
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_v)
+}
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return item.Value.ReadBoxed(w, nat_v)
-}
-
-func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.Write(w, nat_v), nil
+	return item.Value.ReadTL1Boxed(w, nat_v)
 }
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_v uint32) []byte {
+	return item.WriteTL1(w, nat_v)
+}
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteTL1(w []byte, nat_v uint32) []byte {
 	w = basictl.StringWrite(w, item.Key)
-	w = item.Value.WriteBoxed(w, nat_v)
+	w = item.Value.WriteTL1Boxed(w, nat_v)
 	return w
 }
 

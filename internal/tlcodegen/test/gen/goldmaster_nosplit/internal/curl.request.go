@@ -372,6 +372,9 @@ func (item *CurlRequest) RepairMasks() {
 }
 
 func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CurlRequest) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	item.tl2mask1 = 0
 	if w, err = basictl.NatRead(w, &item.FieldMask); err != nil {
@@ -385,7 +388,7 @@ func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {
 	}
 	if item.FieldMask&(1<<0) != 0 {
 		item.tl2mask0 |= 1
-		if w, err = BuiltinDictStringStringRead(w, &item.Headers); err != nil {
+		if w, err = BuiltinDictStringStringReadTL1(w, &item.Headers); err != nil {
 			return w, err
 		}
 	} else {
@@ -499,15 +502,21 @@ func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *CurlRequest) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CurlRequest) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CurlRequest) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *CurlRequest) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.StringWrite(w, item.Method)
 	w = basictl.StringWrite(w, item.Url)
 	if item.FieldMask&(1<<0) != 0 {
-		w = BuiltinDictStringStringWrite(w, item.Headers)
+		w = BuiltinDictStringStringWriteTL1(w, item.Headers)
 	}
 	if item.FieldMask&(1<<1) != 0 {
 		w = basictl.StringWrite(w, item.Body)
@@ -552,27 +561,42 @@ func (item *CurlRequest) Write(w []byte) []byte {
 }
 
 func (item *CurlRequest) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CurlRequest) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3f5a4651); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CurlRequest) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CurlRequest) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CurlRequest) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CurlRequest) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x3f5a4651)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *CurlRequest) ReadResult(w []byte, ret *CurlResponse) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *CurlRequest) ReadResultTL1(w []byte, ret *CurlResponse) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *CurlRequest) WriteResult(w []byte, ret CurlResponse) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *CurlRequest) WriteResultTL1(w []byte, ret CurlResponse) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -709,44 +733,44 @@ func (item *CurlRequest) writeResultJSON(tctx *basictl.JSONWriteContext, w []byt
 	return w, nil
 }
 
-func (item *CurlRequest) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+func (item *CurlRequest) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
 	var ret CurlResponse
 	ret.FillRandom(rg)
-	return item.WriteResult(w, ret)
+	return item.WriteResultTL1(w, ret)
 }
 
-func (item *CurlRequest) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CurlRequest) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CurlResponse
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *CurlRequest) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CurlRequest) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CurlResponse
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 
-func (item *CurlRequest) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CurlRequest) ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CurlResponse
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	return r, item.WriteResultTL2(w, tctx, ret), nil
 }
 
-func (item *CurlRequest) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CurlRequest) ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CurlResponse
 	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

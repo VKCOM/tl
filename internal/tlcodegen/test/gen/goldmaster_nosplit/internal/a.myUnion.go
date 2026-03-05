@@ -78,10 +78,16 @@ func (item *AMyUnion) SetNionA(value AuNionA) {
 }
 
 func (item *AMyUnion) Read(w []byte) (_ []byte, err error) {
-	return item.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *AMyUnion) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
 }
 
 func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AMyUnion) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -89,30 +95,39 @@ func (item *AMyUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	switch tag {
 	case 0xa7662843:
 		item.index = 0
-		return item.valueUNionA.Read(w)
+		return item.valueUNionA.ReadTL1(w)
 	case 0xdf61f632:
 		item.index = 1
-		return item.valueNionA.Read(w)
+		return item.valueNionA.ReadTL1(w)
 	default:
 		return w, ErrorInvalidUnionTag("a.MyUnion", tag)
 	}
 }
 
 func (item *AMyUnion) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxedGeneral(w)
+	return item.WriteTL1General(w)
+}
+func (item *AMyUnion) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
 }
 
 func (item *AMyUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AMyUnion) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AMyUnion) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AMyUnion) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AMyUnion[item.index].TLTag)
 	switch item.index {
 	case 0:
-		w = item.valueUNionA.Write(w)
+		w = item.valueUNionA.WriteTL1(w)
 	case 1:
-		w = item.valueNionA.Write(w)
+		w = item.valueNionA.WriteTL1(w)
 	}
 	return w
 }
@@ -344,32 +359,50 @@ func (item *AUNionA) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AUNionA) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *AUNionA) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.A)
 }
 
 func (item *AUNionA) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *AUNionA) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *AUNionA) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *AUNionA) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.A)
 	return w
 }
 
 func (item *AUNionA) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AUNionA) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa7662843); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *AUNionA) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AUNionA) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AUNionA) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AUNionA) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa7662843)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item AUNionA) String() string {
@@ -592,32 +625,50 @@ func (item *AuNionA) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AuNionA) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *AuNionA) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.B)
 }
 
 func (item *AuNionA) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *AuNionA) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *AuNionA) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *AuNionA) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.B)
 	return w
 }
 
 func (item *AuNionA) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AuNionA) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xdf61f632); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *AuNionA) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AuNionA) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AuNionA) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AuNionA) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdf61f632)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item AuNionA) String() string {

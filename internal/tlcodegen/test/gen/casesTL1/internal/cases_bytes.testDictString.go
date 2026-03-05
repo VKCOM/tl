@@ -30,32 +30,50 @@ func (item *CasesBytesTestDictString) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesBytesTestDictString) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictStringIntRead(w, &item.Dict)
+	return item.ReadTL1(w)
+}
+func (item *CasesBytesTestDictString) ReadTL1(w []byte) (_ []byte, err error) {
+	return BuiltinDictStringIntReadTL1(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CasesBytesTestDictString) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CasesBytesTestDictString) Write(w []byte) []byte {
-	w = BuiltinDictStringIntWrite(w, item.Dict)
+	return item.WriteTL1(w)
+}
+func (item *CasesBytesTestDictString) WriteTL1(w []byte) []byte {
+	w = BuiltinDictStringIntWriteTL1(w, item.Dict)
 	return w
 }
 
 func (item *CasesBytesTestDictString) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesBytesTestDictString) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6c04d6ce); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesBytesTestDictString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesBytesTestDictString) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesBytesTestDictString) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesBytesTestDictString) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6c04d6ce)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesBytesTestDictString) String() string {
@@ -152,32 +170,50 @@ func (item *CasesBytesTestDictStringBytes) FillRandom(rg *basictl.RandGenerator)
 }
 
 func (item *CasesBytesTestDictStringBytes) Read(w []byte) (_ []byte, err error) {
-	return BuiltinDictStringIntBytesRead(w, &item.Dict)
+	return item.ReadTL1(w)
+}
+func (item *CasesBytesTestDictStringBytes) ReadTL1(w []byte) (_ []byte, err error) {
+	return BuiltinDictStringIntBytesReadTL1(w, &item.Dict)
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CasesBytesTestDictStringBytes) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CasesBytesTestDictStringBytes) Write(w []byte) []byte {
-	w = BuiltinDictStringIntBytesWrite(w, item.Dict)
+	return item.WriteTL1(w)
+}
+func (item *CasesBytesTestDictStringBytes) WriteTL1(w []byte) []byte {
+	w = BuiltinDictStringIntBytesWriteTL1(w, item.Dict)
 	return w
 }
 
 func (item *CasesBytesTestDictStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesBytesTestDictStringBytes) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6c04d6ce); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesBytesTestDictStringBytes) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesBytesTestDictStringBytes) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6c04d6ce)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesBytesTestDictStringBytes) String() string {

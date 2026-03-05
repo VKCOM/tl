@@ -22,7 +22,7 @@ func BuiltinVectorDictionaryAnyFieldDoubleIntFillRandom(rg *basictl.RandGenerato
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorDictionaryAnyFieldDoubleIntRead(w []byte, vec *[]DictionaryAnyFieldDoubleInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryAnyFieldDoubleIntReadTL1(w []byte, vec *[]DictionaryAnyFieldDoubleInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -33,17 +33,17 @@ func BuiltinVectorDictionaryAnyFieldDoubleIntRead(w []byte, vec *[]DictionaryAny
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldDoubleIntWrite(w []byte, vec []DictionaryAnyFieldDoubleInt) []byte {
+func BuiltinVectorDictionaryAnyFieldDoubleIntWriteTL1(w []byte, vec []DictionaryAnyFieldDoubleInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -194,6 +194,9 @@ func (item *DictionaryAnyFieldDoubleInt) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictionaryAnyFieldDoubleInt) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.DoubleRead(w, &item.Key); err != nil {
 		return w, err
 	}
@@ -201,29 +204,44 @@ func (item *DictionaryAnyFieldDoubleInt) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *DictionaryAnyFieldDoubleInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictionaryAnyFieldDoubleInt) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) WriteTL1(w []byte) []byte {
 	w = basictl.DoubleWrite(w, item.Key)
 	w = basictl.IntWrite(w, item.Value)
 	return w
 }
 
 func (item *DictionaryAnyFieldDoubleInt) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe466c347); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *DictionaryAnyFieldDoubleInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *DictionaryAnyFieldDoubleInt) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *DictionaryAnyFieldDoubleInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xe466c347)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item DictionaryAnyFieldDoubleInt) String() string {

@@ -42,38 +42,56 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) RepairMasks() {
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	return item.Value.Read(w, item.N)
+	return item.Value.ReadTL1(w, item.N)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	if w, err = item.Value.Write(w, item.N); err != nil {
+	if w, err = item.Value.WriteTL1(w, item.N); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc176008e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc176008e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item BenchmarksVrutoyTopLevelContainerWithDependency) String() string {

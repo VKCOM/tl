@@ -30,32 +30,50 @@ func (item *VectorInteger) Reset() {
 }
 
 func (item *VectorInteger) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinVectorInteger.BuiltinVectorIntegerRead(w, item.ptr())
+	return item.ReadTL1(w)
+}
+func (item *VectorInteger) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorInteger.BuiltinVectorIntegerReadTL1(w, item.ptr())
 }
 
 func (item *VectorInteger) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *VectorInteger) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *VectorInteger) Write(w []byte) []byte {
-	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWrite(w, *item.ptr())
+	return item.WriteTL1(w)
+}
+func (item *VectorInteger) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteTL1(w, *item.ptr())
 	return w
 }
 
 func (item *VectorInteger) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *VectorInteger) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *VectorInteger) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *VectorInteger) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *VectorInteger) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *VectorInteger) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item VectorInteger) String() string {

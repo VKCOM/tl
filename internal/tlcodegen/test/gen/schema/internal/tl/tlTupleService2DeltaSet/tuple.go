@@ -31,34 +31,38 @@ func (item *TupleService2DeltaSet) Reset() {
 }
 
 func (item *TupleService2DeltaSet) Read(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetRead(w, item.ptr(), nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
+	return item.ReadTL1(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
-
-func (item *TupleService2DeltaSet) WriteGeneral(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.Write(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+func (item *TupleService2DeltaSet) ReadTL1(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	return tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadTL1(w, item.ptr(), nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 
 func (item *TupleService2DeltaSet) Write(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWrite(w, *item.ptr(), nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+	return item.WriteTL1(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+}
+func (item *TupleService2DeltaSet) WriteTL1(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteTL1(w, *item.ptr(), nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *TupleService2DeltaSet) ReadBoxed(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+}
+func (item *TupleService2DeltaSet) ReadTL1Boxed(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
-}
-
-func (item *TupleService2DeltaSet) WriteBoxedGeneral(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+	return item.ReadTL1(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
 func (item *TupleService2DeltaSet) WriteBoxed(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+}
+func (item *TupleService2DeltaSet) WriteTL1Boxed(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
-	return item.Write(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+	return item.WriteTL1(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
 func (item *TupleService2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {

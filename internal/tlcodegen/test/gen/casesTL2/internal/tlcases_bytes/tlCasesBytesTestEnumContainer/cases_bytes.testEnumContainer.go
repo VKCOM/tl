@@ -32,26 +32,44 @@ func (item *CasesBytesTestEnumContainer) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesBytesTestEnumContainer) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesBytesTestEnumContainer) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesBytesTestEnumContainer) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1General(w)
+}
+func (item *CasesBytesTestEnumContainer) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesBytesTestEnumContainer) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *CasesBytesTestEnumContainer) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
 func (item *CasesBytesTestEnumContainer) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesBytesTestEnumContainer) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesBytesTestEnumContainer) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesBytesTestEnumContainer) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesBytesTestEnumContainer) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesBytesTestEnumContainer) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 

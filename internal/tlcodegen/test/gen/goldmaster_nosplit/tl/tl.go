@@ -112,9 +112,9 @@ type (
 	VectorIntMaybe                = internal.VectorIntMaybe
 )
 
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return internal.BoolReadBoxed(w, v)
+func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
+	return internal.BoolReadTL1Boxed(w, v)
 }
-func BoolWriteBoxed(w []byte, v bool) []byte {
-	return internal.BoolWriteBoxed(w, v)
+func BoolWriteTL1Boxed(w []byte, v bool) []byte {
+	return internal.BoolWriteTL1Boxed(w, v)
 }

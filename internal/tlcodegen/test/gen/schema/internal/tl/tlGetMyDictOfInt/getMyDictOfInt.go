@@ -28,40 +28,64 @@ func (item *GetMyDictOfInt) Reset() {
 }
 
 func (item *GetMyDictOfInt) Read(w []byte) (_ []byte, err error) {
-	return item.X.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *GetMyDictOfInt) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.X.ReadTL1Boxed(w)
 }
 
 func (item *GetMyDictOfInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *GetMyDictOfInt) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *GetMyDictOfInt) Write(w []byte) []byte {
-	w = item.X.WriteBoxed(w)
+	return item.WriteTL1(w)
+}
+func (item *GetMyDictOfInt) WriteTL1(w []byte) []byte {
+	w = item.X.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *GetMyDictOfInt) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *GetMyDictOfInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x166f962c); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *GetMyDictOfInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *GetMyDictOfInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *GetMyDictOfInt) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *GetMyDictOfInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x166f962c)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *GetMyDictOfInt) ReadResult(w []byte, ret *tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *GetMyDictOfInt) ReadResultTL1(w []byte, ret *tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *GetMyDictOfInt) WriteResult(w []byte, ret tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *GetMyDictOfInt) WriteResultTL1(w []byte, ret tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -83,21 +107,21 @@ func (item *GetMyDictOfInt) writeResultJSON(tctx *basictl.JSONWriteContext, w []
 	return w, nil
 }
 
-func (item *GetMyDictOfInt) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMyDictOfInt) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyDictOfInt.MyDictOfInt
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *GetMyDictOfInt) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMyDictOfInt) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyDictOfInt.MyDictOfInt
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

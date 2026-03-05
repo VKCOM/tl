@@ -91,13 +91,16 @@ func (item *TasksTask) Reset() {
 }
 
 func (item *TasksTask) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TasksTask) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.Flags); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Tag); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Tag); err != nil {
 		return w, err
 	}
 	if w, err = basictl.StringRead(w, &item.Data); err != nil {
@@ -135,13 +138,19 @@ func (item *TasksTask) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *TasksTask) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *TasksTask) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *TasksTask) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *TasksTask) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = basictl.IntWrite(w, item.Flags)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Tag)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Tag)
 	w = basictl.StringWrite(w, item.Data)
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.LongWrite(w, item.Id)
@@ -159,19 +168,28 @@ func (item *TasksTask) Write(w []byte) []byte {
 }
 
 func (item *TasksTask) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TasksTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7c23bc2c); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TasksTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TasksTask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *TasksTask) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TasksTask) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7c23bc2c)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TasksTask) String() string {

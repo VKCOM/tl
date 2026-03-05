@@ -107,7 +107,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 
 						newDst := factory.CreateObjectFromName(testingInfo.TestingType)
 						if success.IsTLBytesBoxed {
-							_, err := newDst.ReadBoxed(utils.ParseHexToBytes(success.Bytes))
+							_, err := newDst.ReadTL1Boxed(utils.ParseHexToBytes(success.Bytes))
 							if err != nil {
 								t.Fatalf("read tl1 error: %s", err.Error())
 							}
@@ -151,7 +151,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 				}
 				tl1Data := utils.ParseHexToBytes(testCase.Bytes)
 				if testCase.IsTLBytesBoxed {
-					_, _ = obj.ReadBoxed(tl1Data)
+					_, _ = obj.ReadTL1Boxed(tl1Data)
 				} else {
 					_, _ = obj.Read(tl1Data)
 				}
@@ -194,7 +194,7 @@ func createTestSamples(t *testing.T) {
 
 		for i := 0; i < NumberOfSamples; i++ {
 			dst.FillRandom(rg)
-			tl1write, err := dst.WriteBoxedGeneral(nil)
+			tl1write, err := dst.WriteTL1BoxedGeneral(nil)
 			if err != nil {
 				t.Fatal(err.Error())
 			}

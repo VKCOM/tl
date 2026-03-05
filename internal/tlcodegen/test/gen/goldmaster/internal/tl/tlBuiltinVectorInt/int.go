@@ -24,7 +24,7 @@ func BuiltinVectorIntFillRandom(rg *basictl.RandGenerator, vec *[]int32) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorIntRead(w []byte, vec *[]int32) (_ []byte, err error) {
+func BuiltinVectorIntReadTL1(w []byte, vec *[]int32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -42,7 +42,7 @@ func BuiltinVectorIntRead(w []byte, vec *[]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
+func BuiltinVectorIntWriteTL1(w []byte, vec []int32) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
 		w = basictl.IntWrite(w, elem)

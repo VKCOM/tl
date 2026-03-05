@@ -28,34 +28,38 @@ func (item *Service2ObjectId) Reset() {
 }
 
 func (item *Service2ObjectId) Read(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.Id, nat_objectIdLength)
+	return item.ReadTL1(w, nat_objectIdLength)
 }
-
-func (item *Service2ObjectId) WriteGeneral(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	return item.Write(w, nat_objectIdLength)
+func (item *Service2ObjectId) ReadTL1(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+	return tlBuiltinTupleInt.BuiltinTupleIntReadTL1(w, &item.Id, nat_objectIdLength)
 }
 
 func (item *Service2ObjectId) Write(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWrite(w, item.Id, nat_objectIdLength); err != nil {
+	return item.WriteTL1(w, nat_objectIdLength)
+}
+func (item *Service2ObjectId) WriteTL1(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteTL1(w, item.Id, nat_objectIdLength); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *Service2ObjectId) ReadBoxed(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_objectIdLength)
+}
+func (item *Service2ObjectId) ReadTL1Boxed(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xaa0af282); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_objectIdLength)
-}
-
-func (item *Service2ObjectId) WriteBoxedGeneral(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_objectIdLength)
+	return item.ReadTL1(w, nat_objectIdLength)
 }
 
 func (item *Service2ObjectId) WriteBoxed(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_objectIdLength)
+}
+func (item *Service2ObjectId) WriteTL1Boxed(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xaa0af282)
-	return item.Write(w, nat_objectIdLength)
+	return item.WriteTL1(w, nat_objectIdLength)
 }
 
 func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32) error {

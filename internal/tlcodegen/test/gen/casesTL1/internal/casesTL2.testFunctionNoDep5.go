@@ -29,40 +29,64 @@ func (item *CasesTL2TestFunctionNoDep5) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTL2TestFunctionNoDep5) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.X)
 	return w, nil
 }
 
 func (item *CasesTL2TestFunctionNoDep5) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2b47b925); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTL2TestFunctionNoDep5) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x2b47b925)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) ReadResult(w []byte, ret *CasesTL2TestObject) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *CasesTL2TestFunctionNoDep5) ReadResultTL1(w []byte, ret *CasesTL2TestObject) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *CasesTL2TestFunctionNoDep5) WriteResult(w []byte, ret CasesTL2TestObject) (_ []byte, err error) {
-	if w, err = ret.WriteBoxed(w); err != nil {
+	return item.WriteResultTL1(w, ret)
+}
+func (item *CasesTL2TestFunctionNoDep5) WriteResultTL1(w []byte, ret CasesTL2TestObject) (_ []byte, err error) {
+	if w, err = ret.WriteTL1Boxed(w); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -88,27 +112,27 @@ func (item *CasesTL2TestFunctionNoDep5) writeResultJSON(tctx *basictl.JSONWriteC
 	return w, nil
 }
 
-func (item *CasesTL2TestFunctionNoDep5) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+func (item *CasesTL2TestFunctionNoDep5) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
 	var ret CasesTL2TestObject
 	ret.FillRandom(rg)
-	return item.WriteResult(w, ret)
+	return item.WriteResultTL1(w, ret)
 }
 
-func (item *CasesTL2TestFunctionNoDep5) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep5) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CasesTL2TestObject
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionNoDep5) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep5) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret CasesTL2TestObject
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

@@ -30,42 +30,60 @@ func (item *MyBoxedTupleSlice) Reset() {
 }
 
 func (item *MyBoxedTupleSlice) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *MyBoxedTupleSlice) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
 	}
-	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedRead(w, &item.Data, item.N)
+	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadTL1(w, &item.Data, item.N)
 }
 
 func (item *MyBoxedTupleSlice) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *MyBoxedTupleSlice) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *MyBoxedTupleSlice) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *MyBoxedTupleSlice) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	w = basictl.NatWrite(w, 0x9770768a)
-	if w, err = tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWrite(w, item.Data, item.N); err != nil {
+	if w, err = tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedWriteTL1(w, item.Data, item.N); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *MyBoxedTupleSlice) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *MyBoxedTupleSlice) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x25d1a1be); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *MyBoxedTupleSlice) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *MyBoxedTupleSlice) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *MyBoxedTupleSlice) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *MyBoxedTupleSlice) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x25d1a1be)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item MyBoxedTupleSlice) String() string {

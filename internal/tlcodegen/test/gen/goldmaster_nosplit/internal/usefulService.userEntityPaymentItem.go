@@ -34,36 +34,40 @@ func (item *UsefulServiceUserEntityPaymentItem) FillRandom(rg *basictl.RandGener
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) Read(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItem) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Id); err != nil {
 		return w, err
 	}
-	return item.Promo.ReadBoxed(w, nat_fields_mask)
-}
-
-func (item *UsefulServiceUserEntityPaymentItem) WriteGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.Write(w, nat_fields_mask), nil
+	return item.Promo.ReadTL1Boxed(w, nat_fields_mask)
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) Write(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItem) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.StringWrite(w, item.Id)
-	w = item.Promo.WriteBoxed(w, nat_fields_mask)
+	w = item.Promo.WriteTL1Boxed(w, nat_fields_mask)
 	return w
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItem) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4f798680); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_fields_mask)
-}
-
-func (item *UsefulServiceUserEntityPaymentItem) WriteBoxedGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_fields_mask), nil
+	return item.ReadTL1(w, nat_fields_mask)
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) WriteBoxed(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItem) WriteTL1Boxed(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.NatWrite(w, 0x4f798680)
-	return item.Write(w, nat_fields_mask)
+	return item.WriteTL1(w, nat_fields_mask)
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {

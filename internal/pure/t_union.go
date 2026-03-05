@@ -7,7 +7,6 @@
 package pure
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -99,7 +98,7 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 			tlName, 0,
 			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, leftArgs, true, i, false, tlast.TL2FuncDeclaration{})
 		if err != nil {
-			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
+			return nil, err
 		}
 		ins.variantTypes[i] = element
 		ins.variantNames[i] = variantDef.Name
@@ -159,7 +158,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			variantDef,
 			true, i)
 		if err != nil {
-			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
+			return nil, err
 		}
 		ins.variantTypes[i] = element
 		if len(element.fields) != 0 {

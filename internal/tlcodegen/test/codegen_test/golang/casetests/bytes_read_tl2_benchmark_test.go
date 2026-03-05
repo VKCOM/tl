@@ -21,7 +21,7 @@ func initTestValues[T meta.Object](tlVersion int, constructor func() T) func(ite
 		var err error
 
 		if tlVersion == 1 {
-			bytes, err = testObject.WriteGeneral(nil)
+			bytes, err = testObject.WriteTL1General(nil)
 			if err != nil {
 				panic("can't init such data")
 			}

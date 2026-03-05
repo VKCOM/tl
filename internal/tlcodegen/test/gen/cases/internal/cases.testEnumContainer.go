@@ -29,32 +29,50 @@ func (item *CasesTestEnumContainer) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTestEnumContainer) Read(w []byte) (_ []byte, err error) {
-	return item.Value.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *CasesTestEnumContainer) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.Value.ReadTL1Boxed(w)
 }
 
 func (item *CasesTestEnumContainer) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CasesTestEnumContainer) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CasesTestEnumContainer) Write(w []byte) []byte {
-	w = item.Value.WriteBoxed(w)
+	return item.WriteTL1(w)
+}
+func (item *CasesTestEnumContainer) WriteTL1(w []byte) []byte {
+	w = item.Value.WriteTL1Boxed(w)
 	return w
 }
 
 func (item *CasesTestEnumContainer) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTestEnumContainer) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xcb684231); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTestEnumContainer) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTestEnumContainer) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesTestEnumContainer) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTestEnumContainer) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xcb684231)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTestEnumContainer) String() string {

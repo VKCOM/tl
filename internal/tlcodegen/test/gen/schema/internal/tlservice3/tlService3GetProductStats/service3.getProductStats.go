@@ -31,44 +31,68 @@ func (item *Service3GetProductStats) Reset() {
 }
 
 func (item *Service3GetProductStats) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service3GetProductStats) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.UserId); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Types)
+	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Types)
 }
 
 func (item *Service3GetProductStats) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service3GetProductStats) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service3GetProductStats) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service3GetProductStats) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.UserId)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Types)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Types)
 	return w
 }
 
 func (item *Service3GetProductStats) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service3GetProductStats) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x261f6898); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service3GetProductStats) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service3GetProductStats) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service3GetProductStats) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service3GetProductStats) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x261f6898)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service3GetProductStats) ReadResult(w []byte, ret *tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service3GetProductStats) ReadResultTL1(w []byte, ret *tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *Service3GetProductStats) WriteResult(w []byte, ret tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service3GetProductStats) WriteResultTL1(w []byte, ret tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -90,21 +114,21 @@ func (item *Service3GetProductStats) writeResultJSON(tctx *basictl.JSONWriteCont
 	return w, nil
 }
 
-func (item *Service3GetProductStats) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3GetProductStats) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service3GetProductStats) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3GetProductStats) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

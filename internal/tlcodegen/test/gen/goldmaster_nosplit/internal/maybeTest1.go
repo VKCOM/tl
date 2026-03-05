@@ -61,74 +61,92 @@ func (item *MaybeTest1) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *MaybeTest1) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *MaybeTest1) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.A.ReadBoxed(w); err != nil {
+	if w, err = item.A.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.B.ReadBoxed(w); err != nil {
+	if w, err = item.B.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.C.ReadBoxed(w); err != nil {
+	if w, err = item.C.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.D.ReadBoxed(w); err != nil {
+	if w, err = item.D.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.E.ReadBoxed(w, item.N); err != nil {
+	if w, err = item.E.ReadTL1Boxed(w, item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.F.ReadBoxed(w); err != nil {
+	if w, err = item.F.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.G.ReadBoxed(w); err != nil {
+	if w, err = item.G.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.H.ReadBoxed(w); err != nil {
+	if w, err = item.H.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	if w, err = item.I.ReadBoxed(w); err != nil {
+	if w, err = item.I.ReadTL1Boxed(w); err != nil {
 		return w, err
 	}
-	return item.J.ReadBoxed(w)
+	return item.J.ReadTL1Boxed(w)
 }
 
 func (item *MaybeTest1) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *MaybeTest1) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *MaybeTest1) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *MaybeTest1) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
-	w = item.A.WriteBoxed(w)
-	w = item.B.WriteBoxed(w)
-	w = item.C.WriteBoxed(w)
-	w = item.D.WriteBoxed(w)
-	if w, err = item.E.WriteBoxed(w, item.N); err != nil {
+	w = item.A.WriteTL1Boxed(w)
+	w = item.B.WriteTL1Boxed(w)
+	w = item.C.WriteTL1Boxed(w)
+	w = item.D.WriteTL1Boxed(w)
+	if w, err = item.E.WriteTL1Boxed(w, item.N); err != nil {
 		return w, err
 	}
-	w = item.F.WriteBoxed(w)
-	w = item.G.WriteBoxed(w)
-	w = item.H.WriteBoxed(w)
-	w = item.I.WriteBoxed(w)
-	w = item.J.WriteBoxed(w)
+	w = item.F.WriteTL1Boxed(w)
+	w = item.G.WriteTL1Boxed(w)
+	w = item.H.WriteTL1Boxed(w)
+	w = item.I.WriteTL1Boxed(w)
+	w = item.J.WriteTL1Boxed(w)
 	return w, nil
 }
 
 func (item *MaybeTest1) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *MaybeTest1) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc457763c); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *MaybeTest1) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *MaybeTest1) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *MaybeTest1) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *MaybeTest1) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc457763c)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item MaybeTest1) String() string {

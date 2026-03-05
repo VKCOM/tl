@@ -46,11 +46,14 @@ func (item *CasesMyCycle2) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesMyCycle2) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesMyCycle2) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
-		if w, err = item.A.Read(w); err != nil {
+		if w, err = item.A.ReadTL1(w); err != nil {
 			return w, err
 		}
 	} else {
@@ -60,31 +63,46 @@ func (item *CasesMyCycle2) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *CasesMyCycle2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *CasesMyCycle2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *CasesMyCycle2) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *CasesMyCycle2) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
-		w = item.A.Write(w)
+		w = item.A.WriteTL1(w)
 	}
 	return w
 }
 
 func (item *CasesMyCycle2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesMyCycle2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5444c9a2); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesMyCycle2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesMyCycle2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *CasesMyCycle2) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesMyCycle2) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x5444c9a2)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesMyCycle2) String() string {

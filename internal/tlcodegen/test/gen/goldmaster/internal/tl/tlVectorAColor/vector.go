@@ -33,32 +33,50 @@ func (item *VectorAColor) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *VectorAColor) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinVectorAColor.BuiltinVectorAColorRead(w, item.ptr())
+	return item.ReadTL1(w)
+}
+func (item *VectorAColor) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorAColor.BuiltinVectorAColorReadTL1(w, item.ptr())
 }
 
 func (item *VectorAColor) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *VectorAColor) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *VectorAColor) Write(w []byte) []byte {
-	w = tlBuiltinVectorAColor.BuiltinVectorAColorWrite(w, *item.ptr())
+	return item.WriteTL1(w)
+}
+func (item *VectorAColor) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteTL1(w, *item.ptr())
 	return w
 }
 
 func (item *VectorAColor) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *VectorAColor) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *VectorAColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *VectorAColor) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *VectorAColor) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *VectorAColor) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item VectorAColor) String() string {

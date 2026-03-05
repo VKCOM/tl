@@ -32,34 +32,38 @@ func (item *Replace1) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
 }
 
 func (item *Replace1) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.A, nat_n)
+	return item.ReadTL1(w, nat_n)
 }
-
-func (item *Replace1) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.Write(w, nat_n)
+func (item *Replace1) ReadTL1(w []byte, nat_n uint32) (_ []byte, err error) {
+	return tlBuiltinTupleInt.BuiltinTupleIntReadTL1(w, &item.A, nat_n)
 }
 
 func (item *Replace1) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWrite(w, item.A, nat_n); err != nil {
+	return item.WriteTL1(w, nat_n)
+}
+func (item *Replace1) WriteTL1(w []byte, nat_n uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteTL1(w, item.A, nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *Replace1) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_n)
+}
+func (item *Replace1) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x89eac43a); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_n)
-}
-
-func (item *Replace1) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_n)
+	return item.ReadTL1(w, nat_n)
 }
 
 func (item *Replace1) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_n)
+}
+func (item *Replace1) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x89eac43a)
-	return item.Write(w, nat_n)
+	return item.WriteTL1(w, nat_n)
 }
 
 func (item *Replace1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {

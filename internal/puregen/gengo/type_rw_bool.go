@@ -76,11 +76,11 @@ func (trw *TypeRWBool) typeRepairMasksCode(bytesVersion bool, directImports *Dir
 }
 
 func (trw *TypeRWBool) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAsterisk(ref, val), joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAsterisk(ref, val), joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWBool) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWBool) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

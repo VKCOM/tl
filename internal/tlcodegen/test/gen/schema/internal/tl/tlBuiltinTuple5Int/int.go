@@ -21,7 +21,7 @@ func BuiltinTuple5IntReset(vec *[5]int32) {
 	}
 }
 
-func BuiltinTuple5IntRead(w []byte, vec *[5]int32) (_ []byte, err error) {
+func BuiltinTuple5IntReadTL1(w []byte, vec *[5]int32) (_ []byte, err error) {
 	for i := range *vec {
 		if w, err = basictl.IntRead(w, &(*vec)[i]); err != nil {
 			return w, err
@@ -30,7 +30,7 @@ func BuiltinTuple5IntRead(w []byte, vec *[5]int32) (_ []byte, err error) {
 	return w, nil
 }
 
-func BuiltinTuple5IntWrite(w []byte, vec *[5]int32) []byte {
+func BuiltinTuple5IntWriteTL1(w []byte, vec *[5]int32) []byte {
 	for _, elem := range *vec {
 		w = basictl.IntWrite(w, elem)
 	}

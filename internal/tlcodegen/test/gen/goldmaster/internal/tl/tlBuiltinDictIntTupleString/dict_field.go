@@ -34,7 +34,7 @@ func BuiltinDictIntTupleStringFillRandom(rg *basictl.RandGenerator, m *map[int32
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictIntTupleStringReadTL1(w []byte, m *map[int32][]string, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -49,7 +49,7 @@ func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldIntTupleString.DictFieldIntTupleString
-		if w, err = elem.Read(w, nat_t); err != nil {
+		if w, err = elem.ReadTL1(w, nat_t); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -57,7 +57,7 @@ func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32
 	return w, nil
 }
 
-func BuiltinDictIntTupleStringWrite(w []byte, m map[int32][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictIntTupleStringWriteTL1(w []byte, m map[int32][]string, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w, nil
@@ -72,7 +72,7 @@ func BuiltinDictIntTupleStringWrite(w []byte, m map[int32][]string, nat_t uint32
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldIntTupleString.DictFieldIntTupleString{Key: key, Value: val}
-		if w, err = elem.Write(w, nat_t); err != nil {
+		if w, err = elem.WriteTL1(w, nat_t); err != nil {
 			return w, err
 		}
 	}

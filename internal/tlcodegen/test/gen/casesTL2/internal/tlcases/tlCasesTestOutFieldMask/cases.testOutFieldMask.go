@@ -66,26 +66,44 @@ func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTestOutFieldMask) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTestOutFieldMask) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesTestOutFieldMask) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1General(w)
+}
+func (item *CasesTestOutFieldMask) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesTestOutFieldMask) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *CasesTestOutFieldMask) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
 func (item *CasesTestOutFieldMask) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTestOutFieldMask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesTestOutFieldMask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTestOutFieldMask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesTestOutFieldMask) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTestOutFieldMask) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 

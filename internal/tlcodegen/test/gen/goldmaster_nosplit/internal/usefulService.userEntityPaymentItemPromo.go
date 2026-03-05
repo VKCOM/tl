@@ -32,32 +32,36 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) FillRandom(rg *basictl.Rand
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) Read(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Content)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.Write(w, nat_fields_mask), nil
-}
-
 func (item *UsefulServiceUserEntityPaymentItemPromo) Write(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.StringWrite(w, item.Content)
 	return w
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x24c7ec9f); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_fields_mask)
-}
-
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteBoxedGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_fields_mask), nil
+	return item.ReadTL1(w, nat_fields_mask)
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) WriteBoxed(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_fields_mask)
+}
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL1Boxed(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.NatWrite(w, 0x24c7ec9f)
-	return item.Write(w, nat_fields_mask)
+	return item.WriteTL1(w, nat_fields_mask)
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
@@ -256,23 +260,27 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) FillRandom(rg *ba
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
 	if item.Ok {
-		return item.Value.ReadBoxed(w, nat_t)
+		return item.Value.ReadTL1Boxed(w, nat_t)
 	}
 	return w, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t), nil
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_t)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteTL1Boxed(w []byte, nat_t uint32) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		return item.Value.WriteBoxed(w, nat_t)
+		return item.Value.WriteTL1Boxed(w, nat_t)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }

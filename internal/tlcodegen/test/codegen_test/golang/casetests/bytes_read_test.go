@@ -48,7 +48,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 			_, readErr := mt.object.Read(trueBytes)
 
 			assert.Nil(t, readErr)
-			writeData, writeErr := mt.object.WriteGeneral(nil)
+			writeData, writeErr := mt.object.WriteTL1General(nil)
 
 			assert.Nil(t, writeErr)
 			assert.Equal(t, utils.SprintHexDump(trueBytes), utils.SprintHexDump(writeData))
@@ -56,7 +56,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 			_, readAgainErr := mt.object.Read(trueBytes)
 			assert.Nil(t, readAgainErr)
 
-			writeAgainData, writeAgainErr := mt.object.WriteGeneral(nil)
+			writeAgainData, writeAgainErr := mt.object.WriteTL1General(nil)
 
 			assert.Nil(t, writeAgainErr)
 			assert.Equal(t, trueBytes, writeAgainData)
@@ -103,7 +103,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 				buf2 = buf2[:0]
 				t.Run(fmt.Sprintf("Object %d", i), func(t *testing.T) {
 					obj := objects[i]
-					buf1, err = obj.WriteGeneral(buf1)
+					buf1, err = obj.WriteTL1General(buf1)
 					if err != nil {
 						t.Logf("Seed: %d\n", seed)
 						t.Fatal("first serialization wasn't succeeded", err.Error())
@@ -116,7 +116,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 						return
 					}
 					obj1 := obj
-					buf2, err = obj.WriteGeneral(buf2)
+					buf2, err = obj.WriteTL1General(buf2)
 					if err != nil {
 						t.Logf("Seed: %d\n", seed)
 						t.Fatal("second serialization wasn't succeeded", err.Error())
@@ -358,7 +358,7 @@ func checkExistenceOfTest(tests *testformat.AllTestsBytes, testName, typeName, b
 }
 
 func addSample(tests *testformat.AllTestsBytes, testName string, sample meta.Object, expectingHex string) (bool, error) {
-	bytes, err := sample.WriteGeneral(nil)
+	bytes, err := sample.WriteTL1General(nil)
 	if err != nil {
 		return false, err
 	}

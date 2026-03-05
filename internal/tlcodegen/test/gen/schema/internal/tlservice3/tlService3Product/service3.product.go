@@ -54,13 +54,16 @@ func (item *Service3Product) Reset() {
 }
 
 func (item *Service3Product) Read(w []byte, nat_mode uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_mode)
+}
+func (item *Service3Product) ReadTL1(w []byte, nat_mode uint32) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Id); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Id); err != nil {
 		return w, err
 	}
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Info); err != nil {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Info); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.Date); err != nil {
@@ -70,7 +73,7 @@ func (item *Service3Product) Read(w []byte, nat_mode uint32) (_ []byte, err erro
 		return w, err
 	}
 	if nat_mode&(1<<0) != 0 {
-		if w, err = tlBool.BoolReadBoxed(w, &item.Removed); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &item.Removed); err != nil {
 			return w, err
 		}
 	} else {
@@ -79,36 +82,37 @@ func (item *Service3Product) Read(w []byte, nat_mode uint32) (_ []byte, err erro
 	return w, nil
 }
 
-func (item *Service3Product) WriteGeneral(w []byte, nat_mode uint32) (_ []byte, err error) {
-	return item.Write(w, nat_mode), nil
-}
-
 func (item *Service3Product) Write(w []byte, nat_mode uint32) []byte {
+	return item.WriteTL1(w, nat_mode)
+}
+func (item *Service3Product) WriteTL1(w []byte, nat_mode uint32) []byte {
 	w = basictl.IntWrite(w, item.Type)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Id)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Info)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Id)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Info)
 	w = basictl.IntWrite(w, item.Date)
 	w = basictl.IntWrite(w, item.ExpirationDate)
 	if nat_mode&(1<<0) != 0 {
-		w = tlBool.BoolWriteBoxed(w, item.Removed)
+		w = tlBool.BoolWriteTL1Boxed(w, item.Removed)
 	}
 	return w
 }
 
 func (item *Service3Product) ReadBoxed(w []byte, nat_mode uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_mode)
+}
+func (item *Service3Product) ReadTL1Boxed(w []byte, nat_mode uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x461f4ce2); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_mode)
-}
-
-func (item *Service3Product) WriteBoxedGeneral(w []byte, nat_mode uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_mode), nil
+	return item.ReadTL1(w, nat_mode)
 }
 
 func (item *Service3Product) WriteBoxed(w []byte, nat_mode uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_mode)
+}
+func (item *Service3Product) WriteTL1Boxed(w []byte, nat_mode uint32) []byte {
 	w = basictl.NatWrite(w, 0x461f4ce2)
-	return item.Write(w, nat_mode)
+	return item.WriteTL1(w, nat_mode)
 }
 
 func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_mode uint32) error {

@@ -25,7 +25,7 @@ func BuiltinVectorAColorFillRandom(rg *basictl.RandGenerator, vec *[]tlAColor.AC
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorAColorRead(w []byte, vec *[]tlAColor.AColor) (_ []byte, err error) {
+func BuiltinVectorAColorReadTL1(w []byte, vec *[]tlAColor.AColor) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -36,17 +36,17 @@ func BuiltinVectorAColorRead(w []byte, vec *[]tlAColor.AColor) (_ []byte, err er
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorAColorWrite(w []byte, vec []tlAColor.AColor) []byte {
+func BuiltinVectorAColorWriteTL1(w []byte, vec []tlAColor.AColor) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }

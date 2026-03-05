@@ -142,6 +142,15 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL2-specific and cannot be used from TL1", tName))
 	}
 	if _, ok := kt.tl2Names[tName]; !ok && ctxTL2 {
+		if kt.builtinWrappedCanonicalName != "" { // for Int, we want to say "use int32 instead"
+			ktWrapped, ok := k.tips[kt.builtinWrappedCanonicalName]
+			if ok {
+				kt = ktWrapped
+			}
+		}
+		for good := range kt.tl2Names {
+			return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL1-specific, in TL2 please use %s instead", tName, good))
+		}
 		return tr, nil, someType.PR.BeautifulError(fmt.Errorf("type %s is TL1-specific and cannot be used from TL2", tName))
 	}
 	if ctxTL2 && someType.Name != kt.canonicalName {

@@ -27,23 +27,27 @@ func (item *VectorService3ProductMaybe) Reset() {
 }
 
 func (item *VectorService3ProductMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+
+func (item *VectorService3ProductMaybe) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
 	if item.Ok {
-		return tlBuiltinVectorService3Product.BuiltinVectorService3ProductRead(w, &item.Value, nat_t)
+		return tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadTL1(w, &item.Value, nat_t)
 	}
 	return w, nil
 }
 
-func (item *VectorService3ProductMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t), nil
+func (item *VectorService3ProductMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_t)
 }
 
-func (item *VectorService3ProductMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+func (item *VectorService3ProductMaybe) WriteTL1Boxed(w []byte, nat_t uint32) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		return tlBuiltinVectorService3Product.BuiltinVectorService3ProductWrite(w, item.Value, nat_t)
+		return tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteTL1(w, item.Value, nat_t)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }

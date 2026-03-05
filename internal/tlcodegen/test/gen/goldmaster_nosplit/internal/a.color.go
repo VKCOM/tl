@@ -66,10 +66,16 @@ func (item AColor) IsBlue() bool { return item.index == 4 }
 func (item *AColor) SetBlue()    { item.index = 4 }
 
 func (item *AColor) Read(w []byte) (_ []byte, err error) {
-	return item.ReadBoxed(w)
+	return item.ReadTL1(w)
+}
+func (item *AColor) ReadTL1(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
 }
 
 func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *AColor) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -96,14 +102,23 @@ func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *AColor) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxedGeneral(w)
+	return item.WriteTL1General(w)
+}
+func (item *AColor) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1BoxedGeneral(w)
 }
 
 func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *AColor) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *AColor) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *AColor) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AColor[item.index].TLTag)
 	return w
 }
@@ -333,23 +348,27 @@ func (item *AColorMaybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *AColorMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+
+func (item *AColorMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
 	if item.Ok {
-		return item.Value.ReadBoxed(w)
+		return item.Value.ReadTL1Boxed(w)
 	}
 	return w, nil
 }
 
-func (item *AColorMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+func (item *AColorMaybe) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
 }
 
-func (item *AColorMaybe) WriteBoxed(w []byte) []byte {
+func (item *AColorMaybe) WriteTL1Boxed(w []byte) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		return item.Value.WriteBoxed(w)
+		return item.Value.WriteTL1Boxed(w)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }
@@ -517,7 +536,7 @@ func BuiltinVectorAColorFillRandom(rg *basictl.RandGenerator, vec *[]AColor) {
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinVectorAColorRead(w []byte, vec *[]AColor) (_ []byte, err error) {
+func BuiltinVectorAColorReadTL1(w []byte, vec *[]AColor) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -531,17 +550,17 @@ func BuiltinVectorAColorRead(w []byte, vec *[]AColor) (_ []byte, err error) {
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].ReadBoxed(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorAColorWrite(w []byte, vec []AColor) []byte {
+func BuiltinVectorAColorWriteTL1(w []byte, vec []AColor) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.WriteBoxed(w)
+		w = elem.WriteTL1Boxed(w)
 	}
 	return w
 }

@@ -33,10 +33,10 @@ func (item *Maybe) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Maybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	return w, basictl.TL2Error("not implemented for tl2 type")
+	return item.ReadTL1Boxed(w)
 }
 
-func (item *Maybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+func (item *Maybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 

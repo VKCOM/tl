@@ -38,48 +38,66 @@ func (item *UnionArgsUse) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UnionArgsUse) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UnionArgsUse) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.K); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
-	if w, err = item.A.ReadBoxed(w, item.K); err != nil {
+	if w, err = item.A.ReadTL1Boxed(w, item.K); err != nil {
 		return w, err
 	}
-	return item.B.ReadBoxed(w, item.N)
+	return item.B.ReadTL1Boxed(w, item.N)
 }
 
 func (item *UnionArgsUse) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *UnionArgsUse) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *UnionArgsUse) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *UnionArgsUse) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.K)
 	w = basictl.NatWrite(w, item.N)
-	if w, err = item.A.WriteBoxed(w, item.K); err != nil {
+	if w, err = item.A.WriteTL1Boxed(w, item.K); err != nil {
 		return w, err
 	}
-	if w, err = item.B.WriteBoxed(w, item.N); err != nil {
+	if w, err = item.B.WriteTL1Boxed(w, item.N); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *UnionArgsUse) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UnionArgsUse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x742161d2); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UnionArgsUse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UnionArgsUse) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *UnionArgsUse) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UnionArgsUse) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x742161d2)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item UnionArgsUse) String() string {

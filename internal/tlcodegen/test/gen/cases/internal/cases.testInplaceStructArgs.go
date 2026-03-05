@@ -39,6 +39,9 @@ func (item *CasesTestInplaceStructArgs) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTestInplaceStructArgs) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTestInplaceStructArgs) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.A1); err != nil {
 		return w, err
 	}
@@ -48,37 +51,52 @@ func (item *CasesTestInplaceStructArgs) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.A3); err != nil {
 		return w, err
 	}
-	return item.Arg.Read(w, item.A1, item.A2, item.A3)
+	return item.Arg.ReadTL1(w, item.A1, item.A2, item.A3)
 }
 
 func (item *CasesTestInplaceStructArgs) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTestInplaceStructArgs) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTestInplaceStructArgs) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTestInplaceStructArgs) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.A1)
 	w = basictl.NatWrite(w, item.A2)
 	w = basictl.NatWrite(w, item.A3)
-	if w, err = item.Arg.Write(w, item.A1, item.A2, item.A3); err != nil {
+	if w, err = item.Arg.WriteTL1(w, item.A1, item.A2, item.A3); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *CasesTestInplaceStructArgs) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTestInplaceStructArgs) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa9e4441e); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTestInplaceStructArgs) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTestInplaceStructArgs) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTestInplaceStructArgs) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTestInplaceStructArgs) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xa9e4441e)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item CasesTestInplaceStructArgs) String() string {

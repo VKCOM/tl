@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -73,7 +74,7 @@ func (w *Whitelist) UnusedWarning() error {
 		}
 	}
 	if len(unusedFilters) != 0 {
-		return fmt.Errorf("warning: unused filters in %s whitelist: %s", w.whiltelistName, strings.Join(unusedFilters, ", "))
+		return fmt.Errorf("%s: unused filters in %s whitelist: %s", color.InYellow("warning"), w.whiltelistName, strings.Join(unusedFilters, ", "))
 	}
 	return nil
 }

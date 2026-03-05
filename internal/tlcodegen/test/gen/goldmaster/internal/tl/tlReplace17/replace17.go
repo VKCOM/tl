@@ -38,40 +38,58 @@ func (item *Replace17) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Replace17) Read(w []byte) (_ []byte, err error) {
-	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.X); err != nil {
+	return item.ReadTL1(w)
+}
+func (item *Replace17) ReadTL1(w []byte) (_ []byte, err error) {
+	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.X); err != nil {
 		return w, err
 	}
 	if w, err = basictl.IntRead(w, &item.A); err != nil {
 		return w, err
 	}
-	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Y)
+	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Y)
 }
 
 func (item *Replace17) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Replace17) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Replace17) Write(w []byte) []byte {
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.X)
+	return item.WriteTL1(w)
+}
+func (item *Replace17) WriteTL1(w []byte) []byte {
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.X)
 	w = basictl.IntWrite(w, item.A)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Y)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Y)
 	return w
 }
 
 func (item *Replace17) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Replace17) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf46f9b9b); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Replace17) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Replace17) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Replace17) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Replace17) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf46f9b9b)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Replace17) String() string {

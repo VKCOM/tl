@@ -107,46 +107,49 @@ func (item *TasksCronTime) Reset() {
 }
 
 func (item *TasksCronTime) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TasksCronTime) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Seconds); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Seconds); err != nil {
 			return w, err
 		}
 	} else {
 		item.Seconds = item.Seconds[:0]
 	}
 	if item.FieldsMask&(1<<1) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Minutes); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Minutes); err != nil {
 			return w, err
 		}
 	} else {
 		item.Minutes = item.Minutes[:0]
 	}
 	if item.FieldsMask&(1<<2) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Hours); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Hours); err != nil {
 			return w, err
 		}
 	} else {
 		item.Hours = item.Hours[:0]
 	}
 	if item.FieldsMask&(1<<3) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.DaysOfWeek); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.DaysOfWeek); err != nil {
 			return w, err
 		}
 	} else {
 		item.DaysOfWeek = item.DaysOfWeek[:0]
 	}
 	if item.FieldsMask&(1<<4) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Days); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Days); err != nil {
 			return w, err
 		}
 	} else {
 		item.Days = item.Days[:0]
 	}
 	if item.FieldsMask&(1<<5) != 0 {
-		if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Months); err != nil {
+		if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Months); err != nil {
 			return w, err
 		}
 	} else {
@@ -156,46 +159,61 @@ func (item *TasksCronTime) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *TasksCronTime) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *TasksCronTime) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *TasksCronTime) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *TasksCronTime) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Seconds)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Seconds)
 	}
 	if item.FieldsMask&(1<<1) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Minutes)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Minutes)
 	}
 	if item.FieldsMask&(1<<2) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Hours)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Hours)
 	}
 	if item.FieldsMask&(1<<3) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.DaysOfWeek)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.DaysOfWeek)
 	}
 	if item.FieldsMask&(1<<4) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Days)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Days)
 	}
 	if item.FieldsMask&(1<<5) != 0 {
-		w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.Months)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Months)
 	}
 	return w
 }
 
 func (item *TasksCronTime) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TasksCronTime) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd4177d7f); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TasksCronTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TasksCronTime) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *TasksCronTime) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TasksCronTime) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd4177d7f)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TasksCronTime) String() string {

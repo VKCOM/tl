@@ -28,40 +28,64 @@ func (item *UniqueGet) Reset() {
 }
 
 func (item *UniqueGet) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *UniqueGet) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Key)
 }
 
 func (item *UniqueGet) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *UniqueGet) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *UniqueGet) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *UniqueGet) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	return w
 }
 
 func (item *UniqueGet) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *UniqueGet) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xce89bbf2); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *UniqueGet) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *UniqueGet) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *UniqueGet) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *UniqueGet) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xce89bbf2)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *UniqueGet) ReadResult(w []byte, ret *tlIntMaybe.IntMaybe) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *UniqueGet) ReadResultTL1(w []byte, ret *tlIntMaybe.IntMaybe) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *UniqueGet) WriteResult(w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *UniqueGet) WriteResultTL1(w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -83,21 +107,21 @@ func (item *UniqueGet) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte,
 	return w, nil
 }
 
-func (item *UniqueGet) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *UniqueGet) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlIntMaybe.IntMaybe
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *UniqueGet) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *UniqueGet) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlIntMaybe.IntMaybe
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

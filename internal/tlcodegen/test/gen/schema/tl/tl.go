@@ -162,9 +162,9 @@ type (
 	WithFloat                    = tlWithFloat.WithFloat
 )
 
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
-	return tlBool.BoolReadBoxed(w, v)
+func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
+	return tlBool.BoolReadTL1Boxed(w, v)
 }
-func BoolWriteBoxed(w []byte, v bool) []byte {
-	return tlBool.BoolWriteBoxed(w, v)
+func BoolWriteTL1Boxed(w []byte, v bool) []byte {
+	return tlBool.BoolWriteTL1Boxed(w, v)
 }

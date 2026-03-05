@@ -16,7 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorTasksQueueTypeInfoRead(w []byte, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) (_ []byte, err error) {
+func BuiltinVectorTasksQueueTypeInfoReadTL1(w []byte, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -30,17 +30,17 @@ func BuiltinVectorTasksQueueTypeInfoRead(w []byte, vec *[]tlTasksQueueTypeInfo.T
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorTasksQueueTypeInfoWrite(w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
+func BuiltinVectorTasksQueueTypeInfoWriteTL1(w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

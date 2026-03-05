@@ -34,7 +34,7 @@ func BuiltinDictStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[str
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]tlPairIntInt.PairIntInt) (_ []byte, err error) {
+func BuiltinDictStringPairIntIntReadTL1(w []byte, m *map[string]tlPairIntInt.PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -49,7 +49,7 @@ func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]tlPairIntInt.PairIn
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldStringPairIntInt.DictFieldStringPairIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -57,7 +57,7 @@ func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]tlPairIntInt.PairIn
 	return w, nil
 }
 
-func BuiltinDictStringPairIntIntWrite(w []byte, m map[string]tlPairIntInt.PairIntInt) []byte {
+func BuiltinDictStringPairIntIntWriteTL1(w []byte, m map[string]tlPairIntInt.PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -70,7 +70,7 @@ func BuiltinDictStringPairIntIntWrite(w []byte, m map[string]tlPairIntInt.PairIn
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldStringPairIntInt.DictFieldStringPairIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

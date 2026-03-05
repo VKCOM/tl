@@ -16,7 +16,7 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BuiltinVectorService3Product0Read(w []byte, vec *[]tlService3Product0.Service3Product0) (_ []byte, err error) {
+func BuiltinVectorService3Product0ReadTL1(w []byte, vec *[]tlService3Product0.Service3Product0) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -30,17 +30,17 @@ func BuiltinVectorService3Product0Read(w []byte, vec *[]tlService3Product0.Servi
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinVectorService3Product0Write(w []byte, vec []tlService3Product0.Service3Product0) []byte {
+func BuiltinVectorService3Product0WriteTL1(w []byte, vec []tlService3Product0.Service3Product0) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

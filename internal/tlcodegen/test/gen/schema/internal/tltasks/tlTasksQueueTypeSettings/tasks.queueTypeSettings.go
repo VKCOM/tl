@@ -146,18 +146,21 @@ func (item *TasksQueueTypeSettings) Reset() {
 }
 
 func (item *TasksQueueTypeSettings) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *TasksQueueTypeSettings) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
-		if w, err = tlBool.BoolReadBoxed(w, &item.IsEnabled); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &item.IsEnabled); err != nil {
 			return w, err
 		}
 	} else {
 		item.IsEnabled = false
 	}
 	if item.FieldsMask&(1<<1) != 0 {
-		if w, err = tlBool.BoolReadBoxed(w, &item.IsPersistent); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &item.IsPersistent); err != nil {
 			return w, err
 		}
 	} else {
@@ -192,7 +195,7 @@ func (item *TasksQueueTypeSettings) Read(w []byte) (_ []byte, err error) {
 		item.MoveToQueueTypeOnError = ""
 	}
 	if item.FieldsMask&(1<<5) != 0 {
-		if w, err = tlBool.BoolReadBoxed(w, &item.IsBlocking); err != nil {
+		if w, err = tlBool.BoolReadTL1Boxed(w, &item.IsBlocking); err != nil {
 			return w, err
 		}
 	} else {
@@ -216,16 +219,22 @@ func (item *TasksQueueTypeSettings) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *TasksQueueTypeSettings) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *TasksQueueTypeSettings) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *TasksQueueTypeSettings) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *TasksQueueTypeSettings) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
-		w = tlBool.BoolWriteBoxed(w, item.IsEnabled)
+		w = tlBool.BoolWriteTL1Boxed(w, item.IsEnabled)
 	}
 	if item.FieldsMask&(1<<1) != 0 {
-		w = tlBool.BoolWriteBoxed(w, item.IsPersistent)
+		w = tlBool.BoolWriteTL1Boxed(w, item.IsPersistent)
 	}
 	if item.FieldsMask&(1<<2) != 0 {
 		w = basictl.IntWrite(w, item.Priority)
@@ -240,7 +249,7 @@ func (item *TasksQueueTypeSettings) Write(w []byte) []byte {
 		w = basictl.StringWrite(w, item.MoveToQueueTypeOnError)
 	}
 	if item.FieldsMask&(1<<5) != 0 {
-		w = tlBool.BoolWriteBoxed(w, item.IsBlocking)
+		w = tlBool.BoolWriteTL1Boxed(w, item.IsBlocking)
 	}
 	if item.FieldsMask&(1<<6) != 0 {
 		w = basictl.IntWrite(w, item.Timelimit)
@@ -252,19 +261,28 @@ func (item *TasksQueueTypeSettings) Write(w []byte) []byte {
 }
 
 func (item *TasksQueueTypeSettings) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *TasksQueueTypeSettings) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x561fbc09); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *TasksQueueTypeSettings) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *TasksQueueTypeSettings) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *TasksQueueTypeSettings) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *TasksQueueTypeSettings) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x561fbc09)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item TasksQueueTypeSettings) String() string {

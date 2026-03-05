@@ -15,10 +15,10 @@ import (
 var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
-func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
+func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func BoolWriteBoxed(w []byte, v bool) []byte {
+func BoolWriteTL1Boxed(w []byte, v bool) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }

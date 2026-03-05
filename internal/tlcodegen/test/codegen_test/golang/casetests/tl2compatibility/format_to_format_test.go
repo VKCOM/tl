@@ -201,7 +201,7 @@ func TestJsonTL2Compatibility(t *testing.T) {
 					//_ = tl1Obj.ReadJSON(false, &basictl.JsonLexer{Data: []byte(`{"f1":1,"f2":2,"f3":true,"f4":true}`)})
 
 					// o1 -> TL1_old
-					tl1Value, _ := tl1Obj.WriteGeneral(nil)
+					tl1Value, _ := tl1Obj.WriteTL1General(nil)
 					// o1 -> JSON
 					jsonValue, err := tl1Obj.WriteJSONGeneral(&basictl.JSONWriteContext{}, nil)
 					if err != nil {
@@ -233,7 +233,7 @@ func TestJsonTL2Compatibility(t *testing.T) {
 					}
 
 					// o1 -> TL1_new
-					newTl1Value, _ := tl1Obj.WriteGeneral(nil)
+					newTl1Value, _ := tl1Obj.WriteTL1General(nil)
 					// TL1_old =?= TL2_new
 					if !assert.Equal(t, tl1Value, newTl1Value) {
 						newJsonValue, _ := tl1Obj.WriteJSONGeneral(&basictl.JSONWriteContext{}, nil)

@@ -31,34 +31,38 @@ func (item *LongKeyDictionaryTupleString) FillRandom(rg *basictl.RandGenerator, 
 }
 
 func (item *LongKeyDictionaryTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	return BuiltinDictLongTupleStringRead(w, item.ptr(), nat_t)
+	return item.ReadTL1(w, nat_t)
 }
-
-func (item *LongKeyDictionaryTupleString) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.Write(w, nat_t)
+func (item *LongKeyDictionaryTupleString) ReadTL1(w []byte, nat_t uint32) (_ []byte, err error) {
+	return BuiltinDictLongTupleStringReadTL1(w, item.ptr(), nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
-	if w, err = BuiltinDictLongTupleStringWrite(w, *item.ptr(), nat_t); err != nil {
+	return item.WriteTL1(w, nat_t)
+}
+func (item *LongKeyDictionaryTupleString) WriteTL1(w []byte, nat_t uint32) (_ []byte, err error) {
+	if w, err = BuiltinDictLongTupleStringWriteTL1(w, *item.ptr(), nat_t); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *LongKeyDictionaryTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+func (item *LongKeyDictionaryTupleString) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb424d8f1); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_t)
-}
-
-func (item *LongKeyDictionaryTupleString) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t)
+	return item.ReadTL1(w, nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_t)
+}
+func (item *LongKeyDictionaryTupleString) WriteTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xb424d8f1)
-	return item.Write(w, nat_t)
+	return item.WriteTL1(w, nat_t)
 }
 
 func (item *LongKeyDictionaryTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {

@@ -29,40 +29,64 @@ func (item *CasesTL2TestFunctionWithDep2) FillRandom(rg *basictl.RandGenerator) 
 }
 
 func (item *CasesTL2TestFunctionWithDep2) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.NatRead(w, &item.N)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	return w, nil
 }
 
 func (item *CasesTL2TestFunctionWithDep2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9d44a2fd); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *CasesTL2TestFunctionWithDep2) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9d44a2fd)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) ReadResult(w []byte, ret *BenchmarksVrutoyPositions) (_ []byte, err error) {
-	return ret.ReadBoxed(w, item.N)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *CasesTL2TestFunctionWithDep2) ReadResultTL1(w []byte, ret *BenchmarksVrutoyPositions) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w, item.N)
 }
 
 func (item *CasesTL2TestFunctionWithDep2) WriteResult(w []byte, ret BenchmarksVrutoyPositions) (_ []byte, err error) {
-	if w, err = ret.WriteBoxed(w, item.N); err != nil {
+	return item.WriteResultTL1(w, ret)
+}
+func (item *CasesTL2TestFunctionWithDep2) WriteResultTL1(w []byte, ret BenchmarksVrutoyPositions) (_ []byte, err error) {
+	if w, err = ret.WriteTL1Boxed(w, item.N); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -88,27 +112,27 @@ func (item *CasesTL2TestFunctionWithDep2) writeResultJSON(tctx *basictl.JSONWrit
 	return w, nil
 }
 
-func (item *CasesTL2TestFunctionWithDep2) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+func (item *CasesTL2TestFunctionWithDep2) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
 	var ret BenchmarksVrutoyPositions
 	ret.FillRandom(rg, item.N)
-	return item.WriteResult(w, ret)
+	return item.WriteResultTL1(w, ret)
 }
 
-func (item *CasesTL2TestFunctionWithDep2) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionWithDep2) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret BenchmarksVrutoyPositions
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionWithDep2) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionWithDep2) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret BenchmarksVrutoyPositions
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

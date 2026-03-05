@@ -32,32 +32,36 @@ func (item *VectorService3Product) Reset() {
 }
 
 func (item *VectorService3Product) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	return tlBuiltinVectorService3Product.BuiltinVectorService3ProductRead(w, item.ptr(), nat_t)
+	return item.ReadTL1(w, nat_t)
 }
-
-func (item *VectorService3Product) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.Write(w, nat_t), nil
+func (item *VectorService3Product) ReadTL1(w []byte, nat_t uint32) (_ []byte, err error) {
+	return tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadTL1(w, item.ptr(), nat_t)
 }
 
 func (item *VectorService3Product) Write(w []byte, nat_t uint32) []byte {
-	w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWrite(w, *item.ptr(), nat_t)
+	return item.WriteTL1(w, nat_t)
+}
+func (item *VectorService3Product) WriteTL1(w []byte, nat_t uint32) []byte {
+	w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteTL1(w, *item.ptr(), nat_t)
 	return w
 }
 
 func (item *VectorService3Product) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+func (item *VectorService3Product) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_t)
-}
-
-func (item *VectorService3Product) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t), nil
+	return item.ReadTL1(w, nat_t)
 }
 
 func (item *VectorService3Product) WriteBoxed(w []byte, nat_t uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_t)
+}
+func (item *VectorService3Product) WriteTL1Boxed(w []byte, nat_t uint32) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
-	return item.Write(w, nat_t)
+	return item.WriteTL1(w, nat_t)
 }
 
 func (item *VectorService3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {

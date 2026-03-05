@@ -260,6 +260,9 @@ func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32, nat_
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_outer, nat_outers)
+}
+func (item *CasesTestAllPossibleFieldConfigs) ReadTL1(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Local); err != nil {
 		return w, err
@@ -270,13 +273,13 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	if w, err = basictl.IntRead(w, &item.F00); err != nil {
 		return w, err
 	}
-	if w, err = item.F01.Read(w); err != nil {
+	if w, err = item.F01.ReadTL1(w); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntRead(w, &item.F02, item.Locals); err != nil {
+	if w, err = BuiltinTupleIntReadTL1(w, &item.F02, item.Locals); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntRead(w, &item.F03, nat_outers); err != nil {
+	if w, err = BuiltinTupleIntReadTL1(w, &item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if item.Local&(1<<0) != 0 {
@@ -292,7 +295,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	}
 	if item.Local&(1<<2) != 0 {
 		item.tl2mask0 |= 4
-		if w, err = BuiltinTupleIntRead(w, &item.F12, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	} else {
@@ -300,7 +303,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	}
 	if item.Local&(1<<3) != 0 {
 		item.tl2mask0 |= 8
-		if w, err = BuiltinTupleIntRead(w, &item.F13, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	} else {
@@ -319,7 +322,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	}
 	if nat_outer&(1<<2) != 0 {
 		item.tl2mask0 |= 64
-		if w, err = BuiltinTupleIntRead(w, &item.F22, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	} else {
@@ -327,7 +330,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	}
 	if nat_outer&(1<<3) != 0 {
 		item.tl2mask0 |= 128
-		if w, err = BuiltinTupleIntRead(w, &item.F23, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntReadTL1(w, &item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	} else {
@@ -336,31 +339,30 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, n
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteGeneral(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.Write(w, nat_outer, nat_outers)
-}
-
 func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.WriteTL1(w, nat_outer, nat_outers)
+}
+func (item *CasesTestAllPossibleFieldConfigs) WriteTL1(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Local)
 	w = basictl.NatWrite(w, item.Locals)
 	w = basictl.IntWrite(w, item.F00)
-	w = item.F01.Write(w)
-	if w, err = BuiltinTupleIntWrite(w, item.F02, item.Locals); err != nil {
+	w = item.F01.WriteTL1(w)
+	if w, err = BuiltinTupleIntWriteTL1(w, item.F02, item.Locals); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleIntWrite(w, item.F03, nat_outers); err != nil {
+	if w, err = BuiltinTupleIntWriteTL1(w, item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if item.Local&(1<<0) != 0 {
 		w = basictl.IntWrite(w, item.F10)
 	}
 	if item.Local&(1<<2) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F12, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if item.Local&(1<<3) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F13, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -368,12 +370,12 @@ func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32, 
 		w = basictl.IntWrite(w, item.F20)
 	}
 	if nat_outer&(1<<2) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F22, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if nat_outer&(1<<3) != 0 {
-		if w, err = BuiltinTupleIntWrite(w, item.F23, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntWriteTL1(w, item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -381,19 +383,21 @@ func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32, 
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) ReadBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_outer, nat_outers)
+}
+func (item *CasesTestAllPossibleFieldConfigs) ReadTL1Boxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc3607629); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_outer, nat_outers)
-}
-
-func (item *CasesTestAllPossibleFieldConfigs) WriteBoxedGeneral(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_outer, nat_outers)
+	return item.ReadTL1(w, nat_outer, nat_outers)
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) WriteBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_outer, nat_outers)
+}
+func (item *CasesTestAllPossibleFieldConfigs) WriteTL1Boxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc3607629)
-	return item.Write(w, nat_outer, nat_outers)
+	return item.WriteTL1(w, nat_outer, nat_outers)
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32, nat_outers uint32) error {

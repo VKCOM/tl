@@ -29,6 +29,9 @@ func (item *FieldConflict2) Reset() {
 }
 
 func (item *FieldConflict2) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *FieldConflict2) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.X); err != nil {
 		return w, err
 	}
@@ -36,29 +39,44 @@ func (item *FieldConflict2) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *FieldConflict2) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *FieldConflict2) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *FieldConflict2) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *FieldConflict2) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.X)
 	w = basictl.IntWrite(w, item.SetX)
 	return w
 }
 
 func (item *FieldConflict2) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *FieldConflict2) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1bba76b8); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *FieldConflict2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *FieldConflict2) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *FieldConflict2) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *FieldConflict2) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1bba76b8)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item FieldConflict2) String() string {

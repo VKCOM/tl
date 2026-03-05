@@ -23,7 +23,7 @@ func BuiltinDictStringService1ValueReset(m map[string]tlService1Value.Service1Va
 	clear(m)
 }
 
-func BuiltinDictStringService1ValueRead(w []byte, m *map[string]tlService1Value.Service1Value) (_ []byte, err error) {
+func BuiltinDictStringService1ValueReadTL1(w []byte, m *map[string]tlService1Value.Service1Value) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -41,7 +41,7 @@ func BuiltinDictStringService1ValueRead(w []byte, m *map[string]tlService1Value.
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldStringService1Value.DictFieldStringService1Value
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -49,7 +49,7 @@ func BuiltinDictStringService1ValueRead(w []byte, m *map[string]tlService1Value.
 	return w, nil
 }
 
-func BuiltinDictStringService1ValueWrite(w []byte, m map[string]tlService1Value.Service1Value) []byte {
+func BuiltinDictStringService1ValueWriteTL1(w []byte, m map[string]tlService1Value.Service1Value) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -62,7 +62,7 @@ func BuiltinDictStringService1ValueWrite(w []byte, m map[string]tlService1Value.
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldStringService1Value.DictFieldStringService1Value{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }

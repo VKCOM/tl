@@ -32,36 +32,54 @@ func (item *Service1KeysStat) Reset() {
 }
 
 func (item *Service1KeysStat) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service1KeysStat) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.StartTime); err != nil {
 		return w, err
 	}
-	return tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntRead(w, &item.KeysTops)
+	return tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadTL1(w, &item.KeysTops)
 }
 
 func (item *Service1KeysStat) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *Service1KeysStat) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *Service1KeysStat) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *Service1KeysStat) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.StartTime)
-	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWrite(w, item.KeysTops)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteTL1(w, item.KeysTops)
 	return w
 }
 
 func (item *Service1KeysStat) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service1KeysStat) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf0f6bc68); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service1KeysStat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service1KeysStat) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *Service1KeysStat) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service1KeysStat) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf0f6bc68)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item Service1KeysStat) String() string {

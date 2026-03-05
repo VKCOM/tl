@@ -34,23 +34,27 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) FillRandom(rg *ba
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_t)
+}
+
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
 	}
 	if item.Ok {
-		return item.Value.ReadBoxed(w, nat_t)
+		return item.Value.ReadTL1Boxed(w, nat_t)
 	}
 	return w, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_t), nil
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_t)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteTL1Boxed(w []byte, nat_t uint32) []byte {
 	if item.Ok {
 		w = basictl.NatWrite(w, 0x3f9c8ef8)
-		return item.Value.WriteBoxed(w, nat_t)
+		return item.Value.WriteTL1Boxed(w, nat_t)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
 }

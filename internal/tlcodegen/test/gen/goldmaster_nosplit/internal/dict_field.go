@@ -30,7 +30,7 @@ func BuiltinDictIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictIntPairIntIntRead(w []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
+func BuiltinDictIntPairIntIntReadTL1(w []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -48,7 +48,7 @@ func BuiltinDictIntPairIntIntRead(w []byte, m *map[int32]PairIntInt) (_ []byte, 
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldIntPairIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -56,7 +56,7 @@ func BuiltinDictIntPairIntIntRead(w []byte, m *map[int32]PairIntInt) (_ []byte, 
 	return w, nil
 }
 
-func BuiltinDictIntPairIntIntWrite(w []byte, m map[int32]PairIntInt) []byte {
+func BuiltinDictIntPairIntIntWriteTL1(w []byte, m map[int32]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -71,7 +71,7 @@ func BuiltinDictIntPairIntIntWrite(w []byte, m map[int32]PairIntInt) []byte {
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldIntPairIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -265,7 +265,7 @@ func BuiltinDictIntTupleStringFillRandom(rg *basictl.RandGenerator, m *map[int32
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictIntTupleStringReadTL1(w []byte, m *map[int32][]string, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -283,7 +283,7 @@ func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldIntTupleString
-		if w, err = elem.Read(w, nat_t); err != nil {
+		if w, err = elem.ReadTL1(w, nat_t); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -291,7 +291,7 @@ func BuiltinDictIntTupleStringRead(w []byte, m *map[int32][]string, nat_t uint32
 	return w, nil
 }
 
-func BuiltinDictIntTupleStringWrite(w []byte, m map[int32][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictIntTupleStringWriteTL1(w []byte, m map[int32][]string, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w, nil
@@ -306,7 +306,7 @@ func BuiltinDictIntTupleStringWrite(w []byte, m map[int32][]string, nat_t uint32
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldIntTupleString{Key: key, Value: val}
-		if w, err = elem.Write(w, nat_t); err != nil {
+		if w, err = elem.WriteTL1(w, nat_t); err != nil {
 			return w, err
 		}
 	}
@@ -504,7 +504,7 @@ func BuiltinDictLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
+func BuiltinDictLongPairIntIntReadTL1(w []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -522,7 +522,7 @@ func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]PairIntInt) (_ []byte,
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldLongPairIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -530,7 +530,7 @@ func BuiltinDictLongPairIntIntRead(w []byte, m *map[int64]PairIntInt) (_ []byte,
 	return w, nil
 }
 
-func BuiltinDictLongPairIntIntWrite(w []byte, m map[int64]PairIntInt) []byte {
+func BuiltinDictLongPairIntIntWriteTL1(w []byte, m map[int64]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -545,7 +545,7 @@ func BuiltinDictLongPairIntIntWrite(w []byte, m map[int64]PairIntInt) []byte {
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldLongPairIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -739,7 +739,7 @@ func BuiltinDictLongTupleStringFillRandom(rg *basictl.RandGenerator, m *map[int6
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictLongTupleStringRead(w []byte, m *map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongTupleStringReadTL1(w []byte, m *map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -757,7 +757,7 @@ func BuiltinDictLongTupleStringRead(w []byte, m *map[int64][]string, nat_t uint3
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldLongTupleString
-		if w, err = elem.Read(w, nat_t); err != nil {
+		if w, err = elem.ReadTL1(w, nat_t); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -765,7 +765,7 @@ func BuiltinDictLongTupleStringRead(w []byte, m *map[int64][]string, nat_t uint3
 	return w, nil
 }
 
-func BuiltinDictLongTupleStringWrite(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictLongTupleStringWriteTL1(w []byte, m map[int64][]string, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w, nil
@@ -780,7 +780,7 @@ func BuiltinDictLongTupleStringWrite(w []byte, m map[int64][]string, nat_t uint3
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldLongTupleString{Key: key, Value: val}
-		if w, err = elem.Write(w, nat_t); err != nil {
+		if w, err = elem.WriteTL1(w, nat_t); err != nil {
 			return w, err
 		}
 	}
@@ -978,7 +978,7 @@ func BuiltinDictStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[str
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]PairIntInt) (_ []byte, err error) {
+func BuiltinDictStringPairIntIntReadTL1(w []byte, m *map[string]PairIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -996,7 +996,7 @@ func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]PairIntInt) (_ []by
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldStringPairIntInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -1004,7 +1004,7 @@ func BuiltinDictStringPairIntIntRead(w []byte, m *map[string]PairIntInt) (_ []by
 	return w, nil
 }
 
-func BuiltinDictStringPairIntIntWrite(w []byte, m map[string]PairIntInt) []byte {
+func BuiltinDictStringPairIntIntWriteTL1(w []byte, m map[string]PairIntInt) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -1017,7 +1017,7 @@ func BuiltinDictStringPairIntIntWrite(w []byte, m map[string]PairIntInt) []byte 
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldStringPairIntInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -1196,7 +1196,7 @@ func BuiltinDictStringStringFillRandom(rg *basictl.RandGenerator, m *map[string]
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictStringStringRead(w []byte, m *map[string]string) (_ []byte, err error) {
+func BuiltinDictStringStringReadTL1(w []byte, m *map[string]string) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -1214,7 +1214,7 @@ func BuiltinDictStringStringRead(w []byte, m *map[string]string) (_ []byte, err 
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldStringString
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -1222,7 +1222,7 @@ func BuiltinDictStringStringRead(w []byte, m *map[string]string) (_ []byte, err 
 	return w, nil
 }
 
-func BuiltinDictStringStringWrite(w []byte, m map[string]string) []byte {
+func BuiltinDictStringStringWriteTL1(w []byte, m map[string]string) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -1235,7 +1235,7 @@ func BuiltinDictStringStringWrite(w []byte, m map[string]string) []byte {
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldStringString{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -1409,7 +1409,7 @@ func BuiltinDictStringStringBytesFillRandom(rg *basictl.RandGenerator, vec *[]Di
 	rg.DecreaseDepth()
 }
 
-func BuiltinDictStringStringBytesRead(w []byte, vec *[]DictFieldStringStringBytes) (_ []byte, err error) {
+func BuiltinDictStringStringBytesReadTL1(w []byte, vec *[]DictFieldStringStringBytes) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -1423,17 +1423,17 @@ func BuiltinDictStringStringBytesRead(w []byte, vec *[]DictFieldStringStringByte
 		*vec = (*vec)[:l]
 	}
 	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
+		if w, err = (*vec)[i].ReadTL1(w); err != nil {
 			return w, err
 		}
 	}
 	return w, nil
 }
 
-func BuiltinDictStringStringBytesWrite(w []byte, vec []DictFieldStringStringBytes) []byte {
+func BuiltinDictStringStringBytesWriteTL1(w []byte, vec []DictFieldStringStringBytes) []byte {
 	w = basictl.NatWrite(w, uint32(len(vec)))
 	for _, elem := range vec {
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
@@ -1585,7 +1585,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basi
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadTL1(w []byte, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -1603,7 +1603,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *m
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictFieldStringUsefulServiceUserEntityPaymentItemBoxed
-		if w, err = elem.Read(w, nat_t); err != nil {
+		if w, err = elem.ReadTL1(w, nat_t); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -1611,7 +1611,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *m
 	return w, nil
 }
 
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteTL1(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -1624,7 +1624,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m m
 	for _, key := range keys {
 		val := m[key]
 		elem := DictFieldStringUsefulServiceUserEntityPaymentItemBoxed{Key: key, Value: val}
-		w = elem.Write(w, nat_t)
+		w = elem.WriteTL1(w, nat_t)
 	}
 	return w
 }
@@ -1804,19 +1804,28 @@ func (item *DictFieldIntPairIntInt) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictFieldIntPairIntInt) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictFieldIntPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return item.Value.Read(w)
+	return item.Value.ReadTL1(w)
 }
 
 func (item *DictFieldIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictFieldIntPairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictFieldIntPairIntInt) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictFieldIntPairIntInt) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Key)
-	w = item.Value.Write(w)
+	w = item.Value.WriteTL1(w)
 	return w
 }
 
@@ -2063,19 +2072,21 @@ func (item *DictFieldIntTupleString) FillRandom(rg *basictl.RandGenerator, nat_v
 }
 
 func (item *DictFieldIntTupleString) Read(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_v)
+}
+func (item *DictFieldIntTupleString) ReadTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return BuiltinTupleStringRead(w, &item.Value, nat_v)
-}
-
-func (item *DictFieldIntTupleString) WriteGeneral(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.Write(w, nat_v)
+	return BuiltinTupleStringReadTL1(w, &item.Value, nat_v)
 }
 
 func (item *DictFieldIntTupleString) Write(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.WriteTL1(w, nat_v)
+}
+func (item *DictFieldIntTupleString) WriteTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Key)
-	if w, err = BuiltinTupleStringWrite(w, item.Value, nat_v); err != nil {
+	if w, err = BuiltinTupleStringWriteTL1(w, item.Value, nat_v); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -2316,19 +2327,28 @@ func (item *DictFieldLongPairIntInt) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictFieldLongPairIntInt) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictFieldLongPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return item.Value.Read(w)
+	return item.Value.ReadTL1(w)
 }
 
 func (item *DictFieldLongPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictFieldLongPairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictFieldLongPairIntInt) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictFieldLongPairIntInt) WriteTL1(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Key)
-	w = item.Value.Write(w)
+	w = item.Value.WriteTL1(w)
 	return w
 }
 
@@ -2575,19 +2595,21 @@ func (item *DictFieldLongTupleString) FillRandom(rg *basictl.RandGenerator, nat_
 }
 
 func (item *DictFieldLongTupleString) Read(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_v)
+}
+func (item *DictFieldLongTupleString) ReadTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return BuiltinTupleStringRead(w, &item.Value, nat_v)
-}
-
-func (item *DictFieldLongTupleString) WriteGeneral(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.Write(w, nat_v)
+	return BuiltinTupleStringReadTL1(w, &item.Value, nat_v)
 }
 
 func (item *DictFieldLongTupleString) Write(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.WriteTL1(w, nat_v)
+}
+func (item *DictFieldLongTupleString) WriteTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	w = basictl.LongWrite(w, item.Key)
-	if w, err = BuiltinTupleStringWrite(w, item.Value, nat_v); err != nil {
+	if w, err = BuiltinTupleStringWriteTL1(w, item.Value, nat_v); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -2828,19 +2850,28 @@ func (item *DictFieldStringPairIntInt) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictFieldStringPairIntInt) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictFieldStringPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return item.Value.Read(w)
+	return item.Value.ReadTL1(w)
 }
 
 func (item *DictFieldStringPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictFieldStringPairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictFieldStringPairIntInt) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictFieldStringPairIntInt) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
-	w = item.Value.Write(w)
+	w = item.Value.WriteTL1(w)
 	return w
 }
 
@@ -3087,6 +3118,9 @@ func (item *DictFieldStringString) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictFieldStringString) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictFieldStringString) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
 	}
@@ -3094,10 +3128,16 @@ func (item *DictFieldStringString) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *DictFieldStringString) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictFieldStringString) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictFieldStringString) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictFieldStringString) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	w = basictl.StringWrite(w, item.Value)
 	return w
@@ -3351,6 +3391,9 @@ func (item *DictFieldStringStringBytes) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictFieldStringStringBytes) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *DictFieldStringStringBytes) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringReadBytes(w, &item.Key); err != nil {
 		return w, err
 	}
@@ -3358,10 +3401,16 @@ func (item *DictFieldStringStringBytes) Read(w []byte) (_ []byte, err error) {
 }
 
 func (item *DictFieldStringStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *DictFieldStringStringBytes) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *DictFieldStringStringBytes) Write(w []byte) []byte {
+	return item.WriteTL1(w)
+}
+func (item *DictFieldStringStringBytes) WriteTL1(w []byte) []byte {
 	w = basictl.StringWriteBytes(w, item.Key)
 	w = basictl.StringWriteBytes(w, item.Value)
 	return w
@@ -3615,19 +3664,21 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) FillRandom(r
 }
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_v)
+}
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
 	}
-	return item.Value.ReadBoxed(w, nat_v)
-}
-
-func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.Write(w, nat_v), nil
+	return item.Value.ReadTL1Boxed(w, nat_v)
 }
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_v uint32) []byte {
+	return item.WriteTL1(w, nat_v)
+}
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteTL1(w []byte, nat_v uint32) []byte {
 	w = basictl.StringWrite(w, item.Key)
-	w = item.Value.WriteBoxed(w, nat_v)
+	w = item.Value.WriteTL1Boxed(w, nat_v)
 	return w
 }
 

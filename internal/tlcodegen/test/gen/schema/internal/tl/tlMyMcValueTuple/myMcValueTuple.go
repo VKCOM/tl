@@ -29,32 +29,50 @@ func (item *MyMcValueTuple) Reset() {
 }
 
 func (item *MyMcValueTuple) Read(w []byte) (_ []byte, err error) {
-	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueRead(w, &item.Xs)
+	return item.ReadTL1(w)
+}
+func (item *MyMcValueTuple) ReadTL1(w []byte) (_ []byte, err error) {
+	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadTL1(w, &item.Xs)
 }
 
 func (item *MyMcValueTuple) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return item.WriteTL1General(w)
+}
+func (item *MyMcValueTuple) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
 }
 
 func (item *MyMcValueTuple) Write(w []byte) []byte {
-	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWrite(w, &item.Xs)
+	return item.WriteTL1(w)
+}
+func (item *MyMcValueTuple) WriteTL1(w []byte) []byte {
+	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteTL1(w, &item.Xs)
 	return w
 }
 
 func (item *MyMcValueTuple) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *MyMcValueTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1287d116); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *MyMcValueTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *MyMcValueTuple) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
 }
 
 func (item *MyMcValueTuple) WriteBoxed(w []byte) []byte {
+	return item.WriteTL1Boxed(w)
+}
+func (item *MyMcValueTuple) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1287d116)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item MyMcValueTuple) String() string {

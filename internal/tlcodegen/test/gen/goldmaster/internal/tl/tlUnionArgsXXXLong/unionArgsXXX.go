@@ -39,34 +39,38 @@ func (item *UnionArgsXXX1Long) FillRandom(rg *basictl.RandGenerator, nat_Y uint3
 }
 
 func (item *UnionArgsXXX1Long) Read(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return tlBuiltinTupleLong.BuiltinTupleLongRead(w, &item.X, nat_Y)
+	return item.ReadTL1(w, nat_Y)
 }
-
-func (item *UnionArgsXXX1Long) WriteGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.Write(w, nat_Y)
+func (item *UnionArgsXXX1Long) ReadTL1(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return tlBuiltinTupleLong.BuiltinTupleLongReadTL1(w, &item.X, nat_Y)
 }
 
 func (item *UnionArgsXXX1Long) Write(w []byte, nat_Y uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleLong.BuiltinTupleLongWrite(w, item.X, nat_Y); err != nil {
+	return item.WriteTL1(w, nat_Y)
+}
+func (item *UnionArgsXXX1Long) WriteTL1(w []byte, nat_Y uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleLong.BuiltinTupleLongWriteTL1(w, item.X, nat_Y); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
 func (item *UnionArgsXXX1Long) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXX1Long) ReadTL1Boxed(w []byte, nat_Y uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe7978c97); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_Y)
-}
-
-func (item *UnionArgsXXX1Long) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_Y)
+	return item.ReadTL1(w, nat_Y)
 }
 
 func (item *UnionArgsXXX1Long) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXX1Long) WriteTL1Boxed(w []byte, nat_Y uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xe7978c97)
-	return item.Write(w, nat_Y)
+	return item.WriteTL1(w, nat_Y)
 }
 
 func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
@@ -276,32 +280,36 @@ func (item *UnionArgsXXX2Long) FillRandom(rg *basictl.RandGenerator, nat_Y uint3
 }
 
 func (item *UnionArgsXXX2Long) Read(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_Y)
+}
+func (item *UnionArgsXXX2Long) ReadTL1(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.A)
 }
 
-func (item *UnionArgsXXX2Long) WriteGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.Write(w, nat_Y), nil
-}
-
 func (item *UnionArgsXXX2Long) Write(w []byte, nat_Y uint32) []byte {
+	return item.WriteTL1(w, nat_Y)
+}
+func (item *UnionArgsXXX2Long) WriteTL1(w []byte, nat_Y uint32) []byte {
 	w = basictl.IntWrite(w, item.A)
 	return w
 }
 
 func (item *UnionArgsXXX2Long) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXX2Long) ReadTL1Boxed(w []byte, nat_Y uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6daed784); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_Y)
-}
-
-func (item *UnionArgsXXX2Long) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_Y), nil
+	return item.ReadTL1(w, nat_Y)
 }
 
 func (item *UnionArgsXXX2Long) WriteBoxed(w []byte, nat_Y uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXX2Long) WriteTL1Boxed(w []byte, nat_Y uint32) []byte {
 	w = basictl.NatWrite(w, 0x6daed784)
-	return item.Write(w, nat_Y)
+	return item.WriteTL1(w, nat_Y)
 }
 
 func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
@@ -553,6 +561,9 @@ func (item *UnionArgsXXXLong) SetV2(value UnionArgsXXX2Long) {
 }
 
 func (item *UnionArgsXXXLong) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXXLong) ReadTL1Boxed(w []byte, nat_Y uint32) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -560,28 +571,27 @@ func (item *UnionArgsXXXLong) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 	switch tag {
 	case 0xe7978c97:
 		item.index = 0
-		return item.valueV1.Read(w, nat_Y)
+		return item.valueV1.ReadTL1(w, nat_Y)
 	case 0x6daed784:
 		item.index = 1
-		return item.valueV2.Read(w, nat_Y)
+		return item.valueV2.ReadTL1(w, nat_Y)
 	default:
 		return w, internal.ErrorInvalidUnionTag("UnionArgsXXX", tag)
 	}
 }
 
-func (item *UnionArgsXXXLong) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_Y)
-}
-
 func (item *UnionArgsXXXLong) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w, nat_Y)
+}
+func (item *UnionArgsXXXLong) WriteTL1Boxed(w []byte, nat_Y uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _UnionArgsXXXLong[item.index].TLTag)
 	switch item.index {
 	case 0:
-		if w, err = item.valueV1.Write(w, nat_Y); err != nil {
+		if w, err = item.valueV1.WriteTL1(w, nat_Y); err != nil {
 			return w, err
 		}
 	case 1:
-		w = item.valueV2.Write(w, nat_Y)
+		w = item.valueV2.WriteTL1(w, nat_Y)
 	}
 	return w, nil
 }

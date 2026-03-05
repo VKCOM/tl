@@ -79,6 +79,9 @@ func (item *TasksQueueStats) Reset() {
 }
 
 func (item *TasksQueueStats) Read(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1(w, nat_fields_mask)
+}
+func (item *TasksQueueStats) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if nat_fields_mask&(1<<0) != 0 {
 		if w, err = basictl.IntRead(w, &item.WaitingSize); err != nil {
 			return w, err
@@ -103,11 +106,10 @@ func (item *TasksQueueStats) Read(w []byte, nat_fields_mask uint32) (_ []byte, e
 	return w, nil
 }
 
-func (item *TasksQueueStats) WriteGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.Write(w, nat_fields_mask), nil
-}
-
 func (item *TasksQueueStats) Write(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1(w, nat_fields_mask)
+}
+func (item *TasksQueueStats) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	if nat_fields_mask&(1<<0) != 0 {
 		w = basictl.IntWrite(w, item.WaitingSize)
 	}
@@ -121,19 +123,21 @@ func (item *TasksQueueStats) Write(w []byte, nat_fields_mask uint32) []byte {
 }
 
 func (item *TasksQueueStats) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w, nat_fields_mask)
+}
+func (item *TasksQueueStats) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1d942543); err != nil {
 		return w, err
 	}
-	return item.Read(w, nat_fields_mask)
-}
-
-func (item *TasksQueueStats) WriteBoxedGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteBoxed(w, nat_fields_mask), nil
+	return item.ReadTL1(w, nat_fields_mask)
 }
 
 func (item *TasksQueueStats) WriteBoxed(w []byte, nat_fields_mask uint32) []byte {
+	return item.WriteTL1Boxed(w, nat_fields_mask)
+}
+func (item *TasksQueueStats) WriteTL1Boxed(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.NatWrite(w, 0x1d942543)
-	return item.Write(w, nat_fields_mask)
+	return item.WriteTL1(w, nat_fields_mask)
 }
 
 func (item *TasksQueueStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {

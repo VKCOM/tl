@@ -33,22 +33,31 @@ func (item *Service2SetObjectTtl) Reset() {
 }
 
 func (item *Service2SetObjectTtl) Read(w []byte) (_ []byte, err error) {
+	return item.ReadTL1(w)
+}
+func (item *Service2SetObjectTtl) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ObjectIdLength); err != nil {
 		return w, err
 	}
-	if w, err = item.ObjectId.Read(w, item.ObjectIdLength); err != nil {
+	if w, err = item.ObjectId.ReadTL1(w, item.ObjectIdLength); err != nil {
 		return w, err
 	}
 	return basictl.IntRead(w, &item.Ttl)
 }
 
 func (item *Service2SetObjectTtl) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w)
+	return item.WriteTL1General(w)
+}
+func (item *Service2SetObjectTtl) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
 }
 
 func (item *Service2SetObjectTtl) Write(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w)
+}
+func (item *Service2SetObjectTtl) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.ObjectIdLength)
-	if w, err = item.ObjectId.Write(w, item.ObjectIdLength); err != nil {
+	if w, err = item.ObjectId.WriteTL1(w, item.ObjectIdLength); err != nil {
 		return w, err
 	}
 	w = basictl.IntWrite(w, item.Ttl)
@@ -56,27 +65,42 @@ func (item *Service2SetObjectTtl) Write(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service2SetObjectTtl) ReadBoxed(w []byte) (_ []byte, err error) {
+	return item.ReadTL1Boxed(w)
+}
+func (item *Service2SetObjectTtl) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6f98f025); err != nil {
 		return w, err
 	}
-	return item.Read(w)
+	return item.ReadTL1(w)
 }
 
 func (item *Service2SetObjectTtl) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w)
+	return item.WriteTL1BoxedGeneral(w)
+}
+func (item *Service2SetObjectTtl) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
 }
 
 func (item *Service2SetObjectTtl) WriteBoxed(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w)
+}
+func (item *Service2SetObjectTtl) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x6f98f025)
-	return item.Write(w)
+	return item.WriteTL1(w)
 }
 
 func (item *Service2SetObjectTtl) ReadResult(w []byte, ret *tlTrue.True) (_ []byte, err error) {
-	return ret.ReadBoxed(w)
+	return item.ReadResultTL1(w, ret)
+}
+func (item *Service2SetObjectTtl) ReadResultTL1(w []byte, ret *tlTrue.True) (_ []byte, err error) {
+	return ret.ReadTL1Boxed(w)
 }
 
 func (item *Service2SetObjectTtl) WriteResult(w []byte, ret tlTrue.True) (_ []byte, err error) {
-	w = ret.WriteBoxed(w)
+	return item.WriteResultTL1(w, ret)
+}
+func (item *Service2SetObjectTtl) WriteResultTL1(w []byte, ret tlTrue.True) (_ []byte, err error) {
+	w = ret.WriteTL1Boxed(w)
 	return w, nil
 }
 
@@ -98,21 +122,21 @@ func (item *Service2SetObjectTtl) writeResultJSON(tctx *basictl.JSONWriteContext
 	return w, nil
 }
 
-func (item *Service2SetObjectTtl) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service2SetObjectTtl) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTrue.True
-	if r, err = item.ReadResult(r, &ret); err != nil {
+	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service2SetObjectTtl) ReadResultJSONWriteResult(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service2SetObjectTtl) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTrue.True
 	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResult(w, ret)
+	w, err = item.WriteResultTL1(w, ret)
 	return r, w, err
 }
 

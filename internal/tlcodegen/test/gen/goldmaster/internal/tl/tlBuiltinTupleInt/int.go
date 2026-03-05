@@ -24,7 +24,7 @@ func BuiltinTupleIntFillRandom(rg *basictl.RandGenerator, vec *[]int32, nat_n ui
 	rg.DecreaseDepth()
 }
 
-func BuiltinTupleIntRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntReadTL1(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int32, nat_n)
 	} else {
@@ -38,7 +38,7 @@ func BuiltinTupleIntRead(w []byte, vec *[]int32, nat_n uint32) (_ []byte, err er
 	return w, nil
 }
 
-func BuiltinTupleIntWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntWriteTL1(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int32", len(vec), nat_n)
 	}

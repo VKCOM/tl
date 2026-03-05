@@ -34,7 +34,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basi
 	}
 	rg.DecreaseDepth()
 }
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadTL1(w []byte, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -49,7 +49,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *m
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldStringUsefulServiceUserEntityPaymentItemBoxed.DictFieldStringUsefulServiceUserEntityPaymentItemBoxed
-		if w, err = elem.Read(w, nat_t); err != nil {
+		if w, err = elem.ReadTL1(w, nat_t); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -57,7 +57,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedRead(w []byte, m *m
 	return w, nil
 }
 
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteTL1(w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -70,7 +70,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWrite(w []byte, m m
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldStringUsefulServiceUserEntityPaymentItemBoxed.DictFieldStringUsefulServiceUserEntityPaymentItemBoxed{Key: key, Value: val}
-		w = elem.Write(w, nat_t)
+		w = elem.WriteTL1(w, nat_t)
 	}
 	return w
 }

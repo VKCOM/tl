@@ -22,7 +22,7 @@ func BuiltinDictStringIntReset(m map[string]int32) {
 	clear(m)
 }
 
-func BuiltinDictStringIntRead(w []byte, m *map[string]int32) (_ []byte, err error) {
+func BuiltinDictStringIntReadTL1(w []byte, m *map[string]int32) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
@@ -40,7 +40,7 @@ func BuiltinDictStringIntRead(w []byte, m *map[string]int32) (_ []byte, err erro
 	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictFieldStringInt.DictFieldStringInt
-		if w, err = elem.Read(w); err != nil {
+		if w, err = elem.ReadTL1(w); err != nil {
 			return w, err
 		}
 		data[elem.Key] = elem.Value
@@ -48,7 +48,7 @@ func BuiltinDictStringIntRead(w []byte, m *map[string]int32) (_ []byte, err erro
 	return w, nil
 }
 
-func BuiltinDictStringIntWrite(w []byte, m map[string]int32) []byte {
+func BuiltinDictStringIntWriteTL1(w []byte, m map[string]int32) []byte {
 	w = basictl.NatWrite(w, uint32(len(m)))
 	if len(m) == 0 {
 		return w
@@ -61,7 +61,7 @@ func BuiltinDictStringIntWrite(w []byte, m map[string]int32) []byte {
 	for _, key := range keys {
 		val := m[key]
 		elem := tlDictFieldStringInt.DictFieldStringInt{Key: key, Value: val}
-		w = elem.Write(w)
+		w = elem.WriteTL1(w)
 	}
 	return w
 }
