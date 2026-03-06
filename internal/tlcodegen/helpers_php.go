@@ -583,8 +583,11 @@ class tl_switcher {
    * @return int
    */
   public static function tl_get_query_mode($tl_query) {
+    if ($tl_query == "") {
+      return -1;
+    }
     $tl_namespace = "_common";
-    $exploded = explode($tl_query, '.', 2);
+    $exploded = explode('.', $tl_query, 2);
     if (is_array($exploded) && count($exploded) == 2) {
       $tl_namespace = $exploded[0];
     }
