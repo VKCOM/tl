@@ -29,9 +29,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General
 	flag.StringVar(&opt.Language, "language", "",
 		`generation target language (go, cpp, php). Empty for linter.`)
+
 	ignoreGeneratedCode := false
 	flag.BoolVar(&ignoreGeneratedCode, "ignoreGeneratedCode", false,
 		"flag is ignored, because default generator is linting now")
+
 	flag.StringVar(&opt.Outdir, "outdir", "",
 		`where to write generated files`)
 	flag.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
@@ -44,6 +46,9 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"prints diff of outdir contents before and after generating")
 	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
+
+	flag.BoolVar(&opt.PrintVersion, "version", false,
+		"prints version of tlgen")
 
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",

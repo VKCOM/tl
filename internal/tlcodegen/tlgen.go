@@ -154,7 +154,6 @@ type Gen2Options struct {
 	AddFactoryData    bool
 
 	// TL2
-
 	TL2WhiteList string
 
 	// Linter
@@ -204,6 +203,9 @@ type Gen2Options struct {
 	// .tlo
 	TLOPath           string
 	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
+
+	// Other modes
+	PrintVersion bool
 }
 
 func (opt *Gen2Options) GenerateTL2() bool {
