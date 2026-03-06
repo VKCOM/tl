@@ -583,7 +583,7 @@ class tl_switcher {
    * @return int
    */
   public static function tl_get_query_mode($tl_query) {
-    if ($tl_query == "") {
+    if ($tl_query === "") {
       return -1;
     }
     $tl_namespace = "_common";
