@@ -7,6 +7,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/vkcom/tl/internal/tlcodegen"
@@ -14,12 +15,16 @@ import (
 )
 
 func main() {
-	log.Printf("tlgen version: %s", utils.AppVersion())
-
-	log.SetFlags(0)
-
 	var options tlcodegen.Gen2Options
-
 	parseFlags(&options)
+
+	// mode to print version
+	if options.PrintVersion {
+		fmt.Println(utils.AppVersion())
+		return
+	}
+
+	log.Printf("tlgen version: %s", utils.AppVersion())
+	log.SetFlags(0)
 	run(options)
 }
