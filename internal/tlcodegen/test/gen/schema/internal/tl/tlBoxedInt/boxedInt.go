@@ -142,7 +142,6 @@ func (item *BoxedInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 
 func (item *BoxedInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -156,10 +155,10 @@ func (item *BoxedInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedInt", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("boxedInt", key)
 			}

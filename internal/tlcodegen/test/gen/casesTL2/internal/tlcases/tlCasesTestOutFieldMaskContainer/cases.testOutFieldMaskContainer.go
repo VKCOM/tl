@@ -105,26 +105,26 @@ func (item *CasesTestOutFieldMaskContainer) ReadJSONGeneral(tctx *basictl.JSONRe
 				if propFPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMaskContainer", "f")
 				}
+				propFPresented = true
 				if err := internal.Json2ReadUint32(in, &item.F); err != nil {
 					return err
 				}
-				propFPresented = true
 			case "fs":
 				if propFsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMaskContainer", "fs")
 				}
+				propFsPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Fs); err != nil {
 					return err
 				}
-				propFsPresented = true
 			case "inner":
 				if propInnerPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMaskContainer", "inner")
 				}
+				propInnerPresented = true
 				if err := item.Inner.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propInnerPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testOutFieldMaskContainer", key)
 			}

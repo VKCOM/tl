@@ -101,18 +101,18 @@ func (item *BenchmarksVruhash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propLowPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruhash", "low")
 				}
+				propLowPresented = true
 				if err := internal.Json2ReadInt64(in, &item.Low); err != nil {
 					return err
 				}
-				propLowPresented = true
 			case "high":
 				if propHighPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruhash", "high")
 				}
+				propHighPresented = true
 				if err := internal.Json2ReadInt64(in, &item.High); err != nil {
 					return err
 				}
-				propHighPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("benchmarks.vruhash", key)
 			}

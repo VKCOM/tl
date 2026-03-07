@@ -1243,7 +1243,6 @@ func (item *DictFieldIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 func (item *DictFieldIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1257,18 +1256,18 @@ func (item *DictFieldIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadInt32(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("__dict_field", key)
 			}
@@ -1516,7 +1515,6 @@ func (item *DictFieldStringInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 func (item *DictFieldStringInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1530,18 +1528,18 @@ func (item *DictFieldStringInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("__dict_field", key)
 			}
@@ -1789,7 +1787,6 @@ func (item *DictFieldStringIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.
 func (item *DictFieldStringIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1803,18 +1800,18 @@ func (item *DictFieldStringIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadStringBytes(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadInt32(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("__dict_field", key)
 			}
@@ -2062,7 +2059,6 @@ func (item *DictFieldStringString) ReadJSON(legacyTypeNames bool, in *basictl.Js
 func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -2076,18 +2072,18 @@ func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("__dict_field", key)
 			}
@@ -2335,7 +2331,6 @@ func (item *DictFieldStringStringBytes) ReadJSON(legacyTypeNames bool, in *basic
 func (item *DictFieldStringStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -2349,18 +2344,18 @@ func (item *DictFieldStringStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := Json2ReadStringBytes(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
+				propValuePresented = true
 				if err := Json2ReadStringBytes(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("__dict_field", key)
 			}

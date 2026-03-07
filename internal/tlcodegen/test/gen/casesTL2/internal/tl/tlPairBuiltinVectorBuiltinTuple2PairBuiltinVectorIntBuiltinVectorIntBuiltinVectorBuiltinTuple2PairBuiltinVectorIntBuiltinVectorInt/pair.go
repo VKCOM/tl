@@ -106,18 +106,18 @@ func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBu
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
+				propYPresented = true
 				if err := tlBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt.BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("pair", key)
 			}

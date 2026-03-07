@@ -99,7 +99,6 @@ func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propTypePresented bool
 	var propJointIdPresented bool
 	var propObjectIdPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -113,26 +112,26 @@ func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.object", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "joint_id":
 				if propJointIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.object", "joint_id")
 				}
+				propJointIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.JointId); err != nil {
 					return err
 				}
-				propJointIdPresented = true
 			case "object_id":
 				if propObjectIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.object", "object_id")
 				}
+				propObjectIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.ObjectId); err != nil {
 					return err
 				}
-				propObjectIdPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service4.object", key)
 			}

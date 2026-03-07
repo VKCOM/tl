@@ -104,7 +104,6 @@ func (item *Cyc3MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -118,18 +117,18 @@ func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cyc3.myCycle", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cyc3.myCycle", "a")
 				}
+				propAPresented = true
 				if err := BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cyc3.myCycle", key)
 			}

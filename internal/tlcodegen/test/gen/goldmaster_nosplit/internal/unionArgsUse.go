@@ -116,9 +116,10 @@ func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKPresented bool
 	var propNPresented bool
+	var propAPresented bool
 	var rawA []byte
+	var propBPresented bool
 	var rawB []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -132,30 +133,32 @@ func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 				if propKPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsUse", "k")
 				}
+				propKPresented = true
 				if err := Json2ReadUint32(in, &item.K); err != nil {
 					return err
 				}
-				propKPresented = true
 			case "n":
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsUse", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsUse", "a")
 				}
+				propAPresented = true
 				rawA = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "b":
-				if rawB != nil {
+				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("unionArgsUse", "b")
 				}
+				propBPresented = true
 				rawB = in.Raw()
 				if !in.Ok() {
 					return in.Error()

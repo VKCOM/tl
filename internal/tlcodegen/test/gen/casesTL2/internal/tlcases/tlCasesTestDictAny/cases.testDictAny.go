@@ -99,10 +99,10 @@ func (item *CasesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testDictAny", "dict")
 				}
+				propDictPresented = true
 				if err := tlBuiltinVectorDictionaryAnyFieldDoubleInt.BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
-				propDictPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testDictAny", key)
 			}

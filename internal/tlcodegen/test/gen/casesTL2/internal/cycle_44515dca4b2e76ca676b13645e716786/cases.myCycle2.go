@@ -119,18 +119,19 @@ func (item *CasesMyCycle2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.myCycle2", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.myCycle2", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
+				item.tl2mask0 |= 1
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.myCycle2", key)
 			}

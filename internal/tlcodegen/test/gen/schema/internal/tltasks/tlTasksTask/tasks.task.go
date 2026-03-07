@@ -210,7 +210,6 @@ func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	var propRetriesPresented bool
 	var propScheduledTimePresented bool
 	var propDeadlinePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -224,66 +223,66 @@ func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "tag":
 				if propTagPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "tag")
 				}
+				propTagPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Tag); err != nil {
 					return err
 				}
-				propTagPresented = true
 			case "data":
 				if propDataPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "data")
 				}
+				propDataPresented = true
 				if err := internal.Json2ReadString(in, &item.Data); err != nil {
 					return err
 				}
-				propDataPresented = true
 			case "id":
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "id")
 				}
+				propIdPresented = true
 				if err := internal.Json2ReadInt64(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "retries":
 				if propRetriesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "retries")
 				}
+				propRetriesPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Retries); err != nil {
 					return err
 				}
-				propRetriesPresented = true
 			case "scheduled_time":
 				if propScheduledTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "scheduled_time")
 				}
+				propScheduledTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ScheduledTime); err != nil {
 					return err
 				}
-				propScheduledTimePresented = true
 			case "deadline":
 				if propDeadlinePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "deadline")
 				}
+				propDeadlinePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Deadline); err != nil {
 					return err
 				}
-				propDeadlinePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.task", key)
 			}

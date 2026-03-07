@@ -159,9 +159,9 @@ func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 
 func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propAPresented bool
 	var rawA []byte
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -175,14 +175,15 @@ func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("get_arrays", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("get_arrays", "a")
 				}
+				propAPresented = true
 				rawA = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -191,10 +192,10 @@ func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("get_arrays", "b")
 				}
+				propBPresented = true
 				if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("get_arrays", key)
 			}

@@ -120,18 +120,19 @@ func (item *CasesTL2TestObjectWithParam) ReadJSONGeneral(tctx *basictl.JSONReadC
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
+				item.tl2mask0 |= 1
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "y")
 				}
+				propYPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testObjectWithParam", key)
 			}

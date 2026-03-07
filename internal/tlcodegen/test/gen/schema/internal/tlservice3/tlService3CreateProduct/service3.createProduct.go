@@ -171,7 +171,6 @@ func (item *Service3CreateProduct) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	var propInfoPresented bool
 	var propDatePresented bool
 	var propExpirationDatePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -185,50 +184,50 @@ func (item *Service3CreateProduct) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "type":
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "id":
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "id")
 				}
+				propIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "info":
 				if propInfoPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "info")
 				}
+				propInfoPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Info); err != nil {
 					return err
 				}
-				propInfoPresented = true
 			case "date":
 				if propDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "date")
 				}
+				propDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Date); err != nil {
 					return err
 				}
-				propDatePresented = true
 			case "expiration_date":
 				if propExpirationDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.createProduct", "expiration_date")
 				}
+				propExpirationDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.ExpirationDate); err != nil {
 					return err
 				}
-				propExpirationDatePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.createProduct", key)
 			}

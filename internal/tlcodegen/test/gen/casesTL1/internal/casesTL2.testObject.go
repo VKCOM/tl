@@ -195,15 +195,15 @@ func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propNsPresented bool
-	var trueTypeF1Presented bool
+	var propF1Presented bool
 	var trueTypeF1Value bool
 	var propF2Presented bool
 	var propF3Presented bool
+	var propF4Presented bool
 	var rawF4 []byte
 	var propF5Presented bool
 	var propF6Presented bool
 	var propF7Presented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -217,46 +217,47 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "ns":
 				if propNsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "ns")
 				}
+				propNsPresented = true
 				if err := Json2ReadUint32(in, &item.Ns); err != nil {
 					return err
 				}
-				propNsPresented = true
 			case "f1":
-				if trueTypeF1Presented {
+				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f1")
 				}
+				propF1Presented = true
 				if err := Json2ReadBool(in, &trueTypeF1Value); err != nil {
 					return err
 				}
-				trueTypeF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f2")
 				}
+				propF2Presented = true
 				if err := Json2ReadBool(in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
 			case "f3":
 				if propF3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f3")
 				}
+				propF3Presented = true
 				if err := BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.F3); err != nil {
 					return err
 				}
-				propF3Presented = true
 			case "f4":
-				if rawF4 != nil {
+				if propF4Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f4")
 				}
+				propF4Presented = true
 				rawF4 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -265,26 +266,26 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propF5Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f5")
 				}
+				propF5Presented = true
 				if err := Json2ReadBool(in, &item.F5); err != nil {
 					return err
 				}
-				propF5Presented = true
 			case "f6":
 				if propF6Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f6")
 				}
+				propF6Presented = true
 				if err := BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx, in, &item.F6); err != nil {
 					return err
 				}
-				propF6Presented = true
 			case "f7":
 				if propF7Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f7")
 				}
+				propF7Presented = true
 				if err := BuiltinVectorTrueBoxedReadJSONGeneral(tctx, in, &item.F7); err != nil {
 					return err
 				}
-				propF7Presented = true
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObject", key)
 			}
@@ -316,16 +317,17 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if !propF7Presented {
 		item.F7 = item.F7[:0]
 	}
-	if trueTypeF1Presented {
-		if trueTypeF1Value {
-			item.N |= 1 << 0
-		}
+	if trueTypeF1Value {
+		item.N |= 1 << 0
 	}
 	if propF5Presented {
 		item.N |= 1 << 1
 	}
 	if propF7Presented {
 		item.N |= 1 << 14
+	}
+	if propF1Presented && !trueTypeF1Value && (item.N&(1<<0) != 0) {
+		return ErrorInvalidJSON("casesTL2.testObject", "field 'f1' is explicitly set to false, but corresponding fieldmask item.N bit 0 is 1")
 	}
 	var inF4Pointer *basictl.JsonLexer
 	inF4 := basictl.JsonLexer{Data: rawF4}
@@ -336,10 +338,6 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		return err
 	}
 
-	// tries to set bit to zero if it is 1
-	if trueTypeF1Presented && !trueTypeF1Value && (item.N&(1<<0) != 0) {
-		return ErrorInvalidJSON("casesTL2.testObject", "fieldmask bit item.N.0 is indefinite because of the contradictions in values")
-	}
 	return nil
 }
 

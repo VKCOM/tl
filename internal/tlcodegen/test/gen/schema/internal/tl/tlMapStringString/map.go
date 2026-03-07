@@ -91,7 +91,6 @@ func (item *MapStringString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 func (item *MapStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -105,18 +104,18 @@ func (item *MapStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("map", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("map", "value")
 				}
+				propValuePresented = true
 				if err := internal.Json2ReadString(in, &item.Value); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("map", key)
 			}

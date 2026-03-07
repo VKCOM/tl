@@ -66,7 +66,6 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL1Boxed(w []byte, nat
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propContentPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -80,10 +79,10 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basic
 				if propContentPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.userEntityPaymentItemPromo", "content")
 				}
+				propContentPresented = true
 				if err := Json2ReadString(in, &item.Content); err != nil {
 					return err
 				}
-				propContentPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("usefulService.userEntityPaymentItemPromo", key)
 			}

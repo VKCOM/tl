@@ -164,15 +164,16 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propAPresented bool
 	var rawA []byte
 	var propA1Presented bool
 	var propBPresented bool
 	var propCPresented bool
+	var propDPresented bool
 	var rawD []byte
 	var propD1Presented bool
 	var propEPresented bool
 	var propGPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -186,14 +187,15 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "a")
 				}
+				propAPresented = true
 				rawA = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -202,30 +204,31 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propA1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "a1")
 				}
+				propA1Presented = true
 				if err := item.A1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propA1Presented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "b")
 				}
+				propBPresented = true
 				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "c")
 				}
+				propCPresented = true
 				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
-				if rawD != nil {
+				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "d")
 				}
+				propDPresented = true
 				rawD = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -234,26 +237,26 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propD1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "d1")
 				}
+				propD1Presented = true
 				if err := item.D1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propD1Presented = true
 			case "e":
 				if propEPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "e")
 				}
+				propEPresented = true
 				if err := item.E.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propEPresented = true
 			case "g":
 				if propGPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "g")
 				}
+				propGPresented = true
 				if err := item.G.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propGPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("replace", key)
 			}
@@ -475,7 +478,6 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

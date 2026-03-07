@@ -92,7 +92,6 @@ func (item *MyTwoDicts) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -106,18 +105,18 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "a")
 				}
+				propAPresented = true
 				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "b")
 				}
+				propBPresented = true
 				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("myTwoDicts", key)
 			}

@@ -118,7 +118,6 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propBPresented bool
 	var propCPresented bool
 	var propDPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -132,42 +131,42 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "b")
 				}
+				propBPresented = true
 				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "c")
 				}
+				propCPresented = true
 				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
 				if propDPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "d")
 				}
+				propDPresented = true
 				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propDPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("ab.testMaybe", key)
 			}

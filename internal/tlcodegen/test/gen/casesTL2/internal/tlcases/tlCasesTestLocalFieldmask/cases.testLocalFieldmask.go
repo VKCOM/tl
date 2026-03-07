@@ -147,22 +147,24 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propF1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f1")
 				}
+				propF1Presented = true
 				if err := internal.Json2ReadUint32(in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f2")
 				}
+				propF2Presented = true
 				if err := internal.Json2ReadUint32(in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
+				item.tl2mask0 |= 1
 			case "f3":
 				if propF3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f3")
 				}
+				propF3Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -170,11 +172,11 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if bitValue {
 					item.tl2mask0 |= 2
 				}
-				propF3Presented = true
 			case "f4":
 				if propF4Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testLocalFieldmask", "f4")
 				}
+				propF4Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -182,7 +184,6 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if bitValue {
 					item.tl2mask0 |= 4
 				}
-				propF4Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testLocalFieldmask", key)
 			}

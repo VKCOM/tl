@@ -88,7 +88,6 @@ func (item *TlsCombinatorRight) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *TlsCombinatorRight) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -102,10 +101,10 @@ func (item *TlsCombinatorRight) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorRight", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.combinatorRight", key)
 			}

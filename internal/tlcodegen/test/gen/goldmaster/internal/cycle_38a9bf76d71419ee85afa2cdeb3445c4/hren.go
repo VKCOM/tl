@@ -103,7 +103,6 @@ func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 
 func (item *Hren) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -117,13 +116,13 @@ func (item *Hren) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Jso
 				if propNextPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("hren", "next")
 				}
+				propNextPresented = true
 				if item.Next == nil {
 					item.Next = new(HrenMaybe)
 				}
 				if err := item.Next.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propNextPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("hren", key)
 			}

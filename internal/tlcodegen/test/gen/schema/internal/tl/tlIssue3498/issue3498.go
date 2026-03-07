@@ -90,7 +90,6 @@ func (item *Issue3498) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 
 func (item *Issue3498) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -104,10 +103,10 @@ func (item *Issue3498) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("issue3498", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("issue3498", key)
 			}

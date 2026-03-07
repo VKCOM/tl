@@ -152,9 +152,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1Boxed(w []byte, nat_n ui
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
-	var rawF1 []byte
-	var rawF2 []byte
-
+	item.tl2mask0 = 0
+	var propF1Presented bool
+	var propF2Presented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -165,20 +165,20 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 			in.WantColon()
 			switch key {
 			case "f1":
-				if rawF1 != nil {
+				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				rawF1 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF1Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F1, nat_m); err != nil {
+					return err
 				}
 			case "f2":
-				if rawF2 != nil {
+				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				rawF2 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF2Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F2, nat_m); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
@@ -190,37 +190,21 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 			return in.Error()
 		}
 	}
-	if nat_n&(1<<0) == 0 {
-		if rawF1 != nil {
-			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-		}
+	if !propF1Presented {
 		item.F1 = item.F1[:0]
-	} else {
-		var inF1Pointer *basictl.JsonLexer
-		inF1 := basictl.JsonLexer{Data: rawF1}
-		if rawF1 != nil {
-			inF1Pointer = &inF1
-		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_m); err != nil {
-			return err
-		}
-
 	}
-	if nat_n&(1<<1) == 0 {
-		if rawF2 != nil {
-			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
-		}
+	if !propF2Presented {
 		item.F2 = item.F2[:0]
-	} else {
-		var inF2Pointer *basictl.JsonLexer
-		inF2 := basictl.JsonLexer{Data: rawF2}
-		if rawF2 != nil {
-			inF2Pointer = &inF2
+	}
+	if propF1Presented {
+		if nat_n&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask nat_n bit 0 is 0")
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF2Pointer, &item.F2, nat_m); err != nil {
-			return err
+	}
+	if propF2Presented {
+		if nat_n&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask nat_n bit 1 is 0")
 		}
-
 	}
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -535,9 +519,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1Boxed(w []byte, nat_n u
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -551,24 +535,18 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				if nat_n&(1<<0) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF1Presented = true
 				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				if nat_n&(1<<1) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF2Presented = true
 				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
 			}
@@ -584,6 +562,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 	}
 	if !propF2Presented {
 		BuiltinTuple2IntReset(&item.F2)
+	}
+	if propF1Presented {
+		if nat_n&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask nat_n bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if nat_n&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask nat_n bit 1 is 0")
+		}
 	}
 	if nat_n&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -866,9 +854,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1Boxed(w []byte, nat_m u
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_m uint32) error {
-	var rawF1 []byte
-	var rawF2 []byte
-
+	item.tl2mask0 = 0
+	var propF1Presented bool
+	var propF2Presented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -879,20 +867,20 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			in.WantColon()
 			switch key {
 			case "f1":
-				if rawF1 != nil {
+				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				rawF1 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF1Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F1, nat_m); err != nil {
+					return err
 				}
 			case "f2":
-				if rawF2 != nil {
+				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				rawF2 = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propF2Presented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F2, nat_m); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
@@ -904,37 +892,21 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			return in.Error()
 		}
 	}
-	if 3&(1<<0) == 0 {
-		if rawF1 != nil {
-			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-		}
+	if !propF1Presented {
 		item.F1 = item.F1[:0]
-	} else {
-		var inF1Pointer *basictl.JsonLexer
-		inF1 := basictl.JsonLexer{Data: rawF1}
-		if rawF1 != nil {
-			inF1Pointer = &inF1
-		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_m); err != nil {
-			return err
-		}
-
 	}
-	if 3&(1<<1) == 0 {
-		if rawF2 != nil {
-			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
-		}
+	if !propF2Presented {
 		item.F2 = item.F2[:0]
-	} else {
-		var inF2Pointer *basictl.JsonLexer
-		inF2 := basictl.JsonLexer{Data: rawF2}
-		if rawF2 != nil {
-			inF2Pointer = &inF2
+	}
+	if propF1Presented {
+		if 3&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask 3 bit 0 is 0")
 		}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF2Pointer, &item.F2, nat_m); err != nil {
-			return err
+	}
+	if propF2Presented {
+		if 3&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask 3 bit 1 is 0")
 		}
-
 	}
 	if 3&(1<<0) != 0 {
 		item.tl2mask0 |= 1
@@ -1240,9 +1212,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1256,24 +1228,18 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 				if propF1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				if 4&(1<<0) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF1Presented = true
 				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
 			case "f2":
 				if propF2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				if 4&(1<<1) == 0 {
-					return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
-				}
+				propF2Presented = true
 				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
 			default:
 				return ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
 			}
@@ -1289,6 +1255,16 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 	}
 	if !propF2Presented {
 		BuiltinTuple1IntReset(&item.F2)
+	}
+	if propF1Presented {
+		if 4&(1<<0) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is set, but will be ignored, because corresponding fieldmask 4 bit 0 is 0")
+		}
+	}
+	if propF2Presented {
+		if 4&(1<<1) == 0 {
+			return ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is set, but will be ignored, because corresponding fieldmask 4 bit 1 is 0")
+		}
 	}
 	if 4&(1<<0) != 0 {
 		item.tl2mask0 |= 1

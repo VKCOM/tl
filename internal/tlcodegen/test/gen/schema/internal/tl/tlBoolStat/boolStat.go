@@ -99,7 +99,6 @@ func (item *BoolStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 	var propStatTruePresented bool
 	var propStatFalsePresented bool
 	var propStatUnknownPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -113,26 +112,26 @@ func (item *BoolStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propStatTruePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boolStat", "statTrue")
 				}
+				propStatTruePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StatTrue); err != nil {
 					return err
 				}
-				propStatTruePresented = true
 			case "statFalse":
 				if propStatFalsePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boolStat", "statFalse")
 				}
+				propStatFalsePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StatFalse); err != nil {
 					return err
 				}
-				propStatFalsePresented = true
 			case "statUnknown":
 				if propStatUnknownPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boolStat", "statUnknown")
 				}
+				propStatUnknownPresented = true
 				if err := internal.Json2ReadInt32(in, &item.StatUnknown); err != nil {
 					return err
 				}
-				propStatUnknownPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("boolStat", key)
 			}

@@ -137,18 +137,20 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 				if propF1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
+				propF1Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
-				propF1Presented = true
+				item.tl2mask0 |= 1
 			case "f2":
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
+				propF2Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F2); err != nil {
 					return err
 				}
-				propF2Presented = true
+				item.tl2mask0 |= 2
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
 			}

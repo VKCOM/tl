@@ -296,7 +296,6 @@ func (item *AbCall2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *AbCall2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -310,10 +309,10 @@ func (item *AbCall2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.call2", "x")
 				}
+				propXPresented = true
 				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.call2", key)
 			}

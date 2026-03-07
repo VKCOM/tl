@@ -107,7 +107,6 @@ func (item *AbUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -121,18 +120,18 @@ func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useCycle", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useCycle", "b")
 				}
+				propBPresented = true
 				if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.useCycle", key)
 			}

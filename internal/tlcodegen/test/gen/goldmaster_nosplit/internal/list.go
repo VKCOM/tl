@@ -196,10 +196,10 @@ func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFlagPresented bool
 	var propHeadPresented bool
 	var propTailPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -213,29 +213,29 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propFlagPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "flag")
 				}
+				propFlagPresented = true
 				if err := Json2ReadUint32(in, &item.Flag); err != nil {
 					return err
 				}
-				propFlagPresented = true
 			case "head":
 				if propHeadPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "head")
 				}
+				propHeadPresented = true
 				if err := item.Head.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propHeadPresented = true
 			case "tail":
 				if propTailPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "tail")
 				}
+				propTailPresented = true
 				if item.Tail == nil {
 					item.Tail = new(ListService5Output)
 				}
 				if err := item.Tail.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTailPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("list", key)
 			}

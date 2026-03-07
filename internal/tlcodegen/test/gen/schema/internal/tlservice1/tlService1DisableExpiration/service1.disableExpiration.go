@@ -135,7 +135,6 @@ func (item *Service1DisableExpiration) ReadJSON(legacyTypeNames bool, in *basict
 
 func (item *Service1DisableExpiration) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -149,10 +148,10 @@ func (item *Service1DisableExpiration) ReadJSONGeneral(tctx *basictl.JSONReadCon
 				if propPrefixPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.disableExpiration", "prefix")
 				}
+				propPrefixPresented = true
 				if err := internal.Json2ReadString(in, &item.Prefix); err != nil {
 					return err
 				}
-				propPrefixPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.disableExpiration", key)
 			}

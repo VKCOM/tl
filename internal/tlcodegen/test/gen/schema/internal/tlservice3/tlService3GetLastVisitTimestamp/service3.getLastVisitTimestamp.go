@@ -136,7 +136,6 @@ func (item *Service3GetLastVisitTimestamp) ReadJSON(legacyTypeNames bool, in *ba
 
 func (item *Service3GetLastVisitTimestamp) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propUserIdPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *Service3GetLastVisitTimestamp) ReadJSONGeneral(tctx *basictl.JSONRea
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getLastVisitTimestamp", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.getLastVisitTimestamp", key)
 			}

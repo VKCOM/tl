@@ -94,7 +94,6 @@ func (item *AbUseDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -108,18 +107,18 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "tags":
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
+				propTagsPresented = true
 				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
-				propTagsPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("ab.useDictString", key)
 			}
@@ -394,7 +393,6 @@ func (item *AbUseDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -408,18 +406,18 @@ func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "tags":
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
+				propTagsPresented = true
 				if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
-				propTagsPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("ab.useDictString", key)
 			}

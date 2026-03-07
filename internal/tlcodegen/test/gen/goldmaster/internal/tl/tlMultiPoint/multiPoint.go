@@ -139,7 +139,6 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	var propDPresented bool
 	var propEPresented bool
 	var propFPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -153,50 +152,50 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "a")
 				}
+				propAPresented = true
 				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "b")
 				}
+				propBPresented = true
 				if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "c")
 				}
+				propCPresented = true
 				if err := tlBuiltinTuple3Int32s.BuiltinTuple3Int32sReadJSONGeneral(tctx, in, &item.C); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "d")
 				}
+				propDPresented = true
 				if err := tlBuiltinTuple3Int32sBoxed.BuiltinTuple3Int32sBoxedReadJSONGeneral(tctx, in, &item.D); err != nil {
 					return err
 				}
-				propDPresented = true
 			case "e":
 				if propEPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "e")
 				}
+				propEPresented = true
 				if err := tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32ReadJSONGeneral(tctx, in, &item.E); err != nil {
 					return err
 				}
-				propEPresented = true
 			case "f":
 				if propFPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "f")
 				}
+				propFPresented = true
 				if err := tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx, in, &item.F); err != nil {
 					return err
 				}
-				propFPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("multiPoint", key)
 			}

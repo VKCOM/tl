@@ -74,8 +74,7 @@ func (item *UnionArgsXXX1Long) WriteTL1Boxed(w []byte, nat_Y uint32) (_ []byte, 
 }
 
 func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
-	var rawX []byte
-
+	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -86,12 +85,12 @@ func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX1", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := tlBuiltinTupleLong.BuiltinTupleLongReadJSONGeneral(tctx, in, &item.X, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("unionArgsXXX1", key)
@@ -103,15 +102,9 @@ func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := tlBuiltinTupleLong.BuiltinTupleLongReadJSONGeneral(tctx, inXPointer, &item.X, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -314,7 +307,6 @@ func (item *UnionArgsXXX2Long) WriteTL1Boxed(w []byte, nat_Y uint32) []byte {
 
 func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -328,10 +320,10 @@ func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("unionArgsXXX2", "a")
 				}
+				propAPresented = true
 				if err := internal.Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("unionArgsXXX2", key)
 			}
@@ -418,7 +410,6 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, optimizeE
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.A != 0 {

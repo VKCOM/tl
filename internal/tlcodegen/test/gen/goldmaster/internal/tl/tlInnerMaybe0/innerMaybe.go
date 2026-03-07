@@ -89,7 +89,6 @@ func (item *InnerMaybe0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -103,10 +102,10 @@ func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("innerMaybe", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("innerMaybe", key)
 			}

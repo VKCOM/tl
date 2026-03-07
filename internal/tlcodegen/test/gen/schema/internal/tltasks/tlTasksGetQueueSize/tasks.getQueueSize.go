@@ -204,7 +204,6 @@ func (item *TasksGetQueueSize) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	var propQueueIdPresented bool
 	var propFieldsMaskPresented bool
 	var propLocalDepPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -218,34 +217,34 @@ func (item *TasksGetQueueSize) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propTypeNamePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "type_name")
 				}
+				propTypeNamePresented = true
 				if err := internal.Json2ReadString(in, &item.TypeName); err != nil {
 					return err
 				}
-				propTypeNamePresented = true
 			case "queue_id":
 				if propQueueIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "queue_id")
 				}
+				propQueueIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
 					return err
 				}
-				propQueueIdPresented = true
 			case "fields_mask":
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "local_dep":
 				if propLocalDepPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "local_dep")
 				}
+				propLocalDepPresented = true
 				if err := internal.Json2ReadInt32(in, &item.LocalDep); err != nil {
 					return err
 				}
-				propLocalDepPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.getQueueSize", key)
 			}

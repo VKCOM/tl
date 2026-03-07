@@ -143,7 +143,6 @@ func (item *Service1GetWildcard) ReadJSON(legacyTypeNames bool, in *basictl.Json
 
 func (item *Service1GetWildcard) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -157,10 +156,10 @@ func (item *Service1GetWildcard) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propPrefixPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.getWildcard", "prefix")
 				}
+				propPrefixPresented = true
 				if err := internal.Json2ReadString(in, &item.Prefix); err != nil {
 					return err
 				}
-				propPrefixPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.getWildcard", key)
 			}

@@ -98,10 +98,10 @@ func (item *CasesTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testMaybe", "value")
 				}
+				propValuePresented = true
 				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propValuePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testMaybe", key)
 			}

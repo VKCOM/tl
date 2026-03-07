@@ -52,8 +52,7 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteTL1(w [
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
 	var propKeyPresented bool
-	var rawValue []byte
-
+	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -67,17 +66,17 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGene
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
-				if rawValue != nil {
+				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
-				rawValue = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propValuePresented = true
+				if err := item.Value.ReadJSONGeneral(tctx, in, nat_v); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("__dict_field", key)
@@ -92,15 +91,9 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGene
 	if !propKeyPresented {
 		item.Key = ""
 	}
-	var inValuePointer *basictl.JsonLexer
-	inValue := basictl.JsonLexer{Data: rawValue}
-	if rawValue != nil {
-		inValuePointer = &inValue
+	if !propValuePresented {
+		item.Value.Reset()
 	}
-	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, nat_v); err != nil {
-		return err
-	}
-
 	return nil
 }
 

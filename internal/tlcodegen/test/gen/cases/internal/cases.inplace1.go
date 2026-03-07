@@ -64,8 +64,7 @@ func (item *CasesInplace1Int) WriteTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint
 }
 
 func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {
-	var rawValue []byte
-
+	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -76,12 +75,12 @@ func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			in.WantColon()
 			switch key {
 			case "value":
-				if rawValue != nil {
+				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace1", "value")
 				}
-				rawValue = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propValuePresented = true
+				if err := item.Value.ReadJSONGeneral(tctx, in, nat_a2, nat_a3, nat_a1); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("cases.inplace1", key)
@@ -93,15 +92,9 @@ func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			return in.Error()
 		}
 	}
-	var inValuePointer *basictl.JsonLexer
-	inValue := basictl.JsonLexer{Data: rawValue}
-	if rawValue != nil {
-		inValuePointer = &inValue
+	if !propValuePresented {
+		item.Value.Reset()
 	}
-	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, nat_a2, nat_a3, nat_a1); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -295,8 +288,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) WriteTL1Boxed(w []byte, nat_a1 ui
 }
 
 func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) error {
-	var rawValue []byte
-
+	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -307,12 +299,12 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSO
 			in.WantColon()
 			switch key {
 			case "value":
-				if rawValue != nil {
+				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace1", "value")
 				}
-				rawValue = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propValuePresented = true
+				if err := item.Value.ReadJSONGeneral(tctx, in, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("cases.inplace1", key)
@@ -324,15 +316,9 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSO
 			return in.Error()
 		}
 	}
-	var inValuePointer *basictl.JsonLexer
-	inValue := basictl.JsonLexer{Data: rawValue}
-	if rawValue != nil {
-		inValuePointer = &inValue
+	if !propValuePresented {
+		item.Value.Reset()
 	}
-	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
-		return err
-	}
-
 	return nil
 }
 

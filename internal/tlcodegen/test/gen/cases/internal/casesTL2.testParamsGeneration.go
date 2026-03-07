@@ -142,10 +142,12 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 	var propN1Presented bool
 	var propN2Presented bool
 	var propX1Presented bool
+	var propX2Presented bool
 	var rawX2 []byte
+	var propX3Presented bool
 	var rawX3 []byte
+	var propX4Presented bool
 	var rawX4 []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -159,46 +161,49 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propN1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "n1")
 				}
+				propN1Presented = true
 				if err := Json2ReadUint32(in, &item.N1); err != nil {
 					return err
 				}
-				propN1Presented = true
 			case "n2":
 				if propN2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "n2")
 				}
+				propN2Presented = true
 				if err := Json2ReadUint32(in, &item.N2); err != nil {
 					return err
 				}
-				propN2Presented = true
 			case "x1":
 				if propX1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x1")
 				}
+				propX1Presented = true
 				if err := item.X1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propX1Presented = true
 			case "x2":
-				if rawX2 != nil {
+				if propX2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x2")
 				}
+				propX2Presented = true
 				rawX2 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "x3":
-				if rawX3 != nil {
+				if propX3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x3")
 				}
+				propX3Presented = true
 				rawX3 = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "x4":
-				if rawX4 != nil {
+				if propX4Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x4")
 				}
+				propX4Presented = true
 				rawX4 = in.Raw()
 				if !in.Ok() {
 					return in.Error()

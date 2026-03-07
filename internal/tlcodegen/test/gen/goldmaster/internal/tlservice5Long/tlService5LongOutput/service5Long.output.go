@@ -594,7 +594,6 @@ func (item *Service5LongStringOutput) ReadJSON(legacyTypeNames bool, in *basictl
 func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propHttpCodePresented bool
 	var propResponsePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -608,18 +607,18 @@ func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propHttpCodePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5Long.stringOutput", "http_code")
 				}
+				propHttpCodePresented = true
 				if err := internal.Json2ReadInt64(in, &item.HttpCode); err != nil {
 					return err
 				}
-				propHttpCodePresented = true
 			case "response":
 				if propResponsePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5Long.stringOutput", "response")
 				}
+				propResponsePresented = true
 				if err := internal.Json2ReadString(in, &item.Response); err != nil {
 					return err
 				}
-				propResponsePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service5Long.stringOutput", key)
 			}
@@ -731,7 +730,6 @@ func (item *Service5LongStringOutput) InternalWriteTL2(w []byte, sizes []int, op
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.HttpCode != 0 {

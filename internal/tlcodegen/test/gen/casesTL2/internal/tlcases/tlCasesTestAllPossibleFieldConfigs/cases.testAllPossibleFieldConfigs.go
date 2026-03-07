@@ -275,62 +275,64 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				if propLocalPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "local")
 				}
+				propLocalPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Local); err != nil {
 					return err
 				}
-				propLocalPresented = true
 			case "locals":
 				if propLocalsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "locals")
 				}
+				propLocalsPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Locals); err != nil {
 					return err
 				}
-				propLocalsPresented = true
 			case "f00":
 				if propF00Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f00")
 				}
+				propF00Presented = true
 				if err := internal.Json2ReadInt32(in, &item.F00); err != nil {
 					return err
 				}
-				propF00Presented = true
 			case "f01":
 				if propF01Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f01")
 				}
+				propF01Presented = true
 				if err := item.F01.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propF01Presented = true
 			case "f02":
 				if propF02Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f02")
 				}
+				propF02Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F02); err != nil {
 					return err
 				}
-				propF02Presented = true
 			case "f03":
 				if propF03Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f03")
 				}
+				propF03Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F03); err != nil {
 					return err
 				}
-				propF03Presented = true
 			case "f10":
 				if propF10Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f10")
 				}
+				propF10Presented = true
 				if err := internal.Json2ReadInt32(in, &item.F10); err != nil {
 					return err
 				}
-				propF10Presented = true
+				item.tl2mask0 |= 1
 			case "f11":
 				if propF11Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f11")
 				}
+				propF11Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -338,35 +340,38 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				if bitValue {
 					item.tl2mask0 |= 2
 				}
-				propF11Presented = true
 			case "f12":
 				if propF12Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f12")
 				}
+				propF12Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F12); err != nil {
 					return err
 				}
-				propF12Presented = true
+				item.tl2mask0 |= 4
 			case "f13":
 				if propF13Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f13")
 				}
+				propF13Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F13); err != nil {
 					return err
 				}
-				propF13Presented = true
+				item.tl2mask0 |= 8
 			case "f20":
 				if propF20Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f20")
 				}
+				propF20Presented = true
 				if err := internal.Json2ReadInt32(in, &item.F20); err != nil {
 					return err
 				}
-				propF20Presented = true
+				item.tl2mask0 |= 16
 			case "f21":
 				if propF21Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f21")
 				}
+				propF21Presented = true
 				var bitValue bool
 				if err := internal.Json2ReadBool(in, &bitValue); err != nil {
 					return err
@@ -374,23 +379,24 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				if bitValue {
 					item.tl2mask0 |= 32
 				}
-				propF21Presented = true
 			case "f22":
 				if propF22Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f22")
 				}
+				propF22Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F22); err != nil {
 					return err
 				}
-				propF22Presented = true
+				item.tl2mask0 |= 64
 			case "f23":
 				if propF23Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f23")
 				}
+				propF23Presented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F23); err != nil {
 					return err
 				}
-				propF23Presented = true
+				item.tl2mask0 |= 128
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testAllPossibleFieldConfigs", key)
 			}
@@ -660,7 +666,6 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 		w[currentBlockPosition] = currentBlock
 	}
 	currentBlock = 0
-	// start the next block
 	currentBlockPosition = len(w)
 	if len(w)-oldLen < currentSize {
 		w = append(w, 0)

@@ -84,7 +84,6 @@ func (item *Service6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.Js
 
 func (item *Service6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -98,10 +97,10 @@ func (item *Service6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.findResultRow", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service6.findResultRow", key)
 			}

@@ -418,7 +418,6 @@ func (item *AUNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *AUNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -432,10 +431,10 @@ func (item *AUNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.uNionA", "a")
 				}
+				propAPresented = true
 				if err := internal.Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("a.uNionA", key)
 			}
@@ -684,7 +683,6 @@ func (item *AuNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 
 func (item *AuNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -698,10 +696,10 @@ func (item *AuNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("au.nionA", "b")
 				}
+				propBPresented = true
 				if err := internal.Json2ReadInt32(in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("au.nionA", key)
 			}
@@ -799,7 +797,6 @@ func (item *AuNionA) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.B != 0 {

@@ -67,8 +67,7 @@ func (item *Replace1) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error
 }
 
 func (item *Replace1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	var rawA []byte
-
+	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -79,12 +78,12 @@ func (item *Replace1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 			in.WantColon()
 			switch key {
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace1", "a")
 				}
-				rawA = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propAPresented = true
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.A, nat_n); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("replace1", key)
@@ -96,15 +95,9 @@ func (item *Replace1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 			return in.Error()
 		}
 	}
-	var inAPointer *basictl.JsonLexer
-	inA := basictl.JsonLexer{Data: rawA}
-	if rawA != nil {
-		inAPointer = &inA
+	if !propAPresented {
+		item.A = item.A[:0]
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, nat_n); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -99,7 +99,6 @@ func (item *TasksCronTaskWithId) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 	var propIdPresented bool
 	var propNextTimePresented bool
 	var propTaskPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -113,26 +112,26 @@ func (item *TasksCronTaskWithId) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTaskWithId", "id")
 				}
+				propIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "next_time":
 				if propNextTimePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTaskWithId", "next_time")
 				}
+				propNextTimePresented = true
 				if err := internal.Json2ReadInt32(in, &item.NextTime); err != nil {
 					return err
 				}
-				propNextTimePresented = true
 			case "task":
 				if propTaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTaskWithId", "task")
 				}
+				propTaskPresented = true
 				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTaskPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.cronTaskWithId", key)
 			}

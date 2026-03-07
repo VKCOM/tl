@@ -97,10 +97,10 @@ func (item *CasesTL2TestVectorBool) ReadJSONGeneral(tctx *basictl.JSONReadContex
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testVectorBool", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testVectorBool", key)
 			}

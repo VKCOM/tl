@@ -131,12 +131,13 @@ func (item *UseDictUgly) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propDPresented bool
 	var rawD []byte
+	var propEPresented bool
 	var rawE []byte
 	var propXPresented bool
 	var propYPresented bool
 	var propZPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,22 +151,24 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "d":
-				if rawD != nil {
+				if propDPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "d")
 				}
+				propDPresented = true
 				rawD = in.Raw()
 				if !in.Ok() {
 					return in.Error()
 				}
 			case "e":
-				if rawE != nil {
+				if propEPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "e")
 				}
+				propEPresented = true
 				rawE = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -174,26 +177,26 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "x")
 				}
+				propXPresented = true
 				if err := BuiltinDictIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "y")
 				}
+				propYPresented = true
 				if err := BuiltinDictLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			case "z":
 				if propZPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "z")
 				}
+				propZPresented = true
 				if err := BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
 					return err
 				}
-				propZPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("useDictUgly", key)
 			}

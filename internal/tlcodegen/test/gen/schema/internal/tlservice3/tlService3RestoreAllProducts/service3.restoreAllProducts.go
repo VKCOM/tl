@@ -156,7 +156,6 @@ func (item *Service3RestoreAllProducts) ReadJSONGeneral(tctx *basictl.JSONReadCo
 	var propTypePresented bool
 	var propStartDatePresented bool
 	var propEndDatePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -170,34 +169,34 @@ func (item *Service3RestoreAllProducts) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.restoreAllProducts", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "type":
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.restoreAllProducts", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "start_date":
 				if propStartDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.restoreAllProducts", "start_date")
 				}
+				propStartDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.StartDate); err != nil {
 					return err
 				}
-				propStartDatePresented = true
 			case "end_date":
 				if propEndDatePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.restoreAllProducts", "end_date")
 				}
+				propEndDatePresented = true
 				if err := internal.Json2ReadInt32(in, &item.EndDate); err != nil {
 					return err
 				}
-				propEndDatePresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.restoreAllProducts", key)
 			}

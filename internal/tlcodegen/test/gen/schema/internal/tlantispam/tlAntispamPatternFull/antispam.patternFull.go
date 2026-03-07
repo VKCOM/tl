@@ -118,7 +118,6 @@ func (item *AntispamPatternFound) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 	var propFlagsPresented bool
 	var propTypePresented bool
 	var propTextPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -132,42 +131,42 @@ func (item *AntispamPatternFound) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propIpPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.patternFound", "ip")
 				}
+				propIpPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Ip); err != nil {
 					return err
 				}
-				propIpPresented = true
 			case "uahash":
 				if propUahashPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.patternFound", "uahash")
 				}
+				propUahashPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Uahash); err != nil {
 					return err
 				}
-				propUahashPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.patternFound", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "type":
 				if propTypePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.patternFound", "type")
 				}
+				propTypePresented = true
 				if err := internal.Json2ReadInt32(in, &item.Type); err != nil {
 					return err
 				}
-				propTypePresented = true
 			case "text":
 				if propTextPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("antispam.patternFound", "text")
 				}
+				propTextPresented = true
 				if err := internal.Json2ReadString(in, &item.Text); err != nil {
 					return err
 				}
-				propTextPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("antispam.patternFound", key)
 			}

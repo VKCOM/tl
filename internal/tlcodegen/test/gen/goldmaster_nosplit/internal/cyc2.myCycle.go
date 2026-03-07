@@ -110,7 +110,6 @@ func (item *Cyc2MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -124,26 +123,26 @@ func (item *Cyc2MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propFieldsMaskPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc2.myCycle", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "a":
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc2.myCycle", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc2.myCycle", "b")
 				}
+				propBPresented = true
 				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cyc2.myCycle", key)
 			}

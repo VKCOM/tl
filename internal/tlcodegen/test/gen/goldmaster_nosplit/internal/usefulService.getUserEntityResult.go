@@ -70,8 +70,7 @@ func (item *UsefulServiceGetUserEntityResult) WriteTL1Boxed(w []byte, nat_fields
 
 func (item *UsefulServiceGetUserEntityResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propEntityIdPresented bool
-	var rawPaymentItems []byte
-
+	var propPaymentItemsPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -85,17 +84,17 @@ func (item *UsefulServiceGetUserEntityResult) ReadJSONGeneral(tctx *basictl.JSON
 				if propEntityIdPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.getUserEntityResult", "entity_id")
 				}
+				propEntityIdPresented = true
 				if err := Json2ReadString(in, &item.EntityId); err != nil {
 					return err
 				}
-				propEntityIdPresented = true
 			case "payment_items":
-				if rawPaymentItems != nil {
+				if propPaymentItemsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.getUserEntityResult", "payment_items")
 				}
-				rawPaymentItems = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propPaymentItemsPresented = true
+				if err := item.PaymentItems.ReadJSONGeneral(tctx, in, nat_fields_mask); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("usefulService.getUserEntityResult", key)
@@ -110,15 +109,9 @@ func (item *UsefulServiceGetUserEntityResult) ReadJSONGeneral(tctx *basictl.JSON
 	if !propEntityIdPresented {
 		item.EntityId = ""
 	}
-	var inPaymentItemsPointer *basictl.JsonLexer
-	inPaymentItems := basictl.JsonLexer{Data: rawPaymentItems}
-	if rawPaymentItems != nil {
-		inPaymentItemsPointer = &inPaymentItems
+	if !propPaymentItemsPresented {
+		item.PaymentItems.Reset()
 	}
-	if err := item.PaymentItems.ReadJSONGeneral(tctx, inPaymentItemsPointer, nat_fields_mask); err != nil {
-		return err
-	}
-
 	return nil
 }
 

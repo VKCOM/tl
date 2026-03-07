@@ -116,8 +116,8 @@ func (item *CasesTestInplaceStructArgs) ReadJSONGeneral(tctx *basictl.JSONReadCo
 	var propA1Presented bool
 	var propA2Presented bool
 	var propA3Presented bool
+	var propArgPresented bool
 	var rawArg []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -131,30 +131,31 @@ func (item *CasesTestInplaceStructArgs) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propA1Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs", "a1")
 				}
+				propA1Presented = true
 				if err := Json2ReadUint32(in, &item.A1); err != nil {
 					return err
 				}
-				propA1Presented = true
 			case "a2":
 				if propA2Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs", "a2")
 				}
+				propA2Presented = true
 				if err := Json2ReadUint32(in, &item.A2); err != nil {
 					return err
 				}
-				propA2Presented = true
 			case "a3":
 				if propA3Presented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs", "a3")
 				}
+				propA3Presented = true
 				if err := Json2ReadUint32(in, &item.A3); err != nil {
 					return err
 				}
-				propA3Presented = true
 			case "arg":
-				if rawArg != nil {
+				if propArgPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs", "arg")
 				}
+				propArgPresented = true
 				rawArg = in.Raw()
 				if !in.Ok() {
 					return in.Error()

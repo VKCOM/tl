@@ -136,7 +136,6 @@ func (item *Service5PerformQuery) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 
 func (item *Service5PerformQuery) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propQueryPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *Service5PerformQuery) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 				if propQueryPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.performQuery", "query")
 				}
+				propQueryPresented = true
 				if err := internal.Json2ReadString(in, &item.Query); err != nil {
 					return err
 				}
-				propQueryPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service5.performQuery", key)
 			}

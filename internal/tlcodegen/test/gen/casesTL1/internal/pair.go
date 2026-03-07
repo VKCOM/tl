@@ -147,9 +147,8 @@ func (item *PairTupleIntTupleInt) WriteTL1Boxed(w []byte, nat_X uint32, nat_Y ui
 }
 
 func (item *PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
-	var rawX []byte
-	var rawY []byte
-
+	var propXPresented bool
+	var propYPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -160,20 +159,20 @@ func (item *PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.X, nat_X); err != nil {
+					return err
 				}
 			case "y":
-				if rawY != nil {
+				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
-				rawY = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propYPresented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.Y, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("pair", key)
@@ -185,24 +184,12 @@ func (item *PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inXPointer, &item.X, nat_X); err != nil {
-		return err
+	if !propYPresented {
+		item.Y = item.Y[:0]
 	}
-
-	var inYPointer *basictl.JsonLexer
-	inY := basictl.JsonLexer{Data: rawY}
-	if rawY != nil {
-		inYPointer = &inY
-	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inYPointer, &item.Y, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -298,9 +285,8 @@ func (item *PairTupleTupleInt2TupleTupleInt2) WriteTL1Boxed(w []byte, nat_X uint
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
-	var rawX []byte
-	var rawY []byte
-
+	var propXPresented bool
+	var propYPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -311,20 +297,20 @@ func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSON
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, in, &item.X, nat_X); err != nil {
+					return err
 				}
 			case "y":
-				if rawY != nil {
+				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
-				rawY = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propYPresented = true
+				if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, in, &item.Y, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("pair", key)
@@ -336,24 +322,12 @@ func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSON
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, inXPointer, &item.X, nat_X); err != nil {
-		return err
+	if !propYPresented {
+		item.Y = item.Y[:0]
 	}
-
-	var inYPointer *basictl.JsonLexer
-	inY := basictl.JsonLexer{Data: rawY}
-	if rawY != nil {
-		inYPointer = &inY
-	}
-	if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, inYPointer, &item.Y, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -453,9 +427,8 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) error {
-	var rawX []byte
-	var rawY []byte
-
+	var propXPresented bool
+	var propYPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -466,20 +439,20 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 			in.WantColon()
 			switch key {
 			case "x":
-				if rawX != nil {
+				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
-				rawX = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propXPresented = true
+				if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, in, &item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
+					return err
 				}
 			case "y":
-				if rawY != nil {
+				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
-				rawY = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propYPresented = true
+				if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, in, &item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("pair", key)
@@ -491,24 +464,12 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 			return in.Error()
 		}
 	}
-	var inXPointer *basictl.JsonLexer
-	inX := basictl.JsonLexer{Data: rawX}
-	if rawX != nil {
-		inXPointer = &inX
+	if !propXPresented {
+		item.X = item.X[:0]
 	}
-	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, inXPointer, &item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
-		return err
+	if !propYPresented {
+		item.Y = item.Y[:0]
 	}
-
-	var inYPointer *basictl.JsonLexer
-	inY := basictl.JsonLexer{Data: rawY}
-	if rawY != nil {
-		inYPointer = &inY
-	}
-	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, inYPointer, &item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
-		return err
-	}
-
 	return nil
 }
 

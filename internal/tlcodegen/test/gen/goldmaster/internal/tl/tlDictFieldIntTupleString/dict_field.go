@@ -54,8 +54,7 @@ func (item *DictFieldIntTupleString) WriteTL1(w []byte, nat_v uint32) (_ []byte,
 
 func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
 	var propKeyPresented bool
-	var rawValue []byte
-
+	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -69,17 +68,17 @@ func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "value":
-				if rawValue != nil {
+				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
-				rawValue = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propValuePresented = true
+				if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, in, &item.Value, nat_v); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("__dict_field", key)
@@ -94,15 +93,9 @@ func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	if !propKeyPresented {
 		item.Key = 0
 	}
-	var inValuePointer *basictl.JsonLexer
-	inValue := basictl.JsonLexer{Data: rawValue}
-	if rawValue != nil {
-		inValuePointer = &inValue
+	if !propValuePresented {
+		item.Value = item.Value[:0]
 	}
-	if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, inValuePointer, &item.Value, nat_v); err != nil {
-		return err
-	}
-
 	return nil
 }
 

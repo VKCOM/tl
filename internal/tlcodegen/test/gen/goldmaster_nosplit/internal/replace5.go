@@ -99,8 +99,8 @@ func (item *Replace5) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 
 func (item *Replace5) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propAPresented bool
 	var rawA []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -114,14 +114,15 @@ func (item *Replace5) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace5", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace5", "a")
 				}
+				propAPresented = true
 				rawA = in.Raw()
 				if !in.Ok() {
 					return in.Error()

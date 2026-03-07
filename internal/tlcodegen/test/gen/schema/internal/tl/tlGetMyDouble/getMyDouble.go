@@ -136,7 +136,6 @@ func (item *GetMyDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 
 func (item *GetMyDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -150,10 +149,10 @@ func (item *GetMyDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("getMyDouble", "x")
 				}
+				propXPresented = true
 				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("getMyDouble", key)
 			}

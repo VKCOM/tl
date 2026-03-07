@@ -162,15 +162,14 @@ func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 
 func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
-	var trueTypeQueryPresented bool
+	var propQueryPresented bool
 	var trueTypeQueryValue bool
-	var trueTypeSortPresented bool
+	var propSortPresented bool
 	var trueTypeSortValue bool
-	var trueTypeSortReversePresented bool
+	var propSortReversePresented bool
 	var trueTypeSortReverseValue bool
 	var propWaitBinlogPosPresented bool
 	var propStringForwardKeysPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -184,50 +183,50 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "query":
-				if trueTypeQueryPresented {
+				if propQueryPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "query")
 				}
+				propQueryPresented = true
 				if err := internal.Json2ReadBool(in, &trueTypeQueryValue); err != nil {
 					return err
 				}
-				trueTypeQueryPresented = true
 			case "sort":
-				if trueTypeSortPresented {
+				if propSortPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "sort")
 				}
+				propSortPresented = true
 				if err := internal.Json2ReadBool(in, &trueTypeSortValue); err != nil {
 					return err
 				}
-				trueTypeSortPresented = true
 			case "sort_reverse":
-				if trueTypeSortReversePresented {
+				if propSortReversePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "sort_reverse")
 				}
+				propSortReversePresented = true
 				if err := internal.Json2ReadBool(in, &trueTypeSortReverseValue); err != nil {
 					return err
 				}
-				trueTypeSortReversePresented = true
 			case "wait_binlog_pos":
 				if propWaitBinlogPosPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "wait_binlog_pos")
 				}
+				propWaitBinlogPosPresented = true
 				if err := internal.Json2ReadInt64(in, &item.WaitBinlogPos); err != nil {
 					return err
 				}
-				propWaitBinlogPosPresented = true
 			case "string_forward_keys":
 				if propStringForwardKeysPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "string_forward_keys")
 				}
+				propStringForwardKeysPresented = true
 				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.StringForwardKeys); err != nil {
 					return err
 				}
-				propStringForwardKeysPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("rpcInvokeReqExtra", key)
 			}
@@ -247,20 +246,14 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	if !propStringForwardKeysPresented {
 		item.StringForwardKeys = item.StringForwardKeys[:0]
 	}
-	if trueTypeQueryPresented {
-		if trueTypeQueryValue {
-			item.FieldsMask |= 1 << 0
-		}
+	if trueTypeQueryValue {
+		item.FieldsMask |= 1 << 0
 	}
-	if trueTypeSortPresented {
-		if trueTypeSortValue {
-			item.FieldsMask |= 1 << 1
-		}
+	if trueTypeSortValue {
+		item.FieldsMask |= 1 << 1
 	}
-	if trueTypeSortReversePresented {
-		if trueTypeSortReverseValue {
-			item.FieldsMask |= 1 << 2
-		}
+	if trueTypeSortReverseValue {
+		item.FieldsMask |= 1 << 2
 	}
 	if propWaitBinlogPosPresented {
 		item.FieldsMask |= 1 << 16
@@ -268,17 +261,14 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 	if propStringForwardKeysPresented {
 		item.FieldsMask |= 1 << 18
 	}
-	// tries to set bit to zero if it is 1
-	if trueTypeQueryPresented && !trueTypeQueryValue && (item.FieldsMask&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.0 is indefinite because of the contradictions in values")
+	if propQueryPresented && !trueTypeQueryValue && (item.FieldsMask&(1<<0) != 0) {
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "field 'query' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 0 is 1")
 	}
-	// tries to set bit to zero if it is 1
-	if trueTypeSortPresented && !trueTypeSortValue && (item.FieldsMask&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.1 is indefinite because of the contradictions in values")
+	if propSortPresented && !trueTypeSortValue && (item.FieldsMask&(1<<1) != 0) {
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "field 'sort' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 1 is 1")
 	}
-	// tries to set bit to zero if it is 1
-	if trueTypeSortReversePresented && !trueTypeSortReverseValue && (item.FieldsMask&(1<<2) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.2 is indefinite because of the contradictions in values")
+	if propSortReversePresented && !trueTypeSortReverseValue && (item.FieldsMask&(1<<2) != 0) {
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "field 'sort_reverse' is explicitly set to false, but corresponding fieldmask item.FieldsMask bit 2 is 1")
 	}
 	return nil
 }

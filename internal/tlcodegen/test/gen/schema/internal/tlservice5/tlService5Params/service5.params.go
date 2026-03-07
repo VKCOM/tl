@@ -133,7 +133,6 @@ func (item *Service5Params) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propFieldsMaskPresented bool
 	var propMaxExecutionSpeedPresented bool
 	var propMaxExecutionSpeedBytesPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -147,26 +146,26 @@ func (item *Service5Params) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propFieldsMaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.params", "fields_mask")
 				}
+				propFieldsMaskPresented = true
 				if err := internal.Json2ReadUint32(in, &item.FieldsMask); err != nil {
 					return err
 				}
-				propFieldsMaskPresented = true
 			case "max_execution_speed":
 				if propMaxExecutionSpeedPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.params", "max_execution_speed")
 				}
+				propMaxExecutionSpeedPresented = true
 				if err := internal.Json2ReadInt32(in, &item.MaxExecutionSpeed); err != nil {
 					return err
 				}
-				propMaxExecutionSpeedPresented = true
 			case "max_execution_speed_bytes":
 				if propMaxExecutionSpeedBytesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.params", "max_execution_speed_bytes")
 				}
+				propMaxExecutionSpeedBytesPresented = true
 				if err := internal.Json2ReadInt32(in, &item.MaxExecutionSpeedBytes); err != nil {
 					return err
 				}
-				propMaxExecutionSpeedBytesPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service5.params", key)
 			}

@@ -98,7 +98,6 @@ func (item *HalfStr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -112,18 +111,18 @@ func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("halfStr", "x")
 				}
+				propXPresented = true
 				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("halfStr", "y")
 				}
+				propYPresented = true
 				if err := item.Y.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("halfStr", key)
 			}

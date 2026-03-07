@@ -333,10 +333,10 @@ func (item *Service5Insert) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propFlagsPresented bool
-	var trueTypePersistentPresented bool
+	var propPersistentPresented bool
 	var trueTypePersistentValue bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -350,18 +350,18 @@ func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propFlagsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.insert", "flags")
 				}
+				propFlagsPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "persistent":
-				if trueTypePersistentPresented {
+				if propPersistentPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service5.insert", "persistent")
 				}
+				propPersistentPresented = true
 				if err := internal.Json2ReadBool(in, &trueTypePersistentValue); err != nil {
 					return err
 				}
-				trueTypePersistentPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service5.insert", key)
 			}
@@ -375,14 +375,11 @@ func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	if !propFlagsPresented {
 		item.Flags = 0
 	}
-	if trueTypePersistentPresented {
-		if trueTypePersistentValue {
-			item.Flags |= 1 << 0
-		}
+	if trueTypePersistentValue {
+		item.Flags |= 1 << 0
 	}
-	// tries to set bit to zero if it is 1
-	if trueTypePersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("service5.insert", "fieldmask bit item.Flags.0 is indefinite because of the contradictions in values")
+	if propPersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
+		return internal.ErrorInvalidJSON("service5.insert", "field 'persistent' is explicitly set to false, but corresponding fieldmask item.Flags bit 0 is 1")
 	}
 	if item.Flags&(1<<0) != 0 {
 		item.tl2mask0 |= 1

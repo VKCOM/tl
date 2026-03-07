@@ -64,8 +64,7 @@ func (item *Replace4) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error
 }
 
 func (item *Replace4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	var rawA []byte
-
+	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -76,12 +75,12 @@ func (item *Replace4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 			in.WantColon()
 			switch key {
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace4", "a")
 				}
-				rawA = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propAPresented = true
+				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.A, nat_n); err != nil {
+					return err
 				}
 			default:
 				return ErrorInvalidJSONExcessElement("replace4", key)
@@ -93,15 +92,9 @@ func (item *Replace4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 			return in.Error()
 		}
 	}
-	var inAPointer *basictl.JsonLexer
-	inA := basictl.JsonLexer{Data: rawA}
-	if rawA != nil {
-		inAPointer = &inA
+	if !propAPresented {
+		item.A = item.A[:0]
 	}
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, nat_n); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -321,7 +314,6 @@ func (item *Replace43) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 
 func (item *Replace43) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -335,10 +327,10 @@ func (item *Replace43) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace4", "a")
 				}
+				propAPresented = true
 				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("replace4", key)
 			}

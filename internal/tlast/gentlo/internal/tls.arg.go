@@ -267,7 +267,6 @@ func (item *TlsArg) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 	var propExistVarNumPresented bool
 	var propExistVarBitPresented bool
 	var propTypePresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -281,50 +280,50 @@ func (item *TlsArg) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 				if propIdPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "id")
 				}
+				propIdPresented = true
 				if err := Json2ReadString(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "flags")
 				}
+				propFlagsPresented = true
 				if err := Json2ReadUint32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			case "var_num":
 				if propVarNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "var_num")
 				}
+				propVarNumPresented = true
 				if err := Json2ReadInt32(in, &item.VarNum); err != nil {
 					return err
 				}
-				propVarNumPresented = true
 			case "exist_var_num":
 				if propExistVarNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "exist_var_num")
 				}
+				propExistVarNumPresented = true
 				if err := Json2ReadInt32(in, &item.ExistVarNum); err != nil {
 					return err
 				}
-				propExistVarNumPresented = true
 			case "exist_var_bit":
 				if propExistVarBitPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "exist_var_bit")
 				}
+				propExistVarBitPresented = true
 				if err := Json2ReadInt32(in, &item.ExistVarBit); err != nil {
 					return err
 				}
-				propExistVarBitPresented = true
 			case "type":
 				if propTypePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "type")
 				}
+				propTypePresented = true
 				if err := item.Type.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTypePresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.arg", key)
 			}

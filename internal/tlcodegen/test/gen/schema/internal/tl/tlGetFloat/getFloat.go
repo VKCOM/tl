@@ -138,7 +138,6 @@ func (item *GetFloat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 
 func (item *GetFloat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -152,10 +151,10 @@ func (item *GetFloat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("getFloat", "x")
 				}
+				propXPresented = true
 				if err := internal.Json2ReadFloat32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("getFloat", key)
 			}

@@ -89,7 +89,6 @@ func (item *Replace6) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 
 func (item *Replace6) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -103,10 +102,10 @@ func (item *Replace6) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace6", "a")
 				}
+				propAPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("replace6", key)
 			}

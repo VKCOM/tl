@@ -270,7 +270,6 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in 
 
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -284,10 +283,10 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSON
 				if propNextPositionsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoytopLevelUnionBig", "next_positions")
 				}
+				propNextPositionsPresented = true
 				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
 					return err
 				}
-				propNextPositionsPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("benchmarks.vrutoytopLevelUnionBig", key)
 			}

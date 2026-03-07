@@ -170,7 +170,6 @@ func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool)
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 2)
 	currentBlock |= 1
 	if *item.ptr() != 0 {
@@ -328,7 +327,6 @@ func (item *AbCode) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 
 func (item *AbCode) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -342,10 +340,10 @@ func (item *AbCode) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.code", "x")
 				}
+				propXPresented = true
 				if err := Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("ab.code", key)
 			}
@@ -443,7 +441,6 @@ func (item *AbCode) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if item.X != 0 {
@@ -1823,7 +1820,6 @@ func (item *CdResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 func (item *CdResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propStrPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1837,18 +1833,18 @@ func (item *CdResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.response", "x")
 				}
+				propXPresented = true
 				if err := Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "str":
 				if propStrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.response", "str")
 				}
+				propStrPresented = true
 				if err := Json2ReadString(in, &item.Str); err != nil {
 					return err
 				}
-				propStrPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cd.response", key)
 			}
@@ -1960,7 +1956,6 @@ func (item *CdResponse) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 3)
 	currentBlock |= 1
 	if item.X != 0 {
@@ -2138,7 +2133,6 @@ func (item *CdResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 func (item *CdResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propStrPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -2152,18 +2146,18 @@ func (item *CdResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.response", "x")
 				}
+				propXPresented = true
 				if err := Json2ReadInt32(in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "str":
 				if propStrPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.response", "str")
 				}
+				propStrPresented = true
 				if err := Json2ReadStringBytes(in, &item.Str); err != nil {
 					return err
 				}
-				propStrPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("cd.response", key)
 			}
@@ -2275,7 +2269,6 @@ func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmp
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 3)
 	currentBlock |= 1
 	if item.X != 0 {

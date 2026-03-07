@@ -98,10 +98,10 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 				if propNextPositionsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyPositions", "next_positions")
 				}
+				propNextPositionsPresented = true
 				if err := tlBuiltinVectorBenchmarksVruposition.BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
 					return err
 				}
-				propNextPositionsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("benchmarks.vrutoyPositions", key)
 			}

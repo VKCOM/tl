@@ -418,8 +418,6 @@
           "GoldenInput": "{\"f1\":1,\"f2\":0}",
           "Alternatives": [
             "{\"f2\":0}",
-            "{\"f3\":false}",
-            "{\"f3\":false,\"f4\":false}",
             "{\"f1\":1,\"f2\":0,\"f3\":false}"
           ],
           "IncorrectAlternatives": null
@@ -445,8 +443,7 @@
         {
           "GoldenInput": "{\"f0\":1,\"f1\":2,\"f2\":0,\"t1\":true,\"t2\":true}",
           "Alternatives": [
-            "{\"t3\":false}",
-            "{\"t3\":false}"
+            "{\"t2\":true}"
           ],
           "IncorrectAlternatives": null
         },
@@ -525,7 +522,6 @@
       "Failures": [
         "{\"f\":1,\"inner\":{\"f3\":[1,2]}}",
         "{\"f\":1,\"inner\":{\"f1\":1,\"f2\":true}}",
-        "{\"f\":1,\"fs\":1,\"inner\":{\"f1\":1}}",
         "{\"f\":0,\"inner\":{\"f1\":1}}"
       ]
     },

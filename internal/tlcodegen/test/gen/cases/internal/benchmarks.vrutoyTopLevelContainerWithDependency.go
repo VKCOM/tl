@@ -109,8 +109,8 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyType
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
+	var propValuePresented bool
 	var rawValue []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -124,14 +124,15 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 				if propNPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainerWithDependency", "n")
 				}
+				propNPresented = true
 				if err := Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "value":
-				if rawValue != nil {
+				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainerWithDependency", "value")
 				}
+				propValuePresented = true
 				rawValue = in.Raw()
 				if !in.Ok() {
 					return in.Error()

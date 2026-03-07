@@ -137,7 +137,6 @@ func (item *Service3SetLimits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 
 func (item *Service3SetLimits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLimitsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -151,10 +150,10 @@ func (item *Service3SetLimits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				if propLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.setLimits", "limits")
 				}
+				propLimitsPresented = true
 				if err := item.Limits.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propLimitsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.setLimits", key)
 			}

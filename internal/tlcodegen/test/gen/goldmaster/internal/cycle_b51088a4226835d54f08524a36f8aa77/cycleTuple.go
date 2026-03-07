@@ -590,12 +590,13 @@ func (item *CycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
 	var propAPresented bool
+	var propBPresented bool
 	var rawB []byte
 	var propCPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -609,33 +610,34 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "ns":
 				if propNsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "ns")
 				}
+				propNsPresented = true
 				if err := internal.Json2ReadUint32(in, &item.Ns); err != nil {
 					return err
 				}
-				propNsPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "a")
 				}
+				propAPresented = true
 				if item.A == nil {
 					item.A = new([2]CycleTuple)
 				}
 				if err := BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
-				if rawB != nil {
+				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "b")
 				}
+				propBPresented = true
 				rawB = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -644,10 +646,10 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "c")
 				}
+				propCPresented = true
 				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.C); err != nil {
 					return err
 				}
-				propCPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cycleTuple", key)
 			}

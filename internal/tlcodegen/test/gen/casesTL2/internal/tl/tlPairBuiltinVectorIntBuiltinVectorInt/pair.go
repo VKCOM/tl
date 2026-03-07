@@ -101,18 +101,18 @@ func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
+				propXPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
-				propXPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
+				propYPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("pair", key)
 			}

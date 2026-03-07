@@ -271,8 +271,8 @@ func (item *TlsCombinatorLeft0) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 
 func (item *TlsCombinatorLeft0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArgsNumPresented bool
+	var propArgsPresented bool
 	var rawArgs []byte
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -286,14 +286,15 @@ func (item *TlsCombinatorLeft0) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if propArgsNumPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorLeft", "args_num")
 				}
+				propArgsNumPresented = true
 				if err := Json2ReadUint32(in, &item.ArgsNum); err != nil {
 					return err
 				}
-				propArgsNumPresented = true
 			case "args":
-				if rawArgs != nil {
+				if propArgsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorLeft", "args")
 				}
+				propArgsPresented = true
 				rawArgs = in.Raw()
 				if !in.Ok() {
 					return in.Error()

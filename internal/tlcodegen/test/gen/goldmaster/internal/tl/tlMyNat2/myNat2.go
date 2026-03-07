@@ -409,7 +409,6 @@ func (item *MyPlus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 
 func (item *MyPlus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -423,10 +422,10 @@ func (item *MyPlus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myPlus", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("myPlus", key)
 			}
@@ -520,7 +519,6 @@ func (item *MyPlus) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if w, sizes, sz = item.A.InternalWriteTL2(w, sizes, true); sz != 0 {

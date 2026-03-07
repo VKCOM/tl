@@ -87,7 +87,6 @@ func (item *MaybeWrapperInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 
 func (item *MaybeWrapperInt3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -101,10 +100,10 @@ func (item *MaybeWrapperInt3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("maybeWrapper", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("maybeWrapper", key)
 			}

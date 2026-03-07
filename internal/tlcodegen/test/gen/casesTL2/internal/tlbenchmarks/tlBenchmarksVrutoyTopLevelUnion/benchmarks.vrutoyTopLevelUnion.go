@@ -364,10 +364,10 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSON
 				if propNextPositionsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoytopLevelUnionBig", "next_positions")
 				}
+				propNextPositionsPresented = true
 				if err := tlBuiltinVectorBenchmarksVruposition.BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
 					return err
 				}
-				propNextPositionsPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("benchmarks.vrutoytopLevelUnionBig", key)
 			}
@@ -696,7 +696,6 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	// add constructor No for union type in case of non first option
 	w = basictl.TL2WriteSize(w, 1)
 	currentBlock |= 1
 	if currentBlockPosition < len(w) {

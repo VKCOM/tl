@@ -97,7 +97,6 @@ func (item *AbTopLevel1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 func (item *AbTopLevel1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -111,18 +110,18 @@ func (item *AbTopLevel1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel1", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel1", "b")
 				}
+				propBPresented = true
 				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propBPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("ab.topLevel1", key)
 			}

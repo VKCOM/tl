@@ -414,7 +414,6 @@ func (item *TlsCombinator0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propTypeNamePresented bool
 	var propLeftPresented bool
 	var propRightPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -428,42 +427,42 @@ func (item *TlsCombinator0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propNamePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator", "name")
 				}
+				propNamePresented = true
 				if err := Json2ReadInt32(in, &item.Name); err != nil {
 					return err
 				}
-				propNamePresented = true
 			case "id":
 				if propIdPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator", "id")
 				}
+				propIdPresented = true
 				if err := Json2ReadString(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "type_name":
 				if propTypeNamePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator", "type_name")
 				}
+				propTypeNamePresented = true
 				if err := Json2ReadInt32(in, &item.TypeName); err != nil {
 					return err
 				}
-				propTypeNamePresented = true
 			case "left":
 				if propLeftPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator", "left")
 				}
+				propLeftPresented = true
 				if err := item.Left.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propLeftPresented = true
 			case "right":
 				if propRightPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator", "right")
 				}
+				propRightPresented = true
 				if err := item.Right.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propRightPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.combinator", key)
 			}
@@ -666,7 +665,6 @@ func (item *TlsCombinatorV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 	var propLeftPresented bool
 	var propRightPresented bool
 	var propFlagsPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -680,50 +678,50 @@ func (item *TlsCombinatorV4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propNamePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "name")
 				}
+				propNamePresented = true
 				if err := Json2ReadInt32(in, &item.Name); err != nil {
 					return err
 				}
-				propNamePresented = true
 			case "id":
 				if propIdPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "id")
 				}
+				propIdPresented = true
 				if err := Json2ReadString(in, &item.Id); err != nil {
 					return err
 				}
-				propIdPresented = true
 			case "type_name":
 				if propTypeNamePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "type_name")
 				}
+				propTypeNamePresented = true
 				if err := Json2ReadInt32(in, &item.TypeName); err != nil {
 					return err
 				}
-				propTypeNamePresented = true
 			case "left":
 				if propLeftPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "left")
 				}
+				propLeftPresented = true
 				if err := item.Left.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propLeftPresented = true
 			case "right":
 				if propRightPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "right")
 				}
+				propRightPresented = true
 				if err := item.Right.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propRightPresented = true
 			case "flags":
 				if propFlagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinator_v4", "flags")
 				}
+				propFlagsPresented = true
 				if err := Json2ReadInt32(in, &item.Flags); err != nil {
 					return err
 				}
-				propFlagsPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("tls.combinator_v4", key)
 			}

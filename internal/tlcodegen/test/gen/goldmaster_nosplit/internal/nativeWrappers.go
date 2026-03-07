@@ -131,7 +131,6 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 	var propDPresented bool
 	var propEPresented bool
 	var propFPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -145,50 +144,50 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "a")
 				}
+				propAPresented = true
 				if err := Json2ReadInt32(in, &item.A); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "b")
 				}
+				propBPresented = true
 				if err := Json2ReadInt32(in, &item.B); err != nil {
 					return err
 				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "c")
 				}
+				propCPresented = true
 				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
 				if propDPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "d")
 				}
+				propDPresented = true
 				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propDPresented = true
 			case "e":
 				if propEPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "e")
 				}
+				propEPresented = true
 				if err := item.E.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propEPresented = true
 			case "f":
 				if propFPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "f")
 				}
+				propFPresented = true
 				if err := item.F.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propFPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("nativeWrappers", key)
 			}

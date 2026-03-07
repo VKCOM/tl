@@ -144,7 +144,6 @@ func (item *Service3GetProductStats) ReadJSON(legacyTypeNames bool, in *basictl.
 func (item *Service3GetProductStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propUserIdPresented bool
 	var propTypesPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -158,18 +157,18 @@ func (item *Service3GetProductStats) ReadJSONGeneral(tctx *basictl.JSONReadConte
 				if propUserIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProductStats", "user_id")
 				}
+				propUserIdPresented = true
 				if err := internal.Json2ReadInt32(in, &item.UserId); err != nil {
 					return err
 				}
-				propUserIdPresented = true
 			case "types":
 				if propTypesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.getProductStats", "types")
 				}
+				propTypesPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Types); err != nil {
 					return err
 				}
-				propTypesPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service3.getProductStats", key)
 			}

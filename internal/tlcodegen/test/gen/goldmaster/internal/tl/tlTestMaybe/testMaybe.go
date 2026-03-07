@@ -147,9 +147,9 @@ func (item *TestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	var propBPresented bool
 	var propCPresented bool
 	var propDPresented bool
+	var propEPresented bool
 	var rawE []byte
 	var propFPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -163,46 +163,47 @@ func (item *TestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propNPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "n")
 				}
+				propNPresented = true
 				if err := internal.Json2ReadUint32(in, &item.N); err != nil {
 					return err
 				}
-				propNPresented = true
 			case "a":
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "a")
 				}
+				propAPresented = true
 				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propAPresented = true
 			case "b":
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "b")
 				}
+				propBPresented = true
 				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propBPresented = true
 			case "c":
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "c")
 				}
+				propCPresented = true
 				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propCPresented = true
 			case "d":
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "d")
 				}
+				propDPresented = true
 				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propDPresented = true
 			case "e":
-				if rawE != nil {
+				if propEPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "e")
 				}
+				propEPresented = true
 				rawE = in.Raw()
 				if !in.Ok() {
 					return in.Error()
@@ -211,10 +212,10 @@ func (item *TestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 				if propFPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "f")
 				}
+				propFPresented = true
 				if err := item.F.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propFPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("testMaybe", key)
 			}

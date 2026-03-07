@@ -155,7 +155,6 @@ func (item *TasksAddTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 	var propTypeNamePresented bool
 	var propQueueIdPresented bool
 	var propTaskPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -169,26 +168,26 @@ func (item *TasksAddTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 				if propTypeNamePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.addTask", "type_name")
 				}
+				propTypeNamePresented = true
 				if err := internal.Json2ReadString(in, &item.TypeName); err != nil {
 					return err
 				}
-				propTypeNamePresented = true
 			case "queue_id":
 				if propQueueIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.addTask", "queue_id")
 				}
+				propQueueIdPresented = true
 				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
 					return err
 				}
-				propQueueIdPresented = true
 			case "task":
 				if propTaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.addTask", "task")
 				}
+				propTaskPresented = true
 				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propTaskPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.addTask", key)
 			}

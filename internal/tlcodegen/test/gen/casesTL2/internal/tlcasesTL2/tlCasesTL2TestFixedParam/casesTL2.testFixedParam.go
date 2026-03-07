@@ -97,10 +97,10 @@ func (item *CasesTL2TestFixedParam) ReadJSONGeneral(tctx *basictl.JSONReadContex
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testFixedParam", "x")
 				}
+				propXPresented = true
 				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
-				propXPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testFixedParam", key)
 			}

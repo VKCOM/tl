@@ -143,7 +143,6 @@ func (item *Service1Touch) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 func (item *Service1Touch) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propDelayPresented bool
-
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -157,18 +156,18 @@ func (item *Service1Touch) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.touch", "key")
 				}
+				propKeyPresented = true
 				if err := internal.Json2ReadString(in, &item.Key); err != nil {
 					return err
 				}
-				propKeyPresented = true
 			case "delay":
 				if propDelayPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.touch", "delay")
 				}
+				propDelayPresented = true
 				if err := internal.Json2ReadInt32(in, &item.Delay); err != nil {
 					return err
 				}
-				propDelayPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("service1.touch", key)
 			}

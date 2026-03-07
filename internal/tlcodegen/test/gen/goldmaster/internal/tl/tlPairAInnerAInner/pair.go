@@ -76,9 +76,8 @@ func (item *PairAInnerAInner) WriteTL1Boxed(w []byte, nat_X uint32, nat_Y uint32
 }
 
 func (item *PairAInnerAInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
-	var rawA []byte
-	var rawB []byte
-
+	var propAPresented bool
+	var propBPresented bool
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -89,20 +88,20 @@ func (item *PairAInnerAInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			in.WantColon()
 			switch key {
 			case "a":
-				if rawA != nil {
+				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
 				}
-				rawA = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propAPresented = true
+				if err := item.A.ReadJSONGeneral(tctx, in, nat_X); err != nil {
+					return err
 				}
 			case "b":
-				if rawB != nil {
+				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
 				}
-				rawB = in.Raw()
-				if !in.Ok() {
-					return in.Error()
+				propBPresented = true
+				if err := item.B.ReadJSONGeneral(tctx, in, nat_Y); err != nil {
+					return err
 				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("pair", key)
@@ -114,24 +113,12 @@ func (item *PairAInnerAInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			return in.Error()
 		}
 	}
-	var inAPointer *basictl.JsonLexer
-	inA := basictl.JsonLexer{Data: rawA}
-	if rawA != nil {
-		inAPointer = &inA
+	if !propAPresented {
+		item.A.Reset()
 	}
-	if err := item.A.ReadJSONGeneral(tctx, inAPointer, nat_X); err != nil {
-		return err
+	if !propBPresented {
+		item.B.Reset()
 	}
-
-	var inBPointer *basictl.JsonLexer
-	inB := basictl.JsonLexer{Data: rawB}
-	if rawB != nil {
-		inBPointer = &inB
-	}
-	if err := item.B.ReadJSONGeneral(tctx, inBPointer, nat_Y); err != nil {
-		return err
-	}
-
 	return nil
 }
 
