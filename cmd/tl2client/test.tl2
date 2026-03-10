@@ -75,22 +75,22 @@
 //----- Test Common Types
 
 //a.testNewTypes = b:byte u:uint64;
-//
+
 //a.fun1#12345671
 //    => int32;
-//
+
 //a.fun2#12345672
 //    => x:int32;
-//
+
 //a.fun3#12345673
 //    => x:int32 y:int32;
-//
+
 //a.fun4__Result = x:int32;
-//
+
 //a.fun4#12345674
 //    => <=> a.fun4__Result;
-//
+
 //a.fun5__Result = x:int32 y:int32;
-//
+
 //a.fun5#12345675
 //    => <=> a.fun5__Result;

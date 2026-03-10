@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/VKCOM/tl/internal/tlast"
 )
 
@@ -72,11 +73,14 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	_ = k.addPrimitive("bit", "", "bit", 0, true)
 	_ = k.addPrimitive("string", "string", "string", 0, true)
 	k.addTL1Brackets()
-	_ = k.addPrimitive("__function", "__function", "function", 0, false)
-	{
-		ktFetcher := k.addPrimitive("__function_result", "__function_result", "function_result", 0, false)
-		ktFetcher.canBeBare = false
-		ktFetcher.tl1BoxedName = tlast.TL2TypeName{Name: "__function_result"}
+	if k.opts.InstantiateExclamationWrappers {
+		// We do not want to expose these types to backends which do not support exclamation wrappers.
+		_ = k.addPrimitive("__function", "__function", "function", 0, false)
+		{
+			ktFetcher := k.addPrimitive("__function_result", "__function_result", "function_result", 0, false)
+			ktFetcher.canBeBare = false
+			ktFetcher.tl1BoxedName = tlast.TL2TypeName{Name: "__function_result"}
+		}
 	}
 	k.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
 	for _, ann := range strings.Split(k.opts.Annotations, ",") {
@@ -571,9 +575,9 @@ func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]s
 
 func (k *Kernel) PrintUnusedWarnings() {
 	if err := k.rpcPreferTL2WhiteList.UnusedWarning(); err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("%v\n", color.InYellow(err))
 	}
 	if err := k.tl2WhiteList.UnusedWarning(); err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("%v\n", color.InYellow(err))
 	}
 }

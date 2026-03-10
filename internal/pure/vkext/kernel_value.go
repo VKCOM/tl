@@ -15,7 +15,7 @@ import (
 )
 
 // common for read/write/json/etc... for simplicity
-type TL2Context struct {
+type TLContext struct {
 }
 
 type KernelValue interface {
@@ -23,9 +23,16 @@ type KernelValue interface {
 
 	Reset()
 	Random(rg *rand.Rand)
+
+	WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel)
+	ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error)
+
 	WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel)
-	ReadTL2(r []byte, ctx *TL2Context) ([]byte, error)
-	WriteJSON(w []byte, ctx *TL2Context) []byte
+	ReadTL2(r []byte, ctx *TLContext) ([]byte, error)
+
+	WriteJSON(w []byte, ctx *TLContext) []byte
+
+	// WriteTL1/ReadTL1 also effectively perform RepairMasks
 
 	UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel)
 	UIFixPath(side int, level int, model *UIModel) int // always called onPath
@@ -68,7 +75,7 @@ func CreateValue(ins pure.TypeInstance) KernelValue {
 			value := &KernelValueArrayBit{
 				instance: ins,
 			}
-			if ins.IsTuple() {
+			if ins.IsTuple() && !ins.DynamicSize() {
 				value.resize(int(ins.Count()))
 			}
 			return value
@@ -76,7 +83,7 @@ func CreateValue(ins pure.TypeInstance) KernelValue {
 		value := &KernelValueArray{
 			instance: ins,
 		}
-		if ins.IsTuple() {
+		if ins.IsTuple() && !ins.DynamicSize() {
 			value.resize(int(ins.Count()))
 		}
 		return value

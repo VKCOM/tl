@@ -9,6 +9,7 @@ package vkext
 import (
 	"cmp"
 	"encoding/binary"
+	"errors"
 	"io"
 	"math/rand/v2"
 	"strconv"
@@ -37,6 +38,15 @@ func (v *KernelValueUint32) Random(rg *rand.Rand) {
 	v.value = rg.Uint32()
 }
 
+func (v *KernelValueUint32) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	rr, err := basictl.
+	return r, natArgs, nil
+}
+
+func (v *KernelValueUint32) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	v.WriteTL2(w, false, onPath, level, model)
+}
+
 func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
 		return
@@ -50,7 +60,7 @@ func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	}
 }
 
-func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 4 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -58,7 +68,7 @@ func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[4:], nil
 }
 
-func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
@@ -124,6 +134,14 @@ func (v *KernelValueInt32) Random(rg *rand.Rand) {
 	v.value = int32(rg.Uint32())
 }
 
+func (v *KernelValueInt32) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, nil
+}
+
+func (v *KernelValueInt32) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	v.WriteTL2(w, false, onPath, level, model)
+}
+
 func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
 		return
@@ -137,7 +155,7 @@ func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	}
 }
 
-func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 4 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -145,7 +163,7 @@ func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[4:], nil
 }
 
-func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return strconv.AppendInt(w, int64(v.value), 10)
 }
 
@@ -211,6 +229,14 @@ func (v *KernelValueUint64) Random(rg *rand.Rand) {
 	v.value = rg.Uint64()
 }
 
+func (v *KernelValueUint64) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, errors.New("uint64 cannot be read from TL1")
+}
+
+func (v *KernelValueUint64) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	panic("uint64 cannot be saved to TL1")
+}
+
 func (v *KernelValueUint64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
 		return
@@ -224,7 +250,7 @@ func (v *KernelValueUint64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	}
 }
 
-func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 8 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -232,7 +258,7 @@ func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[8:], nil
 }
 
-func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return strconv.AppendUint(w, v.value, 10)
 }
 
@@ -298,6 +324,14 @@ func (v *KernelValueInt64) Random(rg *rand.Rand) {
 	v.value = int64(rg.Uint64())
 }
 
+func (v *KernelValueInt64) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, nil
+}
+
+func (v *KernelValueInt64) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	v.WriteTL2(w, false, onPath, level, model)
+}
+
 func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
 		return
@@ -311,7 +345,7 @@ func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	}
 }
 
-func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 8 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -319,7 +353,7 @@ func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[8:], nil
 }
 
-func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return strconv.AppendInt(w, v.value, 10)
 }
 
@@ -385,6 +419,14 @@ func (v *KernelValueByte) Random(rg *rand.Rand) {
 	v.value = byte(rg.Uint32())
 }
 
+func (v *KernelValueByte) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, errors.New("byte cannot be read from TL1")
+}
+
+func (v *KernelValueByte) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	panic("byte cannot be saved to TL1")
+}
+
 func (v *KernelValueByte) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && v.value == 0 {
 		return
@@ -398,7 +440,7 @@ func (v *KernelValueByte) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bo
 	}
 }
 
-func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueByte) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 1 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -406,7 +448,7 @@ func (v *KernelValueByte) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[1:], nil
 }
 
-func (v *KernelValueByte) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueByte) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return strconv.AppendUint(w, uint64(v.value), 10)
 }
 
@@ -472,6 +514,14 @@ func (v *KernelValueBool) Random(rg *rand.Rand) {
 	v.value = (rg.Uint32() & 1) != 0
 }
 
+func (v *KernelValueBool) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	panic("TODO - have no magics to write")
+}
+
+func (v *KernelValueBool) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	panic("TODO - have no magics to write")
+}
+
 func (v *KernelValueBool) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && !v.value {
 		return
@@ -489,7 +539,7 @@ func (v *KernelValueBool) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bo
 	}
 }
 
-func (v *KernelValueBool) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueBool) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	if len(r) < 1 {
 		return r, io.ErrUnexpectedEOF
 	}
@@ -497,7 +547,7 @@ func (v *KernelValueBool) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
 	return r[1:], nil
 }
 
-func (v *KernelValueBool) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueBool) WriteJSON(w []byte, ctx *TLContext) []byte {
 	if v.value {
 		return append(w, "true"...)
 	}
@@ -557,14 +607,22 @@ func (v *KernelValueBit) Reset() {
 func (v *KernelValueBit) Random(rg *rand.Rand) {
 }
 
+func (v *KernelValueBit) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, errors.New("bit cannot be read from TL1")
+}
+
+func (v *KernelValueBit) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	panic("bit cannot be saved to TL1")
+}
+
 func (v *KernelValueBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 }
 
-func (v *KernelValueBit) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueBit) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	return r, nil
 }
 
-func (v *KernelValueBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueBit) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return append(w, "true"...)
 }
 

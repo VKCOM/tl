@@ -48,6 +48,57 @@ func (v *KernelValueStruct) Random(rg *rand.Rand) {
 	}
 }
 
+func (v *KernelValueStruct) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, nil
+}
+
+func (v *KernelValueStruct) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	var currentBlock byte
+	currentBlockPosition := w.Len()
+	w.WriteFieldmask()
+
+	if v.instance.IsUnionElement() {
+		w.WriteVariantIndex(v.instance.UnionIndex())
+		currentBlock |= 1
+	}
+
+	for i, field := range v.fields {
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
+		fieldDef := v.instance.Fields()[i]
+		if (i+1)%8 == 0 {
+			w.buf[currentBlockPosition] = currentBlock
+			currentBlock = 0
+			// start the next block
+			currentBlockPosition = w.Len()
+			w.WriteFieldmask()
+		}
+		if strings.HasPrefix(fieldDef.Name(), "_") { // IsOmitted
+			continue
+		}
+		if fieldDef.FieldMask() != nil {
+			if field != nil {
+				if fieldOnPath {
+					field.WriteTL2(w, false, true, level+1, model)
+				} else {
+					field.WriteTL2(w, false, false, 0, model)
+				}
+				currentBlock |= 1 << ((i + 1) % 8)
+			}
+			continue
+		}
+		wasLen := w.Len()
+		if fieldOnPath {
+			field.WriteTL2(w, true, true, level+1, model)
+		} else {
+			field.WriteTL2(w, true, false, 0, model)
+		}
+		if w.Len() != wasLen {
+			currentBlock |= 1 << ((i + 1) % 8)
+		}
+	}
+	w.buf[currentBlockPosition] = currentBlock
+}
+
 func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	firstUsedByte := w.ReserveSpaceForSize()
 
@@ -102,7 +153,7 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2Context) (err error) {
+func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TLContext) (err error) {
 	for i, ft := range v.fields {
 		fieldDef := v.instance.Fields()[i]
 		if (i+1)%8 == 0 {
@@ -133,7 +184,7 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TL2C
 	return nil
 }
 
-func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -165,7 +216,7 @@ func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err er
 	return r, v.ReadFieldsTL2(block, currentR, ctx)
 }
 
-func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TLContext) []byte {
 	if v.instance.IsTypedef() {
 		return v.fields[0].WriteJSON(w, ctx)
 	}

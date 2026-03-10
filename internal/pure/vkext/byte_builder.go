@@ -19,10 +19,12 @@ type ByteColor byte
 const ByteColorNormal ByteColor = 0
 const ByteColorObjectSize ByteColor = 1
 const ByteColorElementCount ByteColor = 2
-const ByteColorVariantIndex ByteColor = 3
-const ByteColorFieldMask ByteColor = 4
+const ByteColorTL2VariantIndex ByteColor = 3
+const ByteColorTL2FieldMask ByteColor = 4
 const ByteColorStringSize ByteColor = 6
 const ByteColorStringData ByteColor = 7
+const ByteColorStringPadding ByteColor = 8
+const ByteColorObjectMagic ByteColor = 9
 
 type ByteBuilder struct {
 	buf          []byte
@@ -58,6 +60,7 @@ func (b *ByteBuilder) PrintLegend() string {
 }
 
 func (b *ByteBuilder) Print() string {
+	b.fixColors(ByteColorNormal)
 	var sb strings.Builder
 	currentColor := ByteColorNormal
 	currentCursor := false
@@ -84,14 +87,18 @@ func (b *ByteBuilder) Print() string {
 				sb.WriteString(color.Green)
 			case ByteColorElementCount:
 				sb.WriteString(color.Blue)
-			case ByteColorVariantIndex:
+			case ByteColorTL2VariantIndex:
 				sb.WriteString(color.Red)
-			case ByteColorFieldMask:
+			case ByteColorTL2FieldMask:
 				sb.WriteString(color.Purple)
 			case ByteColorStringSize:
 				sb.WriteString(color.Yellow)
 			case ByteColorStringData:
 				sb.WriteString(color.Gray)
+			case ByteColorStringPadding:
+				sb.WriteString(color.Cyan)
+			case ByteColorObjectMagic:
+				sb.WriteString(color.Red) // same as TL2 variant index
 			}
 			currentColor = wantColor
 		}
@@ -116,10 +123,21 @@ func (b *ByteBuilder) fixColors(c ByteColor) {
 func (b *ByteBuilder) WriteFieldmask() {
 	b.fixColors(ByteColorNormal)
 	b.buf = append(b.buf, 0)
-	b.fixColors(ByteColorFieldMask)
+	b.fixColors(ByteColorTL2FieldMask)
 }
 
-func (b *ByteBuilder) WriteString(v string) {
+func (b *ByteBuilder) WriteStringTL1(v string) {
+	b.fixColors(ByteColorNormal)
+	var p uint
+	b.buf, p = basictl.StringWriteLen(b.buf, len(v))
+	b.fixColors(ByteColorStringSize)
+	b.buf = append(b.buf, v...)
+	b.fixColors(ByteColorStringData)
+	b.buf = basictl.StringWritePadding(b.buf, p)
+	b.fixColors(ByteColorStringPadding)
+}
+
+func (b *ByteBuilder) WriteStringTL2(v string) {
 	b.fixColors(ByteColorNormal)
 	b.buf = basictl.TL2WriteSize(b.buf, len(v))
 	b.fixColors(ByteColorStringSize)
@@ -130,10 +148,16 @@ func (b *ByteBuilder) WriteString(v string) {
 func (b *ByteBuilder) WriteVariantIndex(v int) {
 	b.fixColors(ByteColorNormal)
 	b.buf = basictl.TL2WriteSize(b.buf, v)
-	b.fixColors(ByteColorVariantIndex)
+	b.fixColors(ByteColorTL2VariantIndex)
 }
 
-func (b *ByteBuilder) WriteElementCount(v int) {
+func (b *ByteBuilder) WriteElementCountTL1(v uint32) {
+	b.fixColors(ByteColorNormal)
+	b.buf = basictl.NatWrite(b.buf, v)
+	b.fixColors(ByteColorElementCount)
+}
+
+func (b *ByteBuilder) WriteElementCountTL2(v int) {
 	b.fixColors(ByteColorNormal)
 	b.buf = basictl.TL2WriteSize(b.buf, v)
 	b.fixColors(ByteColorElementCount)

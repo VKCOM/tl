@@ -22,10 +22,13 @@ type TypeInstanceArray struct {
 	field Field
 }
 
-func (ins *TypeInstanceArray) IsTuple() bool     { return ins.isTuple }
-func (ins *TypeInstanceArray) Count() uint32     { return ins.count }
+func (ins *TypeInstanceArray) IsTuple() bool { return ins.isTuple } // otherwise, vector
+// if DynamicSize(), size is by external nat arg, otherwise, fixed Count() elements
 func (ins *TypeInstanceArray) DynamicSize() bool { return ins.dynamicSize }
-func (ins *TypeInstanceArray) Field() Field      { return ins.field }
+func (ins *TypeInstanceArray) Count() uint32     { return ins.count }
+
+// all nat params work as if element was struct field
+func (ins *TypeInstanceArray) Field() Field { return ins.field }
 
 func (ins *TypeInstanceArray) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
 	if !c.push(ins, prName) {

@@ -63,13 +63,56 @@ func (v *KernelValueArray) Random(rg *rand.Rand) {
 	}
 }
 
+func (v *KernelValueArray) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	var err error
+	switch {
+	case !v.instance.IsTuple():
+		var count uint32
+		if r, err = basictl.NatRead(r, &count); err != nil {
+			return r, natArgs, err
+		}
+		v.resize(int(count))
+	case v.instance.DynamicSize():
+		v.resize(int(natArgs[len(natArgs)-1])) // RepairMasks
+	default:
+		v.resize(int(v.instance.Count())) // RepairMasks
+	}
+
+	for _, elem := range v.elements {
+		if r, natArgs, err = elem.ReadTL1(r, ctx, natArgs); err != nil {
+			return r, natArgs, err
+		}
+	}
+	return r, natArgs, nil
+}
+
+func (v *KernelValueArray) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	switch {
+	case !v.instance.IsTuple():
+		w.WriteElementCountTL1(uint32(len(v.elements)))
+	case v.instance.DynamicSize():
+		v.resize(int(natArgs[len(natArgs)-1])) // RepairMasks
+	default:
+		v.resize(int(v.instance.Count())) // RepairMasks
+	}
+
+	for i, elem := range v.elements {
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
+		if fieldOnPath {
+			elem.WriteTL1(w, natArgs, true, level+1, model)
+		} else {
+			elem.WriteTL1(w, natArgs, false, 0, model)
+		}
+	}
+}
+
 func (v *KernelValueArray) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
 		return
 	}
 
 	firstUsedByte := w.ReserveSpaceForSize()
-	w.WriteElementCount(len(v.elements))
+	w.WriteElementCountTL2(len(v.elements))
 
 	for i, elem := range v.elements {
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
@@ -84,7 +127,7 @@ func (v *KernelValueArray) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueArray) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueArray) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -121,7 +164,7 @@ func (v *KernelValueArray) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 	return r, nil
 }
 
-func (v *KernelValueArray) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueArray) WriteJSON(w []byte, ctx *TLContext) []byte {
 	w = append(w, '[')
 	for i, el := range v.elements {
 		if i != 0 {
