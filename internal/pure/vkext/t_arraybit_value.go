@@ -7,6 +7,7 @@
 package vkext
 
 import (
+	"errors"
 	"math/rand/v2"
 	"strings"
 
@@ -52,6 +53,14 @@ func (v *KernelValueArrayBit) Random(rg *rand.Rand) {
 	}
 }
 
+func (v *KernelValueArrayBit) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, errors.New("array bit cannot be read from TL1")
+}
+
+func (v *KernelValueArrayBit) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	panic("array bit cannot be saved to TL1")
+}
+
 func (v *KernelValueArrayBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
 		return
@@ -59,7 +68,7 @@ func (v *KernelValueArrayBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPat
 
 	firstUsedByte := w.ReserveSpaceForSize()
 
-	w.WriteElementCount(len(v.elements))
+	w.WriteElementCountTL2(len(v.elements))
 
 	w.buf = basictl.VectorBitContentWriteTL2(w.buf, v.elements)
 
@@ -67,7 +76,7 @@ func (v *KernelValueArrayBit) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPat
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -100,7 +109,7 @@ func (v *KernelValueArrayBit) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err 
 	return r, nil
 }
 
-func (v *KernelValueArrayBit) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueArrayBit) WriteJSON(w []byte, ctx *TLContext) []byte {
 	w = append(w, '[')
 	first := true
 	for _, el := range v.elements {

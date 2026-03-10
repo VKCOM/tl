@@ -33,11 +33,19 @@ func (v *KernelValueUnion) Random(rg *rand.Rand) {
 	v.variants[v.index].Random(rg)
 }
 
+func (v *KernelValueUnion) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, nil
+}
+
+func (v *KernelValueUnion) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	v.variants[v.index].WriteTL1(w, natArgs, onPath, level, model)
+}
+
 func (v *KernelValueUnion) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	v.variants[v.index].WriteTL2(w, optimizeEmpty, onPath, level, model)
 }
 
-func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -72,7 +80,7 @@ func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err err
 	return r, v.variants[v.index].ReadFieldsTL2(block, currentR, ctx)
 }
 
-func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TLContext) []byte {
 	w = append(w, `{"type":"`...)
 	w = append(w, v.instance.VariantNames()[v.index]...)
 	if len(v.instance.VariantTypes()[v.index].Fields()) == 0 {

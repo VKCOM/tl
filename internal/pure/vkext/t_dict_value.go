@@ -57,16 +57,48 @@ func (v *KernelValueDict) Random(rg *rand.Rand) {
 	v.sort()
 }
 
+func (v *KernelValueDict) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	var err error
+	var count uint32
+	if r, err = basictl.NatRead(r, &count); err != nil {
+		return r, natArgs, err
+	}
+	v.resize(int(count))
+
+	for i, elem := range v.elements {
+		if r, natArgs, err = elem.ReadTL1(r, ctx, natArgs); err != nil {
+			// leave container in good shape
+			v.resize(i)
+			v.sort()
+			return r, natArgs, err
+		}
+	}
+	v.sort()
+	return r, natArgs, nil
+}
+
+func (v *KernelValueDict) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	v.sort() // TODO - remove, sort when container changes
+
+	w.WriteElementCountTL1(uint32(len(v.elements)))
+
+	for _, elem := range v.elements {
+		// TODO - onPath
+		elem.WriteTL1(w, natArgs, false, 0, model)
+	}
+}
+
 func (v *KernelValueDict) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if len(v.elements) == 0 && optimizeEmpty {
 		return
 	}
-	v.sort()
+	v.sort() // TODO - remove, sort when container changes
 
 	firstUsedByte := w.ReserveSpaceForSize()
-	w.WriteElementCount(len(v.elements))
+	w.WriteElementCountTL2(len(v.elements))
 
 	for _, elem := range v.elements {
+		// TODO - onPath
 		elem.WriteTL2(w, false, false, 0, model)
 	}
 
@@ -74,7 +106,7 @@ func (v *KernelValueDict) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bo
 	w.FinishSize(firstUsedByte, lastUsedByte, optimizeEmpty)
 }
 
-func (v *KernelValueDict) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err error) {
+func (v *KernelValueDict) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -97,8 +129,11 @@ func (v *KernelValueDict) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err erro
 	}
 
 	v.resize(elementCount)
-	for _, elem := range v.elements {
+	for i, elem := range v.elements {
 		if currentR, err = elem.ReadTL2(currentR, ctx); err != nil {
+			// leave container in good shape
+			v.resize(i)
+			v.sort()
 			return r, err
 		}
 	}
@@ -106,8 +141,8 @@ func (v *KernelValueDict) ReadTL2(r []byte, ctx *TL2Context) (_ []byte, err erro
 	return r, nil
 }
 
-func (v *KernelValueDict) WriteJSON(w []byte, ctx *TL2Context) []byte {
-	v.sort()
+func (v *KernelValueDict) WriteJSON(w []byte, ctx *TLContext) []byte {
+	v.sort() // TODO - remove, sort when container changes
 	w = append(w, '[')
 	first := true
 	for _, el := range v.elements {
@@ -122,7 +157,7 @@ func (v *KernelValueDict) WriteJSON(w []byte, ctx *TL2Context) []byte {
 }
 
 func (v *KernelValueDict) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
-	sb.WriteString("<KernelValueDict>")
+	sb.WriteString("<KernelValueDict>") // TODO
 }
 
 func (v *KernelValueDict) UIFixPath(side int, level int, model *UIModel) int {

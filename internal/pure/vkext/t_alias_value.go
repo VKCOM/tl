@@ -6,6 +6,8 @@
 
 package vkext
 
+// TODO - removed for now to have similarity to generated code
+
 //type KernelValueAlias struct {
 //	instance *TypeInstanceAlias
 //	value    KernelValue
@@ -29,11 +31,11 @@ package vkext
 //	v.value.WriteTL2(w, optimizeEmpty, onPath, level, model)
 //}
 //
-//func (v *KernelValueAlias) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+//func (v *KernelValueAlias) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 //	return v.value.ReadTL2(r, ctx)
 //}
 //
-//func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TL2Context) []byte {
+//func (v *KernelValueAlias) WriteJSON(w []byte, ctx *TLContext) []byte {
 //	return v.value.WriteJSON(w, ctx)
 //}
 //

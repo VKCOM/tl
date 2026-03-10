@@ -38,6 +38,20 @@ func (v *KernelValueString) Random(rg *rand.Rand) {
 	v.value = string(res)
 }
 
+func (v *KernelValueString) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+	return r, natArgs, nil
+}
+
+func (v *KernelValueString) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+	if onPath {
+		w.SetCursorStart()
+	}
+	w.WriteStringTL1(v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
+}
+
 func (v *KernelValueString) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
 	if optimizeEmpty && len(v.value) == 0 {
 		return
@@ -45,17 +59,17 @@ func (v *KernelValueString) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if onPath {
 		w.SetCursorStart()
 	}
-	w.WriteString(v.value)
+	w.WriteStringTL2(v.value)
 	if onPath {
 		w.SetCursorFinish()
 	}
 }
 
-func (v *KernelValueString) ReadTL2(r []byte, ctx *TL2Context) ([]byte, error) {
+func (v *KernelValueString) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
 	return basictl.StringReadTL2(r, &v.value)
 }
 
-func (v *KernelValueString) WriteJSON(w []byte, ctx *TL2Context) []byte {
+func (v *KernelValueString) WriteJSON(w []byte, ctx *TLContext) []byte {
 	return basictl.JSONWriteString(w, v.value)
 }
 

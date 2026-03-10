@@ -150,7 +150,7 @@ func main() {
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
 	flag.Parse()
 
-	kernel := pure.NewKernel(&pure.OptionsKernel{})
+	kernel := pure.NewKernel(&pure.OptionsKernel{ErrorWriter: os.Stdout})
 	if len(flag.Args()) == 0 {
 		log.Printf("tl2client requires 1 or more .tl and/or tl2 files")
 		os.Exit(2)
@@ -200,8 +200,8 @@ func main() {
 	}
 
 	name := tlast.TL2TypeName{
-		Namespace: "memcache",
-		Name:      "set",
+		Namespace: "a",
+		Name:      "top2",
 	}
 	fun := kernel.GetFunctionInstance(name)
 	if fun == nil {
