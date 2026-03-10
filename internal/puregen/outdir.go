@@ -23,7 +23,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const buildVersionFormat = `tlgen version: %s
+const buildVersionFormat = `tl2gen version: %s
 schema url: %s
 schema commit: %s
 schema version: %d (%v)
@@ -66,7 +66,7 @@ type filepathNameCode struct {
 	code         string
 }
 
-func (gen *OutDir) Write(opts *Options, markerFile string) error {
+func (gen *OutDir) Write(opts *Options, markerFile string, oldMarkerFile string) error {
 	if opts.Outdir == "" {
 		return fmt.Errorf("--outdir should not be empty")
 	}
@@ -80,7 +80,7 @@ func (gen *OutDir) Write(opts *Options, markerFile string) error {
 	if err := gen.collectRelativePaths(opts.Outdir, "", relativeFiles, &relativeDirs); err != nil {
 		return fmt.Errorf("error reading outdir content %q: %w", opts.Outdir, err)
 	}
-	if len(relativeFiles) != 0 && !relativeFiles[markerFile] {
+	if len(relativeFiles) != 0 && !relativeFiles[markerFile] && !relativeFiles[oldMarkerFile] {
 		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", opts.Outdir, markerFile)
 	}
 	markerContent := fmt.Sprintf(buildVersionFormat,

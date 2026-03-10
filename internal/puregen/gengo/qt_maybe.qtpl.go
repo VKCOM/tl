@@ -123,8 +123,6 @@ func (item *`)
 	qw422016.N().S(`}
 
 `)
-	qw422016.N().S(`
-`)
 	if !maybe.wr.originateFromTL2 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)

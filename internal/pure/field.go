@@ -30,7 +30,7 @@ func (arg *ActualNatArg) IsField() bool {
 	return arg.isField
 }
 
-func (arg *ActualNatArg) IsName() bool {
+func (arg *ActualNatArg) IsNatParam() bool {
 	return !arg.isField && !arg.isNumber
 }
 

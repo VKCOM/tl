@@ -49,6 +49,11 @@ func languagesString() string {
 func main() {
 	fmt.Printf("tl2gen version: %s\n", utils.AppVersion())
 
+	//fun := tlcases.TestRecursiveFieldMask{}
+	//in := basictl.JsonLexer{Data: []byte(`{"f2":1,"f0":0}`)}
+	//err := fun.ReadJSON(true, &in)
+	//fmt.Printf("%s %v\n", fun.String(), err)
+
 	//runtime.SetMutexProfileFraction(1)
 	//runtime.SetBlockProfileRate(1)
 	//go func() {

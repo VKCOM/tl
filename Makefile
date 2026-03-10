@@ -123,7 +123,7 @@ migrate_to_tl2: build
 
 .PHONY: goldmaster_tl2_nocompile
 goldmaster_tl2_nocompile: build migrate_to_tl2
-	@./target/bin/tl2gen --language=go --split-internal -v \
+	@./target/bin/tl2gen --language=go -v \
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./internal/tlcodegen/test/gen/casesTL2 \
