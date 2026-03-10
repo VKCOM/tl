@@ -58,20 +58,6 @@ func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte,
     {%- endif -%}
 }
 
-{%- comment %}
-func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    {%- if maybe.wr.originateFromTL2 -%}
-        return w, basictl.TL2Error("not implemented for tl2 type")
-    {%- else -%}
-        {%- if writeElementNeedsError -%}
-            return item.WriteBoxed(w{%s= natArgsCall %})
-        {%- else -%}
-            return item.WriteBoxed(w{%s= natArgsCall %}), nil
-        {%- endif -%}
-    {%- endif -%}
-}
-{% endcomment -%}
-
 {%- if !maybe.wr.originateFromTL2 -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     return item.WriteTL1Boxed(w{%s= natArgsCall %})

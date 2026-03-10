@@ -58,11 +58,7 @@ type Object interface {
 		qw422016.N().S(`	FillRandom(rg *basictl.RandGenerator)
 `)
 	}
-	qw422016.N().S(`	Read(w []byte) ([]byte, error) // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
-	ReadBoxed(w []byte) ([]byte, error) // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
-	WriteGeneral(w []byte) ([]byte, error) // same as Write, but has common signature (with error) for all objects, so can be called through interface
-	WriteBoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
-
+	qw422016.N().S(`
 	ReadTL1(w []byte) ([]byte, error) // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
 	ReadTL1Boxed(w []byte) ([]byte, error) // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
 	WriteTL1General(w []byte) ([]byte, error) // same as Write, but has common signature (with error) for all objects, so can be called through interface
@@ -109,14 +105,8 @@ type Function interface {
 	}
 	qw422016.N().S(`}
 
-func GetAllTLItems() []TLItem {
-	var allItems []TLItem
-	for _, item := range itemsByName {
-		if item != nil {
-			allItems = append(allItems, *item)
-		}
-	}
-	return allItems
+func GetAllTLItems() []*TLItem {
+	return itemsOrdered
 }
 
 // for quick one-liners
@@ -284,6 +274,8 @@ func FactoryItemByTLName(name string) *TLItem {
     return itemsByName[name]
 }
 
+var itemsOrdered []*TLItem
+
 var itemsByTag = map[uint32]*TLItem {}
 
 var itemsByName = map[string]*TLItem {}
@@ -344,6 +336,10 @@ func pleaseImportFactoryFunction() Function {
 }
 
 func fillObject(item *TLItem)  {
+	if _, ok := itemsByName[item.tlName]; ok {
+       panic(fmt.Errorf("fillObject called with duplicate tlName: %s #%08x", item.tlName, item.tag))
+	}
+    itemsOrdered = append(itemsOrdered, item)
 	itemsByName[item.tlName] = item
 	if item.tag != 0 {
 	    itemsByTag[item.tag] = item
@@ -352,6 +348,10 @@ func fillObject(item *TLItem)  {
 }
 
 func fillFunction(item *TLItem)  {
+	if _, ok := itemsByName[item.tlName]; ok {
+       panic(fmt.Errorf("fillFunction called with duplicate tlName: %s #%08x", item.tlName, item.tag))
+	}
+    itemsOrdered = append(itemsOrdered, item)
 	itemsByName[item.tlName] = item
 	if item.tag != 0 {
 	    itemsByTag[item.tag] = item

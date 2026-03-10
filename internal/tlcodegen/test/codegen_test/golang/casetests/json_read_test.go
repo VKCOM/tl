@@ -13,9 +13,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory_bytes"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/factory"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/factory_bytes"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/meta"
 	"github.com/vkcom/tl/pkg/basictl"
 
 	"github.com/stretchr/testify/assert"
@@ -72,7 +72,14 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 					assert.Nil(t, readErr)
 					writeData, writeErr := mt.object.MarshalJSON()
 
+					//if writeErr != nil {
+					//	_ = mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
+					//	fmt.Printf("aha")
+					//}
 					assert.Nil(t, writeErr)
+					//if success.GoldenInput != string(writeData) {
+					//	fmt.Printf("aha")
+					//}
 					assert.Equal(t, success.GoldenInput, string(writeData))
 
 					readAgainErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
@@ -97,6 +104,10 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 				mt.object.FillRandom(rg)
 				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
 
+				//if readErr == nil {
+				//	fmt.Printf("aha")
+				//	readErr = mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
+				//}
 				assert.NotNil(t, readErr)
 			})
 
@@ -136,6 +147,8 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 				err = obj.ReadJSON(false, &basictl.JsonLexer{Data: buf1})
 				if err != nil {
 					t.Logf("Seed: %d\n", seed)
+					//err = obj.ReadJSON(false, &basictl.JsonLexer{Data: buf1})
+					//_, err = obj.WriteJSONGeneral(&basictl.JSONWriteContext{}, buf1)
 					t.Fatal("first deserialization wasn't succeeded", err.Error())
 					return
 				}

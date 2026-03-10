@@ -1249,21 +1249,8 @@ func (f *Field) IsAffectedByExternalFieldMask() bool {
 	return f.fieldMask != nil && !f.fieldMask.isField
 }
 
-func (f *Field) IsTypeDependsFromLocalFields() bool {
-	for _, natArg := range f.natArgs {
-		if natArg.isField {
-			return true
-		}
-	}
-	return false
-}
-
 func (f *Field) HasNatArguments() bool {
 	return len(f.natArgs) != 0
-}
-
-func (f *Field) IsLocalIndependent() bool {
-	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
 }
 
 // do not generate fields, but affect block position and skip during reading
