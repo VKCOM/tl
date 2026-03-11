@@ -56,7 +56,7 @@ var (
 // For debugging
 var DEBUG = false
 
-func debugf(format string, args ...interface{}) {
+func Debugf(format string, args ...interface{}) {
 	if DEBUG {
 		fmt.Printf(format, args...)
 	}
