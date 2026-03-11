@@ -244,3 +244,12 @@ testpuremigr: build
 
 # /home/user/go/src/gitlab.mvk.com/go/vkgo/pkg/vktl/combined.tl
 # ./cmd/tl2client/test.tl
+
+# если тега нет, то будет текущий + 1, иначе надо написать TAG={тег}
+.PHONY: update-tag
+update-tag:
+	@if [ -n "$(TAG)" ]; then \
+		bash scripts/update-tag.sh "$(TAG)"; \
+	else \
+		bash scripts/update-tag.sh; \
+	fi
