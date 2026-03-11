@@ -248,7 +248,9 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 
 			if trw.wr.gen.options.GenerateFieldMasks {
 				// print all fieldmask constants
+				totalFieldMask := 0
 				printMasks := false
+
 				for _, field := range trw.Fields {
 					if field.fieldMask != nil && field.fieldMask.isField {
 						if !printMasks {
@@ -258,7 +260,12 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						}
 						hpp.WriteString(fmt.Sprintf(`	static constexpr uint32_t TL_FIELD_MASK_%s = 1 << %d;
 `, strings.ToUpper(field.cppName), field.BitNumber))
+						totalFieldMask |= 1 << field.BitNumber
 					}
+				}
+
+				if printMasks {
+					hpp.WriteString(fmt.Sprintf("\n\tstatic constexpr uint32_t TL_TOTAL_FIELD_MASK = 0x%08[1]x;\n", totalFieldMask))
 				}
 			}
 
