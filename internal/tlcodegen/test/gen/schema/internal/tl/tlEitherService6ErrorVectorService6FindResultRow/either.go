@@ -74,9 +74,6 @@ func (item *EitherService6ErrorVectorService6FindResultRow) SetRight(value Right
 	item.valueRight = value
 }
 
-func (item *EitherService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *EitherService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -94,9 +91,6 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byt
 	}
 }
 
-func (item *EitherService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _EitherService6ErrorVectorService6FindResultRow[item.index].TLTag)
 	switch item.index {
@@ -221,31 +215,19 @@ func (item *LeftService6ErrorVectorService6FindResultRow) Reset() {
 	item.Value.Reset()
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Value.ReadTL1(w)
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteTL1(w []byte) []byte {
 	w = item.Value.WriteTL1(w)
 	return w
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0a29cd5d); err != nil {
 		return w, err
@@ -253,16 +235,10 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte)
 	return item.ReadTL1(w)
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x0a29cd5d)
 	return item.WriteTL1(w)
@@ -357,31 +333,19 @@ func (item *RightService6ErrorVectorService6FindResultRow) Reset() {
 	item.Value = item.Value[:0]
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadTL1(w, &item.Value)
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) WriteTL1(w []byte) []byte {
 	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteTL1(w, item.Value)
 	return w
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xdf3ecb3b); err != nil {
 		return w, err
@@ -389,16 +353,10 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte
 	return item.ReadTL1(w)
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *RightService6ErrorVectorService6FindResultRow) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdf3ecb3b)
 	return item.WriteTL1(w)

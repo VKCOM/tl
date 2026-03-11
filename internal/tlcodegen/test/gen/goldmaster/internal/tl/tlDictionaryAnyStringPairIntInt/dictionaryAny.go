@@ -34,31 +34,19 @@ func (item *DictionaryAnyStringPairIntInt) FillRandom(rg *basictl.RandGenerator)
 	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntFillRandom(rg, item.ptr())
 }
 
-func (item *DictionaryAnyStringPairIntInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *DictionaryAnyStringPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadTL1(w, item.ptr())
 }
 
-func (item *DictionaryAnyStringPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *DictionaryAnyStringPairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *DictionaryAnyStringPairIntInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *DictionaryAnyStringPairIntInt) WriteTL1(w []byte) []byte {
 	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteTL1(w, *item.ptr())
 	return w
 }
 
-func (item *DictionaryAnyStringPairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *DictionaryAnyStringPairIntInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1f4c6190); err != nil {
 		return w, err
@@ -66,16 +54,10 @@ func (item *DictionaryAnyStringPairIntInt) ReadTL1Boxed(w []byte) (_ []byte, err
 	return item.ReadTL1(w)
 }
 
-func (item *DictionaryAnyStringPairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *DictionaryAnyStringPairIntInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *DictionaryAnyStringPairIntInt) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *DictionaryAnyStringPairIntInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1f4c6190)
 	return item.WriteTL1(w)

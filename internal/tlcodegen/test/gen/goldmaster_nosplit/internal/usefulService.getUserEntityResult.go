@@ -31,9 +31,6 @@ func (item *UsefulServiceGetUserEntityResult) FillRandom(rg *basictl.RandGenerat
 	item.PaymentItems.FillRandom(rg, nat_fields_mask)
 }
 
-func (item *UsefulServiceGetUserEntityResult) Read(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_fields_mask)
-}
 func (item *UsefulServiceGetUserEntityResult) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.EntityId); err != nil {
 		return w, err
@@ -41,18 +38,12 @@ func (item *UsefulServiceGetUserEntityResult) ReadTL1(w []byte, nat_fields_mask 
 	return item.PaymentItems.ReadTL1Boxed(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceGetUserEntityResult) Write(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteTL1(w, nat_fields_mask)
-}
 func (item *UsefulServiceGetUserEntityResult) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.StringWrite(w, item.EntityId)
 	w = item.PaymentItems.WriteTL1Boxed(w, nat_fields_mask)
 	return w
 }
 
-func (item *UsefulServiceGetUserEntityResult) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_fields_mask)
-}
 func (item *UsefulServiceGetUserEntityResult) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe494698a); err != nil {
 		return w, err
@@ -60,9 +51,6 @@ func (item *UsefulServiceGetUserEntityResult) ReadTL1Boxed(w []byte, nat_fields_
 	return item.ReadTL1(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceGetUserEntityResult) WriteBoxed(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_fields_mask)
-}
 func (item *UsefulServiceGetUserEntityResult) WriteTL1Boxed(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.NatWrite(w, 0xe494698a)
 	return item.WriteTL1(w, nat_fields_mask)
@@ -297,10 +285,6 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) FillRandom(rg *basictl.R
 	}
 }
 
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_t)
-}
-
 func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
@@ -309,10 +293,6 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadTL1Boxed(w []byte, n
 		return item.Value.ReadTL1Boxed(w, nat_t)
 	}
 	return w, nil
-}
-
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteBoxed(w []byte, nat_t uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_t)
 }
 
 func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteTL1Boxed(w []byte, nat_t uint32) []byte {

@@ -24,28 +24,16 @@ func (Service1GetKeysStatPeriods) TLTag() uint32  { return 0x8cdf39e3 }
 
 func (item *Service1GetKeysStatPeriods) Reset() {}
 
-func (item *Service1GetKeysStatPeriods) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service1GetKeysStatPeriods) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *Service1GetKeysStatPeriods) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service1GetKeysStatPeriods) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service1GetKeysStatPeriods) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service1GetKeysStatPeriods) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service1GetKeysStatPeriods) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service1GetKeysStatPeriods) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x8cdf39e3); err != nil {
 		return w, err
@@ -53,24 +41,15 @@ func (item *Service1GetKeysStatPeriods) ReadTL1Boxed(w []byte) (_ []byte, err er
 	return item.ReadTL1(w)
 }
 
-func (item *Service1GetKeysStatPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service1GetKeysStatPeriods) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service1GetKeysStatPeriods) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service1GetKeysStatPeriods) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x8cdf39e3)
 	return item.WriteTL1(w)
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResult(w []byte, ret *[]int32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service1GetKeysStatPeriods) ReadResultTL1(w []byte, ret *[]int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -78,9 +57,6 @@ func (item *Service1GetKeysStatPeriods) ReadResultTL1(w []byte, ret *[]int32) (_
 	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, ret)
 }
 
-func (item *Service1GetKeysStatPeriods) WriteResult(w []byte, ret []int32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service1GetKeysStatPeriods) WriteResultTL1(w []byte, ret []int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, ret)

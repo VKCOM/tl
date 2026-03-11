@@ -43,9 +43,6 @@ func (item *CasesTL2TestArrayFixedBool) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinTuple16BoolFillRandom(rg, &item.A6)
 }
 
-func (item *CasesTL2TestArrayFixedBool) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestArrayFixedBool) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = BuiltinTuple1BoolReadTL1(w, &item.A1); err != nil {
 		return w, err
@@ -65,16 +62,10 @@ func (item *CasesTL2TestArrayFixedBool) ReadTL1(w []byte) (_ []byte, err error) 
 	return BuiltinTuple16BoolReadTL1(w, &item.A6)
 }
 
-func (item *CasesTL2TestArrayFixedBool) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestArrayFixedBool) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTL2TestArrayFixedBool) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestArrayFixedBool) WriteTL1(w []byte) []byte {
 	w = BuiltinTuple1BoolWriteTL1(w, &item.A1)
 	w = BuiltinTuple0BoolWriteTL1(w, &item.A2)
@@ -85,9 +76,6 @@ func (item *CasesTL2TestArrayFixedBool) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CasesTL2TestArrayFixedBool) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestArrayFixedBool) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf704cf4e); err != nil {
 		return w, err
@@ -95,16 +83,10 @@ func (item *CasesTL2TestArrayFixedBool) ReadTL1Boxed(w []byte) (_ []byte, err er
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestArrayFixedBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestArrayFixedBool) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTL2TestArrayFixedBool) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestArrayFixedBool) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf704cf4e)
 	return item.WriteTL1(w)

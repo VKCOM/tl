@@ -27,31 +27,19 @@ func (item *GetMyDouble) Reset() {
 	item.X.Reset()
 }
 
-func (item *GetMyDouble) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetMyDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.X.ReadTL1(w)
 }
 
-func (item *GetMyDouble) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetMyDouble) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *GetMyDouble) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *GetMyDouble) WriteTL1(w []byte) []byte {
 	w = item.X.WriteTL1(w)
 	return w
 }
 
-func (item *GetMyDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetMyDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb660ad10); err != nil {
 		return w, err
@@ -59,31 +47,19 @@ func (item *GetMyDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetMyDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetMyDouble) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *GetMyDouble) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetMyDouble) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xb660ad10)
 	return item.WriteTL1(w)
 }
 
-func (item *GetMyDouble) ReadResult(w []byte, ret *tlMyDouble.MyDouble) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetMyDouble) ReadResultTL1(w []byte, ret *tlMyDouble.MyDouble) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *GetMyDouble) WriteResult(w []byte, ret tlMyDouble.MyDouble) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetMyDouble) WriteResultTL1(w []byte, ret tlMyDouble.MyDouble) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

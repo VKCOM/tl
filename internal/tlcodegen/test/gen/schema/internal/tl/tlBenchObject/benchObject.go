@@ -31,9 +31,6 @@ func (item *BenchObject) Reset() {
 	item.Ys = item.Ys[:0]
 }
 
-func (item *BenchObject) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchObject) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Xs); err != nil {
 		return w, err
@@ -41,25 +38,16 @@ func (item *BenchObject) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInteger.BuiltinVectorIntegerReadTL1(w, &item.Ys)
 }
 
-func (item *BenchObject) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchObject) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BenchObject) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchObject) WriteTL1(w []byte) []byte {
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Xs)
 	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteTL1(w, item.Ys)
 	return w
 }
 
-func (item *BenchObject) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchObject) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb697e865); err != nil {
 		return w, err
@@ -67,16 +55,10 @@ func (item *BenchObject) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *BenchObject) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchObject) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BenchObject) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchObject) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xb697e865)
 	return item.WriteTL1(w)

@@ -92,9 +92,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams) RepairMasks(nat_n uint32, nat_m 
 	}
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_n, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL1(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
@@ -116,9 +113,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL1(w []byte, nat_n uint32, 
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) Write(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_n, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	if nat_n&(1<<0) != 0 {
 		if w, err = BuiltinTupleIntWriteTL1(w, item.F1, nat_m); err != nil {
@@ -133,9 +127,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1(w []byte, nat_n uint32,
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) ReadBoxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_n, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL1Boxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
@@ -143,9 +134,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL1Boxed(w []byte, nat_n uin
 	return item.ReadTL1(w, nat_n, nat_m)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteBoxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_n, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1Boxed(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.WriteTL1(w, nat_n, nat_m)
@@ -467,9 +455,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) RepairMasks(nat_n uint32) {
 	}
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_n)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadTL1(w []byte, nat_n uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
@@ -491,9 +476,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadTL1(w []byte, nat_n uint32)
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) Write(w []byte, nat_n uint32) []byte {
-	return item.WriteTL1(w, nat_n)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1(w []byte, nat_n uint32) []byte {
 	if nat_n&(1<<0) != 0 {
 		w = BuiltinTuple2IntWriteTL1(w, &item.F1)
@@ -504,9 +486,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1(w []byte, nat_n uint32
 	return w
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_n)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams2) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
@@ -514,9 +493,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadTL1Boxed(w []byte, nat_n ui
 	return item.ReadTL1(w, nat_n)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteBoxed(w []byte, nat_n uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_n)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1Boxed(w []byte, nat_n uint32) []byte {
 	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.WriteTL1(w, nat_n)
@@ -794,9 +770,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) RepairMasks(nat_m uint32) {
 	}
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) Read(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadTL1(w []byte, nat_m uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 3&(1<<0) != 0 {
@@ -818,9 +791,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadTL1(w []byte, nat_m uint32)
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) Write(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1(w []byte, nat_m uint32) (_ []byte, err error) {
 	if 3&(1<<0) != 0 {
 		if w, err = BuiltinTupleIntWriteTL1(w, item.F1, nat_m); err != nil {
@@ -835,9 +805,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1(w []byte, nat_m uint32
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) ReadBoxed(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadTL1Boxed(w []byte, nat_m uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
@@ -845,9 +812,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadTL1Boxed(w []byte, nat_m ui
 	return item.ReadTL1(w, nat_m)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) WriteBoxed(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_m)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1Boxed(w []byte, nat_m uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.WriteTL1(w, nat_m)
@@ -1137,9 +1101,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) RepairMasks() {
 	}
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
@@ -1161,16 +1122,10 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadTL1(w []byte) (_ []byte, e
 	return w, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteTL1(w []byte) []byte {
 	if 4&(1<<0) != 0 {
 		w = BuiltinTuple1IntWriteTL1(w, &item.F1)
@@ -1181,9 +1136,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc1de8275); err != nil {
 		return w, err
@@ -1191,16 +1143,10 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadTL1Boxed(w []byte) (_ []by
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xc1de8275)
 	return item.WriteTL1(w)

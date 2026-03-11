@@ -26,31 +26,19 @@ func (item *Service6Error) Reset() {
 	item.Code = 0
 }
 
-func (item *Service6Error) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service6Error) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Code)
 }
 
-func (item *Service6Error) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service6Error) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service6Error) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service6Error) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Code)
 	return w
 }
 
-func (item *Service6Error) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service6Error) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x738553ef); err != nil {
 		return w, err
@@ -58,16 +46,10 @@ func (item *Service6Error) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service6Error) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service6Error) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service6Error) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service6Error) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x738553ef)
 	return item.WriteTL1(w)

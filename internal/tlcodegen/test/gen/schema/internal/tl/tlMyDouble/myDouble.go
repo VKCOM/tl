@@ -26,9 +26,6 @@ func (item *MyDouble) Reset() {
 	*item.ptr() = 0
 }
 
-func (item *MyDouble) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2210c154); err != nil {
 		return w, err
@@ -36,25 +33,16 @@ func (item *MyDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.DoubleRead(w, item.ptr())
 }
 
-func (item *MyDouble) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyDouble) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyDouble) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyDouble) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2210c154)
 	w = basictl.DoubleWrite(w, *item.ptr())
 	return w
 }
 
-func (item *MyDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x90a6c726); err != nil {
 		return w, err
@@ -62,16 +50,10 @@ func (item *MyDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyDouble) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyDouble) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyDouble) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x90a6c726)
 	return item.WriteTL1(w)

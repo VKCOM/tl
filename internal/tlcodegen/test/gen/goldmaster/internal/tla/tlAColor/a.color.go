@@ -65,16 +65,10 @@ func (item *AColor) SetBRed()    { item.index = 3 }
 func (item AColor) IsBlue() bool { return item.index == 4 }
 func (item *AColor) SetBlue()    { item.index = 4 }
 
-func (item *AColor) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AColor) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AColor) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -101,23 +95,14 @@ func (item *AColor) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *AColor) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AColor) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AColor) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AColor) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AColor) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AColor[item.index].TLTag)
 	return w

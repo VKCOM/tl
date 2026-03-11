@@ -26,9 +26,6 @@ func (item *DictFieldStringDictionaryInt) Reset() {
 	tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.Value)
 }
 
-func (item *DictFieldStringDictionaryInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *DictFieldStringDictionaryInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
@@ -36,16 +33,10 @@ func (item *DictFieldStringDictionaryInt) ReadTL1(w []byte) (_ []byte, err error
 	return tlBuiltinDictStringInt.BuiltinDictStringIntReadTL1(w, &item.Value)
 }
 
-func (item *DictFieldStringDictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *DictFieldStringDictionaryInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *DictFieldStringDictionaryInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *DictFieldStringDictionaryInt) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteTL1(w, item.Value)

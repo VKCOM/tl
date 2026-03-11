@@ -41,16 +41,10 @@ func (item *TupleCycleTuple) RepairMasks(nat_n uint32) {
 	cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRepairMasks(item.ptr(), nat_n)
 }
 
-func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_n)
-}
 func (item *TupleCycleTuple) ReadTL1(w []byte, nat_n uint32) (_ []byte, err error) {
 	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleReadTL1(w, item.ptr(), nat_n)
 }
 
-func (item *TupleCycleTuple) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_n)
-}
 func (item *TupleCycleTuple) WriteTL1(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWriteTL1(w, *item.ptr(), nat_n); err != nil {
 		return w, err
@@ -58,9 +52,6 @@ func (item *TupleCycleTuple) WriteTL1(w []byte, nat_n uint32) (_ []byte, err err
 	return w, nil
 }
 
-func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_n)
-}
 func (item *TupleCycleTuple) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -68,9 +59,6 @@ func (item *TupleCycleTuple) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err
 	return item.ReadTL1(w, nat_n)
 }
 
-func (item *TupleCycleTuple) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_n)
-}
 func (item *TupleCycleTuple) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	return item.WriteTL1(w, nat_n)

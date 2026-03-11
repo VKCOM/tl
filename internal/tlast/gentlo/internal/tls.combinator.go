@@ -161,9 +161,6 @@ func (item *TlsCombinator) SetV4(value TlsCombinatorV4) {
 	item.valueV4 = value
 }
 
-func (item *TlsCombinator) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsCombinator) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -181,9 +178,6 @@ func (item *TlsCombinator) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *TlsCombinator) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsCombinator) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsCombinator[item.index].TLTag)
 	switch item.index {
@@ -328,9 +322,6 @@ func (item *TlsCombinator0) Reset() {
 	item.Right.Reset()
 }
 
-func (item *TlsCombinator0) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TlsCombinator0) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Name); err != nil {
 		return w, err
@@ -347,16 +338,10 @@ func (item *TlsCombinator0) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Right.ReadTL1Boxed(w)
 }
 
-func (item *TlsCombinator0) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TlsCombinator0) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *TlsCombinator0) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *TlsCombinator0) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Name)
 	w = basictl.StringWrite(w, item.Id)
@@ -370,9 +355,6 @@ func (item *TlsCombinator0) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *TlsCombinator0) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsCombinator0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5c0a1ed5); err != nil {
 		return w, err
@@ -380,16 +362,10 @@ func (item *TlsCombinator0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TlsCombinator0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TlsCombinator0) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *TlsCombinator0) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsCombinator0) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x5c0a1ed5)
 	return item.WriteTL1(w)
@@ -574,9 +550,6 @@ func (item *TlsCombinatorV4) Reset() {
 	item.Flags = 0
 }
 
-func (item *TlsCombinatorV4) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TlsCombinatorV4) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Name); err != nil {
 		return w, err
@@ -596,16 +569,10 @@ func (item *TlsCombinatorV4) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Flags)
 }
 
-func (item *TlsCombinatorV4) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TlsCombinatorV4) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *TlsCombinatorV4) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *TlsCombinatorV4) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Name)
 	w = basictl.StringWrite(w, item.Id)
@@ -620,9 +587,6 @@ func (item *TlsCombinatorV4) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *TlsCombinatorV4) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsCombinatorV4) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe91692d5); err != nil {
 		return w, err
@@ -630,16 +594,10 @@ func (item *TlsCombinatorV4) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TlsCombinatorV4) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TlsCombinatorV4) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *TlsCombinatorV4) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsCombinatorV4) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xe91692d5)
 	return item.WriteTL1(w)

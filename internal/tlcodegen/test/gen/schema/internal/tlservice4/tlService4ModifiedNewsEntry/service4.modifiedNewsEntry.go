@@ -74,9 +74,6 @@ func (item *Service4ModifiedNewsEntry) Reset() {
 	item.HiddenByPrivacy = false
 }
 
-func (item *Service4ModifiedNewsEntry) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service4ModifiedNewsEntry) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = item.Object.ReadTL1(w); err != nil {
 		return w, err
@@ -111,16 +108,10 @@ func (item *Service4ModifiedNewsEntry) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *Service4ModifiedNewsEntry) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service4ModifiedNewsEntry) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service4ModifiedNewsEntry) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service4ModifiedNewsEntry) WriteTL1(w []byte) []byte {
 	w = item.Object.WriteTL1(w)
 	w = basictl.IntWrite(w, item.CreationDate)
@@ -137,9 +128,6 @@ func (item *Service4ModifiedNewsEntry) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service4ModifiedNewsEntry) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service4ModifiedNewsEntry) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xda19832a); err != nil {
 		return w, err
@@ -147,16 +135,10 @@ func (item *Service4ModifiedNewsEntry) ReadTL1Boxed(w []byte) (_ []byte, err err
 	return item.ReadTL1(w)
 }
 
-func (item *Service4ModifiedNewsEntry) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service4ModifiedNewsEntry) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service4ModifiedNewsEntry) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service4ModifiedNewsEntry) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xda19832a)
 	return item.WriteTL1(w)

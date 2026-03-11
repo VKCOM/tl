@@ -26,31 +26,19 @@ func (item *GetFloat) Reset() {
 	item.X = 0
 }
 
-func (item *GetFloat) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetFloat) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.FloatRead(w, &item.X)
 }
 
-func (item *GetFloat) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetFloat) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *GetFloat) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *GetFloat) WriteTL1(w []byte) []byte {
 	w = basictl.FloatWrite(w, item.X)
 	return w
 }
 
-func (item *GetFloat) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetFloat) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x25a7bc68); err != nil {
 		return w, err
@@ -58,24 +46,15 @@ func (item *GetFloat) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetFloat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetFloat) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *GetFloat) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetFloat) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x25a7bc68)
 	return item.WriteTL1(w)
 }
 
-func (item *GetFloat) ReadResult(w []byte, ret *float32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetFloat) ReadResultTL1(w []byte, ret *float32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x824dab22); err != nil {
 		return w, err
@@ -83,9 +62,6 @@ func (item *GetFloat) ReadResultTL1(w []byte, ret *float32) (_ []byte, err error
 	return basictl.FloatRead(w, ret)
 }
 
-func (item *GetFloat) WriteResult(w []byte, ret float32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetFloat) WriteResultTL1(w []byte, ret float32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x824dab22)
 	w = basictl.FloatWrite(w, ret)

@@ -29,31 +29,19 @@ func (item *MyMaybe1) Reset() {
 	item.ptr().Reset()
 }
 
-func (item *MyMaybe1) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyMaybe1) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ptr().ReadTL1Boxed(w)
 }
 
-func (item *MyMaybe1) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyMaybe1) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyMaybe1) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyMaybe1) WriteTL1(w []byte) []byte {
 	w = item.ptr().WriteTL1Boxed(w)
 	return w
 }
 
-func (item *MyMaybe1) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyMaybe1) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x32c541fe); err != nil {
 		return w, err
@@ -61,16 +49,10 @@ func (item *MyMaybe1) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyMaybe1) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyMaybe1) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyMaybe1) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyMaybe1) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x32c541fe)
 	return item.WriteTL1(w)

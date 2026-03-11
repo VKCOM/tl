@@ -63,9 +63,6 @@ func (item *CasesMyCycle3) RepairMasks() {
 	item.A.RepairMasks()
 }
 
-func (item *CasesMyCycle3) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesMyCycle3) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
@@ -82,16 +79,10 @@ func (item *CasesMyCycle3) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *CasesMyCycle3) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesMyCycle3) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesMyCycle3) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesMyCycle3) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -100,9 +91,6 @@ func (item *CasesMyCycle3) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CasesMyCycle3) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesMyCycle3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7624f86b); err != nil {
 		return w, err
@@ -110,16 +98,10 @@ func (item *CasesMyCycle3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CasesMyCycle3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesMyCycle3) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesMyCycle3) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesMyCycle3) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7624f86b)
 	return item.WriteTL1(w)

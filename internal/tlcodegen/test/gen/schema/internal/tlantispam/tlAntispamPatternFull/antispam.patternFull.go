@@ -40,9 +40,6 @@ func (item *AntispamPatternFound) Reset() {
 	item.Text = ""
 }
 
-func (item *AntispamPatternFound) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AntispamPatternFound) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Ip); err != nil {
 		return w, err
@@ -59,16 +56,10 @@ func (item *AntispamPatternFound) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Text)
 }
 
-func (item *AntispamPatternFound) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AntispamPatternFound) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AntispamPatternFound) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AntispamPatternFound) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Ip)
 	w = basictl.IntWrite(w, item.Uahash)
@@ -78,9 +69,6 @@ func (item *AntispamPatternFound) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *AntispamPatternFound) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AntispamPatternFound) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa7688492); err != nil {
 		return w, err
@@ -88,16 +76,10 @@ func (item *AntispamPatternFound) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *AntispamPatternFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AntispamPatternFound) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AntispamPatternFound) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AntispamPatternFound) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa7688492)
 	return item.WriteTL1(w)
@@ -297,9 +279,6 @@ func (item *AntispamPatternFull) AsPatternNotFound() (AntispamPatternNotFound, b
 func (item *AntispamPatternFull) ResetToPatternNotFound() { item.index = 1 }
 func (item *AntispamPatternFull) SetPatternNotFound()     { item.index = 1 }
 
-func (item *AntispamPatternFull) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AntispamPatternFull) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -317,9 +296,6 @@ func (item *AntispamPatternFull) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *AntispamPatternFull) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AntispamPatternFull) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AntispamPatternFull[item.index].TLTag)
 	switch item.index {
@@ -432,28 +408,16 @@ func (AntispamPatternNotFound) TLTag() uint32  { return 0x2c22e225 }
 
 func (item *AntispamPatternNotFound) Reset() {}
 
-func (item *AntispamPatternNotFound) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AntispamPatternNotFound) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *AntispamPatternNotFound) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AntispamPatternNotFound) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AntispamPatternNotFound) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AntispamPatternNotFound) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *AntispamPatternNotFound) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AntispamPatternNotFound) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2c22e225); err != nil {
 		return w, err
@@ -461,16 +425,10 @@ func (item *AntispamPatternNotFound) ReadTL1Boxed(w []byte) (_ []byte, err error
 	return item.ReadTL1(w)
 }
 
-func (item *AntispamPatternNotFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AntispamPatternNotFound) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AntispamPatternNotFound) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AntispamPatternNotFound) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2c22e225)
 	return item.WriteTL1(w)

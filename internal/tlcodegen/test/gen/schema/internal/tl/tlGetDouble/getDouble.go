@@ -26,9 +26,6 @@ func (item *GetDouble) Reset() {
 	item.X = 0
 }
 
-func (item *GetDouble) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2210c154); err != nil {
 		return w, err
@@ -36,25 +33,16 @@ func (item *GetDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.DoubleRead(w, &item.X)
 }
 
-func (item *GetDouble) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetDouble) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *GetDouble) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *GetDouble) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2210c154)
 	w = basictl.DoubleWrite(w, item.X)
 	return w
 }
 
-func (item *GetDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x39711d7b); err != nil {
 		return w, err
@@ -62,24 +50,15 @@ func (item *GetDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetDouble) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *GetDouble) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetDouble) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x39711d7b)
 	return item.WriteTL1(w)
 }
 
-func (item *GetDouble) ReadResult(w []byte, ret *float64) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetDouble) ReadResultTL1(w []byte, ret *float64) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2210c154); err != nil {
 		return w, err
@@ -87,9 +66,6 @@ func (item *GetDouble) ReadResultTL1(w []byte, ret *float64) (_ []byte, err erro
 	return basictl.DoubleRead(w, ret)
 }
 
-func (item *GetDouble) WriteResult(w []byte, ret float64) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetDouble) WriteResultTL1(w []byte, ret float64) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x2210c154)
 	w = basictl.DoubleWrite(w, ret)

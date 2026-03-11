@@ -27,31 +27,19 @@ func (item *BoxedArray) Reset() {
 	item.X.Reset()
 }
 
-func (item *BoxedArray) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BoxedArray) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.X.ReadTL1Boxed(w)
 }
 
-func (item *BoxedArray) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BoxedArray) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BoxedArray) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BoxedArray) WriteTL1(w []byte) []byte {
 	w = item.X.WriteTL1Boxed(w)
 	return w
 }
 
-func (item *BoxedArray) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BoxedArray) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x95dcc8b7); err != nil {
 		return w, err
@@ -59,31 +47,19 @@ func (item *BoxedArray) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *BoxedArray) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BoxedArray) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BoxedArray) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BoxedArray) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x95dcc8b7)
 	return item.WriteTL1(w)
 }
 
-func (item *BoxedArray) ReadResult(w []byte, ret *tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *BoxedArray) ReadResultTL1(w []byte, ret *tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *BoxedArray) WriteResult(w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *BoxedArray) WriteResultTL1(w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

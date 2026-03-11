@@ -43,9 +43,6 @@ func (item *Service2AddOrIncrMany) Reset() {
 	item.Deltas = item.Deltas[:0]
 }
 
-func (item *Service2AddOrIncrMany) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service2AddOrIncrMany) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ObjectIdLength); err != nil {
 		return w, err
@@ -68,16 +65,10 @@ func (item *Service2AddOrIncrMany) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadTL1(w, &item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum)
 }
 
-func (item *Service2AddOrIncrMany) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service2AddOrIncrMany) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *Service2AddOrIncrMany) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *Service2AddOrIncrMany) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.ObjectIdLength)
 	w = basictl.NatWrite(w, item.IntCountersNum)
@@ -95,9 +86,6 @@ func (item *Service2AddOrIncrMany) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *Service2AddOrIncrMany) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service2AddOrIncrMany) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5aa52489); err != nil {
 		return w, err
@@ -105,24 +93,15 @@ func (item *Service2AddOrIncrMany) ReadTL1Boxed(w []byte) (_ []byte, err error) 
 	return item.ReadTL1(w)
 }
 
-func (item *Service2AddOrIncrMany) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service2AddOrIncrMany) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *Service2AddOrIncrMany) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service2AddOrIncrMany) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x5aa52489)
 	return item.WriteTL1(w)
 }
 
-func (item *Service2AddOrIncrMany) ReadResult(w []byte, ret *[]tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service2AddOrIncrMany) ReadResultTL1(w []byte, ret *[]tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -130,9 +109,6 @@ func (item *Service2AddOrIncrMany) ReadResultTL1(w []byte, ret *[]tlService2Coun
 	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadTL1(w, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum)
 }
 
-func (item *Service2AddOrIncrMany) WriteResult(w []byte, ret []tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service2AddOrIncrMany) WriteResultTL1(w []byte, ret []tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteTL1(w, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum); err != nil {

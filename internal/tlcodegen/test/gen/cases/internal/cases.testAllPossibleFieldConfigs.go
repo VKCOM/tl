@@ -259,9 +259,6 @@ func (item *CasesTestAllPossibleFieldConfigs) RepairMasks(nat_outer uint32, nat_
 	}
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_outer, nat_outers)
-}
 func (item *CasesTestAllPossibleFieldConfigs) ReadTL1(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Local); err != nil {
@@ -339,9 +336,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL1(w []byte, nat_outer uint32
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_outer, nat_outers)
-}
 func (item *CasesTestAllPossibleFieldConfigs) WriteTL1(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Local)
 	w = basictl.NatWrite(w, item.Locals)
@@ -382,9 +376,6 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteTL1(w []byte, nat_outer uint3
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_outer, nat_outers)
-}
 func (item *CasesTestAllPossibleFieldConfigs) ReadTL1Boxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc3607629); err != nil {
 		return w, err
@@ -392,9 +383,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL1Boxed(w []byte, nat_outer u
 	return item.ReadTL1(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) WriteBoxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_outer, nat_outers)
-}
 func (item *CasesTestAllPossibleFieldConfigs) WriteTL1Boxed(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xc3607629)
 	return item.WriteTL1(w, nat_outer, nat_outers)

@@ -61,9 +61,6 @@ func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f u
 	BuiltinTupleIntFillRandom(rg, &item.F3, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_f, nat_fs)
-}
 func (item *CasesTestOutFieldMask) ReadTL1(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	if nat_f&(1<<0) != 0 {
 		if w, err = basictl.NatRead(w, &item.F1); err != nil {
@@ -75,9 +72,6 @@ func (item *CasesTestOutFieldMask) ReadTL1(w []byte, nat_f uint32, nat_fs uint32
 	return BuiltinTupleIntReadTL1(w, &item.F3, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) Write(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_f, nat_fs)
-}
 func (item *CasesTestOutFieldMask) WriteTL1(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	if nat_f&(1<<0) != 0 {
 		w = basictl.NatWrite(w, item.F1)
@@ -88,9 +82,6 @@ func (item *CasesTestOutFieldMask) WriteTL1(w []byte, nat_f uint32, nat_fs uint3
 	return w, nil
 }
 
-func (item *CasesTestOutFieldMask) ReadBoxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_f, nat_fs)
-}
 func (item *CasesTestOutFieldMask) ReadTL1Boxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xe41ff835); err != nil {
 		return w, err
@@ -98,9 +89,6 @@ func (item *CasesTestOutFieldMask) ReadTL1Boxed(w []byte, nat_f uint32, nat_fs u
 	return item.ReadTL1(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) WriteBoxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_f, nat_fs)
-}
 func (item *CasesTestOutFieldMask) WriteTL1Boxed(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xe41ff835)
 	return item.WriteTL1(w, nat_f, nat_fs)

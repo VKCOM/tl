@@ -33,10 +33,6 @@ func (item *TupleInt0Maybe) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *TupleInt0Maybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
-
 func (item *TupleInt0Maybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
@@ -45,10 +41,6 @@ func (item *TupleInt0Maybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 		return tlBuiltinTuple0Int.BuiltinTuple0IntReadTL1(w, &item.Value)
 	}
 	return w, nil
-}
-
-func (item *TupleInt0Maybe) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
 }
 
 func (item *TupleInt0Maybe) WriteTL1Boxed(w []byte) []byte {

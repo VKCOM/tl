@@ -33,10 +33,6 @@ func (item *VectorIntMaybe) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *VectorIntMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
-
 func (item *VectorIntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
@@ -45,10 +41,6 @@ func (item *VectorIntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 		return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.Value)
 	}
 	return w, nil
-}
-
-func (item *VectorIntMaybe) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
 }
 
 func (item *VectorIntMaybe) WriteTL1Boxed(w []byte) []byte {

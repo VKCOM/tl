@@ -31,9 +31,6 @@ func (item *DictFieldIntTupleString) FillRandom(rg *basictl.RandGenerator, nat_v
 	tlBuiltinTupleString.BuiltinTupleStringFillRandom(rg, &item.Value, nat_v)
 }
 
-func (item *DictFieldIntTupleString) Read(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_v)
-}
 func (item *DictFieldIntTupleString) ReadTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Key); err != nil {
 		return w, err
@@ -41,9 +38,6 @@ func (item *DictFieldIntTupleString) ReadTL1(w []byte, nat_v uint32) (_ []byte, 
 	return tlBuiltinTupleString.BuiltinTupleStringReadTL1(w, &item.Value, nat_v)
 }
 
-func (item *DictFieldIntTupleString) Write(w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_v)
-}
 func (item *DictFieldIntTupleString) WriteTL1(w []byte, nat_v uint32) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Key)
 	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteTL1(w, item.Value, nat_v); err != nil {

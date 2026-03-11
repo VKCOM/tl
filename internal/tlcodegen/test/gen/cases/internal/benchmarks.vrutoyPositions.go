@@ -36,16 +36,10 @@ func (item *BenchmarksVrutoyPositions) RepairMasks(nat_n uint32) {
 	BuiltinTupleBenchmarksVrupositionRepairMasks(&item.NextPositions, nat_n)
 }
 
-func (item *BenchmarksVrutoyPositions) Read(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_n)
-}
 func (item *BenchmarksVrutoyPositions) ReadTL1(w []byte, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleBenchmarksVrupositionReadTL1(w, &item.NextPositions, nat_n)
 }
 
-func (item *BenchmarksVrutoyPositions) Write(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_n)
-}
 func (item *BenchmarksVrutoyPositions) WriteTL1(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = BuiltinTupleBenchmarksVrupositionWriteTL1(w, item.NextPositions, nat_n); err != nil {
 		return w, err
@@ -53,9 +47,6 @@ func (item *BenchmarksVrutoyPositions) WriteTL1(w []byte, nat_n uint32) (_ []byt
 	return w, nil
 }
 
-func (item *BenchmarksVrutoyPositions) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_n)
-}
 func (item *BenchmarksVrutoyPositions) ReadTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb6003de0); err != nil {
 		return w, err
@@ -63,9 +54,6 @@ func (item *BenchmarksVrutoyPositions) ReadTL1Boxed(w []byte, nat_n uint32) (_ [
 	return item.ReadTL1(w, nat_n)
 }
 
-func (item *BenchmarksVrutoyPositions) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_n)
-}
 func (item *BenchmarksVrutoyPositions) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xb6003de0)
 	return item.WriteTL1(w, nat_n)

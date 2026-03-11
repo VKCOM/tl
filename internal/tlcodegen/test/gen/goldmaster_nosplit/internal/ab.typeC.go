@@ -28,31 +28,19 @@ func (item *AbTypeC) FillRandom(rg *basictl.RandGenerator) {
 	item.X.FillRandom(rg)
 }
 
-func (item *AbTypeC) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbTypeC) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.X.ReadTL1(w)
 }
 
-func (item *AbTypeC) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbTypeC) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AbTypeC) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AbTypeC) WriteTL1(w []byte) []byte {
 	w = item.X.WriteTL1(w)
 	return w
 }
 
-func (item *AbTypeC) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbTypeC) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x69920d6e); err != nil {
 		return w, err
@@ -60,16 +48,10 @@ func (item *AbTypeC) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *AbTypeC) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbTypeC) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbTypeC) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbTypeC) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x69920d6e)
 	return item.WriteTL1(w)

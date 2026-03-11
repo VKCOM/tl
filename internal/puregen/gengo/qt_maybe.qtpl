@@ -40,9 +40,11 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
 }
         {%- endif -%}
 
+{%- if maybe.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.ReadTL1Boxed(w{%s= natArgsCall %})
 }
+{%- endif -%}
 
 func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if maybe.wr.originateFromTL2 -%}
@@ -59,9 +61,11 @@ func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte,
 }
 
 {%- if !maybe.wr.originateFromTL2 -%}
+{%- if maybe.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     return item.WriteTL1Boxed(w{%s= natArgsCall %})
 }
+{%- endif -%}
 
 func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if item.Ok {

@@ -34,24 +34,15 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) FillRandom(rg *ba
 	tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg, item.ptr(), nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_t)
-}
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL1(w []byte, nat_t uint32) (_ []byte, err error) {
 	return tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadTL1(w, item.ptr(), nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Write(w []byte, nat_t uint32) []byte {
-	return item.WriteTL1(w, nat_t)
-}
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL1(w []byte, nat_t uint32) []byte {
 	w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteTL1(w, *item.ptr(), nat_t)
 	return w
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_t)
-}
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 		return w, err
@@ -59,9 +50,6 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL1Boxed(w []
 	return item.ReadTL1(w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteBoxed(w []byte, nat_t uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_t)
-}
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL1Boxed(w []byte, nat_t uint32) []byte {
 	w = basictl.NatWrite(w, 0x1f4c618f)
 	return item.WriteTL1(w, nat_t)

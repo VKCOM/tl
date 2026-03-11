@@ -33,31 +33,19 @@ func (item *Service1EnableKeysStat) Reset() {
 	item.Period = 0
 }
 
-func (item *Service1EnableKeysStat) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service1EnableKeysStat) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Period)
 }
 
-func (item *Service1EnableKeysStat) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service1EnableKeysStat) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service1EnableKeysStat) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service1EnableKeysStat) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Period)
 	return w
 }
 
-func (item *Service1EnableKeysStat) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service1EnableKeysStat) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x29a7090e); err != nil {
 		return w, err
@@ -65,31 +53,19 @@ func (item *Service1EnableKeysStat) ReadTL1Boxed(w []byte) (_ []byte, err error)
 	return item.ReadTL1(w)
 }
 
-func (item *Service1EnableKeysStat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service1EnableKeysStat) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service1EnableKeysStat) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service1EnableKeysStat) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x29a7090e)
 	return item.WriteTL1(w)
 }
 
-func (item *Service1EnableKeysStat) ReadResult(w []byte, ret *bool) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service1EnableKeysStat) ReadResultTL1(w []byte, ret *bool) (_ []byte, err error) {
 	return tlBool.BoolReadTL1Boxed(w, ret)
 }
 
-func (item *Service1EnableKeysStat) WriteResult(w []byte, ret bool) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service1EnableKeysStat) WriteResultTL1(w []byte, ret bool) (_ []byte, err error) {
 	w = tlBool.BoolWriteTL1Boxed(w, ret)
 	return w, nil

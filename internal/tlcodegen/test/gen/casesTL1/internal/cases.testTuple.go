@@ -28,31 +28,19 @@ func (item *CasesTestTuple) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinTuple4IntFillRandom(rg, &item.Tpl)
 }
 
-func (item *CasesTestTuple) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTestTuple) ReadTL1(w []byte) (_ []byte, err error) {
 	return BuiltinTuple4IntReadTL1(w, &item.Tpl)
 }
 
-func (item *CasesTestTuple) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTestTuple) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTestTuple) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTestTuple) WriteTL1(w []byte) []byte {
 	w = BuiltinTuple4IntWriteTL1(w, &item.Tpl)
 	return w
 }
 
-func (item *CasesTestTuple) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTestTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4b9caf8f); err != nil {
 		return w, err
@@ -60,16 +48,10 @@ func (item *CasesTestTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTestTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTestTuple) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTestTuple) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTestTuple) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x4b9caf8f)
 	return item.WriteTL1(w)

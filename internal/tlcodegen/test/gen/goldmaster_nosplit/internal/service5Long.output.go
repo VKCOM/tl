@@ -29,28 +29,16 @@ func (item *Service5LongEmptyOutput) Reset() {}
 
 func (item *Service5LongEmptyOutput) FillRandom(rg *basictl.RandGenerator) {}
 
-func (item *Service5LongEmptyOutput) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service5LongEmptyOutput) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *Service5LongEmptyOutput) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service5LongEmptyOutput) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service5LongEmptyOutput) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service5LongEmptyOutput) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service5LongEmptyOutput) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service5LongEmptyOutput) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xff8f7db9); err != nil {
 		return w, err
@@ -58,16 +46,10 @@ func (item *Service5LongEmptyOutput) ReadTL1Boxed(w []byte) (_ []byte, err error
 	return item.ReadTL1(w)
 }
 
-func (item *Service5LongEmptyOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service5LongEmptyOutput) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service5LongEmptyOutput) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service5LongEmptyOutput) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xff8f7db9)
 	return item.WriteTL1(w)
@@ -246,16 +228,10 @@ func (item *Service5LongOutput) SetString(value Service5LongStringOutput) {
 	item.valueString = value
 }
 
-func (item *Service5LongOutput) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service5LongOutput) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *Service5LongOutput) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service5LongOutput) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -273,23 +249,14 @@ func (item *Service5LongOutput) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *Service5LongOutput) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service5LongOutput) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *Service5LongOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service5LongOutput) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service5LongOutput) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service5LongOutput) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _Service5LongOutput[item.index].TLTag)
 	switch item.index {
@@ -529,9 +496,6 @@ func (item *Service5LongStringOutput) FillRandom(rg *basictl.RandGenerator) {
 	item.Response = basictl.RandomString(rg)
 }
 
-func (item *Service5LongStringOutput) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service5LongStringOutput) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.LongRead(w, &item.HttpCode); err != nil {
 		return w, err
@@ -539,25 +503,16 @@ func (item *Service5LongStringOutput) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Response)
 }
 
-func (item *Service5LongStringOutput) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service5LongStringOutput) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service5LongStringOutput) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service5LongStringOutput) WriteTL1(w []byte) []byte {
 	w = basictl.LongWrite(w, item.HttpCode)
 	w = basictl.StringWrite(w, item.Response)
 	return w
 }
 
-func (item *Service5LongStringOutput) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service5LongStringOutput) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xdc170ff7); err != nil {
 		return w, err
@@ -565,16 +520,10 @@ func (item *Service5LongStringOutput) ReadTL1Boxed(w []byte) (_ []byte, err erro
 	return item.ReadTL1(w)
 }
 
-func (item *Service5LongStringOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service5LongStringOutput) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service5LongStringOutput) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service5LongStringOutput) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdc170ff7)
 	return item.WriteTL1(w)

@@ -44,9 +44,6 @@ func (item *NativeWrappers) FillRandom(rg *basictl.RandGenerator) {
 	item.F.FillRandom(rg)
 }
 
-func (item *NativeWrappers) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *NativeWrappers) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.A); err != nil {
 		return w, err
@@ -69,16 +66,10 @@ func (item *NativeWrappers) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.F.ReadTL1Boxed(w)
 }
 
-func (item *NativeWrappers) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *NativeWrappers) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *NativeWrappers) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *NativeWrappers) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.A)
 	w = basictl.NatWrite(w, 0xa8509bda)
@@ -90,9 +81,6 @@ func (item *NativeWrappers) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *NativeWrappers) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *NativeWrappers) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x344ddf50); err != nil {
 		return w, err
@@ -100,16 +88,10 @@ func (item *NativeWrappers) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *NativeWrappers) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *NativeWrappers) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *NativeWrappers) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *NativeWrappers) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x344ddf50)
 	return item.WriteTL1(w)

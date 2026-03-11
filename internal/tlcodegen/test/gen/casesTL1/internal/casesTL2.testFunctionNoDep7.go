@@ -28,31 +28,19 @@ func (item *CasesTL2TestFunctionNoDep7) FillRandom(rg *basictl.RandGenerator) {
 	item.X = basictl.RandomInt(rg)
 }
 
-func (item *CasesTL2TestFunctionNoDep7) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
-func (item *CasesTL2TestFunctionNoDep7) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTL2TestFunctionNoDep7) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.X)
 	return w
 }
 
-func (item *CasesTL2TestFunctionNoDep7) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x08824518); err != nil {
 		return w, err
@@ -60,31 +48,19 @@ func (item *CasesTL2TestFunctionNoDep7) ReadTL1Boxed(w []byte) (_ []byte, err er
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestFunctionNoDep7) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTL2TestFunctionNoDep7) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionNoDep7) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x08824518)
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTL2TestFunctionNoDep7) ReadResult(w []byte, ret *CasesTestAllDicts) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionNoDep7) ReadResultTL1(w []byte, ret *CasesTestAllDicts) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *CasesTL2TestFunctionNoDep7) WriteResult(w []byte, ret CasesTestAllDicts) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionNoDep7) WriteResultTL1(w []byte, ret CasesTestAllDicts) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

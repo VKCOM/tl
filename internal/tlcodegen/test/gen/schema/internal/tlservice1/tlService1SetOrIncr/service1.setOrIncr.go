@@ -34,9 +34,6 @@ func (item *Service1SetOrIncr) Reset() {
 	item.Value = 0
 }
 
-func (item *Service1SetOrIncr) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service1SetOrIncr) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
@@ -50,16 +47,10 @@ func (item *Service1SetOrIncr) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.LongRead(w, &item.Value)
 }
 
-func (item *Service1SetOrIncr) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service1SetOrIncr) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service1SetOrIncr) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service1SetOrIncr) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	w = basictl.IntWrite(w, item.Flags)
@@ -68,9 +59,6 @@ func (item *Service1SetOrIncr) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service1SetOrIncr) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service1SetOrIncr) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x772e390d); err != nil {
 		return w, err
@@ -78,31 +66,19 @@ func (item *Service1SetOrIncr) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service1SetOrIncr) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service1SetOrIncr) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service1SetOrIncr) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service1SetOrIncr) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x772e390d)
 	return item.WriteTL1(w)
 }
 
-func (item *Service1SetOrIncr) ReadResult(w []byte, ret *tlService1Value.Service1Value) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service1SetOrIncr) ReadResultTL1(w []byte, ret *tlService1Value.Service1Value) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *Service1SetOrIncr) WriteResult(w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service1SetOrIncr) WriteResultTL1(w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

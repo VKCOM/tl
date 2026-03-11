@@ -29,9 +29,6 @@ func (item *MyTwoDicts) Reset() {
 	tlBuiltinDictStringInt.BuiltinDictStringIntReset(item.B)
 }
 
-func (item *MyTwoDicts) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyTwoDicts) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = tlBuiltinDictStringInt.BuiltinDictStringIntReadTL1(w, &item.A); err != nil {
 		return w, err
@@ -39,25 +36,16 @@ func (item *MyTwoDicts) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringInt.BuiltinDictStringIntReadTL1(w, &item.B)
 }
 
-func (item *MyTwoDicts) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyTwoDicts) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyTwoDicts) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyTwoDicts) WriteTL1(w []byte) []byte {
 	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteTL1(w, item.A)
 	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteTL1(w, item.B)
 	return w
 }
 
-func (item *MyTwoDicts) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyTwoDicts) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa859581d); err != nil {
 		return w, err
@@ -65,16 +53,10 @@ func (item *MyTwoDicts) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyTwoDicts) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyTwoDicts) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyTwoDicts) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyTwoDicts) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa859581d)
 	return item.WriteTL1(w)

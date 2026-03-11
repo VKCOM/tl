@@ -36,31 +36,19 @@ func (item *BenchmarksVrutoyTopLevelContainer) RepairMasks() {
 	item.Value.RepairMasks()
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Value.ReadTL1Boxed(w)
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) WriteTL1(w []byte) []byte {
 	w = item.Value.WriteTL1Boxed(w)
 	return w
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xfb442ca5); err != nil {
 		return w, err
@@ -68,16 +56,10 @@ func (item *BenchmarksVrutoyTopLevelContainer) ReadTL1Boxed(w []byte) (_ []byte,
 	return item.ReadTL1(w)
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelContainer) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xfb442ca5)
 	return item.WriteTL1(w)

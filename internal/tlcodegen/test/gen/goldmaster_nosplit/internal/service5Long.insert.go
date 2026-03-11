@@ -60,9 +60,6 @@ func (item *Service5LongInsert) RepairMasks() {
 	}
 }
 
-func (item *Service5LongInsert) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service5LongInsert) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flags); err != nil {
@@ -74,24 +71,15 @@ func (item *Service5LongInsert) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *Service5LongInsert) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service5LongInsert) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service5LongInsert) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service5LongInsert) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.Flags)
 	return w
 }
 
-func (item *Service5LongInsert) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service5LongInsert) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7cf362bb); err != nil {
 		return w, err
@@ -99,31 +87,19 @@ func (item *Service5LongInsert) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service5LongInsert) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service5LongInsert) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service5LongInsert) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service5LongInsert) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7cf362bb)
 	return item.WriteTL1(w)
 }
 
-func (item *Service5LongInsert) ReadResult(w []byte, ret *Service5LongOutput) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service5LongInsert) ReadResultTL1(w []byte, ret *Service5LongOutput) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *Service5LongInsert) WriteResult(w []byte, ret Service5LongOutput) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service5LongInsert) WriteResultTL1(w []byte, ret Service5LongOutput) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

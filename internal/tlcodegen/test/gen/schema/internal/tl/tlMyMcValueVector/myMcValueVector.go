@@ -28,31 +28,19 @@ func (item *MyMcValueVector) Reset() {
 	item.Xs = item.Xs[:0]
 }
 
-func (item *MyMcValueVector) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyMcValueVector) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService1Value.BuiltinVectorService1ValueReadTL1(w, &item.Xs)
 }
 
-func (item *MyMcValueVector) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyMcValueVector) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyMcValueVector) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyMcValueVector) WriteTL1(w []byte) []byte {
 	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteTL1(w, item.Xs)
 	return w
 }
 
-func (item *MyMcValueVector) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyMcValueVector) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x761d6d58); err != nil {
 		return w, err
@@ -60,16 +48,10 @@ func (item *MyMcValueVector) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyMcValueVector) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyMcValueVector) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyMcValueVector) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyMcValueVector) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x761d6d58)
 	return item.WriteTL1(w)

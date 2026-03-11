@@ -39,9 +39,6 @@ func (item *Service3Product0) Reset() {
 	item.Removed = false
 }
 
-func (item *Service3Product0) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service3Product0) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
@@ -68,16 +65,10 @@ func (item *Service3Product0) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *Service3Product0) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service3Product0) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service3Product0) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service3Product0) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Type)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Id)
@@ -90,9 +81,6 @@ func (item *Service3Product0) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service3Product0) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service3Product0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x461f4ce2); err != nil {
 		return w, err
@@ -100,16 +88,10 @@ func (item *Service3Product0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service3Product0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service3Product0) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service3Product0) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service3Product0) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x461f4ce2)
 	return item.WriteTL1(w)

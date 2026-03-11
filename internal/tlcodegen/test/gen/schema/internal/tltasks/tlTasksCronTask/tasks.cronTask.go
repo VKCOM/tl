@@ -35,9 +35,6 @@ func (item *TasksCronTask) Reset() {
 	item.Time.Reset()
 }
 
-func (item *TasksCronTask) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksCronTask) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.TypeName); err != nil {
 		return w, err
@@ -51,16 +48,10 @@ func (item *TasksCronTask) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Time.ReadTL1(w)
 }
 
-func (item *TasksCronTask) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksCronTask) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksCronTask) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksCronTask) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.QueueId)
@@ -69,9 +60,6 @@ func (item *TasksCronTask) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksCronTask) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksCronTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc90cf28a); err != nil {
 		return w, err
@@ -79,16 +67,10 @@ func (item *TasksCronTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksCronTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksCronTask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksCronTask) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksCronTask) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xc90cf28a)
 	return item.WriteTL1(w)

@@ -31,9 +31,6 @@ func (item *Service4Object) Reset() {
 	item.ObjectId = item.ObjectId[:0]
 }
 
-func (item *Service4Object) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service4Object) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
@@ -44,16 +41,10 @@ func (item *Service4Object) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInt.BuiltinVectorIntReadTL1(w, &item.ObjectId)
 }
 
-func (item *Service4Object) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service4Object) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service4Object) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service4Object) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Type)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.JointId)
@@ -61,9 +52,6 @@ func (item *Service4Object) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service4Object) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service4Object) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa6eeca4f); err != nil {
 		return w, err
@@ -71,16 +59,10 @@ func (item *Service4Object) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service4Object) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service4Object) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service4Object) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service4Object) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa6eeca4f)
 	return item.WriteTL1(w)

@@ -24,28 +24,16 @@ func (Service3GetLimits) TLTag() uint32  { return 0xeb399467 }
 
 func (item *Service3GetLimits) Reset() {}
 
-func (item *Service3GetLimits) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service3GetLimits) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *Service3GetLimits) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service3GetLimits) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service3GetLimits) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service3GetLimits) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service3GetLimits) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service3GetLimits) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xeb399467); err != nil {
 		return w, err
@@ -53,31 +41,19 @@ func (item *Service3GetLimits) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service3GetLimits) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service3GetLimits) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service3GetLimits) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service3GetLimits) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xeb399467)
 	return item.WriteTL1(w)
 }
 
-func (item *Service3GetLimits) ReadResult(w []byte, ret *tlService3Limits.Service3Limits) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service3GetLimits) ReadResultTL1(w []byte, ret *tlService3Limits.Service3Limits) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *Service3GetLimits) WriteResult(w []byte, ret tlService3Limits.Service3Limits) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service3GetLimits) WriteResultTL1(w []byte, ret tlService3Limits.Service3Limits) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

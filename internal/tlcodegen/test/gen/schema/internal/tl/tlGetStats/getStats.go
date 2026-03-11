@@ -27,31 +27,19 @@ func (item *GetStats) Reset() {
 	item.X.Reset()
 }
 
-func (item *GetStats) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetStats) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.X.ReadTL1(w)
 }
 
-func (item *GetStats) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetStats) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *GetStats) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *GetStats) WriteTL1(w []byte) []byte {
 	w = item.X.WriteTL1(w)
 	return w
 }
 
-func (item *GetStats) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetStats) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xbaa6da35); err != nil {
 		return w, err
@@ -59,31 +47,19 @@ func (item *GetStats) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetStats) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetStats) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *GetStats) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetStats) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xbaa6da35)
 	return item.WriteTL1(w)
 }
 
-func (item *GetStats) ReadResult(w []byte, ret *tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetStats) ReadResultTL1(w []byte, ret *tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *GetStats) WriteResult(w []byte, ret tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetStats) WriteResultTL1(w []byte, ret tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

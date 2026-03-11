@@ -31,9 +31,6 @@ func (item *UseResponse) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinTupleAbResponseFillRandom(rg, &item.X, item.N)
 }
 
-func (item *UseResponse) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *UseResponse) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -41,16 +38,10 @@ func (item *UseResponse) ReadTL1(w []byte) (_ []byte, err error) {
 	return BuiltinTupleAbResponseReadTL1(w, &item.X, item.N)
 }
 
-func (item *UseResponse) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *UseResponse) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *UseResponse) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *UseResponse) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	if w, err = BuiltinTupleAbResponseWriteTL1(w, item.X, item.N); err != nil {
@@ -59,9 +50,6 @@ func (item *UseResponse) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *UseResponse) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *UseResponse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0a63ec5f); err != nil {
 		return w, err
@@ -69,16 +57,10 @@ func (item *UseResponse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *UseResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *UseResponse) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *UseResponse) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *UseResponse) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x0a63ec5f)
 	return item.WriteTL1(w)

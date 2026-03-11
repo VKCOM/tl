@@ -33,9 +33,6 @@ func (item *TasksAddTask) Reset() {
 	item.Task.Reset()
 }
 
-func (item *TasksAddTask) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksAddTask) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.TypeName); err != nil {
 		return w, err
@@ -46,16 +43,10 @@ func (item *TasksAddTask) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Task.ReadTL1(w)
 }
 
-func (item *TasksAddTask) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksAddTask) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksAddTask) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksAddTask) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.QueueId)
@@ -63,9 +54,6 @@ func (item *TasksAddTask) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksAddTask) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksAddTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2ca073d5); err != nil {
 		return w, err
@@ -73,24 +61,15 @@ func (item *TasksAddTask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksAddTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksAddTask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksAddTask) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksAddTask) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2ca073d5)
 	return item.WriteTL1(w)
 }
 
-func (item *TasksAddTask) ReadResult(w []byte, ret *int64) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *TasksAddTask) ReadResultTL1(w []byte, ret *int64) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x22076cba); err != nil {
 		return w, err
@@ -98,9 +77,6 @@ func (item *TasksAddTask) ReadResultTL1(w []byte, ret *int64) (_ []byte, err err
 	return basictl.LongRead(w, ret)
 }
 
-func (item *TasksAddTask) WriteResult(w []byte, ret int64) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *TasksAddTask) WriteResultTL1(w []byte, ret int64) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x22076cba)
 	w = basictl.LongWrite(w, ret)

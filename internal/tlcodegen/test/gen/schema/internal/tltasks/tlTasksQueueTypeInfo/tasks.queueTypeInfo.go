@@ -32,9 +32,6 @@ func (item *TasksQueueTypeInfo) Reset() {
 	item.Stats.Reset()
 }
 
-func (item *TasksQueueTypeInfo) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksQueueTypeInfo) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.TypeName); err != nil {
 		return w, err
@@ -45,16 +42,10 @@ func (item *TasksQueueTypeInfo) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Stats.ReadTL1(w)
 }
 
-func (item *TasksQueueTypeInfo) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksQueueTypeInfo) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksQueueTypeInfo) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksQueueTypeInfo) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
 	w = item.Settings.WriteTL1(w)
@@ -62,9 +53,6 @@ func (item *TasksQueueTypeInfo) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksQueueTypeInfo) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksQueueTypeInfo) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x38d38d3e); err != nil {
 		return w, err
@@ -72,16 +60,10 @@ func (item *TasksQueueTypeInfo) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksQueueTypeInfo) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksQueueTypeInfo) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksQueueTypeInfo) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksQueueTypeInfo) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x38d38d3e)
 	return item.WriteTL1(w)

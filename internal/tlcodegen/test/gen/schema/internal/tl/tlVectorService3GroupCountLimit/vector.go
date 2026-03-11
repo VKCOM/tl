@@ -31,31 +31,19 @@ func (item *VectorService3GroupCountLimit) Reset() {
 	*item.ptr() = (*item.ptr())[:0]
 }
 
-func (item *VectorService3GroupCountLimit) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *VectorService3GroupCountLimit) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadTL1(w, item.ptr())
 }
 
-func (item *VectorService3GroupCountLimit) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *VectorService3GroupCountLimit) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *VectorService3GroupCountLimit) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *VectorService3GroupCountLimit) WriteTL1(w []byte) []byte {
 	w = tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitWriteTL1(w, *item.ptr())
 	return w
 }
 
-func (item *VectorService3GroupCountLimit) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *VectorService3GroupCountLimit) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -63,16 +51,10 @@ func (item *VectorService3GroupCountLimit) ReadTL1Boxed(w []byte) (_ []byte, err
 	return item.ReadTL1(w)
 }
 
-func (item *VectorService3GroupCountLimit) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *VectorService3GroupCountLimit) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *VectorService3GroupCountLimit) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *VectorService3GroupCountLimit) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	return item.WriteTL1(w)

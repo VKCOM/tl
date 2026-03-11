@@ -28,16 +28,10 @@ func (item *CasesInplace1Int) FillRandom(rg *basictl.RandGenerator, nat_a1 uint3
 	item.Value.FillRandom(rg, nat_a2, nat_a3, nat_a1)
 }
 
-func (item *CasesInplace1Int) Read(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_a1, nat_a2, nat_a3)
-}
 func (item *CasesInplace1Int) ReadTL1(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	return item.Value.ReadTL1(w, nat_a2, nat_a3, nat_a1)
 }
 
-func (item *CasesInplace1Int) Write(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3)
-}
 func (item *CasesInplace1Int) WriteTL1(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	if w, err = item.Value.WriteTL1(w, nat_a2, nat_a3, nat_a1); err != nil {
 		return w, err
@@ -45,9 +39,6 @@ func (item *CasesInplace1Int) WriteTL1(w []byte, nat_a1 uint32, nat_a2 uint32, n
 	return w, nil
 }
 
-func (item *CasesInplace1Int) ReadBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_a1, nat_a2, nat_a3)
-}
 func (item *CasesInplace1Int) ReadTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5533e8e9); err != nil {
 		return w, err
@@ -55,9 +46,6 @@ func (item *CasesInplace1Int) ReadTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint3
 	return item.ReadTL1(w, nat_a1, nat_a2, nat_a3)
 }
 
-func (item *CasesInplace1Int) WriteBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_a1, nat_a2, nat_a3)
-}
 func (item *CasesInplace1Int) WriteTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x5533e8e9)
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3)
@@ -134,16 +122,10 @@ func (item *CasesInplace1PairTupleIntTupleInt) FillRandom(rg *basictl.RandGenera
 	item.Value.FillRandom(rg, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn)
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) Read(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
-}
 func (item *CasesInplace1PairTupleIntTupleInt) ReadTL1(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	return item.Value.ReadTL1(w, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn)
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) Write(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
-}
 func (item *CasesInplace1PairTupleIntTupleInt) WriteTL1(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	if w, err = item.Value.WriteTL1(w, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 		return w, err
@@ -151,9 +133,6 @@ func (item *CasesInplace1PairTupleIntTupleInt) WriteTL1(w []byte, nat_a1 uint32,
 	return w, nil
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) ReadBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
-}
 func (item *CasesInplace1PairTupleIntTupleInt) ReadTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5533e8e9); err != nil {
 		return w, err
@@ -161,9 +140,6 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadTL1Boxed(w []byte, nat_a1 uin
 	return item.ReadTL1(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) WriteBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
-}
 func (item *CasesInplace1PairTupleIntTupleInt) WriteTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x5533e8e9)
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)

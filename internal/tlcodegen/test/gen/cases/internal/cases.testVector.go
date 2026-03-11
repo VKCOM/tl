@@ -28,31 +28,19 @@ func (item *CasesTestVector) FillRandom(rg *basictl.RandGenerator) {
 	BuiltinVectorIntFillRandom(rg, &item.Arr)
 }
 
-func (item *CasesTestVector) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTestVector) ReadTL1(w []byte) (_ []byte, err error) {
 	return BuiltinVectorIntReadTL1(w, &item.Arr)
 }
 
-func (item *CasesTestVector) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTestVector) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTestVector) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTestVector) WriteTL1(w []byte) []byte {
 	w = BuiltinVectorIntWriteTL1(w, item.Arr)
 	return w
 }
 
-func (item *CasesTestVector) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTestVector) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4975695c); err != nil {
 		return w, err
@@ -60,16 +48,10 @@ func (item *CasesTestVector) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTestVector) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTestVector) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTestVector) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTestVector) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x4975695c)
 	return item.WriteTL1(w)

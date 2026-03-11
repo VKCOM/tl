@@ -27,31 +27,19 @@ func (item *Service1DisableExpiration) Reset() {
 	item.Prefix = ""
 }
 
-func (item *Service1DisableExpiration) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service1DisableExpiration) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Prefix)
 }
 
-func (item *Service1DisableExpiration) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service1DisableExpiration) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service1DisableExpiration) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service1DisableExpiration) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Prefix)
 	return w
 }
 
-func (item *Service1DisableExpiration) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service1DisableExpiration) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf1c39c2d); err != nil {
 		return w, err
@@ -59,31 +47,19 @@ func (item *Service1DisableExpiration) ReadTL1Boxed(w []byte) (_ []byte, err err
 	return item.ReadTL1(w)
 }
 
-func (item *Service1DisableExpiration) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service1DisableExpiration) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service1DisableExpiration) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service1DisableExpiration) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf1c39c2d)
 	return item.WriteTL1(w)
 }
 
-func (item *Service1DisableExpiration) ReadResult(w []byte, ret *bool) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service1DisableExpiration) ReadResultTL1(w []byte, ret *bool) (_ []byte, err error) {
 	return tlBool.BoolReadTL1Boxed(w, ret)
 }
 
-func (item *Service1DisableExpiration) WriteResult(w []byte, ret bool) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service1DisableExpiration) WriteResultTL1(w []byte, ret bool) (_ []byte, err error) {
 	w = tlBool.BoolWriteTL1Boxed(w, ret)
 	return w, nil

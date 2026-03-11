@@ -25,10 +25,6 @@ func (item *TasksTaskInfoMaybe) Reset() {
 	item.Ok = false
 }
 
-func (item *TasksTaskInfoMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
-
 func (item *TasksTaskInfoMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
@@ -37,10 +33,6 @@ func (item *TasksTaskInfoMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 		return item.Value.ReadTL1(w)
 	}
 	return w, nil
-}
-
-func (item *TasksTaskInfoMaybe) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
 }
 
 func (item *TasksTaskInfoMaybe) WriteTL1Boxed(w []byte) []byte {

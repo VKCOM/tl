@@ -35,9 +35,6 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) FillRandom(rg *basictl.RandGene
 	item.B.FillRandom(rg, nat_PXI, nat_PYI)
 }
 
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) Read(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_W, nat_PXI, nat_PYI)
-}
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL1(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	if w, err = item.A.ReadTL1(w, nat_W); err != nil {
 		return w, err
@@ -45,9 +42,6 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL1(w []byte, nat_W uint32,
 	return item.B.ReadTL1(w, nat_PXI, nat_PYI)
 }
 
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) Write(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_W, nat_PXI, nat_PYI)
-}
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteTL1(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	if w, err = item.A.WriteTL1(w, nat_W); err != nil {
 		return w, err
@@ -58,9 +52,6 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteTL1(w []byte, nat_W uint32
 	return w, nil
 }
 
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadBoxed(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_W, nat_PXI, nat_PYI)
-}
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL1Boxed(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xaf5e2b14); err != nil {
 		return w, err
@@ -68,9 +59,6 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL1Boxed(w []byte, nat_W ui
 	return item.ReadTL1(w, nat_W, nat_PXI, nat_PYI)
 }
 
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteBoxed(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_W, nat_PXI, nat_PYI)
-}
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteTL1Boxed(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xaf5e2b14)
 	return item.WriteTL1(w, nat_W, nat_PXI, nat_PYI)

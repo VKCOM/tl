@@ -26,9 +26,6 @@ func (item *BoxedInt) Reset() {
 	item.X = 0
 }
 
-func (item *BoxedInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BoxedInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa8509bda); err != nil {
 		return w, err
@@ -36,25 +33,16 @@ func (item *BoxedInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
-func (item *BoxedInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BoxedInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BoxedInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BoxedInt) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xa8509bda)
 	w = basictl.IntWrite(w, item.X)
 	return w
 }
 
-func (item *BoxedInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BoxedInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5688ebaf); err != nil {
 		return w, err
@@ -62,24 +50,15 @@ func (item *BoxedInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *BoxedInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BoxedInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BoxedInt) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BoxedInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x5688ebaf)
 	return item.WriteTL1(w)
 }
 
-func (item *BoxedInt) ReadResult(w []byte, ret *int32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *BoxedInt) ReadResultTL1(w []byte, ret *int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xa8509bda); err != nil {
 		return w, err
@@ -87,9 +66,6 @@ func (item *BoxedInt) ReadResultTL1(w []byte, ret *int32) (_ []byte, err error) 
 	return basictl.IntRead(w, ret)
 }
 
-func (item *BoxedInt) WriteResult(w []byte, ret int32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *BoxedInt) WriteResultTL1(w []byte, ret int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xa8509bda)
 	w = basictl.IntWrite(w, ret)

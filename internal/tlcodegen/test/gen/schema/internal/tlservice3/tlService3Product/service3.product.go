@@ -53,9 +53,6 @@ func (item *Service3Product) Reset() {
 	item.Removed = false
 }
 
-func (item *Service3Product) Read(w []byte, nat_mode uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_mode)
-}
 func (item *Service3Product) ReadTL1(w []byte, nat_mode uint32) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
@@ -82,9 +79,6 @@ func (item *Service3Product) ReadTL1(w []byte, nat_mode uint32) (_ []byte, err e
 	return w, nil
 }
 
-func (item *Service3Product) Write(w []byte, nat_mode uint32) []byte {
-	return item.WriteTL1(w, nat_mode)
-}
 func (item *Service3Product) WriteTL1(w []byte, nat_mode uint32) []byte {
 	w = basictl.IntWrite(w, item.Type)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.Id)
@@ -97,9 +91,6 @@ func (item *Service3Product) WriteTL1(w []byte, nat_mode uint32) []byte {
 	return w
 }
 
-func (item *Service3Product) ReadBoxed(w []byte, nat_mode uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_mode)
-}
 func (item *Service3Product) ReadTL1Boxed(w []byte, nat_mode uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x461f4ce2); err != nil {
 		return w, err
@@ -107,9 +98,6 @@ func (item *Service3Product) ReadTL1Boxed(w []byte, nat_mode uint32) (_ []byte, 
 	return item.ReadTL1(w, nat_mode)
 }
 
-func (item *Service3Product) WriteBoxed(w []byte, nat_mode uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_mode)
-}
 func (item *Service3Product) WriteTL1Boxed(w []byte, nat_mode uint32) []byte {
 	w = basictl.NatWrite(w, 0x461f4ce2)
 	return item.WriteTL1(w, nat_mode)

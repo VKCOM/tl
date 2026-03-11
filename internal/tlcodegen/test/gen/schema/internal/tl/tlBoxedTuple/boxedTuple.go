@@ -27,9 +27,6 @@ func (item *BoxedTuple) Reset() {
 	tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.X)
 }
 
-func (item *BoxedTuple) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BoxedTuple) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -37,25 +34,16 @@ func (item *BoxedTuple) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple3Int.BuiltinTuple3IntReadTL1(w, &item.X)
 }
 
-func (item *BoxedTuple) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BoxedTuple) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BoxedTuple) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BoxedTuple) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x9770768a)
 	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteTL1(w, &item.X)
 	return w
 }
 
-func (item *BoxedTuple) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BoxedTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x30c9d533); err != nil {
 		return w, err
@@ -63,24 +51,15 @@ func (item *BoxedTuple) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *BoxedTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BoxedTuple) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BoxedTuple) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BoxedTuple) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x30c9d533)
 	return item.WriteTL1(w)
 }
 
-func (item *BoxedTuple) ReadResult(w []byte, ret *[3]int32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *BoxedTuple) ReadResultTL1(w []byte, ret *[3]int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -88,9 +67,6 @@ func (item *BoxedTuple) ReadResultTL1(w []byte, ret *[3]int32) (_ []byte, err er
 	return tlBuiltinTuple3Int.BuiltinTuple3IntReadTL1(w, ret)
 }
 
-func (item *BoxedTuple) WriteResult(w []byte, ret [3]int32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *BoxedTuple) WriteResultTL1(w []byte, ret [3]int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteTL1(w, &ret)
