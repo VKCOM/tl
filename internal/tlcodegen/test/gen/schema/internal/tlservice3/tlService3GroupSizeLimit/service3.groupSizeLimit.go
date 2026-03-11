@@ -28,9 +28,6 @@ func (item *Service3GroupSizeLimit) Reset() {
 	item.Limit = 0
 }
 
-func (item *Service3GroupSizeLimit) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service3GroupSizeLimit) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Type); err != nil {
 		return w, err
@@ -38,25 +35,16 @@ func (item *Service3GroupSizeLimit) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Limit)
 }
 
-func (item *Service3GroupSizeLimit) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service3GroupSizeLimit) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service3GroupSizeLimit) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service3GroupSizeLimit) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Type)
 	w = basictl.IntWrite(w, item.Limit)
 	return w
 }
 
-func (item *Service3GroupSizeLimit) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service3GroupSizeLimit) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x90e59396); err != nil {
 		return w, err
@@ -64,16 +52,10 @@ func (item *Service3GroupSizeLimit) ReadTL1Boxed(w []byte) (_ []byte, err error)
 	return item.ReadTL1(w)
 }
 
-func (item *Service3GroupSizeLimit) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service3GroupSizeLimit) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service3GroupSizeLimit) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service3GroupSizeLimit) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x90e59396)
 	return item.WriteTL1(w)

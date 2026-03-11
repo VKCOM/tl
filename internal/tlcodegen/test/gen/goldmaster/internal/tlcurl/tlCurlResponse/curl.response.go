@@ -87,16 +87,10 @@ func (item *CurlResponse) SetError(value CurlResponseError) {
 	item.valueError = value
 }
 
-func (item *CurlResponse) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CurlResponse) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *CurlResponse) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CurlResponse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -114,23 +108,14 @@ func (item *CurlResponse) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *CurlResponse) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CurlResponse) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *CurlResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CurlResponse) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CurlResponse) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CurlResponse) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _CurlResponse[item.index].TLTag)
 	switch item.index {
@@ -374,9 +359,6 @@ func (item *CurlResponseError) FillRandom(rg *basictl.RandGenerator) {
 	item.ErrorString = basictl.RandomString(rg)
 }
 
-func (item *CurlResponseError) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CurlResponseError) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldMask); err != nil {
 		return w, err
@@ -387,16 +369,10 @@ func (item *CurlResponseError) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.ErrorString)
 }
 
-func (item *CurlResponseError) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CurlResponseError) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CurlResponseError) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CurlResponseError) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.IntWrite(w, item.ErrorCode)
@@ -404,9 +380,6 @@ func (item *CurlResponseError) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CurlResponseError) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CurlResponseError) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xaf514651); err != nil {
 		return w, err
@@ -414,16 +387,10 @@ func (item *CurlResponseError) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CurlResponseError) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CurlResponseError) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CurlResponseError) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CurlResponseError) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xaf514651)
 	return item.WriteTL1(w)
@@ -760,9 +727,6 @@ func (item *CurlResponseOk) RepairMasks() {
 	}
 }
 
-func (item *CurlResponseOk) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CurlResponseOk) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldMask); err != nil {
@@ -785,16 +749,10 @@ func (item *CurlResponseOk) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *CurlResponseOk) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CurlResponseOk) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CurlResponseOk) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CurlResponseOk) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.IntWrite(w, item.HttpCode)
@@ -805,9 +763,6 @@ func (item *CurlResponseOk) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CurlResponseOk) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CurlResponseOk) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x57d7a33a); err != nil {
 		return w, err
@@ -815,16 +770,10 @@ func (item *CurlResponseOk) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CurlResponseOk) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CurlResponseOk) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CurlResponseOk) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CurlResponseOk) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x57d7a33a)
 	return item.WriteTL1(w)

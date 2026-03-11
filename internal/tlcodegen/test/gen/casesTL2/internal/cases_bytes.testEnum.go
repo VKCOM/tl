@@ -51,37 +51,22 @@ func (item *CasesBytesTestEnum) SetV2()    { item.index = 1 }
 func (item CasesBytesTestEnum) IsV3() bool { return item.index == 2 }
 func (item *CasesBytesTestEnum) SetV3()    { item.index = 2 }
 
-func (item *CasesBytesTestEnum) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesBytesTestEnum) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesBytesTestEnum) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesBytesTestEnum) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesBytesTestEnum) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesBytesTestEnum) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesBytesTestEnum) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesBytesTestEnum) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }

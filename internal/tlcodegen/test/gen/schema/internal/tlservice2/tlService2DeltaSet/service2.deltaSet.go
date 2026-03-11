@@ -30,9 +30,6 @@ func (item *Service2DeltaSet) Reset() {
 	item.Counters.Reset()
 }
 
-func (item *Service2DeltaSet) Read(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
-}
 func (item *Service2DeltaSet) ReadTL1(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	if w, err = item.Id.ReadTL1(w, nat_objectIdLength); err != nil {
 		return w, err
@@ -40,9 +37,6 @@ func (item *Service2DeltaSet) ReadTL1(w []byte, nat_objectIdLength uint32, nat_i
 	return item.Counters.ReadTL1(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2DeltaSet) Write(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
-}
 func (item *Service2DeltaSet) WriteTL1(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	if w, err = item.Id.WriteTL1(w, nat_objectIdLength); err != nil {
 		return w, err
@@ -53,9 +47,6 @@ func (item *Service2DeltaSet) WriteTL1(w []byte, nat_objectIdLength uint32, nat_
 	return w, nil
 }
 
-func (item *Service2DeltaSet) ReadBoxed(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
-}
 func (item *Service2DeltaSet) ReadTL1Boxed(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xbf49abc2); err != nil {
 		return w, err
@@ -63,9 +54,6 @@ func (item *Service2DeltaSet) ReadTL1Boxed(w []byte, nat_objectIdLength uint32, 
 	return item.ReadTL1(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2DeltaSet) WriteBoxed(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
-}
 func (item *Service2DeltaSet) WriteTL1Boxed(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xbf49abc2)
 	return item.WriteTL1(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)

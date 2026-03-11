@@ -70,37 +70,22 @@ func (item *BenchmarksVrutoyTopLevelUnion) AsEmpty() (BenchmarksVrutoytopLevelUn
 func (item *BenchmarksVrutoyTopLevelUnion) ResetToEmpty() { item.index = 1 }
 func (item *BenchmarksVrutoyTopLevelUnion) SetEmpty()     { item.index = 1 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
@@ -294,44 +279,26 @@ func (item *BenchmarksVrutoytopLevelUnionBig) FillRandom(rg *basictl.RandGenerat
 	BuiltinVectorBenchmarksVrupositionFillRandom(rg, &item.NextPositions)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
@@ -548,44 +515,26 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) Reset() {}
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) FillRandom(rg *basictl.RandGenerator) {}
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }

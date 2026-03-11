@@ -31,31 +31,19 @@ func (item *VectorEitherService6ErrorVectorService6FindResultRow) Reset() {
 	*item.ptr() = (*item.ptr())[:0]
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadTL1(w, item.ptr())
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteTL1(w []byte) []byte {
 	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteTL1(w, *item.ptr())
 	return w
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -63,16 +51,10 @@ func (item *VectorEitherService6ErrorVectorService6FindResultRow) ReadTL1Boxed(w
 	return item.ReadTL1(w)
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	return item.WriteTL1(w)

@@ -31,9 +31,6 @@ func (item *DictFieldIntPairIntInt) FillRandom(rg *basictl.RandGenerator) {
 	item.Value.FillRandom(rg)
 }
 
-func (item *DictFieldIntPairIntInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *DictFieldIntPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Key); err != nil {
 		return w, err
@@ -41,16 +38,10 @@ func (item *DictFieldIntPairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Value.ReadTL1(w)
 }
 
-func (item *DictFieldIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *DictFieldIntPairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *DictFieldIntPairIntInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *DictFieldIntPairIntInt) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Key)
 	w = item.Value.WriteTL1(w)

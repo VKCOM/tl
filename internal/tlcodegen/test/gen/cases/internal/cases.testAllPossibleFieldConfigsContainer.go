@@ -44,9 +44,6 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) RepairMasks() {
 	item.Value.RepairMasks(item.Outer, item.Outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Outer); err != nil {
 		return w, err
@@ -57,16 +54,10 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadTL1(w []byte) (_ []by
 	return item.Value.ReadTL1(w, item.Outer, item.Outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Outer)
 	w = basictl.NatWrite(w, item.Outers)
@@ -76,9 +67,6 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL1(w []byte) (_ []b
 	return w, nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb932488a); err != nil {
 		return w, err
@@ -86,16 +74,10 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadTL1Boxed(w []byte) (_
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xb932488a)
 	return item.WriteTL1(w)

@@ -43,9 +43,6 @@ func (item *CdUseCycle) RepairMasks() {
 	item.A.RepairMasks()
 }
 
-func (item *CdUseCycle) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CdUseCycle) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = item.A.ReadTL1(w); err != nil {
 		return w, err
@@ -53,25 +50,16 @@ func (item *CdUseCycle) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.B.ReadTL1Boxed(w)
 }
 
-func (item *CdUseCycle) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CdUseCycle) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CdUseCycle) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CdUseCycle) WriteTL1(w []byte) []byte {
 	w = item.A.WriteTL1(w)
 	w = item.B.WriteTL1Boxed(w)
 	return w
 }
 
-func (item *CdUseCycle) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CdUseCycle) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6ed67ca0); err != nil {
 		return w, err
@@ -79,16 +67,10 @@ func (item *CdUseCycle) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CdUseCycle) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CdUseCycle) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CdUseCycle) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CdUseCycle) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6ed67ca0)
 	return item.WriteTL1(w)

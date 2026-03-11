@@ -371,9 +371,6 @@ func (item *CurlRequest) RepairMasks() {
 	}
 }
 
-func (item *CurlRequest) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CurlRequest) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	item.tl2mask1 = 0
@@ -501,16 +498,10 @@ func (item *CurlRequest) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *CurlRequest) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CurlRequest) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CurlRequest) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CurlRequest) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldMask)
 	w = basictl.StringWrite(w, item.Method)
@@ -560,9 +551,6 @@ func (item *CurlRequest) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CurlRequest) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CurlRequest) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3f5a4651); err != nil {
 		return w, err
@@ -570,31 +558,19 @@ func (item *CurlRequest) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *CurlRequest) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CurlRequest) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CurlRequest) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CurlRequest) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x3f5a4651)
 	return item.WriteTL1(w)
 }
 
-func (item *CurlRequest) ReadResult(w []byte, ret *CurlResponse) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *CurlRequest) ReadResultTL1(w []byte, ret *CurlResponse) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *CurlRequest) WriteResult(w []byte, ret CurlResponse) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *CurlRequest) WriteResultTL1(w []byte, ret CurlResponse) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

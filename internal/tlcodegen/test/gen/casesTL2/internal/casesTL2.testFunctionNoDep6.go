@@ -28,58 +28,34 @@ func (item *CasesTL2TestFunctionNoDep6) FillRandom(rg *basictl.RandGenerator) {
 	item.X = basictl.RandomInt(rg)
 }
 
-func (item *CasesTL2TestFunctionNoDep6) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep6) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) WriteTL1General(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep6) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) WriteTL1(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
-func (item *CasesTL2TestFunctionNoDep6) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep6) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep6) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionNoDep6) WriteTL1Boxed(w []byte) []byte {
 	panic(basictl.TL2Error("not implemented for tl2 type"))
 }
 
-func (item *CasesTL2TestFunctionNoDep6) ReadResult(w []byte, ret *CasesTL2TestArrayFixedBool) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionNoDep6) ReadResultTL1(w []byte, ret *CasesTL2TestArrayFixedBool) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep6) WriteResult(w []byte, ret CasesTL2TestArrayFixedBool) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionNoDep6) WriteResultTL1(w []byte, ret CasesTL2TestArrayFixedBool) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }

@@ -303,7 +303,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		if err != nil {
 			return fmt.Errorf("error on generating tlo: %w", err)
 		}
-		buf, err := s.WriteBoxed(nil)
+		buf, err := s.WriteTL1Boxed(nil)
 		if err != nil {
 			return fmt.Errorf("error writing boxed tlo: %w", err)
 		}

@@ -150,16 +150,19 @@ func (item *`)
 	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
 		/* for interface requirements for TL2 Type, also for tests */
 
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) Read(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) Read(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 }
-func (item*`)
+`)
+		}
+		qw422016.N().S(`func (item*`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL1(w []byte`)
 		qw422016.N().S(natArgsDecl)
@@ -171,16 +174,20 @@ func (item*`)
 `)
 	}
 	qw422016.N().S(`
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadBoxed(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) (_ []byte, err error) {
+`)
+	if union.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadBoxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1Boxed(w`)
-	qw422016.N().S(natArgsCall)
-	qw422016.N().S(`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
 }
-func (item*`)
+`)
+	}
+	qw422016.N().S(`func (item*`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadTL1Boxed(w []byte`)
 	qw422016.N().S(natArgsDecl)
@@ -232,27 +239,34 @@ func (item*`)
 	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
 		/* for interface requirements for TL2 Type, also for tests */
 
-		qw422016.N().S(`func (item*`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteGeneral(w []byte) (_ []byte, err error) {
+		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item*`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteGeneral(w []byte) (_ []byte, err error) {
     return item.WriteTL1General(w)
 }
-func (item*`)
+`)
+		}
+		qw422016.N().S(`func (item*`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL1General(w []byte) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+`)
+		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 }
-func (item *`)
+`)
+		}
+		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL1BoxedGeneral(w []byte`)
 		qw422016.N().S(natArgsDecl)
@@ -275,18 +289,22 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteBoxed(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) `)
-	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
-	qw422016.N().S(` {
+`)
+	if union.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteBoxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) `)
+		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
+		qw422016.N().S(` {
     return item.WriteTL1Boxed(w`)
-	qw422016.N().S(natArgsCall)
-	qw422016.N().S(`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
 }
-func (item *`)
+`)
+	}
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 	qw422016.N().S(natArgsDecl)

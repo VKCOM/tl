@@ -36,9 +36,6 @@ func (item *Service3Limits) Reset() {
 	item.CustomGroupCountLimits = item.CustomGroupCountLimits[:0]
 }
 
-func (item *Service3Limits) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service3Limits) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.DefaultGroupSizeLimit); err != nil {
 		return w, err
@@ -52,16 +49,10 @@ func (item *Service3Limits) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadTL1(w, &item.CustomGroupCountLimits)
 }
 
-func (item *Service3Limits) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service3Limits) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service3Limits) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service3Limits) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.DefaultGroupSizeLimit)
 	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteTL1(w, item.CustomGroupSizeLimits)
@@ -70,9 +61,6 @@ func (item *Service3Limits) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Service3Limits) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service3Limits) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x80ee61ca); err != nil {
 		return w, err
@@ -80,16 +68,10 @@ func (item *Service3Limits) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service3Limits) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service3Limits) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service3Limits) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service3Limits) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x80ee61ca)
 	return item.WriteTL1(w)

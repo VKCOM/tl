@@ -31,31 +31,19 @@ func (item *TupleIntBoxed0) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedFillRandom(rg, item.ptr())
 }
 
-func (item *TupleIntBoxed0) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TupleIntBoxed0) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedReadTL1(w, item.ptr())
 }
 
-func (item *TupleIntBoxed0) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TupleIntBoxed0) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TupleIntBoxed0) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TupleIntBoxed0) WriteTL1(w []byte) []byte {
 	w = tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedWriteTL1(w, item.ptr())
 	return w
 }
 
-func (item *TupleIntBoxed0) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TupleIntBoxed0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -63,16 +51,10 @@ func (item *TupleIntBoxed0) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TupleIntBoxed0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TupleIntBoxed0) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TupleIntBoxed0) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TupleIntBoxed0) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x9770768a)
 	return item.WriteTL1(w)

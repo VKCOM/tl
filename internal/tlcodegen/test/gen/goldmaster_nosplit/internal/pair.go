@@ -31,9 +31,6 @@ func (item *PairAInnerAInner) FillRandom(rg *basictl.RandGenerator, nat_X uint32
 	item.B.FillRandom(rg, nat_Y)
 }
 
-func (item *PairAInnerAInner) Read(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_X, nat_Y)
-}
 func (item *PairAInnerAInner) ReadTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	if w, err = item.A.ReadTL1(w, nat_X); err != nil {
 		return w, err
@@ -41,9 +38,6 @@ func (item *PairAInnerAInner) ReadTL1(w []byte, nat_X uint32, nat_Y uint32) (_ [
 	return item.B.ReadTL1(w, nat_Y)
 }
 
-func (item *PairAInnerAInner) Write(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_X, nat_Y)
-}
 func (item *PairAInnerAInner) WriteTL1(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	if w, err = item.A.WriteTL1(w, nat_X); err != nil {
 		return w, err
@@ -54,9 +48,6 @@ func (item *PairAInnerAInner) WriteTL1(w []byte, nat_X uint32, nat_Y uint32) (_ 
 	return w, nil
 }
 
-func (item *PairAInnerAInner) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_X, nat_Y)
-}
 func (item *PairAInnerAInner) ReadTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
@@ -64,9 +55,6 @@ func (item *PairAInnerAInner) ReadTL1Boxed(w []byte, nat_X uint32, nat_Y uint32)
 	return item.ReadTL1(w, nat_X, nat_Y)
 }
 
-func (item *PairAInnerAInner) WriteBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_X, nat_Y)
-}
 func (item *PairAInnerAInner) WriteTL1Boxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.WriteTL1(w, nat_X, nat_Y)
@@ -299,9 +287,6 @@ func (item *PairIntInt) FillRandom(rg *basictl.RandGenerator) {
 	item.B = basictl.RandomInt(rg)
 }
 
-func (item *PairIntInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *PairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.A); err != nil {
 		return w, err
@@ -309,25 +294,16 @@ func (item *PairIntInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.B)
 }
 
-func (item *PairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *PairIntInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *PairIntInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *PairIntInt) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.A)
 	w = basictl.IntWrite(w, item.B)
 	return w
 }
 
-func (item *PairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *PairIntInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
@@ -335,16 +311,10 @@ func (item *PairIntInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *PairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *PairIntInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *PairIntInt) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *PairIntInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.WriteTL1(w)
@@ -599,9 +569,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) FillRandom(rg *basictl.RandGenerat
 	item.B.FillRandom(rg)
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) Read(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_XXI, nat_XYI)
-}
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	if w, err = item.A.ReadTL1(w, nat_XXI, nat_XYI); err != nil {
 		return w, err
@@ -609,9 +576,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1(w []byte, nat_XXI uint32, 
 	return item.B.ReadTL1Boxed(w)
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) Write(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_XXI, nat_XYI)
-}
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	if w, err = item.A.WriteTL1(w, nat_XXI, nat_XYI); err != nil {
 		return w, err
@@ -620,9 +584,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1(w []byte, nat_XXI uint32,
 	return w, nil
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) ReadBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_XXI, nat_XYI)
-}
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1Boxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
@@ -630,9 +591,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL1Boxed(w []byte, nat_XXI uin
 	return item.ReadTL1(w, nat_XXI, nat_XYI)
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_XXI, nat_XYI)
-}
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1Boxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.WriteTL1(w, nat_XXI, nat_XYI)

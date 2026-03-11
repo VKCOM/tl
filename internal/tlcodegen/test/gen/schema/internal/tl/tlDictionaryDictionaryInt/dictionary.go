@@ -29,31 +29,19 @@ func (item *DictionaryDictionaryInt) Reset() {
 	tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReset(*item.ptr())
 }
 
-func (item *DictionaryDictionaryInt) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *DictionaryDictionaryInt) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadTL1(w, item.ptr())
 }
 
-func (item *DictionaryDictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *DictionaryDictionaryInt) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *DictionaryDictionaryInt) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *DictionaryDictionaryInt) WriteTL1(w []byte) []byte {
 	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteTL1(w, *item.ptr())
 	return w
 }
 
-func (item *DictionaryDictionaryInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *DictionaryDictionaryInt) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1f4c618f); err != nil {
 		return w, err
@@ -61,16 +49,10 @@ func (item *DictionaryDictionaryInt) ReadTL1Boxed(w []byte) (_ []byte, err error
 	return item.ReadTL1(w)
 }
 
-func (item *DictionaryDictionaryInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *DictionaryDictionaryInt) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *DictionaryDictionaryInt) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *DictionaryDictionaryInt) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1f4c618f)
 	return item.WriteTL1(w)

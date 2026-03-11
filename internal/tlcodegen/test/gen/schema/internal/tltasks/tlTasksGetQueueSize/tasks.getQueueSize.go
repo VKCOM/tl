@@ -44,9 +44,6 @@ func (item *TasksGetQueueSize) Reset() {
 	item.LocalDep = 0
 }
 
-func (item *TasksGetQueueSize) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksGetQueueSize) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.TypeName); err != nil {
 		return w, err
@@ -67,16 +64,10 @@ func (item *TasksGetQueueSize) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *TasksGetQueueSize) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksGetQueueSize) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksGetQueueSize) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksGetQueueSize) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteTL1(w, item.QueueId)
@@ -87,9 +78,6 @@ func (item *TasksGetQueueSize) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksGetQueueSize) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksGetQueueSize) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6abbb057); err != nil {
 		return w, err
@@ -97,31 +85,19 @@ func (item *TasksGetQueueSize) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksGetQueueSize) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksGetQueueSize) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksGetQueueSize) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksGetQueueSize) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6abbb057)
 	return item.WriteTL1(w)
 }
 
-func (item *TasksGetQueueSize) ReadResult(w []byte, ret *tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *TasksGetQueueSize) ReadResultTL1(w []byte, ret *tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w, item.FieldsMask)
 }
 
-func (item *TasksGetQueueSize) WriteResult(w []byte, ret tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *TasksGetQueueSize) WriteResultTL1(w []byte, ret tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w, item.FieldsMask)
 	return w, nil

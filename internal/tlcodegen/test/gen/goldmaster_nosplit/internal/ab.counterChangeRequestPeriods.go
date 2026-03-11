@@ -81,16 +81,10 @@ func (item *AbCounterChangeRequestPeriods) SetOne(value AbCounterChangeRequestPe
 	item.valueOne = value
 }
 
-func (item *AbCounterChangeRequestPeriods) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbCounterChangeRequestPeriods) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriods) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -108,23 +102,14 @@ func (item *AbCounterChangeRequestPeriods) ReadTL1Boxed(w []byte) (_ []byte, err
 	}
 }
 
-func (item *AbCounterChangeRequestPeriods) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbCounterChangeRequestPeriods) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *AbCounterChangeRequestPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbCounterChangeRequestPeriods) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbCounterChangeRequestPeriods) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriods) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AbCounterChangeRequestPeriods[item.index].TLTag)
 	switch item.index {
@@ -363,31 +348,19 @@ func (item *AbCounterChangeRequestPeriodsMany) FillRandom(rg *basictl.RandGenera
 	BuiltinVectorIntFillRandom(rg, &item.ObjectsPeridos)
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) ReadTL1(w []byte) (_ []byte, err error) {
 	return BuiltinVectorIntReadTL1(w, &item.ObjectsPeridos)
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL1(w []byte) []byte {
 	w = BuiltinVectorIntWriteTL1(w, item.ObjectsPeridos)
 	return w
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x14a35d80); err != nil {
 		return w, err
@@ -395,16 +368,10 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadTL1Boxed(w []byte) (_ []byte,
 	return item.ReadTL1(w)
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x14a35d80)
 	return item.WriteTL1(w)
@@ -627,31 +594,19 @@ func (item *AbCounterChangeRequestPeriodsOne) FillRandom(rg *basictl.RandGenerat
 	item.Period = basictl.RandomLong(rg)
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.LongRead(w, &item.Period)
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL1(w []byte) []byte {
 	w = basictl.LongWrite(w, item.Period)
 	return w
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd9c36de5); err != nil {
 		return w, err
@@ -659,16 +614,10 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadTL1Boxed(w []byte) (_ []byte, 
 	return item.ReadTL1(w)
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd9c36de5)
 	return item.WriteTL1(w)

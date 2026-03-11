@@ -30,9 +30,6 @@ func (item *Service5Query) Reset() {
 	item.Params.Reset()
 }
 
-func (item *Service5Query) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service5Query) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Query); err != nil {
 		return w, err
@@ -40,25 +37,16 @@ func (item *Service5Query) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Params.ReadTL1(w)
 }
 
-func (item *Service5Query) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service5Query) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service5Query) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service5Query) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Query)
 	w = item.Params.WriteTL1(w)
 	return w
 }
 
-func (item *Service5Query) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service5Query) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb3b62513); err != nil {
 		return w, err
@@ -66,31 +54,19 @@ func (item *Service5Query) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service5Query) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service5Query) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service5Query) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service5Query) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xb3b62513)
 	return item.WriteTL1(w)
 }
 
-func (item *Service5Query) ReadResult(w []byte, ret *tlService5Output.Service5Output) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service5Query) ReadResultTL1(w []byte, ret *tlService5Output.Service5Output) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *Service5Query) WriteResult(w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service5Query) WriteResultTL1(w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

@@ -173,16 +173,20 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) Read(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) (_ []byte, err error) {
+`)
+	if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) Read(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1(w`)
-	qw422016.N().S(natArgsCall)
-	qw422016.N().S(`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
 }
-func (item *`)
+`)
+	}
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadTL1(w []byte `)
 	qw422016.N().S(natArgsDecl)
@@ -192,16 +196,19 @@ func (item *`)
 
 `)
 	if len(struct_.wr.NatParams) == 0 {
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteGeneral(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteGeneral(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
     return item.WriteTL1General(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 }
-func (item *`)
+`)
+		}
+		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL1General(w []byte`)
 		qw422016.N().S(natArgsDecl)
@@ -222,18 +229,22 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) Write(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) `)
-	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
-	qw422016.N().S(` {
+`)
+	if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) Write(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) `)
+		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
+		qw422016.N().S(` {
     return item.WriteTL1(w`)
-	qw422016.N().S(natArgsCall)
-	qw422016.N().S(`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
 }
-func (item *`)
+`)
+	}
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteTL1(w []byte`)
 	qw422016.N().S(natArgsDecl)
@@ -245,16 +256,19 @@ func (item *`)
 
 `)
 	if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 {
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadBoxed(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) ReadBoxed(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1Boxed(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 }
-func (item *`)
+`)
+		}
+		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
@@ -278,16 +292,19 @@ func (item *`)
 
 `)
 		if len(struct_.wr.NatParams) == 0 {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) (_ []byte, err error) {
+			if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
+				qw422016.N().S(natArgsDecl)
+				qw422016.N().S(`) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+				qw422016.N().S(natArgsCall)
+				qw422016.N().S(`)
 }
-func (item *`)
+`)
+			}
+			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteTL1BoxedGeneral(w []byte`)
 			qw422016.N().S(natArgsDecl)
@@ -308,18 +325,22 @@ func (item *`)
 `)
 		}
 		qw422016.N().S(`
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteBoxed(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) `)
-		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
-		qw422016.N().S(` {
+`)
+		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteBoxed(w []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) `)
+			qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
+			qw422016.N().S(` {
     return item.WriteTL1Boxed(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 }
-func (item *`)
+`)
+		}
+		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
@@ -1438,14 +1459,17 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-	qw422016.N().S(`func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResult(w []byte, ret *`)
-	qw422016.N().S(retArg)
-	qw422016.N().S(`) (_ []byte, err error) {
+	if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadResult(w []byte, ret *`)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadResultTL1(w, ret)
 }
-func (item *`)
+`)
+	}
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultTL1(w []byte, ret *`)
 	qw422016.N().S(retArg)
@@ -1462,14 +1486,18 @@ func (item *`)
 	}
 	qw422016.N().S(`}
 
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteResult(w []byte, ret `)
-	qw422016.N().S(retArg)
-	qw422016.N().S(`) (_ []byte, err error) {
+`)
+	if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteResult(w []byte, ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) (_ []byte, err error) {
     return item.WriteResultTL1(w, ret)
 }
-func (item *`)
+`)
+	}
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteResultTL1(w []byte, ret `)
 	qw422016.N().S(retArg)

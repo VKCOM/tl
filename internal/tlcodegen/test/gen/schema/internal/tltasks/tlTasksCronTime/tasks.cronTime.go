@@ -106,9 +106,6 @@ func (item *TasksCronTime) Reset() {
 	item.Months = item.Months[:0]
 }
 
-func (item *TasksCronTime) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksCronTime) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -158,16 +155,10 @@ func (item *TasksCronTime) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *TasksCronTime) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksCronTime) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksCronTime) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksCronTime) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -191,9 +182,6 @@ func (item *TasksCronTime) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksCronTime) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksCronTime) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd4177d7f); err != nil {
 		return w, err
@@ -201,16 +189,10 @@ func (item *TasksCronTime) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksCronTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksCronTime) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksCronTime) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksCronTime) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd4177d7f)
 	return item.WriteTL1(w)

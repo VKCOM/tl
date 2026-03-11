@@ -50,9 +50,6 @@ func (item *CasesTL2TestObjectWithParam4) RepairMasks() {
 	}
 }
 
-func (item *CasesTL2TestObjectWithParam4) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestObjectWithParam4) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
@@ -66,16 +63,10 @@ func (item *CasesTL2TestObjectWithParam4) ReadTL1(w []byte) (_ []byte, err error
 	return BuiltinTuple4IntReadTL1(w, &item.Y)
 }
 
-func (item *CasesTL2TestObjectWithParam4) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestObjectWithParam4) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTL2TestObjectWithParam4) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestObjectWithParam4) WriteTL1(w []byte) []byte {
 	if 4&(1<<0) != 0 {
 		w = basictl.IntWrite(w, item.X)
@@ -84,9 +75,6 @@ func (item *CasesTL2TestObjectWithParam4) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CasesTL2TestObjectWithParam4) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestObjectWithParam4) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd0ce3a42); err != nil {
 		return w, err
@@ -94,16 +82,10 @@ func (item *CasesTL2TestObjectWithParam4) ReadTL1Boxed(w []byte) (_ []byte, err 
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestObjectWithParam4) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestObjectWithParam4) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTL2TestObjectWithParam4) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestObjectWithParam4) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd0ce3a42)
 	return item.WriteTL1(w)

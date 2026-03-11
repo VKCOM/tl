@@ -43,9 +43,6 @@ func (item *CasesTL2TestParamsGeneration) FillRandom(rg *basictl.RandGenerator) 
 	item.X4.FillRandom(rg, item.N1, item.N2)
 }
 
-func (item *CasesTL2TestParamsGeneration) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestParamsGeneration) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N1); err != nil {
 		return w, err
@@ -65,16 +62,10 @@ func (item *CasesTL2TestParamsGeneration) ReadTL1(w []byte) (_ []byte, err error
 	return item.X4.ReadTL1(w, item.N1, item.N2)
 }
 
-func (item *CasesTL2TestParamsGeneration) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestParamsGeneration) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTL2TestParamsGeneration) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestParamsGeneration) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N1)
 	w = basictl.NatWrite(w, item.N2)
@@ -89,9 +80,6 @@ func (item *CasesTL2TestParamsGeneration) WriteTL1(w []byte) (_ []byte, err erro
 	return w, nil
 }
 
-func (item *CasesTL2TestParamsGeneration) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestParamsGeneration) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xaac2f033); err != nil {
 		return w, err
@@ -99,16 +87,10 @@ func (item *CasesTL2TestParamsGeneration) ReadTL1Boxed(w []byte) (_ []byte, err 
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestParamsGeneration) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestParamsGeneration) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *CasesTL2TestParamsGeneration) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestParamsGeneration) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xaac2f033)
 	return item.WriteTL1(w)

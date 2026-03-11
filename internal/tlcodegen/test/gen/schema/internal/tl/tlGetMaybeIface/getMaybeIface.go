@@ -28,31 +28,19 @@ func (item *GetMaybeIface) Reset() {
 	item.X.Reset()
 }
 
-func (item *GetMaybeIface) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetMaybeIface) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.X.ReadTL1Boxed(w)
 }
 
-func (item *GetMaybeIface) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetMaybeIface) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *GetMaybeIface) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *GetMaybeIface) WriteTL1(w []byte) []byte {
 	w = item.X.WriteTL1Boxed(w)
 	return w
 }
 
-func (item *GetMaybeIface) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetMaybeIface) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x6b055ae4); err != nil {
 		return w, err
@@ -60,31 +48,19 @@ func (item *GetMaybeIface) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetMaybeIface) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetMaybeIface) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *GetMaybeIface) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetMaybeIface) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x6b055ae4)
 	return item.WriteTL1(w)
 }
 
-func (item *GetMaybeIface) ReadResult(w []byte, ret *tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetMaybeIface) ReadResultTL1(w []byte, ret *tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w)
 }
 
-func (item *GetMaybeIface) WriteResult(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetMaybeIface) WriteResultTL1(w []byte, ret tlService1ValueMaybe.Service1ValueMaybe) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w)
 	return w, nil

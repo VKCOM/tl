@@ -27,9 +27,6 @@ func (item *BoxedVector64) Reset() {
 	item.X = item.X[:0]
 }
 
-func (item *BoxedVector64) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BoxedVector64) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -37,25 +34,16 @@ func (item *BoxedVector64) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadTL1(w, &item.X)
 }
 
-func (item *BoxedVector64) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BoxedVector64) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BoxedVector64) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BoxedVector64) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteTL1(w, item.X)
 	return w
 }
 
-func (item *BoxedVector64) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BoxedVector64) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x83659ba8); err != nil {
 		return w, err
@@ -63,24 +51,15 @@ func (item *BoxedVector64) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *BoxedVector64) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BoxedVector64) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BoxedVector64) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BoxedVector64) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x83659ba8)
 	return item.WriteTL1(w)
 }
 
-func (item *BoxedVector64) ReadResult(w []byte, ret *[]int64) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *BoxedVector64) ReadResultTL1(w []byte, ret *[]int64) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -88,9 +67,6 @@ func (item *BoxedVector64) ReadResultTL1(w []byte, ret *[]int64) (_ []byte, err 
 	return tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadTL1(w, ret)
 }
 
-func (item *BoxedVector64) WriteResult(w []byte, ret []int64) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *BoxedVector64) WriteResultTL1(w []byte, ret []int64) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteTL1(w, ret)

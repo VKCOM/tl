@@ -70,9 +70,6 @@ func (item *BenchmarksVrutoyTopLevelUnion) AsEmpty() (BenchmarksVrutoytopLevelUn
 func (item *BenchmarksVrutoyTopLevelUnion) ResetToEmpty() { item.index = 1 }
 func (item *BenchmarksVrutoyTopLevelUnion) SetEmpty()     { item.index = 1 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -90,9 +87,6 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadTL1Boxed(w []byte) (_ []byte, err
 	}
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _BenchmarksVrutoyTopLevelUnion[item.index].TLTag)
 	switch item.index {
@@ -212,31 +206,19 @@ func (item *BenchmarksVrutoytopLevelUnionBig) FillRandom(rg *basictl.RandGenerat
 	BuiltinVectorBenchmarksVrupositionFillRandom(rg, &item.NextPositions)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL1(w []byte) (_ []byte, err error) {
 	return BuiltinVectorBenchmarksVrupositionReadTL1(w, &item.NextPositions)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1(w []byte) []byte {
 	w = BuiltinVectorBenchmarksVrupositionWriteTL1(w, item.NextPositions)
 	return w
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xef556bee); err != nil {
 		return w, err
@@ -244,16 +226,10 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL1Boxed(w []byte) (_ []byte, 
 	return item.ReadTL1(w)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xef556bee)
 	return item.WriteTL1(w)
@@ -353,30 +329,18 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) Reset() {}
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) FillRandom(rg *basictl.RandGenerator) {}
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xce27c770); err != nil {
 		return w, err
@@ -384,16 +348,10 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL1Boxed(w []byte) (_ []byte
 	return item.ReadTL1(w)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xce27c770)
 	return item.WriteTL1(w)

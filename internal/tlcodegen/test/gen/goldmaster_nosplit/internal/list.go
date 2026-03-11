@@ -103,9 +103,6 @@ func (item *ListService5Output) RepairMasks() {
 	}
 }
 
-func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *ListService5Output) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flag); err != nil {
@@ -135,16 +132,10 @@ func (item *ListService5Output) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *ListService5Output) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *ListService5Output) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *ListService5Output) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *ListService5Output) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.Flag)
 	if item.Flag&(1<<0) != 0 {
@@ -161,9 +152,6 @@ func (item *ListService5Output) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *ListService5Output) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *ListService5Output) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x02d80cdd); err != nil {
 		return w, err
@@ -171,16 +159,10 @@ func (item *ListService5Output) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *ListService5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *ListService5Output) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *ListService5Output) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *ListService5Output) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x02d80cdd)
 	return item.WriteTL1(w)

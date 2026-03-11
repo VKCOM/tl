@@ -187,9 +187,6 @@ func (item *BenchmarksVruposition) RepairMasks() {
 	}
 }
 
-func (item *BenchmarksVruposition) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *BenchmarksVruposition) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
@@ -233,16 +230,10 @@ func (item *BenchmarksVruposition) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *BenchmarksVruposition) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *BenchmarksVruposition) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *BenchmarksVruposition) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *BenchmarksVruposition) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = basictl.LongWrite(w, item.PayloadOffset)
@@ -255,9 +246,6 @@ func (item *BenchmarksVruposition) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *BenchmarksVruposition) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *BenchmarksVruposition) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x32792c04); err != nil {
 		return w, err
@@ -265,16 +253,10 @@ func (item *BenchmarksVruposition) ReadTL1Boxed(w []byte) (_ []byte, err error) 
 	return item.ReadTL1(w)
 }
 
-func (item *BenchmarksVruposition) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *BenchmarksVruposition) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *BenchmarksVruposition) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *BenchmarksVruposition) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x32792c04)
 	return item.WriteTL1(w)

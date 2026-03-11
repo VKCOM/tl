@@ -126,9 +126,6 @@ func (item *TlsType) Reset() {
 	item.ParamsType = 0
 }
 
-func (item *TlsType) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TlsType) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Name); err != nil {
 		return w, err
@@ -148,16 +145,10 @@ func (item *TlsType) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.LongRead(w, &item.ParamsType)
 }
 
-func (item *TlsType) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TlsType) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TlsType) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TlsType) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Name)
 	w = basictl.StringWrite(w, item.Id)
@@ -168,9 +159,6 @@ func (item *TlsType) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TlsType) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsType) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x12eb4386); err != nil {
 		return w, err
@@ -178,16 +166,10 @@ func (item *TlsType) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TlsType) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TlsType) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TlsType) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsType) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x12eb4386)
 	return item.WriteTL1(w)

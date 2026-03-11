@@ -31,9 +31,6 @@ func (item *CasesTL2TestArrayFlexibleBool) FillRandom(rg *basictl.RandGenerator)
 	BuiltinTupleBoolFillRandom(rg, &item.Arr, item.N)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -41,16 +38,10 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadTL1(w []byte) (_ []byte, err erro
 	return BuiltinTupleBoolReadTL1(w, &item.Arr, item.N)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	if w, err = BuiltinTupleBoolWriteTL1(w, item.Arr, item.N); err != nil {
@@ -59,9 +50,6 @@ func (item *CasesTL2TestArrayFlexibleBool) WriteTL1(w []byte) (_ []byte, err err
 	return w, nil
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x974a9b29); err != nil {
 		return w, err
@@ -69,16 +57,10 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadTL1Boxed(w []byte) (_ []byte, err
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestArrayFlexibleBool) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x974a9b29)
 	return item.WriteTL1(w)

@@ -30,31 +30,19 @@ func (item *TlsNatConst) Reset() {
 	item.Value = 0
 }
 
-func (item *TlsNatConst) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TlsNatConst) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Value)
 }
 
-func (item *TlsNatConst) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TlsNatConst) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TlsNatConst) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TlsNatConst) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Value)
 	return w
 }
 
-func (item *TlsNatConst) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsNatConst) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x8ce940b1); err != nil {
 		return w, err
@@ -62,16 +50,10 @@ func (item *TlsNatConst) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TlsNatConst) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TlsNatConst) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TlsNatConst) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsNatConst) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x8ce940b1)
 	return item.WriteTL1(w)
@@ -205,9 +187,6 @@ func (item *TlsNatExpr) SetNatVar(value TlsNatVar) {
 	item.valueNatVar = value
 }
 
-func (item *TlsNatExpr) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsNatExpr) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -225,9 +204,6 @@ func (item *TlsNatExpr) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *TlsNatExpr) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsNatExpr) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _TlsNatExpr[item.index].TLTag)
 	switch item.index {
@@ -354,9 +330,6 @@ func (item *TlsNatVar) Reset() {
 	item.VarNum = 0
 }
 
-func (item *TlsNatVar) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TlsNatVar) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Dif); err != nil {
 		return w, err
@@ -364,25 +337,16 @@ func (item *TlsNatVar) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.VarNum)
 }
 
-func (item *TlsNatVar) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TlsNatVar) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TlsNatVar) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TlsNatVar) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Dif)
 	w = basictl.IntWrite(w, item.VarNum)
 	return w
 }
 
-func (item *TlsNatVar) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TlsNatVar) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x4e8a14f0); err != nil {
 		return w, err
@@ -390,16 +354,10 @@ func (item *TlsNatVar) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TlsNatVar) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TlsNatVar) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TlsNatVar) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TlsNatVar) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x4e8a14f0)
 	return item.WriteTL1(w)

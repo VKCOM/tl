@@ -410,9 +410,6 @@ func (item *TasksFullFilledCron) Reset() {
 	item.A31 = 0
 }
 
-func (item *TasksFullFilledCron) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TasksFullFilledCron) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -644,16 +641,10 @@ func (item *TasksFullFilledCron) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *TasksFullFilledCron) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TasksFullFilledCron) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TasksFullFilledCron) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TasksFullFilledCron) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -755,9 +746,6 @@ func (item *TasksFullFilledCron) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TasksFullFilledCron) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TasksFullFilledCron) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xd4177d7e); err != nil {
 		return w, err
@@ -765,16 +753,10 @@ func (item *TasksFullFilledCron) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *TasksFullFilledCron) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TasksFullFilledCron) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TasksFullFilledCron) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TasksFullFilledCron) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xd4177d7e)
 	return item.WriteTL1(w)

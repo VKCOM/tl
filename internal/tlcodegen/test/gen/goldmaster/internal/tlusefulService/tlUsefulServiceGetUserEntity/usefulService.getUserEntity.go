@@ -65,9 +65,6 @@ func (item *UsefulServiceGetUserEntity) RepairMasks() {
 	}
 }
 
-func (item *UsefulServiceGetUserEntity) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *UsefulServiceGetUserEntity) ReadTL1(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
@@ -84,16 +81,10 @@ func (item *UsefulServiceGetUserEntity) ReadTL1(w []byte) (_ []byte, err error) 
 	return w, nil
 }
 
-func (item *UsefulServiceGetUserEntity) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *UsefulServiceGetUserEntity) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *UsefulServiceGetUserEntity) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *UsefulServiceGetUserEntity) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	if item.FieldsMask&(1<<0) != 0 {
@@ -102,9 +93,6 @@ func (item *UsefulServiceGetUserEntity) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *UsefulServiceGetUserEntity) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *UsefulServiceGetUserEntity) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3c857e52); err != nil {
 		return w, err
@@ -112,31 +100,19 @@ func (item *UsefulServiceGetUserEntity) ReadTL1Boxed(w []byte) (_ []byte, err er
 	return item.ReadTL1(w)
 }
 
-func (item *UsefulServiceGetUserEntity) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *UsefulServiceGetUserEntity) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *UsefulServiceGetUserEntity) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *UsefulServiceGetUserEntity) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x3c857e52)
 	return item.WriteTL1(w)
 }
 
-func (item *UsefulServiceGetUserEntity) ReadResult(w []byte, ret *tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *UsefulServiceGetUserEntity) ReadResultTL1(w []byte, ret *tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
 	return ret.ReadTL1Boxed(w, item.FieldsMask)
 }
 
-func (item *UsefulServiceGetUserEntity) WriteResult(w []byte, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *UsefulServiceGetUserEntity) WriteResultTL1(w []byte, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
 	w = ret.WriteTL1Boxed(w, item.FieldsMask)
 	return w, nil

@@ -30,16 +30,10 @@ func (item *TupleService2CounterSet) Reset() {
 	*item.ptr() = (*item.ptr())[:0]
 }
 
-func (item *TupleService2CounterSet) Read(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
-}
 func (item *TupleService2CounterSet) ReadTL1(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadTL1(w, item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 
-func (item *TupleService2CounterSet) Write(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
-}
 func (item *TupleService2CounterSet) WriteTL1(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteTL1(w, *item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err
@@ -47,9 +41,6 @@ func (item *TupleService2CounterSet) WriteTL1(w []byte, nat_tintCountersNum uint
 	return w, nil
 }
 
-func (item *TupleService2CounterSet) ReadBoxed(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
-}
 func (item *TupleService2CounterSet) ReadTL1Boxed(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -57,9 +48,6 @@ func (item *TupleService2CounterSet) ReadTL1Boxed(w []byte, nat_tintCountersNum 
 	return item.ReadTL1(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2CounterSet) WriteBoxed(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
-}
 func (item *TupleService2CounterSet) WriteTL1Boxed(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	return item.WriteTL1(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)

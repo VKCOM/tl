@@ -35,9 +35,6 @@ func (item *Hren) FillRandom(rg *basictl.RandGenerator) {
 	rg.DecreaseDepth()
 }
 
-func (item *Hren) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Hren) ReadTL1(w []byte) (_ []byte, err error) {
 	if item.Next == nil {
 		item.Next = new(HrenMaybe)
@@ -45,16 +42,10 @@ func (item *Hren) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.Next.ReadTL1Boxed(w)
 }
 
-func (item *Hren) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Hren) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Hren) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Hren) WriteTL1(w []byte) []byte {
 	if item.Next == nil {
 		var tmpValue HrenMaybe
@@ -65,9 +56,6 @@ func (item *Hren) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *Hren) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Hren) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x12ab5219); err != nil {
 		return w, err
@@ -75,16 +63,10 @@ func (item *Hren) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Hren) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Hren) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Hren) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Hren) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x12ab5219)
 	return item.WriteTL1(w)
@@ -319,10 +301,6 @@ func (item *HrenMaybe) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *HrenMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
-
 func (item *HrenMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.ReadBool(w, &item.Ok, 0x27930a7b, 0x3f9c8ef8); err != nil {
 		return w, err
@@ -331,10 +309,6 @@ func (item *HrenMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 		return item.Value.ReadTL1(w)
 	}
 	return w, nil
-}
-
-func (item *HrenMaybe) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
 }
 
 func (item *HrenMaybe) WriteTL1Boxed(w []byte) []byte {

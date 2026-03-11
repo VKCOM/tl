@@ -77,16 +77,10 @@ func (item *MyNat3) SetMyPlus3(value MyPlus3) {
 	*item.valueMyPlus3 = value
 }
 
-func (item *MyNat3) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyNat3) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *MyNat3) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyNat3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -107,23 +101,14 @@ func (item *MyNat3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *MyNat3) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyNat3) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *MyNat3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyNat3) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyNat3) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyNat3) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _MyNat3[item.index].TLTag)
 	switch item.index {
@@ -351,31 +336,19 @@ func (item *MyPlus3) FillRandom(rg *basictl.RandGenerator) {
 	item.ptr().FillRandom(rg)
 }
 
-func (item *MyPlus3) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyPlus3) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ptr().ReadTL1Boxed(w)
 }
 
-func (item *MyPlus3) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyPlus3) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyPlus3) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyPlus3) WriteTL1(w []byte) []byte {
 	w = item.ptr().WriteTL1Boxed(w)
 	return w
 }
 
-func (item *MyPlus3) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyPlus3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x692c291b); err != nil {
 		return w, err
@@ -383,16 +356,10 @@ func (item *MyPlus3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyPlus3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyPlus3) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyPlus3) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyPlus3) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x692c291b)
 	return item.WriteTL1(w)
@@ -579,28 +546,16 @@ func (item *MyZero3) Reset() {}
 
 func (item *MyZero3) FillRandom(rg *basictl.RandGenerator) {}
 
-func (item *MyZero3) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyZero3) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *MyZero3) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyZero3) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *MyZero3) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *MyZero3) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *MyZero3) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyZero3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x103a40cf); err != nil {
 		return w, err
@@ -608,16 +563,10 @@ func (item *MyZero3) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyZero3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyZero3) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *MyZero3) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyZero3) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x103a40cf)
 	return item.WriteTL1(w)

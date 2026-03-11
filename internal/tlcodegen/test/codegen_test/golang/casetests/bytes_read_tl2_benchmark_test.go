@@ -117,7 +117,7 @@ func BenchmarkTL1WriteRandomVector(b *testing.B) {
 			b.Fail()
 		}
 		b.StartTimer()
-		_ = dst.Write(nil)
+		_ = dst.WriteTL1(nil)
 	}
 }
 
@@ -138,7 +138,7 @@ func BenchmarkTL1WriteRandomVectorWithWriteBuffer(b *testing.B) {
 			b.Fail()
 		}
 		b.StartTimer()
-		writeBuffer = dst.Write(writeBuffer[:0])
+		writeBuffer = dst.WriteTL1(writeBuffer[:0])
 	}
 }
 
@@ -174,7 +174,7 @@ func BenchmarkTL1WriteRandomArrayWithWriteBuffer(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		writeBuffer, _ = dsts[i%NumberOfSamples].Write(writeBuffer[:0])
+		writeBuffer, _ = dsts[i%NumberOfSamples].WriteTL1(writeBuffer[:0])
 	}
 }
 

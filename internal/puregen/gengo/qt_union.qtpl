@@ -66,17 +66,21 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
 
 {%- if union.wr.HasTL2() && len(union.wr.NatParams) == 0 -%}
 {%- code /* for interface requirements for TL2 Type, also for tests */ -%}
+{%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.ReadTL1(w{%s= natArgsCall %})
 }
+{%- endif -%}
 func (item*{%s= goName %}) ReadTL1(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.ReadTL1Boxed(w{%s= natArgsCall %})
 }
 {%- endif -%}
 
+{%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.ReadTL1Boxed(w{%s= natArgsCall %})
 }
+{%- endif -%}
 func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if union.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -105,16 +109,20 @@ func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, 
 
 {%- if union.wr.HasTL2() && len(union.wr.NatParams) == 0 -%}
 {%- code /* for interface requirements for TL2 Type, also for tests */ -%}
+{%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item*{%s= goName %}) WriteGeneral(w []byte) (_ []byte, err error) {
     return item.WriteTL1General(w)
 }
+{%- endif -%}
 func (item*{%s= goName %}) WriteTL1General(w []byte) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w)
 }
 
+{%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w{%s= natArgsCall %})
 }
+{%- endif -%}
 func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if union.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -124,9 +132,11 @@ func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_
 }
 {%- endif -%}
 
+{%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     return item.WriteTL1Boxed(w{%s= natArgsCall %})
 }
+{%- endif -%}
 func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
     {%- if union.wr.originateFromTL2 -%}
         {%- if writeNeedsError -%}

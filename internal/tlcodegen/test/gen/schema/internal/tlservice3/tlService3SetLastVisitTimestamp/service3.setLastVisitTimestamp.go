@@ -29,9 +29,6 @@ func (item *Service3SetLastVisitTimestamp) Reset() {
 	item.Timestamp = 0
 }
 
-func (item *Service3SetLastVisitTimestamp) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service3SetLastVisitTimestamp) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.UserId); err != nil {
 		return w, err
@@ -39,25 +36,16 @@ func (item *Service3SetLastVisitTimestamp) ReadTL1(w []byte) (_ []byte, err erro
 	return basictl.IntRead(w, &item.Timestamp)
 }
 
-func (item *Service3SetLastVisitTimestamp) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service3SetLastVisitTimestamp) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service3SetLastVisitTimestamp) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service3SetLastVisitTimestamp) WriteTL1(w []byte) []byte {
 	w = basictl.IntWrite(w, item.UserId)
 	w = basictl.IntWrite(w, item.Timestamp)
 	return w
 }
 
-func (item *Service3SetLastVisitTimestamp) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service3SetLastVisitTimestamp) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x7909b020); err != nil {
 		return w, err
@@ -65,31 +53,19 @@ func (item *Service3SetLastVisitTimestamp) ReadTL1Boxed(w []byte) (_ []byte, err
 	return item.ReadTL1(w)
 }
 
-func (item *Service3SetLastVisitTimestamp) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service3SetLastVisitTimestamp) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service3SetLastVisitTimestamp) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service3SetLastVisitTimestamp) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x7909b020)
 	return item.WriteTL1(w)
 }
 
-func (item *Service3SetLastVisitTimestamp) ReadResult(w []byte, ret *bool) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service3SetLastVisitTimestamp) ReadResultTL1(w []byte, ret *bool) (_ []byte, err error) {
 	return tlBool.BoolReadTL1Boxed(w, ret)
 }
 
-func (item *Service3SetLastVisitTimestamp) WriteResult(w []byte, ret bool) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service3SetLastVisitTimestamp) WriteResultTL1(w []byte, ret bool) (_ []byte, err error) {
 	w = tlBool.BoolWriteTL1Boxed(w, ret)
 	return w, nil

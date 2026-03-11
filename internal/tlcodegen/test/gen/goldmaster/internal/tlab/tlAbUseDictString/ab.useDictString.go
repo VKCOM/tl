@@ -35,9 +35,6 @@ func (item *AbUseDictString) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinDictStringString.BuiltinDictStringStringFillRandom(rg, &item.Tags)
 }
 
-func (item *AbUseDictString) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbUseDictString) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -45,25 +42,16 @@ func (item *AbUseDictString) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringString.BuiltinDictStringStringReadTL1(w, &item.Tags)
 }
 
-func (item *AbUseDictString) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbUseDictString) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AbUseDictString) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AbUseDictString) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = tlBuiltinDictStringString.BuiltinDictStringStringWriteTL1(w, item.Tags)
 	return w
 }
 
-func (item *AbUseDictString) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbUseDictString) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3325d884); err != nil {
 		return w, err
@@ -71,16 +59,10 @@ func (item *AbUseDictString) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *AbUseDictString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbUseDictString) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbUseDictString) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbUseDictString) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x3325d884)
 	return item.WriteTL1(w)
@@ -334,9 +316,6 @@ func (item *AbUseDictStringBytes) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinDictStringString.BuiltinDictStringStringBytesFillRandom(rg, &item.Tags)
 }
 
-func (item *AbUseDictStringBytes) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AbUseDictStringBytes) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
@@ -344,25 +323,16 @@ func (item *AbUseDictStringBytes) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringString.BuiltinDictStringStringBytesReadTL1(w, &item.Tags)
 }
 
-func (item *AbUseDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AbUseDictStringBytes) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *AbUseDictStringBytes) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *AbUseDictStringBytes) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.FieldsMask)
 	w = tlBuiltinDictStringString.BuiltinDictStringStringBytesWriteTL1(w, item.Tags)
 	return w
 }
 
-func (item *AbUseDictStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AbUseDictStringBytes) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x3325d884); err != nil {
 		return w, err
@@ -370,16 +340,10 @@ func (item *AbUseDictStringBytes) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *AbUseDictStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AbUseDictStringBytes) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AbUseDictStringBytes) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AbUseDictStringBytes) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x3325d884)
 	return item.WriteTL1(w)

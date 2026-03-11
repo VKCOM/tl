@@ -30,16 +30,10 @@ func (item *IntKeyDictionaryTupleString) FillRandom(rg *basictl.RandGenerator, n
 	BuiltinDictIntTupleStringFillRandom(rg, item.ptr(), nat_t)
 }
 
-func (item *IntKeyDictionaryTupleString) Read(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_t)
-}
 func (item *IntKeyDictionaryTupleString) ReadTL1(w []byte, nat_t uint32) (_ []byte, err error) {
 	return BuiltinDictIntTupleStringReadTL1(w, item.ptr(), nat_t)
 }
 
-func (item *IntKeyDictionaryTupleString) Write(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteTL1(w, nat_t)
-}
 func (item *IntKeyDictionaryTupleString) WriteTL1(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = BuiltinDictIntTupleStringWriteTL1(w, *item.ptr(), nat_t); err != nil {
 		return w, err
@@ -47,9 +41,6 @@ func (item *IntKeyDictionaryTupleString) WriteTL1(w []byte, nat_t uint32) (_ []b
 	return w, nil
 }
 
-func (item *IntKeyDictionaryTupleString) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_t)
-}
 func (item *IntKeyDictionaryTupleString) ReadTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x07bafc42); err != nil {
 		return w, err
@@ -57,9 +48,6 @@ func (item *IntKeyDictionaryTupleString) ReadTL1Boxed(w []byte, nat_t uint32) (_
 	return item.ReadTL1(w, nat_t)
 }
 
-func (item *IntKeyDictionaryTupleString) WriteBoxed(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w, nat_t)
-}
 func (item *IntKeyDictionaryTupleString) WriteTL1Boxed(w []byte, nat_t uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x07bafc42)
 	return item.WriteTL1(w, nat_t)

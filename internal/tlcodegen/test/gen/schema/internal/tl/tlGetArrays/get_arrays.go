@@ -32,9 +32,6 @@ func (item *GetArrays) Reset() {
 	tlBuiltinTuple5Int.BuiltinTuple5IntReset(&item.B)
 }
 
-func (item *GetArrays) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *GetArrays) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -45,16 +42,10 @@ func (item *GetArrays) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple5Int.BuiltinTuple5IntReadTL1(w, &item.B)
 }
 
-func (item *GetArrays) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *GetArrays) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *GetArrays) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *GetArrays) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteTL1(w, item.A, item.N); err != nil {
@@ -64,9 +55,6 @@ func (item *GetArrays) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *GetArrays) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *GetArrays) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x90658cdb); err != nil {
 		return w, err
@@ -74,24 +62,15 @@ func (item *GetArrays) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *GetArrays) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *GetArrays) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *GetArrays) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *GetArrays) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x90658cdb)
 	return item.WriteTL1(w)
 }
 
-func (item *GetArrays) ReadResult(w []byte, ret *[5]int32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *GetArrays) ReadResultTL1(w []byte, ret *[5]int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -99,9 +78,6 @@ func (item *GetArrays) ReadResultTL1(w []byte, ret *[5]int32) (_ []byte, err err
 	return tlBuiltinTuple5Int.BuiltinTuple5IntReadTL1(w, ret)
 }
 
-func (item *GetArrays) WriteResult(w []byte, ret [5]int32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *GetArrays) WriteResultTL1(w []byte, ret [5]int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteTL1(w, &ret)

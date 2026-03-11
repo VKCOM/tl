@@ -26,9 +26,6 @@ func (item *DictFieldStringService1Value) Reset() {
 	item.Value.Reset()
 }
 
-func (item *DictFieldStringService1Value) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *DictFieldStringService1Value) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.StringRead(w, &item.Key); err != nil {
 		return w, err
@@ -36,16 +33,10 @@ func (item *DictFieldStringService1Value) ReadTL1(w []byte) (_ []byte, err error
 	return item.Value.ReadTL1Boxed(w)
 }
 
-func (item *DictFieldStringService1Value) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *DictFieldStringService1Value) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *DictFieldStringService1Value) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *DictFieldStringService1Value) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Key)
 	w = item.Value.WriteTL1Boxed(w)

@@ -65,9 +65,6 @@ func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *CasesTestLocalFieldmask) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTestLocalFieldmask) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.F1); err != nil {
 		return w, err
@@ -82,16 +79,10 @@ func (item *CasesTestLocalFieldmask) ReadTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *CasesTestLocalFieldmask) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTestLocalFieldmask) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *CasesTestLocalFieldmask) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *CasesTestLocalFieldmask) WriteTL1(w []byte) []byte {
 	w = basictl.NatWrite(w, item.F1)
 	if item.F1&(1<<0) != 0 {
@@ -100,9 +91,6 @@ func (item *CasesTestLocalFieldmask) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *CasesTestLocalFieldmask) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTestLocalFieldmask) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xf68fd3f9); err != nil {
 		return w, err
@@ -110,16 +98,10 @@ func (item *CasesTestLocalFieldmask) ReadTL1Boxed(w []byte) (_ []byte, err error
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTestLocalFieldmask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTestLocalFieldmask) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *CasesTestLocalFieldmask) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTestLocalFieldmask) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xf68fd3f9)
 	return item.WriteTL1(w)

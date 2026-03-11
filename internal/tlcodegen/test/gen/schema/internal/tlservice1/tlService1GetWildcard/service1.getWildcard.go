@@ -30,31 +30,19 @@ func (item *Service1GetWildcard) Reset() {
 	item.Prefix = ""
 }
 
-func (item *Service1GetWildcard) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *Service1GetWildcard) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Prefix)
 }
 
-func (item *Service1GetWildcard) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *Service1GetWildcard) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *Service1GetWildcard) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *Service1GetWildcard) WriteTL1(w []byte) []byte {
 	w = basictl.StringWrite(w, item.Prefix)
 	return w
 }
 
-func (item *Service1GetWildcard) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *Service1GetWildcard) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x2f2abf13); err != nil {
 		return w, err
@@ -62,24 +50,15 @@ func (item *Service1GetWildcard) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *Service1GetWildcard) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *Service1GetWildcard) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *Service1GetWildcard) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *Service1GetWildcard) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x2f2abf13)
 	return item.WriteTL1(w)
 }
 
-func (item *Service1GetWildcard) ReadResult(w []byte, ret *[]tlMapStringString.MapStringString) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *Service1GetWildcard) ReadResultTL1(w []byte, ret *[]tlMapStringString.MapStringString) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
 		return w, err
@@ -87,9 +66,6 @@ func (item *Service1GetWildcard) ReadResultTL1(w []byte, ret *[]tlMapStringStrin
 	return tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadTL1(w, ret)
 }
 
-func (item *Service1GetWildcard) WriteResult(w []byte, ret []tlMapStringString.MapStringString) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *Service1GetWildcard) WriteResultTL1(w []byte, ret []tlMapStringString.MapStringString) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x1cb5c415)
 	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteTL1(w, ret)

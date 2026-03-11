@@ -61,9 +61,6 @@ func (item *TreeStatsObjectLimitValue) SetDouble(value TreeStatsObjectLimitValue
 	item.valueDouble = value
 }
 
-func (item *TreeStatsObjectLimitValue) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValue) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -81,9 +78,6 @@ func (item *TreeStatsObjectLimitValue) ReadTL1Boxed(w []byte) (_ []byte, err err
 	}
 }
 
-func (item *TreeStatsObjectLimitValue) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValue) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _TreeStatsObjectLimitValue[item.index].TLTag)
 	switch item.index {
@@ -201,31 +195,19 @@ func (item *TreeStatsObjectLimitValueDouble) Reset() {
 	*item.ptr() = 0
 }
 
-func (item *TreeStatsObjectLimitValueDouble) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.DoubleRead(w, item.ptr())
 }
 
-func (item *TreeStatsObjectLimitValueDouble) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TreeStatsObjectLimitValueDouble) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) WriteTL1(w []byte) []byte {
 	w = basictl.DoubleWrite(w, *item.ptr())
 	return w
 }
 
-func (item *TreeStatsObjectLimitValueDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x5dfb8816); err != nil {
 		return w, err
@@ -233,16 +215,10 @@ func (item *TreeStatsObjectLimitValueDouble) ReadTL1Boxed(w []byte) (_ []byte, e
 	return item.ReadTL1(w)
 }
 
-func (item *TreeStatsObjectLimitValueDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TreeStatsObjectLimitValueDouble) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValueDouble) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x5dfb8816)
 	return item.WriteTL1(w)
@@ -302,28 +278,16 @@ func (TreeStatsObjectLimitValueLong) TLTag() uint32  { return 0x73111993 }
 
 func (item *TreeStatsObjectLimitValueLong) Reset() {}
 
-func (item *TreeStatsObjectLimitValueLong) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *TreeStatsObjectLimitValueLong) ReadTL1(w []byte) (_ []byte, err error) { return w, nil }
 
-func (item *TreeStatsObjectLimitValueLong) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *TreeStatsObjectLimitValueLong) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w), nil
 }
 
-func (item *TreeStatsObjectLimitValueLong) Write(w []byte) []byte {
-	return item.WriteTL1(w)
-}
 func (item *TreeStatsObjectLimitValueLong) WriteTL1(w []byte) []byte {
 	return w
 }
 
-func (item *TreeStatsObjectLimitValueLong) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValueLong) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x73111993); err != nil {
 		return w, err
@@ -331,16 +295,10 @@ func (item *TreeStatsObjectLimitValueLong) ReadTL1Boxed(w []byte) (_ []byte, err
 	return item.ReadTL1(w)
 }
 
-func (item *TreeStatsObjectLimitValueLong) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *TreeStatsObjectLimitValueLong) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *TreeStatsObjectLimitValueLong) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *TreeStatsObjectLimitValueLong) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x73111993)
 	return item.WriteTL1(w)

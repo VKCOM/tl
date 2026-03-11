@@ -53,9 +53,6 @@ func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
 	tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntFillRandom(rg, &item.Z)
 }
 
-func (item *UseDictUgly) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *UseDictUgly) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -75,16 +72,10 @@ func (item *UseDictUgly) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadTL1(w, &item.Z)
 }
 
-func (item *UseDictUgly) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *UseDictUgly) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *UseDictUgly) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *UseDictUgly) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	if w, err = tlBuiltinDictIntTupleString.BuiltinDictIntTupleStringWriteTL1(w, item.D, item.N); err != nil {
@@ -99,9 +90,6 @@ func (item *UseDictUgly) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *UseDictUgly) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *UseDictUgly) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xfb9ce817); err != nil {
 		return w, err
@@ -109,16 +97,10 @@ func (item *UseDictUgly) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *UseDictUgly) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *UseDictUgly) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *UseDictUgly) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *UseDictUgly) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xfb9ce817)
 	return item.WriteTL1(w)

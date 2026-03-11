@@ -78,9 +78,6 @@ func (item *TasksQueueStats) Reset() {
 	item.InProgressSize = 0
 }
 
-func (item *TasksQueueStats) Read(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.ReadTL1(w, nat_fields_mask)
-}
 func (item *TasksQueueStats) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if nat_fields_mask&(1<<0) != 0 {
 		if w, err = basictl.IntRead(w, &item.WaitingSize); err != nil {
@@ -106,9 +103,6 @@ func (item *TasksQueueStats) ReadTL1(w []byte, nat_fields_mask uint32) (_ []byte
 	return w, nil
 }
 
-func (item *TasksQueueStats) Write(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteTL1(w, nat_fields_mask)
-}
 func (item *TasksQueueStats) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	if nat_fields_mask&(1<<0) != 0 {
 		w = basictl.IntWrite(w, item.WaitingSize)
@@ -122,9 +116,6 @@ func (item *TasksQueueStats) WriteTL1(w []byte, nat_fields_mask uint32) []byte {
 	return w
 }
 
-func (item *TasksQueueStats) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w, nat_fields_mask)
-}
 func (item *TasksQueueStats) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x1d942543); err != nil {
 		return w, err
@@ -132,9 +123,6 @@ func (item *TasksQueueStats) ReadTL1Boxed(w []byte, nat_fields_mask uint32) (_ [
 	return item.ReadTL1(w, nat_fields_mask)
 }
 
-func (item *TasksQueueStats) WriteBoxed(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteTL1Boxed(w, nat_fields_mask)
-}
 func (item *TasksQueueStats) WriteTL1Boxed(w []byte, nat_fields_mask uint32) []byte {
 	w = basictl.NatWrite(w, 0x1d942543)
 	return item.WriteTL1(w, nat_fields_mask)

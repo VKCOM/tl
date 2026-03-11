@@ -45,16 +45,10 @@ func (item *AMyBool) SetMyTrue()    { item.index = 0 }
 func (item AMyBool) IsMyFalse() bool { return item.index == 1 }
 func (item *AMyBool) SetMyFalse()    { item.index = 1 }
 
-func (item *AMyBool) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *AMyBool) ReadTL1(w []byte) (_ []byte, err error) {
 	return item.ReadTL1Boxed(w)
 }
 
-func (item *AMyBool) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *AMyBool) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
@@ -72,23 +66,14 @@ func (item *AMyBool) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *AMyBool) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *AMyBool) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1BoxedGeneral(w)
 }
 
-func (item *AMyBool) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *AMyBool) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w), nil
 }
 
-func (item *AMyBool) WriteBoxed(w []byte) []byte {
-	return item.WriteTL1Boxed(w)
-}
 func (item *AMyBool) WriteTL1Boxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AMyBool[item.index].TLTag)
 	return w

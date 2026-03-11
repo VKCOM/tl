@@ -28,31 +28,19 @@ func (item *CasesTL2TestFunctionWithDep1) FillRandom(rg *basictl.RandGenerator) 
 	item.N = basictl.RandomSize(rg)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) ReadTL1(w []byte) (_ []byte, err error) {
 	return basictl.NatRead(w, &item.N)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	return w, nil
 }
 
-func (item *CasesTL2TestFunctionWithDep1) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xb6c63b07); err != nil {
 		return w, err
@@ -60,24 +48,15 @@ func (item *CasesTL2TestFunctionWithDep1) ReadTL1Boxed(w []byte) (_ []byte, err 
 	return item.ReadTL1(w)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *CasesTL2TestFunctionWithDep1) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xb6c63b07)
 	return item.WriteTL1(w)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) ReadResult(w []byte, ret *[]int32) (_ []byte, err error) {
-	return item.ReadResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionWithDep1) ReadResultTL1(w []byte, ret *[]int32) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
 		return w, err
@@ -85,9 +64,6 @@ func (item *CasesTL2TestFunctionWithDep1) ReadResultTL1(w []byte, ret *[]int32) 
 	return BuiltinTupleIntReadTL1(w, ret, item.N)
 }
 
-func (item *CasesTL2TestFunctionWithDep1) WriteResult(w []byte, ret []int32) (_ []byte, err error) {
-	return item.WriteResultTL1(w, ret)
-}
 func (item *CasesTL2TestFunctionWithDep1) WriteResultTL1(w []byte, ret []int32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x9770768a)
 	if w, err = BuiltinTupleIntWriteTL1(w, ret, item.N); err != nil {

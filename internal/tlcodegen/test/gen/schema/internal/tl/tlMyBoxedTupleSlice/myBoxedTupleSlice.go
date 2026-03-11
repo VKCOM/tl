@@ -29,9 +29,6 @@ func (item *MyBoxedTupleSlice) Reset() {
 	item.Data = item.Data[:0]
 }
 
-func (item *MyBoxedTupleSlice) Read(w []byte) (_ []byte, err error) {
-	return item.ReadTL1(w)
-}
 func (item *MyBoxedTupleSlice) ReadTL1(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
@@ -42,16 +39,10 @@ func (item *MyBoxedTupleSlice) ReadTL1(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadTL1(w, &item.Data, item.N)
 }
 
-func (item *MyBoxedTupleSlice) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1General(w)
-}
 func (item *MyBoxedTupleSlice) WriteTL1General(w []byte) (_ []byte, err error) {
 	return item.WriteTL1(w)
 }
 
-func (item *MyBoxedTupleSlice) Write(w []byte) (_ []byte, err error) {
-	return item.WriteTL1(w)
-}
 func (item *MyBoxedTupleSlice) WriteTL1(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	w = basictl.NatWrite(w, 0x9770768a)
@@ -61,9 +52,6 @@ func (item *MyBoxedTupleSlice) WriteTL1(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *MyBoxedTupleSlice) ReadBoxed(w []byte) (_ []byte, err error) {
-	return item.ReadTL1Boxed(w)
-}
 func (item *MyBoxedTupleSlice) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0x25d1a1be); err != nil {
 		return w, err
@@ -71,16 +59,10 @@ func (item *MyBoxedTupleSlice) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return item.ReadTL1(w)
 }
 
-func (item *MyBoxedTupleSlice) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteTL1BoxedGeneral(w)
-}
 func (item *MyBoxedTupleSlice) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteTL1Boxed(w)
 }
 
-func (item *MyBoxedTupleSlice) WriteBoxed(w []byte) (_ []byte, err error) {
-	return item.WriteTL1Boxed(w)
-}
 func (item *MyBoxedTupleSlice) WriteTL1Boxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x25d1a1be)
 	return item.WriteTL1(w)
