@@ -99,6 +99,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to delete files that are already in the target directory, but will not be affected by the new generation (default:true)`)
 	flag.StringVar(&opt.BasicTLNamespace, "cpp-basictl-namespace", "basictl",
 		`name for namespace for tl basic types and functions (default:basictl)`)
+	flag.BoolVar(&opt.GenerateFieldMasks, "cpp-generate-fieldmasks", false,
+		`whether to generate constants with fieldmask for each field in type`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,

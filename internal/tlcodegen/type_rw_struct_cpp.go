@@ -245,6 +245,23 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	std::string_view tl_name() const { return "%[1]s"; }
 `, trw.wr.tlName, trw.wr.tlTag))
 			}
+
+			if trw.wr.gen.options.GenerateFieldMasks {
+				// print all fieldmask constants
+				printMasks := false
+				for _, field := range trw.Fields {
+					if field.fieldMask != nil && field.fieldMask.isField {
+						if !printMasks {
+							printMasks = true
+							hpp.WriteString("\n")
+							hpp.WriteString("\t// tl field masks constants\n")
+						}
+						hpp.WriteString(fmt.Sprintf(`	static constexpr uint32_t TL_FIELD_MASK_%s = 1 << %d;
+`, strings.ToUpper(field.cppName), field.BitNumber))
+					}
+				}
+			}
+
 			if len(myArgsDecl) == 0 {
 				// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 				hpp.WriteString(fmt.Sprintf(`
