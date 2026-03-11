@@ -298,8 +298,10 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 			}
 		}
 
+		relativeInclude, _ := filepath.Rel(gen.options.RootCPP, ".")
+
 		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
-		cppMake1.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o %s -c %s\n", buildFilePath, namespaceFilePath))
+		cppMake1.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I%s -o %s -c %s\n", relativeInclude, buildFilePath, namespaceFilePath))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
 		if gen.options.SplitInternal {
@@ -670,19 +672,21 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 }
 
 func createStreams(gen *Gen2, cppMake *strings.Builder) {
+	relativeInclude, _ := filepath.Rel(gen.options.RootCPP, ".")
+
 	cppMake.WriteString("# compile streams which are used to work with io\n")
 	cppMake.WriteString(fmt.Sprintf("__build/io_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_streams.cpp %[1]s/io_streams.h\n", CppBasictlPackage(gen)))
-	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c %[1]s/io_streams.cpp\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I%[2]s -o __build/io_streams.o -c %[1]s/io_streams.cpp\n", CppBasictlPackage(gen), relativeInclude))
 
 	cppMake.WriteString("\n")
 
 	cppMake.WriteString(fmt.Sprintf("__build/io_throwable_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_throwable_streams.cpp %[1]s/io_throwable_streams.h\n", CppBasictlPackage(gen)))
-	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c %[1]s/io_throwable_streams.cpp\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I%[2]s -o __build/io_throwable_streams.o -c %[1]s/io_throwable_streams.cpp\n", CppBasictlPackage(gen), relativeInclude))
 
 	cppMake.WriteString("\n")
 
 	cppMake.WriteString(fmt.Sprintf("__build/string_io.o: %[1]s/io_connectors.h %[1]s/impl/string_io.cpp %[1]s/impl/string_io.h\n", CppBasictlPackage(gen)))
-	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c %[1]s/impl/string_io.cpp\n", CppBasictlPackage(gen)))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I%[2]s -o __build/string_io.o -c %[1]s/impl/string_io.cpp\n", CppBasictlPackage(gen), relativeInclude))
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
@@ -1157,12 +1161,15 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName), gen.o
 		return err
 	}
 
+	relativeInclude, _ := filepath.Rel(gen.options.RootCPP, ".")
+
 	make.WriteString("# compile meta data collection\n")
 	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s __build
-	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
+	$(CC) $(CFLAGS) -I%[3]s -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
 		filepathDetailsName,
+		relativeInclude,
 	))
 	make.WriteString("\n")
 	return nil
@@ -1311,13 +1318,16 @@ void %[1]s::factory::set_all_factories() {
 		return err
 	}
 
+	relativeInclude, _ := filepath.Rel(gen.options.RootCPP, ".")
+
 	make.WriteString("# compile objects factories\n")
 	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s __build
-	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
+	$(CC) $(CFLAGS) -I%[4]s -o __build/__factory.o -c %[2]s
 `,
 		filepathName,
 		filepathNameDetails,
 		factoryFileDependencies.String(),
+		relativeInclude,
 	))
 	make.WriteString("\n")
 

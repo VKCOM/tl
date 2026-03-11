@@ -56,6 +56,12 @@ var (
 // For debugging
 var DEBUG = false
 
+func debugf(format string, args ...interface{}) {
+	if DEBUG {
+		fmt.Printf(format, args...)
+	}
+}
+
 type LocalResolveContext struct {
 	localTypeArgs map[string]LocalTypeArg
 	localNatArgs  map[string]LocalNatArg
@@ -2420,10 +2426,8 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		gen.componentsOrder = order
 
 		for _, v := range sortedTypes {
-			if len(v.arguments) == 0 {
-				visitedNodes := make(map[*TypeRWWrapper]int)
-				v.trw.FillRecursiveChildren(visitedNodes, true)
-			}
+			visitedNodes := make(map[*TypeRWWrapper]int)
+			v.trw.FillRecursiveChildren(visitedNodes, true)
 		}
 	}
 
