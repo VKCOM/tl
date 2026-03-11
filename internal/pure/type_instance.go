@@ -15,7 +15,7 @@ type TypeInstance interface {
 
 	GoodForMapKey() bool
 	IsBit() bool // for vector/tuple special case
-	FindCycle(c *cycleFinder)
+	FindCycle(c *cycleFinder, prName tlast.PositionRange)
 	GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance
 	BoxedOnly() bool
 

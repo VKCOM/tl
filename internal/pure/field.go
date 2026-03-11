@@ -61,7 +61,7 @@ type Field struct {
 
 	natArgs []ActualNatArg // for TL1 only, empty for TL2
 
-	prName tlast.PositionRange
+	pr tlast.PositionRange
 }
 
 func (f Field) OwnerTypeInstance() TypeInstance { return f.owner }

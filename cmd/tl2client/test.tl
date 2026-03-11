@@ -32,3 +32,5 @@ map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 //@read a.call1#12345678 x:int => Int;
 
 //@read a.call2#12345679 x:int => True;
+
+curl.myHren curl.myHren = curl.MyHren;

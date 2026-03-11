@@ -117,7 +117,7 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 // exclamation marker is not actually a template at all, "!X" is simply reference to interface RpcFunction,
 // so we remove template argument from the list
 // @any rpcProxy.diagonal {X:Type} query:!X = Vector (Maybe X);
-func (k *Kernel) checkExclamationWrapper(typ *tlast.Combinator) (bool, []tlast.TemplateArgument, error) {
+func (k *Kernel) CheckExclamationWrapper(typ *tlast.Combinator) (bool, []tlast.TemplateArgument, error) {
 	exclPos := -1
 	for i, field := range typ.Fields {
 		if field.Excl {
@@ -174,7 +174,7 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 		if _, ok := namespaceTL1SeeHere[typ.Construct.Name.Namespace]; !ok {
 			namespaceTL1SeeHere[typ.Construct.Name.Namespace] = typ.Construct.NamePR.BeautifulError(errSeeHere)
 		}
-		_, targs, err := k.checkExclamationWrapper(typ)
+		_, targs, err := k.CheckExclamationWrapper(typ)
 		if err != nil {
 			return err
 		}
@@ -452,8 +452,8 @@ func (k *Kernel) checkUnionElementsCompatibility(types []*tlast.Combinator) erro
 	base := types[0]
 	for _, typ := range types[1:] {
 
-		_, baseTarg, _ := k.checkExclamationWrapper(base)
-		_, typTarg, _ := k.checkExclamationWrapper(base)
+		_, baseTarg, _ := k.CheckExclamationWrapper(base)
+		_, typTarg, _ := k.CheckExclamationWrapper(typ)
 
 		cur := typ.Construct.Name.String()
 		if len(typTarg) < len(baseTarg) {

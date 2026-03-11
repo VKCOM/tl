@@ -23,7 +23,7 @@ type TypeInstanceDict struct {
 func (ins *TypeInstanceDict) Field() Field                   { return ins.field }
 func (ins *TypeInstanceDict) FieldType() *TypeInstanceStruct { return ins.fieldType }
 
-func (ins *TypeInstanceDict) FindCycle(c *cycleFinder) {
+func (ins *TypeInstanceDict) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
 }
 
 func (ins *TypeInstanceDict) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {
@@ -87,6 +87,7 @@ func (k *Kernel) createDict(canonicalName string,
 		ins:     fieldIns,
 		bare:    fieldBare,
 		natArgs: fieldNatArgs,
+		pr:      resolvedType.BracketType.ArrayType.PR, // to print recursive cycles, we do not need key type
 	}
 	return ins, nil
 }
