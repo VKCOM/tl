@@ -447,7 +447,7 @@ func (k *Kernel) Compile() error {
 				if natFieldUsage.UsedAsSize && natFieldUsage.UsedAsMask {
 					e3 := natFieldUsage.usedAsMaskPR.BeautifulError(fmt.Errorf("used as mask here"))
 					e3.PrintWarning(k.opts.ErrorWriter, nil)
-					e1 := field.prName.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.Name()))
+					e1 := field.pr.BeautifulError(fmt.Errorf("#-field %s is used as tuple size, while already being used as a field mask", field.Name()))
 					e2 := natFieldUsage.usedAsSizePR.BeautifulError(fmt.Errorf("used as size here"))
 					return tlast.BeautifulError2(e1, e2)
 				}
@@ -457,11 +457,15 @@ func (k *Kernel) Compile() error {
 	var cf cycleFinder
 	for _, ref := range k.instancesOrdered {
 		cf.reset()
-		ref.ins.FindCycle(&cf)
-		res := cf.printCycle()
-		if res == "TODO - implement later" {
-			return fmt.Errorf("found recursive cycle %s", res)
-		}
+		ref.ins.FindCycle(&cf, tlast.PositionRange{}) // never printed
+		_ = cf.printCycle()
+		//if err != nil {
+		//	return err
+		//}
+		// TODO - this fix is not easy. If all constructors reach original type, this is error,
+		// but if only some, this is OK. Complicated property.
+		//myPlus a:MyNat2 = MyNat2; // struct with field
+		//^^^^^^-- found infinite cycle MyNat2->myPlus->MyNat2, use optional to break it ./internal/tlcodegen/tes
 	}
 	tl2Children := map[TypeInstance]struct{}{}
 	typesCounterMarkTL2 := 0

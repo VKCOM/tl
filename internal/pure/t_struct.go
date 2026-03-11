@@ -130,14 +130,14 @@ outer:
 	return result
 }
 
-func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder) {
-	if !c.push(ins) {
+func (ins *TypeInstanceStruct) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
+	if !c.push(ins, prName) {
 		return
 	}
 	defer c.pop(ins)
 	for _, ft := range ins.fields {
 		if ft.fieldMask == nil {
-			ft.ins.ins.FindCycle(c)
+			ft.ins.ins.FindCycle(c, ft.pr)
 		}
 	}
 }
@@ -206,7 +206,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			// fieldMask:     fieldMask,
 			commentBefore: fieldDef.CommentBefore,
 			commentRight:  fieldDef.CommentRight,
-			prName:        fieldDef.PRName,
+			pr:            fieldDef.PR,
 		}
 		if fieldDef.IsOptional && newField.IsBit() {
 			// we allow optional bit through aliases or template arguments,
@@ -615,7 +615,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			ins:           fieldIns,
 			natArgs:       natArgs,
 			bare:          fieldBare,
-			prName:        fieldDef.PRName,
+			pr:            fieldDef.FieldType.PR,
 		}
 		if !fieldBare && fieldIns.ins != nil && fieldIns.ins.CanonicalName() == "True" &&
 			!purelegacy.AllowTrueBoxed(def.Construct.Name.String(), fieldDef.FieldName) &&
@@ -753,7 +753,7 @@ func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedT
 		ins:           fieldIns,
 		natArgs:       natArgs,
 		bare:          fieldBare,
-		prName:        def.Type.TypeAlias.PR,
+		pr:            def.Type.TypeAlias.PR,
 	}
 	ins.fields = append(ins.fields, newField)
 

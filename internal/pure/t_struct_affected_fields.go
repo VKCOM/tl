@@ -57,7 +57,7 @@ func (ins *TypeInstanceStruct) GetNatFieldUsage(fieldIndex int, inStructFields b
 				field.FieldMask().IsField() && field.FieldMask().FieldIndex() == fieldIndex {
 				if !natFieldUsage.UsedAsMask {
 					natFieldUsage.UsedAsMask = true
-					natFieldUsage.usedAsMaskPR = field.prName
+					natFieldUsage.usedAsMaskPR = field.pr
 				}
 				natFieldUsage.appendUsage(field.bitNumber, ins, i)
 			}
@@ -95,7 +95,7 @@ func markAffectedFields(node TypeInstance, visitedNodes map[TypeInstance]struct{
 			if field.FieldMask() != nil && !field.FieldMask().IsField() && !field.FieldMask().IsNumber() && field.FieldMask().name == natParamName {
 				if !natFieldUsage.UsedAsMask {
 					natFieldUsage.UsedAsMask = true
-					natFieldUsage.usedAsMaskPR = field.prName
+					natFieldUsage.usedAsMaskPR = field.pr
 				}
 				natFieldUsage.appendUsage(field.bitNumber, ins, fieldIndex)
 			}

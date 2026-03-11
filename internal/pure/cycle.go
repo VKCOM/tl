@@ -6,26 +6,37 @@
 
 package pure
 
-import "strings"
+import (
+	"fmt"
+	"strings"
 
-type cycleFinder struct {
-	visitedNodes map[TypeInstance]int
-	path         []TypeInstance
-	found        []TypeInstance
+	"github.com/vkcom/tl/internal/tlast"
+)
+
+type cyclePathElement struct {
+	ins    TypeInstance
+	prName tlast.PositionRange
 }
 
-func (c *cycleFinder) printCycle() string {
-	if len(c.found) == 0 {
-		return ""
+type cycleFinder struct {
+	visitedNodes map[TypeInstance]int // int: we find the shortest cycle to help with debugging
+	path         []cyclePathElement
+	found        []cyclePathElement
+}
+
+func (c *cycleFinder) printCycle() error {
+	if len(c.found) < 2 {
+		return nil
 	}
 	sb := strings.Builder{}
-	for i, ins := range c.found {
+	for i, pe := range c.found {
 		if i != 0 {
 			sb.WriteString("->")
 		}
-		sb.WriteString(ins.CanonicalName())
+		sb.WriteString(pe.ins.CanonicalName())
 	}
-	return sb.String()
+	// first element has no PR because we start from type definition, not field
+	return c.found[1].prName.BeautifulError(fmt.Errorf("found infinite cycle %s, use optional to break it", sb.String()))
 }
 
 func (c *cycleFinder) reset() {
@@ -37,25 +48,25 @@ func (c *cycleFinder) reset() {
 	c.found = c.found[:0]
 }
 
-func (c *cycleFinder) push(ins TypeInstance) bool {
+func (c *cycleFinder) push(ins TypeInstance, prName tlast.PositionRange) bool {
 	depth := len(c.path)
 	if depth == 0 { // source type
-		c.path = append(c.path, ins)
+		c.path = append(c.path, cyclePathElement{ins: ins, prName: prName})
 		return true
 	}
 	if wasDepth, ok := c.visitedNodes[ins]; ok && depth >= wasDepth {
 		return false
 	}
 	c.visitedNodes[ins] = depth
-	c.path = append(c.path, ins)
-	if len(c.path) > 1 && c.path[0] == ins && (len(c.found) == 0 || depth < len(c.found)) {
+	c.path = append(c.path, cyclePathElement{ins: ins, prName: prName})
+	if len(c.path) > 1 && c.path[0].ins == ins && (len(c.found) == 0 || depth < len(c.found)) {
 		c.found = append(c.found[:0], c.path...)
 	}
 	return true
 }
 
 func (c *cycleFinder) pop(ins TypeInstance) {
-	if c.path[len(c.path)-1] != ins {
+	if c.path[len(c.path)-1].ins != ins {
 		panic("cycle finder wrong recursion")
 	}
 	c.path = c.path[:len(c.path)-1]

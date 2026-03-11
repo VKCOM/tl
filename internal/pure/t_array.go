@@ -27,13 +27,13 @@ func (ins *TypeInstanceArray) Count() uint32     { return ins.count }
 func (ins *TypeInstanceArray) DynamicSize() bool { return ins.dynamicSize }
 func (ins *TypeInstanceArray) Field() Field      { return ins.field }
 
-func (ins *TypeInstanceArray) FindCycle(c *cycleFinder) {
-	if !c.push(ins) {
+func (ins *TypeInstanceArray) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
+	if !c.push(ins, prName) {
 		return
 	}
 	defer c.pop(ins)
 	if ins.isTuple {
-		ins.field.ins.ins.FindCycle(c)
+		ins.field.ins.ins.FindCycle(c, ins.field.pr)
 	}
 }
 
@@ -107,6 +107,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 		ins:     fieldIns,
 		bare:    fieldBare,
 		natArgs: fieldNatArgs,
+		pr:      resolvedType.BracketType.ArrayType.PR,
 	}
 	return ins, nil
 }
@@ -144,6 +145,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 		ins:     fieldIns,
 		bare:    fieldBare,
 		natArgs: fieldNatArgs,
+		pr:      resolvedType.BracketType.ArrayType.PR,
 	}
 	return ins, nil
 }

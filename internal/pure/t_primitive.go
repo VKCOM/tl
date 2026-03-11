@@ -30,7 +30,7 @@ func (ins *TypeInstancePrimitive) IsBit() bool {
 	return ins.canonicalName == "bit"
 }
 
-func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder) {
+func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
 }
 
 func (ins *TypeInstancePrimitive) GetChildren(children []TypeInstance, withReturnType bool) []TypeInstance {

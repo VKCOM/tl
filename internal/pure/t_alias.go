@@ -21,7 +21,7 @@ package pure
 //	return ins.fieldType.ins.IsBit()
 //}
 //
-//func (ins *TypeInstanceAlias) FindCycle(c *cycleFinder) {
+//func (ins *TypeInstanceAlias) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
 //	if !c.push(ins) {
 //		return
 //	}

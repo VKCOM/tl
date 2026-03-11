@@ -16,7 +16,9 @@ import (
 
 type TypeInstanceUnion struct {
 	TypeInstanceCommon
+	// TODO - wrap into field?
 	variantNames   []string
+	variantNamePRs []tlast.PositionRange
 	variantTypes   []*TypeInstanceStruct
 	elementNatArgs []ActualNatArg // empty for TL2
 	isEnum         bool
@@ -43,14 +45,14 @@ func (ins *TypeInstanceUnion) IsUnionMaybe() (isMaybe bool, elementField Field) 
 	return true, ins.variantTypes[1].fields[0]
 }
 
-func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
-	if !c.push(ins) {
+func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
+	if !c.push(ins, prName) {
 		return
 	}
 	defer c.pop(ins)
 	// any variant with a cycle is prohibited, because it could be set active
-	for _, variant := range ins.variantTypes {
-		variant.FindCycle(c)
+	for i, variant := range ins.variantTypes {
+		variant.FindCycle(c, ins.variantNamePRs[i])
 	}
 }
 
@@ -80,11 +82,13 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 			commentBefore: tip.combTL2.CommentBefore,
 			commentRight:  "", // TODO - no comment right in TL2?
 		},
-		isEnum:       true,
-		variantNames: make([]string, len(def.Variants)),
-		variantTypes: make([]*TypeInstanceStruct, len(def.Variants)),
+		isEnum:         true,
+		variantNames:   make([]string, len(def.Variants)),
+		variantNamePRs: make([]tlast.PositionRange, len(def.Variants)),
+		variantTypes:   make([]*TypeInstanceStruct, len(def.Variants)),
 	}
 	for i, variantDef := range def.Variants {
+		ins.variantNamePRs[i] = variantDef.PRName
 		tlName := tip.canonicalName
 		tlName.Name += "__" + variantDef.Name
 		found, comment := utils.ExtractTLGenTag(variantDef.CommentBefore, "tlgen:tl1name")
@@ -141,11 +145,13 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 		},
 		variantNames:   variantNames,
 		variantTypes:   make([]*TypeInstanceStruct, len(definition)),
+		variantNamePRs: make([]tlast.PositionRange, len(definition)),
 		elementNatArgs: natArgs,
 		isEnum:         true,
 	}
 
 	for i, variantDef := range definition {
+		ins.variantNamePRs[i] = variantDef.Construct.NamePR
 		// do not change canonical names before removing long adapters,
 		// otherwise long adapter discovery will break (see func (gen *genGo) findLongAdapter)
 		argsStart := len(canonicalName)
