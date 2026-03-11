@@ -188,6 +188,7 @@ type Gen2Options struct {
 	GenerateCommonMakefile bool
 	DeleteUnrelatedFiles   bool
 	BasicTLNamespace       string
+	GenerateFieldMasks     bool
 
 	// PHP
 	AddFunctionBodies            bool

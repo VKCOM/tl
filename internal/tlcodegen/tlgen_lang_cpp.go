@@ -286,15 +286,30 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 				return createdDetailsHpps[w.hppDetailsFileName]
 			})
 
-			hppDets := utils.MapSlice(usedTypes, func(a *TypeRWWrapper) string {
-				return a.hppDetailsFileName
-			})
+			{
+				hppFiles := utils.MapSlice(usedTypes, func(a *TypeRWWrapper) string {
+					return a.fileName
+				})
+				hppFilesList := utils.SetToSlice(utils.SliceToSet(hppFiles))
 
-			hppDetsList := utils.SetToSlice(utils.SliceToSet(hppDets))
+				sort.Strings(hppFilesList)
+				for _, h := range hppFilesList {
+					if !createdHpps[h] {
+						continue
+					}
+					cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
+				}
+			}
+			{
+				hppDets := utils.MapSlice(usedTypes, func(a *TypeRWWrapper) string {
+					return a.hppDetailsFileName
+				})
+				hppDetsList := utils.SetToSlice(utils.SliceToSet(hppDets))
 
-			sort.Strings(hppDetsList)
-			for _, h := range hppDetsList {
-				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
+				sort.Strings(hppDetsList)
+				for _, h := range hppDetsList {
+					cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
+				}
 			}
 		}
 
