@@ -7,15 +7,22 @@
 {%s= HeaderComment %}
 package {%s= FactoryGoPackageName %}{%s= addBytesLower("", bytesVersion) %}
 
+{%- if addHeader -%}
+// factory contains both metadata all types and all generated code for all types.
+// you want to import factory only where absolutely necessary, and never into common code.
+{%- endif -%}
+
 import (
-    "{%s= gen.MetaPackageName %}"
+    "{%s= gen.options.Go.TLPackageNameFull %}/internal/metainternal"
+{%- if addHeader -%}
+    "{%s= gen.MetaPackageName %}" // force import to call meta init first
+{%- endif -%}
     {%- for _, wr := range sortedImports -%}
     "{%s= gen.options.Go.TLPackageNameFull %}/{%s= wr %}"
     {%- endfor -%}
 )
 
 {%- if addHeader -%}
-    {%- code if hasCode != nil { *hasCode = true } -%}
 
     func CreateFunction(tag uint32) meta.Function {
         item := meta.FactoryItemByTLTag(tag)
@@ -65,27 +72,27 @@ func init() {
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
         {%- if wr.UnionParent() != nil && wr.UnionParent().IsEnum -%}
             {%- code if hasCode != nil { *hasCode = true } -%}
-            meta.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
+            metainternal.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
             {%- continue -%}
         {%- endif -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
         {%- if fun.ResultType != nil -%}
-            meta.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
-            func() meta.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }, {%- code -%}
+            metainternal.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() metainternal.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }, {%- code -%}
             {%- if wr.WrLong != nil -%}
-                func() meta.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
+                func() metainternal.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
             {%- else -%}
                 nil)
             {%- endif -%}
         {%- else -%}
-            meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
-            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
+            metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() metainternal.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
         {%- endif -%}
     {%- endif -%}
     {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.HasTL2() -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
-        meta.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
-            func() meta.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
+        metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            func() metainternal.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
     {%- endif -%}
 {%- endfor -%}
 }

@@ -3,6 +3,8 @@
 
 package gengo
 
+import "fmt"
+
 import (
 	qtio422016 "io"
 
@@ -14,6 +16,352 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
+func (gen *genGo) streamgenerateMetaInternal(qw422016 *qt422016.Writer, commentString string) {
+	qw422016.N().S(commentString)
+	qw422016.N().S(`
+package metainternal
+
+import (
+    "`)
+	qw422016.N().S(gen.options.Go.TLPackageNameFull)
+	qw422016.N().S(`/internal"
+	"fmt"
+    `)
+	qw422016.N().Q(gen.BasicPackageNameFull)
+	qw422016.N().S(`
+)
+
+// We can create only types which have zero type arguments and zero nat arguments
+type Object interface {
+	TLName() string // returns type's TL name. For union, returns constructor name depending on actual union value
+	TLTag() uint32  // returns type's TL tag. For union, returns constructor tag depending on actual union value
+	String() string // returns type's representation for debugging (JSON for now)
+
+`)
+	if gen.options.GenerateRandomCode {
+		qw422016.N().S(`	FillRandom(rg *basictl.RandGenerator)
+`)
+	}
+	qw422016.N().S(`
+	ReadTL1(w []byte) ([]byte, error) // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
+	ReadTL1Boxed(w []byte) ([]byte, error) // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
+	WriteTL1General(w []byte) ([]byte, error) // same as Write, but has common signature (with error) for all objects, so can be called through interface
+	WriteTL1BoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
+
+	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error
+	UnmarshalJSON([]byte) error // reads type's JSON representation
+
+	ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error
+    // like MarshalJSON, but appends to w and returns it
+    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error)
+`)
+	if gen.options.GenerateTL2() {
+		qw422016.N().S(`
+    ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error)
+	WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte
+`)
+	}
+	qw422016.N().S(`}
+
+type Function interface {
+	Object
+
+`)
+	if gen.options.GenerateRandomCode {
+		qw422016.N().S(`    FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error)
+`)
+	}
+	qw422016.N().S(`
+    // tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
+    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
+	ReadResultJSONWriteResultTL1(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
+
+`)
+	if gen.options.GenerateTL2() {
+		qw422016.N().S(`    ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+    ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+
+    ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+    ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
+`)
+	}
+	qw422016.N().S(`}
+
+type TLItem interface {
+    TLTag() uint32
+    TLName() string
+    // true if has TL1 code generated
+    HasTL1() bool
+    // true if has TL2 code generated
+    HasTL2() bool
+    CreateObject() Object
+    // used in TL generator tests only, do not use in product code
+    CreateObjectBytes() Object
+
+    IsFunction() bool
+    CreateFunction() Function
+    // used in TL generator tests only, do not use in product code
+    CreateFunctionBytes() Function
+    HasUnionTypesInResult() bool
+    HasUnionTypesInArguments() bool
+    // For transcoding short-long version during Long ID transition
+    HasFunctionLong() bool
+    CreateFunctionLong() Function
+
+// Annotations
+`)
+	for _, name := range gen.kernel.AllAnnotations() {
+		goName := ToUpperFirst(name)
+
+		qw422016.N().S(`    Annotation`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`() bool
+`)
+	}
+	qw422016.N().S(`}
+
+type TLItemImpl struct {
+    Tag                uint32
+    Annotations        uint32
+    Name             string
+
+    HaTL1             bool
+    HaTL2             bool
+
+    ResultTypeContainsUnionTypes bool
+    ArgumentsTypesContainUnionTypes bool
+
+    // either CrObject != nil or CrFunction != nil for object/function respectively
+    // also, CrFunctionLong can be != nil if there is long adapter (legacy to be removed soon)
+    // also, CrObjectBytes, CrFunctionBytes, CrFunctionLongBytes
+    // can be != nil independently, if factory_bytes is imported
+    CrFunction     func() Function
+    CrFunctionLong func() Function
+    CrObject       func() Object
+    CrFunctionBytes     func() Function
+    CrFunctionLongBytes func() Function
+    CrObjectBytes       func() Object
+}
+
+func (item TLItemImpl) TLTag() uint32            { return item.Tag }
+func (item TLItemImpl) TLName() string           { return item.Name }
+// true for TL1-originated types
+func (item TLItemImpl) HasTL1() bool              { return item.HaTL1 }
+// true for TL2-originated types and for TL1-originated types if in TL2 generation whitelist
+func (item TLItemImpl) HasTL2() bool              { return item.HaTL2 }
+func (item TLItemImpl) CreateObject() Object     {
+    if item.CrFunction != nil {
+        return item.CrFunction()
+    }
+    return item.CrObject()
+}
+// used in TL generator tests only, do not use in product code
+func (item TLItemImpl) CreateObjectBytes() Object {
+    if item.CrFunctionBytes != nil {
+        return item.CrFunctionBytes()
+    }
+    if item.CrFunction != nil {
+        return item.CrFunction()
+    }
+    if item.CrObjectBytes != nil {
+        return item.CrObjectBytes()
+    }
+    return item.CrObject()
+}
+
+func (item TLItemImpl) IsFunction() bool         { return item.CrFunction != nil }
+func (item TLItemImpl) CreateFunction() Function { return item.CrFunction() }
+// used in TL generator tests only, do not use in product code
+func (item TLItemImpl) CreateFunctionBytes() Function {
+    if item.CrFunctionBytes != nil {
+        return item.CrFunctionBytes()
+    }
+    return item.CrFunction()
+}
+
+func (item TLItemImpl) HasUnionTypesInResult() bool { return item.ResultTypeContainsUnionTypes }
+func (item TLItemImpl) HasUnionTypesInArguments() bool { return item.ArgumentsTypesContainUnionTypes }
+
+// For transcoding short-long version during Long ID transition
+func (item TLItemImpl) HasFunctionLong() bool        { return item.CrFunctionLong != nil }
+func (item TLItemImpl) CreateFunctionLong() Function { return item.CrFunctionLong() }
+// we simplify interface by commenting this method no one yet needs.
+// hopefully it will be removed together with long adapters code
+// func (item TLItemImpl) CreateFunctionLongBytes() Function {
+//     if item.CrFunctionLongBytes != nil {
+//         return item.CrFunctionLongBytes()
+//     }
+//     return item.CrFunctionLong()
+// }
+
+// Annotations
+`)
+	for bit, name := range gen.kernel.AllAnnotations() {
+		goName := ToUpperFirst(name)
+
+		qw422016.N().S(`    func (item TLItemImpl) Annotation`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`() bool { return item.Annotations & `)
+		qw422016.N().S(fmt.Sprintf("%#x", 1<<bit))
+		qw422016.N().S(` != 0 }
+`)
+	}
+	qw422016.N().S(`
+// TLItemImpl serves as a single type for all TL1 enum values
+func (item *TLItemImpl) Reset()                         {}
+`)
+	if gen.options.GenerateRandomCode {
+		qw422016.N().S(`	func (item *TLItemImpl) FillRandom(rg *basictl.RandGenerator) {}
+`)
+	}
+	qw422016.N().S(`func (item *TLItemImpl) ReadTL1(w []byte) ([]byte, error)  { return w, nil }
+func (item *TLItemImpl) ReadTL1Boxed(w []byte) ([]byte, error) { return basictl.NatReadExactTag(w, item.Tag) }
+func (item *TLItemImpl) WriteTL1General(w []byte) ([]byte, error) { return w, nil }
+func (item *TLItemImpl) WriteTL1BoxedGeneral(w []byte) ([]byte, error) { return basictl.NatWrite(w, item.Tag), nil }
+func (item TLItemImpl) String() string {
+	return string(item.WriteJSON(nil))
+}
+func (item *TLItemImpl) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	in.Delim('{')
+	if !in.Ok() {
+		return in.Error()
+	}
+	for !in.IsDelim('}') {
+		return internal.ErrorInvalidJSONExcessElement(item.Name, in.UnsafeFieldName(true))
+	}
+	in.Delim('}')
+	if !in.Ok() {
+		return in.Error()
+	}
+	return nil
+}
+func (item *TLItemImpl) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSON(w), nil
+}
+func (item *TLItemImpl) WriteJSON(w []byte) []byte {
+	w = append(w, '{')
+	return append(w, '}')
+}
+func (item *TLItemImpl) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+func (item *TLItemImpl) UnmarshalJSON(b []byte) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: true}
+    if err := item.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: b}); err != nil {
+        return internal.ErrorInvalidJSON(item.Name, err.Error())
+    }
+    return nil
+}
+func (item *TLItemImpl) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+    return r, nil
+}
+func (item *TLItemImpl) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+    return w
+}
+
+var ItemsOrdered []TLItem
+
+var ItemsByTag = map[uint32]*TLItemImpl {}
+
+var ItemsByName = map[string]*TLItemImpl {}
+
+// called by factory init code
+func SetGlobalFactoryCreateForFunction(name string, createFunction func() Function, createFunctionLong func() Function) {
+    item := ItemsByName[name]
+    if item == nil || item.CrFunction == nil { // only replace !nil createFunction
+        panic(fmt.Sprintf("factory cannot find function %s to set", name))
+    }
+    item.CrFunction = createFunction
+    item.CrFunctionLong = createFunctionLong
+}
+
+// called by factory init code
+func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
+    item := ItemsByName[name]
+    if item == nil || item.CrObject == nil { // only replace !nil createObject
+        panic(fmt.Sprintf("factory cannot find object %s to set", name))
+    }
+    item.CrObject = createObject
+}
+
+// called by factory init code
+func SetGlobalFactoryCreateForEnumElement(name string) {
+    item := ItemsByName[name]
+    if item == nil || item.CrObject == nil { // only replace !nil createObject
+        panic(fmt.Sprintf("factory cannot find enum %s to set", name))
+    }
+    item.CrObject = func() Object { return item }
+}
+
+// called by factory init code
+func SetGlobalFactoryCreateForFunctionBytes(name string, createFunctionBytes func() Function, createFunctionLongBytes func() Function) {
+    item := ItemsByName[name]
+    if item == nil || item.CrFunction == nil { // only replace !nil createFunction
+        panic(fmt.Sprintf("factory cannot find function %s to set", name))
+    }
+    item.CrFunctionBytes = createFunctionBytes
+    item.CrFunctionLongBytes = createFunctionLongBytes
+}
+
+// Do not call directly, called by factory init code
+func SetGlobalFactoryCreateForObjectBytes(name string, createObjectBytes func() Object) {
+    item := ItemsByName[name]
+    if item == nil || item.CrObject == nil { // only replace !nil createObject
+        panic(fmt.Sprintf("factory cannot find object %s to set", name))
+    }
+    item.CrObjectBytes = createObjectBytes
+}
+
+func pleaseImportFactoryObject() Object {
+       panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
+}
+
+func pleaseImportFactoryFunction() Function {
+       panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
+}
+
+func FillObject(item *TLItemImpl)  {
+	if _, ok := ItemsByName[item.Name]; ok {
+	    return // meta and metamini can both add the same item
+	}
+    ItemsOrdered = append(ItemsOrdered, item)
+	ItemsByName[item.Name] = item
+	if item.Tag != 0 {
+	    ItemsByTag[item.Tag] = item
+	}
+	item.CrObject = pleaseImportFactoryObject
+}
+
+func FillFunction(item *TLItemImpl)  {
+	if _, ok := ItemsByName[item.Name]; ok {
+	    return // meta and metamini can both add the same item
+	}
+    ItemsOrdered = append(ItemsOrdered, item)
+	ItemsByName[item.Name] = item
+	if item.Tag != 0 {
+	    ItemsByTag[item.Tag] = item
+	}
+	item.CrFunction = pleaseImportFactoryFunction
+}
+`)
+}
+
+func (gen *genGo) writegenerateMetaInternal(qq422016 qtio422016.Writer, commentString string) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	gen.streamgenerateMetaInternal(qw422016, commentString)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (gen *genGo) generateMetaInternal(commentString string) string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	gen.writegenerateMetaInternal(qb422016, commentString)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
 func (gen *genGo) streamgenerateHelpers(qw422016 *qt422016.Writer, commentString, pkgName string) {
 	qw422016.N().S(commentString)
 	qw422016.N().S(`
@@ -24,8 +372,8 @@ package `)
 import (
 	"errors"
 	"fmt"
-	"github.com/mailru/easyjson/jlexer"
 	"strconv"
+	"github.com/mailru/easyjson/jlexer"
 )
 
 type UnionElement struct {

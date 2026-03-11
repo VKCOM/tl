@@ -188,7 +188,7 @@ func createTestSamples(t *testing.T) {
 		if dst == nil {
 			t.Fatalf("can't init object")
 		}
-		if _, ok := dst.(*meta.TLItem); ok {
+		if _, ok := dst.(meta.TLItem); ok {
 			continue
 		}
 
