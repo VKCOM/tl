@@ -19,7 +19,7 @@ import (
 
 func TestJsonCompatibility(t *testing.T) {
 	tl1Items := meta1.GetAllTLItems()
-	tl1ItemsNames := utils.MapSlice(tl1Items, func(a *meta1.TLItem) string {
+	tl1ItemsNames := utils.MapSlice(tl1Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -28,7 +28,7 @@ func TestJsonCompatibility(t *testing.T) {
 	})
 
 	tl2Items := meta1.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a *meta1.TLItem) string {
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -63,7 +63,8 @@ func TestJsonCompatibility(t *testing.T) {
 						return
 					}
 
-					err = tl2Obj.ReadJSON(false, &basictl.JsonLexer{Data: jsonValue})
+					tctx := basictl.JSONReadContext{}
+					err = tl2Obj.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: jsonValue})
 					//err = tl2Obj.ReadJSON(false, &basictl.JsonLexer{Data: []byte(`{smth}`)})
 
 					if err != nil {
@@ -90,7 +91,7 @@ func TestJsonCompatibility(t *testing.T) {
 
 func TestTL2Compatibility(t *testing.T) {
 	tl1Items := meta1.GetAllTLItems()
-	tl1ItemsNames := utils.MapSlice(tl1Items, func(a *meta1.TLItem) string {
+	tl1ItemsNames := utils.MapSlice(tl1Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -99,7 +100,7 @@ func TestTL2Compatibility(t *testing.T) {
 	})
 
 	tl2Items := meta1.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a *meta1.TLItem) string {
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -156,7 +157,7 @@ func TestTL2Compatibility(t *testing.T) {
 
 func TestJsonTL2Compatibility(t *testing.T) {
 	tl1Items := meta1.GetAllTLItems()
-	tl1ItemsNames := utils.MapSlice(tl1Items, func(a *meta1.TLItem) string {
+	tl1ItemsNames := utils.MapSlice(tl1Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -165,7 +166,7 @@ func TestJsonTL2Compatibility(t *testing.T) {
 	})
 
 	tl2Items := meta1.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a *meta1.TLItem) string {
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -210,7 +211,8 @@ func TestJsonTL2Compatibility(t *testing.T) {
 					}
 
 					// JSON -> o2
-					err = tl2Obj.ReadJSON(false, &basictl.JsonLexer{Data: jsonValue})
+					tctx := basictl.JSONReadContext{}
+					err = tl2Obj.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: jsonValue})
 					//err = tl2Obj.ReadJSON(false, &basictl.JsonLexer{Data: []byte(`{smth}`)})
 
 					if err != nil {

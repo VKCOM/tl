@@ -27,11 +27,20 @@ package `)
 	qw422016.N().S(addBytesLower("", bytesVersion))
 	qw422016.N().S(`
 
+// factory contains both metadata all types and all generated code for all types.
+// you want to import factory only where absolutely necessary, and never into common code.
+
 import (
     "`)
-	qw422016.N().S(gen.MetaPackageName)
-	qw422016.N().S(`"
+	qw422016.N().S(gen.options.Go.TLPackageNameFull)
+	qw422016.N().S(`/internal/metainternal"
 `)
+	if addHeader {
+		qw422016.N().S(`    "`)
+		qw422016.N().S(gen.MetaPackageName)
+		qw422016.N().S(`" // force import to call meta init first
+`)
+	}
 	for _, wr := range sortedImports {
 		qw422016.N().S(`    "`)
 		qw422016.N().S(gen.options.Go.TLPackageNameFull)
@@ -44,10 +53,6 @@ import (
 
 `)
 	if addHeader {
-		if hasCode != nil {
-			*hasCode = true
-		}
-
 		qw422016.N().S(`
     func CreateFunction(tag uint32) meta.Function {
         item := meta.FactoryItemByTLTag(tag)
@@ -111,7 +116,7 @@ func init() {
 					*hasCode = true
 				}
 
-				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
+				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForEnumElement(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`)
 `)
@@ -122,18 +127,18 @@ func init() {
 			}
 
 			if fun.ResultType != nil {
-				qw422016.N().S(`            meta.SetGlobalFactoryCreateForFunction`)
+				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForFunction`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,`)
 
-				qw422016.N().S(`            func() meta.Function { return new(`)
+				qw422016.N().S(`            func() metainternal.Function { return new(`)
 				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`) },`)
 
 				if wr.WrLong != nil {
-					qw422016.N().S(`                func() meta.Function { return new(`)
+					qw422016.N().S(`                func() metainternal.Function { return new(`)
 					qw422016.N().S(wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true))
 					qw422016.N().S(`) })
 `)
@@ -142,13 +147,13 @@ func init() {
 `)
 				}
 			} else {
-				qw422016.N().S(`            meta.SetGlobalFactoryCreateForObject`)
+				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForObject`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
 				qw422016.N().Q(wr.tlName.String())
 				qw422016.N().S(`,`)
 
-				qw422016.N().S(`            func() meta.Object { return new(`)
+				qw422016.N().S(`            func() metainternal.Object { return new(`)
 				qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 				qw422016.N().S(`) })
 `)
@@ -159,13 +164,13 @@ func init() {
 				*hasCode = true
 			}
 
-			qw422016.N().S(`        meta.SetGlobalFactoryCreateForObject`)
+			qw422016.N().S(`        metainternal.SetGlobalFactoryCreateForObject`)
 			qw422016.N().S(bytesStr)
 			qw422016.N().S(`(`)
 			qw422016.N().Q(wr.tlName.String())
 			qw422016.N().S(`,`)
 
-			qw422016.N().S(`            func() meta.Object { return new(`)
+			qw422016.N().S(`            func() metainternal.Object { return new(`)
 			qw422016.N().S(wr.TypeString2(bytesVersion, directImports, nil, false, true))
 			qw422016.N().S(`) })
 `)

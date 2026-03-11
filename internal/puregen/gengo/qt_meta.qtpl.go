@@ -16,6 +16,72 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
+func (gen *genGo) streamgenerateMetaMini(qw422016 *qt422016.Writer, tlgenVersion string) {
+	qw422016.N().S(HeaderComment)
+	qw422016.N().S(`
+package `)
+	qw422016.E().S(MetaGoPackageName)
+	qw422016.N().S(`mini
+
+// metamini contains only types which are already imported by your app
+// So GetTLName will work for types you need, and at the same type your
+// code will not depend on many types you do not need.
+
+import (
+    "`)
+	qw422016.N().S(gen.options.Go.TLPackageNameFull)
+	qw422016.N().S(`/internal/metainternal"
+)
+
+type Object = metainternal.Object
+type Function = metainternal.Function
+type TLItem = metainternal.TLItem
+
+// deterministic order, depends on order of package init()
+// we see no benefits in sorting this.
+func GetAllTLItems() []TLItem {
+	return metainternal.ItemsOrdered
+}
+
+// for quick one-liners
+func GetTLName(tag uint32, notFoundName string) string {
+	if item := FactoryItemByTLTag(tag); item != nil {
+		return item.TLName()
+	}
+	return notFoundName
+}
+
+func FactoryItemByTLTag(tag uint32) TLItem {
+    if item, ok := metainternal.ItemsByTag[tag]; ok {
+        return item
+    }
+    return nil
+}
+
+func FactoryItemByTLName(name string) TLItem {
+    if item, ok := metainternal.ItemsByName[name]; ok {
+        return item
+    }
+    return nil
+}
+
+`)
+}
+
+func (gen *genGo) writegenerateMetaMini(qq422016 qtio422016.Writer, tlgenVersion string) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	gen.streamgenerateMetaMini(qw422016, tlgenVersion)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (gen *genGo) generateMetaMini(tlgenVersion string) string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	gen.writegenerateMetaMini(qb422016, tlgenVersion)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
 func (gen *genGo) streamgenerateMeta(qw422016 *qt422016.Writer, tlgenVersion string) {
 	qw422016.N().S(HeaderComment)
 	qw422016.N().S(`
@@ -23,15 +89,13 @@ package `)
 	qw422016.E().S(MetaGoPackageName)
 	qw422016.N().S(`
 
-import (
-    "fmt"
+// meta contains all types, and changes when any of them changes
+// You probably want to import metamini instead.
 
-    `)
-	qw422016.N().Q(gen.BasicPackageNameFull)
-	qw422016.N().S(`
+import (
     "`)
 	qw422016.N().S(gen.options.Go.TLPackageNameFull)
-	qw422016.N().S(`/internal"
+	qw422016.N().S(`/internal/metainternal"
 )
 
 func SchemaGenerator() string { return `)
@@ -47,66 +111,14 @@ func SchemaTimestamp() uint32 { return `)
 	qw422016.E().V(gen.options.SchemaTimestamp)
 	qw422016.N().S(` }
 
-// We can create only types which have zero type arguments and zero nat arguments
-type Object interface {
-	TLName() string // returns type's TL name. For union, returns constructor name depending on actual union value
-	TLTag() uint32  // returns type's TL tag. For union, returns constructor tag depending on actual union value
-	String() string // returns type's representation for debugging (JSON for now)
+type Object = metainternal.Object
+type Function = metainternal.Function
+type TLItem = metainternal.TLItem
 
-`)
-	if gen.options.GenerateRandomCode {
-		qw422016.N().S(`	FillRandom(rg *basictl.RandGenerator)
-`)
-	}
-	qw422016.N().S(`
-	ReadTL1(w []byte) ([]byte, error) // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
-	ReadTL1Boxed(w []byte) ([]byte, error) // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
-	WriteTL1General(w []byte) ([]byte, error) // same as Write, but has common signature (with error) for all objects, so can be called through interface
-	WriteTL1BoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
-
-	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error
-	UnmarshalJSON([]byte) error // reads type's JSON representation
-
-    ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
-    // like MarshalJSON, but appends to w and returns it
-    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
-	WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error)
-`)
-	if gen.options.GenerateTL2() {
-		qw422016.N().S(`
-    ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error)
-	WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte
-`)
-	}
-	qw422016.N().S(`}
-
-type Function interface {
-	Object
-
-`)
-	if gen.options.GenerateRandomCode {
-		qw422016.N().S(`    FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error)
-`)
-	}
-	qw422016.N().S(`
-    // tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
-    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
-	ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
-	ReadResultJSONWriteResultTL1(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
-
-`)
-	if gen.options.GenerateTL2() {
-		qw422016.N().S(`    ReadResultTL1WriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
-    ReadResultTL2WriteResultTL1(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
-
-    ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
-    ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error)
-`)
-	}
-	qw422016.N().S(`}
-
-func GetAllTLItems() []*TLItem {
-	return itemsOrdered
+// deterministic order, depends on order of package init()
+// we see no benefits in sorting this.
+func GetAllTLItems() []TLItem {
+	return metainternal.ItemsOrdered
 }
 
 // for quick one-liners
@@ -117,246 +129,18 @@ func GetTLName(tag uint32, notFoundName string) string {
 	return notFoundName
 }
 
-
-type TLItem struct {
-    tag                uint32
-    annotations        uint32
-    tlName             string
-
-    hasTL1             bool
-    hasTL2             bool
-
-    resultTypeContainsUnionTypes bool
-    argumentsTypesContainUnionTypes bool
-
-    // either createObject != nil or createFunction != nil for object/function respectively
-    // also, createFunctionLong can be != nil if there is long adapter (legacy to be removed soon)
-    // also, createObjectBytes, createFunctionBytes, createFunctionLongBytes
-    // can be != nil independently, if factory_bytes is imported
-    createFunction     func() Function
-    createFunctionLong func() Function
-    createObject       func() Object
-    createFunctionBytes     func() Function
-    createFunctionLongBytes func() Function
-    createObjectBytes       func() Object
-}
-
-func (item TLItem) TLTag() uint32            { return item.tag }
-func (item TLItem) TLName() string           { return item.tlName }
-// true for TL1-originated types
-func (item TLItem) HasTL1() bool              { return item.hasTL1 }
-// true for TL2-originated types and for TL1-originated types if in TL2 generation whitelist
-func (item TLItem) HasTL2() bool              { return item.hasTL2 }
-func (item TLItem) CreateObject() Object     {
-    if item.createFunction != nil {
-        return item.createFunction()
+func FactoryItemByTLTag(tag uint32) TLItem {
+    if item, ok := metainternal.ItemsByTag[tag]; ok {
+        return item
     }
-    return item.createObject()
+    return nil
 }
-// used in TL generator tests only, do not use in product code
-func (item TLItem) CreateObjectBytes() Object {
-    if item.createFunctionBytes != nil {
-        return item.createFunctionBytes()
+
+func FactoryItemByTLName(name string) TLItem {
+    if item, ok := metainternal.ItemsByName[name]; ok {
+        return item
     }
-    if item.createFunction != nil {
-        return item.createFunction()
-    }
-    if item.createObjectBytes != nil {
-        return item.createObjectBytes()
-    }
-    return item.createObject()
-}
-
-func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
-func (item TLItem) CreateFunction() Function { return item.createFunction() }
-// used in TL generator tests only, do not use in product code
-func (item TLItem) CreateFunctionBytes() Function {
-    if item.createFunctionBytes != nil {
-        return item.createFunctionBytes()
-    }
-    return item.createFunction()
-}
-
-func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
-func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
-
-// For transcoding short-long version during Long ID transition
-func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
-func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
-// we simplify interface by commenting this method no one yet needs.
-// hopefully it will be removed together with long adapters code
-// func (item TLItem) CreateFunctionLongBytes() Function {
-//     if item.createFunctionLongBytes != nil {
-//         return item.createFunctionLongBytes()
-//     }
-//     return item.createFunctionLong()
-// }
-
-// Annotations
-`)
-	for bit, name := range gen.kernel.AllAnnotations() {
-		goName := ToUpperFirst(name)
-
-		qw422016.N().S(`func (item TLItem) Annotation`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`() bool { return item.annotations & `)
-		qw422016.N().S(fmt.Sprintf("%#x", 1<<bit))
-		qw422016.N().S(` != 0 }
-`)
-	}
-	qw422016.N().S(`
-// TLItem serves as a single type for all TL1 enum values
-func (item *TLItem) Reset()                         {}
-`)
-	if gen.options.GenerateRandomCode {
-		qw422016.N().S(`	func (item *TLItem) FillRandom(rg *basictl.RandGenerator) {}
-`)
-	}
-	qw422016.N().S(`func (item *TLItem) Read(w []byte) ([]byte, error)  { return w, nil }
-func (item *TLItem) ReadTL1(w []byte) ([]byte, error)  { return w, nil }
-func (item *TLItem) ReadBoxed(w []byte) ([]byte, error) { return basictl.NatReadExactTag(w, item.tag) }
-func (item *TLItem) ReadTL1Boxed(w []byte) ([]byte, error) { return basictl.NatReadExactTag(w, item.tag) }
-func (item *TLItem) WriteGeneral(w []byte) ([]byte, error) { return w, nil }
-func (item *TLItem) WriteTL1General(w []byte) ([]byte, error) { return w, nil }
-func (item *TLItem) WriteBoxedGeneral(w []byte) ([]byte, error) { return basictl.NatWrite(w, item.tag), nil }
-func (item *TLItem) WriteTL1BoxedGeneral(w []byte) ([]byte, error) { return basictl.NatWrite(w, item.tag), nil }
-func (item TLItem) String() string {
-	return string(item.WriteJSON(nil))
-}
-func (item *TLItem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	in.Delim('{')
-	if !in.Ok() {
-		return in.Error()
-	}
-	for !in.IsDelim('}') {
-		return internal.ErrorInvalidJSONExcessElement(item.tlName, in.UnsafeFieldName(true))
-	}
-	in.Delim('}')
-	if !in.Ok() {
-		return in.Error()
-	}
-	return nil
-}
-
-func (item *TLItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
-}
-func (item *TLItem) WriteJSON(w []byte) []byte {
-	w = append(w, '{')
-	return append(w, '}')
-}
-func (item *TLItem) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil), nil
-}
-func (item *TLItem) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-		return internal.ErrorInvalidJSON(item.tlName, err.Error())
-	}
-	return nil
-}
-`)
-	if gen.options.GenerateTL2() {
-		qw422016.N().S(`
-func (item *TLItem) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
-    return r, nil
-}
-
-func (item *TLItem) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-    return w
-}
-`)
-	}
-	qw422016.N().S(`func FactoryItemByTLTag(tag uint32) *TLItem {
-    return itemsByTag[tag]
-}
-
-func FactoryItemByTLName(name string) *TLItem {
-    return itemsByName[name]
-}
-
-var itemsOrdered []*TLItem
-
-var itemsByTag = map[uint32]*TLItem {}
-
-var itemsByName = map[string]*TLItem {}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForFunction(name string, createFunction func() Function, createFunctionLong func() Function) {
-    item := itemsByName[name]
-    if item == nil || item.createFunction == nil { // only replace !nil createFunction
-        panic(fmt.Sprintf("factory cannot find function %s to set", name))
-    }
-    item.createFunction = createFunction
-    item.createFunctionLong = createFunctionLong
-}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForObject(name string, createObject func() Object) {
-    item := itemsByName[name]
-    if item == nil || item.createObject == nil { // only replace !nil createObject
-        panic(fmt.Sprintf("factory cannot find object %s to set", name))
-    }
-    item.createObject = createObject
-}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForEnumElement(name string) {
-    item := itemsByName[name]
-    if item == nil || item.createObject == nil { // only replace !nil createObject
-        panic(fmt.Sprintf("factory cannot find enum %s to set", name))
-    }
-    item.createObject = func() Object { return item }
-}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForFunctionBytes(name string, createFunctionBytes func() Function, createFunctionLongBytes func() Function) {
-    item := itemsByName[name]
-    if item == nil || item.createFunction == nil { // only replace !nil createFunction
-        panic(fmt.Sprintf("factory cannot find function %s to set", name))
-    }
-    item.createFunctionBytes = createFunctionBytes
-    item.createFunctionLongBytes = createFunctionLongBytes
-}
-
-// Do not call directly, called by factory init code
-func SetGlobalFactoryCreateForObjectBytes(name string, createObjectBytes func() Object) {
-    item := itemsByName[name]
-    if item == nil || item.createObject == nil { // only replace !nil createObject
-        panic(fmt.Sprintf("factory cannot find object %s to set", name))
-    }
-    item.createObjectBytes = createObjectBytes
-}
-
-func pleaseImportFactoryObject() Object {
-       panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
-}
-
-func pleaseImportFactoryFunction() Function {
-       panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
-}
-
-func fillObject(item *TLItem)  {
-	if _, ok := itemsByName[item.tlName]; ok {
-       panic(fmt.Errorf("fillObject called with duplicate tlName: %s #%08x", item.tlName, item.tag))
-	}
-    itemsOrdered = append(itemsOrdered, item)
-	itemsByName[item.tlName] = item
-	if item.tag != 0 {
-	    itemsByTag[item.tag] = item
-	}
-	item.createObject = pleaseImportFactoryObject
-}
-
-func fillFunction(item *TLItem)  {
-	if _, ok := itemsByName[item.tlName]; ok {
-       panic(fmt.Errorf("fillFunction called with duplicate tlName: %s #%08x", item.tlName, item.tag))
-	}
-    itemsOrdered = append(itemsOrdered, item)
-	itemsByName[item.tlName] = item
-	if item.tag != 0 {
-	    itemsByTag[item.tag] = item
-	}
-	item.createFunction = pleaseImportFactoryFunction
+    return nil
 }
 
 `)
@@ -376,20 +160,26 @@ func (gen *genGo) generateMeta(tlgenVersion string) string {
 	return qs422016
 }
 
-func (gen *genGo) streamgenerateMetaInit(qw422016 *qt422016.Writer, addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) {
+func (gen *genGo) streamgenerateMetaInit(qw422016 *qt422016.Writer, addHeader bool, types []*TypeRWWrapper, forNamespace func(ns string) bool, hasTypes *bool, packageNames string) {
 	if addHeader {
 		qw422016.N().S(`    `)
 		qw422016.N().S(HeaderComment)
 		qw422016.N().S(`
     package `)
-		qw422016.E().S(MetaGoPackageName)
+		qw422016.E().S(packageNames)
 		qw422016.N().S(`
+    import (
+        "`)
+		qw422016.N().S(gen.options.Go.TLPackageNameFull)
+		qw422016.N().S(`/internal/metainternal"
+    )
+
 `)
 	}
 	qw422016.N().S(`
 func init() {
 `)
-	for _, wr := range gen.generatedTypesList {
+	for _, wr := range types {
 		if !forNamespace(wr.tlName.Namespace) {
 			continue
 		}
@@ -407,33 +197,34 @@ func init() {
 			if fun.ResultType != nil {
 				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
 
-				qw422016.N().S(`        fillFunction(`)
+				qw422016.N().S(`        metainternal.FillFunction`)
 			} else {
-				qw422016.N().S(`fillObject(`)
+				qw422016.N().S(`metainternal.FillObject`)
 			}
-			qw422016.N().S(`        &TLItem{tlName: "`)
+			qw422016.N().S(`(
+        &metainternal.TLItemImpl{Name: "`)
 			qw422016.N().S(wr.tlName.String())
 			qw422016.N().S(`"`)
 
 			if wr.tlTag != 0 {
-				qw422016.N().S(`, tag: `)
+				qw422016.N().S(`, Tag: `)
 				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
 			}
 			if !wr.originateFromTL2 {
-				qw422016.N().S(`, hasTL1:true`)
+				qw422016.N().S(`, HaTL1:true`)
 			}
 			if wr.HasTL2() {
-				qw422016.N().S(`, hasTL2:true`)
+				qw422016.N().S(`, HaTL2:true`)
 			}
 			if wr.AnnotationsMask() != 0 {
-				qw422016.N().S(`, annotations: `)
+				qw422016.N().S(`, Annotations: `)
 				qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			}
 			if argumentsTypesContainUnionTypes {
-				qw422016.N().S(`, argumentsTypesContainUnionTypes:true`)
+				qw422016.N().S(`, ArgumentsTypesContainUnionTypes:true`)
 			}
 			if resultTypeContainsUnionTypes {
-				qw422016.N().S(`, resultTypeContainsUnionTypes:true`)
+				qw422016.N().S(`, ResultTypeContainsUnionTypes:true`)
 			}
 			qw422016.N().S(`})
 `)
@@ -444,26 +235,26 @@ func init() {
 			}
 			// unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
 
-			qw422016.N().S(`        fillObject(&TLItem{tlName: "`)
+			qw422016.N().S(`        metainternal.FillObject(&metainternal.TLItemImpl{Name: "`)
 			qw422016.N().S(wr.tlName.String())
 			qw422016.N().S(`"`)
 
 			if wr.tlTag != 0 {
-				qw422016.N().S(`, tag: `)
+				qw422016.N().S(`, Tag: `)
 				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
 			}
 			if !wr.originateFromTL2 {
-				qw422016.N().S(`, hasTL1:true`)
+				qw422016.N().S(`, HaTL1:true`)
 			}
 			if wr.HasTL2() {
-				qw422016.N().S(`, hasTL2:true`)
+				qw422016.N().S(`, HaTL2:true`)
 			}
 			if wr.AnnotationsMask() != 0 {
-				qw422016.N().S(`, annotations: `)
+				qw422016.N().S(`, Annotations: `)
 				qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			}
 			if argumentsTypesContainUnionTypes {
-				qw422016.N().S(`, argumentsTypesContainUnionTypes:true`)
+				qw422016.N().S(`, ArgumentsTypesContainUnionTypes:true`)
 			}
 			qw422016.N().S(`})
 `)
@@ -473,15 +264,15 @@ func init() {
 `)
 }
 
-func (gen *genGo) writegenerateMetaInit(qq422016 qtio422016.Writer, addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) {
+func (gen *genGo) writegenerateMetaInit(qq422016 qtio422016.Writer, addHeader bool, types []*TypeRWWrapper, forNamespace func(ns string) bool, hasTypes *bool, packageNames string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	gen.streamgenerateMetaInit(qw422016, addHeader, forNamespace, hasTypes)
+	gen.streamgenerateMetaInit(qw422016, addHeader, types, forNamespace, hasTypes, packageNames)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func (gen *genGo) generateMetaInit(addHeader bool, forNamespace func(ns string) bool, hasTypes *bool) string {
+func (gen *genGo) generateMetaInit(addHeader bool, types []*TypeRWWrapper, forNamespace func(ns string) bool, hasTypes *bool, packageNames string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	gen.writegenerateMetaInit(qb422016, addHeader, forNamespace, hasTypes)
+	gen.writegenerateMetaInit(qb422016, addHeader, types, forNamespace, hasTypes, packageNames)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

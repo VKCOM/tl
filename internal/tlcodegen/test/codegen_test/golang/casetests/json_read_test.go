@@ -67,7 +67,8 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 			for _, alternative := range alternatives {
 				t.Run(fmt.Sprintf("%q", alternative), func(t *testing.T) {
 					mt.object.FillRandom(rg)
-					readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
+					tctx := basictl.JSONReadContext{}
+					readErr := mt.object.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: []byte(alternative)})
 
 					assert.Nil(t, readErr)
 					writeData, writeErr := mt.object.MarshalJSON()
@@ -82,7 +83,7 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 					//}
 					assert.Equal(t, success.GoldenInput, string(writeData))
 
-					readAgainErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
+					readAgainErr := mt.object.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: []byte(success.GoldenInput)})
 					assert.Nil(t, readAgainErr)
 
 					writeAgainData, writeAgainErr := mt.object.MarshalJSON()
@@ -102,7 +103,8 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 		for _, failure := range mt.samples.Failures {
 			t.Run(fmt.Sprintf("%q", failure), func(t *testing.T) {
 				mt.object.FillRandom(rg)
-				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(failure)})
+				tctx := basictl.JSONReadContext{}
+				readErr := mt.object.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: []byte(failure)})
 
 				//if readErr == nil {
 				//	fmt.Printf("aha")
@@ -119,6 +121,7 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 }
 
 func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
+
 	const RepeatNumber = 100
 
 	seed := rand.Uint64()
@@ -144,7 +147,8 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 					t.Fatal("first serialization wasn't succeeded", err.Error())
 					return
 				}
-				err = obj.ReadJSON(false, &basictl.JsonLexer{Data: buf1})
+				tctx := basictl.JSONReadContext{}
+				err = obj.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: buf1})
 				if err != nil {
 					t.Logf("Seed: %d\n", seed)
 					//err = obj.ReadJSON(false, &basictl.JsonLexer{Data: buf1})
@@ -159,7 +163,7 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 					t.Fatal("second serialization wasn't succeeded", err.Error())
 					return
 				}
-				err = obj.ReadJSON(false, &basictl.JsonLexer{Data: buf2})
+				err = obj.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: buf2})
 				if err != nil {
 					t.Logf("Seed: %d\n", seed)
 					t.Fatal("second deserialization wasn't succeeded", err.Error())
