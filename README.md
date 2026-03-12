@@ -38,7 +38,8 @@ go install github.com/vkcom/tl/cmd/tlgen@latest
 
 ## Documentation
 
-- [Internals](./docs/TLPrimer.pdf) (in Russian)
+- [Internals (TL1)](./docs/TLPrimer.pdf) (in Russian)
+- [Internals (TL2)](./docs/TL2Primer.pdf) (in Russian)
 
 ## License
 
