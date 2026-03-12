@@ -612,17 +612,13 @@ class tl_switcher {
   private static function tl_get_and_set_namespace_methods_mode($tl_namespace, $change_state) {
     $mode = 0;
     if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
-      $percent = 0;
-      
       // get percent from provided info or stays 0
       $tl_namespace_percent_key = $tl_namespace . "_percent";
-      if (array_key_exists($tl_namespace_percent_key, self::$tl_namespaces_info)) {
-        $percent = self::$tl_namespaces_info[$tl_namespace_percent_key];
-      }
+      $percent = intval(self::$tl_namespaces_info[$tl_namespace_percent_key] ?? 0);
 
       // check 0 and 100 to avoid random call in most cases
       if ($percent != 0) {
-        if ($percent == 100 || $percent > random_int(0, 99)) {
+        if ($percent == 100 || $percent > mt_rand(0, 99)) {
           $mode = self::$tl_namespaces_info[$tl_namespace];
         }
       }
