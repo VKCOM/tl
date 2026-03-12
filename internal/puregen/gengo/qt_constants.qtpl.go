@@ -38,11 +38,10 @@ package `)
 		if c.Crc32() == 0 || c.Construct.Name.String() == "_" { // TODO - remove second check after ReqResult removed from combined.tl
 			continue
 		}
-		//        uncomment to leave only exclamation wrappers
-		//        excl, _, _ := gen.kernel.CheckExclamationWrapper(c)
-		//        if !excl {
-		//            continue
-		//        }
+		excl, _, _ := gen.kernel.CheckExclamationWrapper(c)
+		if !excl && !slices.Contains([]string{"resultTrue", "resultFalse"}, c.Construct.Name.Name) {
+			continue
+		}
 		lines = append(lines, Line{conName: tlast.TL2TypeName(c.Construct.Name), magic: c.Crc32()})
 	}
 	for _, combinator := range gen.kernel.TL2() {
