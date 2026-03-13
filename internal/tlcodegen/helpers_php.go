@@ -592,7 +592,7 @@ class tl_switcher {
       $tl_namespace = $exploded[0];
     }
     if (array_key_exists($tl_namespace, self::$tl_generated_namespaces_info)) {
-      return self::tl_get_and_set_namespace_methods_mode($tl_namespace, false);
+      return self::$tl_generated_namespaces_info[$tl_namespace];
     }
     return 0;
   }
