@@ -349,7 +349,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						cc.AddLines("")
 						cc.Comments(fmt.Sprintf("bits for fieldmask %q", mask))
 						cc.Block(
-							fmt.Sprintf("struct %s {", mask),
+							fmt.Sprintf("struct %s_bits {", mask),
 							func(cc *codecreator.BasicCodeCreator[codecreator.CppHelper]) {
 								totalMask := 0
 								for _, fieldId := range fieldMasksFieldIds[mask] {
