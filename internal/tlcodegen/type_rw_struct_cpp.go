@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 )
@@ -246,29 +247,6 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 `, trw.wr.tlName, trw.wr.tlTag))
 			}
 
-			if trw.wr.gen.options.GenerateFieldMasks {
-				// print all fieldmask constants
-				totalFieldMask := 0
-				printMasks := false
-
-				for _, field := range trw.Fields {
-					if field.fieldMask != nil && field.fieldMask.isField {
-						if !printMasks {
-							printMasks = true
-							hpp.WriteString("\n")
-							hpp.WriteString("\t// tl field masks constants\n")
-						}
-						hpp.WriteString(fmt.Sprintf(`	static constexpr uint32_t TL_FIELD_MASK_%s = 1 << %d;
-`, strings.ToUpper(field.cppName), field.BitNumber))
-						totalFieldMask |= 1 << field.BitNumber
-					}
-				}
-
-				if printMasks {
-					hpp.WriteString(fmt.Sprintf("\n\tstatic constexpr uint32_t TL_TOTAL_FIELD_MASK = 0x%08[1]x;\n", totalFieldMask))
-				}
-			}
-
 			if len(myArgsDecl) == 0 {
 				// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 				hpp.WriteString(fmt.Sprintf(`
@@ -339,6 +317,65 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						trw.wr.cppLocalName))
 				}
 			}
+
+			if trw.wr.gen.options.GenerateFieldMasks {
+				// print all fieldmask constants
+				fieldMasks := make([]string, 0)
+				fieldMasksFieldIds := make(map[string][]int)
+
+				for i, field := range trw.Fields {
+					if field.fieldMask != nil {
+						name := ""
+						if field.fieldMask.IsField() {
+							name = trw.Fields[field.fieldMask.FieldIndex].cppName
+						} else {
+							name = field.fieldMask.name
+						}
+
+						if len(fieldMasksFieldIds[name]) == 0 {
+							fieldMasksFieldIds[name] = make([]int, 0)
+							fieldMasks = append(fieldMasks, name)
+						}
+						fieldMasksFieldIds[name] = append(fieldMasksFieldIds[name], i)
+					}
+				}
+
+				if len(fieldMasks) > 0 {
+					cc := codecreator.NewCppCodeCreator()
+
+					cc.AddShift(1)
+
+					for _, mask := range fieldMasks {
+						cc.AddLines("")
+						cc.Comments(fmt.Sprintf("bits for fieldmask %q", mask))
+						cc.Block(
+							fmt.Sprintf("struct %s {", mask),
+							func(cc *codecreator.BasicCodeCreator[codecreator.CppHelper]) {
+								totalMask := 0
+								for _, fieldId := range fieldMasksFieldIds[mask] {
+									field := trw.Fields[fieldId]
+
+									cc.AddLines(
+										fmt.Sprintf("static constexpr uint32_t FIELD_%s = 1 << %d;", strings.ToUpper(field.cppName), field.BitNumber),
+									)
+
+									totalMask |= 1 << field.BitNumber
+								}
+
+								cc.AddLines(
+									"",
+									fmt.Sprintf("static constexpr uint32_t ALL = 0x%08[1]x;", totalMask),
+								)
+							},
+							"};",
+						)
+					}
+					for _, l := range cc.Print() {
+						hpp.WriteString(l + "\n")
+					}
+				}
+			}
+
 			hpp.WriteString("};\n")
 		}
 		cppFinishNamespace(hpp, typeNamespace)
