@@ -27,13 +27,9 @@ package `)
 	qw422016.N().S(addBytesLower("", bytesVersion))
 	qw422016.N().S(`
 
-`)
-	if addHeader {
-		qw422016.N().S(`// factory contains both metadata all types and all generated code for all types.
+// factory contains both metadata all types and all generated code for all types.
 // you want to import factory only where absolutely necessary, and never into common code.
-`)
-	}
-	qw422016.N().S(`
+
 import (
     "`)
 	qw422016.N().S(gen.options.Go.TLPackageNameFull)
