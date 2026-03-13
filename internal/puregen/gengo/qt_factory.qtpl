@@ -7,10 +7,8 @@
 {%s= HeaderComment %}
 package {%s= FactoryGoPackageName %}{%s= addBytesLower("", bytesVersion) %}
 
-{%- if addHeader -%}
 // factory contains both metadata all types and all generated code for all types.
 // you want to import factory only where absolutely necessary, and never into common code.
-{%- endif -%}
 
 import (
     "{%s= gen.options.Go.TLPackageNameFull %}/internal/metainternal"
