@@ -82,6 +82,10 @@ func (bcc *BasicCodeCreator[T]) addFullBlock(prefix, suffix string, block func(c
 	})
 }
 
+func (bcc *BasicCodeCreator[T]) Block(prefix string, block func(cc *BasicCodeCreator[T]), suffix string) {
+	bcc.addFullBlock(prefix, suffix, block)
+}
+
 func (bcc *BasicCodeCreator[T]) If(condition string, block func(cc *BasicCodeCreator[T])) {
 	bcc.addFullBlock(fmt.Sprintf(bcc.ifPrefixTemplate, condition), bcc.ifSuffixTemplate, block)
 }
