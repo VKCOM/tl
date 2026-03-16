@@ -181,6 +181,10 @@ cpp:
 	$(MAKE) cpp_gen
 	#$(MAKE) cpp_build
 
+.PHONY: cpp_test
+cpp_test:
+	@echo "TODO"
+
 .PHONY: test_multi_lang_cases
 test_multi_lang_cases:
 	@cd internal/tlcodegen/test/codegen_test/; \
