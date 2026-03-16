@@ -265,13 +265,6 @@ func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *D
 	}
 }
 
-func (trw *TypeRWStruct) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
-	}
-	return fmt.Sprintf("if err := %s.ReadJSONLegacy(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
-}
-
 func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)

@@ -44,7 +44,6 @@ type TypeRW interface {
 	typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string
 	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string
 	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string
-	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingRequiresContext() bool
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string

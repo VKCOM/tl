@@ -14,16 +14,12 @@ import (
 type TypeRWPrimitive struct {
 	canonicalType string
 
-	// TODO - remove, this is never set by the pure kernel
-	//tlTag uint32 // if != 0, then TL1 builtin wrapper was compiled
-
 	goType         string
 	resetValue     string
 	randomValue    string
 	writeValue     string
 	readValue      string
 	writeJSONValue string
-	readJSONValue  string
 	readJSON2Value string
 	writeHasError  bool // we keep this for future types
 }
@@ -136,14 +132,6 @@ func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports
 		writeJSONValue += "Bytes"
 	}
 	return fmt.Sprintf("w = %s(w, %s)", writeJSONValue, addAsterisk(ref, val))
-}
-
-func (trw *TypeRWPrimitive) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	readJSONValue := trw.readJSONValue
-	if bytesVersion {
-		readJSONValue += "Bytes"
-	}
-	return wrapLast(false, fmt.Sprintf("%s(%s, %s)", readJSONValue, jvalue, addAmpersand(ref, val)))
 }
 
 func (trw *TypeRWPrimitive) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
