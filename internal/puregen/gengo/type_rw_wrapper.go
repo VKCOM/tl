@@ -265,10 +265,6 @@ func (w *TypeRWWrapper) TypeJSONWritingCode(bytesVersion bool, directImports *Di
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeJSONWritingCode(bytesVersion, directImports, ins, val, natArgs, ref, needError)
 }
-func (w *TypeRWWrapper) TypeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
-}
 
 func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
