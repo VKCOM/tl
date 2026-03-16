@@ -186,9 +186,12 @@ test_multi_lang_cases:
 	@cd internal/tlcodegen/test/codegen_test/; \
 	$(MAKE) run-all-languages-tests;
 
-.PHONY: test
-test:
+.PHONY: go_test
+go_test:
 	@$(GO) test $(shell $(GO) list ./... | grep -v internal/tlcodegen/test/gen/)
+
+.PHONY: test
+test: go_test php_test
 
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
@@ -253,3 +256,7 @@ update-tag:
 	else \
 		bash scripts/update-tag.sh; \
 	fi
+
+.PHONY: php_test
+php_test: build
+	$(MAKE) -C internal/tlcodegen/test/codegen_test run-php-tests
