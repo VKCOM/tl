@@ -597,6 +597,10 @@ class tl_switcher {
     return self::$tl_platform;
   }
 
+  public static function tl_reset_selected_modes() {
+    self::$tl_namespace_mode_selected = [];
+  }
+
   /**
    * @param string $tl_namespace
    * @return int
