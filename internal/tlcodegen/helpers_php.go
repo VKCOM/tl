@@ -568,14 +568,14 @@ class tl_switcher {
   public static $tl_platform = "";
 
   /** @var int[] */
-  private static $tl_generated_namespaces_info = [];
+  private static $tl_namespace_mode_selected = [];
 
   /**
    * @param string $tl_namespace
    * @return int
    */
   public static function tl_get_namespace_methods_mode($tl_namespace) {
-    return self::tl_get_and_set_namespace_methods_mode($tl_namespace, true);
+    return self::tl_select_and_get_namespace_mode($tl_namespace);
   }
 
   /**
@@ -586,15 +586,8 @@ class tl_switcher {
     if ($tl_query === "") {
       return -1;
     }
-    $tl_namespace = "_common";
-    $exploded = explode('.', $tl_query, 2);
-    if (is_array($exploded) && count($exploded) == 2) {
-      $tl_namespace = $exploded[0];
-    }
-    if (array_key_exists($tl_namespace, self::$tl_generated_namespaces_info)) {
-      return self::$tl_generated_namespaces_info[$tl_namespace];
-    }
-    return 0;
+    $tl_namespace = self::get_tl_namespace($tl_query);
+    return (self::$tl_namespace_mode_selected[$tl_namespace] ?? 0);
   }
 
   /**
@@ -606,27 +599,46 @@ class tl_switcher {
 
   /**
    * @param string $tl_namespace
-   * @param bool $change_state
    * @return int
    */
-  private static function tl_get_and_set_namespace_methods_mode($tl_namespace, $change_state) {
+  private static function tl_select_and_get_namespace_mode($tl_namespace) {
     $mode = 0;
+    // check do we have special info for this namespace
     if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
-      // get percent from provided info or stays 0
-      $tl_namespace_percent_key = $tl_namespace . "_percent";
-      $percent = intval(self::$tl_namespaces_info[$tl_namespace_percent_key] ?? 0);
+      // check previous selection exists
+      if (array_key_exists($tl_namespace, self::$tl_namespace_mode_selected)) {
+        // get previous selection
+        $mode = self::$tl_namespace_mode_selected[$tl_namespace];
+      } else {
+        // no selection before => fetch it
+        // get percent from provided info or stays 0
+        $tl_namespace_percent_key = $tl_namespace . "_percent";
+        $percent = intval(self::$tl_namespaces_info[$tl_namespace_percent_key] ?? 0);
 
-      // check 0 and 100 to avoid random call in most cases
-      if ($percent != 0) {
-        if ($percent == 100 || $percent > mt_rand(0, 99)) {
-          $mode = self::$tl_namespaces_info[$tl_namespace];
+        // check 0 and 100 to avoid random call in most cases
+        if ($percent != 0) {
+          if ($percent == 100 || $percent > mt_rand(0, 99)) {
+            $mode = self::$tl_namespaces_info[$tl_namespace];
+          }
         }
+        // store selected value
+        self::$tl_namespace_mode_selected[$tl_namespace] = $mode;
       }
     }
-    if ($change_state) {
-      self::$tl_generated_namespaces_info[$tl_namespace] = $mode;
-    }
     return $mode;
+  }
+
+  /**
+   * @param string $tl_query
+   * @return string
+   */
+  private static function get_tl_namespace($tl_query) {
+    $tl_namespace = "_common";
+    $exploded = explode('.', $tl_query, 2);
+    if (is_array($exploded) && count($exploded) == 2) {
+      $tl_namespace = $exploded[0];
+    }
+    return $tl_namespace;
   }
 }
 `
