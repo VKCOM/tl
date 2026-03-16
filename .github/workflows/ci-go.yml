@@ -41,3 +41,7 @@ jobs:
       - name: Codegen helpers_cpp
         if: matrix.os == 'ubuntu-latest'
         run: cd scripts && bash move-basictl-cpp.sh
+
+      - name: Run cpp tests
+        if: matrix.os == 'ubuntu-latest'
+        run: make cpp_test
