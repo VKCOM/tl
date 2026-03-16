@@ -72,7 +72,12 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	_ = k.addPrimitive("bit", "", "bit", 0, true)
 	_ = k.addPrimitive("string", "string", "string", 0, true)
 	k.addTL1Brackets()
-
+	_ = k.addPrimitive("__function", "__function", "function", 0, false)
+	{
+		ktFetcher := k.addPrimitive("__function_result", "__function_result", "function_result", 0, false)
+		ktFetcher.canBeBare = false
+		ktFetcher.tl1BoxedName = tlast.TL2TypeName{Name: "__function_result"}
+	}
 	k.supportedAnnotations = map[string]struct{}{"read": {}, "any": {}, "internal": {}, "write": {}, "readwrite": {}, "kphp": {}}
 	for _, ann := range strings.Split(k.opts.Annotations, ",") {
 		// TODO - validate here
@@ -434,6 +439,12 @@ func (k *Kernel) Compile() error {
 	for _, tip := range k.tipsOrdered {
 		if !tip.isTopLevel {
 			continue
+		}
+		if tip.exclamationArg != nil {
+			if !k.opts.InstantiateExclamationWrappers {
+				continue
+			}
+			_, _ = fmt.Fprintf(k.opts.ErrorWriter, "will instantiate exclamation wrapper %s\n", tip.canonicalName)
 		}
 		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
 		if _, _, err := k.getInstance(tr, true); err != nil {

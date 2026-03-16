@@ -15,7 +15,7 @@ var _ = basictl.NatWrite
 
 // BLOCK: TEST UNIONS
 type CasesTestMaybe struct {
-	Value Maybe
+	Value IntMaybe
 }
 
 func (CasesTestMaybe) TLName() string { return "cases.testMaybe" }

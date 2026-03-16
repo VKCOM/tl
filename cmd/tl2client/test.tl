@@ -33,4 +33,8 @@ map {X:Type} {Y:Type} key:X value:Y = Map X Y;
 
 //@read a.call2#12345679 x:int => True;
 
-curl.myHren curl.myHren = curl.MyHren;
+// curl.myHren curl.myHren = curl.MyHren;
+
+@readwrite tree_stats.preferMaster {X:Type} query:!X => X;
+@any rpcProxy.diagonal {X:Type} query:!X => Vector (Maybe X);
+@any rpcProxy.diagonalTargets {X:Type} offset:int limit:int query:!X => Vector (%Vector (Maybe X));

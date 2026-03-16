@@ -77,6 +77,8 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 			tlTag:         tip.combTL2.TypeDecl.Magic,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel,
+			resolvedType:  tr,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(tr),
 			argNamespace:  k.getArgNamespace(tr),
 			hasTL2:        true,
 			commentBefore: tip.combTL2.CommentBefore,
@@ -113,7 +115,7 @@ func (k *Kernel) createUnionTL2(canonicalName string, tip *KernelType, tr tlast.
 	return ins, nil
 }
 
-func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
+func (k *Kernel) createUnionTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TL2TypeRef, definition []*tlast.Combinator) (TypeInstance, error) {
 
 	localArgs, natParams := k.fillLocalArgs(tip.templateArguments, resolvedType)
@@ -138,6 +140,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // in generator, only those unions that have TL2 generation will be added to a factory
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        false, // could be marked later
 			commentBefore: "",    // no comment for union in TL1
@@ -159,7 +162,7 @@ func (k *Kernel) createUnionTL1FromTL1(canonicalName string, tip *KernelType,
 			argsStart = st
 		}
 		variantCanonicalName := variantDef.Construct.Name.String() + canonicalName[argsStart:]
-		element, err := k.createStructTL1FromTL1(variantCanonicalName, tip,
+		element, err := k.createStructTL1(variantCanonicalName, tip,
 			resolvedType,
 			variantDef,
 			true, i)

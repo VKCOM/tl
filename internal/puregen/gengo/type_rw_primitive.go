@@ -12,7 +12,7 @@ import (
 )
 
 type TypeRWPrimitive struct {
-	tlType string
+	canonicalType string
 
 	// TODO - remove, this is never set by the pure kernel
 	//tlTag uint32 // if != 0, then TL1 builtin wrapper was compiled
@@ -41,7 +41,7 @@ func (trw *TypeRWPrimitive) typeString2(bytesVersion bool, directImports *Direct
 }
 
 func (trw *TypeRWPrimitive) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.tlType == "string"
+	return trw.canonicalType == "string"
 }
 
 func (trw *TypeRWPrimitive) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -94,8 +94,8 @@ func (trw *TypeRWPrimitive) typeRepairMasksCode(bytesVersion bool, directImports
 
 func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	prefix := ""
-	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.tlType)
+	if !bare && trw.canonicalType != "__function_result" {
+		log.Panicf("trw %q cannot be boxed", trw.canonicalType)
 		//prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.tlTag)
 	}
 	code := fmt.Sprintf("%s(w, %s)", addBytes(trw.writeValue, bytesVersion), addAsterisk(ref, val))
@@ -109,16 +109,19 @@ func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.tlType == "string" {
+	if trw.canonicalType == "string" {
 		return fmt.Sprintf("len(%s) != 0", addAsterisk(ref, val))
+	}
+	if trw.canonicalType == "__function" || trw.canonicalType == "__function_result" {
+		return "true"
 	}
 	return fmt.Sprintf("%s != 0", addAsterisk(ref, val))
 }
 
 func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	prefix := ""
-	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.tlType)
+	if !bare && trw.canonicalType != "__function_result" {
+		log.Panicf("trw %q cannot be boxed", trw.canonicalType)
 		//prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.tlTag)
 	}
 	if bytesVersion {

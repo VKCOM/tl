@@ -18,7 +18,7 @@ type (
 	DictFieldStringString                                                                                                            = internal.DictFieldStringString
 	DictFieldStringStringBytes                                                                                                       = internal.DictFieldStringStringBytes
 	DictionaryAnyFieldDoubleInt                                                                                                      = internal.DictionaryAnyFieldDoubleInt
-	Maybe                                                                                                                            = internal.Maybe
+	IntMaybe                                                                                                                         = internal.IntMaybe
 	PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int                                                                   = internal.PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int
 	PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt = internal.PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt
 	PairBuiltinVectorIntBuiltinVectorInt                                                                                             = internal.PairBuiltinVectorIntBuiltinVectorInt

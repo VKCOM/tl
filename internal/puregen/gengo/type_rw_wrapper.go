@@ -8,6 +8,7 @@ package gengo
 
 import (
 	"cmp"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -292,4 +293,44 @@ func (w *TypeRWWrapper) IsFunction() bool {
 		return false
 	}
 	return structElement.ResultType != nil
+}
+
+func (w *TypeRWWrapper) formatNatArgsDecl() string {
+	var s strings.Builder
+	for _, arg := range w.NatParams {
+		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
+	}
+	return s.String()
+}
+
+func (w *TypeRWWrapper) formatNatArgsDeclNoComma() string {
+	return strings.TrimPrefix(w.formatNatArgsDecl(), ",")
+}
+
+// if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
+// and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
+func (w *TypeRWWrapper) formatNatArgsDeclCall() string {
+	var s strings.Builder
+	for _, arg := range w.NatParams {
+		s.WriteString(fmt.Sprintf(", nat_%s", arg))
+	}
+	return s.String()
+}
+
+func (w *TypeRWWrapper) HasFetcher() bool {
+	return w.pureType.Common().HasFetcher()
+}
+
+func (w *TypeRWWrapper) fetcherDecl() string {
+	if w.HasFetcher() {
+		return ", fetcher any"
+	}
+	return ""
+}
+
+func (w *TypeRWWrapper) fetcherCall() string {
+	if w.HasFetcher() {
+		return ", fetcher"
+	}
+	return ""
 }

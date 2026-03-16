@@ -29,9 +29,10 @@ type KernelType struct {
 	// order of instantiation
 	instancesOrdered []*TypeInstanceRef
 
-	isTopLevel  bool
-	isFunction  bool // to prohibit references
-	annotations []string
+	isTopLevel     bool
+	isFunction     bool                    // to prohibit references
+	exclamationArg *tlast.TemplateArgument // empty if no such arg
+	annotations    []string
 
 	tl1Names map[string]struct{}
 	tl2Names map[string]struct{}
@@ -64,6 +65,13 @@ func (t *KernelType) OriginTL2() bool {
 
 func (t *KernelType) IsFunction() bool {
 	return t.isFunction
+}
+
+// Very few functions wrap another function. This is for TL1 only, TL2 does not have this complexity.
+// Currently only PHP generator needs them, because parsing of invokeReq is split between runtime and user code.
+// All other generators should skip/ignore such functions.
+func (t *KernelType) IsExclamationWrapper() bool {
+	return t.exclamationArg != nil
 }
 
 func (t *KernelType) Annotations() []string {

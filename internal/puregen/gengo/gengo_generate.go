@@ -17,7 +17,7 @@ import (
 func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.TypeInstance) error {
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
-			tlType:         "#",
+			canonicalType:  "uint32",
 			goType:         "uint32",
 			writeJSONValue: "basictl.JSONWriteUint32",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadUint32",
@@ -27,7 +27,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.NatWrite",
 			readValue:      "basictl.NatRead",
 		}, {
-			tlType:         "int",
+			canonicalType:  "int32",
 			goType:         "int32",
 			writeJSONValue: "basictl.JSONWriteInt32",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadInt32",
@@ -37,7 +37,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.IntWrite",
 			readValue:      "basictl.IntRead",
 		}, {
-			tlType:         "long",
+			canonicalType:  "int64",
 			goType:         "int64",
 			writeJSONValue: "basictl.JSONWriteInt64",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadInt64",
@@ -47,7 +47,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.LongWrite",
 			readValue:      "basictl.LongRead",
 		}, {
-			tlType:         "float",
+			canonicalType:  "float32",
 			goType:         "float32",
 			writeJSONValue: "basictl.JSONWriteFloat32",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadFloat32",
@@ -57,7 +57,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.FloatWrite",
 			readValue:      "basictl.FloatRead",
 		}, {
-			tlType:         "double",
+			canonicalType:  "float64",
 			goType:         "float64",
 			writeJSONValue: "basictl.JSONWriteFloat64",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadFloat64",
@@ -67,7 +67,27 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.DoubleWrite",
 			readValue:      "basictl.DoubleRead",
 		}, {
-			tlType:         "string",
+			canonicalType:  "string",
+			goType:         "string",
+			writeJSONValue: "basictl.JSONWriteString",
+			readJSONValue:  gen.InternalPrefix() + "JsonReadString",
+			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
+			resetValue:     "%s = \"\"",
+			randomValue:    "basictl.RandomString",
+			writeValue:     "basictl.StringWrite",
+			readValue:      "basictl.StringRead",
+		}, {
+			canonicalType:  "__function",
+			goType:         "string",
+			writeJSONValue: "basictl.JSONWriteString",
+			readJSONValue:  gen.InternalPrefix() + "JsonReadString",
+			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
+			resetValue:     "%s = \"\"",
+			randomValue:    "basictl.RandomString",
+			writeValue:     "basictl.StringWrite",
+			readValue:      "basictl.StringRead",
+		}, {
+			canonicalType:  "__function_result",
 			goType:         "string",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSONValue:  gen.InternalPrefix() + "JsonReadString",
@@ -79,7 +99,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 		},
 	}
 	for _, ct := range primitiveTypesList {
-		if ct.goType == pureType.CanonicalName() {
+		if ct.canonicalType == pureType.CanonicalName() {
 			myWrapper.trw = ct
 			//ct.tlTag = myWrapper.tlTag
 			return nil
@@ -89,8 +109,8 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 	// TODO - add missing types (uint64, byte, bit) aboveб error below
 	// TODO - bit type might simplify generators by generating no code in TypeWriting methods
 	myWrapper.trw = &TypeRWPrimitive{
-		tlType: pureType.CanonicalName(),
-		goType: pureType.CanonicalName(),
+		canonicalType: pureType.CanonicalName(),
+		goType:        pureType.CanonicalName(),
 	}
 	return nil // fmt.Errorf("unknown primitive type")
 }

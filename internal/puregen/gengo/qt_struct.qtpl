@@ -10,8 +10,8 @@
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
         tlName := struct_.wr.tlName.String()
-        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+        natArgsDecl := struct_.wr.formatNatArgsDecl()
+        natArgsCall := struct_.wr.formatNatArgsDeclCall()
         writeNeedsError := struct_.wr.hasErrorInWriteMethods
     -%}
     {%- if struct_.unionParent != nil -%}
@@ -78,13 +78,13 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
         {%- endif -%}
 
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1(w{%s= natArgsCall %})
+func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item *{%s= goName %}) ReadTL1(w []byte {%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
+func (item *{%s= goName %}) ReadTL1(w []byte {%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
 
-{%- if len(struct_.wr.NatParams) == 0 -%}
+{%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.WriteTL1General(w{%s= natArgsCall %})
@@ -100,30 +100,30 @@ func (item *{%s= goName %}) WriteTL1General(w []byte{%s= natArgsDecl %}) (_ []by
 {%- endif -%}
 
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteTL1(w{%s= natArgsCall %})
+func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    return item.WriteTL1(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item *{%s= goName %}) WriteTL1(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} { {%= struct_.writeFields(bytesVersion, directImports) %} }
+func (item *{%s= goName %}) WriteTL1(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} { {%= struct_.writeFields(bytesVersion, directImports) %} }
 
     {%- if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 -%}
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
         return w, err
     }
-    return item.ReadTL1(w{%s= natArgsCall %})
+    return item.ReadTL1(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
     {%- endif -%}
 }
 
-{%- if len(struct_.wr.NatParams) == 0 -%}
+{%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w{%s= natArgsCall %})
@@ -139,11 +139,11 @@ func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_
 {%- endif -%}
 
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    return item.WriteTL1Boxed(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     {%- if struct_.wr.originateFromTL2 -%}
         {%- if writeNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
@@ -152,15 +152,15 @@ func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrap
         {%- endif -%}
     {%- else -%}
     w = basictl.NatWrite(w, {%s= tlTag %})
-    return item.WriteTL1(w{%s= natArgsCall %})
+    return item.WriteTL1(w{%s= natArgsCall %}{%s= struct_.wr.fetcherCall() %})
     {%- endif -%}
 }
 
     {%- endif -%}
 {%= struct_.functionCode(bytesVersion, directImports) %}
-    {%- if len(struct_.wr.NatParams) == 0 -%}
+    {%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
 
-func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= struct_.wr.formatNatArgsDeclNoComma() %}) string {
     {%- if writeNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {
@@ -338,8 +338,8 @@ type {%s= goName %} struct {
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
-        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+        natArgsDecl := struct_.wr.formatNatArgsDecl()
+        natArgsCall := struct_.wr.formatNatArgsDeclCall()
         writeNeedsError := struct_.wr.hasErrorInWriteMethods
     -%}
     {%- if struct_.isTypedef() -%}
@@ -399,7 +399,7 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
-        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+        natArgsDecl := struct_.wr.formatNatArgsDecl()
     -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -654,8 +654,8 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 {%- func (struct_ *TypeRWStruct)writeJSONCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+        natArgsDecl := struct_.wr.formatNatArgsDecl()
+        natArgsCall := struct_.wr.formatNatArgsDeclCall()
         writeNeedsError := struct_.wr.hasErrorInWriteMethods
     -%}
 
@@ -739,9 +739,12 @@ func (item *{%s= goName %}) ReadResult(w []byte, ret *{%s= retArg %}) (_ []byte,
 {%- endif -%}
 func (item *{%s= goName %}) ReadResultTL1(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
-    return w, basictl.TL2Error("not implemented for tl2 type")
+        return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
+        {%- if struct_.resultHasFetcher() -%}
+            var fetcher any
+        {%- endif -%}
+        {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
     {%- endif -%}
 }
 
@@ -752,10 +755,13 @@ func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte,
 {%- endif -%}
 func (item *{%s= goName %}) WriteResultTL1(w []byte, ret {%s= retArg %}) (_ []byte, err error) {
     {%- if struct_.wr.originateFromTL2 -%}
-    return w, basictl.TL2Error("not implemented for tl2 type")
+        return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
-    {%s= struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods) %}
-    return w, nil
+        {%- if struct_.resultHasFetcher() -%}
+            var fetcher any
+        {%- endif -%}
+        {%s= struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods) %}
+        return w, nil
     {%- endif -%}
 }
 

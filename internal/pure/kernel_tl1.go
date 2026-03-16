@@ -117,29 +117,30 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 // exclamation marker is not actually a template at all, "!X" is simply reference to interface RpcFunction,
 // so we remove template argument from the list
 // @any rpcProxy.diagonal {X:Type} query:!X = Vector (Maybe X);
-func (k *Kernel) CheckExclamationWrapper(typ *tlast.Combinator) (bool, []tlast.TemplateArgument, error) {
+func (k *Kernel) CheckExclamationWrapper(typ *tlast.Combinator) (exclArg *tlast.TemplateArgument, _ []tlast.TemplateArgument, _ error) {
 	exclPos := -1
 	for i, field := range typ.Fields {
 		if field.Excl {
 			if exclPos != -1 {
-				return false, nil, field.PR.BeautifulError(errors.New("!X field must be defined only once"))
+				return nil, nil, field.PR.BeautifulError(errors.New("!X field must be defined only once"))
 			}
 			if !purelegacy.EnableExclamation(typ.Construct.Name.String()) {
-				return false, nil, field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
+				return nil, nil, field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
 			}
 			if field.IsRepeated || field.Mask != nil {
-				return false, nil, field.PR.BeautifulError(errors.New("!X field must not be repeated or have fields mask"))
+				return nil, nil, field.PR.BeautifulError(errors.New("!X field must not be repeated or have fields mask"))
 			}
 			if len(typ.TemplateArguments) == 0 || field.FieldType.String() != typ.TemplateArguments[len(typ.TemplateArguments)-1].FieldName {
-				return false, nil, field.PR.BeautifulError(errors.New("!X field must reference last template argument"))
+				// this probably can be easily relaxed, but we are not planning on further developing this feature, so no.
+				return nil, nil, field.PR.BeautifulError(errors.New("!X field must reference last template argument"))
 			}
 			exclPos = i
 		}
 	}
 	if exclPos == -1 {
-		return false, typ.TemplateArguments, nil
+		return nil, typ.TemplateArguments, nil
 	}
-	return true, typ.TemplateArguments[:len(typ.TemplateArguments)-1], nil
+	return &typ.TemplateArguments[len(typ.TemplateArguments)-1], typ.TemplateArguments[:len(typ.TemplateArguments)-1], nil
 }
 
 func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) error {
@@ -254,16 +255,21 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 	}
 	// in order for deterministic migration
 	for _, comb := range k.filesTL1 {
+		exclArg, targs, _ := k.CheckExclamationWrapper(comb)
+
 		if comb.IsFunction {
+			if len(targs) != 0 {
+				return comb.TemplateArgumentsPR.BeautifulError(fmt.Errorf("functions should not have template arguments, except very few infrastructure functions"))
+			}
 			cName := comb.Construct.Name
 			kt := &KernelType{
-				originTL2:  false,
-				combTL1:    []*tlast.Combinator{comb},
-				instances:  map[string]*TypeInstanceRef{},
-				isFunction: true,
-				isTopLevel: len(comb.TemplateArguments) == 0,
-				// functions have no canonical name, because there is no references to functions
-				// also they have no TL1 names or TL2 names set.
+				originTL2:      false,
+				combTL1:        []*tlast.Combinator{comb},
+				instances:      map[string]*TypeInstanceRef{},
+				isFunction:     true,
+				isTopLevel:     true, // despite having 1 template argument in case of excl
+				exclamationArg: exclArg,
+				// functions have no TL1 names or TL2 names set, because there is no references to functions
 				canonicalName:  tlast.TL2TypeName(cName),
 				historicalName: tlast.TL2TypeName(cName),
 				namePR:         comb.Construct.NamePR,

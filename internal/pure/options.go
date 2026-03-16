@@ -24,9 +24,12 @@ type OptionsKernel struct {
 
 	ErrorWriter io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 
-	// this cannot be set via command line, set by generators which want it.
-	// by default, we do not instantiate constants simply to reduce # of created instances.
+	// This option cannot be set via command line, set by generators which want it.
+	// By default, we do not instantiate constants simply to reduce # of created instances.
 	InstantiateConstants bool
+	// This option cannot be set via command line, set by generators which want it.
+	// Most generators skip !X function wrappers, but monolith PHP code uses them,
+	InstantiateExclamationWrappers bool
 
 	// TODO - remove after migration code stabilized
 	TL2MigrationDevMode bool

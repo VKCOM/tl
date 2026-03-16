@@ -22,8 +22,8 @@ func (union *TypeRWUnion) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVer
 	goName := addBytes(union.wr.goGlobalName, bytesVersion)
 	tlName := union.wr.tlName.String()
 	asterisk := ifString(union.IsEnum, "", "*")
-	natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
-	natArgsCall := formatNatArgsDeclCall(union.wr.NatParams)
+	natArgsDecl := union.wr.formatNatArgsDecl()
+	natArgsCall := union.wr.formatNatArgsDeclCall()
 	writeNeedsError := union.wr.hasErrorInWriteMethods
 
 	union.streamgenerateEnumAlias(qw422016, bytesVersion)
@@ -147,7 +147,7 @@ func (item *`)
 	qw422016.N().S(`
 
 `)
-	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
+	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 && !union.wr.HasFetcher() {
 		/* for interface requirements for TL2 Type, also for tests */
 
 		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
@@ -155,9 +155,11 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) Read(w []byte`)
 			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(union.wr.fetcherDecl())
 			qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1(w`)
 			qw422016.N().S(natArgsCall)
+			qw422016.N().S(union.wr.fetcherCall())
 			qw422016.N().S(`)
 }
 `)
@@ -166,9 +168,11 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL1(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(union.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1Boxed(w`)
 		qw422016.N().S(natArgsCall)
+		qw422016.N().S(union.wr.fetcherCall())
 		qw422016.N().S(`)
 }
 `)
@@ -180,9 +184,11 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadBoxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(union.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1Boxed(w`)
 		qw422016.N().S(natArgsCall)
+		qw422016.N().S(union.wr.fetcherCall())
 		qw422016.N().S(`)
 }
 `)
@@ -191,6 +197,7 @@ func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadTL1Boxed(w []byte`)
 	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(union.wr.fetcherDecl())
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if union.wr.originateFromTL2 {
@@ -295,11 +302,13 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteBoxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(union.wr.fetcherDecl())
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
     return item.WriteTL1Boxed(w`)
 		qw422016.N().S(natArgsCall)
+		qw422016.N().S(union.wr.fetcherCall())
 		qw422016.N().S(`)
 }
 `)
@@ -308,6 +317,7 @@ func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(union.wr.fetcherDecl())
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(`  {
@@ -942,7 +952,7 @@ func (item `)
 		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) String(`)
-		qw422016.N().S(formatNatArgsDeclNoComma(union.wr.NatParams))
+		qw422016.N().S(union.wr.formatNatArgsDeclNoComma())
 		qw422016.N().S(`) string {
 `)
 		if writeNeedsError {

@@ -6,8 +6,8 @@
         goName := addBytes(union.wr.goGlobalName, bytesVersion)
         tlName := union.wr.tlName.String()
         asterisk := ifString(union.IsEnum, "", "*")
-        natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(union.wr.NatParams)
+        natArgsDecl := union.wr.formatNatArgsDecl()
+        natArgsCall := union.wr.formatNatArgsDeclCall()
         writeNeedsError := union.wr.hasErrorInWriteMethods
     -%}
 {%= union.generateEnumAlias(bytesVersion) %}
@@ -64,24 +64,24 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
 
 {%= union.generateConstructorsBehavior(bytesVersion, directImports) %}
 
-{%- if union.wr.HasTL2() && len(union.wr.NatParams) == 0 -%}
+{%- if union.wr.HasTL2() && len(union.wr.NatParams) == 0 && !union.wr.HasFetcher() -%}
 {%- code /* for interface requirements for TL2 Type, also for tests */ -%}
 {%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1(w{%s= natArgsCall %})
+func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1(w{%s= natArgsCall %}{%s= union.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item*{%s= goName %}) ReadTL1(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1Boxed(w{%s= natArgsCall %})
+func (item*{%s= goName %}) ReadTL1(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w{%s= natArgsCall %}{%s= union.wr.fetcherCall() %})
 }
 {%- endif -%}
 
 {%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w{%s= natArgsCall %}{%s= union.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) (_ []byte, err error) {
     {%- if union.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -133,11 +133,11 @@ func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_
 {%- endif -%}
 
 {%- if union.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    return item.WriteTL1Boxed(w{%s= natArgsCall %}{%s= union.wr.fetcherCall() %})
 }
 {%- endif -%}
-func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
+func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
     {%- if union.wr.originateFromTL2 -%}
         {%- if writeNeedsError -%}
             return w, basictl.TL2Error("not implemented for tl2 type")
@@ -464,7 +464,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
 }
 
 {%- if len(union.wr.NatParams) == 0 -%}
-func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= union.wr.formatNatArgsDeclNoComma() %}) string {
     {%- if writeNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {

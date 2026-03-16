@@ -6,8 +6,8 @@
         goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
         tlName := maybe.wr.tlName.String()
         elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
-        natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(maybe.wr.NatParams)
+        natArgsDecl := maybe.wr.formatNatArgsDecl()
+        natArgsCall := maybe.wr.formatNatArgsDeclCall()
         emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
         okTag := fmt.Sprintf("%#x", maybe.okTag)
         writeElementNeedsError := maybe.element.t.hasErrorInWriteMethods
@@ -41,12 +41,12 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
         {%- endif -%}
 
 {%- if maybe.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.ReadTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) (_ []byte, err error) {
+    return item.ReadTL1Boxed(w{%s= natArgsCall %}{%s= maybe.wr.fetcherCall() %})
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) (_ []byte, err error) {
     {%- if maybe.wr.originateFromTL2 -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
@@ -62,12 +62,12 @@ func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}) (_ []byte,
 
 {%- if !maybe.wr.originateFromTL2 -%}
 {%- if maybe.wr.gen.options.Go.GenerateLegacyReadWrite -%}
-func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return item.WriteTL1Boxed(w{%s= natArgsCall %})
+func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return item.WriteTL1Boxed(w{%s= natArgsCall %}{%s= maybe.wr.fetcherCall() %})
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if item.Ok {
         w = basictl.NatWrite(w, {%s= okTag %})
         {%s= maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.NatArgs()), false, true, writeElementNeedsError) %}
@@ -249,7 +249,7 @@ func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 }
     {%- if len(maybe.wr.NatParams) == 0 -%}
 
-func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(maybe.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= maybe.wr.formatNatArgsDeclNoComma() %}) string {
     {%- if writeElementNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {

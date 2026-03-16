@@ -252,3 +252,29 @@ func (k *Kernel) resolveMaskTL1(mask tlast.FieldMask, leftArgs []tlast.TL2TypeTe
 	}
 	return ActualNatArg{}, mask.PRName.BeautifulError(errors.New("fieldMask reference not found"))
 }
+
+func (k *Kernel) resolvedTypeNeedsFetcher(tr tlast.TL2TypeRef) bool {
+	if br := tr.BracketType; br != nil {
+		bracketType := *tr.BracketType
+		if bracketType.HasIndex && !bracketType.IndexType.IsNumber {
+			if k.resolvedTypeNeedsFetcher(bracketType.IndexType.Type) {
+				return true
+			}
+		}
+		return k.resolvedTypeNeedsFetcher(bracketType.ArrayType)
+	}
+	someType := &tr.SomeType
+	tName := someType.Name.String()
+	if tName == "__function_result" {
+		return true
+	}
+	for _, arg := range someType.Arguments {
+		if arg.IsNumber {
+			continue
+		}
+		if k.resolvedTypeNeedsFetcher(arg.Type) {
+			return true
+		}
+	}
+	return false
+}

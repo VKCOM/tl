@@ -95,12 +95,12 @@ func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *Dir
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
 	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
 func (trw *TypeRWBrackets) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }
 
 func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

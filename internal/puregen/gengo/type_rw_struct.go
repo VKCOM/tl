@@ -36,6 +36,10 @@ type TypeRWStruct struct {
 
 var _ TypeRW = &TypeRWStruct{}
 
+func (trw *TypeRWStruct) resultHasFetcher() bool {
+	return trw.ResultType != nil && trw.ResultType.HasFetcher()
+}
+
 func (trw *TypeRWStruct) isTypedef() bool {
 	return trw.pureTypeStruct.IsTypedef()
 }
@@ -226,7 +230,7 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Write%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
 func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -240,7 +244,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Read%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
