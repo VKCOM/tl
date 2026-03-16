@@ -564,7 +564,7 @@ func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) Inte
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor
@@ -835,7 +835,7 @@ func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBu
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor
@@ -1102,7 +1102,7 @@ func (item *PairBuiltinVectorIntBuiltinVectorInt) InternalReadTL2(r []byte) (_ [
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor

@@ -977,7 +977,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor
@@ -1041,7 +1041,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	}
 	// start the next block
 	if len(currentR) > 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 			return currentR, err
 		}
 	} else {

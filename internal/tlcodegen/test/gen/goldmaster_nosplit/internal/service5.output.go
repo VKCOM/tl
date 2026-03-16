@@ -159,7 +159,7 @@ func (item *Service5EmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if (block & 1) != 0 {
@@ -320,7 +320,7 @@ func (item *Service5Output) InternalReadTL2(r []byte) (_ []byte, err error) {
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	item.index = 0
@@ -733,7 +733,7 @@ func (item *Service5StringOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext)
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if (block & 1) != 0 {

@@ -74,6 +74,8 @@
 //----- Test Multiple bools
 //----- Test Common Types
 
+a.testNewTypes = b:byte u:uint64;
+
 a.fun1#12345671
     => int32;
 
