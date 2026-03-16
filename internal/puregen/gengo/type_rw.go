@@ -80,28 +80,6 @@ func formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
 	return result
 }
 
-func formatNatArgsDecl(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
-	}
-	return s.String()
-}
-
-func formatNatArgsDeclNoComma(natArgs []string) string {
-	return strings.TrimPrefix(formatNatArgsDecl(natArgs), ",")
-}
-
-// if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
-// and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
-func formatNatArgsDeclCall(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", nat_%s", arg))
-	}
-	return s.String()
-}
-
 // simply adds commas, natArgs are already fully formatted. Difference to strings.Join is leading comma
 func joinWithCommas(natArgs []string) string {
 	var s strings.Builder

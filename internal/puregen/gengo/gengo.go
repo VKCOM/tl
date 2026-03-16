@@ -54,6 +54,8 @@ type genGo struct {
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	options.Kernel.InstantiateConstants = true
+	// uncomment for testing behavior relevant for PHP generator
+	// options.Kernel.InstantiateExclamationWrappers = true
 	if err := kernel.Compile(); err != nil {
 		return err
 	}

@@ -16,8 +16,8 @@ var (
 
 func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(tuple.wr.goGlobalName, bytesVersion)
-	natDecl := formatNatArgsDecl(tuple.wr.NatParams)
-	// natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
+	natDecl := tuple.wr.formatNatArgsDecl()
+	// natCall := tuple.wr.formatNatArgsDeclCall(=)
 	// tlTag := fmt.Sprintf("0x%08x", tuple.wr.tlTag)
 	typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
@@ -25,8 +25,8 @@ func (tuple *TypeRWDict) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVers
 
 	keyTypeString := tuple.dictKeyField.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	valueTypeString := tuple.dictValueField.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
-	valueNatArgsDecl := formatNatArgsDecl(tuple.element.t.NatParams)
-	valueNatArgsCall := formatNatArgsDeclCall(tuple.element.t.NatParams)
+	valueNatArgsDecl := tuple.element.t.formatNatArgsDecl()
+	valueNatArgsCall := tuple.element.t.formatNatArgsDeclCall()
 	keyFieldName := tuple.dictKeyField.goName
 	valueFieldName := tuple.dictValueField.goName
 

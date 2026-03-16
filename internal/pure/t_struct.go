@@ -27,7 +27,7 @@ type TypeInstanceStruct struct {
 	isAlias             bool
 	isUnwrap            bool
 
-	// if function
+	// if function. TODO - convert to field?
 	resultType     TypeInstance
 	resultTypeBare bool
 	resultNatArgs  []ActualNatArg // for TL1 only, empty for TL2
@@ -173,6 +173,7 @@ func (k *Kernel) createStructTL2(canonicalName string, tip *KernelType, resolved
 			natParams:     natParams,
 			tip:           tip,
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			isTopLevel:    tip.isTopLevel && !isUnionElement,
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        true,
@@ -514,6 +515,9 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 					PR: scale.PR,
 				}
 			}
+		} else if fieldDef.Excl { // order is checked by CheckExclamationWrapper
+			type2 = k.convertTypeRef(fieldDef.FieldType) // keep PRs
+			type2.SomeType.Name = tlast.TL2TypeName{Name: "__function"}
 		} else {
 			type2 = k.convertTypeRef(fieldDef.FieldType)
 		}
@@ -532,7 +536,7 @@ func (k *Kernel) replaceTL1Brackets(def *tlast.Combinator) ([]tlast.Field, []tla
 	return fieldsAfterReplace, typesAfterReplace, originalFieldIndices, nil
 }
 
-func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
+func (k *Kernel) createStructTL1(canonicalName string, tip *KernelType,
 	resolvedType tlast.TL2TypeRef, def *tlast.Combinator,
 	isUnionElement bool, unionIndex int) (*TypeInstanceStruct, error) {
 	leftArgs := append([]tlast.TL2TypeTemplate{}, tip.templateArguments...) // prevent golang aliasing
@@ -549,6 +553,7 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        false, // could be marked later
 			commentBefore: def.CommentBefore,
@@ -681,6 +686,20 @@ func (k *Kernel) createStructTL1FromTL1(canonicalName string, tip *KernelType,
 		}
 	}
 	if def.IsFunction {
+		if tip.exclamationArg != nil {
+			leftArgs = append(leftArgs, tlast.TL2TypeTemplate{
+				Name:     tip.exclamationArg.FieldName,
+				Category: tlast.TL2TypeCategory{IsNatValue: true},
+				PR:       tip.exclamationArg.PR,
+			})
+			localArgs = append(localArgs, LocalArg{
+				wrongTypeErr: nil,
+				arg: tlast.TL2TypeArgument{
+					Type: tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "__function_result"}}},
+					PR:   tip.exclamationArg.PR,
+				},
+			})
+		}
 		fieldType := k.convertTypeRef(def.FuncDecl)
 		rt, natArgs, err := k.resolveType(false, fieldType, leftArgs, localArgs)
 		if err != nil {
@@ -724,6 +743,7 @@ func (k *Kernel) createAliasTL2(canonicalName string, tip *KernelType, resolvedT
 			tip:           tip,
 			isTopLevel:    tip.isTopLevel, // both single types and union elements
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			argNamespace:  k.getArgNamespace(resolvedType),
 			hasTL2:        true,
 			commentBefore: tip.combTL2.CommentBefore,

@@ -38,8 +38,8 @@ package `)
 		if c.Crc32() == 0 || c.Construct.Name.String() == "_" { // TODO - remove second check after ReqResult removed from combined.tl
 			continue
 		}
-		excl, _, _ := gen.kernel.CheckExclamationWrapper(c)
-		if !excl && !slices.Contains([]string{"resultTrue", "resultFalse"}, c.Construct.Name.Name) {
+		exclArg, _, _ := gen.kernel.CheckExclamationWrapper(c)
+		if exclArg == nil && !slices.Contains([]string{"resultTrue", "resultFalse"}, c.Construct.Name.String()) {
 			continue
 		}
 		lines = append(lines, Line{conName: tlast.TL2TypeName(c.Construct.Name), magic: c.Crc32()})

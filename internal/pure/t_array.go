@@ -97,6 +97,7 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 			natParams:     natParams,
 			tip:           nil, // TODO - try to live without brackets type at all
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple: false,
@@ -134,6 +135,7 @@ func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2Type
 			natParams:     natParams,
 			tip:           nil, // TODO - try to live without brackets type at all
 			resolvedType:  resolvedType,
+			hasFetcher:    k.resolvedTypeNeedsFetcher(resolvedType),
 			argNamespace:  k.getArgNamespace(resolvedType),
 		},
 		isTuple:     true,

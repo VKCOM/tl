@@ -44,11 +44,11 @@ func (k *Kernel) canonicalString(tr tlast.TL2TypeRef, top bool) (_ string, bare 
 	}
 	someType := tr.SomeType
 	tName := someType.Name.String()
+	bare = someType.Bare
 	kt, ok := k.tips[tName]
 	if !ok {
 		return "", false, tr.PR.BeautifulError(fmt.Errorf("type or argument reference %s not found", tName))
 	}
-	bare = someType.Bare
 	// Special case, Bool is boxed in TL1, but bare in TL2, so we make it boxed always, from the
 	// type resolution point of view.
 	if someType.Name != kt.tl1BoxedName && kt.canonicalName.String() != "bool" {

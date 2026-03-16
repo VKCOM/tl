@@ -16,8 +16,8 @@ var (
 
 func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(tuple.wr.goGlobalName, bytesVersion)
-	natDecl := formatNatArgsDecl(tuple.wr.NatParams)
-	natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
+	natDecl := tuple.wr.formatNatArgsDecl()
+	natCall := tuple.wr.formatNatArgsDeclCall()
 	typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
@@ -69,6 +69,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if tuple.wr.originateFromTL2 {
@@ -109,6 +110,7 @@ func `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
@@ -422,6 +424,7 @@ func `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if tuple.wr.originateFromTL2 {
@@ -457,6 +460,7 @@ func `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if tuple.wr.originateFromTL2 {
@@ -805,6 +809,7 @@ func `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if tuple.wr.originateFromTL2 {
@@ -827,6 +832,7 @@ func `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
+		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {

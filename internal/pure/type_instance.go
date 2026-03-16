@@ -31,9 +31,9 @@ type TypeInstanceRef struct {
 type TypeInstanceCommon struct {
 	canonicalName string
 	tlName        tlast.TL2TypeName
-	tlName2       tlast.TL2TypeName
 	tlTag         uint32
 	natParams     []string // external nat params (empty for TL2 types)
+	hasFetcher    bool
 	tip           *KernelType
 	isTopLevel    bool
 	resolvedType  tlast.TL2TypeRef
@@ -50,10 +50,6 @@ func (ins *TypeInstanceCommon) CanonicalName() string {
 
 func (ins *TypeInstanceCommon) TLName() tlast.TL2TypeName {
 	return ins.tlName
-}
-
-func (ins *TypeInstanceCommon) TLName2() tlast.TL2TypeName {
-	return ins.tlName2
 }
 
 // for TL1 union zero, for TL2 union as specified by user
@@ -76,6 +72,10 @@ func (ins *TypeInstanceCommon) IsTopLevel() bool {
 
 func (ins *TypeInstanceCommon) ResolvedType() tlast.TL2TypeRef {
 	return ins.resolvedType
+}
+
+func (ins *TypeInstanceCommon) HasFetcher() bool {
+	return ins.hasFetcher
 }
 
 func (ins *TypeInstanceCommon) ArgNamespace() string {

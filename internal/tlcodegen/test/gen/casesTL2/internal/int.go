@@ -644,15 +644,15 @@ func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec 
 	return append(w, ']')
 }
 
-type Maybe struct {
+type IntMaybe struct {
 	Value int32 // not deterministic if !Ok
 	Ok    bool
 }
 
-func (item *Maybe) Reset() {
+func (item *IntMaybe) Reset() {
 	item.Ok = false
 }
-func (item *Maybe) FillRandom(rg *basictl.RandGenerator) {
+func (item *IntMaybe) FillRandom(rg *basictl.RandGenerator) {
 	if basictl.RandomUint(rg)&1 == 1 {
 		item.Ok = true
 		item.Value = basictl.RandomInt(rg)
@@ -661,11 +661,11 @@ func (item *Maybe) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *Maybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
+func (item *IntMaybe) ReadTL1Boxed(w []byte) (_ []byte, err error) {
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+func (item *IntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	if !item.Ok {
 		if optimizeEmpty {
 			return sizes, 0
@@ -696,7 +696,7 @@ func (item *Maybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int)
 	return sizes, currentSize
 }
 
-func (item *Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if !item.Ok {
 		if optimizeEmpty {
 			return w, sizes, 0
@@ -727,7 +727,7 @@ func (item *Maybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) (
 	return w, sizes, currentSize
 }
 
-func (item *Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
+func (item *IntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -772,7 +772,7 @@ func (item *Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *IntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -792,15 +792,15 @@ func (item *Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Maybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *IntMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(tctx, w), nil
 }
 
-func (item *Maybe) WriteJSON(w []byte) []byte {
+func (item *IntMaybe) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
 	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *IntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
@@ -812,6 +812,6 @@ func (item *Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte
 	return append(w, '}')
 }
 
-func (item Maybe) String() string {
+func (item IntMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

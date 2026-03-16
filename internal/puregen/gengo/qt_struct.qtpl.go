@@ -26,8 +26,8 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
 	tlName := struct_.wr.tlName.String()
-	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+	natArgsDecl := struct_.wr.formatNatArgsDecl()
+	natArgsCall := struct_.wr.formatNatArgsDeclCall()
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
 	if struct_.unionParent != nil {
@@ -179,9 +179,11 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) Read(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(struct_.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1(w`)
 		qw422016.N().S(natArgsCall)
+		qw422016.N().S(struct_.wr.fetcherCall())
 		qw422016.N().S(`)
 }
 `)
@@ -190,12 +192,13 @@ func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadTL1(w []byte `)
 	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(struct_.wr.fetcherDecl())
 	qw422016.N().S(`) (_ []byte, err error) { `)
 	struct_.streamreadFields(qw422016, bytesVersion, directImports)
 	qw422016.N().S(` }
 
 `)
-	if len(struct_.wr.NatParams) == 0 {
+	if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
 		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -235,11 +238,13 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) Write(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(struct_.wr.fetcherDecl())
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
     return item.WriteTL1(w`)
 		qw422016.N().S(natArgsCall)
+		qw422016.N().S(struct_.wr.fetcherCall())
 		qw422016.N().S(`)
 }
 `)
@@ -248,6 +253,7 @@ func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteTL1(w []byte`)
 	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(struct_.wr.fetcherDecl())
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` { `)
@@ -261,9 +267,11 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) ReadBoxed(w []byte`)
 			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(struct_.wr.fetcherDecl())
 			qw422016.N().S(`) (_ []byte, err error) {
     return item.ReadTL1Boxed(w`)
 			qw422016.N().S(natArgsCall)
+			qw422016.N().S(struct_.wr.fetcherCall())
 			qw422016.N().S(`)
 }
 `)
@@ -272,6 +280,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(struct_.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if struct_.wr.originateFromTL2 {
@@ -285,13 +294,14 @@ func (item *`)
     }
     return item.ReadTL1(w`)
 			qw422016.N().S(natArgsCall)
+			qw422016.N().S(struct_.wr.fetcherCall())
 			qw422016.N().S(`)
 `)
 		}
 		qw422016.N().S(`}
 
 `)
-		if len(struct_.wr.NatParams) == 0 {
+		if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
 			if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
@@ -331,11 +341,13 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteBoxed(w []byte`)
 			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(struct_.wr.fetcherDecl())
 			qw422016.N().S(`) `)
 			qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 			qw422016.N().S(` {
     return item.WriteTL1Boxed(w`)
 			qw422016.N().S(natArgsCall)
+			qw422016.N().S(struct_.wr.fetcherCall())
 			qw422016.N().S(`)
 }
 `)
@@ -344,6 +356,7 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteTL1Boxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(struct_.wr.fetcherDecl())
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
@@ -362,6 +375,7 @@ func (item *`)
 			qw422016.N().S(`)
     return item.WriteTL1(w`)
 			qw422016.N().S(natArgsCall)
+			qw422016.N().S(struct_.wr.fetcherCall())
 			qw422016.N().S(`)
 `)
 		}
@@ -372,12 +386,12 @@ func (item *`)
 	struct_.streamfunctionCode(qw422016, bytesVersion, directImports)
 	qw422016.N().S(`
 `)
-	if len(struct_.wr.NatParams) == 0 {
+	if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
 		qw422016.N().S(`
 func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) String(`)
-		qw422016.N().S(formatNatArgsDeclNoComma(struct_.wr.NatParams))
+		qw422016.N().S(struct_.wr.formatNatArgsDeclNoComma())
 		qw422016.N().S(`) string {
 `)
 		if writeNeedsError {
@@ -749,8 +763,8 @@ func (struct_ *TypeRWStruct) fieldMaskGettersAndSetters(bytesVersion bool, direc
 func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
-	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+	natArgsDecl := struct_.wr.formatNatArgsDecl()
+	natArgsCall := struct_.wr.formatNatArgsDeclCall()
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
 	if struct_.isTypedef() {
@@ -877,7 +891,7 @@ func (struct_ *TypeRWStruct) generateJSONCode(bytesVersion bool, directImports *
 func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
-	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+	natArgsDecl := struct_.wr.formatNatArgsDecl()
 
 	if len(struct_.wr.NatParams) == 0 {
 		qw422016.N().S(`func (item *`)
@@ -1299,8 +1313,8 @@ func (struct_ *TypeRWStruct) readJsonWithResetForRaw(field Field, bytesVersion b
 
 func (struct_ *TypeRWStruct) streamwriteJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+	natArgsDecl := struct_.wr.formatNatArgsDecl()
+	natArgsCall := struct_.wr.formatNatArgsDeclCall()
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
 
 	qw422016.N().S(`
@@ -1476,10 +1490,14 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if struct_.wr.originateFromTL2 {
-		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+		qw422016.N().S(`        return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		qw422016.N().S(`    `)
+		if struct_.resultHasFetcher() {
+			qw422016.N().S(`            var fetcher any
+`)
+		}
+		qw422016.N().S(`        `)
 		qw422016.N().S(struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true))
 		qw422016.N().S(`
 `)
@@ -1504,13 +1522,17 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if struct_.wr.originateFromTL2 {
-		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+		qw422016.N().S(`        return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		qw422016.N().S(`    `)
+		if struct_.resultHasFetcher() {
+			qw422016.N().S(`            var fetcher any
+`)
+		}
+		qw422016.N().S(`        `)
 		qw422016.N().S(struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods))
 		qw422016.N().S(`
-    return w, nil
+        return w, nil
 `)
 	}
 	qw422016.N().S(`}

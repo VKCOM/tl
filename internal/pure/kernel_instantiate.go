@@ -81,9 +81,9 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef, create bool) (_ *TypeInstanceR
 	}
 	switch {
 	case len(kt.combTL1) > 1:
-		ref.ins, err = k.createUnionTL1FromTL1(canonicalName, kt, tr, kt.combTL1)
+		ref.ins, err = k.createUnionTL1(canonicalName, kt, tr, kt.combTL1)
 	case len(kt.combTL1) == 1:
-		ref.ins, err = k.createStructTL1FromTL1(canonicalName, kt, tr, kt.combTL1[0],
+		ref.ins, err = k.createStructTL1(canonicalName, kt, tr, kt.combTL1[0],
 			false, 0)
 	default:
 		return nil, false, fmt.Errorf("wrong type classification, internal error %s", canonicalName)

@@ -17,12 +17,19 @@ func (trw *TypeRWPrimitive) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if trw.tlType == "string" {
+	if trw.canonicalType == "string" {
 		sz := fmt.Sprintf("currentSize += basictl.TL2CalculateSize(len(%[1]s)) + len(%[1]s)", addAsterisk(refObject, targetObject))
 		if zeroIfEmpty {
 			return fmt.Sprintf("if len(%s) != 0 {\n", addAsterisk(refObject, targetObject)) + sz
 		}
 		return sz
+	}
+	if trw.canonicalType == "__function" || trw.canonicalType == "__function_result" {
+		//sz := "currentSize += 0"
+		if zeroIfEmpty {
+			return "{\n"
+		}
+		return ""
 	}
 	sz := fmt.Sprintf("currentSize += %d", trw.trivialSize())
 	if zeroIfEmpty {
@@ -42,7 +49,7 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	refObject bool,
 ) string {
 	method := trw.writeValue
-	if trw.tlType == "string" {
+	if trw.canonicalType == "string" {
 		method = addBytes("basictl.StringWriteTL2", bytesVersion)
 	}
 	sz := fmt.Sprintf(`%[2]s = %[1]s(%[2]s, %[3]s)`,
@@ -50,11 +57,17 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 		targetBytes,
 		addAsterisk(refObject, targetObject),
 	)
-	if trw.tlType == "string" {
+	if trw.canonicalType == "string" {
 		if zeroIfEmpty {
 			return fmt.Sprintf("if len(%s) != 0 {\n", addAsterisk(refObject, targetObject)) + sz
 		}
 		return sz
+	}
+	if trw.canonicalType == "__function" || trw.canonicalType == "__function_result" {
+		if zeroIfEmpty {
+			return "{\n"
+		}
+		return ""
 	}
 	if zeroIfEmpty {
 		return fmt.Sprintf("if %s != 0 {\n", addAsterisk(refObject, targetObject)) + sz
@@ -71,8 +84,11 @@ func (trw *TypeRWPrimitive) readTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
+	if trw.canonicalType == "__function" || trw.canonicalType == "__function_result" {
+		return ""
+	}
 	method := ""
-	switch trw.goType {
+	switch trw.canonicalType {
 	case "int32":
 		method = "basictl.IntRead"
 	case "uint32":
@@ -105,8 +121,11 @@ func (trw *TypeRWPrimitive) skipTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
+	if trw.canonicalType == "__function" || trw.canonicalType == "__function_result" {
+		return ""
+	}
 	size := 0
-	switch trw.goType {
+	switch trw.canonicalType {
 	case "int32":
 		size = 4
 	case "uint32":
@@ -129,7 +148,7 @@ func (trw *TypeRWPrimitive) skipTL2Call(
 }
 
 func (trw *TypeRWPrimitive) trivialSize() int {
-	switch trw.goType {
+	switch trw.canonicalType {
 	case "byte":
 		return 1
 	case "int32", "uint32", "float32":
