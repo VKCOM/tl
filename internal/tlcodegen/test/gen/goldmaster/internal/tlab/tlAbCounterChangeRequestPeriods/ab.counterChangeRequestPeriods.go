@@ -180,7 +180,7 @@ func (item *AbCounterChangeRequestPeriods) InternalReadTL2(r []byte) (_ []byte, 
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	item.index = 0
@@ -560,7 +560,7 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte, ctx *basictl.TL
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if (block & 1) != 0 {
@@ -812,7 +812,7 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte, ctx *basictl.TL2
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if (block & 1) != 0 {

@@ -282,7 +282,7 @@ func (item *`)
     r = r[currentSize:]
 
     var block byte
-    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if currentR, err = basictl.ByteRead(currentR, &block); err != nil { return r, err }
     var index int
     if (block & 1) != 0 {
         if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }

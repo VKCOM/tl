@@ -89,12 +89,16 @@ func (trw *TypeRWPrimitive) readTL2Call(
 	}
 	method := ""
 	switch trw.canonicalType {
+	case "byte":
+		method = "basictl.ByteRead"
 	case "int32":
 		method = "basictl.IntRead"
 	case "uint32":
 		method = "basictl.NatRead"
 	case "int64":
 		method = "basictl.LongRead"
+	case "uint64":
+		method = "basictl.Uint64Read"
 	case "string":
 		if bytesVersion {
 			method = "basictl.StringReadTL2Bytes"
@@ -126,20 +130,16 @@ func (trw *TypeRWPrimitive) skipTL2Call(
 	}
 	size := 0
 	switch trw.canonicalType {
-	case "int32":
+	case "byte":
+		size = 1
+	case "int32", "uint32", "float32":
 		size = 4
-	case "uint32":
-		size = 4
-	case "int64":
+	case "int64", "uint64", "float64":
 		size = 8
 	case "string":
 		return fmt.Sprintf(`if %[2]s, err = basictl.SkipSizedValue(%[2]s); err != nil { return %[2]s, err }`,
 			"",
 			targetBytes)
-	case "float32":
-		size = 4
-	case "float64":
-		size = 8
 	}
 	return fmt.Sprintf(`if %[2]s, err = basictl.SkipFixedSizedValue(%[2]s, %[3]d); err != nil { return %[2]s, err }`,
 		"",
@@ -153,7 +153,7 @@ func (trw *TypeRWPrimitive) trivialSize() int {
 		return 1
 	case "int32", "uint32", "float32":
 		return 4
-	case "int64", "float64":
+	case "int64", "uint64", "float64":
 		return 8
 	}
 	return 0

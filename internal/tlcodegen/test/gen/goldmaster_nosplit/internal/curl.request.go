@@ -593,7 +593,7 @@ func (item *CurlRequest) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, re
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if block&1 != 0 {
@@ -1459,7 +1459,7 @@ func (item *CurlRequest) InternalReadTL2(r []byte) (_ []byte, err error) {
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor
@@ -1529,7 +1529,7 @@ func (item *CurlRequest) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// start the next block
 	if len(currentR) > 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -1601,7 +1601,7 @@ func (item *CurlRequest) InternalReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// start the next block
 	if len(currentR) > 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 			return currentR, err
 		}
 	} else {

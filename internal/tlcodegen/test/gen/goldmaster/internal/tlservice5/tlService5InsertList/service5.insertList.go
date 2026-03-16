@@ -125,7 +125,7 @@ func (item *Service5InsertList) ReadResultTL2(r []byte, ctx *basictl.TL2ReadCont
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return r, err
 	}
 	if block&1 != 0 {
@@ -498,7 +498,7 @@ func (item *Service5InsertList) InternalReadTL2(r []byte) (_ []byte, err error) 
 	r = r[currentSize:]
 
 	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 		return currentR, err
 	}
 	// read No of constructor

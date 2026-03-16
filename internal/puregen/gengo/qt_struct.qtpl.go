@@ -1565,7 +1565,7 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
     r = r[currentSize:]
 
     var block byte
-    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if currentR, err = basictl.ByteRead(currentR, &block); err != nil { return r, err }
     if block & 1 != 0 {
         var index int
         if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
@@ -2662,7 +2662,7 @@ func (item *`)
     r = r[currentSize:]
 
     var block byte
-    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+    if currentR, err = basictl.ByteRead(currentR, &block); err != nil { return currentR, err }
     // read No of constructor
     if block & 1 != 0 {
         var index int
@@ -2695,7 +2695,7 @@ func (item *`)
 				if (fieldIndex+1)%8 == 0 {
 					qw422016.N().S(`            // start the next block
     if len(currentR) > 0 {
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+        if currentR, err = basictl.ByteRead(currentR, &block); err != nil { return currentR, err }
     } else {
         block = 0
     }
@@ -2781,7 +2781,7 @@ func (item *`)
     r = r[currentSize:]
 
     var block byte
-    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if currentR, err = basictl.ByteRead(currentR, &block); err != nil { return r, err }
     if (block & 1) != 0 {
         var index int
         if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
