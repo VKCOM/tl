@@ -8,10 +8,16 @@
 package tlservice5
 
 import (
+	"context"
+	"time"
+
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlListService5Output"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
+	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/pkg/rpc"
 )
 
 type (
@@ -21,4 +27,177 @@ type (
 	ListOutput   = tlListService5Output.ListService5Output
 	Output       = tlService5Output.Service5Output
 	StringOutput = tlService5Output.Service5StringOutput
+
+	InsertList__Result = tlListService5Output.ListService5Output
 )
+
+type Client struct {
+	Client  rpc.Client
+	Network string // should be either "tcp4" or "unix"
+	Address string
+	ActorID int64         // should be >0 for routing via rpc-proxy
+	Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
+}
+
+func (c *Client) Insert(ctx context.Context, args Insert, extra *rpc.InvokeReqExtra, ret *Output) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.FunctionName = "service5.insert"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("service5.insert", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("service5.insert", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("service5.insert", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) InsertList(ctx context.Context, args InsertList, extra *rpc.InvokeReqExtra, ret *InsertList__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.FunctionName = "service5.insertList"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("service5.insertList", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("service5.insertList", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("service5.insertList", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+type Handler struct {
+	Insert     func(ctx context.Context, args Insert) (Output, error)                 // service5.insert
+	InsertList func(ctx context.Context, args InsertList) (InsertList__Result, error) // service5.insertList
+
+}
+
+func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
+	tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
+	switch tag {
+	case 0x7cf362ba: // service5.insert
+		hctx.SetRequestFunctionName("service5.insert")
+		if h.Insert != nil {
+			var args Insert
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("service5.insert", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Insert(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("service5.insert", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("service5.insert", err)
+				}
+			}
+			return nil
+		}
+	case 0x7cf362bc: // service5.insertList
+		hctx.SetRequestFunctionName("service5.insertList")
+		if h.InsertList != nil {
+			var args InsertList
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("service5.insertList", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.InsertList(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("service5.insertList", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("service5.insertList", err)
+				}
+			}
+			return nil
+		}
+	}
+	return rpc.ErrNoHandler
+}

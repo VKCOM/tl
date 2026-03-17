@@ -8,7 +8,12 @@
 package tl
 
 import (
+	"context"
+	"time"
+
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
+	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/pkg/rpc"
 )
 
 type (
@@ -110,6 +115,13 @@ type (
 	VectorBoxedIntMaybe           = internal.VectorBoxedIntMaybe
 	VectorInt                     = internal.VectorInt
 	VectorIntMaybe                = internal.VectorIntMaybe
+
+	Call1__Result = internal.AbTypeB
+	Call2__Result = internal.CdTypeB
+	Call4__Result = internal.AbTypeB
+	Call5__Result = internal.CdTypeB
+	Call7__Result = internal.AbTypeB
+	Call8__Result = internal.CdTypeB
 )
 
 func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
@@ -117,4 +129,716 @@ func BoolReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 }
 func BoolWriteTL1Boxed(w []byte, v bool) []byte {
 	return internal.BoolWriteTL1Boxed(w, v)
+}
+
+type Client struct {
+	Client  rpc.Client
+	Network string // should be either "tcp4" or "unix"
+	Address string
+	ActorID int64         // should be >0 for routing via rpc-proxy
+	Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
+}
+
+func (c *Client) Call1(ctx context.Context, args Call1, extra *rpc.InvokeReqExtra, ret *Call1__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call1"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call1", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call1", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call1", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call2(ctx context.Context, args Call2, extra *rpc.InvokeReqExtra, ret *Call2__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call2"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call2", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call2", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call2", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call3(ctx context.Context, args Call3, extra *rpc.InvokeReqExtra, ret *TypeB) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call3"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call3", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call3", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call3", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call4(ctx context.Context, args Call4, extra *rpc.InvokeReqExtra, ret *Call4__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call4"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call4", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call4", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call4", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call5(ctx context.Context, args Call5, extra *rpc.InvokeReqExtra, ret *Call5__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call5"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call5", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call5", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call5", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call6(ctx context.Context, args Call6, extra *rpc.InvokeReqExtra, ret *TypeB) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call6"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call6", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call6", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call6", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call7(ctx context.Context, args Call7, extra *rpc.InvokeReqExtra, ret *Call7__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call7"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call7", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call7", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call7", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call8(ctx context.Context, args Call8, extra *rpc.InvokeReqExtra, ret *Call8__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call8"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call8", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call8", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call8", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) Call9(ctx context.Context, args Call9, extra *rpc.InvokeReqExtra, ret *TypeB) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "call9"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("call9", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("call9", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("call9", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+type Handler struct {
+	Call1 func(ctx context.Context, args Call1) (Call1__Result, error) // call1
+	Call2 func(ctx context.Context, args Call2) (Call2__Result, error) // call2
+	Call3 func(ctx context.Context, args Call3) (TypeB, error)         // call3
+	Call4 func(ctx context.Context, args Call4) (Call4__Result, error) // call4
+	Call5 func(ctx context.Context, args Call5) (Call5__Result, error) // call5
+	Call6 func(ctx context.Context, args Call6) (TypeB, error)         // call6
+	Call7 func(ctx context.Context, args Call7) (Call7__Result, error) // call7
+	Call8 func(ctx context.Context, args Call8) (Call8__Result, error) // call8
+	Call9 func(ctx context.Context, args Call9) (TypeB, error)         // call9
+
+}
+
+func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
+	tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
+	switch tag {
+	case 0xa7302fbc: // call1
+		hctx.SetRequestFunctionName("call1")
+		if h.Call1 != nil {
+			var args Call1
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call1", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call1(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call1", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call1", err)
+				}
+			}
+			return nil
+		}
+	case 0xf02024c6: // call2
+		hctx.SetRequestFunctionName("call2")
+		if h.Call2 != nil {
+			var args Call2
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call2", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call2(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call2", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call2", err)
+				}
+			}
+			return nil
+		}
+	case 0x6ace6718: // call3
+		hctx.SetRequestFunctionName("call3")
+		if h.Call3 != nil {
+			var args Call3
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call3", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call3(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call3", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call3", err)
+				}
+			}
+			return nil
+		}
+	case 0x46d7de8f: // call4
+		hctx.SetRequestFunctionName("call4")
+		if h.Call4 != nil {
+			var args Call4
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call4", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call4(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call4", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call4", err)
+				}
+			}
+			return nil
+		}
+	case 0xfc51061c: // call5
+		hctx.SetRequestFunctionName("call5")
+		if h.Call5 != nil {
+			var args Call5
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call5", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call5(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call5", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call5", err)
+				}
+			}
+			return nil
+		}
+	case 0xe41e4696: // call6
+		hctx.SetRequestFunctionName("call6")
+		if h.Call6 != nil {
+			var args Call6
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call6", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call6(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call6", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call6", err)
+				}
+			}
+			return nil
+		}
+	case 0x262a43e2: // call7
+		hctx.SetRequestFunctionName("call7")
+		if h.Call7 != nil {
+			var args Call7
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call7", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call7(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call7", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call7", err)
+				}
+			}
+			return nil
+		}
+	case 0x7b400184: // call8
+		hctx.SetRequestFunctionName("call8")
+		if h.Call8 != nil {
+			var args Call8
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call8", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call8(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call8", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call8", err)
+				}
+			}
+			return nil
+		}
+	case 0x67a0d62d: // call9
+		hctx.SetRequestFunctionName("call9")
+		if h.Call9 != nil {
+			var args Call9
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("call9", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Call9(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("call9", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("call9", err)
+				}
+			}
+			return nil
+		}
+	}
+	return rpc.ErrNoHandler
 }
