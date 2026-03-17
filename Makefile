@@ -56,6 +56,8 @@ goldmaster_nocompile: build
 		--outdir=./$(GEN_PATH)/casesTL1 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -67,6 +69,8 @@ goldmaster_nocompile: build
 		--outdir=./$(GEN_PATH)/cases \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -81,6 +85,8 @@ goldmaster_nocompile: build
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -95,6 +101,8 @@ goldmaster_nocompile: build
 		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -129,6 +137,8 @@ goldmaster_tl2_nocompile: build migrate_to_tl2
 		--outdir=./internal/tlcodegen/test/gen/casesTL2 \
 		--pkgPath=github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \

@@ -8,8 +8,14 @@
 package tlcurl
 
 import (
+	"context"
+	"time"
+
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
+	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/pkg/rpc"
 )
 
 type (
@@ -18,3 +24,98 @@ type (
 	ResponseError = tlCurlResponse.CurlResponseError
 	ResponseOk    = tlCurlResponse.CurlResponseOk
 )
+
+type Client struct {
+	Client  rpc.Client
+	Network string // should be either "tcp4" or "unix"
+	Address string
+	ActorID int64         // should be >0 for routing via rpc-proxy
+	Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
+}
+
+func (c *Client) Request(ctx context.Context, args Request, extra *rpc.InvokeReqExtra, ret *Response) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.FunctionName = "curl.request"
+	preferTLVersion := 1
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+		if extra.PreferTLVersion != 0 {
+			preferTLVersion = extra.PreferTLVersion
+		}
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	if preferTLVersion == 2 {
+		req.BodyFormatTL2 = true
+		req.Body = basictl.NatWrite(req.Body, args.TLTag())
+		tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
+	} else {
+		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+		if err != nil {
+			return internal.ErrorClientWrite("curl.request", err)
+		}
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("curl.request", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		if resp.BodyFormatTL2() {
+			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+		} else {
+			resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		}
+		if err != nil {
+			return internal.ErrorClientReadResult("curl.request", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+type Handler struct {
+	Request func(ctx context.Context, args Request) (Response, error) // curl.request
+
+}
+
+func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
+	tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
+	switch tag {
+	case 0x3f5a4651: // curl.request
+		hctx.SetRequestFunctionName("curl.request")
+		if h.Request != nil {
+			var args Request
+			if hctx.BodyFormatTL2() {
+				_, err = args.ReadTL2(r, nil)
+			} else {
+				_, err = args.ReadTL1(r)
+			}
+			if err != nil {
+				return internal.ErrorServerRead("curl.request", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.Request(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("curl.request", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			if hctx.BodyFormatTL2() {
+				hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
+			} else {
+				hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+				if err != nil {
+					return internal.ErrorServerWriteResult("curl.request", err)
+				}
+			}
+			return nil
+		}
+	}
+	return rpc.ErrNoHandler
+}

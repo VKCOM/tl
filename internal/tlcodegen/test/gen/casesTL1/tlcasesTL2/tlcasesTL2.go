@@ -8,7 +8,12 @@
 package tlcasesTL2
 
 import (
+	"context"
+	"time"
+
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
+	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/pkg/rpc"
 )
 
 type (
@@ -32,4 +37,513 @@ type (
 	TestObjectWithParam4         = internal.CasesTL2TestObjectWithParam4
 	TestParamsGeneration         = internal.CasesTL2TestParamsGeneration
 	TestVectorBool               = internal.CasesTL2TestVectorBool
+
+	TestFunctionNoDep2__Result   = internal.True
+	TestFunctionNoDep7__Result   = internal.CasesTestAllDicts
+	TestFunctionWithDep2__Result = internal.BenchmarksVrutoyPositions
 )
+
+type Client struct {
+	Client  rpc.Client
+	Network string // should be either "tcp4" or "unix"
+	Address string
+	ActorID int64         // should be >0 for routing via rpc-proxy
+	Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
+}
+
+func (c *Client) TestFunctionNoDep1(ctx context.Context, args TestFunctionNoDep1, extra *rpc.InvokeReqExtra, ret *int32) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep1"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep1", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep1", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep1", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep2(ctx context.Context, args TestFunctionNoDep2, extra *rpc.InvokeReqExtra, ret *TestFunctionNoDep2__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep2"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep2", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep2", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep2", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep3(ctx context.Context, args TestFunctionNoDep3, extra *rpc.InvokeReqExtra, ret *[]int32) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep3"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep3", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep3", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep3", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep4(ctx context.Context, args TestFunctionNoDep4, extra *rpc.InvokeReqExtra, ret *bool) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep4"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep4", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep4", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep4", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep5(ctx context.Context, args TestFunctionNoDep5, extra *rpc.InvokeReqExtra, ret *TestObject) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep5"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep5", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep5", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep5", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep6(ctx context.Context, args TestFunctionNoDep6, extra *rpc.InvokeReqExtra, ret *TestArrayFixedBool) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep6"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep6", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep6", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep6", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionNoDep7(ctx context.Context, args TestFunctionNoDep7, extra *rpc.InvokeReqExtra, ret *TestFunctionNoDep7__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionNoDep7"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionNoDep7", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionNoDep7", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionNoDep7", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionWithDep1(ctx context.Context, args TestFunctionWithDep1, extra *rpc.InvokeReqExtra, ret *[]int32) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionWithDep1"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionWithDep1", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionWithDep1", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionWithDep1", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+func (c *Client) TestFunctionWithDep2(ctx context.Context, args TestFunctionWithDep2, extra *rpc.InvokeReqExtra, ret *TestFunctionWithDep2__Result) (err error) {
+	req := c.Client.GetRequest()
+	req.ActorID = c.ActorID
+	req.ReadOnly = true
+	req.FunctionName = "casesTL2.testFunctionWithDep2"
+	if extra != nil {
+		req.Extra = extra.RequestExtra
+		req.FailIfNoConnection = extra.FailIfNoConnection
+	}
+	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
+	if err != nil {
+		return internal.ErrorClientWrite("casesTL2.testFunctionWithDep2", err)
+	}
+	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	if extra != nil && resp != nil {
+		extra.ResponseExtra = resp.Extra
+	}
+	defer c.Client.PutResponse(resp)
+	if err != nil {
+		return internal.ErrorClientDo("casesTL2.testFunctionWithDep2", c.Network, c.ActorID, c.Address, err)
+	}
+	if ret != nil {
+		resp.Body, err = args.ReadResultTL1(resp.Body, ret)
+		if err != nil {
+			return internal.ErrorClientReadResult("casesTL2.testFunctionWithDep2", c.Network, c.ActorID, c.Address, err)
+		}
+	}
+	return nil
+}
+
+type Handler struct {
+	TestFunctionNoDep1   func(ctx context.Context, args TestFunctionNoDep1) (int32, error)                          // casesTL2.testFunctionNoDep1
+	TestFunctionNoDep2   func(ctx context.Context, args TestFunctionNoDep2) (TestFunctionNoDep2__Result, error)     // casesTL2.testFunctionNoDep2
+	TestFunctionNoDep3   func(ctx context.Context, args TestFunctionNoDep3) ([]int32, error)                        // casesTL2.testFunctionNoDep3
+	TestFunctionNoDep4   func(ctx context.Context, args TestFunctionNoDep4) (bool, error)                           // casesTL2.testFunctionNoDep4
+	TestFunctionNoDep5   func(ctx context.Context, args TestFunctionNoDep5) (TestObject, error)                     // casesTL2.testFunctionNoDep5
+	TestFunctionNoDep6   func(ctx context.Context, args TestFunctionNoDep6) (TestArrayFixedBool, error)             // casesTL2.testFunctionNoDep6
+	TestFunctionNoDep7   func(ctx context.Context, args TestFunctionNoDep7) (TestFunctionNoDep7__Result, error)     // casesTL2.testFunctionNoDep7
+	TestFunctionWithDep1 func(ctx context.Context, args TestFunctionWithDep1) ([]int32, error)                      // casesTL2.testFunctionWithDep1
+	TestFunctionWithDep2 func(ctx context.Context, args TestFunctionWithDep2) (TestFunctionWithDep2__Result, error) // casesTL2.testFunctionWithDep2
+
+}
+
+func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
+	tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
+	switch tag {
+	case 0x1b8b9feb: // casesTL2.testFunctionNoDep1
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep1")
+		if h.TestFunctionNoDep1 != nil {
+			var args TestFunctionNoDep1
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep1", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep1(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep1", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep1", err)
+			}
+			return nil
+		}
+	case 0x0a2c0bf9: // casesTL2.testFunctionNoDep2
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep2")
+		if h.TestFunctionNoDep2 != nil {
+			var args TestFunctionNoDep2
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep2", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep2(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep2", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep2", err)
+			}
+			return nil
+		}
+	case 0xf020849b: // casesTL2.testFunctionNoDep3
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep3")
+		if h.TestFunctionNoDep3 != nil {
+			var args TestFunctionNoDep3
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep3", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep3(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep3", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep3", err)
+			}
+			return nil
+		}
+	case 0x5a933a50: // casesTL2.testFunctionNoDep4
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep4")
+		if h.TestFunctionNoDep4 != nil {
+			var args TestFunctionNoDep4
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep4", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep4(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep4", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep4", err)
+			}
+			return nil
+		}
+	case 0x2b47b925: // casesTL2.testFunctionNoDep5
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep5")
+		if h.TestFunctionNoDep5 != nil {
+			var args TestFunctionNoDep5
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep5", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep5(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep5", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep5", err)
+			}
+			return nil
+		}
+	case 0x9a316c2e: // casesTL2.testFunctionNoDep6
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep6")
+		if h.TestFunctionNoDep6 != nil {
+			var args TestFunctionNoDep6
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep6", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep6(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep6", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep6", err)
+			}
+			return nil
+		}
+	case 0x08824518: // casesTL2.testFunctionNoDep7
+		hctx.SetRequestFunctionName("casesTL2.testFunctionNoDep7")
+		if h.TestFunctionNoDep7 != nil {
+			var args TestFunctionNoDep7
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionNoDep7", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionNoDep7(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionNoDep7", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionNoDep7", err)
+			}
+			return nil
+		}
+	case 0xb6c63b07: // casesTL2.testFunctionWithDep1
+		hctx.SetRequestFunctionName("casesTL2.testFunctionWithDep1")
+		if h.TestFunctionWithDep1 != nil {
+			var args TestFunctionWithDep1
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionWithDep1", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionWithDep1(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionWithDep1", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionWithDep1", err)
+			}
+			return nil
+		}
+	case 0x9d44a2fd: // casesTL2.testFunctionWithDep2
+		hctx.SetRequestFunctionName("casesTL2.testFunctionWithDep2")
+		if h.TestFunctionWithDep2 != nil {
+			var args TestFunctionWithDep2
+			_, err = args.ReadTL1(r)
+			if err != nil {
+				return internal.ErrorServerRead("casesTL2.testFunctionWithDep2", err)
+			}
+			ctx = hctx.WithContext(ctx)
+			ret, err := h.TestFunctionWithDep2(ctx, args)
+			if err != nil {
+				return internal.ErrorServerHandle("casesTL2.testFunctionWithDep2", err)
+			}
+			if hctx.LongpollStarted() {
+				return nil
+			}
+			hctx.Response, err = args.WriteResultTL1(hctx.Response, ret)
+			if err != nil {
+				return internal.ErrorServerWriteResult("casesTL2.testFunctionWithDep2", err)
+			}
+			return nil
+		}
+	}
+	return rpc.ErrNoHandler
+}
