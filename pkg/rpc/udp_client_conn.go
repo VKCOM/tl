@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/algo"
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/udp"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/algo"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
 
 type udpClientConn struct {

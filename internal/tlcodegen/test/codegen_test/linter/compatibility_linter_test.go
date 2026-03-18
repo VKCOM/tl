@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
 const SamplesDir = "../../tls/backward_compatibility_samples"

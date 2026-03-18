@@ -12,7 +12,7 @@ package metamini
 // code will not depend on many types you do not need.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
 )
 
 type Object = metainternal.Object

@@ -22,12 +22,12 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/VKCOM/tl/internal/vkgo/pkg/algo"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnet"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/pkg/rpc/udp/centaur"
 	"github.com/gotd/ige"
-	"github.com/vkcom/tl/internal/vkgo/pkg/algo"
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnet"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
-	"github.com/vkcom/tl/pkg/rpc/udp/centaur"
 )
 
 var castagnoliTable = crc32.MakeTable(crc32.Castagnoli)

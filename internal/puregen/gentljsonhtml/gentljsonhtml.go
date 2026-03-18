@@ -14,9 +14,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/puregen"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {

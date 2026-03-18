@@ -14,7 +14,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/vkcom/tl/pkg/rpc/udp"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 	"pgregory.net/rapid"
 
 	"golang.org/x/crypto/curve25519"

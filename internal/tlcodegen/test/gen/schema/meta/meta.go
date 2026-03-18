@@ -10,8 +10,8 @@ package meta
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 func SchemaGenerator() string { return "(devel)" }

@@ -8,17 +8,17 @@
 package tlservice6
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherIntVectorService6FindWithBoundsResult"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherService6ErrorVectorService6FindResultRow"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherIntVectorService6FindWithBoundsResult"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherService6ErrorVectorService6FindResultRow"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindResultRow"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindWithBoundsResult"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6Error"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindResultRow"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindWithBoundsResult"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6MultiFind"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6MultiFindWithBounds"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherIntVectorService6FindWithBoundsResult"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlEitherService6ErrorVectorService6FindResultRow"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherIntVectorService6FindWithBoundsResult"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherService6ErrorVectorService6FindResultRow"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindResultRow"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindWithBoundsResult"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6Error"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindResultRow"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindWithBoundsResult"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6MultiFind"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6MultiFindWithBounds"
 )
 
 type (

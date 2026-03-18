@@ -8,7 +8,7 @@
 package tlnetUdpPacket
 
 import (
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/internal"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal"
 )
 
 type (

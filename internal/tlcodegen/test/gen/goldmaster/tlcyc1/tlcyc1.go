@@ -8,8 +8,8 @@
 package tlcyc1
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorCyc1MyCycle"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorCyc1MyCycle"
 )
 
 type (

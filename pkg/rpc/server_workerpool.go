@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/semaphore"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/semaphore"
 )
 
 const workerGCDuration = time.Second * 60

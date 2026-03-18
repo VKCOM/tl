@@ -8,7 +8,7 @@
 package tlcd
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
 )
 
 func init() {

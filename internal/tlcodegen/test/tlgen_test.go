@@ -13,10 +13,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
 func TestGen(t *testing.T) {

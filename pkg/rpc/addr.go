@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/pkg/rpc/udp"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
 
 func extractIPPort(addr net.Addr) (uint32, uint16) {

@@ -9,8 +9,8 @@ package metainternal
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/casesTL1/internal"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 // We can create only types which have zero type arguments and zero nat arguments

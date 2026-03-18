@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 type cyclePathElement struct {

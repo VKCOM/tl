@@ -1,7 +1,7 @@
 {% package gengo %}
 
 {% import "fmt" %}
-{% import "github.com/vkcom/tl/internal/utils" %}
+{% import "github.com/VKCOM/tl/internal/utils" %}
 {% import "strings" %}
 {% import "sort" %}
 

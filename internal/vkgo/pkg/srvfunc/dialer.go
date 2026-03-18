@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/etchosts"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/etchosts"
 )
 
 var emptyDialer = &net.Dialer{}

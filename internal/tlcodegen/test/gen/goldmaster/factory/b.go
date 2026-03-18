@@ -11,7 +11,7 @@ package factory
 // you want to import factory only where absolutely necessary, and never into common code.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
 )
 
 func init() {

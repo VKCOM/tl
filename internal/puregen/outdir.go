@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/TwiN/go-color"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 	"golang.org/x/sync/errgroup"
 )
 

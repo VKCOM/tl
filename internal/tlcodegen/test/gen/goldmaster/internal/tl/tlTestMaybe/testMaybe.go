@@ -8,14 +8,14 @@
 package tlTestMaybe
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeWrapperInt3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3Maybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeWrapperInt3"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleInt3Maybe"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTupleIntMaybe"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

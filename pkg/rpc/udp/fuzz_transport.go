@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
 )
 
 /*

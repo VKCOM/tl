@@ -9,7 +9,7 @@ package pure
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 func (k *Kernel) typeCheck(tip tlast.TL2TypeDefinition, leftArgs []tlast.TL2TypeTemplate) error {

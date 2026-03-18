@@ -12,8 +12,8 @@ import (
 	"net"
 	"testing"
 
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tltracing"
 	"github.com/stretchr/testify/assert"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tltracing"
 )
 
 func TestErrorTag(t *testing.T) {

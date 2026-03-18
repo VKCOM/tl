@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 type Whitelist struct {

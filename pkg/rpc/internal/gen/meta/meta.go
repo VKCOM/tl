@@ -11,7 +11,7 @@ package meta
 // You probably want to import metamini instead.
 
 import (
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/internal/metainternal"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal/metainternal"
 )
 
 func SchemaGenerator() string { return "v1.3.31" }

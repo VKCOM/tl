@@ -9,9 +9,9 @@ package pure
 import (
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 type TypeInstanceUnion struct {

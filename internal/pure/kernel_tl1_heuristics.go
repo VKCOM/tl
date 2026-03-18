@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func (k *Kernel) IsTrueTypeRef(rt tlast.TypeRef) bool {

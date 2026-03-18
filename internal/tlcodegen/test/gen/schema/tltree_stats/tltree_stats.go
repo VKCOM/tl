@@ -8,7 +8,7 @@
 package tltree_stats
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltree_stats/tlTreeStatsObjectLimitValue"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltree_stats/tlTreeStatsObjectLimitValue"
 )
 
 type (

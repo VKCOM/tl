@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/semaphore"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/semaphore"
 	"golang.org/x/crypto/curve25519"
 )
 

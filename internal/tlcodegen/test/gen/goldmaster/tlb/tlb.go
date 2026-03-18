@@ -8,8 +8,8 @@
 package tlb
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAColor"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlb/tlBRed"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAColor"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlb/tlBRed"
 )
 
 func Red() tlAColor.AColor { return tlBRed.BRed() }

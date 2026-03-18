@@ -15,8 +15,8 @@ import (
 
 	"pgregory.net/rand"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/internal/vkgo/pkg/srvfunc"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/srvfunc"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 )
 
 type writeReqCancel struct {

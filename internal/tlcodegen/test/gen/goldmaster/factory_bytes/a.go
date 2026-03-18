@@ -11,10 +11,10 @@ package factory_bytes
 // you want to import factory only where absolutely necessary, and never into common code.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTopLevel2"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
 )
 
 func init() {

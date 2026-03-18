@@ -11,13 +11,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlListService5Output"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
-	"github.com/vkcom/tl/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlListService5Output"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
+	"github.com/VKCOM/tl/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc"
 )
 
 type (

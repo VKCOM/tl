@@ -8,10 +8,10 @@
 package tlService1GetWildcard
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorMapStringString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMapStringString"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlBuiltinVectorMapStringString"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMapStringString"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

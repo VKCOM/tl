@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 // During recursive generation, we store wrappers to type when they are needed, so that

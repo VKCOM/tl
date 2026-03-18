@@ -15,11 +15,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure/vkext"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/pure/vkext"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 type model struct {

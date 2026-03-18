@@ -11,12 +11,12 @@ package factory
 // you want to import factory only where absolutely necessary, and never into common code.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Output"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
 )
 
 func init() {

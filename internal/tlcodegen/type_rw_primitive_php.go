@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {

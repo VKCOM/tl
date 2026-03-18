@@ -9,7 +9,7 @@ import "cmp"
 
 import "golang.org/x/exp/slices"
 
-import "github.com/vkcom/tl/internal/tlast"
+import "github.com/VKCOM/tl/internal/tlast"
 
 import (
 	qtio422016 "io"

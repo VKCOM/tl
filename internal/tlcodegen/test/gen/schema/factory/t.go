@@ -8,22 +8,22 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksAddTask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTaskWithId"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTime"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksFullFilledCron"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetAnyTask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueSize"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueTypes"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetTaskFromQueue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeInfo"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeSettings"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeStats"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksTask"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksTaskInfo"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltree_stats/tlTreeStatsObjectLimitValue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/meta"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksAddTask"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTask"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTaskWithId"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTime"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksFullFilledCron"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetAnyTask"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueSize"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueTypes"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetTaskFromQueue"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeInfo"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeSettings"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeStats"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksTask"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksTaskInfo"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltree_stats/tlTreeStatsObjectLimitValue"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/meta"
 )
 
 func init() {

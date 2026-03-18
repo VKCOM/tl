@@ -8,9 +8,9 @@
 package tlpkg2
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2Foo"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2T1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2T2"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2Foo"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2T1"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlpkg2/tlPkg2T2"
 )
 
 type (

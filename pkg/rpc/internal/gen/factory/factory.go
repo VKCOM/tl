@@ -11,9 +11,9 @@ package factory
 // you want to import factory only where absolutely necessary, and never into common code.
 
 import (
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/internal"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/internal/metainternal"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/meta" // force import to call meta init first
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal/metainternal"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/meta" // force import to call meta init first
 )
 
 func CreateFunction(tag uint32) meta.Function {

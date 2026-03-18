@@ -18,7 +18,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/vktl/tlpprof/profile"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/vktl/tlpprof/profile"
 )
 
 var profileSupportsDelta = map[handler]bool{

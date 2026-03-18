@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 type LocalArg struct {

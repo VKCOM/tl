@@ -11,9 +11,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/vkcom/tl/internal/purelegacy"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/purelegacy"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 // Instantiation kernel of tlgen.

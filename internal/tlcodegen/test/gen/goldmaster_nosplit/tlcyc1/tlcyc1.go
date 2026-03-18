@@ -8,7 +8,7 @@
 package tlcyc1
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
 )
 
 type (

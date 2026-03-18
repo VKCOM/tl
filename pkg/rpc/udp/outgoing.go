@@ -9,8 +9,8 @@ package udp
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/algo"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/algo"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
 )
 
 // TODO replace with OutgoingConnectionConfig

@@ -8,13 +8,13 @@ import (
 	"sort"
 	"testing"
 
+	testformat "github.com/VKCOM/tl/internal/tlcodegen/test/codegen_test/golang/common"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/factory"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/meta"
+	"github.com/VKCOM/tl/internal/utils"
 	"github.com/stretchr/testify/assert"
-	testformat "github.com/vkcom/tl/internal/tlcodegen/test/codegen_test/golang/common"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/factory"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
-	"github.com/vkcom/tl/internal/utils"
 
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 const randomSeed = 123432

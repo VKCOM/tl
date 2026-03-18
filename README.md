@@ -23,7 +23,7 @@ TL is schema-driven format. Tool caled `tlgen` is used to generate structs/class
 You can run tool without installation. This is recommended way for most use cases.
 
 ```
-go run github.com/vkcom/tl/cmd/tlgen@latest <options>
+go run github.com/VKCOM/tl/cmd/tlgen@latest <options>
 ```
 
 For build scripts, you can pin particular version instead of `latest`.
@@ -33,7 +33,7 @@ For build scripts, you can pin particular version instead of `latest`.
 Install `tlgen` with the following command
 
 ```
-go install github.com/vkcom/tl/cmd/tlgen@latest
+go install github.com/VKCOM/tl/cmd/tlgen@latest
 ```
 
 ## Documentation

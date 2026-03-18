@@ -8,8 +8,8 @@
 package tlservice4
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice4/tlService4ModifiedNewsEntry"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice4/tlService4Object"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice4/tlService4ModifiedNewsEntry"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice4/tlService4Object"
 )
 
 type (

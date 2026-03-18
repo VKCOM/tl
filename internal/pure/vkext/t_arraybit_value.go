@@ -10,8 +10,8 @@ import (
 	"math/rand/v2"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 type KernelValueArrayBit struct {

@@ -13,7 +13,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 // TODO - name collision checks

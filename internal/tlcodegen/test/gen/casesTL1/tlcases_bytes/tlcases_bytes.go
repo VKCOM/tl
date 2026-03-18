@@ -8,7 +8,7 @@
 package tlcases_bytes
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/casesTL1/internal"
 )
 
 type (

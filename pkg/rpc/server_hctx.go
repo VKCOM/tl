@@ -11,7 +11,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tltracing"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tltracing"
 )
 
 // commonality between UDP and TCP servers requried for HandlerContext

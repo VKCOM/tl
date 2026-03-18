@@ -16,11 +16,11 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/puregen"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 const markerFile = "tl2gen_version.txt"
@@ -92,7 +92,7 @@ func (gen *genGo) prepareOptions() (err error) {
 	opts.Go.TLPackageNameFull = strings.TrimSpace(opts.Go.TLPackageNameFull)
 	opts.Go.TLPackageNameFull = strings.TrimSuffix(opts.Go.TLPackageNameFull, "/")
 	if opts.Go.TLPackageNameFull == "" { // for testing, empty path should be prohibited in main argv parsing
-		opts.Go.TLPackageNameFull = "github.com/vkcom/tl/internal/tlcodegen/output/tl"
+		opts.Go.TLPackageNameFull = "github.com/VKCOM/tl/internal/tlcodegen/output/tl"
 	}
 
 	elements := strings.Split(opts.Go.TLPackageNameFull, "/")

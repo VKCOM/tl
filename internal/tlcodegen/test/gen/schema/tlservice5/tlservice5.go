@@ -8,11 +8,11 @@
 package tlservice5
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Insert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Output"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Params"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5PerformQuery"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Query"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Insert"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Output"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Params"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5PerformQuery"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice5/tlService5Query"
 )
 
 type (

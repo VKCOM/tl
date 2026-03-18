@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/puregen"
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {

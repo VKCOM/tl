@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDeps int) {

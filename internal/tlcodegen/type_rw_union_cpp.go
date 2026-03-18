@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func (trw *TypeRWUnion) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {

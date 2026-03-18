@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 type ByteColor byte

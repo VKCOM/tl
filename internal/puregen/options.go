@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vkcom/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure"
 )
 
 type Options struct {
