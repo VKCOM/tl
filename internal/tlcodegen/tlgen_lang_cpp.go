@@ -14,7 +14,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 	"golang.org/x/exp/slices"
 )
 

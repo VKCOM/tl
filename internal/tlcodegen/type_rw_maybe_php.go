@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlcodegen/codecreator"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {

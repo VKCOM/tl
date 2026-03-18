@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 	"golang.org/x/exp/slices"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 // During recursive generation, we store wrappers to type when they are needed, so that

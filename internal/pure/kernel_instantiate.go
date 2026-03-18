@@ -9,7 +9,7 @@ package pure
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 // we do not allow creating additional instances externally for now

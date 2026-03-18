@@ -8,10 +8,10 @@
 package tlDictionaryAnyIntPairIntInt
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictIntPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinDictIntPairIntInt"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

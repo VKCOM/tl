@@ -6,7 +6,7 @@
 
 package gengo
 
-//{% import "github.com/vkcom/tl/internal/utils" %}
+//{% import "github.com/VKCOM/tl/internal/utils" %}
 //{% import "strings" %}
 //{% import "sort" %}
 
@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure"
 )
 
 type TypeRWStruct struct {

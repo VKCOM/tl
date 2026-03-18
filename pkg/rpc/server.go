@@ -20,12 +20,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/constants"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/tlerrorcodes"
-	"github.com/vkcom/tl/pkg/rpc/udp"
-	"github.com/vkcom/tl/internal/vkgo/pkg/semaphore"
-	"github.com/vkcom/tl/internal/vkgo/pkg/srvfunc"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/semaphore"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/srvfunc"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
 
 // TODO: explain safety rules: no ctx/buffer use outside of the handler

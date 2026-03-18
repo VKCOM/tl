@@ -18,14 +18,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/puregen"
-	"github.com/vkcom/tl/internal/puregen/gencanonical"
-	"github.com/vkcom/tl/internal/puregen/gengo"
-	"github.com/vkcom/tl/internal/puregen/gentljsonhtml"
-	"github.com/vkcom/tl/internal/puregen/gentlo"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/puregen/gencanonical"
+	"github.com/VKCOM/tl/internal/puregen/gengo"
+	"github.com/VKCOM/tl/internal/puregen/gentljsonhtml"
+	"github.com/VKCOM/tl/internal/puregen/gentlo"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{

@@ -9,11 +9,11 @@ import "time"
 
 import "strings"
 
-import "github.com/vkcom/tl/internal/tlast"
+import "github.com/VKCOM/tl/internal/tlast"
 
-import "github.com/vkcom/tl/internal/pure"
+import "github.com/VKCOM/tl/internal/pure"
 
-import "github.com/vkcom/tl/internal/puregen"
+import "github.com/VKCOM/tl/internal/puregen"
 
 import (
 	qtio422016 "io"

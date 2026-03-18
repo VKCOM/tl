@@ -12,8 +12,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 const (

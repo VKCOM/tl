@@ -6,7 +6,7 @@ TEST_PATH := internal/tlcodegen/test
 TLS_PATH := $(TEST_PATH)/tls
 GEN_PATH := $(TEST_PATH)/gen
 TLOS_PATH := $(GEN_PATH)
-BASIC_TL_PATH := github.com/vkcom/tl/pkg/basictl
+BASIC_TL_PATH := github.com/VKCOM/tl/pkg/basictl
 
 TL_BYTE_VERSIONS := ch_proxy.,ab.
 
@@ -22,7 +22,7 @@ build: # build static binary to run on many linux variants
 gen_bootstrap: build # do not set --basicPkgPath, or you'll have hard time updating basictl
 	@./target/bin/tl2gen --language=go \
 		--copyrightPath=./COPYRIGHT \
-		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
+		--pkgPath=github.com/VKCOM/tl/internal/tlast/gentlo/tl \
 		--outdir=./internal/tlast/gentlo \
 		./internal/tlast/tls.tl
 
@@ -31,8 +31,8 @@ gen_check: build
 	@./target/bin/tl2gen --split-internal -v --language=go \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/schema \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/schema/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/schema/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/schema.tl
@@ -54,9 +54,9 @@ goldmaster_nocompile: build
 	@./target/bin/tl2gen --language=go -v \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/casesTL1 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL1/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/casesTL1/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
+		--basicRPCPath=github.com/VKCOM/tl/pkg/rpc \
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
@@ -67,9 +67,9 @@ goldmaster_nocompile: build
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/cases \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/cases/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
+		--basicRPCPath=github.com/VKCOM/tl/pkg/rpc \
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
@@ -83,9 +83,9 @@ goldmaster_nocompile: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/goldmaster/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
+		--basicRPCPath=github.com/VKCOM/tl/pkg/rpc \
 		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
@@ -99,9 +99,9 @@ goldmaster_nocompile: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
+		--basicRPCPath=github.com/VKCOM/tl/pkg/rpc \
 		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
@@ -135,9 +135,9 @@ goldmaster_tl2_nocompile: build migrate_to_tl2
 		--tl2WhiteList=* \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./internal/tlcodegen/test/gen/casesTL2 \
-		--pkgPath=github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--basicRPCPath=github.com/vkcom/tl/pkg/rpc \
+		--pkgPath=github.com/VKCOM/tl/internal/tlcodegen/test/gen/casesTL2/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
+		--basicRPCPath=github.com/VKCOM/tl/pkg/rpc \
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
@@ -230,8 +230,8 @@ testpure: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/target/genold/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--pkgPath=github.com/VKCOM/tl/target/genold/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
@@ -250,8 +250,8 @@ testpuremigr: build
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
-		--pkgPath=github.com/vkcom/tl/target/gennew/tl \
-		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--pkgPath=github.com/VKCOM/tl/target/gennew/tl \
+		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \

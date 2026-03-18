@@ -8,8 +8,8 @@
 package tlantispam
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamGetPattern"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamPatternFull"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamGetPattern"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlantispam/tlAntispamPatternFull"
 )
 
 type (

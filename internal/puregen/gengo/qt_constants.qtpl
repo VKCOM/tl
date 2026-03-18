@@ -1,7 +1,7 @@
 {%- import "fmt" -%}
 {%- import "cmp" -%}
 {%- import "golang.org/x/exp/slices" -%}
-{%- import "github.com/vkcom/tl/internal/tlast" -%}
+{%- import "github.com/VKCOM/tl/internal/tlast" -%}
 
 
 {%- func (gen *genGo)generateConstants(commentString, pkgName string) -%}

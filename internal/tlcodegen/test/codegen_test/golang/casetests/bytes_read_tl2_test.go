@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/factory"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/meta"
+	"github.com/VKCOM/tl/internal/utils"
+	"github.com/VKCOM/tl/pkg/basictl"
 	"github.com/stretchr/testify/assert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
-	"github.com/vkcom/tl/internal/utils"
-	"github.com/vkcom/tl/pkg/basictl"
 )
 
 func TestGeneralCasesTL2(t *testing.T) {

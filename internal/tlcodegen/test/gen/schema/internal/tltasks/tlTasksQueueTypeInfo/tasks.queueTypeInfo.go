@@ -8,10 +8,10 @@
 package tlTasksQueueTypeInfo
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeSettings"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeStats"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeSettings"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksQueueTypeStats"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

@@ -8,9 +8,9 @@
 package tlBuiltinTupleService2DeltaSet
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2DeltaSet"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2DeltaSet"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

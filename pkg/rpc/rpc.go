@@ -13,9 +13,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/constants"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
 )
 
 const (
@@ -90,7 +90,6 @@ func NewDefaultError(description string) *Error {
 		Description: description,
 	}
 }
-
 
 func (err *Error) IsApplicationLevelError() bool {
 	return err.Code >= -5999 && err.Code <= -5000

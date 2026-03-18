@@ -8,7 +8,7 @@
 package factory_bytes
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/meta"
+	"github.com/VKCOM/tl/internal/tlast/gentlo/meta"
 )
 
 func CreateFunction(tag uint32) meta.Function {

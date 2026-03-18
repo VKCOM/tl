@@ -14,7 +14,7 @@ import (
 	"sort"
 	"time"
 
-	tls "github.com/vkcom/tl/internal/tlast/gentlo/tltls"
+	tls "github.com/VKCOM/tl/internal/tlast/gentlo/tltls"
 )
 
 const (

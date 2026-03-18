@@ -11,18 +11,18 @@ package factory
 // you want to import factory only where absolutely necessary, and never into common code.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdMyType"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTopLevel3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeA"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeB"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeC"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_e10cb78db8a2766007111b86ce9e11d9"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbResponse"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdMyType"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTopLevel3"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeA"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeB"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeC"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlRequest"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcurl/tlCurlResponse"
 )
 
 func init() {

@@ -14,8 +14,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnet"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnet"
 )
 
 const (

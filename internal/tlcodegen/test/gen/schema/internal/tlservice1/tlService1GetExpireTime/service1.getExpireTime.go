@@ -8,9 +8,9 @@
 package tlService1GetExpireTime
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlIntMaybe"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlIntMaybe"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

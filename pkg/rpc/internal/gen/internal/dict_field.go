@@ -10,7 +10,7 @@ package internal
 import (
 	"sort"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

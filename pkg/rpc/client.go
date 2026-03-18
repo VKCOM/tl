@@ -17,8 +17,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tltracing"
-	"github.com/vkcom/tl/internal/vkgo/pkg/semaphore"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/semaphore"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tltracing"
 	"pgregory.net/rand"
 )
 

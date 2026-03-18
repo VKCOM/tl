@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/factory"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/factory"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 // Этот файл тестирует код, сгенерированный tlgen.

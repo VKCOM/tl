@@ -4,9 +4,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlbenchmarks"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/meta"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/tlbenchmarks"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 const seed int64 = 11234567

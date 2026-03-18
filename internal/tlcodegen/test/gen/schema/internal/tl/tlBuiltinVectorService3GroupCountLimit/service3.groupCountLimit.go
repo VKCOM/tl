@@ -8,9 +8,9 @@
 package tlBuiltinVectorService3GroupCountLimit
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice3/tlService3GroupCountLimit"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice3/tlService3GroupCountLimit"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

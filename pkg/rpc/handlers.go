@@ -21,14 +21,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/constants"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlengine"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlgo"
-	"github.com/vkcom/tl/pkg/rpc/tlerrorcodes"
-	"github.com/vkcom/tl/internal/vkgo/pkg/srvfunc"
-	"github.com/vkcom/tl/internal/vkgo/pkg/vktl/tlpprof" // TODO - modernize pprof package, it is very old
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/srvfunc"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/vktl/tlpprof" // TODO - modernize pprof package, it is very old
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlengine"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlgo"
+	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 )
 
 func (s *Server) CollectStats(localAddr net.Addr) map[string]string {

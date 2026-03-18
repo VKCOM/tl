@@ -8,8 +8,8 @@
 package cycle_38a9bf76d71419ee85afa2cdeb3445c4
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

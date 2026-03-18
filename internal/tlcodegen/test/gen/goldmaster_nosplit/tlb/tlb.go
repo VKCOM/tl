@@ -8,7 +8,7 @@
 package tlb
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
 )
 
 func Red() internal.AColor { return internal.BRed() }

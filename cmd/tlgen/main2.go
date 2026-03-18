@@ -17,9 +17,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/tlcodegen"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 const tlExt = ".tl"

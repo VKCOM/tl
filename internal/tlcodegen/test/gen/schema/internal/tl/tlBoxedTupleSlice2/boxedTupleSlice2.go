@@ -8,9 +8,9 @@
 package tlBoxedTupleSlice2
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyBoxedTupleSlice"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlMyBoxedTupleSlice"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

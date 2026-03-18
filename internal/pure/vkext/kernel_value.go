@@ -11,7 +11,7 @@ import (
 	"math/rand/v2"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure"
 )
 
 // common for read/write/json/etc... for simplicity

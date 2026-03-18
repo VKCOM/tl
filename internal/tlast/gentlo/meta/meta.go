@@ -10,8 +10,8 @@ package meta
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
-	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
+	"github.com/VKCOM/tl/internal/tlast/gentlo/basictl"
+	"github.com/VKCOM/tl/internal/tlast/gentlo/internal"
 )
 
 func SchemaGenerator() string { return "(devel)" }

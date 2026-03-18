@@ -12,9 +12,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/tlerrorcodes"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 )
 
 // serialisation of RPC packets is here

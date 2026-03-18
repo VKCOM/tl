@@ -11,8 +11,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 // create parallel hierarchy of wrappers, suitable for go generator

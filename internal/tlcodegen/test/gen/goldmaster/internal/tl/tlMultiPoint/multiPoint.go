@@ -8,16 +8,16 @@
 package tlMultiPoint
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32s"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32sBoxed"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3IntBoxed"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32Boxed"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32s"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3Int32sBoxed"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3IntBoxed"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlBuiltinTuple3MyInt32Boxed"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32s"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

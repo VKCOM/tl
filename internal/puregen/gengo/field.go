@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure"
 )
 
 type Field struct {

@@ -18,10 +18,10 @@ import (
 	"time"
 
 	"github.com/TwiN/go-color"
+	"github.com/VKCOM/tl/internal/purelegacy"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 	"github.com/google/go-cmp/cmp"
-	"github.com/vkcom/tl/internal/purelegacy"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 )
 

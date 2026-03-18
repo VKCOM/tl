@@ -15,7 +15,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 type migrationTL1RefsTL2Errors struct {

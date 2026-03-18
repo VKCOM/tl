@@ -8,9 +8,9 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlunique/tlUniqueGet"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlunique/tlUniqueStringToInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/meta"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlunique/tlUniqueGet"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlunique/tlUniqueStringToInt"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/meta"
 )
 
 func init() {

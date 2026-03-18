@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 type NatFieldUsage struct {

@@ -8,9 +8,9 @@
 package tlService5LongInsert
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongOutput"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

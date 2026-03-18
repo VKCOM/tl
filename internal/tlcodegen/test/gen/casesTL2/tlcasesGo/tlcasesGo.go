@@ -8,7 +8,7 @@
 package tlcasesGo
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/casesTL2/internal"
 )
 
 type (

@@ -6,7 +6,7 @@
 
 package pure
 
-import "github.com/vkcom/tl/internal/tlast"
+import "github.com/VKCOM/tl/internal/tlast"
 
 type TypeInstance interface {
 	CanonicalName() string

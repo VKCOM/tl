@@ -11,7 +11,7 @@ package meta
 // You probably want to import metamini instead.
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/metainternal"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/casesTL2/internal/metainternal"
 )
 
 func SchemaGenerator() string { return "(devel)" }

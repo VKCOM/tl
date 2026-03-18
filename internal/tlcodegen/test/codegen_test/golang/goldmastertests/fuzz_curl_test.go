@@ -3,10 +3,10 @@ package goldmastertests
 import (
 	"testing"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/tl"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/tlab"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/tlcd"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/tlcurl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlab"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlcd"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlcurl"
 )
 
 func FuzzCurl(f *testing.F) {

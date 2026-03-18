@@ -1,9 +1,10 @@
 package goldmastertests
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 	"testing"
+
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/meta"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFunctionHasUnion(t *testing.T) {

@@ -16,9 +16,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/algo"
-	"github.com/vkcom/tl/internal/vkgo/pkg/etchosts"
-	"github.com/vkcom/tl/pkg/rpc/udp"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/algo"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/etchosts"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
 
 type udpClient struct {

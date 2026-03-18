@@ -13,18 +13,18 @@ import (
 	"os"
 	"testing"
 
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/utils"
 
-	common "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tl"
-	cases "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
+	common "github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/tl"
+	cases "github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/tlcases"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/factory"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/meta"
+	"github.com/VKCOM/tl/pkg/basictl"
 
 	"github.com/stretchr/testify/assert"
 
-	testformat "github.com/vkcom/tl/internal/tlcodegen/test/codegen_test/golang/common"
+	testformat "github.com/VKCOM/tl/internal/tlcodegen/test/codegen_test/golang/common"
 )
 
 type mappingTestBytes struct {

@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/algo"
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/algo"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
 )
 
 type IncomingMessage struct {

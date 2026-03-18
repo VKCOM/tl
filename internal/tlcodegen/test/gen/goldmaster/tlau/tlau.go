@@ -8,7 +8,7 @@
 package tlau
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyUnion"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAMyUnion"
 )
 
 type (

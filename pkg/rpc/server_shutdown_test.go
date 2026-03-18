@@ -16,7 +16,7 @@ import (
 	"pgregory.net/rand"
 	"pgregory.net/rapid"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
 )
 
 type shutdownTestServer struct {

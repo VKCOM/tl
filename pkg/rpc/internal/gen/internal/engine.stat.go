@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
 )
 
 var _ = basictl.NatWrite

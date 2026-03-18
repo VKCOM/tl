@@ -7,7 +7,7 @@
 package pure
 
 import (
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 func (k *Kernel) convertTemplateArguments(args []tlast.TemplateArgument) []tlast.TL2TypeTemplate {

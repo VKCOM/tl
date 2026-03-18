@@ -9,9 +9,9 @@ package gengo
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/pure"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.TypeInstance) error {

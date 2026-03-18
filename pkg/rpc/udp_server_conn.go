@@ -12,10 +12,10 @@ import (
 	"net"
 	"unsafe"
 
-	"github.com/vkcom/tl/internal/vkgo/pkg/basictl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tl"
-	"github.com/vkcom/tl/pkg/rpc/internal/gen/tlnet"
-	"github.com/vkcom/tl/pkg/rpc/udp"
+	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnet"
+	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
 
 type UdpServerConn struct {

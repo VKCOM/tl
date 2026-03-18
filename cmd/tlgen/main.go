@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/vkcom/tl/internal/tlcodegen"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlcodegen"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func main() {

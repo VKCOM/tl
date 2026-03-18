@@ -10,8 +10,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlbenchmarks"
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/cases/tlbenchmarks"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 type array = []interface{}

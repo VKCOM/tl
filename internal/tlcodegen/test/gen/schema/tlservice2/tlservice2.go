@@ -8,14 +8,14 @@
 package tlservice2
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2CounterSet"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2DeltaSet"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2AddOrIncrMany"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2CounterSet"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2DeltaSet"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2ObjectId"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2Set"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2SetObjectTtl"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2CounterSet"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2DeltaSet"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2AddOrIncrMany"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2CounterSet"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2DeltaSet"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2ObjectId"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2Set"
+	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2SetObjectTtl"
 )
 
 type (

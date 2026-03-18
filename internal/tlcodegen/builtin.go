@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vkcom/tl/internal/purelegacy"
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/purelegacy"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 // This code describes part of tlgen which is dependent on VK implementation

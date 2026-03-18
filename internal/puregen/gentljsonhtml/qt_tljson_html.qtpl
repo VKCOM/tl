@@ -3,9 +3,9 @@
 {% import "fmt" %}
 {% import "time" %}
 {% import "strings" %}
-{% import "github.com/vkcom/tl/internal/tlast" %}
-{% import "github.com/vkcom/tl/internal/pure" %}
-{% import "github.com/vkcom/tl/internal/puregen" %}
+{% import "github.com/VKCOM/tl/internal/tlast" %}
+{% import "github.com/VKCOM/tl/internal/pure" %}
+{% import "github.com/VKCOM/tl/internal/puregen" %}
 
 {%- func tlJSON(kernel *pure.Kernel, options *puregen.Options, sortedInstances []pure.TypeInstance, tlgenVersion string) -%}
 <!DOCTYPE html>

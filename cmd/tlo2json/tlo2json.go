@@ -13,8 +13,8 @@ import (
 
 	"golang.org/x/exp/slices"
 
-	tls "github.com/vkcom/tl/internal/tlast/gentlo/tltls"
-	"github.com/vkcom/tl/internal/utils"
+	tls "github.com/VKCOM/tl/internal/tlast/gentlo/tltls"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func main() {

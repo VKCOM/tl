@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlast"
 )
 
 // TODO - make this simple formatiing, do not look up here, look up only in resolveType

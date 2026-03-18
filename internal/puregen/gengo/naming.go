@@ -7,8 +7,8 @@
 package gengo
 
 import (
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
+	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 func canonicalGoName(name tlast.Name, insideNamespace string) string {
