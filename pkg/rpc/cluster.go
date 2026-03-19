@@ -240,8 +240,8 @@ func (cc *ClusterClient) selectInShard(write bool, shard ClusterShard) NetAddr {
 		return nodes[0]
 	default:
 		i, j := cc.pick2(n)
-		li := cc.clientImpl.GetLoad(nodes[i])
-		lj := cc.clientImpl.GetLoad(nodes[j])
+		li := cc.clientImpl.getLoad(nodes[i])
+		lj := cc.clientImpl.getLoad(nodes[j])
 		if li <= lj {
 			return nodes[i]
 		}
@@ -291,8 +291,8 @@ func (cc *ClusterClient) SelectAny(write bool) NetAddr {
 		case aj.Address == "":
 			return ai
 		default:
-			li := cc.clientImpl.GetLoad(ai)
-			lj := cc.clientImpl.GetLoad(aj)
+			li := cc.clientImpl.getLoad(ai)
+			lj := cc.clientImpl.getLoad(aj)
 			if li <= lj {
 				return ai
 			}

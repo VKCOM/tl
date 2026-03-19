@@ -16,6 +16,7 @@ import (
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
+	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 )
 
 const (
@@ -62,8 +63,6 @@ type InvokeReqExtra struct { // additional parameters to auto generated client c
 	// By settings this to 1 or 2, user selects preferred format to use, if generated code supports both
 	PreferTLVersion int
 
-	PreferTL2 bool // TODO - remove on the next iteration
-
 	ResponseExtra ResponseExtra // after call, response extra is available here
 }
 
@@ -87,6 +86,7 @@ func NewError(code int32, description string) *Error {
 
 func NewDefaultError(description string) *Error {
 	return &Error{
+		Code:        tlerrorcodes.Unknown,
 		Description: description,
 	}
 }
