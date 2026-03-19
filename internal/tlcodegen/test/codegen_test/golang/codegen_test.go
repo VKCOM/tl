@@ -75,7 +75,8 @@ func TestWriteArgs(t *testing.T) {
 
 func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, resultBytesValue string, resultJsonValue string) {
 	fn := factory.CreateFunctionFromName(fnType)
-	initFnErr := fn.ReadJSON(false, &basictl.JsonLexer{Data: []byte(fnJsonValue)})
+	tctx := basictl.JSONReadContext{}
+	initFnErr := fn.ReadJSONGeneral(&tctx, &basictl.JsonLexer{Data: []byte(fnJsonValue)})
 	if initFnErr != nil {
 		t.Fatalf("Function initilization error: %v\n", initFnErr)
 		return

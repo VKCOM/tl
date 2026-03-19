@@ -5,8 +5,9 @@
 package metainternal
 
 import (
-    "{%s= gen.options.Go.TLPackageNameFull %}/internal"
 	"fmt"
+
+    "{%s= gen.options.Go.TLPackageNameFull %}/internal"
     {%q= gen.BasicPackageNameFull %}
 )
 
@@ -312,6 +313,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
 	"github.com/mailru/easyjson/jlexer"
 )
 

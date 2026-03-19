@@ -9,6 +9,7 @@ package metainternal
 
 import (
 	"fmt"
+
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster_nosplit/internal"
 	"github.com/VKCOM/tl/pkg/basictl"
 )

@@ -22,10 +22,11 @@ func (gen *genGo) streamgenerateMetaInternal(qw422016 *qt422016.Writer, commentS
 package metainternal
 
 import (
+	"fmt"
+
     "`)
 	qw422016.N().S(gen.options.Go.TLPackageNameFull)
 	qw422016.N().S(`/internal"
-	"fmt"
     `)
 	qw422016.N().Q(gen.BasicPackageNameFull)
 	qw422016.N().S(`
@@ -373,6 +374,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
 	"github.com/mailru/easyjson/jlexer"
 )
 
