@@ -349,6 +349,10 @@ func JSONWriteBool(w []byte, v bool) []byte {
 	return append(w, strconv.FormatBool(v)...)
 }
 
+func JSONWriteByte(w []byte, v byte) []byte {
+	return strconv.AppendUint(w, uint64(v), 10)
+}
+
 func JSONWriteUint32(w []byte, v uint32) []byte {
 	return strconv.AppendUint(w, uint64(v), 10)
 }
@@ -810,6 +814,10 @@ func RandomInt(rg *RandGenerator) int32 {
 
 func RandomLong(rg *RandGenerator) int64 {
 	return rg.r.Int63()
+}
+
+func RandomUint64(rg *RandGenerator) uint64 {
+	return uint64(rg.r.Int63()) // not full range, but ok for now
 }
 
 func RandomFloat(rg *RandGenerator) float32 {

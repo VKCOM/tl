@@ -10,8 +10,9 @@ package internal
 import (
 	"errors"
 	"fmt"
-	"github.com/mailru/easyjson/jlexer"
 	"strconv"
+
+	"github.com/mailru/easyjson/jlexer"
 )
 
 type UnionElement struct {
