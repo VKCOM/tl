@@ -9,6 +9,7 @@ package metainternal
 
 import (
 	"fmt"
+
 	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal"
 )

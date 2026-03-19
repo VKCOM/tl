@@ -511,7 +511,7 @@ func (c *ClientImpl) removeConnection(pc *clientConn) bool {
 	return false
 }
 
-func (c *ClientImpl) GetLoad(address NetAddr) int {
+func (c *ClientImpl) getLoad(address NetAddr) int {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 

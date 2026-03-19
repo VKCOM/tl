@@ -31,14 +31,14 @@ func preparePacket(req *Request) error {
 	switch {
 	case req.ActorID != 0 && req.Extra.Flags != 0:
 		// extra := tl.RpcDestActorFlags{ActorId: req.ActorID, Extra: req.Extra}
-		// headerBuf = extra.WriteBoxed(headerBuf)
+		// headerBuf = extra.WriteTL1Boxed(headerBuf)
 		// we optimize copy of large extra here by writing code above manually
 		headerBuf = basictl.NatWrite(headerBuf, tl.RpcDestActorFlags{}.TLTag())
 		headerBuf = basictl.LongWrite(headerBuf, req.ActorID)
 		headerBuf = req.Extra.WriteTL1(headerBuf)
 	case req.Extra.Flags != 0:
 		// extra := tl.RpcDestFlags{Extra: req.Extra}
-		// headerBuf = extra.WriteBoxed(headerBuf)
+		// headerBuf = extra.WriteTL1Boxed(headerBuf)
 		// we optimize copy of large extra here by writing code above manually
 		headerBuf = basictl.NatWrite(headerBuf, tl.RpcDestFlags{}.TLTag())
 		headerBuf = req.Extra.WriteTL1(headerBuf)
@@ -195,7 +195,7 @@ func (hctx *HandlerContext) prepareResponseBody(err error) error {
 	hctx.ResponseExtra.Flags &= hctx.requestExtraFieldsmask // return only fields they understand
 	if hctx.ResponseExtra.Flags != 0 {
 		// extra := tl.ReqResultHeader{Extra: hctx.ResponseExtra}
-		// resp = extra.WriteBoxed(resp)
+		// resp = extra.WriteTL1Boxed(resp)
 		// we optimize copy of large extra here by writing code above manually
 		resp = basictl.NatWrite(resp, tl.ReqResultHeader{}.TLTag())
 		resp = hctx.ResponseExtra.WriteTL1(resp)
