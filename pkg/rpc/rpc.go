@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnetUdpPacket"
 	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
@@ -26,10 +25,6 @@ const (
 
 	packetTypeRPCNonce     = uint32(0x7acb87aa)
 	packetTypeRPCHandshake = uint32(0x7682eef5)
-
-	PacketTypeRPCPing = constants.RpcPing
-	PacketTypeRPCPong = constants.RpcPong
-	// contains 8 byte payload
 
 	DefaultPacketTimeout = 10 * time.Second
 	// keeping this above 10 seconds helps to avoid disconnecting engines with default 10 seconds ping interval

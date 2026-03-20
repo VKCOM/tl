@@ -22,8 +22,9 @@ import (
 
 	"github.com/VKCOM/tl/internal/vkgo/pkg/semaphore"
 	"github.com/VKCOM/tl/internal/vkgo/pkg/srvfunc"
-	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlengine"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlgo"
 	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
@@ -971,21 +972,21 @@ func (s *Server) callHandler(ctx context.Context, hctx *HandlerContext) (err err
 
 func (s *Server) callHandlerNoRecover(ctx context.Context, hctx *HandlerContext) (err error) {
 	switch hctx.reqTag {
-	case constants.EnginePid:
+	case tlengine.Pid{}.TLTag():
 		return s.handleEnginePID(hctx)
-	case constants.EngineStat:
+	case tlengine.Stat{}.TLTag():
 		return s.handleEngineStat(hctx)
-	case constants.EngineFilteredStat:
+	case tlengine.FilteredStat{}.TLTag():
 		return s.handleEngineFilteredStat(hctx)
-	case constants.EngineVersion:
+	case tlengine.Version{}.TLTag():
 		return s.handleEngineVersion(hctx)
-	case constants.EngineSetVerbosity:
+	case tlengine.SetVerbosity{}.TLTag():
 		return s.handleEngineSetVerbosity(hctx)
-	case constants.EngineSleep:
+	case tlengine.Sleep{}.TLTag():
 		return s.handleEngineSleep(ctx, hctx)
-	case constants.EngineAsyncSleep:
+	case tlengine.AsyncSleep{}.TLTag():
 		return s.handleEngineAsyncSleep(ctx, hctx)
-	case constants.GoPprof:
+	case tlgo.Pprof{}.TLTag():
 		return s.handleGoPProf(hctx)
 	case 0xabcb5b38: // TODO why netDumpUdpTargets is missing in internal constants?
 		return s.handleNetDumpUdpTargets(ctx, hctx)

@@ -14,7 +14,7 @@ import (
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal/metainternal"
 )
 
-func SchemaGenerator() string { return "v1.3.31" }
+func SchemaGenerator() string { return "v1.4.2" }
 func SchemaURL() string       { return "" }
 func SchemaCommit() string    { return "" }
 func SchemaTimestamp() uint32 { return 0 }
