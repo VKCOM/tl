@@ -24,7 +24,6 @@ import (
 	"github.com/VKCOM/tl/internal/vkgo/pkg/basictl"
 	"github.com/VKCOM/tl/internal/vkgo/pkg/srvfunc"
 	"github.com/VKCOM/tl/internal/vkgo/pkg/vktl/tlpprof" // TODO - modernize pprof package, it is very old
-	"github.com/VKCOM/tl/pkg/rpc/internal/gen/constants"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlengine"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlgo"
@@ -220,7 +219,7 @@ func (s *Server) handleEngineStat(hctx *HandlerContext) error {
 	keys := sortedStatKeys(stats)
 	// hctx.Response, err = req.WriteResult(hctx.Response, pid) - TODO - generate code to write sorted stats
 
-	hctx.Response = basictl.NatWrite(hctx.Response, constants.Stat)
+	hctx.Response = basictl.NatWrite(hctx.Response, tl.Stat{}.TLTag())
 	hctx.Response = basictl.NatWrite(hctx.Response, uint32(len(keys)))
 	for _, k := range keys {
 		hctx.Response = basictl.StringWrite(hctx.Response, k)
@@ -239,7 +238,7 @@ func (s *Server) handleEngineFilteredStat(hctx *HandlerContext) error {
 	keys := sortedStatKeys(stats)
 	// hctx.Response, err = req.WriteResult(hctx.Response, pid) - TODO - generate code to write sorted stats
 
-	hctx.Response = basictl.NatWrite(hctx.Response, constants.Stat)
+	hctx.Response = basictl.NatWrite(hctx.Response, tl.Stat{}.TLTag())
 	hctx.Response = basictl.NatWrite(hctx.Response, uint32(len(keys)))
 	for _, k := range keys {
 		hctx.Response = basictl.StringWrite(hctx.Response, k)
