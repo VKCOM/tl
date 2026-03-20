@@ -187,9 +187,19 @@ func Uint64Write(w []byte, v uint64) []byte {
 	return nat64Write(w, v)
 }
 
+// TODO - remove after all generated code updated
+func ByteWriteTL2(w []byte, b byte) []byte {
+	return ByteWrite(w, b)
+}
+
 func ByteWrite(w []byte, b byte) []byte {
 	w = append(w, b)
 	return w
+}
+
+// TODO - remove after all generated code updated
+func ByteReadTL2(r []byte, b *byte) ([]byte, error) {
+	return ByteRead(r, b)
 }
 
 func ByteRead(r []byte, b *byte) ([]byte, error) {
