@@ -47,8 +47,7 @@ func (c *Client) Insert(ctx context.Context, args Insert, extra *rpc.InvokeReqEx
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {

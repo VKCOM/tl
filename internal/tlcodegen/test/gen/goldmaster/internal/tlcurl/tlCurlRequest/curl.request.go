@@ -580,7 +580,7 @@ func (item *CurlRequest) WriteResultTL1(w []byte, ret tlCurlResponse.CurlRespons
 	return w, nil
 }
 
-func (item *CurlRequest) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *tlCurlResponse.CurlResponse) (_ []byte, err error) {
+func (item *CurlRequest) ReadResultTL2(r []byte, tctx *basictl.TL2ReadContext, ret *tlCurlResponse.CurlResponse) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -679,18 +679,18 @@ func (item *CurlRequest) writeResultTL2(w []byte, sizes []int, optimizeEmpty boo
 	return w, sizes, currentSize
 }
 
-func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlCurlResponse.CurlResponse) []byte {
+func (item *CurlRequest) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret tlCurlResponse.CurlResponse) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.calculateLayoutResult(sizes, false, ret)
 	w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1428,18 +1428,18 @@ func (item *CurlRequest) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty b
 	return w, sizes, 1
 }
 
-func (item *CurlRequest) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CurlRequest) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1629,6 +1629,6 @@ func (item *CurlRequest) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *CurlRequest) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CurlRequest) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

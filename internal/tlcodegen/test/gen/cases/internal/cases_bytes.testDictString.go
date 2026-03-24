@@ -192,18 +192,18 @@ func (item *CasesBytesTestDictString) InternalWriteTL2(w []byte, sizes []int, op
 	return w, sizes, 1
 }
 
-func (item *CasesBytesTestDictString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesBytesTestDictString) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -249,7 +249,7 @@ func (item *CasesBytesTestDictString) InternalReadTL2(r []byte) (_ []byte, err e
 	return r, nil
 }
 
-func (item *CasesBytesTestDictString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesBytesTestDictString) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -432,18 +432,18 @@ func (item *CasesBytesTestDictStringBytes) InternalWriteTL2(w []byte, sizes []in
 	return w, sizes, 1
 }
 
-func (item *CasesBytesTestDictStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesBytesTestDictStringBytes) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -489,6 +489,6 @@ func (item *CasesBytesTestDictStringBytes) InternalReadTL2(r []byte) (_ []byte, 
 	return r, nil
 }
 
-func (item *CasesBytesTestDictStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesBytesTestDictStringBytes) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

@@ -100,10 +100,10 @@ func (item *DictionaryString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *DictionaryString) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -113,8 +113,8 @@ func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) [
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -126,7 +126,7 @@ func (item *DictionaryString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *DictionaryString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *DictionaryString) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -215,10 +215,10 @@ func (item *DictionaryStringBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *DictionaryStringBytes) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -228,8 +228,8 @@ func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteConte
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -241,6 +241,6 @@ func (item *DictionaryStringBytes) InternalReadTL2(r []byte) (_ []byte, err erro
 	return r, nil
 }
 
-func (item *DictionaryStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *DictionaryStringBytes) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

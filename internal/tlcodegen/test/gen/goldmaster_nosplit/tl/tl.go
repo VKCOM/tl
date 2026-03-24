@@ -156,8 +156,7 @@ func (c *Client) Call1(ctx context.Context, args Call1, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -202,8 +201,7 @@ func (c *Client) Call2(ctx context.Context, args Call2, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -248,8 +246,7 @@ func (c *Client) Call3(ctx context.Context, args Call3, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -294,8 +291,7 @@ func (c *Client) Call4(ctx context.Context, args Call4, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -340,8 +336,7 @@ func (c *Client) Call5(ctx context.Context, args Call5, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -386,8 +381,7 @@ func (c *Client) Call6(ctx context.Context, args Call6, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -432,8 +426,7 @@ func (c *Client) Call7(ctx context.Context, args Call7, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -478,8 +471,7 @@ func (c *Client) Call8(ctx context.Context, args Call8, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {
@@ -524,8 +516,7 @@ func (c *Client) Call9(ctx context.Context, args Call9, extra *rpc.InvokeReqExtr
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {

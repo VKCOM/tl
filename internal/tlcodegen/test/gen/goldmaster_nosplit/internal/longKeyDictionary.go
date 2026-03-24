@@ -76,10 +76,10 @@ func (item *LongKeyDictionaryTupleString) WriteJSONOpt(jctx *basictl.JSONWriteCo
 	return w, nil
 }
 
-func (item *LongKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *LongKeyDictionaryTupleString) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -89,8 +89,8 @@ func (item *LongKeyDictionaryTupleString) WriteTL2(w []byte, ctx *basictl.TL2Wri
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -102,6 +102,6 @@ func (item *LongKeyDictionaryTupleString) InternalReadTL2(r []byte) (_ []byte, e
 	return r, nil
 }
 
-func (item *LongKeyDictionaryTupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *LongKeyDictionaryTupleString) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

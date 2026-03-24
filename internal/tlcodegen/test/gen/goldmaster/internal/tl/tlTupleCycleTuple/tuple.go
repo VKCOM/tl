@@ -87,10 +87,10 @@ func (item *TupleCycleTuple) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []by
 	return w, nil
 }
 
-func (item *TupleCycleTuple) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleCycleTuple) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -100,8 +100,8 @@ func (item *TupleCycleTuple) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -113,6 +113,6 @@ func (item *TupleCycleTuple) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleCycleTuple) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleCycleTuple) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

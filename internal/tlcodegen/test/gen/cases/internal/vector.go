@@ -106,10 +106,10 @@ func (item *VectorBenchmarksVruposition) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorBenchmarksVruposition) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorBenchmarksVruposition) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -119,8 +119,8 @@ func (item *VectorBenchmarksVruposition) WriteTL2(w []byte, ctx *basictl.TL2Writ
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -132,7 +132,7 @@ func (item *VectorBenchmarksVruposition) InternalReadTL2(r []byte) (_ []byte, er
 	return r, nil
 }
 
-func (item *VectorBenchmarksVruposition) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorBenchmarksVruposition) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -229,10 +229,10 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -242,8 +242,8 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, ctx *basictl
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -255,7 +255,7 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) InternalReadTL2(r []byte) (_ []
 	return r, nil
 }
 
-func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -342,10 +342,10 @@ func (item *VectorBool) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorBool) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -355,8 +355,8 @@ func (item *VectorBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte 
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -368,7 +368,7 @@ func (item *VectorBool) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorBool) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorBool) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -457,10 +457,10 @@ func (item *VectorDictionaryAnyFieldDoubleInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorDictionaryAnyFieldDoubleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorDictionaryAnyFieldDoubleInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -470,8 +470,8 @@ func (item *VectorDictionaryAnyFieldDoubleInt) WriteTL2(w []byte, ctx *basictl.T
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -483,7 +483,7 @@ func (item *VectorDictionaryAnyFieldDoubleInt) InternalReadTL2(r []byte) (_ []by
 	return r, nil
 }
 
-func (item *VectorDictionaryAnyFieldDoubleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorDictionaryAnyFieldDoubleInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -570,10 +570,10 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -583,8 +583,8 @@ func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -596,7 +596,7 @@ func (item *VectorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -683,10 +683,10 @@ func (item *VectorString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorString) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -696,8 +696,8 @@ func (item *VectorString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byt
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -709,7 +709,7 @@ func (item *VectorString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorString) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -796,10 +796,10 @@ func (item *VectorStringBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorStringBytes) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -809,8 +809,8 @@ func (item *VectorStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -822,7 +822,7 @@ func (item *VectorStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorStringBytes) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -909,10 +909,10 @@ func (item *VectorTrueBoxed) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorTrueBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorTrueBoxed) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -922,8 +922,8 @@ func (item *VectorTrueBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -935,6 +935,6 @@ func (item *VectorTrueBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorTrueBoxed) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorTrueBoxed) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

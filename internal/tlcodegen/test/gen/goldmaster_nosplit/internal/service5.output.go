@@ -120,18 +120,18 @@ func (item *Service5EmptyOutput) InternalWriteTL2(w []byte, sizes []int, optimiz
 	return w, sizes, 1
 }
 
-func (item *Service5EmptyOutput) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *Service5EmptyOutput) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -142,7 +142,7 @@ func (item *Service5EmptyOutput) InternalReadTL2(r []byte, block byte) (_ []byte
 	return r, nil
 }
 
-func (item *Service5EmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *Service5EmptyOutput) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -340,23 +340,23 @@ func (item *Service5Output) InternalReadTL2(r []byte) (_ []byte, err error) {
 	Unused(currentR)
 	return r, nil
 }
-func (item *Service5Output) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *Service5Output) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
 
-func (item *Service5Output) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+func (item *Service5Output) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) ([]byte, error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -678,18 +678,18 @@ func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int, optimi
 	return w, sizes, 1
 }
 
-func (item *Service5StringOutput) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *Service5StringOutput) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -714,7 +714,7 @@ func (item *Service5StringOutput) InternalReadTL2(r []byte, block byte) (_ []byt
 	return r, nil
 }
 
-func (item *Service5StringOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *Service5StringOutput) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err

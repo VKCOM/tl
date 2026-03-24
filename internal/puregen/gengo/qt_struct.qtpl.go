@@ -1539,12 +1539,12 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	if struct_.wr.HasTL2() {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *`)
+		qw422016.N().S(`) ReadResultTL2(r []byte, tctx *basictl.TL2ReadContext, ret *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if struct_.pureTypeStruct.IsResultAlias() {
-			qw422016.N().S(`    return ret.ReadTL2(r, ctx)
+			qw422016.N().S(`    return ret.ReadTL2(r, tctx)
 `)
 		} else {
 			qw422016.N().S(`    currentSize := 0
@@ -1672,25 +1672,25 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret `)
+		qw422016.N().S(`) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret `)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) []byte {
 `)
 		if struct_.pureTypeStruct.IsResultAlias() {
-			qw422016.N().S(`    return ret.WriteTL2(w, ctx)
+			qw422016.N().S(`    return ret.WriteTL2(w, tctx)
 `)
 		} else {
 			qw422016.N().S(`    var sizes, sizes2 []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer[:0]
+    if tctx != nil {
+        sizes = tctx.SizeBuffer[:0]
     }
     sizes, _ = item.calculateLayoutResult(sizes, false, ret)
     w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
     if len(sizes2) != 0 {
         panic("tl2: internal write did not consume all size data")
     }
-    if ctx != nil {
-        ctx.SizeBuffer = sizes
+    if tctx != nil {
+        tctx.SizeBuffer = sizes
     }
     return w
 `)
@@ -2351,7 +2351,7 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+		qw422016.N().S(`) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`    panic(`)
@@ -2362,8 +2362,8 @@ func (item *`)
 `)
 		} else {
 			qw422016.N().S(`    var sizes []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer[:0]
+    if tctx != nil {
+        sizes = tctx.SizeBuffer[:0]
     }
     var sz int
     var currentSize int
@@ -2380,8 +2380,8 @@ func (item *`)
     `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)
-    if ctx != nil {
-        ctx.SizeBuffer = sizes
+    if tctx != nil {
+        tctx.SizeBuffer = sizes
     }
     return w
 `)
@@ -2410,7 +2410,7 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+		qw422016.N().S(`) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
     return item.InternalReadTL2(r)
 }
 `)
@@ -2612,7 +2612,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+		qw422016.N().S(`) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`        panic(`)
@@ -2623,16 +2623,16 @@ func (item *`)
 `)
 		} else {
 			qw422016.N().S(`    var sizes, sizes2 []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer[:0]
+    if tctx != nil {
+        sizes = tctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
     w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
     if len(sizes2) != 0 {
         panic("tl2: internal write did not consume all size data")
     }
-    if ctx != nil {
-        ctx.SizeBuffer = sizes
+    if tctx != nil {
+        tctx.SizeBuffer = sizes
     }
     return w
 `)
@@ -2754,7 +2754,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+		qw422016.N().S(`) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`        return r, `)

@@ -105,7 +105,7 @@ func (item *Service5Insert) WriteResultTL1(w []byte, ret Service5Output) (_ []by
 	return w, nil
 }
 
-func (item *Service5Insert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *Service5Output) (_ []byte, err error) {
+func (item *Service5Insert) ReadResultTL2(r []byte, tctx *basictl.TL2ReadContext, ret *Service5Output) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -204,18 +204,18 @@ func (item *Service5Insert) writeResultTL2(w []byte, sizes []int, optimizeEmpty 
 	return w, sizes, currentSize
 }
 
-func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret Service5Output) []byte {
+func (item *Service5Insert) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret Service5Output) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.calculateLayoutResult(sizes, false, ret)
 	w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -460,18 +460,18 @@ func (item *Service5Insert) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
 	return w, sizes, 1
 }
 
-func (item *Service5Insert) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *Service5Insert) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -521,6 +521,6 @@ func (item *Service5Insert) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *Service5Insert) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *Service5Insert) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

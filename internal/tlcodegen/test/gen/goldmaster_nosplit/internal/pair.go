@@ -200,18 +200,18 @@ func (item *PairAInnerAInner) InternalWriteTL2(w []byte, sizes []int, optimizeEm
 	return w, sizes, 1
 }
 
-func (item *PairAInnerAInner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *PairAInnerAInner) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -264,7 +264,7 @@ func (item *PairAInnerAInner) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *PairAInnerAInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *PairAInnerAInner) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -481,18 +481,18 @@ func (item *PairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bo
 	return w, sizes, 1
 }
 
-func (item *PairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *PairIntInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -545,7 +545,7 @@ func (item *PairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *PairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *PairIntInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -730,18 +730,18 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes [
 	return w, sizes, 1
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -794,6 +794,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []byt
 	return r, nil
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

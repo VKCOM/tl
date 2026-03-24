@@ -99,10 +99,10 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *VectorInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -112,8 +112,8 @@ func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -125,6 +125,6 @@ func (item *VectorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *VectorInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
