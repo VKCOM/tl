@@ -117,7 +117,8 @@ func (item *CasesInplace1Int) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesInplace1Int) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.inplace1", err.Error())
 	}
 	return nil
@@ -347,7 +348,8 @@ func (item *CasesInplace1PairBuiltinVectorIntBuiltinVectorInt) MarshalJSON() ([]
 }
 
 func (item *CasesInplace1PairBuiltinVectorIntBuiltinVectorInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.inplace1", err.Error())
 	}
 	return nil

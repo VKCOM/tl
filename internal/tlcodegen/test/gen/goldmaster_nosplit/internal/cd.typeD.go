@@ -122,7 +122,8 @@ func (item *CdTypeD) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CdTypeD) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cd.typeD", err.Error())
 	}
 	return nil

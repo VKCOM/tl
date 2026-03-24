@@ -161,7 +161,8 @@ func (item *CasesTL2TestObjectWithParam4) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTL2TestObjectWithParam4) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("casesTL2.testObjectWithParam", err.Error())
 	}
 	return nil

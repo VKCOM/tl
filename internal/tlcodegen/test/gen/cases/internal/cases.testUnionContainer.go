@@ -122,7 +122,8 @@ func (item *CasesTestUnionContainer) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnionContainer) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testUnionContainer", err.Error())
 	}
 	return nil

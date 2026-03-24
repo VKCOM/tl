@@ -156,7 +156,8 @@ func (item *CasesBytesTestEnum) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesBytesTestEnum) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases_bytes.TestEnum", err.Error())
 	}
 	return nil

@@ -402,7 +402,8 @@ func (item *UsefulServiceGetUserEntity) MarshalJSON() ([]byte, error) {
 }
 
 func (item *UsefulServiceGetUserEntity) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("usefulService.getUserEntity", err.Error())
 	}
 	return nil

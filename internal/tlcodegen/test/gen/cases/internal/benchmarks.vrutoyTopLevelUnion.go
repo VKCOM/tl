@@ -298,7 +298,8 @@ func (item *BenchmarksVrutoyTopLevelUnion) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.VrutoyTopLevelUnion", err.Error())
 	}
 	return nil
@@ -431,7 +432,8 @@ func (item *BenchmarksVrutoytopLevelUnionBig) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vrutoytopLevelUnionBig", err.Error())
 	}
 	return nil
@@ -647,7 +649,8 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vrutoytopLevelUnionEmpty", err.Error())
 	}
 	return nil

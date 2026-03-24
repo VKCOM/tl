@@ -101,7 +101,8 @@ func (item *Service5LongEmptyOutput) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service5LongEmptyOutput) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service5Long.emptyOutput", err.Error())
 	}
 	return nil
@@ -466,7 +467,8 @@ func (item *Service5LongOutput) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service5LongOutput) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service5Long.Output", err.Error())
 	}
 	return nil
@@ -617,7 +619,8 @@ func (item *Service5LongStringOutput) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service5LongStringOutput) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service5Long.stringOutput", err.Error())
 	}
 	return nil

@@ -261,7 +261,8 @@ func (item *NativeWrappers) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NativeWrappers) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("nativeWrappers", err.Error())
 	}
 	return nil

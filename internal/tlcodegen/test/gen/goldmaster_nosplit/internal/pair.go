@@ -407,7 +407,8 @@ func (item *PairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *PairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("pair", err.Error())
 	}
 	return nil

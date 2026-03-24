@@ -207,7 +207,8 @@ func (item *CasesTL2TestArrayFixedBool) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTL2TestArrayFixedBool) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("casesTL2.testArrayFixedBool", err.Error())
 	}
 	return nil

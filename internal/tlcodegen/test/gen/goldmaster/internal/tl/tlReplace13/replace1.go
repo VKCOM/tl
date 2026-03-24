@@ -125,7 +125,8 @@ func (item *Replace13) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Replace13) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("replace1", err.Error())
 	}
 	return nil

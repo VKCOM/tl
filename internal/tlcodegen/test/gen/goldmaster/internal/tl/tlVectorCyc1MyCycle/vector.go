@@ -103,7 +103,8 @@ func (item *VectorCyc1MyCycle) MarshalJSON() ([]byte, error) {
 }
 
 func (item *VectorCyc1MyCycle) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil

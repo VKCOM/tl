@@ -152,7 +152,8 @@ func (item *AbUseDictString) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbUseDictString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("ab.useDictString", err.Error())
 	}
 	return nil
@@ -432,7 +433,8 @@ func (item *AbUseDictStringBytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbUseDictStringBytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("ab.useDictString", err.Error())
 	}
 	return nil

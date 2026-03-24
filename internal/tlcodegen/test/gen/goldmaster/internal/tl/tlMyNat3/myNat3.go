@@ -307,7 +307,8 @@ func (item *MyNat3) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyNat3) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("MyNat3", err.Error())
 	}
 	return nil
@@ -397,7 +398,8 @@ func (item *MyPlus3) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyPlus3) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("myPlus3", err.Error())
 	}
 	return nil
@@ -614,7 +616,8 @@ func (item *MyZero3) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyZero3) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("myZero3", err.Error())
 	}
 	return nil

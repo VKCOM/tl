@@ -127,7 +127,8 @@ func (item *TypeA) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TypeA) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("typeA", err.Error())
 	}
 	return nil

@@ -120,7 +120,8 @@ func (item *CasesBytesTestDictStringString) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesBytesTestDictStringString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases_bytes.testDictStringString", err.Error())
 	}
 	return nil
@@ -353,7 +354,8 @@ func (item *CasesBytesTestDictStringStringBytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesBytesTestDictStringStringBytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases_bytes.testDictStringString", err.Error())
 	}
 	return nil

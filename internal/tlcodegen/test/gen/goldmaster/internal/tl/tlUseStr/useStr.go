@@ -128,7 +128,8 @@ func (item *UseStr) MarshalJSON() ([]byte, error) {
 }
 
 func (item *UseStr) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("useStr", err.Error())
 	}
 	return nil
@@ -368,7 +369,8 @@ func (item *UseStrBytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *UseStrBytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("useStr", err.Error())
 	}
 	return nil
