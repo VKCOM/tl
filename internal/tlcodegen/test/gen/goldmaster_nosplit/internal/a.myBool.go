@@ -157,29 +157,29 @@ func (item *AMyBool) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, err
 }
 
 func (item *AMyBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AMyBool) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _, err := Json2ReadUnion("a.MyBool", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "myTrue", "a.myTrue#00000001", "a.myTrue", "#00000001":
-		if !tctx.LegacyTypeNames && _tag == "a.myTrue#00000001" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.myTrue#00000001" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myTrue#00000001")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#00000001" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#00000001" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "#00000001")
 		}
 		item.index = 0
 	case "myFalse", "a.myFalse#00000002", "a.myFalse", "#00000002":
-		if !tctx.LegacyTypeNames && _tag == "a.myFalse#00000002" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.myFalse#00000002" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "a.myFalse#00000002")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#00000002" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#00000002" {
 			return ErrorInvalidUnionLegacyTagJSON("a.MyBool", "#00000002")
 		}
 		item.index = 1
@@ -190,29 +190,28 @@ func (item *AMyBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item AMyBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item AMyBool) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item AMyBool) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item AMyBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item AMyBool) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"myTrue"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.myTrue#00000001"`...)
 		}
 		return append(w, `"a.myTrue"`...)
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"myFalse"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.myFalse#00000002"`...)
 		}
 		return append(w, `"a.myFalse"`...)

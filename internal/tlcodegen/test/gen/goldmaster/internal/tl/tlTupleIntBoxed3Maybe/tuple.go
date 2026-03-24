@@ -157,7 +157,7 @@ func (item *TupleIntBoxed3Maybe) InternalReadTL2(r []byte) (_ []byte, err error)
 	return r, nil
 }
 
-func (item *TupleIntBoxed3Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TupleIntBoxed3Maybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -169,7 +169,7 @@ func (item *TupleIntBoxed3Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
+		if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(jctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}
@@ -177,21 +177,20 @@ func (item *TupleIntBoxed3Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleIntBoxed3Maybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleIntBoxed3Maybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleIntBoxed3Maybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TupleIntBoxed3Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TupleIntBoxed3Maybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.Value)
+	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(jctx, w, &item.Value)
 	return append(w, '}')
 }
 

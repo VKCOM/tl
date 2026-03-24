@@ -186,53 +186,53 @@ func (item *AColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, erro
 }
 
 func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AColor) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _, err := internal.Json2ReadUnion("a.Color", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "color", "a.color#f35d7a69", "a.color", "#f35d7a69":
-		if !tctx.LegacyTypeNames && _tag == "a.color#f35d7a69" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.color#f35d7a69" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.color#f35d7a69")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#f35d7a69" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#f35d7a69" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "#f35d7a69")
 		}
 		item.index = 0
 	case "red", "a.red#b83a723d", "a.red", "#b83a723d":
-		if !tctx.LegacyTypeNames && _tag == "a.red#b83a723d" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.red#b83a723d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.red#b83a723d")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#b83a723d" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#b83a723d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "#b83a723d")
 		}
 		item.index = 1
 	case "green", "a.green#6127e7b8", "a.green", "#6127e7b8":
-		if !tctx.LegacyTypeNames && _tag == "a.green#6127e7b8" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.green#6127e7b8" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.green#6127e7b8")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#6127e7b8" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#6127e7b8" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "#6127e7b8")
 		}
 		item.index = 2
 	case "b_red", "b.red#a9471844", "b.red", "#a9471844":
-		if !tctx.LegacyTypeNames && _tag == "b.red#a9471844" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "b.red#a9471844" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "b.red#a9471844")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#a9471844" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#a9471844" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "#a9471844")
 		}
 		item.index = 3
 	case "blue", "a.blue#623360f3", "a.blue", "#623360f3":
-		if !tctx.LegacyTypeNames && _tag == "a.blue#623360f3" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "a.blue#623360f3" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.blue#623360f3")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#623360f3" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#623360f3" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "#623360f3")
 		}
 		item.index = 4
@@ -243,53 +243,52 @@ func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item AColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item AColor) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item AColor) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item AColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item AColor) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"color"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.color#f35d7a69"`...)
 		}
 		return append(w, `"a.color"`...)
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"red"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.red#b83a723d"`...)
 		}
 		return append(w, `"a.red"`...)
 	case 2:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"green"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.green#6127e7b8"`...)
 		}
 		return append(w, `"a.green"`...)
 	case 3:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"b_red"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"b.red#a9471844"`...)
 		}
 		return append(w, `"b.red"`...)
 	case 4:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"blue"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"a.blue#623360f3"`...)
 		}
 		return append(w, `"a.blue"`...)

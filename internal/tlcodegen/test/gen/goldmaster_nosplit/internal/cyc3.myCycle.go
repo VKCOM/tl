@@ -77,11 +77,11 @@ func (item Cyc3MyCycle) String() string {
 }
 
 func (item *Cyc3MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Cyc3MyCycle) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 	if in != nil {
@@ -106,7 +106,7 @@ func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc3.myCycle", "a")
 				}
 				propAPresented = true
-				if err := BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := BuiltinVectorCyc1MyCycleReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 			default:
@@ -129,15 +129,14 @@ func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Cyc3MyCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Cyc3MyCycle) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Cyc3MyCycle) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Cyc3MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Cyc3MyCycle) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -149,7 +148,7 @@ func (item *Cyc3MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx, w, item.A)
+	w = BuiltinVectorCyc1MyCycleWriteJSONOpt(jctx, w, item.A)
 	if !(len(item.A) != 0) {
 		w = w[:backupIndexA]
 	}
@@ -450,7 +449,7 @@ func (item *Cyc3MyCycleMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *Cyc3MyCycleMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Cyc3MyCycleMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -462,7 +461,7 @@ func (item *Cyc3MyCycleMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	}
@@ -470,21 +469,20 @@ func (item *Cyc3MyCycleMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Cyc3MyCycleMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Cyc3MyCycleMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Cyc3MyCycleMaybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Cyc3MyCycleMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Cyc3MyCycleMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

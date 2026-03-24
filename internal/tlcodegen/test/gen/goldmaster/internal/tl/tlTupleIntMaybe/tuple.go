@@ -157,7 +157,7 @@ func (item *TupleIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *TupleIntMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -169,7 +169,7 @@ func (item *TupleIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -177,22 +177,21 @@ func (item *TupleIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleIntMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t)
+func (item *TupleIntMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t)
 }
 
 func (item *TupleIntMaybe) WriteJSON(w []byte, nat_t uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *TupleIntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+func (item *TupleIntMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
 	if !item.Ok {
 		return append(w, "{}"...), nil
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.Value, nat_t); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.Value, nat_t); err != nil {
 			return w, err
 		}
 	}

@@ -223,21 +223,21 @@ func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte, ctx *basictl.TL2Rea
 }
 
 func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("ab.CounterChangeRequestPeriods", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "Many", "ab.counterChangeRequestPeriodsMany#14a35d80", "ab.counterChangeRequestPeriodsMany", "#14a35d80":
-		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsMany#14a35d80" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsMany#14a35d80" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsMany#14a35d80")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#14a35d80" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#14a35d80" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "#14a35d80")
 		}
 		item.index = 0
@@ -245,14 +245,14 @@ func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONRea
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueMany.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueMany.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "One", "ab.counterChangeRequestPeriodsOne#d9c36de5", "ab.counterChangeRequestPeriodsOne", "#d9c36de5":
-		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsOne#d9c36de5" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsOne#d9c36de5" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsOne#d9c36de5")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#d9c36de5" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#d9c36de5" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "#d9c36de5")
 		}
 		item.index = 1
@@ -260,7 +260,7 @@ func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONRea
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueOne.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueOne.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -270,41 +270,40 @@ func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriods) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbCounterChangeRequestPeriods) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriods) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"Many"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany#14a35d80"`...)
 			} else {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueMany.WriteJSONOpt(tctx, w)
+		w = item.valueMany.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"One"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne#d9c36de5"`...)
 			} else {
 				w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueOne.WriteJSONOpt(tctx, w)
+		w = item.valueOne.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -382,11 +381,11 @@ func (item AbCounterChangeRequestPeriodsMany) String() string {
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectsPeridosPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -402,7 +401,7 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSO
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.counterChangeRequestPeriodsMany", "objects_peridos")
 				}
 				propObjectsPeridosPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.ObjectsPeridos); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.ObjectsPeridos); err != nil {
 					return err
 				}
 			default:
@@ -422,20 +421,19 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSO
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriodsMany) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbCounterChangeRequestPeriodsMany) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbCounterChangeRequestPeriodsMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriodsMany) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexObjectsPeridos := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"objects_peridos":`...)
-	w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.ObjectsPeridos)
+	w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.ObjectsPeridos)
 	if !(len(item.ObjectsPeridos) != 0) {
 		w = w[:backupIndexObjectsPeridos]
 	}
@@ -628,11 +626,11 @@ func (item AbCounterChangeRequestPeriodsOne) String() string {
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPeriodPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -668,15 +666,14 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriodsOne) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbCounterChangeRequestPeriodsOne) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbCounterChangeRequestPeriodsOne) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriodsOne) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPeriod := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

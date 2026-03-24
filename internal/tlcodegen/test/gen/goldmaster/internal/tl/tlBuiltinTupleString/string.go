@@ -132,8 +132,8 @@ func BuiltinTupleStringInternalReadTL2(r []byte, vec *[]string) (_ []byte, err e
 	}
 	return r, nil
 }
-func BuiltinTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]string, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]string, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -180,11 +180,10 @@ func BuiltinTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 func BuiltinTupleStringWriteJSON(w []byte, vec []string, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleStringWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleStringWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []string, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []string, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {

@@ -65,29 +65,28 @@ func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *VectorAColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *VectorAColor) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorAColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *VectorAColor) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *VectorAColor) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *VectorAColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(tctx, w, *item.ptr())
+func (item *VectorAColor) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *VectorAColor) MarshalJSON() ([]byte, error) {

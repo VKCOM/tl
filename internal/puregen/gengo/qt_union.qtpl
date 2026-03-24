@@ -281,12 +281,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]by
 
 {%- if len(union.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
     _tag, {%- if union.IsEnum -%}_{%- else -%}_value{%- endif -%}, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= tlName %}, in)
     if err != nil {
         return err
@@ -327,18 +327,18 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
                     tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
                     nameWithTag2 := name2 + tag2
                 -%},{%q= nameWithTag2 %},{%q= name2 %},{%q= tag2 %}:
-                    if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
+                    if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
                         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
                     }
-                    if !tctx.LegacyTypeNames && _tag == {%q= tag2 %} {
+                    if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= tag2 %} {
                         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= tag2 %})
                     }
             {%- else -%}:{%- endif -%}
             {%- if !union.wr.originateFromTL2 -%}
-                if !tctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
+                if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
                     return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
                 }
-                if !tctx.LegacyTypeNames && _tag == {%q= tag %} {
+                if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= tag %} {
                     return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= tag %})
                 }
             {%- endif -%}
@@ -360,15 +360,14 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) ([]byte, error) {
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif %}
+func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) ([]byte, error) {
+    return item.WriteJSONOpt(jctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif %}
 }
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(nil, w{%s= natArgsCall %})
 }
-func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     switch item.index {
         {%- for i, field := range union.Fields -%}
             {%- code
@@ -395,12 +394,12 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
             return append(w, `{%q= field.variantName %}`...)
         {%- else -%}
             {%- if union.wr.HasTL2() -%}
-                if tctx.IsTL2 {
+                if jctx != nil && jctx.IsTL2 {
                     return append(w, `{%q= field.variantName %}`...)
                 }
             {%- endif -%}
             {%- if !union.wr.originateFromTL2 -%}
-                if tctx.LegacyTypeNames {
+                if jctx != nil && jctx.LegacyTypeNames {
                     return append(w, `{%q= nameWithTag %}`...)
                 }
             {%- endif -%}
@@ -411,14 +410,14 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
             w = append(w, `{"type":{%q= field.variantName %}`...)
         {%- else -%}
             {%- if union.wr.HasTL2() -%}
-                if tctx.IsTL2 {
+                if jctx != nil && jctx.IsTL2 {
                     w = append(w, `{"type":{%q= field.variantName %}`...)
                 } else {
             {%- endif -%}
                 {%- if wrWithoutLong != nil -%}
-                    if tctx.Short {
+                    if jctx != nil && jctx.Short {
                         {%- if !union.wr.originateFromTL2 -%}
-                            if tctx.LegacyTypeNames {
+                            if jctx != nil && jctx.LegacyTypeNames {
                                 w = append(w, `{"type":{%q= nameWithTagShort %}`...)
                             } else {
                                 w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
@@ -429,7 +428,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteC
                     } else {
                 {%- endif -%}
                     {%- if !union.wr.originateFromTL2 -%}
-                        if tctx.LegacyTypeNames {
+                        if jctx != nil && jctx.LegacyTypeNames {
                             w = append(w, `{"type":{%q= nameWithTag %}`...)
                         } else {
                             w = append(w, `{"type":{%q= nameWithTagNew %}`...)

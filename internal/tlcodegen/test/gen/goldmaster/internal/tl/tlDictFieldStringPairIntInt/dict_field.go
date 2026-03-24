@@ -53,11 +53,11 @@ func (item DictFieldStringPairIntInt) String() string {
 }
 
 func (item *DictFieldStringPairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictFieldStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *DictFieldStringPairIntInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -82,7 +82,7 @@ func (item *DictFieldStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadCon
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -105,15 +105,14 @@ func (item *DictFieldStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictFieldStringPairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictFieldStringPairIntInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictFieldStringPairIntInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *DictFieldStringPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *DictFieldStringPairIntInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -124,7 +123,7 @@ func (item *DictFieldStringPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteConte
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

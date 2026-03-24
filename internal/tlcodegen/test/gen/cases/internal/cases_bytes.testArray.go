@@ -76,11 +76,11 @@ func (item CasesBytesTestArray) String() string {
 }
 
 func (item *CasesBytesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestArray) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propArrPresented bool
 	var rawArr []byte
@@ -125,12 +125,12 @@ func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 	}
 	if propArrPresented {
 		inArr := &basictl.JsonLexer{Data: rawArr}
-		if err := BuiltinTupleStringReadJSONGeneral(tctx, inArr, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleStringReadJSONGeneral(jctx, inArr, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
 	if !propArrPresented {
-		if err := BuiltinTupleStringReadJSONGeneral(tctx, nil, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleStringReadJSONGeneral(jctx, nil, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
@@ -138,15 +138,14 @@ func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesBytesTestArray) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesBytesTestArray) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesBytesTestArray) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -158,7 +157,7 @@ func (item *CasesBytesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	if w, err = BuiltinTupleStringWriteJSONOpt(tctx, w, item.Arr, item.N); err != nil {
+	if w, err = BuiltinTupleStringWriteJSONOpt(jctx, w, item.Arr, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.Arr) != 0) {
@@ -376,11 +375,11 @@ func (item CasesBytesTestArrayBytes) String() string {
 }
 
 func (item *CasesBytesTestArrayBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propArrPresented bool
 	var rawArr []byte
@@ -425,12 +424,12 @@ func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 	}
 	if propArrPresented {
 		inArr := &basictl.JsonLexer{Data: rawArr}
-		if err := BuiltinTupleStringBytesReadJSONGeneral(tctx, inArr, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleStringBytesReadJSONGeneral(jctx, inArr, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
 	if !propArrPresented {
-		if err := BuiltinTupleStringBytesReadJSONGeneral(tctx, nil, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleStringBytesReadJSONGeneral(jctx, nil, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
@@ -438,15 +437,14 @@ func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestArrayBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesBytesTestArrayBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesBytesTestArrayBytes) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestArrayBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesBytesTestArrayBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -458,7 +456,7 @@ func (item *CasesBytesTestArrayBytes) WriteJSONOpt(tctx *basictl.JSONWriteContex
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	if w, err = BuiltinTupleStringBytesWriteJSONOpt(tctx, w, item.Arr, item.N); err != nil {
+	if w, err = BuiltinTupleStringBytesWriteJSONOpt(jctx, w, item.Arr, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.Arr) != 0) {

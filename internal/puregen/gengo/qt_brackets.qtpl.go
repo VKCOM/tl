@@ -294,7 +294,7 @@ func `)
 		qw422016.N().S(`
 func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
+		qw422016.N().S(`ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
@@ -345,16 +345,15 @@ func `)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    tctx := basictl.JSONWriteContext{}
     return `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(&tctx, w, vec`)
+		qw422016.N().S(`WriteJSONOpt(nil, w, vec`)
 		qw422016.N().S(natCall)
 		qw422016.N().S(`)
 }
 func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec `)
+		qw422016.N().S(`WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
@@ -641,12 +640,12 @@ func `)
 		}
 		qw422016.N().S(`func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
+		qw422016.N().S(`ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) error {
-    isTL2 := tctx != nil && tctx.IsTL2
+    isTL2 := jctx != nil && jctx.IsTL2
     if isTL2 {
         nat_n = uint32(len(*vec))
     }
@@ -719,21 +718,20 @@ func `)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    tctx := basictl.JSONWriteContext{}
     return `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(&tctx, w, vec`)
+		qw422016.N().S(`WriteJSONOpt(nil, w, vec`)
 		qw422016.N().S(natCall)
 		qw422016.N().S(`)
 }
 func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec `)
+		qw422016.N().S(`WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec `)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    if tctx != nil && tctx.IsTL2 {
+    if jctx != nil && jctx.IsTL2 {
         nat_n = uint32(len(vec))
     }
     if uint32(len(vec)) != nat_n {
@@ -1031,7 +1029,7 @@ func `)
 		qw422016.N().S(`
 func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
+		qw422016.N().S(`ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *`)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
@@ -1095,16 +1093,15 @@ func `)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    tctx := basictl.JSONWriteContext{}
     return `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(&tctx, w, vec`)
+		qw422016.N().S(`WriteJSONOpt(nil, w, vec`)
 		qw422016.N().S(natCall)
 		qw422016.N().S(`)
 }
 func `)
 		qw422016.N().S(goName)
-		qw422016.N().S(`WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *`)
+		qw422016.N().S(`WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *`)
 		qw422016.N().S(typeString)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)

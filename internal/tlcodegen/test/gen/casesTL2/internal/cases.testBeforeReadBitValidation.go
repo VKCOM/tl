@@ -99,11 +99,11 @@ func (item CasesTestBeforeReadBitValidation) String() string {
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
@@ -139,7 +139,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "a")
 				}
 				propAPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -148,7 +148,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testBeforeReadBitValidation", "b")
 				}
 				propBPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.B); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 2
@@ -178,15 +178,14 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestBeforeReadBitValidation) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestBeforeReadBitValidation) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.N != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -201,12 +200,12 @@ func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.A)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.A)
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"b":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.B)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.B)
 	}
 	return append(w, '}')
 }

@@ -140,11 +140,11 @@ func (item Replace) String() string {
 }
 
 func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Replace) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var rawA []byte
@@ -187,7 +187,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "a1")
 				}
 				propA1Presented = true
-				if err := item.A1.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A1.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -195,7 +195,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "c":
@@ -203,7 +203,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "c")
 				}
 				propCPresented = true
-				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.C.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "d":
@@ -220,7 +220,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "d1")
 				}
 				propD1Presented = true
-				if err := item.D1.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.D1.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "e":
@@ -228,7 +228,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "e")
 				}
 				propEPresented = true
-				if err := item.E.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.E.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "g":
@@ -236,7 +236,7 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "g")
 				}
 				propGPresented = true
-				if err := item.G.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.G.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -272,23 +272,23 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	}
 	if propAPresented {
 		inA := &basictl.JsonLexer{Data: rawA}
-		if err := item.A.ReadJSONGeneral(tctx, inA, item.N); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, inA, item.N); err != nil {
 			return err
 		}
 	}
 	if propDPresented {
 		inD := &basictl.JsonLexer{Data: rawD}
-		if err := item.D.ReadJSONGeneral(tctx, inD, item.N); err != nil {
+		if err := item.D.ReadJSONGeneral(jctx, inD, item.N); err != nil {
 			return err
 		}
 	}
 	if !propAPresented {
-		if err := item.A.ReadJSONGeneral(tctx, nil, item.N); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, nil, item.N); err != nil {
 			return err
 		}
 	}
 	if !propDPresented {
-		if err := item.D.ReadJSONGeneral(tctx, nil, item.N); err != nil {
+		if err := item.D.ReadJSONGeneral(jctx, nil, item.N); err != nil {
 			return err
 		}
 	}
@@ -296,15 +296,14 @@ func (item *Replace) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *Replace) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *Replace) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Replace) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *Replace) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -315,36 +314,36 @@ func (item *Replace) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ [
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.A.WriteJSONOpt(jctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a1":`...)
-	w = item.A1.WriteJSONOpt(tctx, w)
+	w = item.A1.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(tctx, w); err != nil {
+	if w, err = item.B.WriteJSONOpt(jctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(tctx, w)
+	w = item.C.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = item.D.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.D.WriteJSONOpt(jctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d1":`...)
-	w = item.D1.WriteJSONOpt(tctx, w)
+	w = item.D1.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = item.E.WriteJSONOpt(tctx, w); err != nil {
+	if w, err = item.E.WriteJSONOpt(jctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"g":`...)
-	w = item.G.WriteJSONOpt(tctx, w)
+	w = item.G.WriteJSONOpt(jctx, w)
 	return append(w, '}'), nil
 }
 

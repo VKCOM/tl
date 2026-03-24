@@ -161,7 +161,7 @@ func (item *VectorBoxedIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error)
 	return r, nil
 }
 
-func (item *VectorBoxedIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *VectorBoxedIntMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -173,7 +173,7 @@ func (item *VectorBoxedIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
+		if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}
@@ -181,22 +181,21 @@ func (item *VectorBoxedIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorBoxedIntMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *VectorBoxedIntMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *VectorBoxedIntMaybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *VectorBoxedIntMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *VectorBoxedIntMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Value)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Value)
 	}
 	return append(w, '}')
 }

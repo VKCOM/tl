@@ -128,7 +128,7 @@ func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntInternalReadTL2(r []byte, 
 	return r, nil
 }
 
-func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]PairBuiltinVectorIntBuiltinVectorInt) error {
+func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]PairBuiltinVectorIntBuiltinVectorInt) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -139,7 +139,7 @@ func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx *basi
 			if index == 2 {
 				return ErrorWrongSequenceLength("[2]PairBuiltinVectorIntBuiltinVectorInt", index+1, 2)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -156,14 +156,13 @@ func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx *basi
 }
 
 func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSON(w []byte, vec *[2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
+func BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -289,7 +288,7 @@ func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntInternalReadT
 	return r, nil
 }
 
-func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]PairBuiltinVectorIntBuiltinVectorInt) error {
+func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]PairBuiltinVectorIntBuiltinVectorInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -303,7 +302,7 @@ func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGener
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx, in, &(*vec)[index]); err != nil {
+			if err := BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(jctx, in, &(*vec)[index]); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -318,14 +317,13 @@ func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGener
 }
 
 func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSON(w []byte, vec [][2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
+func BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec [][2]PairBuiltinVectorIntBuiltinVectorInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(tctx, w, &elem)
+		w = BuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(jctx, w, &elem)
 	}
 	return append(w, ']')
 }
@@ -379,11 +377,11 @@ func (item PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) Strin
 }
 
 func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
 	if in != nil {
@@ -400,7 +398,7 @@ func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) Read
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
 				propXPresented = true
-				if err := BuiltinVectorBuiltinTuple2IntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := BuiltinVectorBuiltinTuple2IntReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			case "y":
@@ -408,7 +406,7 @@ func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) Read
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
 				propYPresented = true
-				if err := BuiltinVectorBuiltinTuple2IntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinVectorBuiltinTuple2IntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			default:
@@ -431,25 +429,24 @@ func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) Read
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *PairBuiltinVectorBuiltinTuple2IntBuiltinVectorBuiltinTuple2Int) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.X) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"x":`...)
-		w = BuiltinVectorBuiltinTuple2IntWriteJSONOpt(tctx, w, item.X)
+		w = BuiltinVectorBuiltinTuple2IntWriteJSONOpt(jctx, w, item.X)
 	}
 	if len(item.Y) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"y":`...)
-		w = BuiltinVectorBuiltinTuple2IntWriteJSONOpt(tctx, w, item.Y)
+		w = BuiltinVectorBuiltinTuple2IntWriteJSONOpt(jctx, w, item.Y)
 	}
 	return append(w, '}')
 }
@@ -650,11 +647,11 @@ func (item PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBui
 }
 
 func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
 	if in != nil {
@@ -671,7 +668,7 @@ func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBu
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
 				propXPresented = true
-				if err := BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			case "y":
@@ -679,7 +676,7 @@ func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBu
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
 				propYPresented = true
-				if err := BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			default:
@@ -702,25 +699,24 @@ func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBu
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *PairBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntBuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.X) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"x":`...)
-		w = BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(tctx, w, item.X)
+		w = BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(jctx, w, item.X)
 	}
 	if len(item.Y) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"y":`...)
-		w = BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(tctx, w, item.Y)
+		w = BuiltinVectorBuiltinTuple2PairBuiltinVectorIntBuiltinVectorIntWriteJSONOpt(jctx, w, item.Y)
 	}
 	return append(w, '}')
 }
@@ -917,11 +913,11 @@ func (item PairBuiltinVectorIntBuiltinVectorInt) String() string {
 }
 
 func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
 	if in != nil {
@@ -938,7 +934,7 @@ func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "x")
 				}
 				propXPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			case "y":
@@ -946,7 +942,7 @@ func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("pair", "y")
 				}
 				propYPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			default:
@@ -969,25 +965,24 @@ func (item *PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *PairBuiltinVectorIntBuiltinVectorInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.X) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"x":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.X)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.X)
 	}
 	if len(item.Y) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"y":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Y)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.Y)
 	}
 	return append(w, '}')
 }

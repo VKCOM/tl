@@ -105,11 +105,11 @@ func (item CasesTL2TestParamsGeneration) String() string {
 }
 
 func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propN1Presented bool
 	var propN2Presented bool
 	var propX1Presented bool
@@ -149,7 +149,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x1")
 				}
 				propX1Presented = true
-				if err := item.X1.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X1.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "x2":
@@ -200,34 +200,34 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 	}
 	if propX2Presented {
 		inX2 := &basictl.JsonLexer{Data: rawX2}
-		if err := item.X2.ReadJSONGeneral(tctx, inX2, item.N1); err != nil {
+		if err := item.X2.ReadJSONGeneral(jctx, inX2, item.N1); err != nil {
 			return err
 		}
 	}
 	if propX3Presented {
 		inX3 := &basictl.JsonLexer{Data: rawX3}
-		if err := item.X3.ReadJSONGeneral(tctx, inX3, item.N2); err != nil {
+		if err := item.X3.ReadJSONGeneral(jctx, inX3, item.N2); err != nil {
 			return err
 		}
 	}
 	if propX4Presented {
 		inX4 := &basictl.JsonLexer{Data: rawX4}
-		if err := item.X4.ReadJSONGeneral(tctx, inX4, item.N1, item.N2); err != nil {
+		if err := item.X4.ReadJSONGeneral(jctx, inX4, item.N1, item.N2); err != nil {
 			return err
 		}
 	}
 	if !propX2Presented {
-		if err := item.X2.ReadJSONGeneral(tctx, nil, item.N1); err != nil {
+		if err := item.X2.ReadJSONGeneral(jctx, nil, item.N1); err != nil {
 			return err
 		}
 	}
 	if !propX3Presented {
-		if err := item.X3.ReadJSONGeneral(tctx, nil, item.N2); err != nil {
+		if err := item.X3.ReadJSONGeneral(jctx, nil, item.N2); err != nil {
 			return err
 		}
 	}
 	if !propX4Presented {
-		if err := item.X4.ReadJSONGeneral(tctx, nil, item.N1, item.N2); err != nil {
+		if err := item.X4.ReadJSONGeneral(jctx, nil, item.N1, item.N2); err != nil {
 			return err
 		}
 	}
@@ -235,15 +235,14 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -261,18 +260,18 @@ func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x1":`...)
-	w = item.X1.WriteJSONOpt(tctx, w)
+	w = item.X1.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x2":`...)
-	w = item.X2.WriteJSONOpt(tctx, w, item.N1)
+	w = item.X2.WriteJSONOpt(jctx, w, item.N1)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x3":`...)
-	if w, err = item.X3.WriteJSONOpt(tctx, w, item.N2); err != nil {
+	if w, err = item.X3.WriteJSONOpt(jctx, w, item.N2); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x4":`...)
-	if w, err = item.X4.WriteJSONOpt(tctx, w, item.N1, item.N2); err != nil {
+	if w, err = item.X4.WriteJSONOpt(jctx, w, item.N1, item.N2); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

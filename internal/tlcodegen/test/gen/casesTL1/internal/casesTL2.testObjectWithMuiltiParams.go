@@ -113,7 +113,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL1Boxed(w []byte, nat_n ui
 	return item.WriteTL1(w, nat_n, nat_m)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
+func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	if in != nil {
@@ -130,7 +130,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
 				propF1Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F1, nat_m); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F1, nat_m); err != nil {
 					return err
 				}
 			case "f2":
@@ -138,7 +138,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
 				propF2Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F2, nat_m); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F2, nat_m); err != nil {
 					return err
 				}
 			default:
@@ -163,14 +163,14 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 	}
 	if !propF1Presented {
 		if nat_n&(1<<0) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F1, nat_m); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F1, nat_m); err != nil {
 				return err
 			}
 		}
 	}
 	if !propF2Presented {
 		if nat_n&(1<<1) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F2, nat_m); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F2, nat_m); err != nil {
 				return err
 			}
 		}
@@ -179,27 +179,26 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n, nat_m)
+func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_n, nat_m)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSON(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_n, nat_m)
+	return item.WriteJSONOpt(nil, w, nat_n, nat_m)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if nat_n&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_m); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F1, nat_m); err != nil {
 			return w, err
 		}
 	}
 	if nat_n&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F2, nat_m); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F2, nat_m); err != nil {
 			return w, err
 		}
 	}
@@ -302,7 +301,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) WriteTL1Boxed(w []byte, nat_n u
 	return item.WriteTL1(w, nat_n)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	if in != nil {
@@ -319,7 +318,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
 				propF1Presented = true
-				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := BuiltinTuple2IntReadJSONGeneral(jctx, in, &item.F1); err != nil {
 					return err
 				}
 			case "f2":
@@ -327,7 +326,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
 				propF2Presented = true
-				if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
+				if err := BuiltinTuple2IntReadJSONGeneral(jctx, in, &item.F2); err != nil {
 					return err
 				}
 			default:
@@ -360,25 +359,24 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n), nil
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_n), nil
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSON(w []byte, nat_n uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_n)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) []byte {
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) []byte {
 	w = append(w, '{')
 	if nat_n&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = BuiltinTuple2IntWriteJSONOpt(tctx, w, &item.F1)
+		w = BuiltinTuple2IntWriteJSONOpt(jctx, w, &item.F1)
 	}
 	if nat_n&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		w = BuiltinTuple2IntWriteJSONOpt(tctx, w, &item.F2)
+		w = BuiltinTuple2IntWriteJSONOpt(jctx, w, &item.F2)
 	}
 	return append(w, '}')
 }
@@ -455,7 +453,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteTL1Boxed(w []byte, nat_m u
 	return item.WriteTL1(w, nat_m)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_m uint32) error {
+func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_m uint32) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	if in != nil {
@@ -472,7 +470,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
 				propF1Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F1, nat_m); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F1, nat_m); err != nil {
 					return err
 				}
 			case "f2":
@@ -480,7 +478,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
 				propF2Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F2, nat_m); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F2, nat_m); err != nil {
 					return err
 				}
 			default:
@@ -505,14 +503,14 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 	}
 	if !propF1Presented {
 		if 3&(1<<0) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F1, nat_m); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F1, nat_m); err != nil {
 				return err
 			}
 		}
 	}
 	if !propF2Presented {
 		if 3&(1<<1) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F2, nat_m); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F2, nat_m); err != nil {
 				return err
 			}
 		}
@@ -521,27 +519,26 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_m)
+func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_m)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSON(w []byte, nat_m uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_m)
+	return item.WriteJSONOpt(nil, w, nat_m)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if 3&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_m); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F1, nat_m); err != nil {
 			return w, err
 		}
 	}
 	if 3&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F2, nat_m); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F2, nat_m); err != nil {
 			return w, err
 		}
 	}
@@ -629,11 +626,11 @@ func (item CasesTL2TestObjectWithMuiltiParams41) String() string {
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	if in != nil {
@@ -650,7 +647,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
 				propF1Presented = true
-				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := BuiltinTuple1IntReadJSONGeneral(jctx, in, &item.F1); err != nil {
 					return err
 				}
 			case "f2":
@@ -658,7 +655,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
 				propF2Presented = true
-				if err := BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
+				if err := BuiltinTuple1IntReadJSONGeneral(jctx, in, &item.F2); err != nil {
 					return err
 				}
 			default:
@@ -691,25 +688,24 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if 4&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = BuiltinTuple1IntWriteJSONOpt(tctx, w, &item.F1)
+		w = BuiltinTuple1IntWriteJSONOpt(jctx, w, &item.F1)
 	}
 	if 4&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		w = BuiltinTuple1IntWriteJSONOpt(tctx, w, &item.F2)
+		w = BuiltinTuple1IntWriteJSONOpt(jctx, w, &item.F2)
 	}
 	return append(w, '}')
 }

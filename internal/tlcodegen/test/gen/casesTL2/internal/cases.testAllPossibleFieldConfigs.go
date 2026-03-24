@@ -220,11 +220,11 @@ func (item CasesTestAllPossibleFieldConfigs) String() string {
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propLocalPresented bool
 	var propLocalsPresented bool
@@ -280,7 +280,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f01")
 				}
 				propF01Presented = true
-				if err := item.F01.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F01.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "f02":
@@ -288,7 +288,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f02")
 				}
 				propF02Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F02); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F02); err != nil {
 					return err
 				}
 			case "f03":
@@ -296,7 +296,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f03")
 				}
 				propF03Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F03); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F03); err != nil {
 					return err
 				}
 			case "f10":
@@ -324,7 +324,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f12")
 				}
 				propF12Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F12); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F12); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 4
@@ -333,7 +333,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f13")
 				}
 				propF13Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F13); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F13); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 8
@@ -362,7 +362,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f22")
 				}
 				propF22Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F22); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F22); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 64
@@ -371,7 +371,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f23")
 				}
 				propF23Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F23); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F23); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 128
@@ -425,15 +425,14 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.Local != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -453,12 +452,12 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if len(item.F02) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f02":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F02)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F02)
 	}
 	if len(item.F03) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f03":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F03)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F03)
 	}
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -472,12 +471,12 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.tl2mask0&4 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f12":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F12)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F12)
 	}
 	if item.tl2mask0&8 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f13":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F13)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F13)
 	}
 	if item.tl2mask0&16 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -491,12 +490,12 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.tl2mask0&64 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f22":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F22)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F22)
 	}
 	if item.tl2mask0&128 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f23":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F23)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F23)
 	}
 	return append(w, '}')
 }

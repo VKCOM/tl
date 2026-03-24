@@ -149,11 +149,11 @@ func (item *CasesBytesTestEnum) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (
 }
 
 func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestEnum) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _, err := Json2ReadUnion("cases_bytes.TestEnum", in)
 	if err != nil {
 		return err
@@ -172,28 +172,27 @@ func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item CasesBytesTestEnum) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item CasesBytesTestEnum) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item CasesBytesTestEnum) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item CasesBytesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item CasesBytesTestEnum) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v1"`...)
 		}
 		return append(w, `"cases_bytes.testEnum1"`...)
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v2"`...)
 		}
 		return append(w, `"cases_bytes.testEnum2"`...)
 	case 2:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v3"`...)
 		}
 		return append(w, `"cases_bytes.testEnum3"`...)

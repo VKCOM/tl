@@ -136,11 +136,11 @@ func (item CasesTestRecursiveFieldMask) String() string {
 }
 
 func (item *CasesTestRecursiveFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propF0Presented bool
 	var propF1Presented bool
@@ -242,15 +242,14 @@ func (item *CasesTestRecursiveFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadC
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestRecursiveFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestRecursiveFieldMask) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestRecursiveFieldMask) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestRecursiveFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestRecursiveFieldMask) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.F0 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)

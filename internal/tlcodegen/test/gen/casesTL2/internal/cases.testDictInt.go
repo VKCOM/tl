@@ -58,11 +58,11 @@ func (item CasesTestDictInt) String() string {
 }
 
 func (item *CasesTestDictInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestDictInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -78,7 +78,7 @@ func (item *CasesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testDictInt", "dict")
 				}
 				propDictPresented = true
-				if err := BuiltinDictIntIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictIntIntReadJSONGeneral(jctx, in, &item.Dict); err != nil {
 					return err
 				}
 			default:
@@ -98,20 +98,19 @@ func (item *CasesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestDictInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestDictInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestDictInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestDictInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestDictInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Dict) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"dict":`...)
-		w = BuiltinDictIntIntWriteJSONOpt(tctx, w, item.Dict)
+		w = BuiltinDictIntIntWriteJSONOpt(jctx, w, item.Dict)
 	}
 	return append(w, '}')
 }

@@ -61,29 +61,28 @@ func (item DictionaryInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringIntReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringIntWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringIntWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryInt) MarshalJSON() ([]byte, error) {
@@ -177,29 +176,28 @@ func (item DictionaryIntBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringIntBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryIntBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringIntBytesReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryIntBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryIntBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryIntBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringIntBytesWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryIntBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringIntBytesWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryIntBytes) MarshalJSON() ([]byte, error) {
@@ -291,29 +289,28 @@ func (item DictionaryString) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringStringReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringStringWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryString) MarshalJSON() ([]byte, error) {
@@ -407,29 +404,28 @@ func (item DictionaryStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryStringBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringStringBytesReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryStringBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryStringBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryStringBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryStringBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringStringBytesWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryStringBytes) MarshalJSON() ([]byte, error) {

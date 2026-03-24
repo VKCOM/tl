@@ -127,7 +127,7 @@ func (item *CasesTestOutFieldMask) WriteTL1Boxed(w []byte, nat_f uint32, nat_fs 
 	return item.WriteTL1(w, nat_f, nat_fs)
 }
 
-func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_f uint32, nat_fs uint32) error {
+func (item *CasesTestOutFieldMask) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_f uint32, nat_fs uint32) error {
 	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
@@ -167,7 +167,7 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f3")
 				}
 				propF3Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F3, nat_fs); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F3, nat_fs); err != nil {
 					return err
 				}
 			default:
@@ -194,7 +194,7 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if trueTypeF2Value {
 	}
 	if !propF3Presented {
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F3, nat_fs); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F3, nat_fs); err != nil {
 			return err
 		}
 	}
@@ -202,15 +202,14 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestOutFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_f, nat_fs)
+func (item *CasesTestOutFieldMask) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_f, nat_fs)
 }
 
 func (item *CasesTestOutFieldMask) WriteJSON(w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_f, nat_fs)
+	return item.WriteJSONOpt(nil, w, nat_f, nat_fs)
 }
-func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_f uint32, nat_fs uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -224,7 +223,7 @@ func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexF3 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F3, nat_fs); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F3, nat_fs); err != nil {
 		return w, err
 	}
 	if !(len(item.F3) != 0) {

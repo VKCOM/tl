@@ -82,11 +82,11 @@ func (item AbUseCycle) String() string {
 }
 
 func (item *AbUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbUseCycle) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -103,7 +103,7 @@ func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useCycle", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -111,7 +111,7 @@ func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.useCycle", "b")
 				}
 				propBPresented = true
-				if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(jctx, in, &item.B); err != nil {
 					return err
 				}
 			default:
@@ -134,23 +134,22 @@ func (item *AbUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbUseCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbUseCycle) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbUseCycle) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbUseCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbUseCycle) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(tctx, w, item.B)
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(jctx, w, item.B)
 	if !(len(item.B) != 0) {
 		w = w[:backupIndexB]
 	}

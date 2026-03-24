@@ -61,29 +61,28 @@ func (item MyInt64) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyInt64) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MyInt64) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
+func (item *MyInt64) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := item.ptr().ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyInt64) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MyInt64) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MyInt64) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *MyInt64) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = item.ptr().WriteJSONOpt(tctx, w)
+func (item *MyInt64) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = item.ptr().WriteJSONOpt(jctx, w)
 	return w
 }
 func (item *MyInt64) MarshalJSON() ([]byte, error) {

@@ -696,20 +696,19 @@ func (item *CurlRequest) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, 
 }
 
 func (item *CurlRequest) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCurlResponse.CurlResponse) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *CurlRequest) WriteResultJSON(w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *CurlRequest) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *CurlRequest) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlCurlResponse.CurlResponse) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
@@ -719,12 +718,12 @@ func (item *CurlRequest) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte
 	return item.WriteResultTL1(w, ret)
 }
 
-func (item *CurlRequest) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CurlRequest) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlCurlResponse.CurlResponse
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
@@ -776,11 +775,11 @@ func (item CurlRequest) String() string {
 }
 
 func (item *CurlRequest) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CurlRequest) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	item.tl2mask1 = 0
 	var propFieldMaskPresented bool
@@ -838,7 +837,7 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("curl.request", "headers")
 				}
 				propHeadersPresented = true
-				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Headers); err != nil {
+				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(jctx, in, &item.Headers); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -1108,15 +1107,14 @@ func (item *CurlRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CurlRequest) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CurlRequest) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CurlRequest) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CurlRequest) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CurlRequest) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1142,7 +1140,7 @@ func (item *CurlRequest) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"headers":`...)
-		w = tlBuiltinDictStringString.BuiltinDictStringStringWriteJSONOpt(tctx, w, item.Headers)
+		w = tlBuiltinDictStringString.BuiltinDictStringStringWriteJSONOpt(jctx, w, item.Headers)
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)

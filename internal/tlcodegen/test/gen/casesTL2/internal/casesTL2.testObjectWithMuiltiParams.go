@@ -95,11 +95,11 @@ func (item CasesTL2TestObjectWithMuiltiParams) String() string {
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
@@ -117,7 +117,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
 				propF1Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F1); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -126,7 +126,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
 				propF2Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F2); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F2); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 2
@@ -150,25 +150,24 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F1)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F1)
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F2)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F2)
 	}
 	return append(w, '}')
 }

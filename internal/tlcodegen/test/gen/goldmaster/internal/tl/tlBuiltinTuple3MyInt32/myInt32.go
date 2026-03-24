@@ -131,7 +131,7 @@ func BuiltinTuple3MyInt32InternalReadTL2(r []byte, vec *[3]tlMyInt32.MyInt32) (_
 	return r, nil
 }
 
-func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]tlMyInt32.MyInt32) error {
+func BuiltinTuple3MyInt32ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]tlMyInt32.MyInt32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -142,7 +142,7 @@ func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 			if index == 3 {
 				return internal.ErrorWrongSequenceLength("[3]tlMyInt32.MyInt32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -159,14 +159,13 @@ func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 func BuiltinTuple3MyInt32WriteJSON(w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3MyInt32WriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3MyInt32WriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple3MyInt32WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
+func BuiltinTuple3MyInt32WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

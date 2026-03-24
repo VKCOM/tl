@@ -259,9 +259,9 @@ func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *D
 		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref, needError)
 	}
 	if needError {
-		return fmt.Sprintf("if w, err = %s.WriteJSONOpt(tctx, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
+		return fmt.Sprintf("if w, err = %s.WriteJSONOpt(jctx, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
 	} else {
-		return fmt.Sprintf("w = %s.WriteJSONOpt(tctx, w %s)", val, joinWithCommas(natArgs))
+		return fmt.Sprintf("w = %s.WriteJSONOpt(jctx, w %s)", val, joinWithCommas(natArgs))
 	}
 }
 
@@ -269,7 +269,7 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) typeJSON2ReadingRequiresContext() bool {

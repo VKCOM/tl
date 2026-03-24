@@ -133,7 +133,7 @@ func BuiltinTuple3IntBoxedInternalReadTL2(r []byte, vec *[3]int32) (_ []byte, er
 	return r, nil
 }
 
-func BuiltinTuple3IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]int32) error {
+func BuiltinTuple3IntBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -161,10 +161,9 @@ func BuiltinTuple3IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 func BuiltinTuple3IntBoxedWriteJSON(w []byte, vec *[3]int32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3IntBoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3IntBoxedWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple3IntBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]int32) []byte {
+func BuiltinTuple3IntBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[3]int32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

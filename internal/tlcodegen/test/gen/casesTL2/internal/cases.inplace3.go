@@ -57,11 +57,11 @@ func (item CasesInplace3BuiltinTuple2Int) String() string {
 }
 
 func (item *CasesInplace3BuiltinTuple2Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesInplace3BuiltinTuple2Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesInplace3BuiltinTuple2Int) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -77,7 +77,7 @@ func (item *CasesInplace3BuiltinTuple2Int) ReadJSONGeneral(tctx *basictl.JSONRea
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace3", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -97,19 +97,18 @@ func (item *CasesInplace3BuiltinTuple2Int) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace3BuiltinTuple2Int) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesInplace3BuiltinTuple2Int) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesInplace3BuiltinTuple2Int) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesInplace3BuiltinTuple2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesInplace3BuiltinTuple2Int) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -292,11 +291,11 @@ func (item CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Strin
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -312,7 +311,7 @@ func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Read
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace3", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -332,19 +331,18 @@ func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) Read
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesInplace3BuiltinTuple2PairBuiltinVectorIntBuiltinVectorInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

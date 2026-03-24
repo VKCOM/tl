@@ -69,11 +69,11 @@ func (item AbTopLevel2) String() string {
 }
 
 func (item *AbTopLevel2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbTopLevel2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbTopLevel2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -90,7 +90,7 @@ func (item *AbTopLevel2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -98,7 +98,7 @@ func (item *AbTopLevel2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -121,22 +121,21 @@ func (item *AbTopLevel2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbTopLevel2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbTopLevel2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbTopLevel2) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbTopLevel2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbTopLevel2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
+	w = item.B.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -341,11 +340,11 @@ func (item AbTopLevel2Bytes) String() string {
 }
 
 func (item *AbTopLevel2Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbTopLevel2Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbTopLevel2Bytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -362,7 +361,7 @@ func (item *AbTopLevel2Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -370,7 +369,7 @@ func (item *AbTopLevel2Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -393,22 +392,21 @@ func (item *AbTopLevel2Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbTopLevel2Bytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbTopLevel2Bytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbTopLevel2Bytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbTopLevel2Bytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbTopLevel2Bytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
+	w = item.B.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

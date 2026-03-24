@@ -51,7 +51,7 @@ func (item *BenchmarksVrutoyPositions) WriteTL1Boxed(w []byte, nat_n uint32) (_ 
 	return item.WriteTL1(w, nat_n)
 }
 
-func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
 	var propNextPositionsPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -67,7 +67,7 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyPositions", "next_positions")
 				}
 				propNextPositionsPresented = true
-				if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions, nat_n); err != nil {
+				if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(jctx, in, &item.NextPositions, nat_n); err != nil {
 					return err
 				}
 			default:
@@ -81,7 +81,7 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 		}
 	}
 	if !propNextPositionsPresented {
-		if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx, nil, &item.NextPositions, nat_n); err != nil {
+		if err := BuiltinTupleBenchmarksVrupositionReadJSONGeneral(jctx, nil, &item.NextPositions, nat_n); err != nil {
 			return err
 		}
 	}
@@ -89,20 +89,19 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyPositions) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n)
+func (item *BenchmarksVrutoyPositions) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_n)
 }
 
 func (item *BenchmarksVrutoyPositions) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_n)
 }
-func (item *BenchmarksVrutoyPositions) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *BenchmarksVrutoyPositions) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexNextPositions := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next_positions":`...)
-	if w, err = BuiltinTupleBenchmarksVrupositionWriteJSONOpt(tctx, w, item.NextPositions, nat_n); err != nil {
+	if w, err = BuiltinTupleBenchmarksVrupositionWriteJSONOpt(jctx, w, item.NextPositions, nat_n); err != nil {
 		return w, err
 	}
 	if !(len(item.NextPositions) != 0) {

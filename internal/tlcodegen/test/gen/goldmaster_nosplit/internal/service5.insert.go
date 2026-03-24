@@ -221,20 +221,19 @@ func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 }
 
 func (item *Service5Insert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *Service5Output) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service5Insert) WriteResultJSON(w []byte, ret Service5Output) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service5Insert) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret Service5Output) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *Service5Insert) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret Service5Output) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
@@ -244,12 +243,12 @@ func (item *Service5Insert) FillRandomResultTL1(rg *basictl.RandGenerator, w []b
 	return item.WriteResultTL1(w, ret)
 }
 
-func (item *Service5Insert) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5Insert) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret Service5Output
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
@@ -301,11 +300,11 @@ func (item Service5Insert) String() string {
 }
 
 func (item *Service5Insert) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service5Insert) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFlagsPresented bool
 	var propPersistentPresented bool
@@ -361,15 +360,14 @@ func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5Insert) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service5Insert) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service5Insert) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service5Insert) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service5Insert) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

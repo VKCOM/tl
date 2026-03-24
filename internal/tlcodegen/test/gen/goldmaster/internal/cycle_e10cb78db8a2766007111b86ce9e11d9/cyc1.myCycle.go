@@ -141,7 +141,7 @@ func BuiltinVectorCyc1MyCycleInternalReadTL2(r []byte, vec *[]Cyc1MyCycle) (_ []
 	return r, nil
 }
 
-func BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]Cyc1MyCycle) error {
+func BuiltinVectorCyc1MyCycleReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]Cyc1MyCycle) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -155,7 +155,7 @@ func BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -170,14 +170,13 @@ func BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 func BuiltinVectorCyc1MyCycleWriteJSON(w []byte, vec []Cyc1MyCycle) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorCyc1MyCycleWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorCyc1MyCycleWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []Cyc1MyCycle) []byte {
+func BuiltinVectorCyc1MyCycleWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []Cyc1MyCycle) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -282,11 +281,11 @@ func (item Cyc1MyCycle) String() string {
 }
 
 func (item *Cyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Cyc1MyCycle) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propAPresented bool
@@ -312,7 +311,7 @@ func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cyc1.myCycle", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -342,15 +341,14 @@ func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Cyc1MyCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Cyc1MyCycle) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Cyc1MyCycle) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Cyc1MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Cyc1MyCycle) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -362,7 +360,7 @@ func (item *Cyc1MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = item.A.WriteJSONOpt(tctx, w)
+		w = item.A.WriteJSONOpt(jctx, w)
 	}
 	return append(w, '}')
 }

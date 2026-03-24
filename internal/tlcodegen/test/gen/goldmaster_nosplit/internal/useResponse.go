@@ -75,11 +75,11 @@ func (item UseResponse) String() string {
 }
 
 func (item *UseResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *UseResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *UseResponse) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propXPresented bool
 	var rawX []byte
@@ -124,12 +124,12 @@ func (item *UseResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	}
 	if propXPresented {
 		inX := &basictl.JsonLexer{Data: rawX}
-		if err := BuiltinTupleAbResponseReadJSONGeneral(tctx, inX, &item.X, item.N); err != nil {
+		if err := BuiltinTupleAbResponseReadJSONGeneral(jctx, inX, &item.X, item.N); err != nil {
 			return err
 		}
 	}
 	if !propXPresented {
-		if err := BuiltinTupleAbResponseReadJSONGeneral(tctx, nil, &item.X, item.N); err != nil {
+		if err := BuiltinTupleAbResponseReadJSONGeneral(jctx, nil, &item.X, item.N); err != nil {
 			return err
 		}
 	}
@@ -137,15 +137,14 @@ func (item *UseResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UseResponse) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *UseResponse) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *UseResponse) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *UseResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *UseResponse) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -157,7 +156,7 @@ func (item *UseResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	if w, err = BuiltinTupleAbResponseWriteJSONOpt(tctx, w, item.X, item.N); err != nil {
+	if w, err = BuiltinTupleAbResponseWriteJSONOpt(jctx, w, item.X, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.X) != 0) {

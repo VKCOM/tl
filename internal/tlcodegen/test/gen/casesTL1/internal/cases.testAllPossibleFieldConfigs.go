@@ -314,7 +314,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteTL1Boxed(w []byte, nat_outer 
 	return item.WriteTL1(w, nat_outer, nat_outers)
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32, nat_outers uint32) error {
+func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32, nat_outers uint32) error {
 	var propLocalPresented bool
 	var propLocalsPresented bool
 	var propF00Presented bool
@@ -372,7 +372,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f01")
 				}
 				propF01Presented = true
-				if err := item.F01.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F01.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "f02":
@@ -389,7 +389,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f03")
 				}
 				propF03Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F03, nat_outers); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F03, nat_outers); err != nil {
 					return err
 				}
 			case "f10":
@@ -422,7 +422,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f13")
 				}
 				propF13Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F13, nat_outers); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F13, nat_outers); err != nil {
 					return err
 				}
 			case "f20":
@@ -455,7 +455,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f23")
 				}
 				propF23Presented = true
-				if err := BuiltinTupleIntReadJSONGeneral(tctx, in, &item.F23, nat_outers); err != nil {
+				if err := BuiltinTupleIntReadJSONGeneral(jctx, in, &item.F23, nat_outers); err != nil {
 					return err
 				}
 			default:
@@ -526,56 +526,56 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	}
 	if propF02Presented {
 		inF02 := &basictl.JsonLexer{Data: rawF02}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF02, &item.F02, item.Locals); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, inF02, &item.F02, item.Locals); err != nil {
 			return err
 		}
 	}
 	if propF12Presented {
 		inF12 := &basictl.JsonLexer{Data: rawF12}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF12, &item.F12, item.Locals); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, inF12, &item.F12, item.Locals); err != nil {
 			return err
 		}
 	}
 	if propF22Presented {
 		inF22 := &basictl.JsonLexer{Data: rawF22}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inF22, &item.F22, item.Locals); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, inF22, &item.F22, item.Locals); err != nil {
 			return err
 		}
 	}
 	if !propF02Presented {
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F02, item.Locals); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F02, item.Locals); err != nil {
 			return err
 		}
 	}
 	if !propF03Presented {
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F03, nat_outers); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F03, nat_outers); err != nil {
 			return err
 		}
 	}
 	if !propF12Presented {
 		if item.Local&(1<<2) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F12, item.Locals); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F12, item.Locals); err != nil {
 				return err
 			}
 		}
 	}
 	if !propF13Presented {
 		if item.Local&(1<<3) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F13, nat_outers); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F13, nat_outers); err != nil {
 				return err
 			}
 		}
 	}
 	if !propF22Presented {
 		if nat_outer&(1<<2) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F22, item.Locals); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F22, item.Locals); err != nil {
 				return err
 			}
 		}
 	}
 	if !propF23Presented {
 		if nat_outer&(1<<3) != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.F23, nat_outers); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.F23, nat_outers); err != nil {
 				return err
 			}
 		}
@@ -584,15 +584,14 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_outer, nat_outers)
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_outer, nat_outers)
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) WriteJSON(w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_outer, nat_outers)
+	return item.WriteJSONOpt(nil, w, nat_outer, nat_outers)
 }
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_outer uint32, nat_outers uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexLocal := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -618,7 +617,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	backupIndexF02 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f02":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F02, item.Locals); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F02, item.Locals); err != nil {
 		return w, err
 	}
 	if !(len(item.F02) != 0) {
@@ -627,7 +626,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	backupIndexF03 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f03":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F03, nat_outers); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F03, nat_outers); err != nil {
 		return w, err
 	}
 	if !(len(item.F03) != 0) {
@@ -645,14 +644,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.Local&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f12":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F12, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F12, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if item.Local&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f13":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F13, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F13, nat_outers); err != nil {
 			return w, err
 		}
 	}
@@ -668,14 +667,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if nat_outer&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f22":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F22, item.Locals); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F22, item.Locals); err != nil {
 			return w, err
 		}
 	}
 	if nat_outer&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f23":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.F23, nat_outers); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.F23, nat_outers); err != nil {
 			return w, err
 		}
 	}

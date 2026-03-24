@@ -162,21 +162,21 @@ func (item *CasesTestUnion) WriteTL1Boxed(w []byte) []byte {
 }
 
 func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestUnion) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("cases.TestUnion", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "cases.testUnion1#4b4f09b1", "cases.testUnion1", "#4b4f09b1":
-		if !tctx.LegacyTypeNames && _tag == "cases.testUnion1#4b4f09b1" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testUnion1#4b4f09b1" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion1#4b4f09b1")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#4b4f09b1" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#4b4f09b1" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "#4b4f09b1")
 		}
 		item.index = 0
@@ -184,14 +184,14 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueV1.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV1.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cases.testUnion2#464f96c4", "cases.testUnion2", "#464f96c4":
-		if !tctx.LegacyTypeNames && _tag == "cases.testUnion2#464f96c4" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testUnion2#464f96c4" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion2#464f96c4")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#464f96c4" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#464f96c4" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "#464f96c4")
 		}
 		item.index = 1
@@ -199,14 +199,14 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueV2.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV2.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cases.testUnion3#9b8c9e4c", "cases.testUnion3", "#9b8c9e4c":
-		if !tctx.LegacyTypeNames && _tag == "cases.testUnion3#9b8c9e4c" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testUnion3#9b8c9e4c" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion3#9b8c9e4c")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#9b8c9e4c" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#9b8c9e4c" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "#9b8c9e4c")
 		}
 		item.index = 2
@@ -214,14 +214,14 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueV3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV3.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cases.testUnion4#d6e28ad9", "cases.testUnion4", "#d6e28ad9":
-		if !tctx.LegacyTypeNames && _tag == "cases.testUnion4#d6e28ad9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testUnion4#d6e28ad9" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion4#d6e28ad9")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#d6e28ad9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#d6e28ad9" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "#d6e28ad9")
 		}
 		item.index = 3
@@ -229,7 +229,7 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueV4.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueV4.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -239,54 +239,53 @@ func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestUnion) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestUnion) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestUnion) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion1#4b4f09b1"`...)
 		} else {
 			w = append(w, `{"type":"cases.testUnion1"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueV1.WriteJSONOpt(tctx, w)
+		w = item.valueV1.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion2#464f96c4"`...)
 		} else {
 			w = append(w, `{"type":"cases.testUnion2"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueV2.WriteJSONOpt(tctx, w)
+		w = item.valueV2.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 2:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion3#9b8c9e4c"`...)
 		} else {
 			w = append(w, `{"type":"cases.testUnion3"`...)
 		}
 		if item.valueV3 != 0 {
 			w = append(w, `,"value":`...)
-			w = item.valueV3.WriteJSONOpt(tctx, w)
+			w = item.valueV3.WriteJSONOpt(jctx, w)
 		}
 		return append(w, '}')
 	case 3:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion4#d6e28ad9"`...)
 		} else {
 			w = append(w, `{"type":"cases.testUnion4"`...)
 		}
 		if len(item.valueV4) != 0 {
 			w = append(w, `,"value":`...)
-			w = item.valueV4.WriteJSONOpt(tctx, w)
+			w = item.valueV4.WriteJSONOpt(jctx, w)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -364,11 +363,11 @@ func (item CasesTestUnion1) String() string {
 }
 
 func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestUnion1) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -404,15 +403,14 @@ func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion1) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestUnion1) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestUnion1) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestUnion1) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestUnion1) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -490,11 +488,11 @@ func (item CasesTestUnion2) String() string {
 }
 
 func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestUnion2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -530,15 +528,14 @@ func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestUnion2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestUnion2) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestUnion2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestUnion2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -615,11 +612,11 @@ func (item CasesTestUnion3) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *CasesTestUnion3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestUnion3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestUnion3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if err := Json2ReadInt32(in, item.ptr()); err != nil {
 		return err
 	}
@@ -627,16 +624,15 @@ func (item *CasesTestUnion3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestUnion3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestUnion3) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *CasesTestUnion3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestUnion3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = basictl.JSONWriteInt32(w, *item.ptr())
 	return w
 }
@@ -705,11 +701,11 @@ func (item CasesTestUnion4) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *CasesTestUnion4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestUnion4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestUnion4) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if err := Json2ReadString(in, item.ptr()); err != nil {
 		return err
 	}
@@ -717,16 +713,15 @@ func (item *CasesTestUnion4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion4) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestUnion4) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestUnion4) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *CasesTestUnion4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestUnion4) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = basictl.JSONWriteString(w, *item.ptr())
 	return w
 }

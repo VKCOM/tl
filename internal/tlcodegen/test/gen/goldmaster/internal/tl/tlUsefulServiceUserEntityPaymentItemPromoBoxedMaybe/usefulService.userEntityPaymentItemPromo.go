@@ -157,7 +157,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r
 	return r, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -169,7 +169,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(t
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer, nat_t); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, in2Pointer, nat_t); err != nil {
 			return err
 		}
 	}
@@ -177,20 +177,19 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(t
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
+	w = item.Value.WriteJSONOpt(jctx, w, nat_t)
 	return append(w, '}')
 }

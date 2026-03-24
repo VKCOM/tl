@@ -137,7 +137,7 @@ func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]tlAColor.AColor) (_ []b
 	return r, nil
 }
 
-func BuiltinVectorAColorReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlAColor.AColor) error {
+func BuiltinVectorAColorReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlAColor.AColor) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -151,7 +151,7 @@ func BuiltinVectorAColorReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -166,14 +166,13 @@ func BuiltinVectorAColorReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 func BuiltinVectorAColorWriteJSON(w []byte, vec []tlAColor.AColor) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorAColorWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorAColorWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorAColorWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlAColor.AColor) []byte {
+func BuiltinVectorAColorWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlAColor.AColor) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

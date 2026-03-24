@@ -62,11 +62,11 @@ func (item BenchmarksVrutoyTopLevelContainerWithDependency) String() string {
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -91,7 +91,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyTopLevelContainerWithDependency", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -114,15 +114,14 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.N != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -131,7 +130,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(tctx *
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

@@ -66,11 +66,11 @@ func (item CasesTestInplaceStructArgs2) String() string {
 }
 
 func (item *CasesTestInplaceStructArgs2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestInplaceStructArgs2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestInplaceStructArgs2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propA1Presented bool
 	var propA2Presented bool
 	var propA3Presented bool
@@ -113,7 +113,7 @@ func (item *CasesTestInplaceStructArgs2) ReadJSONGeneral(tctx *basictl.JSONReadC
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testInplaceStructArgs2", "arg")
 				}
 				propArgPresented = true
-				if err := item.Arg.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Arg.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -142,15 +142,14 @@ func (item *CasesTestInplaceStructArgs2) ReadJSONGeneral(tctx *basictl.JSONReadC
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestInplaceStructArgs2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestInplaceStructArgs2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestInplaceStructArgs2) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.A1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -169,7 +168,7 @@ func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(tctx *basictl.JSONWriteCon
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arg":`...)
-	w = item.Arg.WriteJSONOpt(tctx, w)
+	w = item.Arg.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

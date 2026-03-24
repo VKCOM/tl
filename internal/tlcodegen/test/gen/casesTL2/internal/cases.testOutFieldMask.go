@@ -91,11 +91,11 @@ func (item CasesTestOutFieldMask) String() string {
 }
 
 func (item *CasesTestOutFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestOutFieldMask) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propF1Presented bool
 	var propF2Presented bool
@@ -135,7 +135,7 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f3")
 				}
 				propF3Presented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.F3); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.F3); err != nil {
 					return err
 				}
 			default:
@@ -158,15 +158,14 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestOutFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestOutFieldMask) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestOutFieldMask) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestOutFieldMask) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -180,7 +179,7 @@ func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	if len(item.F3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f3":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.F3)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.F3)
 	}
 	return append(w, '}')
 }

@@ -65,11 +65,11 @@ func (item InnerMaybe0) String() string {
 }
 
 func (item *InnerMaybe0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *InnerMaybe0) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -85,7 +85,7 @@ func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("innerMaybe", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -105,20 +105,19 @@ func (item *InnerMaybe0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *InnerMaybe0) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *InnerMaybe0) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *InnerMaybe0) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *InnerMaybe0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *InnerMaybe0) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	if !(item.A.Ok) {
 		w = w[:backupIndexA]
 	}

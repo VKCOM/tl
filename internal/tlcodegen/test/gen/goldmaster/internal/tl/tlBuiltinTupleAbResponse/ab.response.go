@@ -134,8 +134,8 @@ func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]tlAbResponse.AbRespo
 	}
 	return r, nil
 }
-func BuiltinTupleAbResponseReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlAbResponse.AbResponse, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleAbResponseReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlAbResponse.AbResponse, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -161,7 +161,7 @@ func BuiltinTupleAbResponseReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSON("[]tlAbResponse.AbResponse", "array is longer than expected")
 				}
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -182,11 +182,10 @@ func BuiltinTupleAbResponseReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 func BuiltinTupleAbResponseWriteJSON(w []byte, vec []tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleAbResponseWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleAbResponseWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleAbResponseWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleAbResponseWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlAbResponse.AbResponse, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -195,7 +194,7 @@ func BuiltinTupleAbResponseWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']'), nil
 }

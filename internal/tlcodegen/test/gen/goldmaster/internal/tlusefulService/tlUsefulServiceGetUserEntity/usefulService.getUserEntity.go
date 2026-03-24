@@ -234,20 +234,19 @@ func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, ctx *basictl.TL
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in, item.FieldsMask); err != nil {
+	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(jctx, in, item.FieldsMask); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *UsefulServiceGetUserEntity) WriteResultJSON(w []byte, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *UsefulServiceGetUserEntity) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w, item.FieldsMask)
+func (item *UsefulServiceGetUserEntity) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w, item.FieldsMask)
 	return w, nil
 }
 
@@ -257,12 +256,12 @@ func (item *UsefulServiceGetUserEntity) FillRandomResultTL1(rg *basictl.RandGene
 	return item.WriteResultTL1(w, ret)
 }
 
-func (item *UsefulServiceGetUserEntity) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *UsefulServiceGetUserEntity) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
@@ -314,11 +313,11 @@ func (item UsefulServiceGetUserEntity) String() string {
 }
 
 func (item *UsefulServiceGetUserEntity) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propStageIdPresented bool
@@ -374,15 +373,14 @@ func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadCo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceGetUserEntity) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *UsefulServiceGetUserEntity) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *UsefulServiceGetUserEntity) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *UsefulServiceGetUserEntity) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *UsefulServiceGetUserEntity) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

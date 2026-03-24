@@ -189,7 +189,7 @@ func BuiltinDictLongPairIntIntInternalReadTL2(r []byte, m *map[int64]tlPairIntIn
 	return r, nil
 }
 
-func BuiltinDictLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]tlPairIntInt.PairIntInt) error {
+func BuiltinDictLongPairIntIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]tlPairIntInt.PairIntInt) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int64]tlPairIntInt.PairIntInt, 0)
@@ -213,7 +213,7 @@ func BuiltinDictLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				return err
 			}
 			var value tlPairIntInt.PairIntInt
-			if err := value.ReadJSONGeneral(tctx, in); err != nil {
+			if err := value.ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			data[key] = value
@@ -228,10 +228,10 @@ func BuiltinDictLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 func BuiltinDictLongPairIntIntWriteJSON(w []byte, m map[int64]tlPairIntInt.PairIntInt) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictLongPairIntIntWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictLongPairIntIntWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64]tlPairIntInt.PairIntInt) []byte {
+func BuiltinDictLongPairIntIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[int64]tlPairIntInt.PairIntInt) []byte {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -246,7 +246,7 @@ func BuiltinDictLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt64(w, key)
 		w = append(w, `":`...)
-		w = value.WriteJSONOpt(tctx, w)
+		w = value.WriteJSONOpt(jctx, w)
 	}
 	return append(w, '}')
 }

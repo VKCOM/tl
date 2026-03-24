@@ -267,11 +267,11 @@ func (item BenchmarksVruposition) String() string {
 }
 
 func (item *BenchmarksVruposition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVruposition) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFieldsMaskPresented bool
 	var propCommitBitPresented bool
@@ -382,7 +382,7 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "hash")
 				}
 				propHashPresented = true
-				if err := item.Hash.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Hash.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "file_offset":
@@ -470,15 +470,14 @@ func (item *BenchmarksVruposition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVruposition) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVruposition) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVruposition) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVruposition) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVruposition) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -523,7 +522,7 @@ func (item *BenchmarksVruposition) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"hash":`...)
-	w = item.Hash.WriteJSONOpt(tctx, w)
+	w = item.Hash.WriteJSONOpt(jctx, w)
 	backupIndexFileOffset := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"file_offset":`...)
@@ -932,8 +931,8 @@ func BuiltinTupleBenchmarksVrupositionInternalReadTL2(r []byte, vec *[]Benchmark
 	}
 	return r, nil
 }
-func BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleBenchmarksVrupositionReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -959,7 +958,7 @@ func BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadCont
 					return ErrorInvalidJSON("[]BenchmarksVruposition", "array is longer than expected")
 				}
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -980,11 +979,10 @@ func BuiltinTupleBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 func BuiltinTupleBenchmarksVrupositionWriteJSON(w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleBenchmarksVrupositionWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleBenchmarksVrupositionWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleBenchmarksVrupositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleBenchmarksVrupositionWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -993,7 +991,7 @@ func BuiltinTupleBenchmarksVrupositionWriteJSONOpt(tctx *basictl.JSONWriteContex
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']'), nil
 }
@@ -1124,7 +1122,7 @@ func BuiltinVectorBenchmarksVrupositionInternalReadTL2(r []byte, vec *[]Benchmar
 	return r, nil
 }
 
-func BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition) error {
+func BuiltinVectorBenchmarksVrupositionReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVruposition) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -1138,7 +1136,7 @@ func BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadCon
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -1153,14 +1151,13 @@ func BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 func BuiltinVectorBenchmarksVrupositionWriteJSON(w []byte, vec []BenchmarksVruposition) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorBenchmarksVrupositionWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorBenchmarksVrupositionWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition) []byte {
+func BuiltinVectorBenchmarksVrupositionWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVruposition) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

@@ -185,20 +185,19 @@ func (item *AbCall11) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret
 }
 
 func (item *AbCall11) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlAColor.AColor) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *AbCall11) WriteResultJSON(w []byte, ret tlAColor.AColor) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *AbCall11) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlAColor.AColor) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *AbCall11) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlAColor.AColor) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
@@ -208,12 +207,12 @@ func (item *AbCall11) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) (
 	return item.WriteResultTL1(w, ret)
 }
 
-func (item *AbCall11) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *AbCall11) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlAColor.AColor
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
@@ -265,11 +264,11 @@ func (item AbCall11) String() string {
 }
 
 func (item *AbCall11) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbCall11) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbCall11) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -285,7 +284,7 @@ func (item *AbCall11) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.call11", "x")
 				}
 				propXPresented = true
-				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -305,19 +304,18 @@ func (item *AbCall11) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCall11) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbCall11) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbCall11) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbCall11) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbCall11) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = item.X.WriteJSONOpt(tctx, w)
+	w = item.X.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

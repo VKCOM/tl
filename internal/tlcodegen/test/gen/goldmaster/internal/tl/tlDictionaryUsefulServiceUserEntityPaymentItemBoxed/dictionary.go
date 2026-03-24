@@ -55,25 +55,24 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL1Boxed(w [
 	return item.WriteTL1(w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	if err := tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, item.ptr(), nat_t); err != nil {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	if err := tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(jctx, in, item.ptr(), nat_t); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
-	w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *item.ptr(), nat_t)
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+	w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(jctx, w, *item.ptr(), nat_t)
 	return w
 }
 

@@ -62,11 +62,11 @@ func (item CasesTestVector) String() string {
 }
 
 func (item *CasesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestVector) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -82,7 +82,7 @@ func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testVector", "arr")
 				}
 				propArrPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Arr); err != nil {
 					return err
 				}
 			default:
@@ -102,20 +102,19 @@ func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestVector) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestVector) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestVector) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestVector) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Arr)
+	w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.Arr)
 	if !(len(item.Arr) != 0) {
 		w = w[:backupIndexArr]
 	}

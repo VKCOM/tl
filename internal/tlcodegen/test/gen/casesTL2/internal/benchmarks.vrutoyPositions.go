@@ -57,11 +57,11 @@ func (item BenchmarksVrutoyPositions) String() string {
 }
 
 func (item *BenchmarksVrutoyPositions) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -77,7 +77,7 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoyPositions", "next_positions")
 				}
 				propNextPositionsPresented = true
-				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
+				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(jctx, in, &item.NextPositions); err != nil {
 					return err
 				}
 			default:
@@ -97,20 +97,19 @@ func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyPositions) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVrutoyPositions) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVrutoyPositions) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoyPositions) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVrutoyPositions) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.NextPositions) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"next_positions":`...)
-		w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx, w, item.NextPositions)
+		w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(jctx, w, item.NextPositions)
 	}
 	return append(w, '}')
 }

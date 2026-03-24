@@ -69,11 +69,11 @@ func (item HalfStr) String() string {
 }
 
 func (item *HalfStr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *HalfStr) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
 	if in != nil {
@@ -90,7 +90,7 @@ func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("halfStr", "x")
 				}
 				propXPresented = true
-				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "y":
@@ -98,7 +98,7 @@ func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return ErrorInvalidJSONWithDuplicatingKeys("halfStr", "y")
 				}
 				propYPresented = true
-				if err := item.Y.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Y.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -121,22 +121,21 @@ func (item *HalfStr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *HalfStr) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *HalfStr) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *HalfStr) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *HalfStr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *HalfStr) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = item.X.WriteJSONOpt(tctx, w)
+	w = item.X.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = item.Y.WriteJSONOpt(tctx, w)
+	w = item.Y.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

@@ -57,11 +57,11 @@ func (item CasesTestTuple) String() string {
 }
 
 func (item *CasesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestTuple) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -77,7 +77,7 @@ func (item *CasesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testTuple", "tpl")
 				}
 				propTplPresented = true
-				if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
+				if err := BuiltinTuple4IntReadJSONGeneral(jctx, in, &item.Tpl); err != nil {
 					return err
 				}
 			default:
@@ -97,19 +97,18 @@ func (item *CasesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestTuple) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestTuple) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestTuple) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = BuiltinTuple4IntWriteJSONOpt(tctx, w, &item.Tpl)
+	w = BuiltinTuple4IntWriteJSONOpt(jctx, w, &item.Tpl)
 	return append(w, '}')
 }
 

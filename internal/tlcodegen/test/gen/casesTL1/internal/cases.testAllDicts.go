@@ -76,11 +76,11 @@ func (item CasesTestAllDicts) String() string {
 }
 
 func (item *CasesTestAllDicts) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestAllDicts) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	var propF3Presented bool
@@ -98,7 +98,7 @@ func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f1")
 				}
 				propF1Presented = true
-				if err := item.F1.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F1.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "f2":
@@ -106,7 +106,7 @@ func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f2")
 				}
 				propF2Presented = true
-				if err := item.F2.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F2.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "f3":
@@ -114,7 +114,7 @@ func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllDicts", "f3")
 				}
 				propF3Presented = true
-				if err := item.F3.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F3.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -140,25 +140,24 @@ func (item *CasesTestAllDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllDicts) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestAllDicts) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestAllDicts) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestAllDicts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestAllDicts) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f1":`...)
-	w = item.F1.WriteJSONOpt(tctx, w)
+	w = item.F1.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f2":`...)
-	w = item.F2.WriteJSONOpt(tctx, w)
+	w = item.F2.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	w = item.F3.WriteJSONOpt(tctx, w)
+	w = item.F3.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

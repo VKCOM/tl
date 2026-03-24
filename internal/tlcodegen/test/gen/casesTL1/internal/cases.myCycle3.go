@@ -92,11 +92,11 @@ func (item CasesMyCycle3) String() string {
 }
 
 func (item *CasesMyCycle3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesMyCycle3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesMyCycle3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 	if in != nil {
@@ -121,7 +121,7 @@ func (item *CasesMyCycle3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.myCycle3", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -147,15 +147,14 @@ func (item *CasesMyCycle3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesMyCycle3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesMyCycle3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesMyCycle3) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesMyCycle3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesMyCycle3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -167,7 +166,7 @@ func (item *CasesMyCycle3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = item.A.WriteJSONOpt(tctx, w)
+		w = item.A.WriteJSONOpt(jctx, w)
 	}
 	return append(w, '}')
 }

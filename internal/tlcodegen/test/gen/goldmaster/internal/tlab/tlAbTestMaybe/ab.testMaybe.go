@@ -96,11 +96,11 @@ func (item AbTestMaybe) String() string {
 }
 
 func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbTestMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var propBPresented bool
@@ -128,7 +128,7 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -136,7 +136,7 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "c":
@@ -144,7 +144,7 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "c")
 				}
 				propCPresented = true
-				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.C.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "d":
@@ -152,7 +152,7 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "d")
 				}
 				propDPresented = true
-				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.D.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -184,15 +184,14 @@ func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbTestMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbTestMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbTestMaybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbTestMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbTestMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -204,28 +203,28 @@ func (item *AbTestMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	if !(item.A.Ok) {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
+	w = item.B.WriteJSONOpt(jctx, w)
 	if !(item.B.Ok) {
 		w = w[:backupIndexB]
 	}
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(tctx, w)
+	w = item.C.WriteJSONOpt(jctx, w)
 	if !(item.C.Ok) {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = item.D.WriteJSONOpt(tctx, w)
+	w = item.D.WriteJSONOpt(jctx, w)
 	if !(item.D.Ok) {
 		w = w[:backupIndexD]
 	}

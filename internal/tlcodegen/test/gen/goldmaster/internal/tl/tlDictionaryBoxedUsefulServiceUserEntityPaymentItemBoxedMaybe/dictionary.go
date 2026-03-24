@@ -162,7 +162,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Interna
 	return r, nil
 }
 
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -174,7 +174,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSO
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(jctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -182,22 +182,21 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSO
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
+		w = tlBuiltinDictStringUsefulServiceUserEntityPaymentItemBoxed.BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(jctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }

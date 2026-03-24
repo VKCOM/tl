@@ -161,7 +161,7 @@ func (item *TupleBoxedIntBoxed0Maybe) InternalReadTL2(r []byte) (_ []byte, err e
 	return r, nil
 }
 
-func (item *TupleBoxedIntBoxed0Maybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TupleBoxedIntBoxed0Maybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -173,7 +173,7 @@ func (item *TupleBoxedIntBoxed0Maybe) ReadJSONGeneral(tctx *basictl.JSONReadCont
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
+		if err := tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedReadJSONGeneral(jctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}
@@ -181,21 +181,20 @@ func (item *TupleBoxedIntBoxed0Maybe) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleBoxedIntBoxed0Maybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleBoxedIntBoxed0Maybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleBoxedIntBoxed0Maybe) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TupleBoxedIntBoxed0Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TupleBoxedIntBoxed0Maybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedWriteJSONOpt(tctx, w, &item.Value)
+	w = tlBuiltinTuple0IntBoxed.BuiltinTuple0IntBoxedWriteJSONOpt(jctx, w, &item.Value)
 	return append(w, '}')
 }
 

@@ -74,29 +74,28 @@ func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorCyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *VectorCyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *VectorCyc1MyCycle) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorCyc1MyCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *VectorCyc1MyCycle) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *VectorCyc1MyCycle) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *VectorCyc1MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx, w, *item.ptr())
+func (item *VectorCyc1MyCycle) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *VectorCyc1MyCycle) MarshalJSON() ([]byte, error) {

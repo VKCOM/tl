@@ -158,7 +158,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) Interna
 	return r, nil
 }
 
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -170,7 +170,7 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSO
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(jctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -178,22 +178,21 @@ func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) ReadJSO
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+func (item *DictionaryBoxedUsefulServiceUserEntityPaymentItemBoxedMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
+		w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(jctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }
@@ -246,29 +245,28 @@ func (item DictionaryString) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringStringReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringStringWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryString) MarshalJSON() ([]byte, error) {
@@ -362,29 +360,28 @@ func (item DictionaryStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryStringBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinDictStringStringBytesReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryStringBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryStringBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryStringBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryStringBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinDictStringStringBytesWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryStringBytes) MarshalJSON() ([]byte, error) {
@@ -466,25 +463,24 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL1Boxed(w [
 	return item.WriteTL1(w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, item.ptr(), nat_t); err != nil {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	if err := BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(jctx, in, item.ptr(), nat_t); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
-	w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *item.ptr(), nat_t)
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+	w = BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(jctx, w, *item.ptr(), nat_t)
 	return w
 }
 

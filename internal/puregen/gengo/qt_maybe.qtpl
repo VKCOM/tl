@@ -191,7 +191,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
   _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}Json2ReadMaybe({%q= tlName %}, in)
   if err != nil {
     return err
@@ -209,19 +209,18 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if writeElementNeedsError -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(jctx, w{%s= natArgsCall %})
     {%- else -%}
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
+    return item.WriteJSONOpt(jctx, w{%s= natArgsCall %}), nil
     {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(nil, w{%s= natArgsCall %})
 }
-func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if !item.Ok {
     {%- if writeElementNeedsError -%}
         return append(w, "{}"...), nil
