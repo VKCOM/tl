@@ -11,11 +11,11 @@ import (
 )
 
 type ActualNatArg struct {
-	isNumber   bool
-	number     uint32
-	isField    bool // otherwise it is # param with name
-	fieldIndex int
-	name       string // param name
+	isNumber bool
+	number   uint32
+	isField  bool // otherwise it is # param with name
+	index    int
+	name     string // param name. TODO - remove, always use index into type's nat params
 }
 
 func (arg *ActualNatArg) IsNumber() bool {
@@ -35,7 +35,7 @@ func (arg *ActualNatArg) IsNatParam() bool {
 }
 
 func (arg *ActualNatArg) FieldIndex() int {
-	return arg.fieldIndex
+	return arg.index
 }
 
 func (arg *ActualNatArg) Name() string {

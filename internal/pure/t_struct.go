@@ -120,12 +120,12 @@ outer:
 			panic("cannot replace to child arith or field nat param")
 		}
 		for i, p := range ins.natParams {
-			if p == arg.Name() {
+			if p == arg.name {
 				result = append(result, natArgs[i])
 				continue outer
 			}
 		}
-		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type %s", arg.Name(), ins.canonicalName)
+		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type %s", arg.name, ins.canonicalName)
 	}
 	return result
 }
@@ -330,9 +330,10 @@ func (k *Kernel) fillLocalArg(arg tlast.TL2TypeArgument, targName string) (local
 		wrongTypeErr: nil,
 		arg:          arg,
 	}
-	for _, param := range localNatParams {
+	for i, param := range localNatParams {
 		localArg.natArgs = append(localArg.natArgs, ActualNatArg{
-			name: param,
+			name:  param,
+			index: i,
 		})
 	}
 	localArgs = append(localArgs, localArg)
@@ -359,12 +360,10 @@ func (k *Kernel) fillLocalArgs(leftArgs []tlast.TL2TypeTemplate, resolvedType2 t
 
 func (k *Kernel) natParamsToActualNatArgs(natParams []string) []ActualNatArg {
 	var result []ActualNatArg
-	for _, param := range natParams {
-		//if i == 0 && !resolvedType.BracketType.IndexType.IsNumber {
-		//	continue
-		//}
+	for i, param := range natParams {
 		result = append(result, ActualNatArg{
-			name: param,
+			name:  param,
+			index: i,
 		})
 	}
 	return result
@@ -678,8 +677,8 @@ func (k *Kernel) createStructTL1(canonicalName string, tip *KernelType,
 						PR:   fieldDef.PR,
 					},
 					natArgs: []ActualNatArg{{
-						isField:    true,
-						fieldIndex: i, // not originalFieldIndex
+						isField: true,
+						index:   i, // not originalFieldIndex
 					}},
 				})
 			}
