@@ -79,7 +79,7 @@ type(
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
                  _, ourResultType := ourTypes[fun.ResultType]
-                ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+                ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
         		myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
                 _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
             -%}
@@ -98,7 +98,7 @@ type(
         {%- if wr.ShouldWriteEnumElementAlias() -%}
             {%- code
                 _, ourUnionParentLocal := ourTypes[wr.UnionParent().wr]
-                ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.UnionParent().wr.tlName.Namespace // false for vectors moved into our namespace
+                ourUnionParentLocal = ourUnionParentLocal && wr.TLName().Namespace == wr.UnionParent().wr.TLName().Namespace // false for vectors moved into our namespace
                 typeString := wr.TypeString2(false, directImports, nil, true, true)
             -%}
 func {%s= typeString %}() {%s= wr.UnionParent().wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
@@ -108,7 +108,7 @@ func {%s= typeString %}() {%s= wr.UnionParent().wr.TypeString2(false, directImpo
     {%- code
          _, ok := wr.trw.(*TypeRWBool)
     -%}
-        {%- if ok && !wr.originateFromTL2 -%}
+        {%- if ok && !wr.OriginTL2() -%}
             {%- code
                 localTypeString := wr.TypeString2(false, directImports, nil, true, true)
                 globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
@@ -140,7 +140,7 @@ func {%s= localTypeString %}WriteTL1Boxed(w []byte, v bool) []byte {
     {%- if !ok || fun.ResultType == nil -%} {%- return -%} {%- endif -%}
     {%- code
          _, ourResultType := ourTypes[fun.ResultType]
-         ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+         ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
          ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
          funcTypeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
          myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
@@ -151,7 +151,7 @@ func {%s= localTypeString %}WriteTL1Boxed(w []byte, v bool) []byte {
                 ret = wr.TypeString2(false, directImports, nil, true, true) + "__Result"
             }
          }
-         tlName := wr.tlName.String()
+         tlName := wr.TLName().String()
     -%}
     {%s= printCommentsType(fun.pureTypeStruct) -%} {%- code -%}
 func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
@@ -161,21 +161,21 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         req.ReadOnly = true
     {%- endif -%}
     req.FunctionName = "{%s= tlName %}"
-{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
     preferTLVersion := {%- if fun.pureTypeStruct.RPCPreferTL2() -%}2{%- else -%}1{%- endif -%}
 
 {%- endif -%}
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
-{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
 		if extra.PreferTLVersion != 0 {
 			preferTLVersion = extra.PreferTLVersion
 		}
 {%- endif -%}
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
     if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -205,7 +205,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         return internal.ErrorClientDo("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
     }
     if ret != nil {
-{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
 		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 		} else {
@@ -228,9 +228,9 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     {%- for _, wr := range types  -%}
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
-                tlName := wr.tlName.String()
+                tlName := wr.TLName().String()
                  _, ourResultType := ourTypes[fun.ResultType]
-                 ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+                 ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
                 ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
                 myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
@@ -247,9 +247,9 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     {%- for _, wr := range types  -%}
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
-                tlName := wr.tlName.String()
+                tlName := wr.TLName().String()
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-                hasRaw := gen.rawHandlerWhileList.HasName2(wr.tlName)
+                hasRaw := gen.rawHandlerWhileList.HasName2(wr.TLName())
             -%}
         {%- if hasRaw -%}
 Raw{%s= funcTypeString %} func(ctx context.Context, hctx *rpc.HandlerContext) error // {%s= tlName %}
@@ -264,10 +264,10 @@ switch tag {
     {%- for _, wr := range types -%}
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
-                tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+                tlTag := fmt.Sprintf("0x%08x", wr.TLTag())
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-                tlName := wr.tlName.String()
-                hasRaw := gen.rawHandlerWhileList.HasName2(wr.tlName)
+                tlName := wr.TLName().String()
+                hasRaw := gen.rawHandlerWhileList.HasName2(wr.TLName())
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
     hctx.SetRequestFunctionName("{%s= tlName %}")
@@ -307,7 +307,7 @@ case {%s= tlTag %}: // {%s= tlName %}
             return nil
         }
         {%- code // code below relies on returning "no serialization generated" error from Read/ReadTL2 above -%}
-{%- if fun.wr.HasTL2() && !fun.wr.originateFromTL2 -%}
+{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
         if hctx.BodyFormatTL2() {
             hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
         } else {

@@ -20,7 +20,7 @@ var (
 
 func (union *TypeRWUnion) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(union.wr.goGlobalName, bytesVersion)
-	tlName := union.wr.tlName.String()
+	tlName := union.wr.TLName().String()
 	asterisk := ifString(union.IsEnum, "", "*")
 	natArgsDecl := union.wr.formatNatArgsDecl()
 	natArgsCall := union.wr.formatNatArgsDeclCall()
@@ -200,7 +200,7 @@ func (item *`)
 	qw422016.N().S(union.wr.fetcherDecl())
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if union.wr.originateFromTL2 {
+	if union.wr.OriginTL2() {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
@@ -212,7 +212,7 @@ func (item *`)
 `)
 		for i, field := range union.Fields {
 			qw422016.N().S(`    case `)
-			qw422016.N().S(fmt.Sprintf("0x%08x", field.t.tlTag))
+			qw422016.N().S(fmt.Sprintf("0x%08x", field.t.TLTag()))
 			qw422016.N().S(`:
         item.index = `)
 			qw422016.N().D(i)
@@ -279,7 +279,7 @@ func (item *`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if union.wr.originateFromTL2 {
+		if union.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -322,7 +322,7 @@ func (item *`)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(`  {
 `)
-	if union.wr.originateFromTL2 {
+	if union.wr.OriginTL2() {
 		if writeNeedsError {
 			qw422016.N().S(`            return w, basictl.TL2Error("not implemented for tl2 type")
 `)
@@ -590,14 +590,14 @@ func (item *`)
     switch _tag {
 `)
 	for i, field := range union.Fields {
-		name := field.t.tlName.String()
+		name := field.t.TLName().String()
 		// we detect variants that were not migrated and give them variantName only
 		hasOldName := !strings.Contains(name, "__")
 		// also we prevent collision of variant name and tlName below which can happen in default namespace
 		if union.wr.HasTL2() && field.variantName == name {
 			hasOldName = false
 		}
-		tag := fmt.Sprintf("#%08x", field.t.tlTag)
+		tag := fmt.Sprintf("#%08x", field.t.TLTag())
 		nameWithTag := name + tag
 		wrWithoutLong := field.t.WrWithoutLong
 		var cases []string
@@ -605,13 +605,13 @@ func (item *`)
 		if union.wr.HasTL2() {
 			cases = append(cases, fmt.Sprintf("%q", field.variantName))
 		}
-		if !union.wr.originateFromTL2 {
+		if !union.wr.OriginTL2() {
 			cases = append(cases, fmt.Sprintf("%q", nameWithTag))
 		}
 		if hasOldName {
 			cases = append(cases, fmt.Sprintf("%q", name))
 		}
-		if !union.wr.originateFromTL2 {
+		if !union.wr.OriginTL2() {
 			cases = append(cases, fmt.Sprintf("%q", tag))
 		}
 		// this mess is because there was no clear variant names in TL1
@@ -619,9 +619,9 @@ func (item *`)
 		qw422016.N().S(`        case `)
 		qw422016.N().S(strings.Join(cases, ","))
 
-		if wrWithoutLong != nil && !hasOldName && !union.wr.originateFromTL2 && !union.HasShortFieldCollision(wrWithoutLong) {
-			name2 := wrWithoutLong.tlName.String()
-			tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+		if wrWithoutLong != nil && !hasOldName && !union.wr.OriginTL2() && !union.HasShortFieldCollision(wrWithoutLong) {
+			name2 := wrWithoutLong.TLName().String()
+			tag2 := fmt.Sprintf("#%08x", wrWithoutLong.TLTag())
 			nameWithTag2 := name2 + tag2
 
 			qw422016.N().S(`,`)
@@ -657,7 +657,7 @@ func (item *`)
 		} else {
 			qw422016.N().S(`:`)
 		}
-		if !union.wr.originateFromTL2 {
+		if !union.wr.OriginTL2() {
 			qw422016.N().S(`                if jctx != nil && !jctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(` {
@@ -749,15 +749,15 @@ func (item `)
     switch item.index {
 `)
 	for i, field := range union.Fields {
-		name := field.t.tlName.String()
-		nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.tlTag)
+		name := field.t.TLName().String()
+		nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.TLTag())
 		nameWithTagNew := name
 		nameWithTagShort := nameWithTag
 		nameWithTagShortNew := nameWithTagNew
 		wrWithoutLong := field.t.WrWithoutLong
 		if wrWithoutLong != nil {
-			nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.tlName.String(), wrWithoutLong.tlTag)
-			nameWithTagShortNew = wrWithoutLong.tlName.String()
+			nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.TLName().String(), wrWithoutLong.TLTag())
+			nameWithTagShortNew = wrWithoutLong.TLName().String()
 		}
 
 		emptyCondition := field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false)
@@ -792,7 +792,7 @@ func (item `)
                 }
 `)
 				}
-				if !union.wr.originateFromTL2 {
+				if !union.wr.OriginTL2() {
 					qw422016.N().S(`                if jctx != nil && jctx.LegacyTypeNames {
                     return append(w, `)
 					qw422016.N().S("`")
@@ -837,7 +837,7 @@ func (item `)
 				if wrWithoutLong != nil {
 					qw422016.N().S(`                    if jctx != nil && jctx.Short {
 `)
-					if !union.wr.originateFromTL2 {
+					if !union.wr.OriginTL2() {
 						qw422016.N().S(`                            if jctx != nil && jctx.LegacyTypeNames {
                                 w = append(w, `)
 						qw422016.N().S("`")
@@ -869,7 +869,7 @@ func (item `)
 					qw422016.N().S(`                    } else {
 `)
 				}
-				if !union.wr.originateFromTL2 {
+				if !union.wr.OriginTL2() {
 					qw422016.N().S(`                        if jctx != nil && jctx.LegacyTypeNames {
                             w = append(w, `)
 					qw422016.N().S("`")
@@ -1202,12 +1202,12 @@ func (union *TypeRWUnion) streamgenerateEnumAlias(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(`UnionElement{
 `)
 	for _, x := range union.Fields {
-		tlTag := fmt.Sprintf("0x%08x", x.t.tlTag)
-		tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
-		if x.t.tlTag == 0 {
+		tlTag := fmt.Sprintf("0x%08x", x.t.TLTag())
+		tlString := fmt.Sprintf("%s#%08x", x.t.TLName(), x.t.TLTag())
+		if x.t.TLTag() == 0 {
 			tlString = ""
 		}
-		tlName := x.t.tlName.String()
+		tlName := x.t.TLName().String()
 
 		qw422016.N().S(`        {TLTag:`)
 		qw422016.N().S(tlTag)

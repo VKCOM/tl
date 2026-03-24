@@ -99,7 +99,7 @@ import (
 func init() {
 `)
 	for _, wr := range gen.generatedTypesList {
-		if !forNamespace(wr.tlName.Namespace) {
+		if !forNamespace(wr.TLName().Namespace) {
 			continue
 		}
 		if !wr.pureType.Common().IsTopLevel() {
@@ -117,7 +117,7 @@ func init() {
 				}
 
 				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForEnumElement(`)
-				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().Q(wr.TLName().String())
 				qw422016.N().S(`)
 `)
 				continue
@@ -130,7 +130,7 @@ func init() {
 				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForFunction`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
-				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().Q(wr.TLName().String())
 				qw422016.N().S(`,`)
 
 				qw422016.N().S(`            func() metainternal.Function { return new(`)
@@ -150,7 +150,7 @@ func init() {
 				qw422016.N().S(`            metainternal.SetGlobalFactoryCreateForObject`)
 				qw422016.N().S(bytesStr)
 				qw422016.N().S(`(`)
-				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().Q(wr.TLName().String())
 				qw422016.N().S(`,`)
 
 				qw422016.N().S(`            func() metainternal.Object { return new(`)
@@ -167,7 +167,7 @@ func init() {
 			qw422016.N().S(`        metainternal.SetGlobalFactoryCreateForObject`)
 			qw422016.N().S(bytesStr)
 			qw422016.N().S(`(`)
-			qw422016.N().Q(wr.tlName.String())
+			qw422016.N().Q(wr.TLName().String())
 			qw422016.N().S(`,`)
 
 			qw422016.N().S(`            func() metainternal.Object { return new(`)

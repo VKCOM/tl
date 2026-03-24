@@ -80,7 +80,7 @@ func (f *Field) IsBit() bool {
 	if b, ok := f.t.trw.(*TypeRWBool); ok {
 		return b.isBit
 	}
-	return f.FieldMask() != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
+	return f.FieldMask() != nil && (f.t.IsTrueType() && (f.t.TLName().String() == "true" || f.t.TLName().String() == "True"))
 }
 
 func (f *Field) TL2MaskForOP(op string) string {

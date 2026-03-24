@@ -23,7 +23,7 @@ func (trw *TypeRWBool) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersio
 	// we generate ReadBoxed/WriteBoxed methods, because vector and other mixed types will call it in their Read*/Write* methods
 	// TODO - fix later by propagating hasTL1 property through type recursion, and not generating Read*/Write* in users
 
-	if !trw.wr.originateFromTL2 {
+	if !trw.wr.OriginTL2() {
 		qw422016.N().S(`const (
     `)
 		qw422016.N().S(trw.falseGoName)
@@ -43,7 +43,7 @@ func `)
 	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
 	qw422016.N().S(`ReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
 `)
-	if trw.wr.originateFromTL2 {
+	if trw.wr.OriginTL2() {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
@@ -60,7 +60,7 @@ func `)
 	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
 	qw422016.N().S(`WriteTL1Boxed(w []byte, v bool) []byte {
 `)
-	if trw.wr.originateFromTL2 {
+	if trw.wr.OriginTL2() {
 		qw422016.N().S(`        panic(basictl.TL2Error("not implemented for tl2 type"))
 `)
 	} else {

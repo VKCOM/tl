@@ -126,14 +126,14 @@ func (trw *TypeRWUnion) typeRepairMasksCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	if bare && !trw.wr.originateFromTL2 {
+	if bare && !trw.wr.OriginTL2() {
 		panic(fmt.Errorf("trying to write bare union %s, please report TL which caused this", trw.wr.goCanonicalName))
 	}
 	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
 func (trw *TypeRWUnion) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	if bare && !trw.wr.originateFromTL2 {
+	if bare && !trw.wr.OriginTL2() {
 		panic(fmt.Errorf("trying to read bare union %s, please report TL which caused this", trw.wr.goCanonicalName))
 	}
 	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)

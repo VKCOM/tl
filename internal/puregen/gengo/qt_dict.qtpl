@@ -38,7 +38,7 @@ func {%s= goName %}RepairMasks(vec *{%s= typeString %} {%s= natDecl %}) {
 }
             {%- endif -%}
 func {%s= goName %}ReadTL1(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    {%- if tuple.wr.originateFromTL2 -%}
+    {%- if tuple.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     var l uint32
@@ -63,7 +63,7 @@ func {%s= goName %}ReadTL1(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_
 }
 
 func {%s= goName %}WriteTL1(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    {%- if tuple.wr.originateFromTL2 -%}
+    {%- if tuple.wr.OriginTL2() -%}
         {%- if writeElementNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}
@@ -300,7 +300,7 @@ func {%s= goName %}RepairMasks(m *map[{%s= keyTypeString %}]{%s= valueTypeString
 }
             {%- endif -%}
 func {%s= goName %}ReadTL1(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
-    {%- if tuple.wr.originateFromTL2 -%}
+    {%- if tuple.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     var l uint32
@@ -330,7 +330,7 @@ func {%s= goName %}ReadTL1(w []byte, m *map[{%s= keyTypeString %}]{%s= valueType
 }
 
 func {%s= goName %}WriteTL1(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    {%- if tuple.wr.originateFromTL2 -%}
+    {%- if tuple.wr.OriginTL2() -%}
         {%- if writeElementNeedsError -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}

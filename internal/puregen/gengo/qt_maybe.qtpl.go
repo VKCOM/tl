@@ -20,7 +20,7 @@ var (
 
 func (maybe *TypeRWMaybe) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
-	tlName := maybe.wr.tlName.String()
+	tlName := maybe.wr.TLName().String()
 	elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
 	natArgsDecl := maybe.wr.formatNatArgsDecl()
 	natArgsCall := maybe.wr.formatNatArgsDeclCall()
@@ -108,7 +108,7 @@ func (item *`)
 	qw422016.N().S(maybe.wr.fetcherDecl())
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if maybe.wr.originateFromTL2 {
+	if maybe.wr.OriginTL2() {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
@@ -130,7 +130,7 @@ func (item *`)
 	qw422016.N().S(`}
 
 `)
-	if !maybe.wr.originateFromTL2 {
+	if !maybe.wr.OriginTL2() {
 		if maybe.wr.gen.options.Go.GenerateLegacyReadWrite {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)

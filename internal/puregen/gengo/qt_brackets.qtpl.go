@@ -72,7 +72,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -115,7 +115,7 @@ func `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			if writeElementNeedsError {
 				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
@@ -426,7 +426,7 @@ func `)
 		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -462,7 +462,7 @@ func `)
 		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			if writeElementNeedsError {
 				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
@@ -810,7 +810,7 @@ func `)
 		qw422016.N().S(tuple.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -835,7 +835,7 @@ func `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
 `)
-		if tuple.wr.originateFromTL2 {
+		if tuple.wr.OriginTL2() {
 			if writeElementNeedsError {
 				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)

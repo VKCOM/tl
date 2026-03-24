@@ -4,7 +4,7 @@
 {%- func (maybe *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
-        tlName := maybe.wr.tlName.String()
+        tlName := maybe.wr.TLName().String()
         elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
         natArgsDecl := maybe.wr.formatNatArgsDecl()
         natArgsCall := maybe.wr.formatNatArgsDeclCall()
@@ -47,7 +47,7 @@ func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.f
 {%- endif -%}
 
 func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) (_ []byte, err error) {
-    {%- if maybe.wr.originateFromTL2 -%}
+    {%- if maybe.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     if w, err = basictl.ReadBool(w, &item.Ok, {%s= emptyTag %}, {%s= okTag %}); err != nil {
@@ -60,7 +60,7 @@ func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= maybe.w
     {%- endif -%}
 }
 
-{%- if !maybe.wr.originateFromTL2 -%}
+{%- if !maybe.wr.OriginTL2() -%}
 {%- if maybe.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}{%s= maybe.wr.fetcherDecl() %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     return item.WriteTL1Boxed(w{%s= natArgsCall %}{%s= maybe.wr.fetcherCall() %})

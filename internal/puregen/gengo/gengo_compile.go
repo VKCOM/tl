@@ -76,11 +76,8 @@ func (gen *genGo) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		kt := pureType.KernelType()
 		myWrapper := &TypeRWWrapper{
-			gen:              gen,
-			pureType:         pureType,
-			tlTag:            pureType.Common().TLTag(),
-			tlName:           pureType.Common().TLName(),
-			originateFromTL2: pureType.Common().OriginTL2(),
+			gen:      gen,
+			pureType: pureType,
 		}
 		if kt != nil {
 			myWrapper.goCanonicalName = kt.HistoricalName()
@@ -89,7 +86,7 @@ func (gen *genGo) addTypeWrappers() error {
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
 
 		// TODO - we'd like to change this to fileName = goCanonicalName
-		fileName := myWrapper.tlName
+		fileName := myWrapper.TLName()
 		for len(fileName.Name) != 0 && fileName.Name[0] == '_' {
 			fileName.Name = fileName.Name[1:]
 		}
@@ -112,7 +109,7 @@ func (gen *genGo) prepareGeneration() error {
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	for _, v := range gen.generatedTypesList {
-		if gen.bytesWhiteList.HasName2(v.tlName) {
+		if gen.bytesWhiteList.HasName2(v.TLName()) {
 			v.MarkWantsBytesVersion(bytesChildren)
 			typesCounterMarkBytes++
 		}
