@@ -260,14 +260,13 @@ func (k *Kernel) Compile() error {
 			return tlast.BeautifulError2(e1, e2)
 		}
 		kt := &KernelType{
-			originTL2:      true,
-			combTL2:        comb,
-			instances:      map[string]*TypeInstanceRef{},
-			isFunction:     comb.IsFunction,
-			isTopLevel:     len(comb.TypeDecl.TemplateArguments) == 0,
-			canBeBare:      true,
-			canonicalName:  refName,
-			historicalName: refName,
+			originTL2:     true,
+			combTL2:       comb,
+			instances:     map[string]*TypeInstanceRef{},
+			isFunction:    comb.IsFunction,
+			isTopLevel:    len(comb.TypeDecl.TemplateArguments) == 0,
+			canBeBare:     true,
+			canonicalName: refName,
 		}
 		if comb.IsFunction {
 			kt.namePR = comb.FuncDecl.PRName
@@ -285,12 +284,11 @@ func (k *Kernel) Compile() error {
 						PR:            tlast.PositionRange{},
 						CommentBefore: "",
 					},
-					instances:      map[string]*TypeInstanceRef{},
-					isFunction:     false,
-					isTopLevel:     true,
-					canBeBare:      true,
-					canonicalName:  resultTlName,
-					historicalName: resultTlName,
+					instances:     map[string]*TypeInstanceRef{},
+					isFunction:    false,
+					isTopLevel:    true,
+					canBeBare:     true,
+					canonicalName: resultTlName,
 				}
 				// TODO - we must not receive errors here, function
 				if err := k.addTip(resultKt, resultTlName.String(), ""); err != nil {

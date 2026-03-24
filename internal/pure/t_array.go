@@ -173,7 +173,6 @@ func (k *Kernel) addTL1Brackets() {
 		tl1Names:          map[string]struct{}{"__dict_field": {}},
 		tl2Names:          map[string]struct{}{},
 		canonicalName:     tlast.TL2TypeName{Name: "__dict_field"},
-		historicalName:    tlast.TL2TypeName{Name: "DictField"},
 		canBeBare:         true,
 		templateArguments: k.convertTemplateArguments(combTL1.TemplateArguments),
 		targs:             make([]KernelTypeTarg, 2),

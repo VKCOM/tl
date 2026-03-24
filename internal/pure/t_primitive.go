@@ -83,16 +83,15 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 		ins: &ins,
 	}
 	kt := &KernelType{
-		originTL2:      tl1name == "",
-		builtin:        true,
-		combTL1:        []*tlast.Combinator{combTL1},
-		combTL2:        combTL2,
-		instances:      map[string]*TypeInstanceRef{name: ref},
-		tl1Names:       map[string]struct{}{},
-		tl2Names:       map[string]struct{}{},
-		canonicalName:  tlast.TL2TypeName{Name: name},
-		historicalName: tlast.TL2TypeName{Name: historicalName},
-		canBeBare:      true,
+		originTL2:     tl1name == "",
+		builtin:       true,
+		combTL1:       []*tlast.Combinator{combTL1},
+		combTL2:       combTL2,
+		instances:     map[string]*TypeInstanceRef{name: ref},
+		tl1Names:      map[string]struct{}{},
+		tl2Names:      map[string]struct{}{},
+		canonicalName: tlast.TL2TypeName{Name: name},
+		canBeBare:     true,
 	}
 	kt.tl2Names[name] = struct{}{}
 	if tl1name != "" {

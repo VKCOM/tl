@@ -14,6 +14,8 @@ import (
 type TypeRWPrimitive struct {
 	canonicalType string
 
+	historicalName string // go generator historically uses TL1-style names
+
 	goType         string
 	resetValue     string
 	randomValue    string

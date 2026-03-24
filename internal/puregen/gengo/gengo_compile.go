@@ -80,7 +80,7 @@ func (gen *genGo) addTypeWrappers() error {
 			pureType: pureType,
 		}
 		if kt != nil {
-			myWrapper.goCanonicalName = kt.HistoricalName()
+			myWrapper.goCanonicalName = kt.CanonicalName()
 		}
 		gen.generatedTypes[pureType.CanonicalName()] = myWrapper
 		gen.generatedTypesList = append(gen.generatedTypesList, myWrapper)
