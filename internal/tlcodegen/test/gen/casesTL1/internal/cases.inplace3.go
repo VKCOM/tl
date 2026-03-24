@@ -51,7 +51,7 @@ func (item *CasesInplace3TupleInt2) WriteTL1Boxed(w []byte, nat_a1 uint32, nat_a
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3)
 }
 
-func (item *CasesInplace3TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {
+func (item *CasesInplace3TupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -67,7 +67,7 @@ func (item *CasesInplace3TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContex
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace3", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in, nat_a2, nat_a3); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in, nat_a2, nat_a3); err != nil {
 					return err
 				}
 			default:
@@ -81,7 +81,7 @@ func (item *CasesInplace3TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContex
 		}
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, nat_a2, nat_a3); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, nat_a2, nat_a3); err != nil {
 			return err
 		}
 	}
@@ -89,19 +89,18 @@ func (item *CasesInplace3TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace3TupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_a1, nat_a2, nat_a3)
+func (item *CasesInplace3TupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_a1, nat_a2, nat_a3)
 }
 
 func (item *CasesInplace3TupleInt2) WriteJSON(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_a1, nat_a2, nat_a3)
+	return item.WriteJSONOpt(nil, w, nat_a1, nat_a2, nat_a3)
 }
-func (item *CasesInplace3TupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+func (item *CasesInplace3TupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_a2, nat_a3); err != nil {
+	if w, err = item.Value.WriteJSONOpt(jctx, w, nat_a2, nat_a3); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -145,7 +144,7 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteTL1Boxed(w []byte, nat
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
 
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) error {
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -161,7 +160,7 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace3", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
 					return err
 				}
 			default:
@@ -175,7 +174,7 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basic
 		}
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
 			return err
 		}
 	}
@@ -183,19 +182,18 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
 
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
+	return item.WriteJSONOpt(nil, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
+	if w, err = item.Value.WriteJSONOpt(jctx, w, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

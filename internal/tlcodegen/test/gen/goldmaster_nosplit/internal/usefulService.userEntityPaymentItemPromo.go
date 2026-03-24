@@ -52,7 +52,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL1Boxed(w []byte, nat
 	return item.WriteTL1(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propContentPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -88,15 +88,14 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_fields_mask), nil
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_fields_mask), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSON(w []byte, nat_fields_mask uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_fields_mask)
+	return item.WriteJSONOpt(nil, w, nat_fields_mask)
 }
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
 	w = append(w, '{')
 	backupIndexContent := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -370,7 +369,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r
 	return r, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -382,7 +381,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(t
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer, nat_t); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, in2Pointer, nat_t); err != nil {
 			return err
 		}
 	}
@@ -390,20 +389,19 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(t
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
+	w = item.Value.WriteJSONOpt(jctx, w, nat_t)
 	return append(w, '}')
 }

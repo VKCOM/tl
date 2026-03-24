@@ -67,29 +67,28 @@ func (item DictionaryAnyStringPairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryAnyStringPairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryAnyStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryAnyStringPairIntInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryAnyStringPairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryAnyStringPairIntInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryAnyStringPairIntInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryAnyStringPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryAnyStringPairIntInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = tlBuiltinDictStringPairIntInt.BuiltinDictStringPairIntIntWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryAnyStringPairIntInt) MarshalJSON() ([]byte, error) {

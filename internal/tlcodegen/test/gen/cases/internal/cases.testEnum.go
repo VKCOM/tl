@@ -166,37 +166,37 @@ func (item *CasesTestEnum) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byt
 }
 
 func (item *CasesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestEnum) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _, err := Json2ReadUnion("cases.TestEnum", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "v1", "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
-		if !tctx.LegacyTypeNames && _tag == "cases.testEnum1#6c6c55ac" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testEnum1#6c6c55ac" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum1#6c6c55ac")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#6c6c55ac" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#6c6c55ac" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#6c6c55ac")
 		}
 		item.index = 0
 	case "v2", "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
-		if !tctx.LegacyTypeNames && _tag == "cases.testEnum2#86ea88ce" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testEnum2#86ea88ce" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum2#86ea88ce")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#86ea88ce" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#86ea88ce" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#86ea88ce")
 		}
 		item.index = 1
 	case "v3", "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
-		if !tctx.LegacyTypeNames && _tag == "cases.testEnum3#69b83e2f" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "cases.testEnum3#69b83e2f" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum3#69b83e2f")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#69b83e2f" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#69b83e2f" {
 			return ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "#69b83e2f")
 		}
 		item.index = 2
@@ -207,37 +207,36 @@ func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item CasesTestEnum) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item CasesTestEnum) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item CasesTestEnum) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item CasesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item CasesTestEnum) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v1"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"cases.testEnum1#6c6c55ac"`...)
 		}
 		return append(w, `"cases.testEnum1"`...)
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v2"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"cases.testEnum2#86ea88ce"`...)
 		}
 		return append(w, `"cases.testEnum2"`...)
 	case 2:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			return append(w, `"v3"`...)
 		}
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"cases.testEnum3#69b83e2f"`...)
 		}
 		return append(w, `"cases.testEnum3"`...)

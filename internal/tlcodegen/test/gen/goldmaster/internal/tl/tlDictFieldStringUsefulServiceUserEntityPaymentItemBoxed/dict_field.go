@@ -44,7 +44,7 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteTL1(w [
 	return w
 }
 
-func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -69,7 +69,7 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGene
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in, nat_v); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in, nat_v); err != nil {
 					return err
 				}
 			default:
@@ -86,7 +86,7 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGene
 		item.Key = ""
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, nat_v); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, nat_v); err != nil {
 			return err
 		}
 	}
@@ -94,15 +94,14 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGene
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_v), nil
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_v), nil
 }
 
 func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_v uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_v)
+	return item.WriteJSONOpt(nil, w, nat_v)
 }
-func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_v uint32) []byte {
+func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_v uint32) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -113,7 +112,7 @@ func (item *DictFieldStringUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w, nat_v)
+	w = item.Value.WriteJSONOpt(jctx, w, nat_v)
 	return append(w, '}')
 }
 

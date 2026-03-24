@@ -96,11 +96,11 @@ func (item CasesTL2TestObjectWithParam4) String() string {
 }
 
 func (item *CasesTL2TestObjectWithParam4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propXPresented bool
 	var propYPresented bool
@@ -127,7 +127,7 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "y")
 				}
 				propYPresented = true
-				if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinTuple4IntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			default:
@@ -155,15 +155,14 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithParam4) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestObjectWithParam4) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestObjectWithParam4) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestObjectWithParam4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestObjectWithParam4) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -172,7 +171,7 @@ func (item *CasesTL2TestObjectWithParam4) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = BuiltinTuple4IntWriteJSONOpt(tctx, w, &item.Y)
+	w = BuiltinTuple4IntWriteJSONOpt(jctx, w, &item.Y)
 	return append(w, '}')
 }
 

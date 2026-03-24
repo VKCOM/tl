@@ -54,7 +54,7 @@ func (item *InnerMaybe) WriteTL1Boxed(w []byte, nat_X uint32) (_ []byte, err err
 	return item.WriteTL1(w, nat_X)
 }
 
-func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32) error {
+func (item *InnerMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32) error {
 	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -70,7 +70,7 @@ func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("innerMaybe", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in, nat_X); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in, nat_X); err != nil {
 					return err
 				}
 			default:
@@ -84,7 +84,7 @@ func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		}
 	}
 	if !propAPresented {
-		if err := item.A.ReadJSONGeneral(tctx, nil, nat_X); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, nil, nat_X); err != nil {
 			return err
 		}
 	}
@@ -92,20 +92,19 @@ func (item *InnerMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *InnerMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_X)
+func (item *InnerMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_X uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_X)
 }
 
 func (item *InnerMaybe) WriteJSON(w []byte, nat_X uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_X)
+	return item.WriteJSONOpt(nil, w, nat_X)
 }
-func (item *InnerMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32) (_ []byte, err error) {
+func (item *InnerMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_X uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(tctx, w, nat_X); err != nil {
+	if w, err = item.A.WriteJSONOpt(jctx, w, nat_X); err != nil {
 		return w, err
 	}
 	if !(item.A.Ok) {

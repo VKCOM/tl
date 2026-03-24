@@ -58,11 +58,11 @@ func (item CasesBytesTestDictString) String() string {
 }
 
 func (item *CasesBytesTestDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestDictString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -78,7 +78,7 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
 				propDictPresented = true
-				if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntReadJSONGeneral(jctx, in, &item.Dict); err != nil {
 					return err
 				}
 			default:
@@ -98,20 +98,19 @@ func (item *CasesBytesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestDictString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestDictString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestDictString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestDictString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Dict) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"dict":`...)
-		w = BuiltinDictStringIntWriteJSONOpt(tctx, w, item.Dict)
+		w = BuiltinDictStringIntWriteJSONOpt(jctx, w, item.Dict)
 	}
 	return append(w, '}')
 }
@@ -292,11 +291,11 @@ func (item CasesBytesTestDictStringBytes) String() string {
 }
 
 func (item *CasesBytesTestDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -312,7 +311,7 @@ func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONRea
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictString", "dict")
 				}
 				propDictPresented = true
-				if err := BuiltinDictStringIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntBytesReadJSONGeneral(jctx, in, &item.Dict); err != nil {
 					return err
 				}
 			default:
@@ -332,20 +331,19 @@ func (item *CasesBytesTestDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestDictStringBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestDictStringBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestDictStringBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Dict) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"dict":`...)
-		w = BuiltinDictStringIntBytesWriteJSONOpt(tctx, w, item.Dict)
+		w = BuiltinDictStringIntBytesWriteJSONOpt(jctx, w, item.Dict)
 	}
 	return append(w, '}')
 }

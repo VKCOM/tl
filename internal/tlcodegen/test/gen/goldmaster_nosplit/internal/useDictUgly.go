@@ -107,11 +107,11 @@ func (item UseDictUgly) String() string {
 }
 
 func (item *UseDictUgly) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *UseDictUgly) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propDPresented bool
 	var rawD []byte
@@ -160,7 +160,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "x")
 				}
 				propXPresented = true
-				if err := BuiltinDictIntPairIntIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := BuiltinDictIntPairIntIntReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			case "y":
@@ -168,7 +168,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "y")
 				}
 				propYPresented = true
-				if err := BuiltinDictLongPairIntIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := BuiltinDictLongPairIntIntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			case "z":
@@ -176,7 +176,7 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("useDictUgly", "z")
 				}
 				propZPresented = true
-				if err := BuiltinDictStringPairIntIntReadJSONGeneral(tctx, in, &item.Z); err != nil {
+				if err := BuiltinDictStringPairIntIntReadJSONGeneral(jctx, in, &item.Z); err != nil {
 					return err
 				}
 			default:
@@ -203,23 +203,23 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	}
 	if propDPresented {
 		inD := &basictl.JsonLexer{Data: rawD}
-		if err := BuiltinDictIntTupleStringReadJSONGeneral(tctx, inD, &item.D, item.N); err != nil {
+		if err := BuiltinDictIntTupleStringReadJSONGeneral(jctx, inD, &item.D, item.N); err != nil {
 			return err
 		}
 	}
 	if propEPresented {
 		inE := &basictl.JsonLexer{Data: rawE}
-		if err := BuiltinDictLongTupleStringReadJSONGeneral(tctx, inE, &item.E, item.N); err != nil {
+		if err := BuiltinDictLongTupleStringReadJSONGeneral(jctx, inE, &item.E, item.N); err != nil {
 			return err
 		}
 	}
 	if !propDPresented {
-		if err := BuiltinDictIntTupleStringReadJSONGeneral(tctx, nil, &item.D, item.N); err != nil {
+		if err := BuiltinDictIntTupleStringReadJSONGeneral(jctx, nil, &item.D, item.N); err != nil {
 			return err
 		}
 	}
 	if !propEPresented {
-		if err := BuiltinDictLongTupleStringReadJSONGeneral(tctx, nil, &item.E, item.N); err != nil {
+		if err := BuiltinDictLongTupleStringReadJSONGeneral(jctx, nil, &item.E, item.N); err != nil {
 			return err
 		}
 	}
@@ -227,15 +227,14 @@ func (item *UseDictUgly) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UseDictUgly) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *UseDictUgly) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *UseDictUgly) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *UseDictUgly) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -247,7 +246,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = BuiltinDictIntTupleStringWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
+	if w, err = BuiltinDictIntTupleStringWriteJSONOpt(jctx, w, item.D, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.D) != 0) {
@@ -256,7 +255,7 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = BuiltinDictLongTupleStringWriteJSONOpt(tctx, w, item.E, item.N); err != nil {
+	if w, err = BuiltinDictLongTupleStringWriteJSONOpt(jctx, w, item.E, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.E) != 0) {
@@ -265,21 +264,21 @@ func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = BuiltinDictIntPairIntIntWriteJSONOpt(tctx, w, item.X)
+	w = BuiltinDictIntPairIntIntWriteJSONOpt(jctx, w, item.X)
 	if !(len(item.X) != 0) {
 		w = w[:backupIndexX]
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = BuiltinDictLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
+	w = BuiltinDictLongPairIntIntWriteJSONOpt(jctx, w, item.Y)
 	if !(len(item.Y) != 0) {
 		w = w[:backupIndexY]
 	}
 	backupIndexZ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"z":`...)
-	w = BuiltinDictStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
+	w = BuiltinDictStringPairIntIntWriteJSONOpt(jctx, w, item.Z)
 	if !(len(item.Z) != 0) {
 		w = w[:backupIndexZ]
 	}

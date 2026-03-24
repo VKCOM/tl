@@ -183,7 +183,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r [
 	return r, nil
 }
 
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_v uint32) error {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_v uint32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, 0)
@@ -199,7 +199,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tct
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
-			if err := value.ReadJSONGeneral(tctx, in, nat_v); err != nil {
+			if err := value.ReadJSONGeneral(jctx, in, nat_v); err != nil {
 				return err
 			}
 			data[key] = value
@@ -214,10 +214,10 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tct
 }
 
 func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSON(w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_v uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&tctx, w, m, nat_v)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&jctx, w, m, nat_v)
 }
-func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_v uint32) []byte {
+func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_v uint32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -229,7 +229,7 @@ func BuiltinDictStringUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(tctx, w, nat_v)
+		w = value.WriteJSONOpt(jctx, w, nat_v)
 	}
 	return append(w, '}')
 }

@@ -191,7 +191,7 @@ func BuiltinDictLongTupleStringInternalReadTL2(r []byte, m *map[int64][]string) 
 	return r, nil
 }
 
-func BuiltinDictLongTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64][]string, nat_v uint32) error {
+func BuiltinDictLongTupleStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64][]string, nat_v uint32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int64][]string, 0)
@@ -215,7 +215,7 @@ func BuiltinDictLongTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				return err
 			}
 			var value []string
-			if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, in, &value, nat_v); err != nil {
+			if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(jctx, in, &value, nat_v); err != nil {
 				return err
 			}
 			data[key] = value
@@ -230,10 +230,10 @@ func BuiltinDictLongTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 func BuiltinDictLongTupleStringWriteJSON(w []byte, m map[int64][]string, nat_v uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictLongTupleStringWriteJSONOpt(&tctx, w, m, nat_v)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictLongTupleStringWriteJSONOpt(&jctx, w, m, nat_v)
 }
-func BuiltinDictLongTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64][]string, nat_v uint32) (_ []byte, err error) {
+func BuiltinDictLongTupleStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[int64][]string, nat_v uint32) (_ []byte, err error) {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -248,7 +248,7 @@ func BuiltinDictLongTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt64(w, key)
 		w = append(w, `":`...)
-		if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(tctx, w, value, nat_v); err != nil {
+		if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(jctx, w, value, nat_v); err != nil {
 			return w, err
 		}
 	}

@@ -174,7 +174,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 }
 {%- endif -%}
 
-func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     *vec = (*vec)[:cap(*vec)]
     index := 0
     if in != nil {
@@ -201,10 +201,9 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
+    return {%s= goName %}WriteJSONOpt(nil, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
@@ -375,8 +374,8 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 {%- endif -%}
 }
 {%- endif -%}
-func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
-    isTL2 := tctx != nil && tctx.IsTL2
+func {%s= goName %}ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+    isTL2 := jctx != nil && jctx.IsTL2
     if isTL2 {
         nat_n = uint32(len(*vec))
     }
@@ -421,11 +420,10 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    tctx := basictl.JSONWriteContext{}
-    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
+    return {%s= goName %}WriteJSONOpt(nil, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    if tctx != nil && tctx.IsTL2 {
+func {%s= goName %}WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    if jctx != nil && jctx.IsTL2 {
         nat_n = uint32(len(vec))
     }
     if uint32(len(vec)) != nat_n {
@@ -596,7 +594,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte,
 }
 {%- endif -%}
 
-func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     index := 0
     if in != nil {
         in.Delim('[')
@@ -622,10 +620,9 @@ func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Js
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
+    return {%s= goName %}WriteJSONOpt(nil, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range *vec {
         w = basictl.JSONAddCommaIfNeeded(w)

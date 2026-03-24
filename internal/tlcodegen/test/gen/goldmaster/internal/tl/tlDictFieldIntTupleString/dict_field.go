@@ -46,7 +46,7 @@ func (item *DictFieldIntTupleString) WriteTL1(w []byte, nat_v uint32) (_ []byte,
 	return w, nil
 }
 
-func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
+func (item *DictFieldIntTupleString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_v uint32) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -71,7 +71,7 @@ func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadConte
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("__dict_field", "value")
 				}
 				propValuePresented = true
-				if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, in, &item.Value, nat_v); err != nil {
+				if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(jctx, in, &item.Value, nat_v); err != nil {
 					return err
 				}
 			default:
@@ -88,7 +88,7 @@ func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadConte
 		item.Key = 0
 	}
 	if !propValuePresented {
-		if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, nil, &item.Value, nat_v); err != nil {
+		if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(jctx, nil, &item.Value, nat_v); err != nil {
 			return err
 		}
 	}
@@ -96,15 +96,14 @@ func (item *DictFieldIntTupleString) ReadJSONGeneral(tctx *basictl.JSONReadConte
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictFieldIntTupleString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_v)
+func (item *DictFieldIntTupleString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_v)
 }
 
 func (item *DictFieldIntTupleString) WriteJSON(w []byte, nat_v uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_v)
+	return item.WriteJSONOpt(nil, w, nat_v)
 }
-func (item *DictFieldIntTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
+func (item *DictFieldIntTupleString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_v uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -116,7 +115,7 @@ func (item *DictFieldIntTupleString) WriteJSONOpt(tctx *basictl.JSONWriteContext
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(tctx, w, item.Value, nat_v); err != nil {
+	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(jctx, w, item.Value, nat_v); err != nil {
 		return w, err
 	}
 	if !(len(item.Value) != 0) {

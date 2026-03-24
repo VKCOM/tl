@@ -55,7 +55,7 @@ func (item *AInner) WriteTL1Boxed(w []byte, nat_I uint32) (_ []byte, err error) 
 	return item.WriteTL1(w, nat_I)
 }
 
-func (item *AInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_I uint32) error {
+func (item *AInner) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_I uint32) error {
 	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -71,7 +71,7 @@ func (item *AInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.inner", "a")
 				}
 				propAPresented = true
-				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.A, nat_I); err != nil {
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, in, &item.A, nat_I); err != nil {
 					return err
 				}
 			default:
@@ -85,7 +85,7 @@ func (item *AInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 		}
 	}
 	if !propAPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.A, nat_I); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.A, nat_I); err != nil {
 			return err
 		}
 	}
@@ -93,20 +93,19 @@ func (item *AInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AInner) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_I)
+func (item *AInner) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_I)
 }
 
 func (item *AInner) WriteJSON(w []byte, nat_I uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_I)
+	return item.WriteJSONOpt(nil, w, nat_I)
 }
-func (item *AInner) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
+func (item *AInner) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, nat_I); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.A, nat_I); err != nil {
 		return w, err
 	}
 	if !(len(item.A) != 0) {

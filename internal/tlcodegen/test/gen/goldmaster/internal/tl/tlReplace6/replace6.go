@@ -65,11 +65,11 @@ func (item Replace6) String() string {
 }
 
 func (item *Replace6) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Replace6) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Replace6) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -85,7 +85,7 @@ func (item *Replace6) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace6", "a")
 				}
 				propAPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 			default:
@@ -105,20 +105,19 @@ func (item *Replace6) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace6) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Replace6) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Replace6) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Replace6) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Replace6) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.A)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.A)
 	if !(len(item.A) != 0) {
 		w = w[:backupIndexA]
 	}

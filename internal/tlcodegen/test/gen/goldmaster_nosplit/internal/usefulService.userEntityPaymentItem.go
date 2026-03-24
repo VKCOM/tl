@@ -58,7 +58,7 @@ func (item *UsefulServiceUserEntityPaymentItem) WriteTL1Boxed(w []byte, nat_fiel
 	return item.WriteTL1(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propIdPresented bool
 	var propPromoPresented bool
 	if in != nil {
@@ -83,7 +83,7 @@ func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(tctx *basictl.JS
 					return ErrorInvalidJSONWithDuplicatingKeys("usefulService.userEntityPaymentItem", "promo")
 				}
 				propPromoPresented = true
-				if err := item.Promo.ReadJSONGeneral(tctx, in, nat_fields_mask); err != nil {
+				if err := item.Promo.ReadJSONGeneral(jctx, in, nat_fields_mask); err != nil {
 					return err
 				}
 			default:
@@ -100,7 +100,7 @@ func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(tctx *basictl.JS
 		item.Id = ""
 	}
 	if !propPromoPresented {
-		if err := item.Promo.ReadJSONGeneral(tctx, nil, nat_fields_mask); err != nil {
+		if err := item.Promo.ReadJSONGeneral(jctx, nil, nat_fields_mask); err != nil {
 			return err
 		}
 	}
@@ -108,15 +108,14 @@ func (item *UsefulServiceUserEntityPaymentItem) ReadJSONGeneral(tctx *basictl.JS
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_fields_mask), nil
+func (item *UsefulServiceUserEntityPaymentItem) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_fields_mask), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) WriteJSON(w []byte, nat_fields_mask uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_fields_mask)
+	return item.WriteJSONOpt(nil, w, nat_fields_mask)
 }
-func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -128,7 +127,7 @@ func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(tctx *basictl.JSONW
 	backupIndexPromo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"promo":`...)
-	w = item.Promo.WriteJSONOpt(tctx, w, nat_fields_mask)
+	w = item.Promo.WriteJSONOpt(jctx, w, nat_fields_mask)
 	if !(item.Promo.Ok) {
 		w = w[:backupIndexPromo]
 	}

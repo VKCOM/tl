@@ -75,11 +75,11 @@ func (item CasesTL2TestArrayFlexibleBool) String() string {
 }
 
 func (item *CasesTL2TestArrayFlexibleBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propArrPresented bool
 	var rawArr []byte
@@ -124,12 +124,12 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 	}
 	if propArrPresented {
 		inArr := &basictl.JsonLexer{Data: rawArr}
-		if err := BuiltinTupleBoolReadJSONGeneral(tctx, inArr, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleBoolReadJSONGeneral(jctx, inArr, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
 	if !propArrPresented {
-		if err := BuiltinTupleBoolReadJSONGeneral(tctx, nil, &item.Arr, item.N); err != nil {
+		if err := BuiltinTupleBoolReadJSONGeneral(jctx, nil, &item.Arr, item.N); err != nil {
 			return err
 		}
 	}
@@ -137,15 +137,14 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestArrayFlexibleBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesTL2TestArrayFlexibleBool) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesTL2TestArrayFlexibleBool) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -157,7 +156,7 @@ func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(tctx *basictl.JSONWriteC
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	if w, err = BuiltinTupleBoolWriteJSONOpt(tctx, w, item.Arr, item.N); err != nil {
+	if w, err = BuiltinTupleBoolWriteJSONOpt(jctx, w, item.Arr, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.Arr) != 0) {

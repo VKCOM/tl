@@ -134,7 +134,7 @@ func BuiltinVectorDictionaryAnyFieldDoubleIntInternalReadTL2(r []byte, vec *[]Di
 	return r, nil
 }
 
-func BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryAnyFieldDoubleInt) error {
+func BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryAnyFieldDoubleInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -148,7 +148,7 @@ func BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx *basictl.JSONR
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -163,14 +163,13 @@ func BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx *basictl.JSONR
 }
 
 func BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSON(w []byte, vec []DictionaryAnyFieldDoubleInt) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryAnyFieldDoubleInt) []byte {
+func BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []DictionaryAnyFieldDoubleInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -231,11 +230,11 @@ func (item DictionaryAnyFieldDoubleInt) String() string {
 }
 
 func (item *DictionaryAnyFieldDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -283,15 +282,14 @@ func (item *DictionaryAnyFieldDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadC
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryAnyFieldDoubleInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryAnyFieldDoubleInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryAnyFieldDoubleInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *DictionaryAnyFieldDoubleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *DictionaryAnyFieldDoubleInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

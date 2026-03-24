@@ -62,7 +62,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL1Boxed(w []byte, nat_XXI ui
 	return item.WriteTL1(w, nat_XXI, nat_XYI)
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XXI uint32, nat_XYI uint32) error {
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XXI uint32, nat_XYI uint32) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -79,7 +79,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSON
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in, nat_XXI, nat_XYI); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in, nat_XXI, nat_XYI); err != nil {
 					return err
 				}
 			case "b":
@@ -87,7 +87,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSON
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -104,7 +104,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSON
 		item.B.Reset()
 	}
 	if !propAPresented {
-		if err := item.A.ReadJSONGeneral(tctx, nil, nat_XXI, nat_XYI); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, nil, nat_XXI, nat_XYI); err != nil {
 			return err
 		}
 	}
@@ -112,24 +112,23 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_XXI, nat_XYI)
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_XXI, nat_XYI)
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSON(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_XXI, nat_XYI)
+	return item.WriteJSONOpt(nil, w, nat_XXI, nat_XYI)
 }
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(tctx, w, nat_XXI, nat_XYI); err != nil {
+	if w, err = item.A.WriteJSONOpt(jctx, w, nat_XXI, nat_XYI); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
+	w = item.B.WriteJSONOpt(jctx, w)
 	return append(w, '}'), nil
 }
 

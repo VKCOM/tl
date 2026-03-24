@@ -211,21 +211,21 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte, ctx *basictl.TL2Rea
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("benchmarks.VrutoyTopLevelUnion", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "Big", "benchmarks.vrutoytopLevelUnionBig#ef556bee", "benchmarks.vrutoytopLevelUnionBig", "#ef556bee":
-		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionBig#ef556bee")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#ef556bee" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#ef556bee" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ef556bee")
 		}
 		item.index = 0
@@ -233,14 +233,14 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueBig.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueBig.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "Empty", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "benchmarks.vrutoytopLevelUnionEmpty", "#ce27c770":
-		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#ce27c770" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#ce27c770" {
 			return ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "#ce27c770")
 		}
 		item.index = 1
@@ -251,34 +251,33 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"Big"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
 			} else {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueBig.WriteJSONOpt(tctx, w)
+		w = item.valueBig.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"Empty"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
 			} else {
 				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
@@ -368,11 +367,11 @@ func (item BenchmarksVrutoytopLevelUnionBig) String() string {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -388,7 +387,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSON
 					return ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoytopLevelUnionBig", "next_positions")
 				}
 				propNextPositionsPresented = true
-				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
+				if err := BuiltinVectorBenchmarksVrupositionReadJSONGeneral(jctx, in, &item.NextPositions); err != nil {
 					return err
 				}
 			default:
@@ -408,20 +407,19 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexNextPositions := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next_positions":`...)
-	w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(tctx, w, item.NextPositions)
+	w = BuiltinVectorBenchmarksVrupositionWriteJSONOpt(jctx, w, item.NextPositions)
 	if !(len(item.NextPositions) != 0) {
 		w = w[:backupIndexNextPositions]
 	}
@@ -610,11 +608,11 @@ func (item BenchmarksVrutoytopLevelUnionEmpty) String() string {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -632,15 +630,14 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSONGeneral(tctx *basictl.JS
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -893,7 +890,7 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(r []byte, vec *[]
 	return r, nil
 }
 
-func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVrutoyTopLevelUnion) error {
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]BenchmarksVrutoyTopLevelUnion) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -907,7 +904,7 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx *basictl.JSO
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -922,14 +919,13 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx *basictl.JSO
 }
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSON(w []byte, vec []BenchmarksVrutoyTopLevelUnion) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVrutoyTopLevelUnion) []byte {
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []BenchmarksVrutoyTopLevelUnion) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

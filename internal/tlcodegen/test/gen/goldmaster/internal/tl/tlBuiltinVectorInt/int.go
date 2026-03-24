@@ -135,7 +135,7 @@ func BuiltinVectorIntInternalReadTL2(r []byte, vec *[]int32) (_ []byte, err erro
 	return r, nil
 }
 
-func BuiltinVectorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32) error {
+func BuiltinVectorIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -164,10 +164,9 @@ func BuiltinVectorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 func BuiltinVectorIntWriteJSON(w []byte, vec []int32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorIntWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorIntWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int32) []byte {
+func BuiltinVectorIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []int32) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

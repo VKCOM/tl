@@ -182,7 +182,7 @@ func BuiltinDictStringStringInternalReadTL2(r []byte, m *map[string]string) (_ [
 	return r, nil
 }
 
-func BuiltinDictStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
+func BuiltinDictStringStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]string, 0)
@@ -213,10 +213,10 @@ func BuiltinDictStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 func BuiltinDictStringStringWriteJSON(w []byte, m map[string]string) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringStringWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringStringWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
+func BuiltinDictStringStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -356,7 +356,7 @@ func BuiltinDictStringStringBytesInternalReadTL2(r []byte, vec *[]tlDictFieldStr
 	return r, nil
 }
 
-func BuiltinDictStringStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictFieldStringString.DictFieldStringStringBytes) error {
+func BuiltinDictStringStringBytesReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictFieldStringString.DictFieldStringStringBytes) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -387,10 +387,10 @@ func BuiltinDictStringStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 func BuiltinDictStringStringBytesWriteJSON(w []byte, vec []tlDictFieldStringString.DictFieldStringStringBytes) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringStringBytesWriteJSONOpt(&tctx, w, vec)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringStringBytesWriteJSONOpt(&jctx, w, vec)
 }
-func BuiltinDictStringStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictFieldStringString.DictFieldStringStringBytes) []byte {
+func BuiltinDictStringStringBytesWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlDictFieldStringString.DictFieldStringStringBytes) []byte {
 	w = append(w, '{')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

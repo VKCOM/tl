@@ -48,7 +48,7 @@ func BuiltinVectorTrueBoxedWriteTL1(w []byte, vec []True) []byte {
 	return w
 }
 
-func BuiltinVectorTrueBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]True) error {
+func BuiltinVectorTrueBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]True) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -62,7 +62,7 @@ func BuiltinVectorTrueBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -77,14 +77,13 @@ func BuiltinVectorTrueBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 func BuiltinVectorTrueBoxedWriteJSON(w []byte, vec []True) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorTrueBoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorTrueBoxedWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorTrueBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []True) []byte {
+func BuiltinVectorTrueBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []True) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -130,11 +129,11 @@ func (item True) String() string {
 }
 
 func (item *True) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *True) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *True) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -152,15 +151,14 @@ func (item *True) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *True) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *True) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *True) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *True) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *True) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

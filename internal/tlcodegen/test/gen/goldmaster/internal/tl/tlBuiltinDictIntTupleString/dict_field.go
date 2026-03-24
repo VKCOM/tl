@@ -191,7 +191,7 @@ func BuiltinDictIntTupleStringInternalReadTL2(r []byte, m *map[int32][]string) (
 	return r, nil
 }
 
-func BuiltinDictIntTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32][]string, nat_v uint32) error {
+func BuiltinDictIntTupleStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32][]string, nat_v uint32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[int32][]string, 0)
@@ -215,7 +215,7 @@ func BuiltinDictIntTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 				return err
 			}
 			var value []string
-			if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, in, &value, nat_v); err != nil {
+			if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(jctx, in, &value, nat_v); err != nil {
 				return err
 			}
 			data[key] = value
@@ -230,10 +230,10 @@ func BuiltinDictIntTupleStringReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 func BuiltinDictIntTupleStringWriteJSON(w []byte, m map[int32][]string, nat_v uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictIntTupleStringWriteJSONOpt(&tctx, w, m, nat_v)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictIntTupleStringWriteJSONOpt(&jctx, w, m, nat_v)
 }
-func BuiltinDictIntTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int32][]string, nat_v uint32) (_ []byte, err error) {
+func BuiltinDictIntTupleStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[int32][]string, nat_v uint32) (_ []byte, err error) {
 	keys := make([]int32, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -248,7 +248,7 @@ func BuiltinDictIntTupleStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt32(w, key)
 		w = append(w, `":`...)
-		if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(tctx, w, value, nat_v); err != nil {
+		if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(jctx, w, value, nat_v); err != nil {
 			return w, err
 		}
 	}

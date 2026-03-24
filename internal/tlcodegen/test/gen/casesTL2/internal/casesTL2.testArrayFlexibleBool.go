@@ -60,11 +60,11 @@ func (item CasesTL2TestArrayFlexibleBool) String() string {
 }
 
 func (item *CasesTL2TestArrayFlexibleBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propArrPresented bool
 	if in != nil {
@@ -89,7 +89,7 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFlexibleBool", "arr")
 				}
 				propArrPresented = true
-				if err := BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := BuiltinVectorBoolReadJSONGeneral(jctx, in, &item.Arr); err != nil {
 					return err
 				}
 			default:
@@ -112,15 +112,14 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestArrayFlexibleBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestArrayFlexibleBool) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestArrayFlexibleBool) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.N != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -130,7 +129,7 @@ func (item *CasesTL2TestArrayFlexibleBool) WriteJSONOpt(tctx *basictl.JSONWriteC
 	if len(item.Arr) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"arr":`...)
-		w = BuiltinVectorBoolWriteJSONOpt(tctx, w, item.Arr)
+		w = BuiltinVectorBoolWriteJSONOpt(jctx, w, item.Arr)
 	}
 	return append(w, '}')
 }

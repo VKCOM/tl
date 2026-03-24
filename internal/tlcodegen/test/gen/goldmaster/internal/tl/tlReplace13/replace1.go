@@ -65,11 +65,11 @@ func (item Replace13) String() string {
 }
 
 func (item *Replace13) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Replace13) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Replace13) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -85,7 +85,7 @@ func (item *Replace13) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace1", "a")
 				}
 				propAPresented = true
-				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 			default:
@@ -105,19 +105,18 @@ func (item *Replace13) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace13) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Replace13) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Replace13) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Replace13) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Replace13) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
+	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(jctx, w, &item.A)
 	return append(w, '}')
 }
 

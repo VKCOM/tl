@@ -562,15 +562,15 @@ func (item *`)
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 `)
 	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
     _tag,`)
@@ -631,7 +631,7 @@ func (item *`)
 			qw422016.N().S(`,`)
 			qw422016.N().Q(tag2)
 			qw422016.N().S(`:
-                    if !tctx.LegacyTypeNames && _tag == `)
+                    if jctx != nil && !jctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(nameWithTag2)
 			qw422016.N().S(` {
                         return `)
@@ -642,7 +642,7 @@ func (item *`)
 			qw422016.N().Q(nameWithTag2)
 			qw422016.N().S(`)
                     }
-                    if !tctx.LegacyTypeNames && _tag == `)
+                    if jctx != nil && !jctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(tag2)
 			qw422016.N().S(` {
                         return `)
@@ -658,7 +658,7 @@ func (item *`)
 			qw422016.N().S(`:`)
 		}
 		if !union.wr.originateFromTL2 {
-			qw422016.N().S(`                if !tctx.LegacyTypeNames && _tag == `)
+			qw422016.N().S(`                if jctx != nil && !jctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(` {
                     return `)
@@ -669,7 +669,7 @@ func (item *`)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(`)
                 }
-                if !tctx.LegacyTypeNames && _tag == `)
+                if jctx != nil && !jctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(tag)
 			qw422016.N().S(` {
                     return `)
@@ -714,10 +714,10 @@ func (item *`)
 func (item `)
 	qw422016.N().S(asterisk)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
+	qw422016.N().S(`) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) ([]byte, error) {
-    return item.WriteJSONOpt(tctx, w`)
+    return item.WriteJSONOpt(jctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)`)
 	if !writeNeedsError {
@@ -734,15 +734,14 @@ func (item `)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+    return item.WriteJSONOpt(nil, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item `)
 	qw422016.N().S(asterisk)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
+	qw422016.N().S(`) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -783,7 +782,7 @@ func (item `)
 `)
 			} else {
 				if union.wr.HasTL2() {
-					qw422016.N().S(`                if tctx.IsTL2 {
+					qw422016.N().S(`                if jctx != nil && jctx.IsTL2 {
                     return append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().Q(field.variantName)
@@ -794,7 +793,7 @@ func (item `)
 `)
 				}
 				if !union.wr.originateFromTL2 {
-					qw422016.N().S(`                if tctx.LegacyTypeNames {
+					qw422016.N().S(`                if jctx != nil && jctx.LegacyTypeNames {
                     return append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().Q(nameWithTag)
@@ -824,7 +823,7 @@ func (item `)
 `)
 			} else {
 				if union.wr.HasTL2() {
-					qw422016.N().S(`                if tctx.IsTL2 {
+					qw422016.N().S(`                if jctx != nil && jctx.IsTL2 {
                     w = append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().S(`{"type":`)
@@ -836,10 +835,10 @@ func (item `)
 `)
 				}
 				if wrWithoutLong != nil {
-					qw422016.N().S(`                    if tctx.Short {
+					qw422016.N().S(`                    if jctx != nil && jctx.Short {
 `)
 					if !union.wr.originateFromTL2 {
-						qw422016.N().S(`                            if tctx.LegacyTypeNames {
+						qw422016.N().S(`                            if jctx != nil && jctx.LegacyTypeNames {
                                 w = append(w, `)
 						qw422016.N().S("`")
 						qw422016.N().S(`{"type":`)
@@ -871,7 +870,7 @@ func (item `)
 `)
 				}
 				if !union.wr.originateFromTL2 {
-					qw422016.N().S(`                        if tctx.LegacyTypeNames {
+					qw422016.N().S(`                        if jctx != nil && jctx.LegacyTypeNames {
                             w = append(w, `)
 					qw422016.N().S("`")
 					qw422016.N().S(`{"type":`)

@@ -348,27 +348,26 @@ type {%s= goName %} struct {
         -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
     {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
     return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
+func (item *{%s= goName %}) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(jctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(nil, w{%s= natArgsCall %})
 }
 
-func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
     return w{%- if writeNeedsError -%}, nil{%- endif -%}
 }
@@ -403,12 +402,12 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
     -%}
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
 {%- comment %}
 при чтении:
 1. 100% одинаково работают опциональные true-поля со значением true и остальные опциональные поля. Если такое поле указано, то бит TL1 филдмаски определяющей опциональность будет установлен в 1, рекурсивно. Если в конце рекурсии встретится константная или внешняя филдмаска чей бит равен 0, это ошибка (так как поле будет проигнорировано)
@@ -660,15 +659,14 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     -%}
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
+func (item *{%s= goName %}) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(jctx, w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(nil, w{%s= natArgsCall %})
 }
-func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     w = append(w, '{')
 {%- comment %}
 if value is under mask and is empty and mask bit is set, we want it to be explicitly set, for example
@@ -885,18 +883,17 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 
 func (item *{%s= goName %}) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *{%s= retArg  %}) error {
     {%- if struct_.ResultType.TypeJSON2ReadingRequiresContext() -%}
-    tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
     {%- endif -%}
     {%s= struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true) %}
     return nil
 }
 
 func (item *{%s= goName %}) WriteResultJSON(w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
-    tctx := basictl.JSONWriteContext{}
-    return item.writeResultJSON(&tctx, w, ret)
+    return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *{%s= goName %}) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
+func (item *{%s= goName %}) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
     {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, struct_.ResultType.hasErrorInWriteMethods) %}
     return w, nil
 }
@@ -909,12 +906,12 @@ func (item *{%s= goName %}) FillRandomResultTL1(rg *basictl.RandGenerator, w []b
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}
   if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.writeResultJSON(tctx, w, ret)
+  w, err = item.writeResultJSON(jctx, w, ret)
   return r, w, err
 }
 

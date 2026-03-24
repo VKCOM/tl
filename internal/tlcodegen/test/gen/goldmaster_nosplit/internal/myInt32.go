@@ -127,7 +127,7 @@ func BuiltinTuple3MyInt32InternalReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, e
 	return r, nil
 }
 
-func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
+func BuiltinTuple3MyInt32ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -138,7 +138,7 @@ func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]MyInt32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -155,14 +155,13 @@ func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 func BuiltinTuple3MyInt32WriteJSON(w []byte, vec *[3]MyInt32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3MyInt32WriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3MyInt32WriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple3MyInt32WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]MyInt32) []byte {
+func BuiltinTuple3MyInt32WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[3]MyInt32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -281,7 +280,7 @@ func BuiltinTuple3MyInt32BoxedInternalReadTL2(r []byte, vec *[3]MyInt32) (_ []by
 	return r, nil
 }
 
-func BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
+func BuiltinTuple3MyInt32BoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -292,7 +291,7 @@ func BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]MyInt32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -309,14 +308,13 @@ func BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 func BuiltinTuple3MyInt32BoxedWriteJSON(w []byte, vec *[3]MyInt32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3MyInt32BoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3MyInt32BoxedWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]MyInt32) []byte {
+func BuiltinTuple3MyInt32BoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[3]MyInt32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }
@@ -369,29 +367,28 @@ func (item MyInt32) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MyInt32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
+func (item *MyInt32) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := item.ptr().ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyInt32) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MyInt32) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MyInt32) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *MyInt32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = item.ptr().WriteJSONOpt(tctx, w)
+func (item *MyInt32) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = item.ptr().WriteJSONOpt(jctx, w)
 	return w
 }
 func (item *MyInt32) MarshalJSON() ([]byte, error) {

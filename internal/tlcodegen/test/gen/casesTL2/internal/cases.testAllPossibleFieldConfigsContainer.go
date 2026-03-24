@@ -65,11 +65,11 @@ func (item CasesTestAllPossibleFieldConfigsContainer) String() string {
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propOuterPresented bool
 	var propOutersPresented bool
 	var propValuePresented bool
@@ -103,7 +103,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *bas
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigsContainer", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -129,15 +129,14 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.Outer != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -151,7 +150,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(tctx *basict
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

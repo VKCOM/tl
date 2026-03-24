@@ -79,11 +79,11 @@ func (item Replace17) String() string {
 }
 
 func (item *Replace17) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Replace17) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propAPresented bool
 	var propYPresented bool
@@ -101,7 +101,7 @@ func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace17", "x")
 				}
 				propXPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			case "a":
@@ -117,7 +117,7 @@ func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace17", "y")
 				}
 				propYPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Y); err != nil {
 					return err
 				}
 			default:
@@ -143,20 +143,19 @@ func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace17) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Replace17) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Replace17) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Replace17) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Replace17) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.X)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.X)
 	if !(len(item.X) != 0) {
 		w = w[:backupIndexX]
 	}
@@ -170,7 +169,7 @@ func (item *Replace17) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Y)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Y)
 	if !(len(item.Y) != 0) {
 		w = w[:backupIndexY]
 	}

@@ -61,11 +61,11 @@ func (item CasesTestArray) String() string {
 }
 
 func (item *CasesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestArray) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propArrPresented bool
 	if in != nil {
@@ -90,7 +90,7 @@ func (item *CasesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testArray", "arr")
 				}
 				propArrPresented = true
-				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Arr); err != nil {
 					return err
 				}
 			default:
@@ -113,15 +113,14 @@ func (item *CasesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestArray) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestArray) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestArray) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.N != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -131,7 +130,7 @@ func (item *CasesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	if len(item.Arr) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"arr":`...)
-		w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Arr)
+		w = BuiltinVectorIntWriteJSONOpt(jctx, w, item.Arr)
 	}
 	return append(w, '}')
 }

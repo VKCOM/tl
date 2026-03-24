@@ -100,11 +100,11 @@ func (item MultiPoint) String() string {
 }
 
 func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *MultiPoint) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	var propCPresented bool
@@ -125,7 +125,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "a")
 				}
 				propAPresented = true
-				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := BuiltinTuple3IntReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 			case "b":
@@ -133,7 +133,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "b")
 				}
 				propBPresented = true
-				if err := BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := BuiltinTuple3IntBoxedReadJSONGeneral(jctx, in, &item.B); err != nil {
 					return err
 				}
 			case "c":
@@ -141,7 +141,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "c")
 				}
 				propCPresented = true
-				if err := BuiltinTuple3Int32sReadJSONGeneral(tctx, in, &item.C); err != nil {
+				if err := BuiltinTuple3Int32sReadJSONGeneral(jctx, in, &item.C); err != nil {
 					return err
 				}
 			case "d":
@@ -149,7 +149,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "d")
 				}
 				propDPresented = true
-				if err := BuiltinTuple3Int32sBoxedReadJSONGeneral(tctx, in, &item.D); err != nil {
+				if err := BuiltinTuple3Int32sBoxedReadJSONGeneral(jctx, in, &item.D); err != nil {
 					return err
 				}
 			case "e":
@@ -157,7 +157,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "e")
 				}
 				propEPresented = true
-				if err := BuiltinTuple3MyInt32ReadJSONGeneral(tctx, in, &item.E); err != nil {
+				if err := BuiltinTuple3MyInt32ReadJSONGeneral(jctx, in, &item.E); err != nil {
 					return err
 				}
 			case "f":
@@ -165,7 +165,7 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "f")
 				}
 				propFPresented = true
-				if err := BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx, in, &item.F); err != nil {
+				if err := BuiltinTuple3MyInt32BoxedReadJSONGeneral(jctx, in, &item.F); err != nil {
 					return err
 				}
 			default:
@@ -200,34 +200,33 @@ func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MultiPoint) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MultiPoint) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MultiPoint) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *MultiPoint) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *MultiPoint) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
+	w = BuiltinTuple3IntWriteJSONOpt(jctx, w, &item.A)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.B)
+	w = BuiltinTuple3IntBoxedWriteJSONOpt(jctx, w, &item.B)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = BuiltinTuple3Int32sWriteJSONOpt(tctx, w, &item.C)
+	w = BuiltinTuple3Int32sWriteJSONOpt(jctx, w, &item.C)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = BuiltinTuple3Int32sBoxedWriteJSONOpt(tctx, w, &item.D)
+	w = BuiltinTuple3Int32sBoxedWriteJSONOpt(jctx, w, &item.D)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = BuiltinTuple3MyInt32WriteJSONOpt(tctx, w, &item.E)
+	w = BuiltinTuple3MyInt32WriteJSONOpt(jctx, w, &item.E)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx, w, &item.F)
+	w = BuiltinTuple3MyInt32BoxedWriteJSONOpt(jctx, w, &item.F)
 	return append(w, '}')
 }
 

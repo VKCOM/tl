@@ -45,8 +45,8 @@ func BuiltinTupleTupleInt2WriteTL1(w []byte, vec [][2]int32, nat_n uint32) (_ []
 	}
 	return w, nil
 }
-func BuiltinTupleTupleInt2ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]int32, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleTupleInt2ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]int32, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -72,7 +72,7 @@ func BuiltinTupleTupleInt2ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 					return ErrorInvalidJSON("[][2]int32", "array is longer than expected")
 				}
 			}
-			if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, &(*vec)[index]); err != nil {
+			if err := BuiltinTuple2IntReadJSONGeneral(jctx, in, &(*vec)[index]); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -93,11 +93,10 @@ func BuiltinTupleTupleInt2ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 func BuiltinTupleTupleInt2WriteJSON(w []byte, vec [][2]int32, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleTupleInt2WriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleTupleInt2WriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][2]int32, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleTupleInt2WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec [][2]int32, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -106,7 +105,7 @@ func BuiltinTupleTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte,
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = BuiltinTuple2IntWriteJSONOpt(tctx, w, &elem)
+		w = BuiltinTuple2IntWriteJSONOpt(jctx, w, &elem)
 	}
 	return append(w, ']'), nil
 }
@@ -145,8 +144,8 @@ func BuiltinTupleTuplePairTupleIntTupleInt2WriteTL1(w []byte, vec [][2]PairTuple
 	}
 	return w, nil
 }
-func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -172,7 +171,7 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx *basictl.JSONRea
 					return ErrorInvalidJSON("[][2]PairTupleIntTupleInt", "array is longer than expected")
 				}
 			}
-			if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx, in, &(*vec)[index], nat_ttXn, nat_ttYn); err != nil {
+			if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(jctx, in, &(*vec)[index], nat_ttXn, nat_ttYn); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -193,11 +192,10 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSON(w []byte, vec [][2]PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(&tctx, w, vec, nat_n, nat_ttXn, nat_ttYn)
+	return BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(nil, w, vec, nat_n, nat_ttXn, nat_ttYn)
 }
-func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][2]PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec [][2]PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -206,7 +204,7 @@ func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteC
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx, w, &elem, nat_ttXn, nat_ttYn); err != nil {
+		if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(jctx, w, &elem, nat_ttXn, nat_ttYn); err != nil {
 			return w, err
 		}
 	}
@@ -251,25 +249,24 @@ func (item *TupleInt) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err error
 	return item.WriteTL1(w, nat_n)
 }
 
-func (item *TupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	if err := BuiltinTupleIntReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
+func (item *TupleInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+	if err := BuiltinTupleIntReadJSONGeneral(jctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n)
+func (item *TupleInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_n)
 }
 
 func (item *TupleInt) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_n)
 }
 
-func (item *TupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
+func (item *TupleInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -323,29 +320,28 @@ func (item TupleInt2) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinTuple2IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *TupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinTuple2IntReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleInt2) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *TupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinTuple2IntWriteJSONOpt(tctx, w, item.ptr())
+func (item *TupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinTuple2IntWriteJSONOpt(jctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt2) MarshalJSON() ([]byte, error) {
@@ -407,29 +403,28 @@ func (item TupleInt4) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleInt4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TupleInt4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinTuple4IntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *TupleInt4) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinTuple4IntReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleInt4) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleInt4) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleInt4) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *TupleInt4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinTuple4IntWriteJSONOpt(tctx, w, item.ptr())
+func (item *TupleInt4) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinTuple4IntWriteJSONOpt(jctx, w, item.ptr())
 	return w
 }
 func (item *TupleInt4) MarshalJSON() ([]byte, error) {
@@ -483,25 +478,24 @@ func (item *TuplePairTupleIntTupleInt2) WriteTL1Boxed(w []byte, nat_tXn uint32, 
 	return item.WriteTL1(w, nat_tXn, nat_tYn)
 }
 
-func (item *TuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tXn uint32, nat_tYn uint32) error {
-	if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx, in, item.ptr(), nat_tXn, nat_tYn); err != nil {
+func (item *TuplePairTupleIntTupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tXn uint32, nat_tYn uint32) error {
+	if err := BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(jctx, in, item.ptr(), nat_tXn, nat_tYn); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_tXn, nat_tYn)
+func (item *TuplePairTupleIntTupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_tXn, nat_tYn)
 }
 
 func (item *TuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_tXn, nat_tYn)
+	return item.WriteJSONOpt(nil, w, nat_tXn, nat_tYn)
 }
 
-func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx, w, item.ptr(), nat_tXn, nat_tYn); err != nil {
+func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	if w, err = BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(jctx, w, item.ptr(), nat_tXn, nat_tYn); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -555,29 +549,28 @@ func (item TupleString4) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleString4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TupleString4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinTuple4StringReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *TupleString4) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinTuple4StringReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleString4) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleString4) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleString4) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *TupleString4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinTuple4StringWriteJSONOpt(tctx, w, item.ptr())
+func (item *TupleString4) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinTuple4StringWriteJSONOpt(jctx, w, item.ptr())
 	return w
 }
 func (item *TupleString4) MarshalJSON() ([]byte, error) {
@@ -639,29 +632,28 @@ func (item TupleString4Bytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TupleString4Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *TupleString4Bytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinTuple4StringBytesReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleString4Bytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TupleString4Bytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TupleString4Bytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *TupleString4Bytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, item.ptr())
+func (item *TupleString4Bytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinTuple4StringBytesWriteJSONOpt(jctx, w, item.ptr())
 	return w
 }
 func (item *TupleString4Bytes) MarshalJSON() ([]byte, error) {
@@ -713,25 +705,24 @@ func (item *TupleTupleInt2) WriteTL1Boxed(w []byte, nat_n uint32) (_ []byte, err
 	return item.WriteTL1(w, nat_n)
 }
 
-func (item *TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
-	if err := BuiltinTupleTupleInt2ReadJSONGeneral(tctx, in, item.ptr(), nat_n); err != nil {
+func (item *TupleTupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
+	if err := BuiltinTupleTupleInt2ReadJSONGeneral(jctx, in, item.ptr(), nat_n); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_n)
+func (item *TupleTupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_n)
 }
 
 func (item *TupleTupleInt2) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_n)
 }
 
-func (item *TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTupleInt2WriteJSONOpt(tctx, w, *item.ptr(), nat_n); err != nil {
+func (item *TupleTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTupleInt2WriteJSONOpt(jctx, w, *item.ptr(), nat_n); err != nil {
 		return w, err
 	}
 	return w, nil
@@ -777,25 +768,24 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteTL1Boxed(w []byte, nat_ttXn ui
 	return item.WriteTL1(w, nat_ttXn, nat_ttYn, nat_n)
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) error {
-	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx, in, item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
+func (item *TupleTuplePairTupleIntTupleInt2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) error {
+	if err := BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(jctx, in, item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_ttXn, nat_ttYn, nat_n)
+func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_ttXn, nat_ttYn, nat_n)
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_ttXn, nat_ttYn, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_ttXn, nat_ttYn, nat_n)
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, *item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
+func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+	if w, err = BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(jctx, w, *item.ptr(), nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return w, err
 	}
 	return w, nil

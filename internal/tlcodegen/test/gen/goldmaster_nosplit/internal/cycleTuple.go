@@ -135,7 +135,7 @@ func BuiltinTuple2CycleTupleInternalReadTL2(r []byte, vec *[2]CycleTuple) (_ []b
 	return r, nil
 }
 
-func BuiltinTuple2CycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]CycleTuple) error {
+func BuiltinTuple2CycleTupleReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]CycleTuple) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -146,7 +146,7 @@ func BuiltinTuple2CycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 			if index == 2 {
 				return ErrorWrongSequenceLength("[2]CycleTuple", index+1, 2)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -163,14 +163,13 @@ func BuiltinTuple2CycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 func BuiltinTuple2CycleTupleWriteJSON(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple2CycleTupleWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple2CycleTupleWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple2CycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
+func BuiltinTuple2CycleTupleWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(tctx, w); err != nil {
+		if w, err = elem.WriteJSONOpt(jctx, w); err != nil {
 			return w, err
 		}
 	}
@@ -305,8 +304,8 @@ func BuiltinTupleCycleTupleInternalReadTL2(r []byte, vec *[]CycleTuple) (_ []byt
 	}
 	return r, nil
 }
-func BuiltinTupleCycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]CycleTuple, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleCycleTupleReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]CycleTuple, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -332,7 +331,7 @@ func BuiltinTupleCycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return ErrorInvalidJSON("[]CycleTuple", "array is longer than expected")
 				}
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -353,11 +352,10 @@ func BuiltinTupleCycleTupleReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 func BuiltinTupleCycleTupleWriteJSON(w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleCycleTupleWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleCycleTupleWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleCycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleCycleTupleWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -366,7 +364,7 @@ func BuiltinTupleCycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(tctx, w); err != nil {
+		if w, err = elem.WriteJSONOpt(jctx, w); err != nil {
 			return w, err
 		}
 	}
@@ -567,11 +565,11 @@ func (item CycleTuple) String() string {
 }
 
 func (item *CycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CycleTuple) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
@@ -612,7 +610,7 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 				if item.A == nil {
 					item.A = new([2]CycleTuple)
 				}
-				if err := BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, item.A); err != nil {
+				if err := BuiltinTuple2CycleTupleReadJSONGeneral(jctx, in, item.A); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -630,7 +628,7 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return ErrorInvalidJSONWithDuplicatingKeys("cycleTuple", "c")
 				}
 				propCPresented = true
-				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.C); err != nil {
+				if err := BuiltinTuple3IntReadJSONGeneral(jctx, in, &item.C); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 2
@@ -672,12 +670,12 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 	}
 	if propBPresented {
 		inB := &basictl.JsonLexer{Data: rawB}
-		if err := BuiltinTupleCycleTupleReadJSONGeneral(tctx, inB, &item.B, item.Ns); err != nil {
+		if err := BuiltinTupleCycleTupleReadJSONGeneral(jctx, inB, &item.B, item.Ns); err != nil {
 			return err
 		}
 	}
 	if !propBPresented {
-		if err := BuiltinTupleCycleTupleReadJSONGeneral(tctx, nil, &item.B, item.Ns); err != nil {
+		if err := BuiltinTupleCycleTupleReadJSONGeneral(jctx, nil, &item.B, item.Ns); err != nil {
 			return err
 		}
 	}
@@ -685,15 +683,14 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CycleTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CycleTuple) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CycleTuple) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CycleTuple) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -712,14 +709,14 @@ func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		if w, err = BuiltinTuple2CycleTupleWriteJSONOpt(tctx, w, item.A); err != nil {
+		if w, err = BuiltinTuple2CycleTupleWriteJSONOpt(jctx, w, item.A); err != nil {
 			return w, err
 		}
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(tctx, w, item.B, item.Ns); err != nil {
+	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(jctx, w, item.B, item.Ns); err != nil {
 		return w, err
 	}
 	if !(len(item.B) != 0) {
@@ -728,7 +725,7 @@ func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"c":`...)
-		w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.C)
+		w = BuiltinTuple3IntWriteJSONOpt(jctx, w, &item.C)
 	}
 	return append(w, '}'), nil
 }

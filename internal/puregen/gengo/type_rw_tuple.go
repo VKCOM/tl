@@ -118,15 +118,15 @@ func (trw *TypeRWBrackets) typeJSONWritingCode(bytesVersion bool, directImports 
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	// Code which depends on serialization location (skipping empty array if object property) is generated in that location.
 	if needError {
-		return fmt.Sprintf("if w, err = %sWriteJSONOpt(tctx, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
+		return fmt.Sprintf("if w, err = %sWriteJSONOpt(jctx, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
 	} else {
-		return fmt.Sprintf("w = %sWriteJSONOpt(tctx, w, %s%s)", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
+		return fmt.Sprintf("w = %sWriteJSONOpt(jctx, w, %s%s)", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
 	}
 }
 
 func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %sReadJSONGeneral(tctx, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %sReadJSONGeneral(jctx, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) typeJSON2ReadingRequiresContext() bool {

@@ -51,7 +51,7 @@ func (item *CasesInplace1Int) WriteTL1Boxed(w []byte, nat_a1 uint32, nat_a2 uint
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3)
 }
 
-func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {
+func (item *CasesInplace1Int) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -67,7 +67,7 @@ func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace1", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in, nat_a2, nat_a3, nat_a1); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in, nat_a2, nat_a3, nat_a1); err != nil {
 					return err
 				}
 			default:
@@ -81,7 +81,7 @@ func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		}
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, nat_a2, nat_a3, nat_a1); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, nat_a2, nat_a3, nat_a1); err != nil {
 			return err
 		}
 	}
@@ -89,19 +89,18 @@ func (item *CasesInplace1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace1Int) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_a1, nat_a2, nat_a3)
+func (item *CasesInplace1Int) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_a1, nat_a2, nat_a3)
 }
 
 func (item *CasesInplace1Int) WriteJSON(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_a1, nat_a2, nat_a3)
+	return item.WriteJSONOpt(nil, w, nat_a1, nat_a2, nat_a3)
 }
-func (item *CasesInplace1Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+func (item *CasesInplace1Int) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_a2, nat_a3, nat_a1); err != nil {
+	if w, err = item.Value.WriteJSONOpt(jctx, w, nat_a2, nat_a3, nat_a1); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -265,7 +264,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) WriteTL1Boxed(w []byte, nat_a1 ui
 	return item.WriteTL1(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) error {
+func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -281,7 +280,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSO
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.inplace1", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 					return err
 				}
 			default:
@@ -295,7 +294,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSO
 		}
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 			return err
 		}
 	}
@@ -303,19 +302,18 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSO
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace1PairTupleIntTupleInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
+func (item *CasesInplace1PairTupleIntTupleInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
 }
 
 func (item *CasesInplace1PairTupleIntTupleInt) WriteJSON(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
+	return item.WriteJSONOpt(nil, w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
 }
-func (item *CasesInplace1PairTupleIntTupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
+func (item *CasesInplace1PairTupleIntTupleInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+	if w, err = item.Value.WriteJSONOpt(jctx, w, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

@@ -170,11 +170,11 @@ func (item CasesTL2TestObject) String() string {
 }
 
 func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestObject) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propNsPresented bool
 	var propF1Presented bool
@@ -232,7 +232,7 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f3")
 				}
 				propF3Presented = true
-				if err := BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.F3); err != nil {
+				if err := BuiltinVectorBoolReadJSONGeneral(jctx, in, &item.F3); err != nil {
 					return err
 				}
 			case "f4":
@@ -257,7 +257,7 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f6")
 				}
 				propF6Presented = true
-				if err := BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx, in, &item.F6); err != nil {
+				if err := BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(jctx, in, &item.F6); err != nil {
 					return err
 				}
 			case "f7":
@@ -265,7 +265,7 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObject", "f7")
 				}
 				propF7Presented = true
-				if err := BuiltinVectorTrueBoxedReadJSONGeneral(tctx, in, &item.F7); err != nil {
+				if err := BuiltinVectorTrueBoxedReadJSONGeneral(jctx, in, &item.F7); err != nil {
 					return err
 				}
 			default:
@@ -313,12 +313,12 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	}
 	if propF4Presented {
 		inF4 := &basictl.JsonLexer{Data: rawF4}
-		if err := item.F4.ReadJSONGeneral(tctx, inF4, item.Ns); err != nil {
+		if err := item.F4.ReadJSONGeneral(jctx, inF4, item.Ns); err != nil {
 			return err
 		}
 	}
 	if !propF4Presented {
-		if err := item.F4.ReadJSONGeneral(tctx, nil, item.Ns); err != nil {
+		if err := item.F4.ReadJSONGeneral(jctx, nil, item.Ns); err != nil {
 			return err
 		}
 	}
@@ -326,15 +326,14 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObject) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesTL2TestObject) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesTL2TestObject) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesTL2TestObject) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -364,13 +363,13 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	backupIndexF3 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	w = BuiltinVectorBoolWriteJSONOpt(tctx, w, item.F3)
+	w = BuiltinVectorBoolWriteJSONOpt(jctx, w, item.F3)
 	if !(len(item.F3) != 0) {
 		w = w[:backupIndexF3]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f4":`...)
-	if w, err = item.F4.WriteJSONOpt(tctx, w, item.Ns); err != nil {
+	if w, err = item.F4.WriteJSONOpt(jctx, w, item.Ns); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -381,14 +380,14 @@ func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	backupIndexF6 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f6":`...)
-	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx, w, item.F6)
+	w = BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(jctx, w, item.F6)
 	if !(len(item.F6) != 0) {
 		w = w[:backupIndexF6]
 	}
 	if item.N&(1<<14) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f7":`...)
-		w = BuiltinVectorTrueBoxedWriteJSONOpt(tctx, w, item.F7)
+		w = BuiltinVectorTrueBoxedWriteJSONOpt(jctx, w, item.F7)
 	}
 	return append(w, '}'), nil
 }

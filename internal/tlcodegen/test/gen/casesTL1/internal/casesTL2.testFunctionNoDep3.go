@@ -71,20 +71,19 @@ func (item *CasesTL2TestFunctionNoDep3) WriteResultTL1(w []byte, ret []int32) (_
 }
 
 func (item *CasesTL2TestFunctionNoDep3) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := BuiltinVectorIntReadJSONGeneral(tctx, in, ret); err != nil {
+	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := BuiltinVectorIntReadJSONGeneral(jctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *CasesTL2TestFunctionNoDep3) WriteResultJSON(w []byte, ret []int32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *CasesTL2TestFunctionNoDep3) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
-	w = BuiltinVectorIntWriteJSONOpt(tctx, w, ret)
+func (item *CasesTL2TestFunctionNoDep3) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
+	w = BuiltinVectorIntWriteJSONOpt(jctx, w, ret)
 	return w, nil
 }
 
@@ -94,12 +93,12 @@ func (item *CasesTL2TestFunctionNoDep3) FillRandomResultTL1(rg *basictl.RandGene
 	return item.WriteResultTL1(w, ret)
 }
 
-func (item *CasesTL2TestFunctionNoDep3) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep3) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
@@ -117,11 +116,11 @@ func (item CasesTL2TestFunctionNoDep3) String() string {
 }
 
 func (item *CasesTL2TestFunctionNoDep3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestFunctionNoDep3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestFunctionNoDep3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -157,15 +156,14 @@ func (item *CasesTL2TestFunctionNoDep3) ReadJSONGeneral(tctx *basictl.JSONReadCo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestFunctionNoDep3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestFunctionNoDep3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestFunctionNoDep3) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestFunctionNoDep3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestFunctionNoDep3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

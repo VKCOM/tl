@@ -69,11 +69,11 @@ func (item AbUseDictString) String() string {
 }
 
 func (item *AbUseDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbUseDictString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
 	if in != nil {
@@ -98,7 +98,7 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
 				propTagsPresented = true
-				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
+				if err := BuiltinDictStringStringReadJSONGeneral(jctx, in, &item.Tags); err != nil {
 					return err
 				}
 			default:
@@ -121,15 +121,14 @@ func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbUseDictString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbUseDictString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbUseDictString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbUseDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbUseDictString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -141,7 +140,7 @@ func (item *AbUseDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	backupIndexTags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tags":`...)
-	w = BuiltinDictStringStringWriteJSONOpt(tctx, w, item.Tags)
+	w = BuiltinDictStringStringWriteJSONOpt(jctx, w, item.Tags)
 	if !(len(item.Tags) != 0) {
 		w = w[:backupIndexTags]
 	}
@@ -350,11 +349,11 @@ func (item AbUseDictStringBytes) String() string {
 }
 
 func (item *AbUseDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbUseDictStringBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
 	if in != nil {
@@ -379,7 +378,7 @@ func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
 				propTagsPresented = true
-				if err := BuiltinDictStringStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
+				if err := BuiltinDictStringStringBytesReadJSONGeneral(jctx, in, &item.Tags); err != nil {
 					return err
 				}
 			default:
@@ -402,15 +401,14 @@ func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbUseDictStringBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbUseDictStringBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbUseDictStringBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbUseDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbUseDictStringBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -422,7 +420,7 @@ func (item *AbUseDictStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w
 	backupIndexTags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tags":`...)
-	w = BuiltinDictStringStringBytesWriteJSONOpt(tctx, w, item.Tags)
+	w = BuiltinDictStringStringBytesWriteJSONOpt(jctx, w, item.Tags)
 	if !(len(item.Tags) != 0) {
 		w = w[:backupIndexTags]
 	}

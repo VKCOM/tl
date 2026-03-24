@@ -72,11 +72,11 @@ func (item CasesTL2TestParamsGeneration) String() string {
 }
 
 func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propN1Presented bool
 	var propN2Presented bool
 	var propX1Presented bool
@@ -113,7 +113,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x1")
 				}
 				propX1Presented = true
-				if err := item.X1.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X1.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "x2":
@@ -121,7 +121,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x2")
 				}
 				propX2Presented = true
-				if err := item.X2.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X2.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "x3":
@@ -129,7 +129,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x3")
 				}
 				propX3Presented = true
-				if err := item.X3.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X3.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "x4":
@@ -137,7 +137,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x4")
 				}
 				propX4Presented = true
-				if err := item.X4.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X4.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -172,15 +172,14 @@ func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONRead
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if item.N1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -194,16 +193,16 @@ func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x1":`...)
-	w = item.X1.WriteJSONOpt(tctx, w)
+	w = item.X1.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x2":`...)
-	w = item.X2.WriteJSONOpt(tctx, w)
+	w = item.X2.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x3":`...)
-	w = item.X3.WriteJSONOpt(tctx, w)
+	w = item.X3.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x4":`...)
-	w = item.X4.WriteJSONOpt(tctx, w)
+	w = item.X4.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

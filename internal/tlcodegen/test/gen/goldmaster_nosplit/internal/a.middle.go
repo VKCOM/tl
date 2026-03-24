@@ -60,7 +60,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteTL1Boxed(w []byte, nat_W u
 	return item.WriteTL1(w, nat_W, nat_PXI, nat_PYI)
 }
 
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_W uint32, nat_PXI uint32, nat_PYI uint32) error {
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_W uint32, nat_PXI uint32, nat_PYI uint32) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -77,7 +77,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("a.middle", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in, nat_W); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in, nat_W); err != nil {
 					return err
 				}
 			case "b":
@@ -85,7 +85,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.J
 					return ErrorInvalidJSONWithDuplicatingKeys("a.middle", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in, nat_PXI, nat_PYI); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in, nat_PXI, nat_PYI); err != nil {
 					return err
 				}
 			default:
@@ -99,12 +99,12 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.J
 		}
 	}
 	if !propAPresented {
-		if err := item.A.ReadJSONGeneral(tctx, nil, nat_W); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, nil, nat_W); err != nil {
 			return err
 		}
 	}
 	if !propBPresented {
-		if err := item.B.ReadJSONGeneral(tctx, nil, nat_PXI, nat_PYI); err != nil {
+		if err := item.B.ReadJSONGeneral(jctx, nil, nat_PXI, nat_PYI); err != nil {
 			return err
 		}
 	}
@@ -112,24 +112,23 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_W, nat_PXI, nat_PYI)
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_W, nat_PXI, nat_PYI)
 }
 
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSON(w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_W, nat_PXI, nat_PYI)
+	return item.WriteJSONOpt(nil, w, nat_W, nat_PXI, nat_PYI)
 }
-func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(tctx, w, nat_W); err != nil {
+	if w, err = item.A.WriteJSONOpt(jctx, w, nat_W); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(tctx, w, nat_PXI, nat_PYI); err != nil {
+	if w, err = item.B.WriteJSONOpt(jctx, w, nat_PXI, nat_PYI); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

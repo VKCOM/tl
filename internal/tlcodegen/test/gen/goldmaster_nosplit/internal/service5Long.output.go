@@ -60,11 +60,11 @@ func (item Service5LongEmptyOutput) String() string {
 }
 
 func (item *Service5LongEmptyOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service5LongEmptyOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service5LongEmptyOutput) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -82,15 +82,14 @@ func (item *Service5LongEmptyOutput) ReadJSONGeneral(tctx *basictl.JSONReadConte
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongEmptyOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service5LongEmptyOutput) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service5LongEmptyOutput) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service5LongEmptyOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service5LongEmptyOutput) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -362,29 +361,29 @@ func (item *Service5LongOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (
 }
 
 func (item *Service5LongOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service5LongOutput) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("service5Long.Output", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "empty", "service5Long.emptyOutput#ff8f7db9", "service5Long.emptyOutput", "#ff8f7db9":
-		if !tctx.LegacyTypeNames && _tag == "service5Long.emptyOutput#ff8f7db9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "service5Long.emptyOutput#ff8f7db9" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.emptyOutput#ff8f7db9")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#ff8f7db9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#ff8f7db9" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "#ff8f7db9")
 		}
 		item.index = 0
 	case "string", "service5Long.stringOutput#dc170ff7", "service5Long.stringOutput", "#dc170ff7":
-		if !tctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff7" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff7" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.stringOutput#dc170ff7")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#dc170ff7" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#dc170ff7" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "#dc170ff7")
 		}
 		item.index = 1
@@ -392,7 +391,7 @@ func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueString.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueString.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -402,28 +401,27 @@ func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service5LongOutput) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service5LongOutput) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service5LongOutput) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"empty"`...)
 		} else {
-			if tctx.Short {
-				if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.Short {
+				if jctx != nil && jctx.LegacyTypeNames {
 					w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
 				} else {
 					w = append(w, `{"type":"service5.emptyOutput"`...)
 				}
 			} else {
-				if tctx.LegacyTypeNames {
+				if jctx != nil && jctx.LegacyTypeNames {
 					w = append(w, `{"type":"service5Long.emptyOutput#ff8f7db9"`...)
 				} else {
 					w = append(w, `{"type":"service5Long.emptyOutput"`...)
@@ -432,17 +430,17 @@ func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"string"`...)
 		} else {
-			if tctx.Short {
-				if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.Short {
+				if jctx != nil && jctx.LegacyTypeNames {
 					w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)
 				} else {
 					w = append(w, `{"type":"service5.stringOutput"`...)
 				}
 			} else {
-				if tctx.LegacyTypeNames {
+				if jctx != nil && jctx.LegacyTypeNames {
 					w = append(w, `{"type":"service5Long.stringOutput#dc170ff7"`...)
 				} else {
 					w = append(w, `{"type":"service5Long.stringOutput"`...)
@@ -450,7 +448,7 @@ func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueString.WriteJSONOpt(tctx, w)
+		w = item.valueString.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -534,11 +532,11 @@ func (item Service5LongStringOutput) String() string {
 }
 
 func (item *Service5LongStringOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service5LongStringOutput) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propHttpCodePresented bool
 	var propResponsePresented bool
 	if in != nil {
@@ -586,15 +584,14 @@ func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongStringOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service5LongStringOutput) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service5LongStringOutput) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service5LongStringOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service5LongStringOutput) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexHttpCode := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

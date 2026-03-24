@@ -71,11 +71,11 @@ func (item CdTopLevel3) String() string {
 }
 
 func (item *CdTopLevel3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CdTopLevel3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CdTopLevel3) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -92,7 +92,7 @@ func (item *CdTopLevel3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.topLevel3", "a")
 				}
 				propAPresented = true
-				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.A.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "b":
@@ -100,7 +100,7 @@ func (item *CdTopLevel3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.topLevel3", "b")
 				}
 				propBPresented = true
-				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.B.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -123,22 +123,21 @@ func (item *CdTopLevel3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CdTopLevel3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CdTopLevel3) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CdTopLevel3) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CdTopLevel3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CdTopLevel3) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(tctx, w)
+	w = item.A.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(tctx, w)
+	w = item.B.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

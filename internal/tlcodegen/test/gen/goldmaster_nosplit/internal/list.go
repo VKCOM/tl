@@ -173,11 +173,11 @@ func (item ListService5Output) String() string {
 }
 
 func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *ListService5Output) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFlagPresented bool
 	var propHeadPresented bool
@@ -204,7 +204,7 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "head")
 				}
 				propHeadPresented = true
-				if err := item.Head.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Head.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 1
@@ -216,7 +216,7 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 				if item.Tail == nil {
 					item.Tail = new(ListService5Output)
 				}
-				if err := item.Tail.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Tail.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 				item.tl2mask0 |= 2
@@ -257,15 +257,14 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *ListService5Output) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *ListService5Output) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *ListService5Output) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *ListService5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *ListService5Output) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlag := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -277,12 +276,12 @@ func (item *ListService5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"head":`...)
-		w = item.Head.WriteJSONOpt(tctx, w)
+		w = item.Head.WriteJSONOpt(jctx, w)
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"tail":`...)
-		w = item.Tail.WriteJSONOpt(tctx, w)
+		w = item.Tail.WriteJSONOpt(jctx, w)
 	}
 	return append(w, '}')
 }

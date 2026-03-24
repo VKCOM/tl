@@ -229,21 +229,21 @@ func (item *CurlResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte
 }
 
 func (item *CurlResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CurlResponse) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("curl.Response", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "Ok", "curl.responseOk#57d7a33a", "curl.responseOk", "#57d7a33a":
-		if !tctx.LegacyTypeNames && _tag == "curl.responseOk#57d7a33a" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "curl.responseOk#57d7a33a" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "curl.responseOk#57d7a33a")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#57d7a33a" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#57d7a33a" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "#57d7a33a")
 		}
 		item.index = 0
@@ -251,14 +251,14 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueOk.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueOk.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "Error", "curl.responseError#af514651", "curl.responseError", "#af514651":
-		if !tctx.LegacyTypeNames && _tag == "curl.responseError#af514651" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "curl.responseError#af514651" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "curl.responseError#af514651")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#af514651" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#af514651" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("curl.Response", "#af514651")
 		}
 		item.index = 1
@@ -266,7 +266,7 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueError.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueError.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -276,41 +276,40 @@ func (item *CurlResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CurlResponse) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CurlResponse) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CurlResponse) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CurlResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CurlResponse) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"Ok"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"curl.responseOk#57d7a33a"`...)
 			} else {
 				w = append(w, `{"type":"curl.responseOk"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueOk.WriteJSONOpt(tctx, w)
+		w = item.valueOk.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.IsTL2 {
+		if jctx != nil && jctx.IsTL2 {
 			w = append(w, `{"type":"Error"`...)
 		} else {
-			if tctx.LegacyTypeNames {
+			if jctx != nil && jctx.LegacyTypeNames {
 				w = append(w, `{"type":"curl.responseError#af514651"`...)
 			} else {
 				w = append(w, `{"type":"curl.responseError"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueError.WriteJSONOpt(tctx, w)
+		w = item.valueError.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -401,11 +400,11 @@ func (item CurlResponseError) String() string {
 }
 
 func (item *CurlResponseError) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CurlResponseError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CurlResponseError) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldMaskPresented bool
 	var propErrorCodePresented bool
 	var propErrorStringPresented bool
@@ -465,15 +464,14 @@ func (item *CurlResponseError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CurlResponseError) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CurlResponseError) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CurlResponseError) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CurlResponseError) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CurlResponseError) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -784,11 +782,11 @@ func (item CurlResponseOk) String() string {
 }
 
 func (item *CurlResponseOk) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CurlResponseOk) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFieldMaskPresented bool
 	var propHttpCodePresented bool
@@ -824,7 +822,7 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("curl.responseOk", "http_headers")
 				}
 				propHttpHeadersPresented = true
-				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.HttpHeaders); err != nil {
+				if err := tlBuiltinDictStringString.BuiltinDictStringStringReadJSONGeneral(jctx, in, &item.HttpHeaders); err != nil {
 					return err
 				}
 			case "http_body":
@@ -868,15 +866,14 @@ func (item *CurlResponseOk) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CurlResponseOk) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CurlResponseOk) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CurlResponseOk) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CurlResponseOk) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CurlResponseOk) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -895,7 +892,7 @@ func (item *CurlResponseOk) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexHttpHeaders := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"http_headers":`...)
-	w = tlBuiltinDictStringString.BuiltinDictStringStringWriteJSONOpt(tctx, w, item.HttpHeaders)
+	w = tlBuiltinDictStringString.BuiltinDictStringStringWriteJSONOpt(jctx, w, item.HttpHeaders)
 	if !(len(item.HttpHeaders) != 0) {
 		w = w[:backupIndexHttpHeaders]
 	}

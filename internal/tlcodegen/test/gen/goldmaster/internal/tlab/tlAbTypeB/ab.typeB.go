@@ -65,11 +65,11 @@ func (item AbTypeB) String() string {
 }
 
 func (item *AbTypeB) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AbTypeB) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AbTypeB) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -85,7 +85,7 @@ func (item *AbTypeB) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.typeB", "x")
 				}
 				propXPresented = true
-				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -105,19 +105,18 @@ func (item *AbTypeB) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbTypeB) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AbTypeB) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AbTypeB) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AbTypeB) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AbTypeB) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = item.X.WriteJSONOpt(tctx, w)
+	w = item.X.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 

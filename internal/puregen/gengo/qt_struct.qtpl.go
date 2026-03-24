@@ -774,15 +774,15 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 `)
 		}
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
+		qw422016.N().S(`) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) error {
     `)
@@ -794,10 +794,10 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 // This method is general version of WriteJSON, use it instead!
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
+		qw422016.N().S(`) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w`)
+    return item.WriteJSONOpt(jctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)`)
 		if !writeNeedsError {
@@ -812,15 +812,14 @@ func (item *`)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+    return item.WriteJSONOpt(nil, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 }
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
+		qw422016.N().S(`) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -897,15 +896,15 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+    jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&jctx, in)
 }
 
 `)
 	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
@@ -1321,10 +1320,10 @@ func (struct_ *TypeRWStruct) streamwriteJSONCode(qw422016 *qt422016.Writer, byte
 // This method is general version of WriteJSON, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
+	qw422016.N().S(`) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
-    return item.WriteJSONOpt(tctx, w`)
+    return item.WriteJSONOpt(jctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)`)
 	if !writeNeedsError {
@@ -1339,14 +1338,13 @@ func (item *`)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
-    tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+    return item.WriteJSONOpt(nil, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
+	qw422016.N().S(`) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -1709,7 +1707,7 @@ func (item *`)
 	qw422016.N().S(`) error {
 `)
 	if struct_.ResultType.TypeJSON2ReadingRequiresContext() {
-		qw422016.N().S(`    tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+		qw422016.N().S(`    jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 `)
 	}
 	qw422016.N().S(`    `)
@@ -1723,13 +1721,12 @@ func (item *`)
 	qw422016.N().S(`) WriteResultJSON(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
-    tctx := basictl.JSONWriteContext{}
-    return item.writeResultJSON(&tctx, w, ret)
+    return item.writeResultJSON(nil, w, ret)
 }
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret `)
+	qw422016.N().S(`) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
     `)
@@ -1756,14 +1753,14 @@ func (item *`)
 	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	qw422016.N().S(`) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
   if r, err = item.ReadResultTL1(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.writeResultJSON(tctx, w, ret)
+  w, err = item.writeResultJSON(jctx, w, ret)
   return r, w, err
 }
 

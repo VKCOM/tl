@@ -57,11 +57,11 @@ func (item CasesBytesTestVector) String() string {
 }
 
 func (item *CasesBytesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestVector) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -77,7 +77,7 @@ func (item *CasesBytesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
 				propArrPresented = true
-				if err := BuiltinVectorStringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := BuiltinVectorStringReadJSONGeneral(jctx, in, &item.Arr); err != nil {
 					return err
 				}
 			default:
@@ -97,20 +97,19 @@ func (item *CasesBytesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestVector) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestVector) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestVector) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestVector) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Arr) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"arr":`...)
-		w = BuiltinVectorStringWriteJSONOpt(tctx, w, item.Arr)
+		w = BuiltinVectorStringWriteJSONOpt(jctx, w, item.Arr)
 	}
 	return append(w, '}')
 }
@@ -290,11 +289,11 @@ func (item CasesBytesTestVectorBytes) String() string {
 }
 
 func (item *CasesBytesTestVectorBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -310,7 +309,7 @@ func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(tctx *basictl.JSONReadCon
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
 				propArrPresented = true
-				if err := BuiltinVectorStringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := BuiltinVectorStringBytesReadJSONGeneral(jctx, in, &item.Arr); err != nil {
 					return err
 				}
 			default:
@@ -330,20 +329,19 @@ func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestVectorBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestVectorBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestVectorBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestVectorBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestVectorBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Arr) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"arr":`...)
-		w = BuiltinVectorStringBytesWriteJSONOpt(tctx, w, item.Arr)
+		w = BuiltinVectorStringBytesWriteJSONOpt(jctx, w, item.Arr)
 	}
 	return append(w, '}')
 }

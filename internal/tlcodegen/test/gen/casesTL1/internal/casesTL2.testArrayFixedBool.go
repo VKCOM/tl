@@ -97,11 +97,11 @@ func (item CasesTL2TestArrayFixedBool) String() string {
 }
 
 func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propA1Presented bool
 	var propA2Presented bool
 	var propA3Presented bool
@@ -122,7 +122,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a1")
 				}
 				propA1Presented = true
-				if err := BuiltinTuple1BoolReadJSONGeneral(tctx, in, &item.A1); err != nil {
+				if err := BuiltinTuple1BoolReadJSONGeneral(jctx, in, &item.A1); err != nil {
 					return err
 				}
 			case "a2":
@@ -130,7 +130,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a2")
 				}
 				propA2Presented = true
-				if err := BuiltinTuple0BoolReadJSONGeneral(tctx, in, &item.A2); err != nil {
+				if err := BuiltinTuple0BoolReadJSONGeneral(jctx, in, &item.A2); err != nil {
 					return err
 				}
 			case "a3":
@@ -138,7 +138,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a3")
 				}
 				propA3Presented = true
-				if err := BuiltinTuple7BoolReadJSONGeneral(tctx, in, &item.A3); err != nil {
+				if err := BuiltinTuple7BoolReadJSONGeneral(jctx, in, &item.A3); err != nil {
 					return err
 				}
 			case "a4":
@@ -146,7 +146,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a4")
 				}
 				propA4Presented = true
-				if err := BuiltinTuple8BoolReadJSONGeneral(tctx, in, &item.A4); err != nil {
+				if err := BuiltinTuple8BoolReadJSONGeneral(jctx, in, &item.A4); err != nil {
 					return err
 				}
 			case "a5":
@@ -154,7 +154,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a5")
 				}
 				propA5Presented = true
-				if err := BuiltinTuple11BoolReadJSONGeneral(tctx, in, &item.A5); err != nil {
+				if err := BuiltinTuple11BoolReadJSONGeneral(jctx, in, &item.A5); err != nil {
 					return err
 				}
 			case "a6":
@@ -162,7 +162,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 					return ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a6")
 				}
 				propA6Presented = true
-				if err := BuiltinTuple16BoolReadJSONGeneral(tctx, in, &item.A6); err != nil {
+				if err := BuiltinTuple16BoolReadJSONGeneral(jctx, in, &item.A6); err != nil {
 					return err
 				}
 			default:
@@ -197,34 +197,33 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadCo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestArrayFixedBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTL2TestArrayFixedBool) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTL2TestArrayFixedBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTL2TestArrayFixedBool) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a1":`...)
-	w = BuiltinTuple1BoolWriteJSONOpt(tctx, w, &item.A1)
+	w = BuiltinTuple1BoolWriteJSONOpt(jctx, w, &item.A1)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a2":`...)
-	w = BuiltinTuple0BoolWriteJSONOpt(tctx, w, &item.A2)
+	w = BuiltinTuple0BoolWriteJSONOpt(jctx, w, &item.A2)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a3":`...)
-	w = BuiltinTuple7BoolWriteJSONOpt(tctx, w, &item.A3)
+	w = BuiltinTuple7BoolWriteJSONOpt(jctx, w, &item.A3)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a4":`...)
-	w = BuiltinTuple8BoolWriteJSONOpt(tctx, w, &item.A4)
+	w = BuiltinTuple8BoolWriteJSONOpt(jctx, w, &item.A4)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a5":`...)
-	w = BuiltinTuple11BoolWriteJSONOpt(tctx, w, &item.A5)
+	w = BuiltinTuple11BoolWriteJSONOpt(jctx, w, &item.A5)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a6":`...)
-	w = BuiltinTuple16BoolWriteJSONOpt(tctx, w, &item.A6)
+	w = BuiltinTuple16BoolWriteJSONOpt(jctx, w, &item.A6)
 	return append(w, '}')
 }
 

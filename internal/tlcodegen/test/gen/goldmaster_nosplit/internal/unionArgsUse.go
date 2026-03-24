@@ -91,11 +91,11 @@ func (item UnionArgsUse) String() string {
 }
 
 func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *UnionArgsUse) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKPresented bool
 	var propNPresented bool
 	var propAPresented bool
@@ -163,23 +163,23 @@ func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 	}
 	if propAPresented {
 		inA := &basictl.JsonLexer{Data: rawA}
-		if err := item.A.ReadJSONGeneral(tctx, inA, item.K); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, inA, item.K); err != nil {
 			return err
 		}
 	}
 	if propBPresented {
 		inB := &basictl.JsonLexer{Data: rawB}
-		if err := item.B.ReadJSONGeneral(tctx, inB, item.N); err != nil {
+		if err := item.B.ReadJSONGeneral(jctx, inB, item.N); err != nil {
 			return err
 		}
 	}
 	if !propAPresented {
-		if err := item.A.ReadJSONGeneral(tctx, nil, item.K); err != nil {
+		if err := item.A.ReadJSONGeneral(jctx, nil, item.K); err != nil {
 			return err
 		}
 	}
 	if !propBPresented {
-		if err := item.B.ReadJSONGeneral(tctx, nil, item.N); err != nil {
+		if err := item.B.ReadJSONGeneral(jctx, nil, item.N); err != nil {
 			return err
 		}
 	}
@@ -187,15 +187,14 @@ func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UnionArgsUse) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *UnionArgsUse) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *UnionArgsUse) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *UnionArgsUse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *UnionArgsUse) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexK := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -213,12 +212,12 @@ func (item *UnionArgsUse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte)
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(tctx, w, item.K); err != nil {
+	if w, err = item.A.WriteJSONOpt(jctx, w, item.K); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.B.WriteJSONOpt(jctx, w, item.N); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

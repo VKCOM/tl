@@ -58,11 +58,11 @@ func (item CasesBytesTestDictAny) String() string {
 }
 
 func (item *CasesBytesTestDictAny) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestDictAny) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -78,7 +78,7 @@ func (item *CasesBytesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictAny", "dict")
 				}
 				propDictPresented = true
-				if err := BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinVectorDictionaryAnyFieldDoubleIntReadJSONGeneral(jctx, in, &item.Dict); err != nil {
 					return err
 				}
 			default:
@@ -98,20 +98,19 @@ func (item *CasesBytesTestDictAny) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestDictAny) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestDictAny) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestDictAny) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestDictAny) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestDictAny) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	if len(item.Dict) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"dict":`...)
-		w = BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(tctx, w, item.Dict)
+		w = BuiltinVectorDictionaryAnyFieldDoubleIntWriteJSONOpt(jctx, w, item.Dict)
 	}
 	return append(w, '}')
 }

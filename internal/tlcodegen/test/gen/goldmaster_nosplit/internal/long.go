@@ -133,8 +133,8 @@ func BuiltinTupleLongInternalReadTL2(r []byte, vec *[]int64) (_ []byte, err erro
 	}
 	return r, nil
 }
-func BuiltinTupleLongReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int64, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleLongReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int64, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -181,11 +181,10 @@ func BuiltinTupleLongReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 func BuiltinTupleLongWriteJSON(w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleLongWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleLongWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleLongWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -247,11 +246,11 @@ func (item Long) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Long) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if err := Json2ReadInt64(in, item.ptr()); err != nil {
 		return err
 	}
@@ -259,16 +258,15 @@ func (item *Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Long) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Long) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Long) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *Long) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Long) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = basictl.JSONWriteInt64(w, *item.ptr())
 	return w
 }

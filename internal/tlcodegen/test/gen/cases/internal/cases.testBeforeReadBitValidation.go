@@ -160,11 +160,11 @@ func (item CasesTestBeforeReadBitValidation) String() string {
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propNPresented bool
 	var propNsPresented bool
@@ -247,26 +247,26 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 	}
 	if propAPresented {
 		inA := &basictl.JsonLexer{Data: rawA}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inA, &item.A, item.Ns); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, inA, &item.A, item.Ns); err != nil {
 			return err
 		}
 	}
 	if propBPresented {
 		inB := &basictl.JsonLexer{Data: rawB}
-		if err := BuiltinTupleIntReadJSONGeneral(tctx, inB, &item.B, item.Ns); err != nil {
+		if err := BuiltinTupleIntReadJSONGeneral(jctx, inB, &item.B, item.Ns); err != nil {
 			return err
 		}
 	}
 	if !propAPresented {
 		if item.tl2mask0&1 != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.A, item.Ns); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.A, item.Ns); err != nil {
 				return err
 			}
 		}
 	}
 	if !propBPresented {
 		if item.tl2mask0&2 != 0 {
-			if err := BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.B, item.Ns); err != nil {
+			if err := BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.B, item.Ns); err != nil {
 				return err
 			}
 		}
@@ -275,15 +275,14 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestBeforeReadBitValidation) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *CasesTestBeforeReadBitValidation) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *CasesTestBeforeReadBitValidation) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -302,14 +301,14 @@ func (item *CasesTestBeforeReadBitValidation) WriteJSONOpt(tctx *basictl.JSONWri
 	if item.tl2mask0&1 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.A, item.Ns); err != nil {
 			return w, err
 		}
 	}
 	if item.tl2mask0&2 != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"b":`...)
-		if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.B, item.Ns); err != nil {
+		if w, err = BuiltinTupleIntWriteJSONOpt(jctx, w, item.B, item.Ns); err != nil {
 			return w, err
 		}
 	}

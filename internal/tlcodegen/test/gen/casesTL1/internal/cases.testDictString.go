@@ -63,11 +63,11 @@ func (item CasesTestDictString) String() string {
 }
 
 func (item *CasesTestDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesTestDictString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -83,7 +83,7 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 					return ErrorInvalidJSONWithDuplicatingKeys("cases.testDictString", "dict")
 				}
 				propDictPresented = true
-				if err := BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := BuiltinDictStringIntReadJSONGeneral(jctx, in, &item.Dict); err != nil {
 					return err
 				}
 			default:
@@ -103,20 +103,19 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestDictString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesTestDictString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesTestDictString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesTestDictString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = BuiltinDictStringIntWriteJSONOpt(tctx, w, item.Dict)
+	w = BuiltinDictStringIntWriteJSONOpt(jctx, w, item.Dict)
 	if !(len(item.Dict) != 0) {
 		w = w[:backupIndexDict]
 	}

@@ -184,11 +184,11 @@ func (item UseTrue) String() string {
 }
 
 func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *UseTrue) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	item.tl2mask0 = 0
 	var propFmPresented bool
 	var propAPresented bool
@@ -242,7 +242,7 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "c")
 				}
 				propCPresented = true
-				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.C.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "d":
@@ -250,7 +250,7 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("useTrue", "d")
 				}
 				propDPresented = true
-				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.D.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "e":
@@ -306,15 +306,14 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UseTrue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *UseTrue) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *UseTrue) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *UseTrue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *UseTrue) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFm := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

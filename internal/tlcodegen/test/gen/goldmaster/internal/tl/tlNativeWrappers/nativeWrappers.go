@@ -106,11 +106,11 @@ func (item NativeWrappers) String() string {
 }
 
 func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NativeWrappers) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	var propCPresented bool
@@ -147,7 +147,7 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "c")
 				}
 				propCPresented = true
-				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.C.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "d":
@@ -155,7 +155,7 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "d")
 				}
 				propDPresented = true
-				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.D.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "e":
@@ -163,7 +163,7 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "e")
 				}
 				propEPresented = true
-				if err := item.E.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.E.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "f":
@@ -171,7 +171,7 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "f")
 				}
 				propFPresented = true
-				if err := item.F.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.F.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -206,15 +206,14 @@ func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NativeWrappers) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *NativeWrappers) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *NativeWrappers) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NativeWrappers) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *NativeWrappers) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -233,28 +232,28 @@ func (item *NativeWrappers) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(tctx, w)
+	w = item.C.WriteJSONOpt(jctx, w)
 	if !(item.C != 0) {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = item.D.WriteJSONOpt(tctx, w)
+	w = item.D.WriteJSONOpt(jctx, w)
 	if !(item.D != 0) {
 		w = w[:backupIndexD]
 	}
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = item.E.WriteJSONOpt(tctx, w)
+	w = item.E.WriteJSONOpt(jctx, w)
 	if !(item.E != 0) {
 		w = w[:backupIndexE]
 	}
 	backupIndexF := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = item.F.WriteJSONOpt(tctx, w)
+	w = item.F.WriteJSONOpt(jctx, w)
 	if !(item.F != 0) {
 		w = w[:backupIndexF]
 	}

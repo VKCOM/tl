@@ -77,11 +77,11 @@ func (item BenchmarksVrutoyTopLevelContainerWithDependency) String() string {
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propValuePresented bool
 	var rawValue []byte
@@ -126,12 +126,12 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 	}
 	if propValuePresented {
 		inValue := &basictl.JsonLexer{Data: rawValue}
-		if err := item.Value.ReadJSONGeneral(tctx, inValue, item.N); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, inValue, item.N); err != nil {
 			return err
 		}
 	}
 	if !propValuePresented {
-		if err := item.Value.ReadJSONGeneral(tctx, nil, item.N); err != nil {
+		if err := item.Value.ReadJSONGeneral(jctx, nil, item.N); err != nil {
 			return err
 		}
 	}
@@ -139,15 +139,14 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tct
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -158,7 +157,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(tctx *
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(tctx, w, item.N); err != nil {
+	if w, err = item.Value.WriteJSONOpt(jctx, w, item.N); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

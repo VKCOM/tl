@@ -62,11 +62,11 @@ func (item CasesBytesTestTuple) String() string {
 }
 
 func (item *CasesBytesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestTuple) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -82,7 +82,7 @@ func (item *CasesBytesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testTuple", "tpl")
 				}
 				propTplPresented = true
-				if err := BuiltinTuple4StringReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
+				if err := BuiltinTuple4StringReadJSONGeneral(jctx, in, &item.Tpl); err != nil {
 					return err
 				}
 			default:
@@ -102,19 +102,18 @@ func (item *CasesBytesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestTuple) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestTuple) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestTuple) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = BuiltinTuple4StringWriteJSONOpt(tctx, w, &item.Tpl)
+	w = BuiltinTuple4StringWriteJSONOpt(jctx, w, &item.Tpl)
 	return append(w, '}')
 }
 
@@ -178,11 +177,11 @@ func (item CasesBytesTestTupleBytes) String() string {
 }
 
 func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *CasesBytesTestTupleBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *CasesBytesTestTupleBytes) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -198,7 +197,7 @@ func (item *CasesBytesTestTupleBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 					return ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testTuple", "tpl")
 				}
 				propTplPresented = true
-				if err := BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
+				if err := BuiltinTuple4StringBytesReadJSONGeneral(jctx, in, &item.Tpl); err != nil {
 					return err
 				}
 			default:
@@ -218,19 +217,18 @@ func (item *CasesBytesTestTupleBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestTupleBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *CasesBytesTestTupleBytes) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *CasesBytesTestTupleBytes) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *CasesBytesTestTupleBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *CasesBytesTestTupleBytes) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, &item.Tpl)
+	w = BuiltinTuple4StringBytesWriteJSONOpt(jctx, w, &item.Tpl)
 	return append(w, '}')
 }
 
