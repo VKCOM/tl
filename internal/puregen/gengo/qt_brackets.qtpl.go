@@ -21,7 +21,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
 	writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
-	repairCode := tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false)
+	repairCode := tuple.element.t.TypeRepairMasksCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false)
 
 	switch {
 	case tuple.vectorLike:
@@ -40,7 +40,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 			qw422016.N().S(`, l)
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
@@ -96,7 +96,7 @@ func (tuple *TypeRWBrackets) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
     }
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false))
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false))
 			qw422016.N().S(`
     }
     return w, nil
@@ -127,7 +127,7 @@ func `)
 			qw422016.N().S(`    w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
 			qw422016.N().S(`
     }
 `)
@@ -319,7 +319,7 @@ func `)
                 *vec = (*vec)[:cap(*vec)]
             }
             `)
-		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 		qw422016.N().S(`
              in.WantComma()
         }
@@ -364,7 +364,7 @@ func `)
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
         `)
-		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
+		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
 		qw422016.N().S(`
     }
 `)
@@ -393,7 +393,7 @@ func `)
 			qw422016.N().S(`, nat_n)
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
@@ -445,7 +445,7 @@ func `)
     }
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false))
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false))
 			qw422016.N().S(`
     }
     return w, nil
@@ -480,7 +480,7 @@ func `)
     }
     for _, elem := range vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
 			qw422016.N().S(`
     }
     return w, nil
@@ -684,7 +684,7 @@ func `)
                 }
             }
             `)
-		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 		qw422016.N().S(`
             in.WantComma()
         }
@@ -745,7 +745,7 @@ func `)
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
         `)
-		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
+		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
 		qw422016.N().S(`
     }
     return append(w, ']'), nil
@@ -777,7 +777,7 @@ func `)
     rg.IncreaseDepth()
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+			qw422016.N().S(tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 			qw422016.N().S(`
     }
     rg.DecreaseDepth()
@@ -816,7 +816,7 @@ func `)
 		} else {
 			qw422016.N().S(`    for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false))
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false))
 			qw422016.N().S(`
     }
     return w, nil
@@ -846,7 +846,7 @@ func `)
 		} else {
 			qw422016.N().S(`    for _, elem := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, false, writeElementNeedsError))
 			qw422016.N().S(`
     }
 `)
@@ -1057,7 +1057,7 @@ func `)
 		qw422016.N().S(`)
             }
             `)
-		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.NatArgs()), false))
+		qw422016.N().S(tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false))
 		qw422016.N().S(`
             in.WantComma()
         }
@@ -1112,7 +1112,7 @@ func `)
     for _, elem := range *vec {
         w = basictl.JSONAddCommaIfNeeded(w)
         `)
-		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
+		qw422016.N().S(tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.wr.formatNatArgs(nil, tuple.element.NatArgs()), false, writeElementNeedsError))
 		qw422016.N().S(`
     }
 `)

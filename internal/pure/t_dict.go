@@ -50,7 +50,7 @@ func (k *Kernel) createDict(canonicalName string,
 		PR: resolvedType.PR, // TODO - check all PRs
 	}
 
-	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType}, "t", nil)
 	//_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
 
 	fieldNatArgs := k.natParamsToActualNatArgs(natParams)

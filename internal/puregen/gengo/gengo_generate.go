@@ -308,7 +308,8 @@ func (gen *genGo) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.Type
 	// TODO - better check?
 	isString := structElement.Fields[0].t.pureType.CanonicalName() == "string"
 	res := &TypeRWDict{
-		wr: myWrapper,
+		wr:            myWrapper,
+		structElement: structElement,
 		element: Field{
 			pureField: field,
 			t:         fieldType,

@@ -252,7 +252,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.Common().NatParams(), ", ")
   {%- elseif fm.IsNumber() -%}
 // {%v fm.Number() %} bit #{%v num %} = false
   {%- else -%}
-// {%s fm.Name() %} bit #{%v num %}
+// {%s fm.NatParamName() %} bit #{%v num %}
   {%- endif -%}
 {%- endfunc -%}
 

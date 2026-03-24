@@ -10,7 +10,6 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/VKCOM/tl/internal/pure"
@@ -55,27 +54,6 @@ func wrapWithError(wrap bool, wrappedType string) string {
 		return wrappedType
 	}
 	return "(_ " + wrappedType + ", err error)"
-}
-
-func formatNatArg(fields []Field, arg pure.ActualNatArg) string {
-	if arg.IsNumber() {
-		return strconv.FormatUint(uint64(arg.Number()), 10)
-	}
-	if arg.IsField() {
-		if arg.FieldIndex() < 0 {
-			panic("should be never, this was used by october kernel to pass TL2 masks")
-		}
-		return "item." + fields[arg.FieldIndex()].goName
-	}
-	return "nat_" + arg.Name()
-}
-
-func formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
-	var result []string
-	for _, arg := range natArgs {
-		result = append(result, formatNatArg(fields, arg))
-	}
-	return result
 }
 
 // simply adds commas, natArgs are already fully formatted. Difference to strings.Join is leading comma

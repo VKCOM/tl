@@ -13,8 +13,10 @@ import (
 // check that brackets cannot be function return type
 
 type TypeRWDict struct {
-	wr      *TypeRWWrapper
-	element Field
+	wr *TypeRWWrapper
+
+	structElement *TypeRWStruct
+	element       Field
 
 	dictKeyString  bool
 	dictKeyField   Field
@@ -22,6 +24,10 @@ type TypeRWDict struct {
 }
 
 var _ TypeRW = &TypeRWDict{}
+
+func (trw *TypeRWDict) formatValueNatArgs() []string {
+	return trw.structElement.wr.formatNatArgs(nil, trw.dictValueField.NatArgs())
+}
 
 func (trw *TypeRWDict) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if !bytesVersion {
