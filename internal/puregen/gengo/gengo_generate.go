@@ -18,6 +18,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
 			canonicalType:  "byte",
+			historicalName: "byte",
 			goType:         "byte",
 			writeJSONValue: "basictl.JSONWriteByte",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadByte",
@@ -27,6 +28,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.ByteRead",
 		}, {
 			canonicalType:  "uint32",
+			historicalName: "nat",
 			goType:         "uint32",
 			writeJSONValue: "basictl.JSONWriteUint32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint32",
@@ -36,6 +38,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.NatRead",
 		}, {
 			canonicalType:  "int32",
+			historicalName: "int",
 			goType:         "int32",
 			writeJSONValue: "basictl.JSONWriteInt32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt32",
@@ -45,6 +48,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.IntRead",
 		}, {
 			canonicalType:  "int64",
+			historicalName: "long",
 			goType:         "int64",
 			writeJSONValue: "basictl.JSONWriteInt64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt64",
@@ -54,6 +58,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.LongRead",
 		}, {
 			canonicalType:  "uint64",
+			historicalName: "uint64",
 			goType:         "uint64",
 			writeJSONValue: "basictl.JSONWriteUint64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint64",
@@ -63,6 +68,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.Uint64Read",
 		}, {
 			canonicalType:  "float32",
+			historicalName: "float",
 			goType:         "float32",
 			writeJSONValue: "basictl.JSONWriteFloat32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat32",
@@ -72,6 +78,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.FloatRead",
 		}, {
 			canonicalType:  "float64",
+			historicalName: "double",
 			goType:         "float64",
 			writeJSONValue: "basictl.JSONWriteFloat64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat64",
@@ -81,6 +88,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.DoubleRead",
 		}, {
 			canonicalType:  "string",
+			historicalName: "string",
 			goType:         "string",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
@@ -90,6 +98,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.StringRead",
 		}, {
 			canonicalType:  "__function",
+			historicalName: "function",
 			goType:         "string",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
@@ -99,6 +108,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			readValue:      "basictl.StringRead",
 		}, {
 			canonicalType:  "__function_result",
+			historicalName: "function_result",
 			goType:         "string",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
@@ -111,7 +121,7 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 	for _, ct := range primitiveTypesList {
 		if ct.canonicalType == pureType.CanonicalName() {
 			myWrapper.trw = ct
-			//ct.tlTag = myWrapper.tlTag
+			myWrapper.goCanonicalName = tlast.TL2TypeName{Name: ct.historicalName}
 			return nil
 		}
 	}

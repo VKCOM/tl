@@ -47,9 +47,8 @@ type KernelType struct {
 	canonicalName tlast.TL2TypeName
 	// for TL1-defined types, if !function, TypeDecl.Name (right side of =)
 	// for TL1 Bool, Bool
-	tl1BoxedName   tlast.TL2TypeName
-	canBeBare      bool
-	historicalName tlast.TL2TypeName // go gen historically uses TL1-style names for builtin types
+	tl1BoxedName tlast.TL2TypeName
+	canBeBare    bool
 
 	namePR tlast.PositionRange // for "see here" in beautiful errors
 
@@ -89,10 +88,6 @@ func (t *KernelType) HasAnnotation(a string) bool {
 
 func (t *KernelType) CanonicalName() tlast.TL2TypeName {
 	return t.canonicalName
-}
-
-func (t *KernelType) HistoricalName() tlast.TL2TypeName {
-	return t.historicalName
 }
 
 func (t *KernelType) CanBeBare() bool {

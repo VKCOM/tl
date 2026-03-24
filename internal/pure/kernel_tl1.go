@@ -76,16 +76,15 @@ func (k *Kernel) CompileBuiltinTL1(typ *tlast.Combinator) error {
 			FieldType: tlast.TypeRef{Type: typ.Construct.Name},
 		}}
 		kt := &KernelType{
-			originTL2:      false,
-			combTL1:        []*tlast.Combinator{&combTL1},
-			instances:      map[string]*TypeInstanceRef{},
-			tl1Names:       map[string]struct{}{bigName: {}},
-			tl2Names:       map[string]struct{}{},
-			canonicalName:  tlast.TL2TypeName(typ.TypeDecl.Name),
-			historicalName: tlast.TL2TypeName(typ.TypeDecl.Name),
-			tl1BoxedName:   tlast.TL2TypeName(typ.TypeDecl.Name),
-			isTopLevel:     true,
-			canBeBare:      true, // actually is will never be bare due to builtinWrappedCanonicalName replacement
+			originTL2:     false,
+			combTL1:       []*tlast.Combinator{&combTL1},
+			instances:     map[string]*TypeInstanceRef{},
+			tl1Names:      map[string]struct{}{bigName: {}},
+			tl2Names:      map[string]struct{}{},
+			canonicalName: tlast.TL2TypeName(typ.TypeDecl.Name),
+			tl1BoxedName:  tlast.TL2TypeName(typ.TypeDecl.Name),
+			isTopLevel:    true,
+			canBeBare:     true, // actually is will never be bare due to builtinWrappedCanonicalName replacement
 
 			builtinWrappedCanonicalName: typ.Construct.Name.String(),
 		}
@@ -270,10 +269,9 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				isTopLevel:     true, // despite having 1 template argument in case of excl
 				exclamationArg: exclArg,
 				// functions have no TL1 names or TL2 names set, because there is no references to functions
-				canonicalName:  tlast.TL2TypeName(cName),
-				historicalName: tlast.TL2TypeName(cName),
-				namePR:         comb.Construct.NamePR,
-				canBeBare:      true,
+				canonicalName: tlast.TL2TypeName(cName),
+				namePR:        comb.Construct.NamePR,
+				canBeBare:     true,
 			}
 			for _, m := range comb.Modifiers {
 				kt.annotations = append(kt.annotations, m.Name)
@@ -323,7 +321,6 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 				tl1Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				tl2Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
 				canonicalName:     tlast.TL2TypeName(cName),
-				historicalName:    tlast.TL2TypeName(cName),
 				tl1BoxedName:      tlast.TL2TypeName(tName),
 				namePR:            comb.Construct.NamePR,
 				canBeBare:         true,
@@ -366,7 +363,6 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 			tl1Names:          map[string]struct{}{tName.String(): {}},
 			tl2Names:          map[string]struct{}{tName.String(): {}},
 			canonicalName:     tlast.TL2TypeName(tName),
-			historicalName:    tlast.TL2TypeName(tName),
 			tl1BoxedName:      tlast.TL2TypeName(tName),
 			namePR:            comb.TypeDecl.NamePR,
 			templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
