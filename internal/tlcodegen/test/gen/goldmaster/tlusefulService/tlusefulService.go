@@ -63,8 +63,7 @@ func (c *Client) GetUserEntity(ctx context.Context, args GetUserEntity, extra *r
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
-		tctx := basictl.TL2WriteContext{}
-		req.Body = args.WriteTL2(req.Body, &tctx)
+		req.Body = args.WriteTL2(req.Body, nil)
 	} else {
 		req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
 		if err != nil {

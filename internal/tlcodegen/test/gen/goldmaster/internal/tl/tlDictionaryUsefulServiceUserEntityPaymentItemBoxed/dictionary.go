@@ -76,10 +76,10 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(jctx
 	return w
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -89,8 +89,8 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -102,6 +102,6 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r
 	return r, nil
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

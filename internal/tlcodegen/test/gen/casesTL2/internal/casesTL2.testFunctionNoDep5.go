@@ -60,7 +60,7 @@ func (item *CasesTL2TestFunctionNoDep5) WriteResultTL1(w []byte, ret CasesTL2Tes
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep5) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *CasesTL2TestObject) (_ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep5) ReadResultTL2(r []byte, tctx *basictl.TL2ReadContext, ret *CasesTL2TestObject) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -159,18 +159,18 @@ func (item *CasesTL2TestFunctionNoDep5) writeResultTL2(w []byte, sizes []int, op
 	return w, sizes, currentSize
 }
 
-func (item *CasesTL2TestFunctionNoDep5) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret CasesTL2TestObject) []byte {
+func (item *CasesTL2TestFunctionNoDep5) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret CasesTL2TestObject) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.calculateLayoutResult(sizes, false, ret)
 	w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -383,18 +383,18 @@ func (item *CasesTL2TestFunctionNoDep5) InternalWriteTL2(w []byte, sizes []int, 
 	return w, sizes, 1
 }
 
-func (item *CasesTL2TestFunctionNoDep5) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesTL2TestFunctionNoDep5) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -440,6 +440,6 @@ func (item *CasesTL2TestFunctionNoDep5) InternalReadTL2(r []byte) (_ []byte, err
 	return r, nil
 }
 
-func (item *CasesTL2TestFunctionNoDep5) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep5) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

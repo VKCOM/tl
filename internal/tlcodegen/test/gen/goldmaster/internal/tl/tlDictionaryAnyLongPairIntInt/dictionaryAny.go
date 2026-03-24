@@ -102,10 +102,10 @@ func (item *DictionaryAnyLongPairIntInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryAnyLongPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *DictionaryAnyLongPairIntInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -115,8 +115,8 @@ func (item *DictionaryAnyLongPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2Writ
 
 	internal.Unused(currentSize)
 	internal.Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -128,6 +128,6 @@ func (item *DictionaryAnyLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, er
 	return r, nil
 }
 
-func (item *DictionaryAnyLongPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *DictionaryAnyLongPairIntInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

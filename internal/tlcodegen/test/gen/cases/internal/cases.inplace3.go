@@ -165,18 +165,18 @@ func (item *CasesInplace3TupleInt2) InternalWriteTL2(w []byte, sizes []int, opti
 	return w, sizes, 1
 }
 
-func (item *CasesInplace3TupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesInplace3TupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -222,7 +222,7 @@ func (item *CasesInplace3TupleInt2) InternalReadTL2(r []byte) (_ []byte, err err
 	return r, nil
 }
 
-func (item *CasesInplace3TupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesInplace3TupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -378,18 +378,18 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, 
 	return w, sizes, 1
 }
 
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -435,6 +435,6 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) InternalReadTL2(r []byte) (
 	return r, nil
 }
 
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

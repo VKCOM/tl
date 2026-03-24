@@ -324,8 +324,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 		qw422016.N().S(`    if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
-        tctx := basictl.TL2WriteContext{}
-        req.Body = args.WriteTL2(req.Body, &tctx)
+        req.Body = args.WriteTL2(req.Body, nil)
     } else {
         req.Body, err = args.WriteTL1BoxedGeneral(req.Body)
         if err != nil {
@@ -338,8 +337,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	} else if fun.wr.HasTL2() {
 		qw422016.N().S(`    req.BodyFormatTL2 = true
     req.Body = basictl.NatWrite(req.Body, args.TLTag())
-    tctx := basictl.TL2WriteContext{}
-    req.Body = args.WriteTL2(req.Body, &tctx)
+    req.Body = args.WriteTL2(req.Body, nil)
 `)
 	} else {
 		qw422016.N().S(`    req.Body, err = args.WriteTL1BoxedGeneral(req.Body)

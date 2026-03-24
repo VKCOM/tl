@@ -59,8 +59,7 @@ func (c *Client) TestFunctionNoDep1(ctx context.Context, args TestFunctionNoDep1
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -89,8 +88,7 @@ func (c *Client) TestFunctionNoDep2(ctx context.Context, args TestFunctionNoDep2
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -119,8 +117,7 @@ func (c *Client) TestFunctionNoDep3(ctx context.Context, args TestFunctionNoDep3
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -149,8 +146,7 @@ func (c *Client) TestFunctionNoDep4(ctx context.Context, args TestFunctionNoDep4
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -179,8 +175,7 @@ func (c *Client) TestFunctionNoDep5(ctx context.Context, args TestFunctionNoDep5
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -209,8 +204,7 @@ func (c *Client) TestFunctionNoDep6(ctx context.Context, args TestFunctionNoDep6
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -239,8 +233,7 @@ func (c *Client) TestFunctionNoDep7(ctx context.Context, args TestFunctionNoDep7
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -269,8 +262,7 @@ func (c *Client) TestFunctionWithDep1(ctx context.Context, args TestFunctionWith
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra
@@ -299,8 +291,7 @@ func (c *Client) TestFunctionWithDep2(ctx context.Context, args TestFunctionWith
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	req.BodyFormatTL2 = true
 	req.Body = basictl.NatWrite(req.Body, args.TLTag())
-	tctx := basictl.TL2WriteContext{}
-	req.Body = args.WriteTL2(req.Body, &tctx)
+	req.Body = args.WriteTL2(req.Body, nil)
 	resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
 	if extra != nil && resp != nil {
 		extra.ResponseExtra = resp.Extra

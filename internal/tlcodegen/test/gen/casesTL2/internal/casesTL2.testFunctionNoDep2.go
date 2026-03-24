@@ -60,12 +60,12 @@ func (item *CasesTL2TestFunctionNoDep2) WriteResultTL1(w []byte, ret True) (_ []
 	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
-func (item *CasesTL2TestFunctionNoDep2) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *True) (_ []byte, err error) {
-	return ret.ReadTL2(r, ctx)
+func (item *CasesTL2TestFunctionNoDep2) ReadResultTL2(r []byte, tctx *basictl.TL2ReadContext, ret *True) (_ []byte, err error) {
+	return ret.ReadTL2(r, tctx)
 }
 
-func (item *CasesTL2TestFunctionNoDep2) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret True) []byte {
-	return ret.WriteTL2(w, ctx)
+func (item *CasesTL2TestFunctionNoDep2) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret True) []byte {
+	return ret.WriteTL2(w, tctx)
 }
 
 func (item *CasesTL2TestFunctionNoDep2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *True) error {
@@ -276,18 +276,18 @@ func (item *CasesTL2TestFunctionNoDep2) InternalWriteTL2(w []byte, sizes []int, 
 	return w, sizes, 1
 }
 
-func (item *CasesTL2TestFunctionNoDep2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *CasesTL2TestFunctionNoDep2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes, sizes2 []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	sizes, _ = item.CalculateLayout(sizes, false)
 	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
 	if len(sizes2) != 0 {
 		panic("tl2: internal write did not consume all size data")
 	}
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -333,6 +333,6 @@ func (item *CasesTL2TestFunctionNoDep2) InternalReadTL2(r []byte) (_ []byte, err
 	return r, nil
 }
 
-func (item *CasesTL2TestFunctionNoDep2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

@@ -250,27 +250,27 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     return r, nil
 }
 {%- endif -%}
-func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *{%s= goName %}) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 {%- if !union.wr.HasTL2() -%}
     panic({%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %}))
 {%- else -%}
     var sizes, sizes2 []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer[:0]
+    if tctx != nil {
+        sizes = tctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
     w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
     if len(sizes2) != 0 {
         panic("tl2: internal write did not consume all size data")
     }
-    if ctx != nil {
-        ctx.SizeBuffer = sizes
+    if tctx != nil {
+        tctx.SizeBuffer = sizes
     }
     return w
 {%- endif -%}
 }
 
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+func (item *{%s= goName %}) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) ([]byte, error) {
     {%- if !union.wr.HasTL2() -%}
     return r, {%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
@@ -480,7 +480,8 @@ func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
 }
 
 func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
-    if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+    jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+    if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, err.Error())
     }
     return nil

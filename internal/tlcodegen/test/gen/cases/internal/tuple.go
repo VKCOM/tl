@@ -444,10 +444,10 @@ func (item *TupleInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat
 	return w, nil
 }
 
-func (item *TupleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleInt) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -457,8 +457,8 @@ func (item *TupleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -470,7 +470,7 @@ func (item *TupleInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleInt) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -557,10 +557,10 @@ func (item *TupleInt2) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -570,8 +570,8 @@ func (item *TupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -583,7 +583,7 @@ func (item *TupleInt2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -670,10 +670,10 @@ func (item *TupleInt4) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleInt4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleInt4) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -683,8 +683,8 @@ func (item *TupleInt4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -696,7 +696,7 @@ func (item *TupleInt4) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleInt4) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleInt4) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -763,10 +763,10 @@ func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteCont
 	return w, nil
 }
 
-func (item *TuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TuplePairTupleIntTupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -776,8 +776,8 @@ func (item *TuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2Write
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -789,7 +789,7 @@ func (item *TuplePairTupleIntTupleInt2) InternalReadTL2(r []byte) (_ []byte, err
 	return r, nil
 }
 
-func (item *TuplePairTupleIntTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TuplePairTupleIntTupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -876,10 +876,10 @@ func (item *TupleString4) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleString4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleString4) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -889,8 +889,8 @@ func (item *TupleString4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byt
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -902,7 +902,7 @@ func (item *TupleString4) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleString4) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleString4) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -989,10 +989,10 @@ func (item *TupleString4Bytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleString4Bytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleString4Bytes) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -1002,8 +1002,8 @@ func (item *TupleString4Bytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1015,7 +1015,7 @@ func (item *TupleString4Bytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleString4Bytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleString4Bytes) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -1080,10 +1080,10 @@ func (item *TupleTupleInt2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byt
 	return w, nil
 }
 
-func (item *TupleTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleTupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -1093,8 +1093,8 @@ func (item *TupleTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1106,7 +1106,7 @@ func (item *TupleTupleInt2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *TupleTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleTupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
 
@@ -1173,10 +1173,10 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(jctx *basictl.JSONWrit
 	return w, nil
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *TupleTuplePairTupleIntTupleInt2) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer[:0]
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
 	}
 	var sz int
 	var currentSize int
@@ -1186,8 +1186,8 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2
 
 	Unused(currentSize)
 	Unused(sz)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1199,6 +1199,6 @@ func (item *TupleTuplePairTupleIntTupleInt2) InternalReadTL2(r []byte) (_ []byte
 	return r, nil
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+func (item *TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }
