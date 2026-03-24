@@ -146,7 +146,7 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *genGo, anyTypeAlias bool, 
 			for _, wr := range types {
 				if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 					_, ourResultType := ourTypes[fun.ResultType]
-					ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+					ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
 					myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
 					_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
 
@@ -175,7 +175,7 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *genGo, anyTypeAlias bool, 
 	for _, wr := range types {
 		if wr.ShouldWriteEnumElementAlias() {
 			_, ourUnionParentLocal := ourTypes[wr.UnionParent().wr]
-			ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.UnionParent().wr.tlName.Namespace // false for vectors moved into our namespace
+			ourUnionParentLocal = ourUnionParentLocal && wr.TLName().Namespace == wr.UnionParent().wr.TLName().Namespace // false for vectors moved into our namespace
 			typeString := wr.TypeString2(false, directImports, nil, true, true)
 
 			qw422016.N().S(`func `)
@@ -191,7 +191,7 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *genGo, anyTypeAlias bool, 
 	for _, wr := range types {
 		_, ok := wr.trw.(*TypeRWBool)
 
-		if ok && !wr.originateFromTL2 {
+		if ok && !wr.OriginTL2() {
 			localTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
 
@@ -263,7 +263,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 		return
 	}
 	_, ourResultType := ourTypes[fun.ResultType]
-	ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+	ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
 	ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
 	funcTypeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
 	myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
@@ -274,7 +274,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 			ret = wr.TypeString2(false, directImports, nil, true, true) + "__Result"
 		}
 	}
-	tlName := wr.tlName.String()
+	tlName := wr.TLName().String()
 
 	qw422016.N().S(`    `)
 	qw422016.N().S(printCommentsType(fun.pureTypeStruct))
@@ -297,7 +297,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(tlName)
 	qw422016.N().S(`"
 `)
-	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 		qw422016.N().S(`    preferTLVersion :=`)
 		if fun.pureTypeStruct.RPCPreferTL2() {
 			qw422016.N().S(`2`)
@@ -311,7 +311,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
 `)
-	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 		qw422016.N().S(`		if extra.PreferTLVersion != 0 {
 			preferTLVersion = extra.PreferTLVersion
 		}
@@ -320,7 +320,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`    }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
-	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 		qw422016.N().S(`    if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -360,7 +360,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     }
     if ret != nil {
 `)
-	if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
 		} else {
@@ -402,9 +402,9 @@ func writeClientCode(bytesVersion bool, shortPackageName string, wr *TypeRWWrapp
 func streamhandlerStructs(qw422016 *qt422016.Writer, gen *genGo, name string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
 	for _, wr := range types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-			tlName := wr.tlName.String()
+			tlName := wr.TLName().String()
 			_, ourResultType := ourTypes[fun.ResultType]
-			ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+			ourResultType = ourResultType && wr.TLName().Namespace == fun.ResultType.TLName().Namespace // false for vectors moved into our namespace
 			ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
@@ -431,9 +431,9 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, gen *genGo, name string, ty
 `)
 	for _, wr := range types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-			tlName := wr.tlName.String()
+			tlName := wr.TLName().String()
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-			hasRaw := gen.rawHandlerWhileList.HasName2(wr.tlName)
+			hasRaw := gen.rawHandlerWhileList.HasName2(wr.TLName())
 
 			if hasRaw {
 				qw422016.N().S(`Raw`)
@@ -467,10 +467,10 @@ switch tag {
 `)
 	for _, wr := range types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+			tlTag := fmt.Sprintf("0x%08x", wr.TLTag())
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-			tlName := wr.tlName.String()
-			hasRaw := gen.rawHandlerWhileList.HasName2(wr.tlName)
+			tlName := wr.TLName().String()
+			hasRaw := gen.rawHandlerWhileList.HasName2(wr.TLName())
 
 			qw422016.N().S(`case `)
 			qw422016.N().S(tlTag)
@@ -540,7 +540,7 @@ switch tag {
 `)
 			// code below relies on returning "no serialization generated" error from Read/ReadTL2 above
 
-			if fun.wr.HasTL2() && !fun.wr.originateFromTL2 {
+			if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
             hctx.Response = args.WriteResultTL2(hctx.Response, nil, ret)
         } else {

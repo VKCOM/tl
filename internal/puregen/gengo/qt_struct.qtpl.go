@@ -24,8 +24,8 @@ var (
 
 func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
-	tlName := struct_.wr.tlName.String()
+	tlTag := fmt.Sprintf("0x%08x", struct_.wr.TLTag())
+	tlName := struct_.wr.TLName().String()
 	natArgsDecl := struct_.wr.formatNatArgsDecl()
 	natArgsCall := struct_.wr.formatNatArgsDeclCall()
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
@@ -68,7 +68,7 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	struct_.streamtypeDefinition(qw422016, bytesVersion, directImports)
 	qw422016.N().S(`
 `)
-	if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 {
+	if struct_.wr.TLTag() != 0 || struct_.wr.OriginTL2() {
 		// anonymous square brackets citizens or other exotic type
 
 		qw422016.N().S(`func (`)
@@ -217,7 +217,7 @@ func (item *`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if struct_.wr.originateFromTL2 {
+		if struct_.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -261,7 +261,7 @@ func (item *`)
 	qw422016.N().S(` }
 
 `)
-	if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 {
+	if struct_.wr.TLTag() != 0 || struct_.wr.OriginTL2() {
 		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -283,7 +283,7 @@ func (item *`)
 		qw422016.N().S(struct_.wr.fetcherDecl())
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if struct_.wr.originateFromTL2 {
+		if struct_.wr.OriginTL2() {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
@@ -320,7 +320,7 @@ func (item *`)
 			qw422016.N().S(natArgsDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
-			if struct_.wr.originateFromTL2 {
+			if struct_.wr.OriginTL2() {
 				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 			} else {
@@ -361,7 +361,7 @@ func (item *`)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
 `)
-		if struct_.wr.originateFromTL2 {
+		if struct_.wr.OriginTL2() {
 			if writeNeedsError {
 				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
@@ -488,7 +488,7 @@ func (item *`)
 		prefixComment := ""
 		if field.IsBit() {
 			prefixComment = "// "
-			fieldTypeString = ifString(field.t.originateFromTL2, "bit", "(TrueType)")
+			fieldTypeString = ifString(field.t.OriginTL2(), "bit", "(TrueType)")
 		} else {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}
@@ -762,7 +762,7 @@ func (struct_ *TypeRWStruct) fieldMaskGettersAndSetters(bytesVersion bool, direc
 
 func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	tlName := struct_.wr.tlName.String()
+	tlName := struct_.wr.TLName().String()
 	natArgsDecl := struct_.wr.formatNatArgsDecl()
 	natArgsCall := struct_.wr.formatNatArgsDeclCall()
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
@@ -890,7 +890,7 @@ func (struct_ *TypeRWStruct) generateJSONCode(bytesVersion bool, directImports *
 
 func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	tlName := struct_.wr.tlName.String()
+	tlName := struct_.wr.TLName().String()
 	natArgsDecl := struct_.wr.formatNatArgsDecl()
 
 	if len(struct_.wr.NatParams()) == 0 {
@@ -1400,12 +1400,12 @@ func (item *`)
 			qw422016.E().V(field.BitNumber())
 			qw422016.N().S(`) != 0 {
 `)
-		} else if emptyCond != "" && struct_.wr.originateFromTL2 {
+		} else if emptyCond != "" && struct_.wr.OriginTL2() {
 			qw422016.N().S(`            if `)
 			qw422016.N().S(emptyCond)
 			qw422016.N().S(` {
 `)
-		} else if emptyCond != "" && !struct_.wr.originateFromTL2 {
+		} else if emptyCond != "" && !struct_.wr.OriginTL2() {
 			qw422016.N().S(`            backupIndex`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(` := len(w)
@@ -1429,10 +1429,10 @@ func (item *`)
 		} else if field.FieldMask() != nil {
 			qw422016.N().S(`            }
 `)
-		} else if emptyCond != "" && struct_.wr.originateFromTL2 {
+		} else if emptyCond != "" && struct_.wr.OriginTL2() {
 			qw422016.N().S(`            }
 `)
-		} else if emptyCond != "" && !struct_.wr.originateFromTL2 {
+		} else if emptyCond != "" && !struct_.wr.OriginTL2() {
 			qw422016.N().S(`            if !(`)
 			qw422016.N().S(emptyCond)
 			qw422016.N().S(`) {
@@ -1488,7 +1488,7 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.OriginTL2() {
 		qw422016.N().S(`        return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
@@ -1520,7 +1520,7 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.OriginTL2() {
 		qw422016.N().S(`        return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
@@ -1783,7 +1783,7 @@ func (item *`)
 			qw422016.N().S(`  return r, w, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().Q(struct_.wr.TLName().String())
 			qw422016.N().S(`)
 `)
 		} else {
@@ -1806,7 +1806,7 @@ func (item *`)
 			qw422016.N().S(`  return r, w, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().Q(struct_.wr.TLName().String())
 			qw422016.N().S(`)
 `)
 		} else {
@@ -1830,7 +1830,7 @@ func (item *`)
 			qw422016.N().S(`  return r, w, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().Q(struct_.wr.TLName().String())
 			qw422016.N().S(`)
 `)
 		} else {
@@ -1854,7 +1854,7 @@ func (item *`)
 			qw422016.N().S(`  return r, w, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
+			qw422016.N().Q(struct_.wr.TLName().String())
 			qw422016.N().S(`)
 `)
 		} else {
@@ -1914,7 +1914,7 @@ func (item *`)
 				qw422016.N().S(` `)
 				qw422016.N().S(mergedFieldsForComment)
 				qw422016.N().S(` in "`)
-				qw422016.N().S(affectedType.wr.tlName.String())
+				qw422016.N().S(affectedType.wr.TLName().String())
 				qw422016.N().S(`" by changing fieldMask "`)
 				qw422016.N().S(field.OriginalName())
 				qw422016.N().S(`"
@@ -2003,7 +2003,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(` = 0
 `)
 	}
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.OriginTL2() {
 		for _, field := range struct_.Fields {
 			if field.IsTL2Omitted() {
 				continue
@@ -2148,7 +2148,7 @@ func (struct_ *TypeRWStruct) randomFields(bytesVersion bool, directImports *Dire
 }
 
 func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.OriginTL2() {
 		if struct_.wr.hasErrorInWriteMethods {
 			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
@@ -2169,7 +2169,7 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 				qw422016.E().V(field.BitNumber())
 				qw422016.N().S(`) != 0 {
                     `)
-				qw422016.N().S(fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag))
+				qw422016.N().S(fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.TLTag()))
 				qw422016.N().S(`
                 }
 `)
@@ -2241,7 +2241,7 @@ func (struct_ *TypeRWStruct) writeFields(bytesVersion bool, directImports *Direc
 }
 
 func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	if struct_.wr.originateFromTL2 {
+	if struct_.wr.OriginTL2() {
 		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		return
@@ -2280,7 +2280,7 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 				qw422016.E().V(field.BitNumber())
 				qw422016.N().S(`) != 0 {
                     `)
-				qw422016.N().S(wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true))
+				qw422016.N().S(wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.TLTag()), true))
 				qw422016.N().S(`
                 }
 `)
@@ -2339,7 +2339,7 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	tlName := struct_.wr.tlName.String()
+	tlName := struct_.wr.TLName().String()
 
 	if struct_.isAlias() {
 		field := struct_.Fields[0]

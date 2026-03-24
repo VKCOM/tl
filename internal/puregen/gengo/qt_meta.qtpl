@@ -108,7 +108,7 @@ func FactoryItemByTLName(name string) TLItem {
 
 func init() {
 {%- for _, wr := range types -%}
-    {%- if !forNamespace(wr.tlName.Namespace) -%}
+    {%- if !forNamespace(wr.TLName().Namespace) -%}
         {%- continue -%}
     {%- endif -%}
     {%- if !wr.pureType.Common().IsTopLevel() -%}
@@ -127,9 +127,9 @@ func init() {
                 resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
             -%}
         metainternal.FillFunction{%- else -%}metainternal.FillObject{%- endif -%}(
-        &metainternal.TLItemImpl{Name: "{%s= wr.tlName.String() %}" {%- code -%}
-            {%- if wr.tlTag != 0 -%}, Tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}{%- endif -%}
-            {%- if !wr.originateFromTL2 -%}, HaTL1:true{%- endif -%}
+        &metainternal.TLItemImpl{Name: "{%s= wr.TLName().String() %}" {%- code -%}
+            {%- if wr.TLTag() != 0 -%}, Tag: {%s= fmt.Sprintf("0x%08x", wr.TLTag()) %}{%- endif -%}
+            {%- if !wr.OriginTL2() -%}, HaTL1:true{%- endif -%}
             {%- if wr.HasTL2() -%}, HaTL2:true{%- endif -%}
             {%- if wr.AnnotationsMask() != 0 -%}, Annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}{%- endif -%}
             {%- if argumentsTypesContainUnionTypes -%}, ArgumentsTypesContainUnionTypes:true{%- endif -%}
@@ -140,9 +140,9 @@ func init() {
             if hasTypes != nil { *hasTypes = true }
             // unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
         -%}
-        metainternal.FillObject(&metainternal.TLItemImpl{Name: "{%s= wr.tlName.String() %}" {%- code -%}
-            {%- if wr.tlTag != 0 -%}, Tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}{%- endif -%}
-            {%- if !wr.originateFromTL2 -%}, HaTL1:true{%- endif -%}
+        metainternal.FillObject(&metainternal.TLItemImpl{Name: "{%s= wr.TLName().String() %}" {%- code -%}
+            {%- if wr.TLTag() != 0 -%}, Tag: {%s= fmt.Sprintf("0x%08x", wr.TLTag()) %}{%- endif -%}
+            {%- if !wr.OriginTL2() -%}, HaTL1:true{%- endif -%}
             {%- if wr.HasTL2() -%}, HaTL2:true{%- endif -%}
             {%- if wr.AnnotationsMask() != 0 -%}, Annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}{%- endif -%}
             {%- if argumentsTypesContainUnionTypes -%}, ArgumentsTypesContainUnionTypes:true{%- endif -%}})

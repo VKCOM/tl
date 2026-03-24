@@ -44,11 +44,6 @@ type TypeRWWrapper struct {
 	// otherwise order-dependent
 	fileNameOverride *TypeRWWrapper
 
-	originateFromTL2 bool
-
-	tlTag  uint32
-	tlName tlast.TL2TypeName
-
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 }
@@ -72,6 +67,18 @@ func (wr *TypeRWWrapper) NatParams() []string {
 	return wr.pureType.Common().NatParams()
 }
 
+func (wr *TypeRWWrapper) OriginTL2() bool {
+	return wr.pureType.Common().OriginTL2()
+}
+
+func (wr *TypeRWWrapper) TLTag() uint32 {
+	return wr.pureType.Common().TLTag()
+}
+
+func (wr *TypeRWWrapper) TLName() tlast.TL2TypeName {
+	return wr.pureType.Common().TLName()
+}
+
 func (wr *TypeRWWrapper) HasTL2() bool {
 	return wr.pureType.Common().HasTL2()
 }
@@ -84,7 +91,7 @@ func (wr *TypeRWWrapper) FileName() string {
 }
 
 func (wr *TypeRWWrapper) Namespace() string {
-	return wr.tlName.Namespace
+	return wr.TLName().Namespace
 }
 
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {

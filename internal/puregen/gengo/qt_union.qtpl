@@ -4,7 +4,7 @@
 {%- func (union *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(union.wr.goGlobalName, bytesVersion)
-        tlName := union.wr.tlName.String()
+        tlName := union.wr.TLName().String()
         asterisk := ifString(union.IsEnum, "", "*")
         natArgsDecl := union.wr.formatNatArgsDecl()
         natArgsCall := union.wr.formatNatArgsDeclCall()
@@ -82,7 +82,7 @@ func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}{%s= union.wr.f
 }
 {%- endif -%}
 func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) (_ []byte, err error) {
-    {%- if union.wr.originateFromTL2 -%}
+    {%- if union.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     var tag uint32
@@ -91,7 +91,7 @@ func (item*{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= union.wr
     }
     switch tag {
     {%- for i, field := range union.Fields -%}
-    case {%s= fmt.Sprintf("0x%08x", field.t.tlTag) %}:
+    case {%s= fmt.Sprintf("0x%08x", field.t.TLTag()) %}:
         item.index = {%d i %}
         {%- if field.t.IsTrueType() -%}
         return w, nil
@@ -124,7 +124,7 @@ func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []
 }
 {%- endif -%}
 func (item *{%s= goName %}) WriteTL1BoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    {%- if union.wr.originateFromTL2 -%}
+    {%- if union.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     return item.WriteTL1Boxed(w{%s= natArgsCall %}){%- if !writeNeedsError -%}, nil{%- endif %}
@@ -138,7 +138,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}{%s= union.wr.
 }
 {%- endif -%}
 func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}{%s= union.wr.fetcherDecl() %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
-    {%- if union.wr.originateFromTL2 -%}
+    {%- if union.wr.OriginTL2() -%}
         {%- if writeNeedsError -%}
             return w, basictl.TL2Error("not implemented for tl2 type")
         {%- else -%}
@@ -294,14 +294,14 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
     switch _tag {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.t.tlName.String()
+                name := field.t.TLName().String()
                 // we detect variants that were not migrated and give them variantName only
                 hasOldName := !strings.Contains(name, "__")
                 // also we prevent collision of variant name and tlName below which can happen in default namespace
                 if union.wr.HasTL2() && field.variantName == name {
                     hasOldName = false
                 }
-                tag := fmt.Sprintf("#%08x", field.t.tlTag)
+                tag := fmt.Sprintf("#%08x", field.t.TLTag())
                 nameWithTag := name + tag
                 wrWithoutLong := field.t.WrWithoutLong
                 var cases []string
@@ -309,22 +309,22 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
                 if union.wr.HasTL2() {
                     cases = append(cases, fmt.Sprintf("%q", field.variantName))
                 }
-                if !union.wr.originateFromTL2 {
+                if !union.wr.OriginTL2() {
                     cases = append(cases, fmt.Sprintf("%q", nameWithTag))
                 }
                 if hasOldName {
                     cases = append(cases, fmt.Sprintf("%q", name))
                 }
-                if !union.wr.originateFromTL2 {
+                if !union.wr.OriginTL2() {
                     cases = append(cases, fmt.Sprintf("%q", tag))
                 }
                 // this mess is because there was no clear variant names in TL1
             -%}
         case {%s= strings.Join(cases, ",") %} {%- code -%}
-            {%- if wrWithoutLong != nil && !hasOldName && !union.wr.originateFromTL2 && !union.HasShortFieldCollision(wrWithoutLong) -%}
+            {%- if wrWithoutLong != nil && !hasOldName && !union.wr.OriginTL2() && !union.HasShortFieldCollision(wrWithoutLong) -%}
                 {%- code
-                    name2 := wrWithoutLong.tlName.String()
-                    tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+                    name2 := wrWithoutLong.TLName().String()
+                    tag2 := fmt.Sprintf("#%08x", wrWithoutLong.TLTag())
                     nameWithTag2 := name2 + tag2
                 -%},{%q= nameWithTag2 %},{%q= name2 %},{%q= tag2 %}:
                     if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= nameWithTag2 %} {
@@ -334,7 +334,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
                         return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= tag2 %})
                     }
             {%- else -%}:{%- endif -%}
-            {%- if !union.wr.originateFromTL2 -%}
+            {%- if !union.wr.OriginTL2() -%}
                 if jctx != nil && !jctx.LegacyTypeNames && _tag == {%q= nameWithTag %} {
                     return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
                 }
@@ -371,15 +371,15 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteC
     switch item.index {
         {%- for i, field := range union.Fields -%}
             {%- code
-                name := field.t.tlName.String()
-                nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.tlTag)
+                name := field.t.TLName().String()
+                nameWithTag := fmt.Sprintf("%s#%08x", name, field.t.TLTag())
                 nameWithTagNew := name
                 nameWithTagShort := nameWithTag
                 nameWithTagShortNew := nameWithTagNew
                 wrWithoutLong := field.t.WrWithoutLong
                 if wrWithoutLong != nil {
-                    nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.tlName.String(), wrWithoutLong.tlTag)
-                    nameWithTagShortNew = wrWithoutLong.tlName.String()
+                    nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.TLName().String(), wrWithoutLong.TLTag())
+                    nameWithTagShortNew = wrWithoutLong.TLName().String()
                 }
 
                 emptyCondition := field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, )
@@ -398,7 +398,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteC
                     return append(w, `{%q= field.variantName %}`...)
                 }
             {%- endif -%}
-            {%- if !union.wr.originateFromTL2 -%}
+            {%- if !union.wr.OriginTL2() -%}
                 if jctx != nil && jctx.LegacyTypeNames {
                     return append(w, `{%q= nameWithTag %}`...)
                 }
@@ -416,7 +416,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteC
             {%- endif -%}
                 {%- if wrWithoutLong != nil -%}
                     if jctx != nil && jctx.Short {
-                        {%- if !union.wr.originateFromTL2 -%}
+                        {%- if !union.wr.OriginTL2() -%}
                             if jctx != nil && jctx.LegacyTypeNames {
                                 w = append(w, `{"type":{%q= nameWithTagShort %}`...)
                             } else {
@@ -427,7 +427,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteC
                         {%- endif -%}
                     } else {
                 {%- endif -%}
-                    {%- if !union.wr.originateFromTL2 -%}
+                    {%- if !union.wr.OriginTL2() -%}
                         if jctx != nil && jctx.LegacyTypeNames {
                             w = append(w, `{"type":{%q= nameWithTag %}`...)
                         } else {
@@ -552,12 +552,12 @@ func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeSt
     var _{%s= goName %} = [{%d len(union.Fields) %}]{%s= union.wr.gen.InternalPrefix()%}UnionElement{
     {%- for _, x := range union.Fields -%}
         {%- code
-            tlTag := fmt.Sprintf("0x%08x", x.t.tlTag )
-            tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
-            if x.t.tlTag == 0 {
+            tlTag := fmt.Sprintf("0x%08x", x.t.TLTag() )
+            tlString := fmt.Sprintf("%s#%08x", x.t.TLName(), x.t.TLTag())
+            if x.t.TLTag() == 0 {
                 tlString = ""
             }
-            tlName := x.t.tlName.String()
+            tlName := x.t.TLName().String()
         -%}
         {TLTag:{%s= tlTag %}, TLName:{%q= tlName %}, TLString:{%q= tlString %}},
     {%- endfor -%}

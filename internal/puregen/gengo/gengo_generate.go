@@ -243,15 +243,12 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		variantWrapper := &TypeRWWrapper{
 			gen:              gen,
 			pureType:         typ,
-			originateFromTL2: typ.Common().OriginTL2(),
-			tlTag:            typ.TLTag(),
-			tlName:           typ.TLName(),
 			fileNameOverride: myWrapper,
 			goCanonicalName:  typ.TLName(),
 			ns:               myWrapper.ns,
 		}
-		if myWrapper.tlName.Namespace != variantWrapper.tlName.Namespace {
-			variantWrapper.ns = gen.getNamespace(variantWrapper.tlName.Namespace)
+		if myWrapper.TLName().Namespace != variantWrapper.TLName().Namespace {
+			variantWrapper.ns = gen.getNamespace(variantWrapper.TLName().Namespace)
 		}
 		variantWrapper.ns.types = append(variantWrapper.ns.types, variantWrapper)
 

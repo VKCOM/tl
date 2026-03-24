@@ -74,7 +74,7 @@ func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]boo
 }
 
 func (trw *TypeRWStruct) markHasRepairMasks(visitedNodes map[*TypeRWWrapper]bool) bool {
-	result := len(trw.AllNewTL2Masks()) != 0 && !trw.wr.originateFromTL2
+	result := len(trw.AllNewTL2Masks()) != 0 && !trw.wr.OriginTL2()
 	for _, f := range trw.Fields {
 		result = result || f.t.MarkHasRepairMasks(visitedNodes)
 	}
@@ -223,7 +223,7 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.tlTag)
+			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.TLTag())
 		}
 		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, last, needError)
 		// was
@@ -237,7 +237,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.wr.tlTag)
+			prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.wr.TLTag())
 		}
 		return prefix + trw.Fields[0].t.TypeReadingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, last)
 		// was

@@ -5,7 +5,7 @@
  // we generate ReadBoxed/WriteBoxed methods, because vector and other mixed types will call it in their Read*/Write* methods
  // TODO - fix later by propagating hasTL1 property through type recursion, and not generating Read*/Write* in users
   -%}
-{%- if !trw.wr.originateFromTL2 -%}
+{%- if !trw.wr.OriginTL2() -%}
 const (
     {%s= trw.falseGoName %} uint32 = {%s= fmt.Sprintf("%#x", trw.falseTag) %}
     {%s= trw.trueGoName %} uint32 = {%s= fmt.Sprintf("%#x", trw.trueTag) %}
@@ -13,7 +13,7 @@ const (
 {%- endif -%}
 
 func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}ReadTL1Boxed(w []byte, v *bool) ([]byte, error) {
-    {%- if trw.wr.originateFromTL2 -%}
+    {%- if trw.wr.OriginTL2() -%}
     return w, basictl.TL2Error("not implemented for tl2 type")
     {%- else -%}
     return basictl.ReadBool(w, v, {%s= trw.falseGoName %}, {%s= trw.trueGoName %})
@@ -21,7 +21,7 @@ func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}ReadTL1Boxed(w []byte, v
 }
 
 func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}WriteTL1Boxed(w []byte, v bool) []byte {
-    {%- if trw.wr.originateFromTL2 -%}
+    {%- if trw.wr.OriginTL2() -%}
         panic(basictl.TL2Error("not implemented for tl2 type"))
     {%- else -%}
         if v {

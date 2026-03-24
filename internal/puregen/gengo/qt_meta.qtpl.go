@@ -180,7 +180,7 @@ func (gen *genGo) streamgenerateMetaInit(qw422016 *qt422016.Writer, addHeader bo
 func init() {
 `)
 	for _, wr := range types {
-		if !forNamespace(wr.tlName.Namespace) {
+		if !forNamespace(wr.TLName().Namespace) {
 			continue
 		}
 		if !wr.pureType.Common().IsTopLevel() {
@@ -203,14 +203,14 @@ func init() {
 			}
 			qw422016.N().S(`(
         &metainternal.TLItemImpl{Name: "`)
-			qw422016.N().S(wr.tlName.String())
+			qw422016.N().S(wr.TLName().String())
 			qw422016.N().S(`"`)
 
-			if wr.tlTag != 0 {
+			if wr.TLTag() != 0 {
 				qw422016.N().S(`, Tag: `)
-				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+				qw422016.N().S(fmt.Sprintf("0x%08x", wr.TLTag()))
 			}
-			if !wr.originateFromTL2 {
+			if !wr.OriginTL2() {
 				qw422016.N().S(`, HaTL1:true`)
 			}
 			if wr.HasTL2() {
@@ -236,14 +236,14 @@ func init() {
 			// unions are not top level types by TL1 rules, but we make them so by implementing Read/Write as ReadBoxed/WriteBoxed
 
 			qw422016.N().S(`        metainternal.FillObject(&metainternal.TLItemImpl{Name: "`)
-			qw422016.N().S(wr.tlName.String())
+			qw422016.N().S(wr.TLName().String())
 			qw422016.N().S(`"`)
 
-			if wr.tlTag != 0 {
+			if wr.TLTag() != 0 {
 				qw422016.N().S(`, Tag: `)
-				qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+				qw422016.N().S(fmt.Sprintf("0x%08x", wr.TLTag()))
 			}
-			if !wr.originateFromTL2 {
+			if !wr.OriginTL2() {
 				qw422016.N().S(`, HaTL1:true`)
 			}
 			if wr.HasTL2() {

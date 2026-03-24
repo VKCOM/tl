@@ -57,7 +57,7 @@ import (
 
 func init() {
 {%- for _, wr := range gen.generatedTypesList -%}
-    {%- if !forNamespace(wr.tlName.Namespace) -%}
+    {%- if !forNamespace(wr.TLName().Namespace) -%}
         {%- continue -%}
     {%- endif -%}
     {%- if !wr.pureType.Common().IsTopLevel() -%}
@@ -70,12 +70,12 @@ func init() {
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
         {%- if wr.UnionParent() != nil && wr.UnionParent().IsEnum -%}
             {%- code if hasCode != nil { *hasCode = true } -%}
-            metainternal.SetGlobalFactoryCreateForEnumElement({%q= wr.tlName.String() %})
+            metainternal.SetGlobalFactoryCreateForEnumElement({%q= wr.TLName().String() %})
             {%- continue -%}
         {%- endif -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
         {%- if fun.ResultType != nil -%}
-            metainternal.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            metainternal.SetGlobalFactoryCreateForFunction{%s= bytesStr %}({%q= wr.TLName().String() %}, {%- code -%}
             func() metainternal.Function { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) }, {%- code -%}
             {%- if wr.WrLong != nil -%}
                 func() metainternal.Function { return new({%s= wr.WrLong.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
@@ -83,13 +83,13 @@ func init() {
                 nil)
             {%- endif -%}
         {%- else -%}
-            metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+            metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.TLName().String() %}, {%- code -%}
             func() metainternal.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
         {%- endif -%}
     {%- endif -%}
     {%- if union, ok := wr.trw.(*TypeRWUnion); ok && union.wr.HasTL2() -%}
         {%- code if hasCode != nil { *hasCode = true } -%}
-        metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.tlName.String() %}, {%- code -%}
+        metainternal.SetGlobalFactoryCreateForObject{%s= bytesStr %}({%q= wr.TLName().String() %}, {%- code -%}
             func() metainternal.Object { return new({%s= wr.TypeString2(bytesVersion, directImports, nil, false, true) %}) })
     {%- endif -%}
 {%- endfor -%}
