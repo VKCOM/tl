@@ -438,7 +438,7 @@ func (item *`)
 	}
 	qw422016.N().S(`}
 `)
-	if len(maybe.wr.NatParams) == 0 {
+	if len(maybe.wr.NatParams()) == 0 {
 		qw422016.N().S(`
 func (item `)
 		qw422016.N().S(goName)

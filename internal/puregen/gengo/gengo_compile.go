@@ -78,7 +78,6 @@ func (gen *genGo) addTypeWrappers() error {
 		myWrapper := &TypeRWWrapper{
 			gen:              gen,
 			pureType:         pureType,
-			NatParams:        pureType.Common().NatParams(),
 			tlTag:            pureType.Common().TLTag(),
 			tlName:           pureType.Common().TLName(),
 			originateFromTL2: pureType.Common().OriginTL2(),

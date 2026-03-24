@@ -147,7 +147,7 @@ func (item *`)
 	qw422016.N().S(`
 
 `)
-	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 && !union.wr.HasFetcher() {
+	if union.wr.HasTL2() && len(union.wr.NatParams()) == 0 && !union.wr.HasFetcher() {
 		/* for interface requirements for TL2 Type, also for tests */
 
 		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
@@ -243,7 +243,7 @@ func (item *`)
 	qw422016.N().S(`}
 
 `)
-	if union.wr.HasTL2() && len(union.wr.NatParams) == 0 {
+	if union.wr.HasTL2() && len(union.wr.NatParams()) == 0 {
 		/* for interface requirements for TL2 Type, also for tests */
 
 		if union.wr.gen.options.Go.GenerateLegacyReadWrite {
@@ -558,7 +558,7 @@ func (item *`)
 	}
 	qw422016.N().S(`
 `)
-	if len(union.wr.NatParams) == 0 {
+	if len(union.wr.NatParams()) == 0 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -947,7 +947,7 @@ func (item `)
 }
 
 `)
-	if len(union.wr.NatParams) == 0 {
+	if len(union.wr.NatParams()) == 0 {
 		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) String(`)

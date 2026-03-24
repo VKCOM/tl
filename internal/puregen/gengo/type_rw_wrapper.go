@@ -25,10 +25,9 @@ type TypeRWWrapper struct {
 
 	pureType pure.TypeInstance
 
-	ns        *Namespace
-	ins       *InternalNamespace
-	trw       TypeRW
-	NatParams []string // external params of type Read/Write method
+	ns  *Namespace
+	ins *InternalNamespace
+	trw TypeRW
 
 	goCanonicalName tlast.TL2TypeName // name element for names below and template full names
 
@@ -67,6 +66,10 @@ func (wr *TypeRWWrapper) UnionParent() *TypeRWUnion {
 		return struct_.unionParent
 	}
 	return nil
+}
+
+func (wr *TypeRWWrapper) NatParams() []string {
+	return wr.pureType.Common().NatParams()
 }
 
 func (wr *TypeRWWrapper) HasTL2() bool {
@@ -289,7 +292,7 @@ func (w *TypeRWWrapper) IsFunction() bool {
 
 func (w *TypeRWWrapper) formatNatArgsDecl() string {
 	var s strings.Builder
-	for _, arg := range w.NatParams {
+	for _, arg := range w.NatParams() {
 		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
 	}
 	return s.String()
@@ -303,7 +306,7 @@ func (w *TypeRWWrapper) formatNatArgsDeclNoComma() string {
 // and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
 func (w *TypeRWWrapper) formatNatArgsDeclCall() string {
 	var s strings.Builder
-	for _, arg := range w.NatParams {
+	for _, arg := range w.NatParams() {
 		s.WriteString(fmt.Sprintf(", nat_%s", arg))
 	}
 	return s.String()
@@ -316,10 +319,10 @@ func (w *TypeRWWrapper) formatNatArg(fields []Field, arg pure.ActualNatArg) stri
 	if arg.IsField() {
 		return "item." + fields[arg.FieldIndex()].goName
 	}
-	if arg.NatParamName() != w.NatParams[arg.FieldIndex()] {
+	if arg.NatParamName() != w.NatParams()[arg.FieldIndex()] {
 		panic("error with nat params names")
 	}
-	return "nat_" + w.NatParams[arg.FieldIndex()]
+	return "nat_" + w.NatParams()[arg.FieldIndex()]
 }
 
 func (w *TypeRWWrapper) formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {

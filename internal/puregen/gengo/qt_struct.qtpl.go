@@ -198,7 +198,7 @@ func (item *`)
 	qw422016.N().S(` }
 
 `)
-	if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
+	if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() {
 		if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -301,7 +301,7 @@ func (item *`)
 		qw422016.N().S(`}
 
 `)
-		if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
+		if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() {
 			if struct_.wr.gen.options.Go.GenerateLegacyReadWrite {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
@@ -386,7 +386,7 @@ func (item *`)
 	struct_.streamfunctionCode(qw422016, bytesVersion, directImports)
 	qw422016.N().S(`
 `)
-	if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() {
+	if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() {
 		qw422016.N().S(`
 func (item `)
 		qw422016.N().S(goName)
@@ -770,7 +770,7 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 	if struct_.isTypedef() {
 		field := struct_.Fields[0]
 
-		if len(struct_.wr.NatParams) == 0 {
+		if len(struct_.wr.NatParams()) == 0 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -845,7 +845,7 @@ func (item *`)
 		qw422016.N().S(`
 `)
 	}
-	if len(struct_.wr.NatParams) == 0 {
+	if len(struct_.wr.NatParams()) == 0 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) MarshalJSON() ([]byte, error) {
@@ -893,7 +893,7 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 	tlName := struct_.wr.tlName.String()
 	natArgsDecl := struct_.wr.formatNatArgsDecl()
 
-	if len(struct_.wr.NatParams) == 0 {
+	if len(struct_.wr.NatParams()) == 0 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

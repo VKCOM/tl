@@ -246,7 +246,7 @@ func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byt
     return append(w, '}')
     {%- endif -%}
 }
-    {%- if len(maybe.wr.NatParams) == 0 -%}
+    {%- if len(maybe.wr.NatParams()) == 0 -%}
 
 func (item {%s= goName %}) String({%s= maybe.wr.formatNatArgsDeclNoComma() %}) string {
     {%- if writeElementNeedsError -%}

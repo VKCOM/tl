@@ -84,7 +84,7 @@ func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}{%s= struct_.wr.fetc
 {%- endif -%}
 func (item *{%s= goName %}) ReadTL1(w []byte {%s= natArgsDecl %}{%s= struct_.wr.fetcherDecl() %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
 
-{%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
+{%- if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() -%}
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.WriteTL1General(w{%s= natArgsCall %})
@@ -123,7 +123,7 @@ func (item *{%s= goName %}) ReadTL1Boxed(w []byte{%s= natArgsDecl %}{%s= struct_
     {%- endif -%}
 }
 
-{%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
+{%- if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() -%}
 {%- if struct_.wr.gen.options.Go.GenerateLegacyReadWrite -%}
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return item.WriteTL1BoxedGeneral(w{%s= natArgsCall %})
@@ -158,7 +158,7 @@ func (item *{%s= goName %}) WriteTL1Boxed(w []byte{%s= natArgsDecl %}{%s= struct
 
     {%- endif -%}
 {%= struct_.functionCode(bytesVersion, directImports) %}
-    {%- if len(struct_.wr.NatParams) == 0 && !struct_.wr.HasFetcher() -%}
+    {%- if len(struct_.wr.NatParams()) == 0 && !struct_.wr.HasFetcher() -%}
 
 func (item {%s= goName %}) String({%s= struct_.wr.formatNatArgsDeclNoComma() %}) string {
     {%- if writeNeedsError -%}
@@ -346,7 +346,7 @@ type {%s= goName %} struct {
         {%- code
             field := struct_.Fields[0]
         -%}
-{%- if len(struct_.wr.NatParams) == 0 -%}
+{%- if len(struct_.wr.NatParams()) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
     return item.ReadJSONGeneral(&jctx, in)
@@ -377,7 +377,7 @@ func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byt
 {%= struct_.readJSONCode(bytesVersion, directImports) %}
 {%= struct_.writeJSONCode(bytesVersion, directImports) %}
     {%- endif -%}
-    {%- if len(struct_.wr.NatParams) == 0 -%}
+    {%- if len(struct_.wr.NatParams()) == 0 -%}
 func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
       return item.WriteJSON(nil){%- if !writeNeedsError -%}, nil{%- endif -%}
 }
@@ -399,7 +399,7 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
         tlName := struct_.wr.tlName.String()
         natArgsDecl := struct_.wr.formatNatArgsDecl()
     -%}
-{%- if len(struct_.wr.NatParams) == 0 -%}
+{%- if len(struct_.wr.NatParams()) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
     return item.ReadJSONGeneral(&jctx, in)

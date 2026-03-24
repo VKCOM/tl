@@ -243,8 +243,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		variantWrapper := &TypeRWWrapper{
 			gen:              gen,
 			pureType:         typ,
-			NatParams:        myWrapper.NatParams,
-			originateFromTL2: myWrapper.originateFromTL2,
+			originateFromTL2: typ.Common().OriginTL2(),
 			tlTag:            typ.TLTag(),
 			tlName:           typ.TLName(),
 			fileNameOverride: myWrapper,
