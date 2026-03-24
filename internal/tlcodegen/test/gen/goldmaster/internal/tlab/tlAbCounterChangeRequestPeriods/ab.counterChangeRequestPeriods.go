@@ -322,7 +322,8 @@ func (item *AbCounterChangeRequestPeriods) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbCounterChangeRequestPeriods) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("ab.CounterChangeRequestPeriods", err.Error())
 	}
 	return nil
@@ -448,7 +449,8 @@ func (item *AbCounterChangeRequestPeriodsMany) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("ab.counterChangeRequestPeriodsMany", err.Error())
 	}
 	return nil
@@ -693,7 +695,8 @@ func (item *AbCounterChangeRequestPeriodsOne) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("ab.counterChangeRequestPeriodsOne", err.Error())
 	}
 	return nil

@@ -233,7 +233,8 @@ func (item *MyNat) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyNat) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("myNat", err.Error())
 	}
 	return nil

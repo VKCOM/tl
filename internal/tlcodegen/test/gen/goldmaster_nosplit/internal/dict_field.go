@@ -1904,7 +1904,8 @@ func (item *DictFieldIntPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldIntPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil
@@ -2404,7 +2405,8 @@ func (item *DictFieldLongPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldLongPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil
@@ -2904,7 +2906,8 @@ func (item *DictFieldStringPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldStringPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil
@@ -3165,7 +3168,8 @@ func (item *DictFieldStringString) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldStringString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil
@@ -3427,7 +3431,8 @@ func (item *DictFieldStringStringBytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldStringStringBytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil

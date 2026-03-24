@@ -228,7 +228,8 @@ func (item *UnionArgsUse) MarshalJSON() ([]byte, error) {
 }
 
 func (item *UnionArgsUse) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("unionArgsUse", err.Error())
 	}
 	return nil

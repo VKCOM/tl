@@ -315,7 +315,8 @@ func (item *AMyUnion) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AMyUnion) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("a.MyUnion", err.Error())
 	}
 	return nil
@@ -440,7 +441,8 @@ func (item *AUNionA) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AUNionA) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("a.uNionA", err.Error())
 	}
 	return nil
@@ -686,7 +688,8 @@ func (item *AuNionA) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AuNionA) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("au.nionA", err.Error())
 	}
 	return nil

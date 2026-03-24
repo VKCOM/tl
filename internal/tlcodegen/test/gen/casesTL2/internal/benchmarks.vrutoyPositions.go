@@ -119,7 +119,8 @@ func (item *BenchmarksVrutoyPositions) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BenchmarksVrutoyPositions) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("benchmarks.vrutoyPositions", err.Error())
 	}
 	return nil

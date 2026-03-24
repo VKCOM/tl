@@ -194,7 +194,8 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) MarshalJSON() ([]byte, er
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testAllPossibleFieldConfigsContainer", err.Error())
 	}
 	return nil

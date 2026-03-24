@@ -144,7 +144,8 @@ func (item *AbTopLevel2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbTopLevel2) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("ab.topLevel2", err.Error())
 	}
 	return nil
@@ -415,7 +416,8 @@ func (item *AbTopLevel2Bytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AbTopLevel2Bytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("ab.topLevel2", err.Error())
 	}
 	return nil

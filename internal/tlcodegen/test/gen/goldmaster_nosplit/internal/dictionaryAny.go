@@ -92,7 +92,8 @@ func (item *DictionaryAnyIntPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictionaryAnyIntPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("dictionaryAny", err.Error())
 	}
 	return nil
@@ -207,7 +208,8 @@ func (item *DictionaryAnyLongPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictionaryAnyLongPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("dictionaryAny", err.Error())
 	}
 	return nil
@@ -322,7 +324,8 @@ func (item *DictionaryAnyStringPairIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictionaryAnyStringPairIntInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("dictionaryAny", err.Error())
 	}
 	return nil

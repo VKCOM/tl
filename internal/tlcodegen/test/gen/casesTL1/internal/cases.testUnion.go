@@ -302,7 +302,8 @@ func (item *CasesTestUnion) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnion) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.TestUnion", err.Error())
 	}
 	return nil
@@ -427,7 +428,8 @@ func (item *CasesTestUnion1) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnion1) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testUnion1", err.Error())
 	}
 	return nil
@@ -552,7 +554,8 @@ func (item *CasesTestUnion2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnion2) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testUnion2", err.Error())
 	}
 	return nil
@@ -641,7 +644,8 @@ func (item *CasesTestUnion3) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnion3) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testUnion3", err.Error())
 	}
 	return nil
@@ -730,7 +734,8 @@ func (item *CasesTestUnion4) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesTestUnion4) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("cases.testUnion4", err.Error())
 	}
 	return nil

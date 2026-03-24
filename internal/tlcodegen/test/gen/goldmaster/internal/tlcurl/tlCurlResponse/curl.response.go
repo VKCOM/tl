@@ -325,7 +325,8 @@ func (item *CurlResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CurlResponse) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("curl.Response", err.Error())
 	}
 	return nil
@@ -502,7 +503,8 @@ func (item *CurlResponseError) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CurlResponseError) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("curl.responseError", err.Error())
 	}
 	return nil
@@ -909,7 +911,8 @@ func (item *CurlResponseOk) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CurlResponseOk) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("curl.responseOk", err.Error())
 	}
 	return nil

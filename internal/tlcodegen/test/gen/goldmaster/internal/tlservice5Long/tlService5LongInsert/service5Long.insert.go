@@ -391,7 +391,8 @@ func (item *Service5LongInsert) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service5LongInsert) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service5Long.insert", err.Error())
 	}
 	return nil

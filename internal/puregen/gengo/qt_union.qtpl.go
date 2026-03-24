@@ -984,7 +984,8 @@ func (item *`)
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) UnmarshalJSON(b []byte) error {
-    if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+    jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+    if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
         return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)

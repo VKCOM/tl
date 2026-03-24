@@ -551,7 +551,8 @@ func (item *TupleInt2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TupleInt2) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil
@@ -664,7 +665,8 @@ func (item *TupleInt4) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TupleInt4) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil
@@ -870,7 +872,8 @@ func (item *TupleString4) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TupleString4) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil
@@ -983,7 +986,8 @@ func (item *TupleString4Bytes) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TupleString4Bytes) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil

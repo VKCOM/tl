@@ -396,7 +396,8 @@ func (item *MyInt32) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyInt32) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("myInt32", err.Error())
 	}
 	return nil
