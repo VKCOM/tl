@@ -102,7 +102,3 @@ func (trw *TypeRWMaybe) typeJSONWritingCode(bytesVersion bool, directImports *Di
 func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
-
-func (trw *TypeRWMaybe) typeJSON2ReadingRequiresContext() bool {
-	return true
-}

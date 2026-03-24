@@ -181,8 +181,7 @@ func (item *AbCall3) WriteResultTL2(w []byte, tctx *basictl.TL2WriteContext, ret
 	return w
 }
 
-func (item *AbCall3) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *TypeB) error {
-	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+func (item *AbCall3) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *TypeB) error {
 	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
@@ -213,9 +212,9 @@ func (item *AbCall3) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext
 	return r, w, err
 }
 
-func (item *AbCall3) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *AbCall3) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret TypeB
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -248,9 +247,9 @@ func (item *AbCall3) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadContext, 
 	return r, w, err
 }
 
-func (item *AbCall3) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *AbCall3) ReadResultJSONWriteResultTL2(jctx *basictl.JSONReadContext, tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret TypeB
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	return r, item.WriteResultTL2(w, tctx, ret), nil

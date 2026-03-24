@@ -1703,15 +1703,10 @@ func (item *`)
 	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *`)
+	qw422016.N().S(`) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) error {
-`)
-	if struct_.ResultType.TypeJSON2ReadingRequiresContext() {
-		qw422016.N().S(`    jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-`)
-	}
-	qw422016.N().S(`    `)
+    `)
 	qw422016.N().S(struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true))
 	qw422016.N().S(`
     return nil
@@ -1767,11 +1762,11 @@ func (item *`)
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	qw422016.N().S(`) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
-  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+  if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
   w, err = item.WriteResultTL1(w, ret)
@@ -1853,7 +1848,7 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+		qw422016.N().S(`) ReadResultJSONWriteResultTL2(jctx *basictl.JSONReadContext, tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 `)
 		if !struct_.wr.HasTL2() {
 			qw422016.N().S(`  return r, w, `)
@@ -1866,7 +1861,7 @@ func (item *`)
 			qw422016.N().S(`  var ret `)
 			qw422016.N().S(retArg)
 			qw422016.N().S(`
-  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+  if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
   return r, item.WriteResultTL2(w, tctx, ret), nil
