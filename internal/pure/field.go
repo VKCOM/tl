@@ -13,9 +13,9 @@ import (
 type ActualNatArg struct {
 	isNumber bool
 	number   uint32
-	isField  bool // otherwise it is # param with name
+	isField  bool
 	index    int
-	name     string // param name. TODO - remove, always use index into type's nat params
+	name     string
 }
 
 func (arg *ActualNatArg) IsNumber() bool {
@@ -27,18 +27,20 @@ func (arg *ActualNatArg) Number() uint32 {
 }
 
 func (arg *ActualNatArg) IsField() bool {
-	return arg.isField
+	return !arg.isNumber && arg.isField
 }
 
 func (arg *ActualNatArg) IsNatParam() bool {
-	return !arg.isField && !arg.isNumber
+	return !arg.isNumber && !arg.isField
 }
 
+// also NatParam index in parent type, useful for vkext dynamic parsing,
+// so we can use stack(slice) instead of map, which is faster and allocates less
 func (arg *ActualNatArg) FieldIndex() int {
 	return arg.index
 }
 
-func (arg *ActualNatArg) Name() string {
+func (arg *ActualNatArg) NatParamName() string {
 	return arg.name
 }
 

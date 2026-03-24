@@ -81,7 +81,7 @@ func (ins *TypeInstanceArray) SkipTL2(r []byte) ([]byte, error) {
 func (k *Kernel) createVectorTL1(canonicalName string,
 	resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t", nil)
 
 	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
@@ -115,12 +115,15 @@ func (k *Kernel) createVectorTL1(canonicalName string,
 
 func (k *Kernel) createTupleTL1(canonicalName string, resolvedType tlast.TL2TypeRef) (TypeInstance, error) {
 
-	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t")
+	_, natParams := k.fillLocalArg(tlast.TL2TypeArgument{Type: resolvedType.BracketType.ArrayType}, "t", nil)
 	// fmt.Printf("natParams for tuple %s: %s\n", canonicalName, strings.Join(natParams, ","))
 	fieldNatArgs := k.natParamsToActualNatArgs(natParams)
 
 	if !resolvedType.BracketType.IndexType.IsNumber {
 		natParams = append([]string{"n"}, natParams...)
+		for i := range fieldNatArgs {
+			fieldNatArgs[i].index++
+		}
 	}
 
 	// fmr.Printf("resolveTypeTL2 of tuple for %s field: %s -> %s\n", canonicalName, fieldT, rt.String())

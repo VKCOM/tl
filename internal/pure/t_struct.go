@@ -105,7 +105,7 @@ func (trw *TypeInstanceStruct) IsTypeDef() bool {
 }
 
 // same code as in func (w *TypeInstanceCommon) TransformNatArgsToChild
-func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(natArgs []string) []string {
+func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(fieldIndex int, natArgs []string) []string {
 	// Caller called outer.Read(   , nat_x, nat_y)
 	// outer has func Read(   ,nat_inner_x uint32, nat_inner_y uint32) {
 	// which calls for example inner.Read(   , nat_inner_y, nat_inner_y)
@@ -115,7 +115,7 @@ func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(natArgs []string) []string {
 	// inner.Read(   , nat_y, nat_y)
 	var result []string
 outer:
-	for _, arg := range ins.fields[0].natArgs {
+	for _, arg := range ins.fields[fieldIndex].natArgs {
 		if arg.IsNumber() || arg.IsField() {
 			panic("cannot replace to child arith or field nat param")
 		}
@@ -319,25 +319,24 @@ func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]stri
 }
 
 // Collect nat params from type tree into linear array
-func (k *Kernel) fillLocalArg(arg tlast.TL2TypeArgument, targName string) (localArgs []LocalArg, natParams []string) {
+func (k *Kernel) fillLocalArg(arg tlast.TL2TypeArgument, targName string, natParams []string) (LocalArg, []string) {
 	var localNatParams []string
 	k.fillNatParamFromArg(arg, &localNatParams, targName)
 	if len(localNatParams) == 1 {
 		localNatParams[0] = targName
 	}
-	natParams = append(natParams, localNatParams...)
 	localArg := LocalArg{
 		wrongTypeErr: nil,
 		arg:          arg,
 	}
-	for i, param := range localNatParams {
+	for _, param := range localNatParams {
 		localArg.natArgs = append(localArg.natArgs, ActualNatArg{
 			name:  param,
-			index: i,
+			index: len(natParams),
 		})
+		natParams = append(natParams, param)
 	}
-	localArgs = append(localArgs, localArg)
-	return
+	return localArg, natParams
 }
 
 // Collect nat params from type tree into linear array
@@ -351,9 +350,9 @@ func (k *Kernel) fillLocalArgs(leftArgs []tlast.TL2TypeTemplate, resolvedType2 t
 	}
 	for i, arg := range actualArgs {
 		leftArg := leftArgs[i]
-		args, params := k.fillLocalArg(arg, leftArg.Name)
-		natParams = append(natParams, params...)
-		localArgs = append(localArgs, args...)
+		localArg, params := k.fillLocalArg(arg, leftArg.Name, natParams)
+		natParams = params
+		localArgs = append(localArgs, localArg)
 	}
 	return
 }

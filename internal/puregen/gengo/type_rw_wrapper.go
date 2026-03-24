@@ -309,6 +309,27 @@ func (w *TypeRWWrapper) formatNatArgsDeclCall() string {
 	return s.String()
 }
 
+func (w *TypeRWWrapper) formatNatArg(fields []Field, arg pure.ActualNatArg) string {
+	if arg.IsNumber() {
+		return strconv.FormatUint(uint64(arg.Number()), 10)
+	}
+	if arg.IsField() {
+		return "item." + fields[arg.FieldIndex()].goName
+	}
+	if arg.NatParamName() != w.NatParams[arg.FieldIndex()] {
+		panic("error with nat params names")
+	}
+	return "nat_" + w.NatParams[arg.FieldIndex()]
+}
+
+func (w *TypeRWWrapper) formatNatArgs(fields []Field, natArgs []pure.ActualNatArg) []string {
+	var result []string
+	for _, arg := range natArgs {
+		result = append(result, w.formatNatArg(fields, arg))
+	}
+	return result
+}
+
 func (w *TypeRWWrapper) HasFetcher() bool {
 	return w.pureType.Common().HasFetcher()
 }

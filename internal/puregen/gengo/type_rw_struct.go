@@ -207,14 +207,14 @@ func (trw *TypeRWStruct) typeResettingCode(bytesVersion bool, directImports *Dir
 
 func (trw *TypeRWStruct) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeRandomCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
+		return trw.Fields[0].t.TypeRandomCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref)
 	}
 	return fmt.Sprintf("%s.FillRandom(rg %s)", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeRepairMasksCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
+		return trw.Fields[0].t.TypeRepairMasksCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref)
 	}
 	return fmt.Sprintf("%s.RepairMasks(%s)", val, strings.Join(natArgs, ","))
 }
@@ -225,7 +225,7 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 		if !bare {
 			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.tlTag)
 		}
-		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref, last, needError)
+		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, last, needError)
 		// was
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Write%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
@@ -239,7 +239,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 		if !bare {
 			prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.wr.tlTag)
 		}
-		return prefix + trw.Fields[0].t.TypeReadingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref, last)
+		return prefix + trw.Fields[0].t.TypeReadingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, last)
 		// was
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Read%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
@@ -256,7 +256,7 @@ func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, r
 
 func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref, needError)
+		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, needError)
 	}
 	if needError {
 		return fmt.Sprintf("if w, err = %s.WriteJSONOpt(jctx, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
@@ -267,7 +267,7 @@ func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *D
 
 func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.pureTypeStruct.ReplaceUnwrapArgs(natArgs), ref)
+		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref)
 	}
 	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }

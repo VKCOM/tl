@@ -52,7 +52,7 @@ func (item *`)
     if basictl.RandomUint(rg) & 1 == 1 {
         item.Ok = true
         `)
-		qw422016.N().S(maybe.element.t.TypeRandomCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false))
+		qw422016.N().S(maybe.element.t.TypeRandomCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false))
 		qw422016.N().S(`
     } else {
         item.Ok = false
@@ -79,7 +79,7 @@ func (item *`)
 		qw422016.N().S(strings.TrimPrefix(natArgsDecl, ","))
 		qw422016.N().S(`) {
     `)
-		qw422016.N().S(maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false))
+		qw422016.N().S(maybe.element.t.TypeRepairMasksCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false))
 		qw422016.N().S(`
 }
 `)
@@ -121,7 +121,7 @@ func (item *`)
     }
     if item.Ok {
         `)
-		qw422016.N().S(maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.NatArgs()), false, true))
+		qw422016.N().S(maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false, true))
 		qw422016.N().S(`
     }
     return w, nil
@@ -161,7 +161,7 @@ func (item *`)
 		qw422016.N().S(okTag)
 		qw422016.N().S(`)
         `)
-		qw422016.N().S(maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.NatArgs()), false, true, writeElementNeedsError))
+		qw422016.N().S(maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false, true, writeElementNeedsError))
 		qw422016.N().S(`
     }
 `)
@@ -348,7 +348,7 @@ func (item *`)
         in2Pointer = &in2
     }
     `)
-	qw422016.N().S(maybe.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, maybe.wr.ins, "in2Pointer", "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false))
+	qw422016.N().S(maybe.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, maybe.wr.ins, "in2Pointer", "item.Value", maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false))
 	qw422016.N().S(`
   }
   return nil
@@ -422,7 +422,7 @@ func (item *`)
 	qw422016.N().S("`")
 	qw422016.N().S(`...)
     `)
-	qw422016.N().S(maybe.element.t.TypeJSONWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.NatArgs()), false, writeElementNeedsError))
+	qw422016.N().S(maybe.element.t.TypeJSONWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.wr.formatNatArgs(nil, maybe.element.NatArgs()), false, writeElementNeedsError))
 	qw422016.N().S(`
 `)
 	if emptyCondition != "" {

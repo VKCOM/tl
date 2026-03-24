@@ -93,7 +93,7 @@ func JSONHelpNatArg(ins pure.TypeInstance, fields []pure.Field, natArg pure.Actu
 	if natArg.IsField() {
 		return fields[natArg.FieldIndex()].Name()
 	}
-	return natArg.Name()
+	return natArg.NatParamName()
 }
 
 func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields []pure.Field, natArgs *[]pure.ActualNatArg) string {
@@ -142,7 +142,7 @@ func helpString2(kernel *pure.Kernel, ins pure.TypeInstance, bare bool, fields [
 			if natArg.IsField() {
 				s.WriteString(fields[natArg.FieldIndex()].Name())
 			} else {
-				s.WriteString(natArg.Name())
+				s.WriteString(natArg.NatParamName())
 			}
 		} else {
 			ref, fieldBare, err := kernel.GetInstance(a.Type)

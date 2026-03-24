@@ -57,12 +57,12 @@ func (item *{%s= goName %}) RepairMasks({%s= strings.TrimPrefix(natArgsDecl, ","
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.MaskTL2Bit() != nil && field.FieldMask() != nil -%}
-            if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+            if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
             }
         {%- endif -%}
         {%- code
-            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk)
+            repairCode := field.t.TypeRepairMasksCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk)
         -%}
         {%- if !field.IsBit() && field.t.hasRepairMasks -%}
             {%- if field.recursive -%}
@@ -201,7 +201,7 @@ type {%s= goName %} struct {
             fieldTypeString := ""
             fieldsMaskComment := ""
             if field.FieldMask() != nil {
-                fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.FieldMask()), field.BitNumber())
+                fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()), field.BitNumber())
             } else if field.MaskTL2Bit() != nil {
                 fieldsMaskComment = fmt.Sprintf(" // Optional, use Set%s", field.goName)
             }
@@ -241,7 +241,7 @@ type {%s= goName %} struct {
             natArgUse := ""
             if field.FieldMask() != nil {
                 maskFunArg = !field.FieldMask().IsField() && !field.FieldMask().IsNumber()
-                natArgUse = formatNatArg(struct_.Fields, *field.FieldMask())
+                natArgUse = struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask())
             }
         -%}
         {%- code
@@ -354,7 +354,7 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
-    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
+    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "item.ptr()", struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), true) %}
     return nil
 }
 
@@ -368,7 +368,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 }
 
 func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "item.ptr()", formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
+    {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "item.ptr()", struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), true, writeNeedsError) %}
     return w{%- if writeNeedsError -%}, nil{%- endif -%}
 }
     {%- else -%}
@@ -463,7 +463,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
                     }
                 {%- else -%}
                     {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                     {%- if field.MaskTL2Bit() != nil -%}
                         item.{%s= field.TL2MaskForOP("|=") %}
                     {%- endif -%}
@@ -527,7 +527,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
                 }
             {%- else -%}
                 {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
             {%- endif -%}
             {%- if field.MaskTL2Bit() != nil -%}
                 {%- if field.IsBit() -%}
@@ -567,7 +567,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.FieldMask() == nil || field.MaskTL2Bit() == nil -%}{%- continue -%}{%- endif -%}
-            if !prop{%s= field.goName %}Presented && {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+            if !prop{%s= field.goName %}Presented && {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
             }
     {%- endfor -%}
@@ -580,7 +580,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
             {%- for curField.FieldMask() != nil -%}
                 {%- if !curField.FieldMask().IsField() -%}
                     {%- code
-                        mask := fmt.Sprintf("%s", formatNatArg(struct_.Fields, *curField.FieldMask()))
+                        mask := fmt.Sprintf("%s", struct_.wr.formatNatArg(struct_.Fields, *curField.FieldMask()))
                         bit := int(curField.BitNumber())
                         -%}
                     {%- if !struct_.wr.HasTL2() -%} {%- code // we stop checking that TL1 masks are in sync, because they can differ for TL2 types -%}
@@ -602,7 +602,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
             {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if !field.IsBit() -%} {%- continue -%} {%- endif -%}
             {%- code
-                mask := fmt.Sprintf("%s", formatNatArg(struct_.Fields, *field.FieldMask()))
+                mask := fmt.Sprintf("%s", struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()))
                 bit := int(field.BitNumber())
                 -%}
             if prop{%s= field.goName %}Presented && !trueType{%s= field.goName %}Value && ({%s= mask %} & (1 << {%v bit %}) != 0) {
@@ -618,7 +618,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
         if prop{%s= field.goName %}Presented {
             in{%s= field.goName %} := &basictl.JsonLexer{Data:raw{%s= field.goName %}}
-            {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in" + field.goName, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+            {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in" + field.goName, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
         }
     {%- endfor -%}
     {%- code // BLOCK: read/reset remaining fields, including those from previous block -%}
@@ -629,11 +629,11 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
                 {%- if field.MaskTL2Bit() != nil -%}
                     if item.{%s= field.TL2MaskForOP("&") %} != 0 {
                 {%- elseif field.FieldMask() != nil -%}
-                    if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v field.BitNumber() %}) != 0 {
+                    if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1 << {%v field.BitNumber() %}) != 0 {
                 {%- endif -%}
                     {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
                     {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "nil", fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "nil", fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                 {%- if field.FieldMask() != nil || field.MaskTL2Bit() != nil -%}
                     }
                 {%- endif -%}
@@ -647,7 +647,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
         in{%s= field.goName %} := basictl.JsonLexer{Data:raw{%s= field.goName %}}
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-        {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "&in" + field.goName, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+        {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "&in" + field.goName, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
 {%- endfunc -%}
 {%- func (struct_ *TypeRWStruct)writeJSONCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
@@ -684,7 +684,7 @@ so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
             {%- if field.MaskTL2Bit() != nil -%}
                 if item.{%s= field.TL2MaskForOP("&") %} != 0 {
             {%- else -%}
-                if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+                if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
             {%- endif -%}
                     w = basictl.JSONAddCommaIfNeeded(w)
                     w = append(w, `{%q= field.OriginalName() %}:true`...)
@@ -698,7 +698,7 @@ so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
         {%- if field.MaskTL2Bit() != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
         {%- elseif field.FieldMask() != nil -%}
-            if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+            if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- elseif emptyCond != "" && struct_.wr.originateFromTL2 -%}
             if {%s= emptyCond %} {
         {%- elseif emptyCond != "" && !struct_.wr.originateFromTL2 -%}
@@ -706,7 +706,7 @@ so even if len(tpl) == 0, it could be wrong, because tuple size must be 3.
         {%- endif -%}
                 w = basictl.JSONAddCommaIfNeeded(w)
                 w = append(w, `"{%s field.OriginalName() %}":`...)
-                {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods) %}
+                {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, field.t.hasErrorInWriteMethods) %}
         {%- if field.MaskTL2Bit() != nil -%}
             }
         {%- elseif field.FieldMask() != nil -%}
@@ -741,7 +741,7 @@ func (item *{%s= goName %}) ReadResultTL1(w []byte, ret *{%s= retArg %}) (_ []by
         {%- if struct_.resultHasFetcher() -%}
             var fetcher any
         {%- endif -%}
-        {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
+        {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, struct_.wr.formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
     {%- endif -%}
 }
 
@@ -757,7 +757,7 @@ func (item *{%s= goName %}) WriteResultTL1(w []byte, ret {%s= retArg %}) (_ []by
         {%- if struct_.resultHasFetcher() -%}
             var fetcher any
         {%- endif -%}
-        {%s= struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods) %}
+        {%s= struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, struct_.wr.formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods) %}
         return w, nil
     {%- endif -%}
 }
@@ -881,7 +881,7 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, tctx *basictl.TL2WriteConte
 {%- endif -%}
 
 func (item *{%s= goName %}) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *{%s= retArg  %}) error {
-    {%s= struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true) %}
+    {%s= struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", struct_.wr.formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true) %}
     return nil
 }
 
@@ -890,14 +890,14 @@ func (item *{%s= goName %}) WriteResultJSON(w []byte, ret {%s= retArg  %}) (_ []
 }
 
 func (item *{%s= goName %}) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
-    {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, struct_.ResultType.hasErrorInWriteMethods) %}
+    {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", struct_.wr.formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, struct_.ResultType.hasErrorInWriteMethods) %}
     return w, nil
 }
 {%- if struct_.wr.gen.options.GenerateRandomCode -%}
 
 func (item *{%s= goName %}) FillRandomResultTL1(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
     var ret {%s= retArg %}
-    {%s= struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false) %}
+    {%s= struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", struct_.wr.formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false) %}
     return item.WriteResultTL1(w, ret)
 }
 {%- endif -%}
@@ -1050,13 +1050,13 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
                 if basictl.RandomInt(rg) & 1 != 0 {
                     item.{%s= field.TL2MaskForOP("|=") %}
                     {%- if !field.IsBit() -%}
-                            {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                            {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
                         }else{
                             {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
                     {%- endif -%}
                 }
             {%- else -%}
-                    {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+                    {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
             {%- endif -%}
             {%- if field.recursive -%}
                   rg.DecreaseDepth()
@@ -1069,14 +1069,14 @@ func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFi
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.IsBit() -%}
             {%- if field.MaskTL2Bit() != nil -%}
-                if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+                if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                      item.{%s= field.TL2MaskForOP("|=") %}
                 }
             {%- endif -%}
             {%- continue -%}
         {%- endif -%}
         {%- if field.FieldMask() != nil -%}
-if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- if field.MaskTL2Bit() != nil -%}
             item.{%s= field.TL2MaskForOP("|=") %}
         {%- endif -%}
@@ -1101,7 +1101,7 @@ item.{%s= field.goName %} = rg.LimitValue(item.{%s= field.goName %})
 item.{%s= field.goName %} = basictl.RandomSize(rg)
             {%- endif -%}
         {%- else -%}
-{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
+{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk) %}
         {%- endif -%}
         {%- if field.recursive -%}
 rg.DecreaseDepth()
@@ -1126,7 +1126,7 @@ rg.DecreaseDepth()
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsBit() -%}
             {%- if !field.Bare() -%} {%- code // special case for TL1 -%}
-                if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+                if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                     {%s= fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag) %}
                 }
             {%- endif -%}
@@ -1134,16 +1134,16 @@ rg.DecreaseDepth()
         {%- endif -%}
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- code
-            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, false, field.t.hasErrorInWriteMethods)
+            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, false, field.t.hasErrorInWriteMethods)
         -%}
         {%- if field.FieldMask() != nil -%}
-        if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+        if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- endif -%}
         {%- if field.recursive -%}
         {%- code // non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe -%}
         if {%s= fieldAccess %} == nil {
             var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
+            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), false, false, field.t.hasErrorInWriteMethods) %}
         } else {
             {%s= writingCode %}
         }
@@ -1177,12 +1177,12 @@ return w
         -%}
         {%- if field.IsBit() -%}
             {%- if field.MaskTL2Bit() != nil -%}
-                if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+                if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                     item.{%s= field.TL2MaskForOP("|=") %}
                 }
             {%- endif -%}
             {%- if !field.Bare() -%} {%- code // special rare case for TL1, let optimizer combine 2 expressions -%}
-                if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+                if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
                     {%s= wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true) %}
                 }
             {%- endif -%}
@@ -1190,13 +1190,13 @@ return w
         {%- endif -%}
         {%- code fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports, struct_.wr.ins) -%}
         {%- if field.FieldMask() != nil -%}
-if {%s= formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
+if {%s= struct_.wr.formatNatArg(struct_.Fields, *field.FieldMask()) %} & (1<<{%v field.BitNumber() %}) != 0 {
         {%- if field.MaskTL2Bit() != nil -%}
             item.{%s= field.TL2MaskForOP("|=") %}
         {%- endif -%}
         {%- endif -%}
 {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
-{%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, last) %}
+{%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, fieldAccess, field.Bare(), struct_.wr.formatNatArgs(struct_.Fields, field.NatArgs()), fieldAsterisk, last) %}
         {%- if field.FieldMask() != nil -%}
 } else {
         {%s= field.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins) %}
