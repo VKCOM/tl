@@ -128,7 +128,3 @@ func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("if err := %sReadJSONGeneral(jctx, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
 }
-
-func (trw *TypeRWBrackets) typeJSON2ReadingRequiresContext() bool {
-	return true
-}

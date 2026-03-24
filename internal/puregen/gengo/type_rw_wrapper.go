@@ -271,10 +271,6 @@ func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *D
 	return w.trw.typeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
 }
 
-func (w *TypeRWWrapper) TypeJSON2ReadingRequiresContext() bool {
-	return w.trw.typeJSON2ReadingRequiresContext()
-}
-
 func (w *TypeRWWrapper) IsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if !ok {

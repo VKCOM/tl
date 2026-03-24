@@ -180,8 +180,7 @@ func (item *CasesTL2TestFunctionNoDep2) WriteResultTL2(w []byte, tctx *basictl.T
 	return w
 }
 
-func (item *CasesTL2TestFunctionNoDep2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *True) error {
-	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+func (item *CasesTL2TestFunctionNoDep2) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *True) error {
 	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
@@ -212,9 +211,9 @@ func (item *CasesTL2TestFunctionNoDep2) ReadResultTL1WriteResultJSON(jctx *basic
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionNoDep2) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep2) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret True
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -247,9 +246,9 @@ func (item *CasesTL2TestFunctionNoDep2) ReadResultTL2WriteResultJSON(tctx *basic
 	return r, w, err
 }
 
-func (item *CasesTL2TestFunctionNoDep2) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *CasesTL2TestFunctionNoDep2) ReadResultJSONWriteResultTL2(jctx *basictl.JSONReadContext, tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret True
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	return r, item.WriteResultTL2(w, tctx, ret), nil

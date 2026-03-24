@@ -44,7 +44,7 @@ type Function interface {
 	// jctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
 	// pass nil if you do not know which options you need
 	ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
-	ReadResultJSONWriteResultTL1(r []byte, w []byte) ([]byte, []byte, error)                                 // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
+	ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) ([]byte, []byte, error)  // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 
 }
 

@@ -271,10 +271,3 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	}
 	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
-
-func (trw *TypeRWStruct) typeJSON2ReadingRequiresContext() bool {
-	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSON2ReadingRequiresContext()
-	}
-	return true
-}

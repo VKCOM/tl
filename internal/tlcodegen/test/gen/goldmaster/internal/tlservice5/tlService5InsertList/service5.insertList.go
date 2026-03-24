@@ -223,8 +223,7 @@ func (item *Service5InsertList) WriteResultTL2(w []byte, tctx *basictl.TL2WriteC
 	return w
 }
 
-func (item *Service5InsertList) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlListService5Output.ListService5Output) error {
-	jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+func (item *Service5InsertList) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *tlListService5Output.ListService5Output) error {
 	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
@@ -255,9 +254,9 @@ func (item *Service5InsertList) ReadResultTL1WriteResultJSON(jctx *basictl.JSONW
 	return r, w, err
 }
 
-func (item *Service5InsertList) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -290,9 +289,9 @@ func (item *Service5InsertList) ReadResultTL2WriteResultJSON(tctx *basictl.TL2Re
 	return r, w, err
 }
 
-func (item *Service5InsertList) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5InsertList) ReadResultJSONWriteResultTL2(jctx *basictl.JSONReadContext, tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlListService5Output.ListService5Output
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	return r, item.WriteResultTL2(w, tctx, ret), nil

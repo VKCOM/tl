@@ -372,9 +372,7 @@ func (item *{%s= goName %}) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byt
     return w{%- if writeNeedsError -%}, nil{%- endif -%}
 }
     {%- else -%}
-        {%- code
-// Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required
-        -%}
+        {%- code // Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required -%}
 
 {%= struct_.readJSONCode(bytesVersion, directImports) %}
 {%= struct_.writeJSONCode(bytesVersion, directImports) %}
@@ -882,10 +880,7 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, tctx *basictl.TL2WriteConte
 
 {%- endif -%}
 
-func (item *{%s= goName %}) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *{%s= retArg  %}) error {
-    {%- if struct_.ResultType.TypeJSON2ReadingRequiresContext() -%}
-    jctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    {%- endif -%}
+func (item *{%s= goName %}) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *{%s= retArg  %}) error {
     {%s= struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true) %}
     return nil
 }
@@ -916,9 +911,9 @@ func (item *{%s= goName %}) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWrite
   return r, w, err
 }
 
-func (item *{%s= goName %}) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}
-  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+  if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
   w, err = item.WriteResultTL1(w, ret)
@@ -964,12 +959,12 @@ func (item *{%s= goName %}) ReadResultTL2WriteResultJSON(tctx *basictl.TL2ReadCo
   {%- endif -%}
 }
 
-func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultJSONWriteResultTL2(jctx *basictl.JSONReadContext, tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   {%- if !struct_.wr.HasTL2() -%}
   return r, w, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= struct_.wr.tlName.String() %})
   {%- else -%}
   var ret {%s= retArg %}
-  if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+  if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
     return r, w, err
   }
   return r, item.WriteResultTL2(w, tctx, ret), nil

@@ -155,10 +155,6 @@ func (trw *TypeRWUnion) typeJSON2ReadingCode(bytesVersion bool, directImports *D
 	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWUnion) typeJSON2ReadingRequiresContext() bool {
-	return true
-}
-
 // TODO - remove with long adapters
 func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	//messages.peerId peer_id:int = messages.ChatId;
