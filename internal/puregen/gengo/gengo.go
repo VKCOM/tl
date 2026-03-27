@@ -48,7 +48,7 @@ type genGo struct {
 	generatedTypes     map[string]*TypeRWWrapper
 	generatedTypesList []*TypeRWWrapper // we need more deterministic order than sort predicate can establish
 
-	globalDec  Deconflicter
+	globalDec  puregen.Deconflicter
 	Namespaces map[string]*Namespace // Handlers Code is inside
 }
 
@@ -489,9 +489,9 @@ func (gen *genGo) getNamespace(n string) *Namespace {
 		na = &Namespace{name: n}
 		gen.Namespaces[n] = na
 		// TODO - ALL golang-specific names
-		na.decGo.deconflictName("Handler")
-		na.decGo.deconflictName("Handle")
-		na.decGo.deconflictName("Client")
+		na.decGo.DeconflictName("Handler")
+		na.decGo.DeconflictName("Handle")
+		na.decGo.DeconflictName("Client")
 	}
 	return na
 }

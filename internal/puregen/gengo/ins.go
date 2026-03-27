@@ -11,6 +11,8 @@ import (
 	"slices"
 	"strings"
 	"sync/atomic"
+
+	"github.com/VKCOM/tl/internal/puregen"
 )
 
 // for golang cycle detection
@@ -22,7 +24,7 @@ type DirectImports struct {
 type Namespace struct {
 	name  string
 	types []*TypeRWWrapper
-	decGo Deconflicter
+	decGo puregen.Deconflicter
 }
 
 type InsFile struct {

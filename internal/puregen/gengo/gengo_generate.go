@@ -138,9 +138,9 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct,
 	unionParent *TypeRWUnion, unionIndex int) error {
 	head, tail := myWrapper.resolvedT2GoName("")
-	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+	myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 
 	//if pureType.ResultType() == nil && myWrapper.unionParent == nil && len(myWrapper.pureType.KernelType().TL1()) != 0 {
 	//wasName := canonicalGoName(myWrapper.pureType.KernelType().TL1()[0].TypeDecl.Name, myWrapper.ns.name)
@@ -164,7 +164,7 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 		unionParent:    unionParent,
 		unionIndex:     unionIndex,
 	}
-	res.fieldsDec.fillGolangIdentifies()
+	res.fieldsDec.FillGolangIdentifies()
 	myWrapper.trw = res
 	//nextTL2MaskBit := 0
 	for _, field := range pureType.Fields() {
@@ -177,7 +177,7 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 			t:         fieldType,
 		}
 		if field.Name() != "" { // empty only for typedef single field
-			newField.goName = res.fieldsDec.deconflictName(utils.CNameToCamelName(field.Name()))
+			newField.goName = res.fieldsDec.DeconflictName(utils.CNameToCamelName(field.Name()))
 		}
 		res.Fields = append(res.Fields, newField)
 	}
@@ -194,9 +194,9 @@ func (gen *genGo) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Ty
 
 func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive, isBit bool) error {
 	head, tail := myWrapper.resolvedT2GoName("")
-	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+	myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 	res := &TypeRWBool{
 		isBit: isBit,
 		wr:    myWrapper,
@@ -204,8 +204,8 @@ func (gen *genGo) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.Type
 	if ok, falseTag, trueTag := pureType.IsTL1Bool(); ok {
 		res.falseTag = falseTag
 		res.trueTag = trueTag
-		res.falseGoName = gen.globalDec.deconflictName("BoolFalse")
-		res.trueGoName = gen.globalDec.deconflictName("BoolTrue")
+		res.falseGoName = gen.globalDec.DeconflictName("BoolFalse")
+		res.trueGoName = gen.globalDec.DeconflictName("BoolTrue")
 	}
 	myWrapper.trw = res
 	return nil
@@ -219,9 +219,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		}
 		// Customizing maybe name was really stupid idea, actually.
 		head, tail := myWrapper.resolvedT2GoName("")
-		myWrapper.goGlobalName = gen.globalDec.deconflictName(tail + head)
+		myWrapper.goGlobalName = gen.globalDec.DeconflictName(tail + head)
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-		myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(tail + head)
+		myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(tail + head)
 
 		res := &TypeRWMaybe{
 			wr: myWrapper,
@@ -237,9 +237,9 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		return nil
 	}
 	head, tail := myWrapper.resolvedT2GoName("")
-	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+	myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-	myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+	myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 
 	res := &TypeRWUnion{
 		pureType: pureType,
@@ -273,7 +273,7 @@ func (gen *genGo) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Typ
 		newField := Variant{
 			variantName: variantName,
 			t:           variantWrapper,
-			goName:      res.fieldsDec.deconflictName(fieldGoName),
+			goName:      res.fieldsDec.DeconflictName(fieldGoName),
 		}
 		res.Fields = append(res.Fields, newField)
 	}

@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package gengo
+package puregen
 
 import (
 	"strconv"
@@ -23,7 +23,7 @@ type Deconflicter struct {
 //	return ok
 //}
 
-func (d *Deconflicter) deconflictName(s string) string {
+func (d *Deconflicter) DeconflictName(s string) string {
 	if d.usedNames == nil {
 		d.usedNames = map[string]bool{}
 	}
@@ -36,9 +36,9 @@ func (d *Deconflicter) deconflictName(s string) string {
 	return s
 }
 
-func (d *Deconflicter) fillGolangIdentifies() {
-	d.deconflictName("Write")
-	d.deconflictName("Read")
-	d.deconflictName("WriteTL2")
-	d.deconflictName("ReadTL2")
+func (d *Deconflicter) FillGolangIdentifies() {
+	d.DeconflictName("Write")
+	d.DeconflictName("Read")
+	d.DeconflictName("WriteTL2")
+	d.DeconflictName("ReadTL2")
 }

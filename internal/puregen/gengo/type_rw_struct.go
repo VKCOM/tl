@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
 )
 
 type TypeRWStruct struct {
@@ -28,8 +29,8 @@ type TypeRWStruct struct {
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
 
-	fieldsDec  Deconflicter // TODO - add all generated methods here
-	setNames   []string     // method names should be the same for bytes and normal versions, so we remember them here
+	fieldsDec  puregen.Deconflicter // TODO - add all generated methods here
+	setNames   []string             // method names should be the same for bytes and normal versions, so we remember them here
 	clearNames []string
 	isSetNames []string
 }
