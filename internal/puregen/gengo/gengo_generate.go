@@ -97,6 +97,11 @@ func (gen *genGo) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.
 			writeValue:     "basictl.StringWrite",
 			readValue:      "basictl.StringRead",
 		}, {
+			// function and function_result support is not finished,
+			// they must be generics, and wrap source function.
+			// if options.Kernel.InstantiateExclamationWrappers = true, result code will compile but
+			// does not pass tests (and it is not meant to pass them yet).
+			// TODO - finish exclamation wrappers support in golang
 			canonicalType:  "__function",
 			historicalName: "function",
 			goType:         "string",
