@@ -103,9 +103,6 @@ func (gen *genGo) addTypeWrappers() error {
 func (gen *genGo) prepareGeneration() error {
 	options := gen.options
 
-	gen.bytesWhiteList = pure.NewWhiteList("--generateByteVersions", options.BytesWhiteList)
-	gen.rawHandlerWhileList = pure.NewWhiteList("--rawHandlerWhiteList", options.Go.RawHandlerWhileList)
-
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	for _, v := range gen.generatedTypesList {
