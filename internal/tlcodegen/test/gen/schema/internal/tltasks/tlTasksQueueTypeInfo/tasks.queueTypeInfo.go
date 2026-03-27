@@ -74,11 +74,11 @@ func (item TasksQueueTypeInfo) String() string {
 }
 
 func (item *TasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksQueueTypeInfo) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypeNamePresented bool
 	var propSettingsPresented bool
 	var propStatsPresented bool
@@ -104,7 +104,7 @@ func (item *TasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeInfo", "settings")
 				}
 				propSettingsPresented = true
-				if err := item.Settings.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Settings.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "stats":
@@ -112,7 +112,7 @@ func (item *TasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeInfo", "stats")
 				}
 				propStatsPresented = true
-				if err := item.Stats.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Stats.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -138,15 +138,14 @@ func (item *TasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksQueueTypeInfo) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TasksQueueTypeInfo) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TasksQueueTypeInfo) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TasksQueueTypeInfo) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexTypeName := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -157,10 +156,10 @@ func (item *TasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"settings":`...)
-	w = item.Settings.WriteJSONOpt(tctx, w)
+	w = item.Settings.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"stats":`...)
-	w = item.Stats.WriteJSONOpt(tctx, w)
+	w = item.Stats.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -169,7 +168,8 @@ func (item *TasksQueueTypeInfo) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksQueueTypeInfo) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.queueTypeInfo", err.Error())
 	}
 	return nil

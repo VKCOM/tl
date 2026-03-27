@@ -45,7 +45,7 @@ func BuiltinVectorMapStringStringWriteTL1(w []byte, vec []tlMapStringString.MapS
 	return w
 }
 
-func BuiltinVectorMapStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlMapStringString.MapStringString) error {
+func BuiltinVectorMapStringStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlMapStringString.MapStringString) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorMapStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorMapStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 func BuiltinVectorMapStringStringWriteJSON(w []byte, vec []tlMapStringString.MapStringString) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorMapStringStringWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorMapStringStringWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorMapStringStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlMapStringString.MapStringString) []byte {
+func BuiltinVectorMapStringStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlMapStringString.MapStringString) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

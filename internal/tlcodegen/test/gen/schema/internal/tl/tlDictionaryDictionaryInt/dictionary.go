@@ -62,29 +62,28 @@ func (item DictionaryDictionaryInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryDictionaryInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictionaryDictionaryInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *DictionaryDictionaryInt) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryDictionaryInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictionaryDictionaryInt) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictionaryDictionaryInt) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *DictionaryDictionaryInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(tctx, w, *item.ptr())
+func (item *DictionaryDictionaryInt) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *DictionaryDictionaryInt) MarshalJSON() ([]byte, error) {
@@ -92,7 +91,8 @@ func (item *DictionaryDictionaryInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictionaryDictionaryInt) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("dictionary", err.Error())
 	}
 	return nil

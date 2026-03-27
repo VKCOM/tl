@@ -73,36 +73,34 @@ func (item *BoxedVector64) WriteResultTL1(w []byte, ret []int64) (_ []byte, err 
 	return w, nil
 }
 
-func (item *BoxedVector64) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int64) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(tctx, in, ret); err != nil {
+func (item *BoxedVector64) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *[]int64) error {
+	if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(jctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *BoxedVector64) WriteResultJSON(w []byte, ret []int64) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *BoxedVector64) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int64) (_ []byte, err error) {
-	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(tctx, w, ret)
+func (item *BoxedVector64) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret []int64) (_ []byte, err error) {
+	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(jctx, w, ret)
 	return w, nil
 }
 
-func (item *BoxedVector64) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedVector64) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int64
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *BoxedVector64) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedVector64) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int64
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -114,11 +112,11 @@ func (item BoxedVector64) String() string {
 }
 
 func (item *BoxedVector64) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BoxedVector64) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BoxedVector64) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -134,7 +132,7 @@ func (item *BoxedVector64) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedVector64", "x")
 				}
 				propXPresented = true
-				if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(tctx, in, &item.X); err != nil {
+				if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSONGeneral(jctx, in, &item.X); err != nil {
 					return err
 				}
 			default:
@@ -154,20 +152,19 @@ func (item *BoxedVector64) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BoxedVector64) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BoxedVector64) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BoxedVector64) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BoxedVector64) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BoxedVector64) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(tctx, w, item.X)
+	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(jctx, w, item.X)
 	if !(len(item.X) != 0) {
 		w = w[:backupIndexX]
 	}
@@ -179,7 +176,8 @@ func (item *BoxedVector64) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BoxedVector64) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("boxedVector64", err.Error())
 	}
 	return nil

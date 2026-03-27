@@ -103,36 +103,34 @@ func (item *Service2Set) WriteResultTL1(w []byte, ret tlTrue.True) (_ []byte, er
 	return w, nil
 }
 
-func (item *Service2Set) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlTrue.True) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+func (item *Service2Set) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *tlTrue.True) error {
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service2Set) WriteResultJSON(w []byte, ret tlTrue.True) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service2Set) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlTrue.True) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *Service2Set) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlTrue.True) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
-func (item *Service2Set) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service2Set) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTrue.True
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service2Set) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service2Set) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTrue.True
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -148,11 +146,11 @@ func (item Service2Set) String() string {
 }
 
 func (item *Service2Set) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service2Set) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectIdLengthPresented bool
 	var propIntCountersNumPresented bool
 	var propFloatCountersNumPresented bool
@@ -243,34 +241,34 @@ func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	}
 	if propIntCountersPresented {
 		inIntCounters := &basictl.JsonLexer{Data: rawIntCounters}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIntCounters, &item.IntCounters, item.IntCountersNum); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, inIntCounters, &item.IntCounters, item.IntCountersNum); err != nil {
 			return err
 		}
 	}
 	if propFloatCountersPresented {
 		inFloatCounters := &basictl.JsonLexer{Data: rawFloatCounters}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inFloatCounters, &item.FloatCounters, item.FloatCountersNum); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, inFloatCounters, &item.FloatCounters, item.FloatCountersNum); err != nil {
 			return err
 		}
 	}
 	if propNewValuesPresented {
 		inNewValues := &basictl.JsonLexer{Data: rawNewValues}
-		if err := item.NewValues.ReadJSONGeneral(tctx, inNewValues, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+		if err := item.NewValues.ReadJSONGeneral(jctx, inNewValues, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 			return err
 		}
 	}
 	if !propIntCountersPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.IntCounters, item.IntCountersNum); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.IntCounters, item.IntCountersNum); err != nil {
 			return err
 		}
 	}
 	if !propFloatCountersPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.FloatCounters, item.FloatCountersNum); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.FloatCounters, item.FloatCountersNum); err != nil {
 			return err
 		}
 	}
 	if !propNewValuesPresented {
-		if err := item.NewValues.ReadJSONGeneral(tctx, nil, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+		if err := item.NewValues.ReadJSONGeneral(jctx, nil, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 			return err
 		}
 	}
@@ -278,15 +276,14 @@ func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2Set) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *Service2Set) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *Service2Set) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service2Set) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *Service2Set) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexObjectIdLength := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -312,7 +309,7 @@ func (item *Service2Set) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexIntCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"intCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.IntCounters, item.IntCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.IntCounters, item.IntCountersNum); err != nil {
 		return w, err
 	}
 	if !(len(item.IntCounters) != 0) {
@@ -321,7 +318,7 @@ func (item *Service2Set) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	backupIndexFloatCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"floatCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.FloatCounters, item.FloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.FloatCounters, item.FloatCountersNum); err != nil {
 		return w, err
 	}
 	if !(len(item.FloatCounters) != 0) {
@@ -329,7 +326,7 @@ func (item *Service2Set) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"newValues":`...)
-	if w, err = item.NewValues.WriteJSONOpt(tctx, w, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	if w, err = item.NewValues.WriteJSONOpt(jctx, w, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -340,7 +337,8 @@ func (item *Service2Set) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service2Set) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service2.set", err.Error())
 	}
 	return nil

@@ -69,11 +69,11 @@ func (item BenchObject) String() string {
 }
 
 func (item *BenchObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BenchObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BenchObject) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXsPresented bool
 	var propYsPresented bool
 	if in != nil {
@@ -90,7 +90,7 @@ func (item *BenchObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchObject", "xs")
 				}
 				propXsPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Xs); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Xs); err != nil {
 					return err
 				}
 			case "ys":
@@ -98,7 +98,7 @@ func (item *BenchObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchObject", "ys")
 				}
 				propYsPresented = true
-				if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSONGeneral(tctx, in, &item.Ys); err != nil {
+				if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSONGeneral(jctx, in, &item.Ys); err != nil {
 					return err
 				}
 			default:
@@ -121,27 +121,26 @@ func (item *BenchObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchObject) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *BenchObject) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *BenchObject) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BenchObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *BenchObject) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Xs)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Xs)
 	if !(len(item.Xs) != 0) {
 		w = w[:backupIndexXs]
 	}
 	backupIndexYs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"ys":`...)
-	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(tctx, w, item.Ys)
+	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(jctx, w, item.Ys)
 	if !(len(item.Ys) != 0) {
 		w = w[:backupIndexYs]
 	}
@@ -153,7 +152,8 @@ func (item *BenchObject) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BenchObject) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("benchObject", err.Error())
 	}
 	return nil

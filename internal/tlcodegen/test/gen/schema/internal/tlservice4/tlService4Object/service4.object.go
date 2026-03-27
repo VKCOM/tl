@@ -73,11 +73,11 @@ func (item Service4Object) String() string {
 }
 
 func (item *Service4Object) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service4Object) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypePresented bool
 	var propJointIdPresented bool
 	var propObjectIdPresented bool
@@ -103,7 +103,7 @@ func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.object", "joint_id")
 				}
 				propJointIdPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.JointId); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.JointId); err != nil {
 					return err
 				}
 			case "object_id":
@@ -111,7 +111,7 @@ func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.object", "object_id")
 				}
 				propObjectIdPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.ObjectId); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.ObjectId); err != nil {
 					return err
 				}
 			default:
@@ -137,15 +137,14 @@ func (item *Service4Object) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service4Object) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service4Object) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service4Object) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service4Object) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service4Object) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexType := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -157,14 +156,14 @@ func (item *Service4Object) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexJointId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"joint_id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.JointId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.JointId)
 	if !(len(item.JointId) != 0) {
 		w = w[:backupIndexJointId]
 	}
 	backupIndexObjectId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"object_id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.ObjectId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.ObjectId)
 	if !(len(item.ObjectId) != 0) {
 		w = w[:backupIndexObjectId]
 	}
@@ -176,7 +175,8 @@ func (item *Service4Object) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service4Object) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service4.object", err.Error())
 	}
 	return nil

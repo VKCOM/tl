@@ -48,7 +48,7 @@ func BuiltinVectorLongBoxedWriteTL1(w []byte, vec []int64) []byte {
 	return w
 }
 
-func BuiltinVectorLongBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int64) error {
+func BuiltinVectorLongBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int64) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -77,10 +77,9 @@ func BuiltinVectorLongBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 func BuiltinVectorLongBoxedWriteJSON(w []byte, vec []int64) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorLongBoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorLongBoxedWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorLongBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int64) []byte {
+func BuiltinVectorLongBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []int64) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

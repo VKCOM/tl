@@ -103,7 +103,7 @@ func (item *Service3Product) WriteTL1Boxed(w []byte, nat_mode uint32) []byte {
 	return item.WriteTL1(w, nat_mode)
 }
 
-func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_mode uint32) error {
+func (item *Service3Product) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_mode uint32) error {
 	var propTypePresented bool
 	var propIdPresented bool
 	var propInfoPresented bool
@@ -132,7 +132,7 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "id")
 				}
 				propIdPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Id); err != nil {
 					return err
 				}
 			case "info":
@@ -140,7 +140,7 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "info")
 				}
 				propInfoPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Info); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Info); err != nil {
 					return err
 				}
 			case "date":
@@ -204,15 +204,14 @@ func (item *Service3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service3Product) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_mode uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_mode), nil
+func (item *Service3Product) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_mode uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_mode), nil
 }
 
 func (item *Service3Product) WriteJSON(w []byte, nat_mode uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_mode)
+	return item.WriteJSONOpt(nil, w, nat_mode)
 }
-func (item *Service3Product) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_mode uint32) []byte {
+func (item *Service3Product) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_mode uint32) []byte {
 	w = append(w, '{')
 	backupIndexType := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -224,14 +223,14 @@ func (item *Service3Product) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Id)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Id)
 	if !(len(item.Id) != 0) {
 		w = w[:backupIndexId]
 	}
 	backupIndexInfo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"info":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Info)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Info)
 	if !(len(item.Info) != 0) {
 		w = w[:backupIndexInfo]
 	}

@@ -69,11 +69,11 @@ func (item Service1KeysStat) String() string {
 }
 
 func (item *Service1KeysStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service1KeysStat) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propStartTimePresented bool
 	var propKeysTopsPresented bool
 	if in != nil {
@@ -98,7 +98,7 @@ func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.keysStat", "keys_tops")
 				}
 				propKeysTopsPresented = true
-				if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(tctx, in, &item.KeysTops); err != nil {
+				if err := tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntReadJSONGeneral(jctx, in, &item.KeysTops); err != nil {
 					return err
 				}
 			default:
@@ -121,15 +121,14 @@ func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1KeysStat) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service1KeysStat) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service1KeysStat) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service1KeysStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service1KeysStat) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexStartTime := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -141,7 +140,7 @@ func (item *Service1KeysStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	backupIndexKeysTops := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"keys_tops":`...)
-	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(tctx, w, item.KeysTops)
+	w = tlBuiltinDictStringDictionaryInt.BuiltinDictStringDictionaryIntWriteJSONOpt(jctx, w, item.KeysTops)
 	if !(len(item.KeysTops) != 0) {
 		w = w[:backupIndexKeysTops]
 	}
@@ -153,7 +152,8 @@ func (item *Service1KeysStat) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service1KeysStat) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service1.keysStat", err.Error())
 	}
 	return nil

@@ -38,7 +38,7 @@ func BuiltinTuple3Service1ValueWriteTL1(w []byte, vec *[3]tlService1Value.Servic
 	return w
 }
 
-func BuiltinTuple3Service1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]tlService1Value.Service1Value) error {
+func BuiltinTuple3Service1ValueReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]tlService1Value.Service1Value) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -49,7 +49,7 @@ func BuiltinTuple3Service1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in
 			if index == 3 {
 				return internal.ErrorWrongSequenceLength("[3]tlService1Value.Service1Value", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -66,14 +66,13 @@ func BuiltinTuple3Service1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 func BuiltinTuple3Service1ValueWriteJSON(w []byte, vec *[3]tlService1Value.Service1Value) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple3Service1ValueWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple3Service1ValueWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple3Service1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]tlService1Value.Service1Value) []byte {
+func BuiltinTuple3Service1ValueWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[3]tlService1Value.Service1Value) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

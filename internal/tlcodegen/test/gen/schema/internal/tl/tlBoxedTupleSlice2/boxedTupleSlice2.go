@@ -69,38 +69,36 @@ func (item *BoxedTupleSlice2) WriteResultTL1(w []byte, ret tlMyBoxedTupleSlice.M
 	return w, nil
 }
 
-func (item *BoxedTupleSlice2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlMyBoxedTupleSlice.MyBoxedTupleSlice) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+func (item *BoxedTupleSlice2) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *tlMyBoxedTupleSlice.MyBoxedTupleSlice) error {
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *BoxedTupleSlice2) WriteResultJSON(w []byte, ret tlMyBoxedTupleSlice.MyBoxedTupleSlice) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *BoxedTupleSlice2) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyBoxedTupleSlice.MyBoxedTupleSlice) (_ []byte, err error) {
-	if w, err = ret.WriteJSONOpt(tctx, w); err != nil {
+func (item *BoxedTupleSlice2) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlMyBoxedTupleSlice.MyBoxedTupleSlice) (_ []byte, err error) {
+	if w, err = ret.WriteJSONOpt(jctx, w); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
-func (item *BoxedTupleSlice2) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedTupleSlice2) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyBoxedTupleSlice.MyBoxedTupleSlice
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *BoxedTupleSlice2) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedTupleSlice2) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyBoxedTupleSlice.MyBoxedTupleSlice
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -116,11 +114,11 @@ func (item BoxedTupleSlice2) String() string {
 }
 
 func (item *BoxedTupleSlice2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *BoxedTupleSlice2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *BoxedTupleSlice2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -136,7 +134,7 @@ func (item *BoxedTupleSlice2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedTupleSlice2", "x")
 				}
 				propXPresented = true
-				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.X.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -156,19 +154,18 @@ func (item *BoxedTupleSlice2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BoxedTupleSlice2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *BoxedTupleSlice2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *BoxedTupleSlice2) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *BoxedTupleSlice2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *BoxedTupleSlice2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	if w, err = item.X.WriteJSONOpt(tctx, w); err != nil {
+	if w, err = item.X.WriteJSONOpt(jctx, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -179,7 +176,8 @@ func (item *BoxedTupleSlice2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *BoxedTupleSlice2) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("boxedTupleSlice2", err.Error())
 	}
 	return nil

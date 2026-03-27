@@ -64,29 +64,28 @@ func (item VectorService3GroupSizeLimit) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorService3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *VectorService3GroupSizeLimit) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, item.ptr()); err != nil {
+func (item *VectorService3GroupSizeLimit) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(jctx, in, item.ptr()); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService3GroupSizeLimit) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *VectorService3GroupSizeLimit) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *VectorService3GroupSizeLimit) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *VectorService3GroupSizeLimit) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, *item.ptr())
+func (item *VectorService3GroupSizeLimit) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(jctx, w, *item.ptr())
 	return w
 }
 func (item *VectorService3GroupSizeLimit) MarshalJSON() ([]byte, error) {
@@ -94,7 +93,8 @@ func (item *VectorService3GroupSizeLimit) MarshalJSON() ([]byte, error) {
 }
 
 func (item *VectorService3GroupSizeLimit) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil

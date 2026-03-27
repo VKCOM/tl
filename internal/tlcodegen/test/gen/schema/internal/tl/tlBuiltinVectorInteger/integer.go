@@ -45,7 +45,7 @@ func BuiltinVectorIntegerWriteTL1(w []byte, vec []tlInteger.Integer) []byte {
 	return w
 }
 
-func BuiltinVectorIntegerReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlInteger.Integer) error {
+func BuiltinVectorIntegerReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlInteger.Integer) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorIntegerReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorIntegerReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 func BuiltinVectorIntegerWriteJSON(w []byte, vec []tlInteger.Integer) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorIntegerWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorIntegerWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorIntegerWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlInteger.Integer) []byte {
+func BuiltinVectorIntegerWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlInteger.Integer) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

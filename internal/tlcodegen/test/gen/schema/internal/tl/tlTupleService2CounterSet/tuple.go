@@ -53,25 +53,24 @@ func (item *TupleService2CounterSet) WriteTL1Boxed(w []byte, nat_tintCountersNum
 	return item.WriteTL1(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {
-	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSONGeneral(tctx, in, item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+func (item *TupleService2CounterSet) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {
+	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSONGeneral(jctx, in, item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleService2CounterSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+func (item *TupleService2CounterSet) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
 func (item *TupleService2CounterSet) WriteJSON(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+	return item.WriteJSONOpt(nil, w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(tctx, w, *item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+func (item *TupleService2CounterSet) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(jctx, w, *item.ptr(), nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil

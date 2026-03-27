@@ -59,7 +59,7 @@ func (item *Service2CounterSet) WriteTL1Boxed(w []byte, nat_intCountersNum uint3
 	return item.WriteTL1(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
+func (item *Service2CounterSet) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
 	var propIntCountersPresented bool
 	var propFloatCountersPresented bool
 	if in != nil {
@@ -76,7 +76,7 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.counterSet", "intCounters")
 				}
 				propIntCountersPresented = true
-				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.IntCounters, nat_intCountersNum); err != nil {
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, in, &item.IntCounters, nat_intCountersNum); err != nil {
 					return err
 				}
 			case "floatCounters":
@@ -84,7 +84,7 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.counterSet", "floatCounters")
 				}
 				propFloatCountersPresented = true
-				if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, in, &item.FloatCounters, nat_floatCountersNum); err != nil {
+				if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(jctx, in, &item.FloatCounters, nat_floatCountersNum); err != nil {
 					return err
 				}
 			default:
@@ -98,12 +98,12 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		}
 	}
 	if !propIntCountersPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.IntCounters, nat_intCountersNum); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.IntCounters, nat_intCountersNum); err != nil {
 			return err
 		}
 	}
 	if !propFloatCountersPresented {
-		if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, nil, &item.FloatCounters, nat_floatCountersNum); err != nil {
+		if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(jctx, nil, &item.FloatCounters, nat_floatCountersNum); err != nil {
 			return err
 		}
 	}
@@ -111,20 +111,19 @@ func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2CounterSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_intCountersNum, nat_floatCountersNum)
+func (item *Service2CounterSet) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2CounterSet) WriteJSON(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_intCountersNum, nat_floatCountersNum)
+	return item.WriteJSONOpt(nil, w, nat_intCountersNum, nat_floatCountersNum)
 }
-func (item *Service2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+func (item *Service2CounterSet) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexIntCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"intCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.IntCounters, nat_intCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.IntCounters, nat_intCountersNum); err != nil {
 		return w, err
 	}
 	if !(len(item.IntCounters) != 0) {
@@ -133,7 +132,7 @@ func (item *Service2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	backupIndexFloatCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"floatCounters":`...)
-	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(tctx, w, item.FloatCounters, nat_floatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(jctx, w, item.FloatCounters, nat_floatCountersNum); err != nil {
 		return w, err
 	}
 	if !(len(item.FloatCounters) != 0) {

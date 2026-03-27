@@ -44,8 +44,8 @@ func BuiltinTupleService2DeltaSetWriteTL1(w []byte, vec []tlService2DeltaSet.Ser
 	}
 	return w, nil
 }
-func BuiltinTupleService2DeltaSetReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleService2DeltaSetReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -71,7 +71,7 @@ func BuiltinTupleService2DeltaSetReadJSONGeneral(tctx *basictl.JSONReadContext, 
 					return internal.ErrorInvalidJSON("[]tlService2DeltaSet.Service2DeltaSet", "array is longer than expected")
 				}
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -92,11 +92,10 @@ func BuiltinTupleService2DeltaSetReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 func BuiltinTupleService2DeltaSetWriteJSON(w []byte, vec []tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleService2DeltaSetWriteJSONOpt(&tctx, w, vec, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
+	return BuiltinTupleService2DeltaSetWriteJSONOpt(nil, w, vec, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
 }
-func BuiltinTupleService2DeltaSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleService2DeltaSetWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {
@@ -105,7 +104,7 @@ func BuiltinTupleService2DeltaSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(tctx, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		if w, err = elem.WriteJSONOpt(jctx, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 			return w, err
 		}
 	}

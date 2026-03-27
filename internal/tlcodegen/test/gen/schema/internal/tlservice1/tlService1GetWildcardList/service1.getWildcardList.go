@@ -70,36 +70,34 @@ func (item *Service1GetWildcardList) WriteResultTL1(w []byte, ret []string) (_ [
 	return w, nil
 }
 
-func (item *Service1GetWildcardList) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]string) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, ret); err != nil {
+func (item *Service1GetWildcardList) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *[]string) error {
+	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(jctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service1GetWildcardList) WriteResultJSON(w []byte, ret []string) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service1GetWildcardList) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []string) (_ []byte, err error) {
-	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, ret)
+func (item *Service1GetWildcardList) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret []string) (_ []byte, err error) {
+	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(jctx, w, ret)
 	return w, nil
 }
 
-func (item *Service1GetWildcardList) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardList) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []string
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service1GetWildcardList) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardList) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []string
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -111,11 +109,11 @@ func (item Service1GetWildcardList) String() string {
 }
 
 func (item *Service1GetWildcardList) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service1GetWildcardList) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service1GetWildcardList) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -151,15 +149,14 @@ func (item *Service1GetWildcardList) ReadJSONGeneral(tctx *basictl.JSONReadConte
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1GetWildcardList) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service1GetWildcardList) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service1GetWildcardList) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service1GetWildcardList) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service1GetWildcardList) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPrefix := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -176,7 +173,8 @@ func (item *Service1GetWildcardList) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service1GetWildcardList) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service1.getWildcardList", err.Error())
 	}
 	return nil

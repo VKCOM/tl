@@ -45,7 +45,7 @@ func BuiltinVectorService6FindWithBoundsResultWriteTL1(w []byte, vec []tlService
 	return w
 }
 
-func BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult) error {
+func BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSON
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSON
 }
 
 func BuiltinVectorService6FindWithBoundsResultWriteJSON(w []byte, vec []tlService6FindWithBoundsResult.Service6FindWithBoundsResult) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService6FindWithBoundsResult.Service6FindWithBoundsResult) []byte {
+func BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlService6FindWithBoundsResult.Service6FindWithBoundsResult) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

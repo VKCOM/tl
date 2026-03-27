@@ -90,11 +90,11 @@ func (item AntispamPatternFound) String() string {
 }
 
 func (item *AntispamPatternFound) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AntispamPatternFound) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AntispamPatternFound) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propIpPresented bool
 	var propUahashPresented bool
 	var propFlagsPresented bool
@@ -178,15 +178,14 @@ func (item *AntispamPatternFound) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternFound) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AntispamPatternFound) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AntispamPatternFound) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AntispamPatternFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AntispamPatternFound) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexIp := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -231,7 +230,8 @@ func (item *AntispamPatternFound) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AntispamPatternFound) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("antispam.patternFound", err.Error())
 	}
 	return nil
@@ -308,21 +308,21 @@ func (item *AntispamPatternFull) WriteTL1Boxed(w []byte) []byte {
 }
 
 func (item *AntispamPatternFull) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AntispamPatternFull) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AntispamPatternFull) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("antispam.PatternFull", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "antispam.patternFound#a7688492", "antispam.patternFound", "#a7688492":
-		if !tctx.LegacyTypeNames && _tag == "antispam.patternFound#a7688492" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "antispam.patternFound#a7688492" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "antispam.patternFound#a7688492")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#a7688492" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#a7688492" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "#a7688492")
 		}
 		item.index = 0
@@ -330,14 +330,14 @@ func (item *AntispamPatternFull) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valuePatternFound.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valuePatternFound.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "antispam.patternNotFound#2c22e225", "antispam.patternNotFound", "#2c22e225":
-		if !tctx.LegacyTypeNames && _tag == "antispam.patternNotFound#2c22e225" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "antispam.patternNotFound#2c22e225" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "antispam.patternNotFound#2c22e225")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#2c22e225" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#2c22e225" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "#2c22e225")
 		}
 		item.index = 1
@@ -348,27 +348,26 @@ func (item *AntispamPatternFull) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternFull) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AntispamPatternFull) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AntispamPatternFull) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AntispamPatternFull) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AntispamPatternFull) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"antispam.patternFound#a7688492"`...)
 		} else {
 			w = append(w, `{"type":"antispam.patternFound"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valuePatternFound.WriteJSONOpt(tctx, w)
+		w = item.valuePatternFound.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"antispam.patternNotFound#2c22e225"`...)
 		} else {
 			w = append(w, `{"type":"antispam.patternNotFound"`...)
@@ -388,7 +387,8 @@ func (item *AntispamPatternFull) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AntispamPatternFull) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("antispam.PatternFull", err.Error())
 	}
 	return nil
@@ -439,11 +439,11 @@ func (item AntispamPatternNotFound) String() string {
 }
 
 func (item *AntispamPatternNotFound) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AntispamPatternNotFound) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AntispamPatternNotFound) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -461,15 +461,14 @@ func (item *AntispamPatternNotFound) ReadJSONGeneral(tctx *basictl.JSONReadConte
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternNotFound) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AntispamPatternNotFound) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AntispamPatternNotFound) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AntispamPatternNotFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AntispamPatternNotFound) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -479,7 +478,8 @@ func (item *AntispamPatternNotFound) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AntispamPatternNotFound) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("antispam.patternNotFound", err.Error())
 	}
 	return nil

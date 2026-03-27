@@ -16,8 +16,7 @@ type OptionsGo struct {
 	GenerateLegacyJsonRead bool
 	UseCheckLengthSanity   bool
 
-	SplitInternal           bool
-	GenerateLegacyReadWrite bool // TODO - remove after replacing names in users
+	SplitInternal bool
 }
 
 func (opt *OptionsGo) Bind(f *flag.FlagSet) {
@@ -36,6 +35,4 @@ func (opt *OptionsGo) Bind(f *flag.FlagSet) {
 
 	f.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
-	f.BoolVar(&opt.GenerateLegacyReadWrite, "generate-legacy-read-write", false,
-		"in addition to ReadTL1/WriteTL1 also generate Read/Write names")
 }

@@ -179,11 +179,11 @@ func (item TasksTask) String() string {
 }
 
 func (item *TasksTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksTask) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propFlagsPresented bool
 	var propTagPresented bool
@@ -222,7 +222,7 @@ func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "tag")
 				}
 				propTagPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Tag); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Tag); err != nil {
 					return err
 				}
 			case "data":
@@ -315,15 +315,14 @@ func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksTask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TasksTask) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TasksTask) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TasksTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TasksTask) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -342,7 +341,7 @@ func (item *TasksTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []
 	backupIndexTag := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tag":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Tag)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Tag)
 	if !(len(item.Tag) != 0) {
 		w = w[:backupIndexTag]
 	}
@@ -381,7 +380,8 @@ func (item *TasksTask) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksTask) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.task", err.Error())
 	}
 	return nil

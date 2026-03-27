@@ -59,7 +59,7 @@ func (item *Service2DeltaSet) WriteTL1Boxed(w []byte, nat_objectIdLength uint32,
 	return item.WriteTL1(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
+func (item *Service2DeltaSet) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
 	var propIdPresented bool
 	var propCountersPresented bool
 	if in != nil {
@@ -76,7 +76,7 @@ func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.deltaSet", "id")
 				}
 				propIdPresented = true
-				if err := item.Id.ReadJSONGeneral(tctx, in, nat_objectIdLength); err != nil {
+				if err := item.Id.ReadJSONGeneral(jctx, in, nat_objectIdLength); err != nil {
 					return err
 				}
 			case "counters":
@@ -84,7 +84,7 @@ func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.deltaSet", "counters")
 				}
 				propCountersPresented = true
-				if err := item.Counters.ReadJSONGeneral(tctx, in, nat_intCountersNum, nat_floatCountersNum); err != nil {
+				if err := item.Counters.ReadJSONGeneral(jctx, in, nat_intCountersNum, nat_floatCountersNum); err != nil {
 					return err
 				}
 			default:
@@ -98,12 +98,12 @@ func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		}
 	}
 	if !propIdPresented {
-		if err := item.Id.ReadJSONGeneral(tctx, nil, nat_objectIdLength); err != nil {
+		if err := item.Id.ReadJSONGeneral(jctx, nil, nat_objectIdLength); err != nil {
 			return err
 		}
 	}
 	if !propCountersPresented {
-		if err := item.Counters.ReadJSONGeneral(tctx, nil, nat_intCountersNum, nat_floatCountersNum); err != nil {
+		if err := item.Counters.ReadJSONGeneral(jctx, nil, nat_intCountersNum, nat_floatCountersNum); err != nil {
 			return err
 		}
 	}
@@ -111,24 +111,23 @@ func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2DeltaSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
+func (item *Service2DeltaSet) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2DeltaSet) WriteJSON(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
+	return item.WriteJSONOpt(nil, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
-func (item *Service2DeltaSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+func (item *Service2DeltaSet) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	if w, err = item.Id.WriteJSONOpt(tctx, w, nat_objectIdLength); err != nil {
+	if w, err = item.Id.WriteJSONOpt(jctx, w, nat_objectIdLength); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"counters":`...)
-	if w, err = item.Counters.WriteJSONOpt(tctx, w, nat_intCountersNum, nat_floatCountersNum); err != nil {
+	if w, err = item.Counters.WriteJSONOpt(jctx, w, nat_intCountersNum, nat_floatCountersNum); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

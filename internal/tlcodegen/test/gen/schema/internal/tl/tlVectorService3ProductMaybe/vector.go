@@ -44,7 +44,7 @@ func (item *VectorService3ProductMaybe) WriteTL1Boxed(w []byte, nat_t uint32) []
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *VectorService3ProductMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *VectorService3ProductMaybe) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (item *VectorService3ProductMaybe) ReadJSONGeneral(tctx *basictl.JSONReadCo
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSONGeneral(jctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}
@@ -64,22 +64,21 @@ func (item *VectorService3ProductMaybe) ReadJSONGeneral(tctx *basictl.JSONReadCo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService3ProductMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *VectorService3ProductMaybe) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *VectorService3ProductMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
-func (item *VectorService3ProductMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+func (item *VectorService3ProductMaybe) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteJSONOpt(tctx, w, item.Value, nat_t)
+		w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteJSONOpt(jctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }

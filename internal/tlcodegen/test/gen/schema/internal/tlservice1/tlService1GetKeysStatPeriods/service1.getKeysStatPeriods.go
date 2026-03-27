@@ -63,36 +63,34 @@ func (item *Service1GetKeysStatPeriods) WriteResultTL1(w []byte, ret []int32) (_
 	return w, nil
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, ret); err != nil {
+func (item *Service1GetKeysStatPeriods) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *[]int32) error {
+	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service1GetKeysStatPeriods) WriteResultJSON(w []byte, ret []int32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service1GetKeysStatPeriods) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, ret)
+func (item *Service1GetKeysStatPeriods) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, ret)
 	return w, nil
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetKeysStatPeriods) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service1GetKeysStatPeriods) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetKeysStatPeriods) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -104,11 +102,11 @@ func (item Service1GetKeysStatPeriods) String() string {
 }
 
 func (item *Service1GetKeysStatPeriods) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service1GetKeysStatPeriods) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service1GetKeysStatPeriods) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -126,15 +124,14 @@ func (item *Service1GetKeysStatPeriods) ReadJSONGeneral(tctx *basictl.JSONReadCo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1GetKeysStatPeriods) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service1GetKeysStatPeriods) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service1GetKeysStatPeriods) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service1GetKeysStatPeriods) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service1GetKeysStatPeriods) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -144,7 +141,8 @@ func (item *Service1GetKeysStatPeriods) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service1GetKeysStatPeriods) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service1.getKeysStatPeriods", err.Error())
 	}
 	return nil

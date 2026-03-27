@@ -50,7 +50,7 @@ func (item *Service2ObjectId) WriteTL1Boxed(w []byte, nat_objectIdLength uint32)
 	return item.WriteTL1(w, nat_objectIdLength)
 }
 
-func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32) error {
+func (item *Service2ObjectId) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32) error {
 	var propIdPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -66,7 +66,7 @@ func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service2.objectId", "id")
 				}
 				propIdPresented = true
-				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, &item.Id, nat_objectIdLength); err != nil {
+				if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, in, &item.Id, nat_objectIdLength); err != nil {
 					return err
 				}
 			default:
@@ -80,7 +80,7 @@ func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 		}
 	}
 	if !propIdPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.Id, nat_objectIdLength); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.Id, nat_objectIdLength); err != nil {
 			return err
 		}
 	}
@@ -88,20 +88,19 @@ func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2ObjectId) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_objectIdLength)
+func (item *Service2ObjectId) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_objectIdLength)
 }
 
 func (item *Service2ObjectId) WriteJSON(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_objectIdLength)
+	return item.WriteJSONOpt(nil, w, nat_objectIdLength)
 }
-func (item *Service2ObjectId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+func (item *Service2ObjectId) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.Id, nat_objectIdLength); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.Id, nat_objectIdLength); err != nil {
 		return w, err
 	}
 	if !(len(item.Id) != 0) {

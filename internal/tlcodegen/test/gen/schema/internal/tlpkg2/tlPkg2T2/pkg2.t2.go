@@ -60,29 +60,28 @@ func (item Pkg2T2) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *Pkg2T2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Pkg2T2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
+func (item *Pkg2T2) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := item.ptr().ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Pkg2T2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Pkg2T2) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Pkg2T2) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *Pkg2T2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = item.ptr().WriteJSONOpt(tctx, w)
+func (item *Pkg2T2) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = item.ptr().WriteJSONOpt(jctx, w)
 	return w
 }
 func (item *Pkg2T2) MarshalJSON() ([]byte, error) {
@@ -90,7 +89,8 @@ func (item *Pkg2T2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Pkg2T2) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("pkg2.t2", err.Error())
 	}
 	return nil

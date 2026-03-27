@@ -84,36 +84,34 @@ func (item *GetArrays) WriteResultTL1(w []byte, ret [5]int32) (_ []byte, err err
 	return w, nil
 }
 
-func (item *GetArrays) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[5]int32) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, ret); err != nil {
+func (item *GetArrays) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *[5]int32) error {
+	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(jctx, in, ret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *GetArrays) WriteResultJSON(w []byte, ret [5]int32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *GetArrays) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret [5]int32) (_ []byte, err error) {
-	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, &ret)
+func (item *GetArrays) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret [5]int32) (_ []byte, err error) {
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(jctx, w, &ret)
 	return w, nil
 }
 
-func (item *GetArrays) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetArrays) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret [5]int32
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *GetArrays) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetArrays) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret [5]int32
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -129,11 +127,11 @@ func (item GetArrays) String() string {
 }
 
 func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *GetArrays) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var rawA []byte
@@ -169,7 +167,7 @@ func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("get_arrays", "b")
 				}
 				propBPresented = true
-				if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(jctx, in, &item.B); err != nil {
 					return err
 				}
 			default:
@@ -190,12 +188,12 @@ func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	}
 	if propAPresented {
 		inA := &basictl.JsonLexer{Data: rawA}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inA, &item.A, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, inA, &item.A, item.N); err != nil {
 			return err
 		}
 	}
 	if !propAPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.A, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.A, item.N); err != nil {
 			return err
 		}
 	}
@@ -203,15 +201,14 @@ func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *GetArrays) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *GetArrays) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *GetArrays) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *GetArrays) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -223,7 +220,7 @@ func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, item.N); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.A, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.A) != 0) {
@@ -231,7 +228,7 @@ func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, &item.B)
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(jctx, w, &item.B)
 	return append(w, '}'), nil
 }
 
@@ -240,7 +237,8 @@ func (item *GetArrays) MarshalJSON() ([]byte, error) {
 }
 
 func (item *GetArrays) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("get_arrays", err.Error())
 	}
 	return nil

@@ -85,22 +85,6 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`
-`)
-	if maybe.wr.gen.options.Go.GenerateLegacyReadWrite {
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadBoxed(w []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(maybe.wr.fetcherDecl())
-		qw422016.N().S(`) (_ []byte, err error) {
-    return item.ReadTL1Boxed(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(maybe.wr.fetcherCall())
-		qw422016.N().S(`)
-}
-`)
-	}
-	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadTL1Boxed(w []byte`)
@@ -131,22 +115,6 @@ func (item *`)
 
 `)
 	if !maybe.wr.OriginTL2() {
-		if maybe.wr.gen.options.Go.GenerateLegacyReadWrite {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) WriteBoxed(w []byte`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(maybe.wr.fetcherDecl())
-			qw422016.N().S(`) `)
-			qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
-			qw422016.N().S(` {
-    return item.WriteTL1Boxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(maybe.wr.fetcherCall())
-			qw422016.N().S(`)
-}
-`)
-		}
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)

@@ -67,7 +67,7 @@ func BuiltinDictStringService1ValueWriteTL1(w []byte, m map[string]tlService1Val
 	return w
 }
 
-func BuiltinDictStringService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlService1Value.Service1Value) error {
+func BuiltinDictStringService1ValueReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlService1Value.Service1Value) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]tlService1Value.Service1Value, 0)
@@ -83,7 +83,7 @@ func BuiltinDictStringService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value tlService1Value.Service1Value
-			if err := value.ReadJSONGeneral(tctx, in); err != nil {
+			if err := value.ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			data[key] = value
@@ -98,10 +98,10 @@ func BuiltinDictStringService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 func BuiltinDictStringService1ValueWriteJSON(w []byte, m map[string]tlService1Value.Service1Value) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringService1ValueWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringService1ValueWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]tlService1Value.Service1Value) []byte {
+func BuiltinDictStringService1ValueWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]tlService1Value.Service1Value) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -113,7 +113,7 @@ func BuiltinDictStringService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, 
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(tctx, w)
+		w = value.WriteJSONOpt(jctx, w)
 	}
 	return append(w, '}')
 }

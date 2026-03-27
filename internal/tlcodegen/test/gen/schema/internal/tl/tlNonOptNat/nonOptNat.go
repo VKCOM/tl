@@ -77,11 +77,11 @@ func (item NonOptNat) String() string {
 }
 
 func (item *NonOptNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NonOptNat) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propXsPresented bool
 	var rawXs []byte
@@ -126,12 +126,12 @@ func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 	}
 	if propXsPresented {
 		inXs := &basictl.JsonLexer{Data: rawXs}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inXs, &item.Xs, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, inXs, &item.Xs, item.N); err != nil {
 			return err
 		}
 	}
 	if !propXsPresented {
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, nil, &item.Xs, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(jctx, nil, &item.Xs, item.N); err != nil {
 			return err
 		}
 	}
@@ -139,15 +139,14 @@ func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NonOptNat) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w)
+func (item *NonOptNat) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w)
 }
 
 func (item *NonOptNat) WriteJSON(w []byte) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NonOptNat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+func (item *NonOptNat) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -159,7 +158,7 @@ func (item *NonOptNat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.Xs, item.N); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(jctx, w, item.Xs, item.N); err != nil {
 		return w, err
 	}
 	if !(len(item.Xs) != 0) {
@@ -173,7 +172,8 @@ func (item *NonOptNat) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NonOptNat) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("nonOptNat", err.Error())
 	}
 	return nil

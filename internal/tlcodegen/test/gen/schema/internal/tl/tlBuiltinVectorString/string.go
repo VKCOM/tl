@@ -44,7 +44,7 @@ func BuiltinVectorStringWriteTL1(w []byte, vec []string) []byte {
 	return w
 }
 
-func BuiltinVectorStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]string) error {
+func BuiltinVectorStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]string) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -73,10 +73,9 @@ func BuiltinVectorStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 func BuiltinVectorStringWriteJSON(w []byte, vec []string) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorStringWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorStringWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []string) []byte {
+func BuiltinVectorStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []string) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
