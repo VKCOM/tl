@@ -66,7 +66,7 @@ func BuiltinDictStringIntWriteTL1(w []byte, m map[string]int32) []byte {
 	return w
 }
 
-func BuiltinDictStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]int32) error {
+func BuiltinDictStringIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]int32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]int32, 0)
@@ -97,10 +97,10 @@ func BuiltinDictStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 func BuiltinDictStringIntWriteJSON(w []byte, m map[string]int32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringIntWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringIntWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]int32) []byte {
+func BuiltinDictStringIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]int32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

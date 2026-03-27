@@ -65,36 +65,34 @@ func (item *Service5PerformQuery) WriteResultTL1(w []byte, ret tlService5Output.
 	return w, nil
 }
 
-func (item *Service5PerformQuery) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService5Output.Service5Output) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+func (item *Service5PerformQuery) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *tlService5Output.Service5Output) error {
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service5PerformQuery) WriteResultJSON(w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service5PerformQuery) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *Service5PerformQuery) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlService5Output.Service5Output) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
-func (item *Service5PerformQuery) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5PerformQuery) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService5Output.Service5Output
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service5PerformQuery) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5PerformQuery) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService5Output.Service5Output
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -106,11 +104,11 @@ func (item Service5PerformQuery) String() string {
 }
 
 func (item *Service5PerformQuery) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service5PerformQuery) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service5PerformQuery) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propQueryPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -146,15 +144,14 @@ func (item *Service5PerformQuery) ReadJSONGeneral(tctx *basictl.JSONReadContext,
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5PerformQuery) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service5PerformQuery) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service5PerformQuery) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service5PerformQuery) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service5PerformQuery) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexQuery := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -171,7 +168,8 @@ func (item *Service5PerformQuery) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service5PerformQuery) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service5.performQuery", err.Error())
 	}
 	return nil

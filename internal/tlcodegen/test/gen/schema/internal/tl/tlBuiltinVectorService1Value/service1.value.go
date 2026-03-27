@@ -45,7 +45,7 @@ func BuiltinVectorService1ValueWriteTL1(w []byte, vec []tlService1Value.Service1
 	return w
 }
 
-func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService1Value.Service1Value) error {
+func BuiltinVectorService1ValueReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService1Value.Service1Value) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 func BuiltinVectorService1ValueWriteJSON(w []byte, vec []tlService1Value.Service1Value) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorService1ValueWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorService1ValueWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService1Value.Service1Value) []byte {
+func BuiltinVectorService1ValueWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlService1Value.Service1Value) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

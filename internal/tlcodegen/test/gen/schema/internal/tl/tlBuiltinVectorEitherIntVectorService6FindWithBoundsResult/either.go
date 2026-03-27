@@ -45,7 +45,7 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteTL1(w []byte, 
 	return w
 }
 
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) error {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tct
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tct
 }
 
 func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSON(w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
+func BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlEitherIntVectorService6FindWithBoundsResult.EitherIntVectorService6FindWithBoundsResult) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

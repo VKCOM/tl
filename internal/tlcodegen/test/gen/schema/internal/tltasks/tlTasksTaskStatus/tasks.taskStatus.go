@@ -74,45 +74,45 @@ func (item *TasksTaskStatus) WriteTL1Boxed(w []byte) []byte {
 }
 
 func (item *TasksTaskStatus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksTaskStatus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksTaskStatus) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _, err := internal.Json2ReadUnion("tasks.TaskStatus", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "tasks.taskStatusNotCurrentlyInEngine#b207caaa", "tasks.taskStatusNotCurrentlyInEngine", "#b207caaa":
-		if !tctx.LegacyTypeNames && _tag == "tasks.taskStatusNotCurrentlyInEngine#b207caaa" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tasks.taskStatusNotCurrentlyInEngine#b207caaa" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusNotCurrentlyInEngine#b207caaa")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#b207caaa" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#b207caaa" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "#b207caaa")
 		}
 		item.index = 0
 	case "tasks.taskStatusScheduled#0aca80a9", "tasks.taskStatusScheduled", "#0aca80a9":
-		if !tctx.LegacyTypeNames && _tag == "tasks.taskStatusScheduled#0aca80a9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tasks.taskStatusScheduled#0aca80a9" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusScheduled#0aca80a9")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#0aca80a9" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#0aca80a9" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "#0aca80a9")
 		}
 		item.index = 1
 	case "tasks.taskStatusWaiting#16739c2c", "tasks.taskStatusWaiting", "#16739c2c":
-		if !tctx.LegacyTypeNames && _tag == "tasks.taskStatusWaiting#16739c2c" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tasks.taskStatusWaiting#16739c2c" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusWaiting#16739c2c")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#16739c2c" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#16739c2c" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "#16739c2c")
 		}
 		item.index = 2
 	case "tasks.taskStatusInProgress#06ef70e7", "tasks.taskStatusInProgress", "#06ef70e7":
-		if !tctx.LegacyTypeNames && _tag == "tasks.taskStatusInProgress#06ef70e7" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tasks.taskStatusInProgress#06ef70e7" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusInProgress#06ef70e7")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#06ef70e7" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#06ef70e7" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "#06ef70e7")
 		}
 		item.index = 3
@@ -123,33 +123,32 @@ func (item *TasksTaskStatus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item TasksTaskStatus) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item TasksTaskStatus) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item TasksTaskStatus) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item TasksTaskStatus) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item TasksTaskStatus) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"tasks.taskStatusNotCurrentlyInEngine#b207caaa"`...)
 		}
 		return append(w, `"tasks.taskStatusNotCurrentlyInEngine"`...)
 	case 1:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"tasks.taskStatusScheduled#0aca80a9"`...)
 		}
 		return append(w, `"tasks.taskStatusScheduled"`...)
 	case 2:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"tasks.taskStatusWaiting#16739c2c"`...)
 		}
 		return append(w, `"tasks.taskStatusWaiting"`...)
 	case 3:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			return append(w, `"tasks.taskStatusInProgress#06ef70e7"`...)
 		}
 		return append(w, `"tasks.taskStatusInProgress"`...)
@@ -167,7 +166,8 @@ func (item *TasksTaskStatus) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksTaskStatus) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.TaskStatus", err.Error())
 	}
 	return nil

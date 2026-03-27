@@ -103,21 +103,21 @@ func (item *EitherService6ErrorVectorService6FindResultRow) WriteTL1Boxed(w []by
 }
 
 func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("Either", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "left#0a29cd5d", "left", "#0a29cd5d":
-		if !tctx.LegacyTypeNames && _tag == "left#0a29cd5d" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "left#0a29cd5d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "left#0a29cd5d")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#0a29cd5d" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#0a29cd5d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "#0a29cd5d")
 		}
 		item.index = 0
@@ -125,14 +125,14 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueLeft.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueLeft.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	case "right#df3ecb3b", "right", "#df3ecb3b":
-		if !tctx.LegacyTypeNames && _tag == "right#df3ecb3b" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "right#df3ecb3b" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "right#df3ecb3b")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#df3ecb3b" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#df3ecb3b" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "#df3ecb3b")
 		}
 		item.index = 1
@@ -140,7 +140,7 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueRight.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueRight.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -150,33 +150,32 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"left#0a29cd5d"`...)
 		} else {
 			w = append(w, `{"type":"left"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueLeft.WriteJSONOpt(tctx, w)
+		w = item.valueLeft.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"right#df3ecb3b"`...)
 		} else {
 			w = append(w, `{"type":"right"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueRight.WriteJSONOpt(tctx, w)
+		w = item.valueRight.WriteJSONOpt(jctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -192,7 +191,8 @@ func (item *EitherService6ErrorVectorService6FindResultRow) MarshalJSON() ([]byt
 }
 
 func (item *EitherService6ErrorVectorService6FindResultRow) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("Either", err.Error())
 	}
 	return nil
@@ -249,11 +249,11 @@ func (item LeftService6ErrorVectorService6FindResultRow) String() string {
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -269,7 +269,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("left", "value")
 				}
 				propValuePresented = true
-				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -289,19 +289,18 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(tctx, w)
+	w = item.Value.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -310,7 +309,8 @@ func (item *LeftService6ErrorVectorService6FindResultRow) MarshalJSON() ([]byte,
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("left", err.Error())
 	}
 	return nil
@@ -367,11 +367,11 @@ func (item RightService6ErrorVectorService6FindResultRow) String() string {
 }
 
 func (item *RightService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RightService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RightService6ErrorVectorService6FindResultRow) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 	if in != nil {
 		in.Delim('{')
@@ -387,7 +387,7 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("right", "value")
 				}
 				propValuePresented = true
-				if err := tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadJSONGeneral(tctx, in, &item.Value); err != nil {
+				if err := tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadJSONGeneral(jctx, in, &item.Value); err != nil {
 					return err
 				}
 			default:
@@ -407,20 +407,19 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RightService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteJSONOpt(tctx, w, item.Value)
+	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteJSONOpt(jctx, w, item.Value)
 	if !(len(item.Value) != 0) {
 		w = w[:backupIndexValue]
 	}
@@ -432,7 +431,8 @@ func (item *RightService6ErrorVectorService6FindResultRow) MarshalJSON() ([]byte
 }
 
 func (item *RightService6ErrorVectorService6FindResultRow) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("right", err.Error())
 	}
 	return nil

@@ -203,11 +203,11 @@ func (item TasksCronTime) String() string {
 }
 
 func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksCronTime) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propSecondsPresented bool
 	var propMinutesPresented bool
@@ -237,7 +237,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "seconds")
 				}
 				propSecondsPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Seconds); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Seconds); err != nil {
 					return err
 				}
 			case "minutes":
@@ -245,7 +245,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "minutes")
 				}
 				propMinutesPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Minutes); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Minutes); err != nil {
 					return err
 				}
 			case "hours":
@@ -253,7 +253,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "hours")
 				}
 				propHoursPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Hours); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Hours); err != nil {
 					return err
 				}
 			case "days_of_week":
@@ -261,7 +261,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days_of_week")
 				}
 				propDaysOfWeekPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.DaysOfWeek); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.DaysOfWeek); err != nil {
 					return err
 				}
 			case "days":
@@ -269,7 +269,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days")
 				}
 				propDaysPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Days); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Days); err != nil {
 					return err
 				}
 			case "months":
@@ -277,7 +277,7 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "months")
 				}
 				propMonthsPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Months); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.Months); err != nil {
 					return err
 				}
 			default:
@@ -333,15 +333,14 @@ func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTime) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TasksCronTime) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TasksCronTime) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TasksCronTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TasksCronTime) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -353,32 +352,32 @@ func (item *TasksCronTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"seconds":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Seconds)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Seconds)
 	}
 	if item.FieldsMask&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"minutes":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Minutes)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Minutes)
 	}
 	if item.FieldsMask&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"hours":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Hours)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Hours)
 	}
 	if item.FieldsMask&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"days_of_week":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.DaysOfWeek)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.DaysOfWeek)
 	}
 	if item.FieldsMask&(1<<4) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"days":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Days)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Days)
 	}
 	if item.FieldsMask&(1<<5) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"months":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Months)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.Months)
 	}
 	return append(w, '}')
 }
@@ -388,7 +387,8 @@ func (item *TasksCronTime) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksCronTime) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.cronTime", err.Error())
 	}
 	return nil

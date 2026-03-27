@@ -82,11 +82,11 @@ func (item Service3Limits) String() string {
 }
 
 func (item *Service3Limits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service3Limits) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDefaultGroupSizeLimitPresented bool
 	var propCustomGroupSizeLimitsPresented bool
 	var propDefaultGroupCountLimitPresented bool
@@ -113,7 +113,7 @@ func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_size_limits")
 				}
 				propCustomGroupSizeLimitsPresented = true
-				if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, &item.CustomGroupSizeLimits); err != nil {
+				if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(jctx, in, &item.CustomGroupSizeLimits); err != nil {
 					return err
 				}
 			case "default_group_count_limit":
@@ -129,7 +129,7 @@ func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_count_limits")
 				}
 				propCustomGroupCountLimitsPresented = true
-				if err := tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx, in, &item.CustomGroupCountLimits); err != nil {
+				if err := tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadJSONGeneral(jctx, in, &item.CustomGroupCountLimits); err != nil {
 					return err
 				}
 			default:
@@ -158,15 +158,14 @@ func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service3Limits) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service3Limits) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service3Limits) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service3Limits) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexDefaultGroupSizeLimit := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -178,7 +177,7 @@ func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexCustomGroupSizeLimits := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"custom_group_size_limits":`...)
-	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, item.CustomGroupSizeLimits)
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(jctx, w, item.CustomGroupSizeLimits)
 	if !(len(item.CustomGroupSizeLimits) != 0) {
 		w = w[:backupIndexCustomGroupSizeLimits]
 	}
@@ -192,7 +191,7 @@ func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexCustomGroupCountLimits := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"custom_group_count_limits":`...)
-	w = tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitWriteJSONOpt(tctx, w, item.CustomGroupCountLimits)
+	w = tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitWriteJSONOpt(jctx, w, item.CustomGroupCountLimits)
 	if !(len(item.CustomGroupCountLimits) != 0) {
 		w = w[:backupIndexCustomGroupCountLimits]
 	}
@@ -204,7 +203,8 @@ func (item *Service3Limits) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service3Limits) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service3.limits", err.Error())
 	}
 	return nil

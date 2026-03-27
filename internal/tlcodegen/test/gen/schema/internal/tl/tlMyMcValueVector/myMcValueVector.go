@@ -62,11 +62,11 @@ func (item MyMcValueVector) String() string {
 }
 
 func (item *MyMcValueVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MyMcValueVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *MyMcValueVector) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXsPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -82,7 +82,7 @@ func (item *MyMcValueVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myMcValueVector", "xs")
 				}
 				propXsPresented = true
-				if err := tlBuiltinVectorService1Value.BuiltinVectorService1ValueReadJSONGeneral(tctx, in, &item.Xs); err != nil {
+				if err := tlBuiltinVectorService1Value.BuiltinVectorService1ValueReadJSONGeneral(jctx, in, &item.Xs); err != nil {
 					return err
 				}
 			default:
@@ -102,20 +102,19 @@ func (item *MyMcValueVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyMcValueVector) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MyMcValueVector) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MyMcValueVector) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *MyMcValueVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *MyMcValueVector) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(tctx, w, item.Xs)
+	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(jctx, w, item.Xs)
 	if !(len(item.Xs) != 0) {
 		w = w[:backupIndexXs]
 	}
@@ -127,7 +126,8 @@ func (item *MyMcValueVector) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyMcValueVector) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("myMcValueVector", err.Error())
 	}
 	return nil

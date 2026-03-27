@@ -52,24 +52,23 @@ func (item *VectorService3Product) WriteTL1Boxed(w []byte, nat_t uint32) []byte 
 	return item.WriteTL1(w, nat_t)
 }
 
-func (item *VectorService3Product) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
-	if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSONGeneral(tctx, in, item.ptr(), nat_t); err != nil {
+func (item *VectorService3Product) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
+	if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSONGeneral(jctx, in, item.ptr(), nat_t); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService3Product) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w, nat_t), nil
+func (item *VectorService3Product) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w, nat_t), nil
 }
 
 func (item *VectorService3Product) WriteJSON(w []byte, nat_t uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w, nat_t)
+	return item.WriteJSONOpt(nil, w, nat_t)
 }
 
-func (item *VectorService3Product) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
-	w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteJSONOpt(tctx, w, *item.ptr(), nat_t)
+func (item *VectorService3Product) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
+	w = tlBuiltinVectorService3Product.BuiltinVectorService3ProductWriteJSONOpt(jctx, w, *item.ptr(), nat_t)
 	return w
 }

@@ -83,36 +83,34 @@ func (item *Service1ReplaceOrIncr) WriteResultTL1(w []byte, ret tlService1Value.
 	return w, nil
 }
 
-func (item *Service1ReplaceOrIncr) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService1Value.Service1Value) error {
-	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
+func (item *Service1ReplaceOrIncr) ReadResultJSON(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, ret *tlService1Value.Service1Value) error {
+	if err := ret.ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (item *Service1ReplaceOrIncr) WriteResultJSON(w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return item.writeResultJSON(&tctx, w, ret)
+	return item.writeResultJSON(nil, w, ret)
 }
 
-func (item *Service1ReplaceOrIncr) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(tctx, w)
+func (item *Service1ReplaceOrIncr) writeResultJSON(jctx *basictl.JSONWriteContext, w []byte, ret tlService1Value.Service1Value) (_ []byte, err error) {
+	w = ret.WriteJSONOpt(jctx, w)
 	return w, nil
 }
 
-func (item *Service1ReplaceOrIncr) ReadResultTL1WriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1ReplaceOrIncr) ReadResultTL1WriteResultJSON(jctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1Value.Service1Value
 	if r, err = item.ReadResultTL1(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.writeResultJSON(tctx, w, ret)
+	w, err = item.writeResultJSON(jctx, w, ret)
 	return r, w, err
 }
 
-func (item *Service1ReplaceOrIncr) ReadResultJSONWriteResultTL1(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1ReplaceOrIncr) ReadResultJSONWriteResultTL1(jctx *basictl.JSONReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1Value.Service1Value
-	if err = item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret); err != nil {
+	if err = item.ReadResultJSON(jctx, &basictl.JsonLexer{Data: r}, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResultTL1(w, ret)
@@ -124,11 +122,11 @@ func (item Service1ReplaceOrIncr) String() string {
 }
 
 func (item *Service1ReplaceOrIncr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *Service1ReplaceOrIncr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *Service1ReplaceOrIncr) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propFlagsPresented bool
 	var propDelayPresented bool
@@ -200,15 +198,14 @@ func (item *Service1ReplaceOrIncr) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1ReplaceOrIncr) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *Service1ReplaceOrIncr) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *Service1ReplaceOrIncr) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *Service1ReplaceOrIncr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *Service1ReplaceOrIncr) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -246,7 +243,8 @@ func (item *Service1ReplaceOrIncr) MarshalJSON() ([]byte, error) {
 }
 
 func (item *Service1ReplaceOrIncr) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("service1.replaceOrIncr", err.Error())
 	}
 	return nil

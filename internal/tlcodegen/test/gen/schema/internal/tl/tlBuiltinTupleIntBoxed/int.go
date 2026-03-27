@@ -45,8 +45,8 @@ func BuiltinTupleIntBoxedWriteTL1(w []byte, vec []int32, nat_n uint32) (_ []byte
 	}
 	return w, nil
 }
-func BuiltinTupleIntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
-	isTL2 := tctx != nil && tctx.IsTL2
+func BuiltinTupleIntBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
+	isTL2 := jctx != nil && jctx.IsTL2
 	if isTL2 {
 		nat_n = uint32(len(*vec))
 	}
@@ -93,11 +93,10 @@ func BuiltinTupleIntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 }
 
 func BuiltinTupleIntBoxedWriteJSON(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTupleIntBoxedWriteJSONOpt(&tctx, w, vec, nat_n)
+	return BuiltinTupleIntBoxedWriteJSONOpt(nil, w, vec, nat_n)
 }
-func BuiltinTupleIntBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
-	if tctx != nil && tctx.IsTL2 {
+func BuiltinTupleIntBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+	if jctx != nil && jctx.IsTL2 {
 		nat_n = uint32(len(vec))
 	}
 	if uint32(len(vec)) != nat_n {

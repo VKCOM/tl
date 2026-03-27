@@ -90,7 +90,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 	if !assert.Equal(t, resultJsonValue, string(jsonResult)) {
 		t.Fatalf("Write json failed, difference:v\n%s\n", cmp.Diff(resultJsonValue, jsonResult))
 	}
-	_, bytesResult, bytesErr := fn.ReadResultJSONWriteResultTL1([]byte(resultJsonValue), nil)
+	_, bytesResult, bytesErr := fn.ReadResultJSONWriteResultTL1(nil, []byte(resultJsonValue), nil)
 	if bytesErr != nil {
 		t.Fatalf("Write bytes error: %v\n", jsonErr)
 		return

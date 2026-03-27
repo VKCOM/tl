@@ -45,7 +45,7 @@ func BuiltinVectorService3GroupCountLimitWriteTL1(w []byte, vec []tlService3Grou
 	return w
 }
 
-func BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService3GroupCountLimit.Service3GroupCountLimit) error {
+func BuiltinVectorService3GroupCountLimitReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService3GroupCountLimit.Service3GroupCountLimit) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx *basictl.JSONReadC
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx *basictl.JSONReadC
 }
 
 func BuiltinVectorService3GroupCountLimitWriteJSON(w []byte, vec []tlService3GroupCountLimit.Service3GroupCountLimit) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorService3GroupCountLimitWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorService3GroupCountLimitWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorService3GroupCountLimitWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService3GroupCountLimit.Service3GroupCountLimit) []byte {
+func BuiltinVectorService3GroupCountLimitWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlService3GroupCountLimit.Service3GroupCountLimit) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

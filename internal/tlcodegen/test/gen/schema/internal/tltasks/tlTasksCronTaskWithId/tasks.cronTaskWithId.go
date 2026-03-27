@@ -73,11 +73,11 @@ func (item TasksCronTaskWithId) String() string {
 }
 
 func (item *TasksCronTaskWithId) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksCronTaskWithId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksCronTaskWithId) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propIdPresented bool
 	var propNextTimePresented bool
 	var propTaskPresented bool
@@ -111,7 +111,7 @@ func (item *TasksCronTaskWithId) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTaskWithId", "task")
 				}
 				propTaskPresented = true
-				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Task.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -137,15 +137,14 @@ func (item *TasksCronTaskWithId) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTaskWithId) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TasksCronTaskWithId) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TasksCronTaskWithId) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TasksCronTaskWithId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TasksCronTaskWithId) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -163,7 +162,7 @@ func (item *TasksCronTaskWithId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"task":`...)
-	w = item.Task.WriteJSONOpt(tctx, w)
+	w = item.Task.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -172,7 +171,8 @@ func (item *TasksCronTaskWithId) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksCronTaskWithId) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.cronTaskWithId", err.Error())
 	}
 	return nil

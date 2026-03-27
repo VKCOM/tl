@@ -62,29 +62,28 @@ func (item MyAnonMcValue) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyAnonMcValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MyAnonMcValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	if err := item.ptr().ReadJSONGeneral(tctx, in); err != nil {
+func (item *MyAnonMcValue) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := item.ptr().ReadJSONGeneral(jctx, in); err != nil {
 		return err
 	}
 	return nil
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyAnonMcValue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MyAnonMcValue) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MyAnonMcValue) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *MyAnonMcValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
-	w = item.ptr().WriteJSONOpt(tctx, w)
+func (item *MyAnonMcValue) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = item.ptr().WriteJSONOpt(jctx, w)
 	return w
 }
 func (item *MyAnonMcValue) MarshalJSON() ([]byte, error) {
@@ -92,7 +91,8 @@ func (item *MyAnonMcValue) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyAnonMcValue) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("myAnonMcValue", err.Error())
 	}
 	return nil

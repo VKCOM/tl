@@ -41,7 +41,7 @@ func BuiltinTuple10IntBoxedWriteTL1(w []byte, vec *[10]int32) []byte {
 	return w
 }
 
-func BuiltinTuple10IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[10]int32) error {
+func BuiltinTuple10IntBoxedReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[10]int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -69,10 +69,9 @@ func BuiltinTuple10IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 func BuiltinTuple10IntBoxedWriteJSON(w []byte, vec *[10]int32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple10IntBoxedWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple10IntBoxedWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple10IntBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[10]int32) []byte {
+func BuiltinTuple10IntBoxedWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[10]int32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

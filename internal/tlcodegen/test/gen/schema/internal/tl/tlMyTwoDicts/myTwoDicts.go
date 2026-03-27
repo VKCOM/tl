@@ -67,11 +67,11 @@ func (item MyTwoDicts) String() string {
 }
 
 func (item *MyTwoDicts) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *MyTwoDicts) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	if in != nil {
@@ -88,7 +88,7 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "a")
 				}
 				propAPresented = true
-				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.A); err != nil {
+				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(jctx, in, &item.A); err != nil {
 					return err
 				}
 			case "b":
@@ -96,7 +96,7 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myTwoDicts", "b")
 				}
 				propBPresented = true
-				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &item.B); err != nil {
+				if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(jctx, in, &item.B); err != nil {
 					return err
 				}
 			default:
@@ -119,27 +119,26 @@ func (item *MyTwoDicts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyTwoDicts) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *MyTwoDicts) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *MyTwoDicts) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *MyTwoDicts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *MyTwoDicts) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(tctx, w, item.A)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(jctx, w, item.A)
 	if !(len(item.A) != 0) {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(tctx, w, item.B)
+	w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(jctx, w, item.B)
 	if !(len(item.B) != 0) {
 		w = w[:backupIndexB]
 	}
@@ -151,7 +150,8 @@ func (item *MyTwoDicts) MarshalJSON() ([]byte, error) {
 }
 
 func (item *MyTwoDicts) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("myTwoDicts", err.Error())
 	}
 	return nil

@@ -81,11 +81,11 @@ func (item TasksCronTask) String() string {
 }
 
 func (item *TasksCronTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TasksCronTask) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypeNamePresented bool
 	var propQueueIdPresented bool
 	var propTaskPresented bool
@@ -112,7 +112,7 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "queue_id")
 				}
 				propQueueIdPresented = true
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(jctx, in, &item.QueueId); err != nil {
 					return err
 				}
 			case "task":
@@ -120,7 +120,7 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "task")
 				}
 				propTaskPresented = true
-				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Task.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "time":
@@ -128,7 +128,7 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTask", "time")
 				}
 				propTimePresented = true
-				if err := item.Time.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Time.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -157,15 +157,14 @@ func (item *TasksCronTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TasksCronTask) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TasksCronTask) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TasksCronTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TasksCronTask) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexTypeName := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -177,16 +176,16 @@ func (item *TasksCronTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	backupIndexQueueId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"queue_id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.QueueId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(jctx, w, item.QueueId)
 	if !(len(item.QueueId) != 0) {
 		w = w[:backupIndexQueueId]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"task":`...)
-	w = item.Task.WriteJSONOpt(tctx, w)
+	w = item.Task.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"time":`...)
-	w = item.Time.WriteJSONOpt(tctx, w)
+	w = item.Time.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -195,7 +194,8 @@ func (item *TasksCronTask) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TasksCronTask) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tasks.cronTask", err.Error())
 	}
 	return nil

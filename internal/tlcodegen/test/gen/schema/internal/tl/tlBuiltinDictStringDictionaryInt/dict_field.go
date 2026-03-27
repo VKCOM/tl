@@ -67,7 +67,7 @@ func BuiltinDictStringDictionaryIntWriteTL1(w []byte, m map[string]map[string]in
 	return w
 }
 
-func BuiltinDictStringDictionaryIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]map[string]int32) error {
+func BuiltinDictStringDictionaryIntReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]map[string]int32) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]map[string]int32, 0)
@@ -83,7 +83,7 @@ func BuiltinDictStringDictionaryIntReadJSONGeneral(tctx *basictl.JSONReadContext
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value map[string]int32
-			if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(tctx, in, &value); err != nil {
+			if err := tlBuiltinDictStringInt.BuiltinDictStringIntReadJSONGeneral(jctx, in, &value); err != nil {
 				return err
 			}
 			data[key] = value
@@ -98,10 +98,10 @@ func BuiltinDictStringDictionaryIntReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 func BuiltinDictStringDictionaryIntWriteJSON(w []byte, m map[string]map[string]int32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringDictionaryIntWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringDictionaryIntWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringDictionaryIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]map[string]int32) []byte {
+func BuiltinDictStringDictionaryIntWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]map[string]int32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -113,7 +113,7 @@ func BuiltinDictStringDictionaryIntWriteJSONOpt(tctx *basictl.JSONWriteContext, 
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(tctx, w, value)
+		w = tlBuiltinDictStringInt.BuiltinDictStringIntWriteJSONOpt(jctx, w, value)
 	}
 	return append(w, '}')
 }

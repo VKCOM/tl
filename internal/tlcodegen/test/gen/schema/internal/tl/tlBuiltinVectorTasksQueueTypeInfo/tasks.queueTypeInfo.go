@@ -45,7 +45,7 @@ func BuiltinVectorTasksQueueTypeInfoWriteTL1(w []byte, vec []tlTasksQueueTypeInf
 	return w
 }
 
-func BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) error {
+func BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx *basictl.JSONReadContex
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -74,14 +74,13 @@ func BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx *basictl.JSONReadContex
 }
 
 func BuiltinVectorTasksQueueTypeInfoWriteJSON(w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
+func BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(tctx, w)
+		w = elem.WriteJSONOpt(jctx, w)
 	}
 	return append(w, ']')
 }

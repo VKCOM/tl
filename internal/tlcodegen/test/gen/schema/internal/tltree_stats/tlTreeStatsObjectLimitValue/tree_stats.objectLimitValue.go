@@ -90,29 +90,29 @@ func (item *TreeStatsObjectLimitValue) WriteTL1Boxed(w []byte) []byte {
 }
 
 func (item *TreeStatsObjectLimitValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TreeStatsObjectLimitValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TreeStatsObjectLimitValue) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("tree_stats.ObjectLimitValue", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "tree_stats.objectLimitValueLong#73111993", "tree_stats.objectLimitValueLong", "#73111993":
-		if !tctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueLong#73111993" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueLong#73111993" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "tree_stats.objectLimitValueLong#73111993")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#73111993" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#73111993" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "#73111993")
 		}
 		item.index = 0
 	case "tree_stats.objectLimitValueDouble#5dfb8816", "tree_stats.objectLimitValueDouble", "#5dfb8816":
-		if !tctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueDouble#5dfb8816" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueDouble#5dfb8816" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "tree_stats.objectLimitValueDouble#5dfb8816")
 		}
-		if !tctx.LegacyTypeNames && _tag == "#5dfb8816" {
+		if jctx != nil && !jctx.LegacyTypeNames && _tag == "#5dfb8816" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "#5dfb8816")
 		}
 		item.index = 1
@@ -120,7 +120,7 @@ func (item *TreeStatsObjectLimitValue) ReadJSONGeneral(tctx *basictl.JSONReadCon
 		if _value != nil {
 			in2Pointer = &basictl.JsonLexer{Data: _value}
 		}
-		if err := item.valueDouble.ReadJSONGeneral(tctx, in2Pointer); err != nil {
+		if err := item.valueDouble.ReadJSONGeneral(jctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -130,32 +130,31 @@ func (item *TreeStatsObjectLimitValue) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TreeStatsObjectLimitValue) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValue) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TreeStatsObjectLimitValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TreeStatsObjectLimitValue) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"tree_stats.objectLimitValueLong#73111993"`...)
 		} else {
 			w = append(w, `{"type":"tree_stats.objectLimitValueLong"`...)
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
+		if jctx != nil && jctx.LegacyTypeNames {
 			w = append(w, `{"type":"tree_stats.objectLimitValueDouble#5dfb8816"`...)
 		} else {
 			w = append(w, `{"type":"tree_stats.objectLimitValueDouble"`...)
 		}
 		if item.valueDouble != 0 {
 			w = append(w, `,"value":`...)
-			w = item.valueDouble.WriteJSONOpt(tctx, w)
+			w = item.valueDouble.WriteJSONOpt(jctx, w)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -172,7 +171,8 @@ func (item *TreeStatsObjectLimitValue) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TreeStatsObjectLimitValue) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tree_stats.ObjectLimitValue", err.Error())
 	}
 	return nil
@@ -228,11 +228,11 @@ func (item TreeStatsObjectLimitValueDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TreeStatsObjectLimitValueDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TreeStatsObjectLimitValueDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TreeStatsObjectLimitValueDouble) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if err := internal.Json2ReadFloat64(in, item.ptr()); err != nil {
 		return err
 	}
@@ -240,16 +240,15 @@ func (item *TreeStatsObjectLimitValueDouble) ReadJSONGeneral(tctx *basictl.JSONR
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValueDouble) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TreeStatsObjectLimitValueDouble) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValueDouble) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
 
-func (item *TreeStatsObjectLimitValueDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TreeStatsObjectLimitValueDouble) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = basictl.JSONWriteFloat64(w, *item.ptr())
 	return w
 }
@@ -258,7 +257,8 @@ func (item *TreeStatsObjectLimitValueDouble) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TreeStatsObjectLimitValueDouble) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tree_stats.objectLimitValueDouble", err.Error())
 	}
 	return nil
@@ -309,11 +309,11 @@ func (item TreeStatsObjectLimitValueLong) String() string {
 }
 
 func (item *TreeStatsObjectLimitValueLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TreeStatsObjectLimitValueLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TreeStatsObjectLimitValueLong) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -331,15 +331,14 @@ func (item *TreeStatsObjectLimitValueLong) ReadJSONGeneral(tctx *basictl.JSONRea
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValueLong) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TreeStatsObjectLimitValueLong) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValueLong) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TreeStatsObjectLimitValueLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TreeStatsObjectLimitValueLong) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -349,7 +348,8 @@ func (item *TreeStatsObjectLimitValueLong) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TreeStatsObjectLimitValueLong) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("tree_stats.objectLimitValueLong", err.Error())
 	}
 	return nil
