@@ -68,6 +68,8 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if err := gen.prepareOptions(); err != nil {
 		return err
 	}
+	gen.bytesWhiteList = pure.NewWhiteList("--generateByteVersions", options.BytesWhiteList)
+	gen.rawHandlerWhileList = pure.NewWhiteList("--rawHandlerWhiteList", options.Go.RawHandlerWhileList)
 	if err := gen.compile(); err != nil {
 		return err
 	}
