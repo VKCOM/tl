@@ -38,9 +38,9 @@ func (gen *genGo) compile() error {
 			}
 		case *pure.TypeInstanceArray:
 			head, tail := myWrapper.resolvedT2GoName("")
-			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
 			head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+			myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 			if err := gen.GenerateTypeArray(myWrapper, pureType); err != nil {
 				return err
 			}
@@ -58,9 +58,9 @@ func (gen *genGo) compile() error {
 		switch pureType := myWrapper.pureType.(type) {
 		case *pure.TypeInstanceDict:
 			head, tail := myWrapper.resolvedT2GoName("")
-			myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
+			myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
 			head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-			myWrapper.goLocalName = myWrapper.ns.decGo.deconflictName(head + tail)
+			myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 			if err := gen.GenerateTypeDict(myWrapper, pureType); err != nil {
 				return err
 			}

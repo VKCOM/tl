@@ -16,11 +16,6 @@ import (
 	"github.com/VKCOM/tl/internal/utils"
 )
 
-// During recursive generation, we store wrappers to type when they are needed, so that
-// we can generate actual types later, when all references to wrappers are set
-// also wrapper stores common information
-
-// TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
@@ -31,7 +26,7 @@ type TypeRW interface {
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 
-	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
+	BeforeCodeGenerationStep1() // during first phase, struct fields recursive bit is set
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
 
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)

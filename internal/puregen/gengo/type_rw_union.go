@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/puregen"
 )
 
 type Variant struct {
@@ -35,7 +36,7 @@ type TypeRWUnion struct {
 	Fields   []Variant
 	IsEnum   bool
 
-	fieldsDec Deconflicter // TODO - add all generated methods here
+	fieldsDec puregen.Deconflicter // TODO - add all generated methods here
 }
 
 func (trw *TypeRWUnion) ElementNatArgs() []pure.ActualNatArg {

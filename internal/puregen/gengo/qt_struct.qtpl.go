@@ -475,7 +475,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		// We skip generating Set and Clear altogether in this case, but still generate IsSet
 		setName := struct_.setNames[i]
 		if setName == "" {
-			setName = struct_.fieldsDec.deconflictName("Set" + utils.ToUpperFirst(field.goName))
+			setName = struct_.fieldsDec.DeconflictName("Set" + utils.ToUpperFirst(field.goName))
 			struct_.setNames[i] = setName
 		}
 		getName := "G" + setName[1:]
@@ -577,7 +577,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		if !field.IsBit() {
 			clearName := struct_.clearNames[i]
 			if clearName == "" {
-				clearName = struct_.fieldsDec.deconflictName("Clear" + utils.ToUpperFirst(field.goName))
+				clearName = struct_.fieldsDec.DeconflictName("Clear" + utils.ToUpperFirst(field.goName))
 				struct_.clearNames[i] = clearName
 			}
 
@@ -624,7 +624,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		}
 		isSetName := struct_.isSetNames[i]
 		if isSetName == "" {
-			isSetName = struct_.fieldsDec.deconflictName("IsSet" + utils.ToUpperFirst(field.goName))
+			isSetName = struct_.fieldsDec.DeconflictName("IsSet" + utils.ToUpperFirst(field.goName))
 			struct_.isSetNames[i] = isSetName
 		}
 
