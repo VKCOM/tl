@@ -22,6 +22,7 @@ import (
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/puregen/gencanonical"
 	"github.com/VKCOM/tl/internal/puregen/gengo"
+	"github.com/VKCOM/tl/internal/puregen/genrust"
 	"github.com/VKCOM/tl/internal/puregen/gentljsonhtml"
 	"github.com/VKCOM/tl/internal/puregen/gentlo"
 	"github.com/VKCOM/tl/internal/tlast"
@@ -35,6 +36,7 @@ var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) e
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
 	"tljson.html":  gentljsonhtml.Generate,
 	"tlo":          gentlo.Generate,
+	"rust":         genrust.Generate,
 }
 
 func languagesString() string {
