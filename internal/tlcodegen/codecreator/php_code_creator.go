@@ -13,14 +13,19 @@ var phpLanguageBundle = LanguageBundle{
 	allowIndexedFor:    true,
 }
 
-type PhpCodeCreator = BasicCodeCreator[PhpHelder]
+type PhpCodeCreator struct {
+	PhpHelder
+	BasicCodeCreator
+}
 
 func NewPhpCodeCreator() PhpCodeCreator {
-	return BasicCodeCreator[PhpHelder]{
-		CodeCreator: CodeCreator{
-			Shift: "  ",
+	return PhpCodeCreator{
+		BasicCodeCreator: BasicCodeCreator{
+			CodeCreator: CodeCreator{
+				Shift: "  ",
+			},
+			LanguageBundle: phpLanguageBundle,
 		},
-		LanguageBundle: phpLanguageBundle,
 	}
 }
 

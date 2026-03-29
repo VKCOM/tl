@@ -387,23 +387,23 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 		cc := codecreator.NewPhpCodeCreator()
 		cc.AddLines()
 
-		cc.AddLines(cc.Lang.Assign(targetName, "[]"))
-		cc.ForIndexed(index, "0", localElementCount, "1", func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.AddLines(cc.Assign(targetName, "[]"))
+		cc.ForIndexed(index, "0", localElementCount, "1", func() {
 			pairCurrentSize := fmt.Sprintf("$pair_current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 			pairBlock := fmt.Sprintf("$pair_block_%[1]s_%[2]d", supportSuffix, callLevel)
 
 			cc.AddLines(
 				// init values
-				cc.Lang.Assign(pairCurrentSize, "0"),
-				cc.Lang.Assign(pairBlock, "0"),
+				cc.Assign(pairCurrentSize, "0"),
+				cc.Assign(pairBlock, "0"),
 			)
 
 			// read size
-			cc.AddLines(cc.Lang.Assign(pairCurrentSize, cc.Lang.TL2FetchSize()))
+			cc.AddLines(cc.Assign(pairCurrentSize, cc.TL2FetchSize()))
 
 			// add to total (size + size(size))
-			cc.AddLines(cc.Lang.AddAssign(localUsedBytesPointer, pairCurrentSize))
-			cc.AddLines(cc.Lang.AddAssign(localUsedBytesPointer, cc.Lang.TL2CountBytes(pairCurrentSize)))
+			cc.AddLines(cc.AddAssign(localUsedBytesPointer, pairCurrentSize))
+			cc.AddLines(cc.AddAssign(localUsedBytesPointer, cc.TL2CountBytes(pairCurrentSize)))
 
 			cc.AddLines(
 				fmt.Sprintf("/** @var %[1]s */", trw.dictKeyField.t.trw.PhpTypeName(true, true)),
@@ -412,39 +412,39 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 				fmt.Sprintf("%[1]s = %[2]s;", valueElement, trw.dictValueField.t.trw.PhpDefaultInit()),
 			)
 
-			cc.If(cc.Lang.NotEqual(pairCurrentSize, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+			cc.If(cc.NotEqual(pairCurrentSize, "0"), func() {
 				// read block
-				cc.AddLines(cc.Lang.Assign(pairBlock, "fetch_byte()"))
-				cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, "1"))
+				cc.AddLines(cc.Assign(pairBlock, "fetch_byte()"))
+				cc.AddLines(cc.SubAssign(pairCurrentSize, "1"))
 
-				cc.If(cc.Lang.CheckBit(pairBlock, 0), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+				cc.If(cc.CheckBit(pairBlock, 0), func() {
 					constructorIndex := fmt.Sprintf("$%s___index", trw.PhpClassName(false, true))
-					cc.AddLines(cc.Lang.TL2FetchSizeTo(constructorIndex))
-					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, cc.Lang.TL2CountBytes(constructorIndex)))
-					cc.If(cc.Lang.NotEqual(constructorIndex, "0"), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-						cc.AddLines(cc.Lang.TL2SkipBytes(pairCurrentSize))
+					cc.AddLines(cc.TL2FetchSizeTo(constructorIndex))
+					cc.AddLines(cc.SubAssign(pairCurrentSize, cc.TL2CountBytes(constructorIndex)))
+					cc.If(cc.NotEqual(constructorIndex, "0"), func() {
+						cc.AddLines(cc.TL2SkipBytes(pairCurrentSize))
 						cc.AddLines("continue;")
 					})
 				})
 
 				fieldUsedBytesPointer := fmt.Sprintf("$field_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
-				cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+				cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
 
-				cc.If(cc.Lang.CheckBit(pairBlock, 1), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-					cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+				cc.If(cc.CheckBit(pairBlock, 1), func() {
+					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
 					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
-					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
+					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 
-				cc.If(cc.Lang.CheckBit(pairBlock, 2), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-					cc.AddLines(cc.Lang.Assign(fieldUsedBytesPointer, "0"))
+				cc.If(cc.CheckBit(pairBlock, 2), func() {
+					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
 					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
-					cc.AddLines(cc.Lang.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
+					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 			})
 
 			// skip rest
-			cc.AddLines(cc.Lang.TL2SkipBytes(pairCurrentSize))
+			cc.AddLines(cc.TL2SkipBytes(pairCurrentSize))
 
 			// assign in array
 			cc.AddLines(fmt.Sprintf("%[1]s[%[2]s] = %[3]s;", targetName, keyElement, valueElement))
@@ -536,7 +536,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 	)
 
 	cc.AddLines(fmt.Sprintf("if (%s != 0) {", currentSize))
-	cc.AddBlock(func(cc *codecreator.CodeCreator) {
+	cc.AddBlock(func() {
 		// add element count
 		cc.AddLines(
 			fmt.Sprintf("%[1]s = count(%[2]s);", currentLen, targetName),
@@ -550,7 +550,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 				panic("do not implement bit vector at the moment")
 			}
 			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				cc.AddLines(
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
@@ -566,7 +566,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 				panic("do not implement bit array at the moment")
 			}
 			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				cc.AddLines(
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
@@ -587,7 +587,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 				fmt.Sprintf("ksort(%[1]s%[2]s);", targetName, flags),
 				fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 			)
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				pairSize := fmt.Sprintf("$pair_size%s", uniqueSuffix)
 				pairBlock := fmt.Sprintf("$pair_block%s", uniqueSuffix)
 
@@ -597,20 +597,20 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 				)
 
 				cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", pairSize))
-				cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				cc.AddBlock(func() {
 					cc.AddLines(
 						fmt.Sprintf("%s = $context_blocks->pop_front();", pairBlock),
 						fmt.Sprintf("store_byte(%s & 0xFF);", pairBlock),
 					)
 					// write key
 					cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << 1)) != 0) {", pairBlock))
-					cc.AddBlock(func(cc *codecreator.CodeCreator) {
+					cc.AddBlock(func() {
 						cc.AddLines(trw.dictKeyField.t.trw.PhpWriteTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)...)
 					})
 					cc.AddLines("}")
 					// write value
 					cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << 2)) != 0) {", pairBlock))
-					cc.AddBlock(func(cc *codecreator.CodeCreator) {
+					cc.AddBlock(func() {
 						cc.AddLines(trw.dictValueField.t.trw.PhpWriteTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)...)
 					})
 					cc.AddLines("}")
@@ -643,7 +643,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 	)
 
 	cc.AddLines(fmt.Sprintf("if (%[1]s != 0) {", currentLen))
-	cc.AddBlock(func(cc *codecreator.CodeCreator) {
+	cc.AddBlock(func() {
 		switch {
 		// actual vector
 		case trw.vectorLike && !trw.dictLike:
@@ -652,7 +652,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 				panic("do not implement bit vector at the moment")
 			}
 			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				cc.AddLines(
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
@@ -668,7 +668,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 				panic("do not implement bit array at the moment")
 			}
 			cc.AddLines(fmt.Sprintf("for (%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", currentIndex, currentLen))
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				cc.AddLines(
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
@@ -689,7 +689,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 				fmt.Sprintf("ksort(%[1]s%[2]s);", targetName, flags),
 				fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 			)
-			cc.AddBlock(func(cc *codecreator.CodeCreator) {
+			cc.AddBlock(func() {
 				pairSize := fmt.Sprintf("$pair_size%s", uniqueSuffix)
 				pairSizeIndex := fmt.Sprintf("$pair_size_index%s", uniqueSuffix)
 
@@ -718,7 +718,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 					cc.AddLines(trw.dictKeyField.t.trw.PhpCalculateSizesTL2MethodCall(keyElement, false, args, supportSuffix, callLevel+1, pairPartSize, true)...)
 				}
 				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
-				cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				cc.AddBlock(func() {
 					cc.AddLines(
 						fmt.Sprintf("%[1]s |= (1 << %[2]d);", pairBlock, 1),
 						fmt.Sprintf("%[1]s += %[2]s;", pairSize, pairPartSize),
@@ -736,7 +736,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 					cc.AddLines(trw.dictValueField.t.trw.PhpCalculateSizesTL2MethodCall(valueElement, false, args, supportSuffix, callLevel+1, pairPartSize, true)...)
 				}
 				cc.AddLines(fmt.Sprintf("if (%s) {", pairPartUsed))
-				cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				cc.AddBlock(func() {
 					cc.AddLines(
 						fmt.Sprintf("%[1]s |= (1 << %[2]d);", pairBlock, 2),
 						fmt.Sprintf("%[1]s += %[2]s;", pairSize, pairPartSize),
@@ -753,12 +753,12 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 
 				// remove tail of blocks if is zero
 				cc.AddLines(fmt.Sprintf("if (%[1]s == 0) {", pairSize))
-				cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				cc.AddBlock(func() {
 					// remove block
 					cc.AddLines(fmt.Sprintf("$context_blocks->cut_tail(%[1]s);", pairBlockIndex))
 				})
 				cc.AddLines("} else {")
-				cc.AddBlock(func(cc *codecreator.CodeCreator) {
+				cc.AddBlock(func() {
 					// update size
 					cc.AddLines(fmt.Sprintf("$context_sizes->set_value(%[1]s, %[2]s);", pairSizeIndex, pairSize))
 				})
@@ -775,7 +775,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 		)
 	})
 	cc.AddLines("} else {")
-	cc.AddBlock(func(cc *codecreator.CodeCreator) {
+	cc.AddBlock(func() {
 		if canOmit {
 			// remove itself
 			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s);", currentSizeIndex))

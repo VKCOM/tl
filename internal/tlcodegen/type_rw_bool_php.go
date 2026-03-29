@@ -120,7 +120,7 @@ func (trw *TypeRWBool) PhpCalculateSizesTL2MethodCall(targetName string, bare bo
 			calcText := []string{fmt.Sprintf("%[1]s += 1;", usedBytesPointer)}
 			if canOmit {
 				cc := codecreator.NewPhpCodeCreator()
-				cc.If(targetName, func(cc *codecreator.PhpCodeCreator) {
+				cc.If(targetName, func() {
 					cc.AddLines(calcText...)
 				})
 				calcText = cc.Print()

@@ -257,7 +257,7 @@ func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, ba
 		}
 		if canOmit {
 			cc := codecreator.NewPhpCodeCreator()
-			cc.If(fmt.Sprintf("%[1]s != 0", checkZeroTarget), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+			cc.If(fmt.Sprintf("%[1]s != 0", checkZeroTarget), func() {
 				cc.AddLines(calcText...)
 			})
 			calcText = cc.Print()

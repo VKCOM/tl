@@ -344,7 +344,7 @@ func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	localSize := fmt.Sprintf("$local_size_%[1]s_%[2]d", supportSuffix, callLevel)
 
 	cc := codecreator.NewPhpCodeCreator()
-	cc.If(fmt.Sprintf("is_null(%[1]s)", targetName), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+	cc.If(fmt.Sprintf("is_null(%[1]s)", targetName), func() {
 		cc.AddLines(fmt.Sprintf("%[1]s = %[2]s;", targetName, trw.PhpDefaultInit()))
 	})
 	cc.AddLines(
@@ -352,12 +352,12 @@ func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), localSize),
 	)
 	if !canOmit {
-		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func() {
 			cc.AddLines(fmt.Sprintf("%[1]s = 1;", localSize))
 		})
 	} else {
 		// remove itself
-		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func() {
 			cc.AddLines("$context_sizes->cut_tail($context_sizes->get_current_size() - 1);")
 		})
 	}
