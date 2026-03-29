@@ -1241,7 +1241,7 @@ func (f *Field) Bare() bool {
 	return f.bare
 }
 
-func (f *Field) IsAffectingLocalFieldMasks() bool {
+func (f *Field) IsAffectedByLocalFieldMask() bool {
 	return f.fieldMask != nil && f.fieldMask.isField
 }
 

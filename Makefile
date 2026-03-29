@@ -34,7 +34,6 @@ gen_check: build
 		--pkgPath=github.com/VKCOM/tl/$(GEN_PATH)/schema/tl \
 		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
-		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/schema.tl
 	@./target/bin/tl2gen --language=tlo \
 		--outfile=./$(TLOS_PATH)/test.tlo \
@@ -60,7 +59,6 @@ goldmaster_nocompile: build
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tl2gen --language=go -v \
@@ -73,7 +71,6 @@ goldmaster_nocompile: build
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tl2gen --language=go --split-internal -v \
@@ -89,7 +86,6 @@ goldmaster_nocompile: build
 		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tl2gen --language=go -v \
@@ -105,7 +101,6 @@ goldmaster_nocompile: build
 		--generateRPCCode \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tl2gen --language=tlo -v \
 		--outfile=./$(TLOS_PATH)/goldmaster.tlo \
@@ -141,7 +136,6 @@ goldmaster_tl2_nocompile: build migrate_to_tl2
 		--generateRPCCode \
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl2
 
@@ -234,7 +228,6 @@ testpure: build
 		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
 		# genold will not compile due to import statements with gennew
 		# @echo "Checking that generated code actually compiles..."
@@ -254,7 +247,6 @@ testpuremigr: build
 		--basicPkgPath=github.com/VKCOM/tl/pkg/basictl \
 		--generateByteVersions=ch_proxy.,ab. \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		./cmd/tl2client/test_migr.tl ./cmd/tl2client/test_migr.tl2
 	@echo "Checking that generated code actually compiles..."
 	time $(GO) build ./target/gennew/...

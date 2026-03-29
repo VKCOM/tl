@@ -73,7 +73,7 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	if err := gen.compile(); err != nil {
 		return err
 	}
-	if err := gen.generateCodeGolang(); err != nil {
+	if err := gen.generateCode(); err != nil {
 		return err
 	}
 	if err := gen.bytesWhiteList.UnusedWarning(); err != nil {
@@ -141,7 +141,7 @@ func (gen *genGo) prepareOptions() (err error) {
 	return nil
 }
 
-func (gen *genGo) generateCodeGolang() error {
+func (gen *genGo) generateCode() error {
 	sortedTypes := gen.generatedTypesList
 	if !gen.options.Go.SplitInternal {
 		globalIns := &InternalNamespace{DebugID: 1, Name: "internal", SubPath: "internal", Namespaces: map[string]struct{}{}, DirectImports: &DirectImports{ns: map[*InternalNamespace]struct{}{}}}

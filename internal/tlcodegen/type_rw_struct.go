@@ -193,7 +193,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedByTrueTypeFieldMasks() []Field {
 	containingNats := make(map[int]bool)
 
 	for _, field := range trw.Fields {
-		if field.IsAffectingLocalFieldMasks() && field.t.IsTrueType() {
+		if field.IsAffectedByLocalFieldMask() && field.t.IsTrueType() {
 			index := field.fieldMask.FieldIndex
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
@@ -210,7 +210,7 @@ func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
 	containingNats := make(map[int]bool)
 
 	for _, field := range trw.Fields {
-		if field.IsAffectingLocalFieldMasks() {
+		if field.IsAffectedByLocalFieldMask() {
 			index := field.fieldMask.FieldIndex
 			if _, contains := containingNats[index]; !contains {
 				nats = append(nats, trw.Fields[index])
@@ -405,7 +405,7 @@ func visit(
 // AllAffectedFieldMasks f must be from trw.Fields
 func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
 	curField := f
-	for curField.IsAffectingLocalFieldMasks() {
+	for curField.IsAffectedByLocalFieldMask() {
 		if curField.fieldMask.FieldIndex < 0 {
 			return
 		}
