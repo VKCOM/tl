@@ -15,7 +15,7 @@ import (
 	"github.com/VKCOM/tl/internal/puregen"
 )
 
-// for golang cycle detection
+// for tracking imports.
 type DirectImports struct {
 	ns         map[*InternalNamespace]struct{}
 	importSort bool

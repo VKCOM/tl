@@ -9,12 +9,11 @@ package puregen
 import "flag"
 
 type OptionsGo struct {
-	BasicPackageNameFull   string // if empty, will be created
-	TLPackageNameFull      string
-	BasicRPCPath           string
-	RawHandlerWhileList    string
-	GenerateLegacyJsonRead bool
-	UseCheckLengthSanity   bool
+	BasicPackageNameFull string // if empty, will be created
+	TLPackageNameFull    string
+	BasicRPCPath         string
+	RawHandlerWhileList  string
+	UseCheckLengthSanity bool
 
 	SplitInternal bool
 }
@@ -28,8 +27,6 @@ func (opt *OptionsGo) Bind(f *flag.FlagSet) {
 		"path to rpc package")
 	f.StringVar(&opt.RawHandlerWhileList, "rawHandlerWhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate RAW function handlers. Empty means none, '*' means all")
-	f.BoolVar(&opt.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
-		"whether to generate methods to read json in old way")
 	f.BoolVar(&opt.UseCheckLengthSanity, "checkLengthSanity", true,
 		"enable feature to generate code to check length sanity of arrays (default:true)")
 

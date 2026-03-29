@@ -44,7 +44,7 @@ func (f *Field) NatArgs() []pure.ActualNatArg {
 	return f.pureField.NatArgs()
 }
 
-func (f *Field) IsAffectingLocalFieldMasks() bool {
+func (f *Field) IsAffectedByLocalFieldMask() bool {
 	return f.FieldMask() != nil && f.FieldMask().IsField()
 }
 
@@ -72,15 +72,8 @@ func (f *Field) IsTL2Omitted() bool {
 	return strings.HasPrefix(f.OriginalName(), "_")
 }
 
-// generate Set/IsSet with external (TL1) or internal (TL1 & TL2) mask/
-// must exactly correspond to migrator logic
-// TL1: x:fm.b?true x:fm.b?True
-// TL2: x:bit
 func (f *Field) IsBit() bool {
-	if b, ok := f.t.trw.(*TypeRWBool); ok {
-		return b.isBit
-	}
-	return f.FieldMask() != nil && (f.t.IsTrueType() && (f.t.TLName().String() == "true" || f.t.TLName().String() == "True"))
+	return f.pureField.IsBit()
 }
 
 func (f *Field) TL2MaskForOP(op string) string {

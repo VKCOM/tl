@@ -86,6 +86,10 @@ func (f Field) MaskTL2Bit() *int {
 	return f.maskTL2Bit
 }
 
+// generate Set/IsSet with external (TL1) or internal (TL1 & TL2) mask/
+// must exactly correspond to migrator logic
+// TL1: x:fm.b?true x:fm.b?True
+// TL2: x:bit
 func (f Field) IsBit() bool {
 	if f.ins.ins == nil {
 		// recursive type, this check allows IsBit to be called even during type resolution
@@ -95,5 +99,5 @@ func (f Field) IsBit() bool {
 	if f.ins.ins.IsBit() {
 		return true
 	}
-	return f.fieldMask != nil && f.ins.ins.CanonicalName() == "True"
+	return f.fieldMask != nil && f.ins.ins.CanonicalName() == "true"
 }

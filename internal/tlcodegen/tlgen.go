@@ -170,16 +170,15 @@ type Gen2Options struct {
 	LinterPHPNonPolymorphicBoxedRef bool
 
 	// Go
-	GenerateRPCCode        bool
-	BytesWhiteList         string
-	TypesWhiteList         string
-	GenerateRandomCode     bool
-	GenerateLegacyJsonRead bool
-	SchemaDocumentation    bool
-	SchemaURL              string
-	SchemaTimestamp        uint // for TLO version/date
-	SchemaCommit           string
-	UseCheckLengthSanity   bool
+	GenerateRPCCode      bool
+	BytesWhiteList       string
+	TypesWhiteList       string
+	GenerateRandomCode   bool
+	SchemaDocumentation  bool
+	SchemaURL            string
+	SchemaTimestamp      uint // for TLO version/date
+	SchemaCommit         string
+	UseCheckLengthSanity bool
 
 	// C++
 	RootCPP                string

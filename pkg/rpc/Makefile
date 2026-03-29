@@ -9,7 +9,6 @@ gen:
 		--basicPkgPath=gitlab.corp.mail.ru/vkgo/vkgo/pkg/basictl \
 		--generateByteVersions= \
 		--generateRandomCode \
-		--generateLegacyJsonRead=false \
 		../rpc/rpc.tl
 	@echo "Checking that generated code actually compiles..."
 	@go build ../rpc/internal/gen/...
