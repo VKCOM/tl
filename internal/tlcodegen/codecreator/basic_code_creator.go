@@ -34,13 +34,13 @@ func (cc *CodeCreator) Print() []string {
 	return s
 }
 
-func (cc *CodeCreator) AddBlock(block func(cc *CodeCreator)) {
+func (cc *CodeCreator) AddBlock(block func()) {
 	cc.AddShift(1)
-	block(cc)
+	block()
 	cc.AddShift(-1)
 }
 
-func (cc *CodeCreator) addFullBlock(prefix, suffix string, block func(cc *CodeCreator)) {
+func (cc *CodeCreator) addFullBlock(prefix, suffix string, block func()) {
 	if prefix != "" {
 		cc.AddLines(prefix)
 	}
@@ -69,28 +69,21 @@ type LanguageBundle struct {
 	allowIndexedFor bool
 }
 
-type BasicCodeCreator[T any] struct {
+type BasicCodeCreator struct {
 	CodeCreator
 	LanguageBundle
 	lastVarIdentifier uint32
-	Lang              T
 }
 
-func (bcc *BasicCodeCreator[T]) addFullBlock(prefix, suffix string, block func(cc *BasicCodeCreator[T])) {
-	bcc.CodeCreator.addFullBlock(prefix, suffix, func(cc *CodeCreator) {
-		block(bcc)
-	})
-}
-
-func (bcc *BasicCodeCreator[T]) Block(prefix string, block func(cc *BasicCodeCreator[T]), suffix string) {
+func (bcc *BasicCodeCreator) Block(prefix string, block func(), suffix string) {
 	bcc.addFullBlock(prefix, suffix, block)
 }
 
-func (bcc *BasicCodeCreator[T]) If(condition string, block func(cc *BasicCodeCreator[T])) {
+func (bcc *BasicCodeCreator) If(condition string, block func()) {
 	bcc.addFullBlock(fmt.Sprintf(bcc.ifPrefixTemplate, condition), bcc.ifSuffixTemplate, block)
 }
 
-func (bcc *BasicCodeCreator[T]) IfElse(condition string, block func(cc *BasicCodeCreator[T]), elseBlock func(cc *BasicCodeCreator[T])) {
+func (bcc *BasicCodeCreator) IfElse(condition string, block func(), elseBlock func()) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.ifPrefixTemplate, condition),
 		bcc.elsePrefixTemplate,
@@ -100,7 +93,7 @@ func (bcc *BasicCodeCreator[T]) IfElse(condition string, block func(cc *BasicCod
 	bcc.AddLines(bcc.ifSuffixTemplate)
 }
 
-func (bcc *BasicCodeCreator[T]) For(initState, condition, iterationStep string, block func(cc *BasicCodeCreator[T])) {
+func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, block func()) {
 	bcc.addFullBlock(
 		fmt.Sprintf(bcc.forPrefixTemplate, initState, condition, iterationStep),
 		bcc.forSuffixTemplate,
@@ -108,7 +101,7 @@ func (bcc *BasicCodeCreator[T]) For(initState, condition, iterationStep string, 
 	)
 }
 
-func (bcc *BasicCodeCreator[T]) ForIndexed(indexVar, startValue, upperBound, step string, block func(cc *BasicCodeCreator[T])) {
+func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
 	if !bcc.allowIndexedFor {
 		panic("can't use for by index")
 	}
@@ -120,17 +113,17 @@ func (bcc *BasicCodeCreator[T]) ForIndexed(indexVar, startValue, upperBound, ste
 	)
 }
 
-func (bcc *BasicCodeCreator[T]) Comments(lines ...string) {
+func (bcc *BasicCodeCreator) Comments(lines ...string) {
 	for _, s := range lines {
 		bcc.AddLines(bcc.commentPrefix + s)
 	}
 }
 
-func (bcc *BasicCodeCreator[T]) Comment(lines string) {
+func (bcc *BasicCodeCreator) Comment(lines string) {
 	bcc.Comments(strings.Split(lines, "\n")...)
 }
 
-func (bcc *BasicCodeCreator[T]) NewVariable(name string) string {
+func (bcc *BasicCodeCreator) NewVariable(name string) string {
 	if name == "" {
 		name = "var"
 	}

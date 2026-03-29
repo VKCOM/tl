@@ -11,14 +11,19 @@ var cppLanguageBundle = LanguageBundle{
 	allowIndexedFor:    true,
 }
 
-type CppCodeCreator = BasicCodeCreator[CppHelper]
+type CppCodeCreator struct {
+	BasicCodeCreator
+	CppHelper
+}
 
 func NewCppCodeCreator() CppCodeCreator {
-	return BasicCodeCreator[CppHelper]{
-		CodeCreator: CodeCreator{
-			Shift: "\t",
+	return CppCodeCreator{
+		BasicCodeCreator: BasicCodeCreator{
+			CodeCreator: CodeCreator{
+				Shift: "\t",
+			},
+			LanguageBundle: cppLanguageBundle,
 		},
-		LanguageBundle: cppLanguageBundle,
 	}
 }
 

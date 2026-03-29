@@ -193,22 +193,22 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	// read inner
 	if trw.element.t == trw.getInnerTarget().t && initIfDefault {
 		cc.Comments("init value to not null <=> ok:true")
-		cc.If(maybeOk, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-			cc.If(fmt.Sprintf("is_null(%[1]s)", targetName), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.If(maybeOk, func() {
+			cc.If(fmt.Sprintf("is_null(%[1]s)", targetName), func() {
 				cc.AddLines(fmt.Sprintf("%[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()))
 			})
 		})
 		initIfDefault = false
 	}
-	cc.IfElse(maybeContainsValueName, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+	cc.IfElse(maybeContainsValueName, func() {
 		var newArgs *TypeArgumentsTree
 		if args != nil {
 			newArgs = args.children[0]
 		}
 		bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		cc.AddLines(bodyReader...)
-	}, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-		cc.If(fmt.Sprintf("!%[1]s", maybeOk), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+	}, func() {
+		cc.If(fmt.Sprintf("!%[1]s", maybeOk), func() {
 			cc.AddLines(fmt.Sprintf("%[1]s = null;", targetName))
 		})
 	})
@@ -279,27 +279,27 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 		fmt.Sprintf("%s_index = $context_sizes->push_back(0);", localCurrentSize),
 	)
 
-	cc.If(fmt.Sprintf("!is_null(%[1]s)", targetName), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+	cc.If(fmt.Sprintf("!is_null(%[1]s)", targetName), func() {
 		innerUsedBytes := fmt.Sprintf("$inner_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
 		cc.AddLines(
-			cc.Lang.Assign(innerUsedBytes, "0"),
-			cc.Lang.Assign(localBlock, "(1 << 0)"),
+			cc.Assign(innerUsedBytes, "0"),
+			cc.Assign(localBlock, "(1 << 0)"),
 			fmt.Sprintf("%[1]s_index = $context_blocks->push_back(0);", localBlock),
-			cc.Lang.AddAssign(localCurrentSize, "2"), // add for block and constructor id
+			cc.AddAssign(localCurrentSize, "2"), // add for block and constructor id
 		)
 		var newArgs *TypeArgumentsTree
 		if args != nil {
 			newArgs = args.children[0]
 		}
 		cc.AddLines(trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, innerUsedBytes, true)...)
-		cc.AddLines(cc.Lang.AddAssign(localCurrentSize, innerUsedBytes))
+		cc.AddLines(cc.AddAssign(localCurrentSize, innerUsedBytes))
 
-		usedInner := cc.Lang.NotEqual(innerUsedBytes, "0")
+		usedInner := cc.NotEqual(innerUsedBytes, "0")
 		if trw.element.IsBit() {
 			usedInner = targetName
 		}
-		cc.If(usedInner, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-			cc.AddLines(cc.Lang.OrAssign(localBlock, "(1 << 1)"))
+		cc.If(usedInner, func() {
+			cc.AddLines(cc.OrAssign(localBlock, "(1 << 1)"))
 		})
 		cc.AddLines(fmt.Sprintf("$context_blocks->set_value(%[1]s_index, %[1]s);", localBlock))
 	})
@@ -310,9 +310,9 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	}
 
 	if canOmit {
-		cc.IfElse(fmt.Sprintf("%[1]s != 0", localCurrentSize), func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
-			updateSizeState(cc)
-		}, func(cc *codecreator.BasicCodeCreator[codecreator.PhpHelder]) {
+		cc.IfElse(fmt.Sprintf("%[1]s != 0", localCurrentSize), func() {
+			updateSizeState(&cc)
+		}, func() {
 			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s_index);", localCurrentSize))
 		})
 	} else {
