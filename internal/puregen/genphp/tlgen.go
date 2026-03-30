@@ -650,6 +650,8 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return err
 	}
 
+	kernel.AllTypeInstances()
+
 	gen, err := generateCode(kernel.TL1(), options)
 	if gen == nil {
 		return err
@@ -663,7 +665,7 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 	if options.Kernel.Verbose {
 		DEBUG = true
-		Debugf(">>> ENABLE DEBUG MODE <<<\n")
+		Debugf(">>> ENABLED DEBUG MODE <<<\n")
 	}
 	gen := &Gen2{
 		options:    options,

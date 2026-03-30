@@ -401,7 +401,6 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		wr:     myWrapper,
 		IsEnum: isEnum,
 	}
-	res.fieldsDecCPP.fillCPPIdentifiers()
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
 
@@ -486,7 +485,6 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 	res := &TypeRWStruct{
 		wr: myWrapper,
 	}
-	res.fieldsDecCPP.fillCPPIdentifiers()
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
 	nextTL2MaskBit := 0
