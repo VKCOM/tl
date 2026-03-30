@@ -467,10 +467,7 @@ var _ = basictl.NatWrite
 		return err
 	}
 
-	if err := outdir.Write(gen.options, markerFile); err != nil {
-		return err // Context is already in err
-	}
-	return nil
+	return outdir.Write(gen.options, markerFile)
 }
 
 func (gen *genGo) InternalPrefix() string {
