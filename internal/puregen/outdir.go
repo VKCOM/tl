@@ -16,10 +16,8 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/TwiN/go-color"
-	"github.com/VKCOM/tl/internal/utils"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -66,7 +64,7 @@ type filepathNameCode struct {
 	code         string
 }
 
-func (gen *OutDir) Write(opts *Options, markerFile string, oldMarkerFile string) error {
+func (gen *OutDir) Write(opts *Options, markerFile string) error {
 	if opts.Outdir == "" {
 		return fmt.Errorf("--outdir should not be empty")
 	}
@@ -80,16 +78,8 @@ func (gen *OutDir) Write(opts *Options, markerFile string, oldMarkerFile string)
 	if err := gen.collectRelativePaths(opts.Outdir, "", relativeFiles, &relativeDirs); err != nil {
 		return fmt.Errorf("error reading outdir content %q: %w", opts.Outdir, err)
 	}
-	if len(relativeFiles) != 0 && !relativeFiles[markerFile] && !relativeFiles[oldMarkerFile] {
-		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", opts.Outdir, markerFile)
-	}
-	markerContent := fmt.Sprintf(buildVersionFormat,
-		strings.TrimSpace(utils.AppVersion()),
-		strings.TrimSpace(opts.SchemaURL),
-		strings.TrimSpace(opts.SchemaCommit),
-		opts.SchemaTimestamp, time.Unix(int64(opts.SchemaTimestamp), 0).UTC())
-	if err := gen.AddCodeFile(markerFile, markerContent); err != nil {
-		return err
+	if len(relativeFiles) != 0 && !relativeFiles[markerFile] {
+		return fmt.Errorf("outdir %q not empty and has no %q file from previous generation that must be there, to prevent accidents, please clean outdir manually", opts.Outdir, markerFile)
 	}
 	// multithreaded formatting+writing, was taking too much time
 	// reading/writing takes even more time than formatting, so we do both here
