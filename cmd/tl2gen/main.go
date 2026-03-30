@@ -22,6 +22,7 @@ import (
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/puregen/gencanonical"
 	"github.com/VKCOM/tl/internal/puregen/gengo"
+	"github.com/VKCOM/tl/internal/puregen/genphp"
 	"github.com/VKCOM/tl/internal/puregen/genrust"
 	"github.com/VKCOM/tl/internal/puregen/gentljsonhtml"
 	"github.com/VKCOM/tl/internal/puregen/gentlo"
@@ -30,8 +31,11 @@ import (
 )
 
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
-	"canonical":    gencanonical.Generate,
-	"go":           gengo.Generate,
+	"canonical": gencanonical.Generate,
+	"go":        gengo.Generate,
+	"php": func(kernel *pure.Kernel, options *puregen.Options) error {
+		return genphp.Generate(kernel.TL1(), tlast.TL2File{Combinators: kernel.TL2()}, options)
+	},
 	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Compile() }, // nothing more than lint
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
 	"tljson.html":  gentljsonhtml.Generate,

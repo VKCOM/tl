@@ -39,6 +39,7 @@ type Options struct {
 
 	Kernel pure.OptionsKernel
 	Go     OptionsGo
+	PHP    OptionsPHP
 	Rust   OptionsRust
 
 	ProfileCPU string
@@ -91,6 +92,7 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 
 	opt.Kernel.Bind(f)
 	opt.Go.Bind(f)
+	opt.PHP.Bind(f)
 	opt.Rust.Bind(f)
 }
 
