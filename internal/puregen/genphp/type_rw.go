@@ -11,10 +11,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/VKCOM/tl/internal/utils"
-	"golang.org/x/exp/slices"
-
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 // During recursive generation, we store wrappers to type when they are needed, so that
@@ -46,124 +44,6 @@ func (d *Deconflicter) deconflictName(s string) string {
 func (d *Deconflicter) removeName(s string) {
 	if d.hasConflict(s) {
 		delete(d.usedNames, s)
-	}
-}
-
-var bannedCppFieldNames = []string{
-	"and",
-	"or",
-	"friend",
-	"xor",
-	"operator",
-	"errno",
-	"class",
-	"short",
-	"default",
-	"signed",
-	"new",
-	"private",
-	"public",
-	"protected",
-	"struct",
-	"return",
-	"delete",
-	"alignas",
-	"constinit",
-	"extern",
-	"protected",
-	"throw",
-	"alignof",
-	"const_cast",
-	"false",
-	"public",
-	"true",
-	"asm",
-	"continue",
-	"float",
-	"register",
-	"try",
-	"auto",
-	"contract_assert",
-	"for",
-	"reinterpret_cast",
-	"typedef",
-	"bool",
-	"co_await",
-	"friend",
-	"requires",
-	"typeid",
-	"break",
-	"co_return",
-	"goto",
-	"return",
-	"typename",
-	"case",
-	"co_yield",
-	"if",
-	"short",
-	"union",
-	"catch",
-	"decltype",
-	"inline",
-	"signed",
-	"unsigned",
-	"char",
-	"default",
-	"int",
-	"sizeof",
-	"using",
-	"char8_t",
-	"delete",
-	"long",
-	"static",
-	"virtual",
-	"char16_t",
-	"do",
-	"mutable",
-	"static_assert",
-	"void",
-	"char32_t",
-	"double",
-	"namespace",
-	"static_cast",
-	"volatile",
-	"class",
-	"dynamic_cast",
-	"new",
-	"struct",
-	"wchar_t",
-	"concept",
-	"else",
-	"noexcept",
-	"switch",
-	"while",
-	"const",
-	"enum",
-	"nullptr",
-	"template",
-	"consteval",
-	"explicit",
-	"operator",
-	"this",
-	"constexpr",
-	"export",
-	"private",
-	"thread_local",
-	"linux",
-	"windows",
-}
-
-func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
-	//d.deconflictName("int")
-	//d.deconflictName("double")
-	//d.deconflictName("float")
-	//d.deconflictName("long")
-	//d.deconflictName("else")
-	//d.deconflictName("inline")
-	//d.deconflictName("namespace")
-
-	for _, word := range bannedCppFieldNames {
-		d.deconflictName(word)
 	}
 }
 
@@ -202,13 +82,6 @@ type TypeRWWrapper struct {
 
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
-}
-
-// Those have unique structure fully defined by the magic.
-// items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
-// they could not be distinguished by the magic. For example vector<int> and vector<long>.
-func (w *TypeRWWrapper) IsTopLevel() bool {
-	return len(w.origTL[0].TemplateArguments) == 0
 }
 
 func (w *TypeRWWrapper) CanonicalStringTop() string {
@@ -321,53 +194,6 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	return canonicalGoName(typeName, insideNamespace), b.String()
 }
 
-type CppIncludeInfo struct {
-	componentId int
-	namespace   string
-}
-
-// for C++ includes
-type DirectIncludesCPP struct {
-	ns map[*TypeRWWrapper]CppIncludeInfo
-}
-
-type TypeDefinitionVariation struct {
-	NeedBytesVersion bool
-}
-
-//func (d DirectIncludesCPP) sortedNames() []string {
-//	var sortedNames []string
-//	for im := range d.ns { // Imports of this file.
-//		sortedNames = append(sortedNames, im)
-//	}
-//	sort.Strings(sortedNames)
-//	return sortedNames
-//}
-
-type NamespaceFiles struct {
-	Namespace string
-	Includes  DirectIncludesCPP
-}
-
-func (d DirectIncludesCPP) splitByNamespaces() (result []NamespaceFiles) {
-	namespaces := make(map[string]int)
-
-	for file, include := range d.ns {
-		ns := include.namespace
-		if namespaces[ns] == 0 {
-			namespaces[ns] = len(namespaces) + 1
-			result = append(result, NamespaceFiles{Namespace: ns, Includes: DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}})
-		}
-		result[namespaces[ns]-1].Includes.ns[file] = include
-	}
-
-	slices.SortFunc(result, func(a, b NamespaceFiles) int {
-		return strings.Compare(a.Namespace, b.Namespace)
-	})
-
-	return
-}
-
 type Pair[L, R any] struct {
 	left  L
 	right R
@@ -386,25 +212,6 @@ func stringCompare(a string, b string) int {
 func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 	// return stringCompare(a.CanonicalString(), b.CanonicalString()) TODO - better idea after everything is stabilized
 	return stringCompare(a.goGlobalName, b.goGlobalName)
-}
-
-func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
-	if _, ok := w.trw.(*TypeRWStruct); ok {
-		if w.unionParent == nil || !w.unionParent.IsEnum {
-			return true
-		}
-	}
-	if _, ok := w.trw.(*TypeRWUnion); ok {
-		return true
-	}
-	if _, ok := w.trw.(*TypeRWMaybe); ok {
-		return true
-	}
-	return false
-}
-
-func (w *TypeRWWrapper) ShouldWriteEnumElementAlias() bool {
-	return w.unionParent != nil && w.unionParent.IsEnum
 }
 
 func (w *TypeRWWrapper) FillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
@@ -745,89 +552,6 @@ func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	}
 	(*reachableTypes)[w] = true
 	w.trw.PhpIterateReachableTypes(reachableTypes)
-}
-
-func (w *TypeRWWrapper) JSONHelpString() string {
-	return w.CanonicalStringTop()
-}
-
-func (w *TypeRWWrapper) JSONHelpFullType(bare bool, fields []Field, natArgs []ActualNatArg) string {
-	result := w.helpString2(bare, fields, &natArgs)
-	if len(natArgs) != 0 {
-		panic("JSONHelpFullType should consume all arguments")
-	}
-	return result
-}
-
-func (w *TypeRWWrapper) JSONHelpNatArg(fields []Field, natArg ActualNatArg) string {
-	if natArg.isArith {
-		return fmt.Sprintf("%d", natArg.Arith.Res)
-	}
-	if natArg.isField {
-		return fields[natArg.FieldIndex].originalName
-	}
-	return natArg.name
-}
-
-func (w *TypeRWWrapper) helpString2(bare bool, fields []Field, natArgs *[]ActualNatArg) string {
-	var s strings.Builder
-	if len(w.origTL) > 1 {
-		if bare {
-			panic("helpString2 of bare union")
-		}
-		s.WriteString(w.origTL[0].TypeDecl.Name.String())
-	} else {
-		if bare {
-			s.WriteString(w.origTL[0].Construct.Name.String())
-		} else {
-			s.WriteString(w.origTL[0].TypeDecl.Name.String())
-		}
-	}
-	if len(w.arguments) == 0 {
-		return s.String()
-	}
-	s.WriteString("<")
-	for i, a := range w.arguments {
-		if i != 0 {
-			s.WriteString(",")
-		}
-		if a.isNat {
-			if a.isArith {
-				s.WriteString(fmt.Sprintf("%d", a.Arith.Res))
-			} else {
-				natArg := (*natArgs)[0]
-				*natArgs = (*natArgs)[1:]
-				if natArg.isField {
-					s.WriteString(fields[natArg.FieldIndex].originalName)
-				} else {
-					s.WriteString(natArg.name)
-				}
-			}
-		} else {
-			s.WriteString(a.tip.helpString2(a.bare, fields, natArgs))
-		}
-	}
-	s.WriteString(">")
-	return s.String()
-}
-
-// same code as in func (trw *TypeRWStruct) replaceUnwrapArgs
-func (w *TypeRWWrapper) TransformNatArgsToChild(natArgs []ActualNatArg, childNatArgs []ActualNatArg) []ActualNatArg {
-	var result []ActualNatArg
-outer:
-	for _, arg := range childNatArgs {
-		if arg.isArith || arg.isField {
-			panic("cannot transform to child arith or field nat param")
-		}
-		for i, p := range w.NatParams {
-			if p == arg.name {
-				result = append(result, natArgs[i])
-				continue outer
-			}
-		}
-		panic("nat param not found in parent nat params")
-	}
-	return result
 }
 
 // TODO remove skipAlias after we start generating go code like we do for C++
