@@ -42,9 +42,6 @@ func (trw *TypeRWBool) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int
 func (trw *TypeRWBool) BeforeCodeGenerationStep1() {
 }
 
-func (trw *TypeRWBool) BeforeCodeGenerationStep2() {
-}
-
 func (trw *TypeRWBool) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 

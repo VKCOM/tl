@@ -18,20 +18,6 @@ type TypeRWUnion struct {
 func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
-	if visitedNodes[trw.wr] != 0 {
-		return
-	}
-	visitedNodes[trw.wr] = 1
-	for _, f := range trw.Fields {
-		if f.recursive {
-			continue
-		}
-		f.t.trw.FillRecursiveChildren(visitedNodes, generic)
-	}
-	visitedNodes[trw.wr] = 2
-}
-
 func (trw *TypeRWUnion) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	var result []*TypeRWWrapper
 	for _, typeDep := range trw.wr.arguments {
@@ -59,19 +45,6 @@ func (trw *TypeRWUnion) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
-	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-	//	var nf []Field
-	//	for _, f := range trw.Fields {
-	//		if !f.recursive {
-	//			nf = append(nf, f)
-	//			panic("recursive field in union " + trw.wr.tlName.String())
-	//}
-	//}
-	//trw.Fields = nf
-	//}
 }
 
 func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {

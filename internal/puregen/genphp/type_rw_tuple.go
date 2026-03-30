@@ -60,12 +60,6 @@ func phpIsDictionary(wr *TypeRWWrapper) bool {
 //	return false
 //}
 
-func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
-	for _, typeDep := range trw.AllPossibleRecursionProducers() {
-		typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
-	}
-}
-
 func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	var result []*TypeRWWrapper
 	for _, typeDep := range trw.wr.arguments {
@@ -105,10 +99,6 @@ func (trw *TypeRWBrackets) IsWrappingType() bool {
 	//return false
 }
 
-func (trw *TypeRWBrackets) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.element.t.containsUnion(visitedNodes)
-}
-
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
 		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {
@@ -118,9 +108,6 @@ func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 			trw.dictValueField = vf
 		}
 	}
-}
-
-func (trw *TypeRWBrackets) BeforeCodeGenerationStep2() {
 }
 
 func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {

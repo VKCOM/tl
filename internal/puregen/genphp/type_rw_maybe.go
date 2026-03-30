@@ -32,20 +32,7 @@ func (trw *TypeRWMaybe) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWMaybe) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.element.t.containsUnion(visitedNodes)
-}
-
-func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
-	visitedNodes[trw.wr] = 1
-	trw.element.t.trw.FillRecursiveChildren(visitedNodes, generic)
-	visitedNodes[trw.wr] = 2
-}
-
 func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWMaybe) BeforeCodeGenerationStep2() {
 }
 
 func (trw *TypeRWMaybe) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
