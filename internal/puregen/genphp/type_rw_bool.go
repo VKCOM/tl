@@ -17,8 +17,7 @@ type TypeRWBool struct {
 	isBit bool
 }
 
-func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
+func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
 
 func (trw *TypeRWBool) BeforeCodeGenerationStep1() {
 }

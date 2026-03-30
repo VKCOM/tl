@@ -22,8 +22,7 @@ func (trw *TypeRWPrimitive) isFloat() bool {
 	return trw.tlType == "float" || trw.tlType == "double"
 }
 
-func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
+func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
 
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
 }

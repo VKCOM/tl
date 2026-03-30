@@ -14,8 +14,7 @@ type TypeRWMaybe struct {
 	okTag    uint32
 }
 
-func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
+func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
 
 func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
 }

@@ -52,10 +52,6 @@ func phpIsDictionary(wr *TypeRWWrapper) bool {
 	return false
 }
 
-func (trw *TypeRWBrackets) IsBuiltinVector() bool {
-	return len(trw.wr.origTL) == 1 && trw.wr.origTL[0].Builtin
-}
-
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
 		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {

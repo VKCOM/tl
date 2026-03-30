@@ -18,10 +18,6 @@ type TypeRWUnion struct {
 func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWUnion) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return true
-}
-
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 
@@ -31,19 +27,4 @@ func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {
 
 func (trw *TypeRWUnion) CanBeBareBoxed() (canBare bool, canBoxed bool) {
 	return false, true
-}
-
-func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
-	//messages.peerId peer_id:int = messages.ChatId;
-	//messagesLong.peerId peer_id:long = messages.ChatId;
-	//
-	//messages.globalChatId#07a5893d chat_id:long = messages.ChatId;
-	//messagesLong.globalChatId global_id:messagesLong.GlobalId = messages.ChatId;
-
-	for _, field := range trw.Fields {
-		if field.t == wr {
-			return true
-		}
-	}
-	return false
 }

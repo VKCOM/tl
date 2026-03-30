@@ -554,14 +554,11 @@ func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	w.trw.PhpIterateReachableTypes(reachableTypes)
 }
 
-// TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
-	// methods below are target language independent
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
-	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
+	BeforeCodeGenerationStep1()
 
-	// methods below depend on target language
 	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
 	CanBeBareBoxed() (canBare bool, canBoxed bool)
 
@@ -625,99 +622,12 @@ func (f *Field) TL2MaskForOP(op string) string {
 	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
 }
 
-func formatNatArg(fields []Field, arg ActualNatArg) string {
-	if arg.isArith {
-		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
-	}
-	if arg.isField {
-		// tl2 case
-		if arg.FieldIndex < 0 {
-			return fmt.Sprintf("item.mask%d", -arg.FieldIndex)
-		}
-		return "item." + fields[arg.FieldIndex].goName
-	}
-	if strings.HasPrefix(arg.name, "nat_") {
-		panic("aha!") // TODO - remove
-	}
-	return "nat_" + arg.name
-}
-
-func formatNatArgCPP(fields []Field, arg ActualNatArg) string { // TODO - harmonize with formatNatArg?
-	if arg.isArith {
-		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
-	}
-	if arg.isField {
-		return "item." + fields[arg.FieldIndex].cppName
-	}
-	return "nat_" + arg.name
-}
-
-func formatNatArgsCPP(fields []Field, natArgs []ActualNatArg) []string {
-	var result []string
-	for _, arg := range natArgs {
-		result = append(result, formatNatArgCPP(fields, arg))
-	}
-	return result
-}
-
-func formatNatArgsCallCPP(natArgs []string) string {
-	return formatNatArgsDeclCall(natArgs)
-}
-
-func formatNatArgsDeclCPP(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", [[maybe_unused]] uint32_t nat_%s", arg))
-	}
-	return s.String()
-}
-
-// TODO - remove all trash functions and consolidate into 1 or 2
-func formatNatArgsAddNat(natArgs []string) []string {
-	var result []string
-	for _, arg := range natArgs {
-		result = append(result, "nat_"+arg)
-	}
-	return result
-}
-
-func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
-	var result []string
-	for _, arg := range natArgs {
-		if !arg.isArith {
-			result = append(result, formatNatArg(fields, arg))
-		}
-	}
-	return result
-}
-
-////for tl2 to tl1 bridge
-////in case of formatNatArgs(struct_.Fields, field.natArgs)
-//func (f *Field) formatNatArgsOrReturnRandoms(fields []Field, rgName string) []string {
-//	result := formatNatArgs(fields, f.natArgs)
-//	if len(f.t.NatParams) != len(result) {
-//		for i := 0; i < len(f.t.NatParams); i++ {
-//			result = append(result, fmt.Sprintf(", basictl.RandomUint(%s)", rgName))
-//		}
-//	}
-//	return result
-//}
-
 // if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
 // and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
 func formatNatArgsDeclCall(natArgs []string) string {
 	var s strings.Builder
 	for _, arg := range natArgs {
 		s.WriteString(fmt.Sprintf(", nat_%s", arg))
-	}
-	return s.String()
-}
-
-// simply adds commas, natArgs are already fully formatted. Difference to strings.Join is leading comma
-func joinWithCommas(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", %s", arg))
 	}
 	return s.String()
 }
