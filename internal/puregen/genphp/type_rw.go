@@ -347,31 +347,6 @@ func (w *TypeRWWrapper) AnnotationsMask() uint32 {
 	return mask
 }
 
-func (w *TypeRWWrapper) DoArgumentsContainUnionTypes() bool {
-	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
-		return w.wr.containsUnion(map[*TypeRWWrapper]bool{})
-	} else {
-		return false
-	}
-}
-
-func (w *TypeRWWrapper) DoesReturnTypeContainUnionTypes() bool {
-	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
-		return w.ResultType.containsUnion(map[*TypeRWWrapper]bool{})
-	} else {
-		return false
-	}
-}
-
-func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	if _, ok := visitedNodes[w]; !ok {
-		visitedNodes[w] = false
-		return w.trw.ContainsUnion(visitedNodes)
-	} else {
-		return false
-	}
-}
-
 // Assign structural names to external arguments
 func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNatArg {
 	for i, a := range w.arguments {
@@ -389,59 +364,6 @@ func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNa
 		}
 	}
 	return result
-}
-
-func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*TypeRWWrapper) {
-	r := make(map[*TypeRWWrapper]bool)
-	w.actualTypeDependenciesRecur(evalType, &r)
-	for arg := range r {
-		//if br, isBr := arg.trw.(*TypeRWBrackets); isBr && br.IsBuiltinVector() {
-		//	continue
-		//}
-		res = append(res, arg)
-	}
-	slices.SortFunc(res, TypeComparator)
-	return
-}
-
-func (w *TypeRWWrapper) actualTypeDependenciesRecur(evalType EvaluatedType, used *map[*TypeRWWrapper]bool) {
-	if evalType.Index != TypeConstant {
-		return
-	}
-	if str, isStr := w.trw.(*TypeRWStruct); isStr && str.IsWrappingType() {
-		eval := str.wr.gen.typesInfo.FieldTypeReduction(evalType.Type, 0)
-		str.Fields[0].t.actualTypeDependenciesRecur(eval, used)
-		return
-	}
-	if br, isBr := w.trw.(*TypeRWBrackets); isBr && br.dictLike && len(br.element.t.origTL[0].TemplateArguments) == 1 {
-		pairType := br.element.t.trw.(*TypeRWStruct)
-		pairEvalType := evalType.Type.Arguments[0]
-
-		if pairEvalType.Type != nil {
-			keyValue := pairType.Fields[0]
-			valueType := pairType.Fields[1]
-
-			evalKey := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 0)
-			evalValue := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 1)
-
-			keyValue.t.actualTypeDependenciesRecur(evalKey, used)
-			valueType.t.actualTypeDependenciesRecur(evalValue, used)
-
-			// add dep from builtin_vector
-			if !(*used)[w] {
-				(*used)[w] = true
-			}
-		}
-		return
-	}
-	if !(*used)[w] {
-		(*used)[w] = true
-	}
-	for i, arg := range w.arguments {
-		if arg.tip != nil {
-			arg.tip.actualTypeDependenciesRecur(evalType.Type.Arguments[i], used)
-		}
-	}
 }
 
 func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
@@ -1042,14 +964,9 @@ type TypeRW interface {
 	// methods below are target language independent
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
-	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
-	AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper
 	IsWrappingType() bool
-	ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
-
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
-	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
 
 	// methods below depend on target language
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
