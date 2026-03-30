@@ -234,10 +234,6 @@ type Gen2 struct {
 
 	Code          map[string]string // fileName->Content, split by file names relative to output dir
 	copyrightText string
-
-	// new options
-	typesInfo       *TypesInfo
-	componentsOrder []int
 }
 
 func canonicalGoName(name tlast.Name, insideNamespace string) string {
@@ -692,99 +688,71 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
-			gen:               gen,
-			tlType:            "#",
-			goType:            "uint32",
-			cppPrimitiveType:  "uint32_t",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "nat",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteUint32",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomUint",
-			writeValue:        "basictl.NatWrite",
-			readValue:         "basictl.NatRead",
+			gen:            gen,
+			tlType:         "#",
+			goType:         "uint32",
+			writeJSONValue: "basictl.JSONWriteUint32",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomUint",
+			writeValue:     "basictl.NatWrite",
+			readValue:      "basictl.NatRead",
 		}, {
-			gen:               gen,
-			tlType:            "int",
-			goType:            "int32",
-			cppPrimitiveType:  "int32_t",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "int",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteInt32",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomInt",
-			writeValue:        "basictl.IntWrite",
-			readValue:         "basictl.IntRead",
+			gen:            gen,
+			tlType:         "int",
+			goType:         "int32",
+			writeJSONValue: "basictl.JSONWriteInt32",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomInt",
+			writeValue:     "basictl.IntWrite",
+			readValue:      "basictl.IntRead",
 		}, {
-			gen:               gen,
-			tlType:            "long",
-			goType:            "int64",
-			cppPrimitiveType:  "int64_t",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "long",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteInt64",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomLong",
-			writeValue:        "basictl.LongWrite",
-			readValue:         "basictl.LongRead",
+			gen:            gen,
+			tlType:         "long",
+			goType:         "int64",
+			writeJSONValue: "basictl.JSONWriteInt64",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomLong",
+			writeValue:     "basictl.LongWrite",
+			readValue:      "basictl.LongRead",
 		}, {
-			gen:               gen,
-			tlType:            "float",
-			goType:            "float32",
-			cppPrimitiveType:  "float",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "float",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteFloat32",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomFloat",
-			writeValue:        "basictl.FloatWrite",
-			readValue:         "basictl.FloatRead",
+			gen:            gen,
+			tlType:         "float",
+			goType:         "float32",
+			writeJSONValue: "basictl.JSONWriteFloat32",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomFloat",
+			writeValue:     "basictl.FloatWrite",
+			readValue:      "basictl.FloatRead",
 		}, {
-			gen:               gen,
-			tlType:            "double",
-			goType:            "float64",
-			cppPrimitiveType:  "double",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "double",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteFloat64",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomDouble",
-			writeValue:        "basictl.DoubleWrite",
-			readValue:         "basictl.DoubleRead",
+			gen:            gen,
+			tlType:         "double",
+			goType:         "float64",
+			writeJSONValue: "basictl.JSONWriteFloat64",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomDouble",
+			writeValue:     "basictl.DoubleWrite",
+			readValue:      "basictl.DoubleRead",
 		}, {
-			gen:               gen,
-			tlType:            "string",
-			goType:            "string",
-			cppPrimitiveType:  "std::string",
-			cppDefaultInit:    "",
-			cppFunctionSuffix: "string",
-			cppResetValue:     "%s.clear();",
-			writeJSONValue:    "basictl.JSONWriteString",
-			resetValue:        "%s = \"\"",
-			randomValue:       "basictl.RandomString",
-			writeValue:        "basictl.StringWrite",
-			readValue:         "basictl.StringRead",
+			gen:            gen,
+			tlType:         "string",
+			goType:         "string",
+			writeJSONValue: "basictl.JSONWriteString",
+			resetValue:     "%s = \"\"",
+			randomValue:    "basictl.RandomString",
+			writeValue:     "basictl.StringWrite",
+			readValue:      "basictl.StringRead",
 		},
 	}
 	if gen.options.GenerateTL2() {
 		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
-			gen:               gen,
-			tlType:            "uint32",
-			goType:            "uint32",
-			cppPrimitiveType:  "uint32_t",
-			cppDefaultInit:    " = 0",
-			cppFunctionSuffix: "nat",
-			cppResetValue:     "%s = 0;",
-			writeJSONValue:    "basictl.JSONWriteUint32",
-			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomUint",
-			writeValue:        "basictl.NatWrite",
-			readValue:         "basictl.NatRead",
+			gen:            gen,
+			tlType:         "uint32",
+			goType:         "uint32",
+			writeJSONValue: "basictl.JSONWriteUint32",
+			resetValue:     "%s = 0",
+			randomValue:    "basictl.RandomUint",
+			writeValue:     "basictl.NatWrite",
+			readValue:      "basictl.NatRead",
 		})
 	}
 	builtinBeautifulText := fmt.Sprintf(`
@@ -1192,12 +1160,6 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 		}
 		if i := strings.Index(longName[:argsStart], "."); i >= 0 {
 			longName = longName[:i] + "Long" + longName[i:]
-
-			if tt, ok := gen.generatedTypes[longName]; ok {
-				// log.Printf("long name %s discovered for %s", longName, v.CanonicalStringTop())
-				v.WrLong = tt
-				tt.WrWithoutLong = v
-			}
 		}
 	}
 
@@ -1310,8 +1272,6 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 		gen.copyrightText = string(buf)
 	}
 	switch options.Language {
-	case "go":
-		return nil, fmt.Errorf("go generator is moved into tl2gen")
 	case "php":
 		{
 			// TODO ADD FEATURE TO CHANGE IT
@@ -1326,7 +1286,6 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 		if err := gen.generateCodePHP(bytesWhiteList); err != nil {
 			return nil, err
 		}
-
 	}
 
 	return gen, nil
