@@ -16,11 +16,6 @@ type TypeRWPrimitive struct {
 	writeValue     string
 	readValue      string
 	writeJSONValue string
-
-	cppFunctionSuffix string
-	cppPrimitiveType  string
-	cppDefaultInit    string
-	cppResetValue     string
 }
 
 func (trw *TypeRWPrimitive) isFloat() bool {

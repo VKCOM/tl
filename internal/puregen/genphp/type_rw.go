@@ -187,19 +187,10 @@ type TypeRWWrapper struct {
 	goLocalName  string
 	cppLocalName string
 
-	wantsBytesVersion bool
-	wantsTL2          bool
-	preventUnwrap     bool // we can have infinite typedef loop in rare cases
+	wantsTL2      bool
+	preventUnwrap bool // we can have infinite typedef loop in rare cases
 
 	fileName string
-
-	originateFromTL2 bool
-
-	// cpp info
-	hppDetailsFileName string
-	cppDetailsFileName string
-	groupName          string
-	typeComponent      int
 
 	// php info
 	phpInfo PhpClassMeta
@@ -211,48 +202,12 @@ type TypeRWWrapper struct {
 
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
-
-	WrLong        *TypeRWWrapper // long transitioning code
-	WrWithoutLong *TypeRWWrapper // long transitioning code
-
-	// tl2 info (if union is not nil otherwise check there)
-	tl2Name              tlast.TL2TypeName
-	tl2Origin            *tlast.TL2Combinator
-	tl2IsResult          bool
-	tl2IsBuiltinBrackets bool
-}
-
-func (wr *TypeRWWrapper) Namespace() string {
-	if wr.originateFromTL2 {
-		return wr.tl2Name.Namespace
-	} else {
-		return wr.tlName.Namespace
-	}
 }
 
 // Those have unique structure fully defined by the magic.
 // items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
 // they could not be distinguished by the magic. For example vector<int> and vector<long>.
 func (w *TypeRWWrapper) IsTopLevel() bool {
-	if w.originateFromTL2 {
-		if w.unionParent == nil {
-			if w.tl2IsResult {
-				return false
-			}
-			if w.tl2IsBuiltinBrackets {
-				return false
-			}
-			if w.tl2Origin != nil {
-				if w.tl2Origin.IsFunction {
-					return true
-				}
-				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
-			}
-			return false
-		} else {
-			return false
-		}
-	}
 	return len(w.origTL[0].TemplateArguments) == 0
 }
 
@@ -262,41 +217,22 @@ func (w *TypeRWWrapper) CanonicalStringTop() string {
 
 func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 	var s strings.Builder
-	if w.originateFromTL2 {
-		if w.unionParent == nil {
-			if w.tl2IsResult {
-				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
-			} else if w.tl2IsBuiltinBrackets {
-				s.WriteString("__builtin_brackets")
-			} else if w.tl2Origin != nil {
-				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
-			} else {
-				s.WriteString(w.tl2Name.String())
-			}
+
+	if len(w.origTL) > 1 {
+		if bare {
+			panic("CanonicalString of bare union")
+		}
+		w.origTL[0].TypeDecl.Name.WriteString(&s)
+	} else if len(w.origTL) == 1 {
+		if bare {
+			w.origTL[0].Construct.Name.WriteString(&s)
 		} else {
-			originType := w.unionParent.wr.tl2Origin
-			if w.unionParent.wr.tl2IsResult {
-				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.StructType.UnionType.Variants[w.unionIndex].Name)
-			} else {
-				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.StructType.UnionType.Variants[w.unionIndex].Name)
-			}
+			w.origTL[0].TypeDecl.Name.WriteString(&s)
 		}
 	} else {
-		if len(w.origTL) > 1 {
-			if bare {
-				panic("CanonicalString of bare union")
-			}
-			w.origTL[0].TypeDecl.Name.WriteString(&s)
-		} else if len(w.origTL) == 1 {
-			if bare {
-				w.origTL[0].Construct.Name.WriteString(&s)
-			} else {
-				w.origTL[0].TypeDecl.Name.WriteString(&s)
-			}
-		} else {
-			panic("all builtins are parsed from TL text, so must have exactly one constructor")
-		}
+		panic("all builtins are parsed from TL text, so must have exactly one constructor")
 	}
+
 	if len(w.arguments) == 0 {
 		return s.String()
 	}
@@ -321,17 +257,9 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 }
 
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {
-	if w.originateFromTL2 {
-		for _, annotation := range w.tl2Origin.Annotations {
-			if annotation.Name == str {
-				return true
-			}
-		}
-	} else {
-		for _, m := range w.origTL[0].Modifiers {
-			if m.Name == str {
-				return true
-			}
+	for _, m := range w.origTL[0].Modifiers {
+		if m.Name == str {
+			return true
 		}
 	}
 	return false
@@ -389,12 +317,7 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), b.String()
 	}
 	var typeName tlast.Name
-	if w.originateFromTL2 {
-		typeName.Name = w.tl2Name.Name
-		typeName.Namespace = w.tl2Name.Namespace
-	} else {
-		typeName = w.origTL[0].TypeDecl.Name
-	}
+	typeName = w.origTL[0].TypeDecl.Name
 	return canonicalGoName(typeName, insideNamespace), b.String()
 }
 
@@ -448,50 +371,6 @@ func (d DirectIncludesCPP) splitByNamespaces() (result []NamespaceFiles) {
 type Pair[L, R any] struct {
 	left  L
 	right R
-}
-
-// not stable
-func mapToPairArray[L comparable, R any](m *map[L]R) (res []Pair[L, R]) {
-	for k, v := range *m {
-		res = append(res, Pair[L, R]{k, v})
-	}
-	return
-}
-
-func (d DirectIncludesCPP) sortedIncludes(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string) {
-	result, _ = d.sortedIncludesWithMap(componentOrder, typeToFile)
-	return
-}
-
-func (d DirectIncludesCPP) sortedIncludesWithMap(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string, mapping map[string][]*TypeRWWrapper) {
-	includeNamesToTypes := make(map[string]int)
-	mapping = make(map[string][]*TypeRWWrapper)
-
-	for tp := range d.ns {
-		include := typeToFile(tp)
-		mapping[include] = append(mapping[include], tp)
-		if _, ok := includeNamesToTypes[include]; !ok {
-			includeNamesToTypes[include] = tp.typeComponent
-		} else {
-			includeNamesToTypes[include] = min(includeNamesToTypes[include], tp.typeComponent)
-		}
-	}
-
-	includeNamesToTypesList := mapToPairArray(&includeNamesToTypes)
-	slices.SortFunc(includeNamesToTypesList, func(a, b Pair[string, int]) int {
-		typeDiff := a.right - b.right
-		if typeDiff == 0 {
-			return strings.Compare(a.left, b.left)
-		} else {
-			return typeDiff
-		}
-	})
-
-	for _, includeInfo := range includeNamesToTypesList {
-		result = append(result, includeInfo.left)
-	}
-
-	return
 }
 
 func stringCompare(a string, b string) int {
