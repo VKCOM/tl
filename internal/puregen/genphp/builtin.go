@@ -10,9 +10,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/purelegacy"
 	"github.com/VKCOM/tl/internal/tlast"
 )
+
+func GenerateTL2(opt *puregen.Options) bool {
+	return opt.Kernel.TL2WhiteList != ""
+}
 
 // This code describes part of tlgen which is dependent on VK implementation
 
