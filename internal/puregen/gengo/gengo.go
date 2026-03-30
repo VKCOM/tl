@@ -23,8 +23,6 @@ import (
 	"github.com/VKCOM/tl/pkg/basictl"
 )
 
-const markerFile = "tl2gen_version.txt"
-
 const BasicTLGoPackageName = "basictl"   // does not contain tl prefix
 const FactoryGoPackageName = "factory"   // does not contain tl prefix
 const MetaGoPackageName = "meta"         // does not contain tl prefix
@@ -371,106 +369,105 @@ var _ = basictl.NatWrite
 	if gen.options.Kernel.Verbose {
 		fmt.Printf("generation of RPC code finished, %d namespaces generated\n", len(gen.Namespaces))
 	}
-	{
-		filepathName := filepath.Join(ConstantsPackageName, ConstantsPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		code := gen.generateConstants(HeaderComment, ConstantsPackageName)
+	filepathName := filepath.Join(ConstantsPackageName, ConstantsPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
+	code := gen.generateConstants(HeaderComment, ConstantsPackageName)
+	if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
+		return err
+	}
+	if gen.BasicPackageRelativePath != "" {
+		// TODO if contains GlobalPackgeName as prefix, there could be name collisions
+		filepathName := filepath.Join(gen.BasicPackageRelativePath, "basictl"+".go")
+		code = basictl.BasicTLContent(HeaderComment, BasicTLGoPackageName)
 		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
 			return err
 		}
-		if gen.BasicPackageRelativePath != "" {
-			// TODO if contains GlobalPackgeName as prefix, there could be name collisions
-			filepathName := filepath.Join(gen.BasicPackageRelativePath, "basictl"+".go")
-			code = basictl.BasicTLContent(HeaderComment, BasicTLGoPackageName)
-			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
-				return err
-			}
-			filepathName = filepath.Join(gen.BasicPackageRelativePath, "basictl2"+".go")
-			code = basictl.BasicTL2Content(HeaderComment, BasicTLGoPackageName)
-			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
-				return err
-			}
-		} else if gen.options.Kernel.Verbose {
-			fmt.Printf("basictl code not written, expected to be available at %q\n", gen.options.Go.BasicPackageNameFull)
+		filepathName = filepath.Join(gen.BasicPackageRelativePath, "basictl2"+".go")
+		code = basictl.BasicTL2Content(HeaderComment, BasicTLGoPackageName)
+		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
+			return err
 		}
-		startsWithAnyLetter := func(ns string) bool {
-			for letter := byte('a'); letter <= 'z'; letter++ {
-				if len(ns) != 0 && ns[0] == letter {
-					return true
-				}
-			}
-			return false
-		}
-		for _, bytesVersion := range []bool{false, true} {
-			genFac := func(fileName string, addHeader bool, forNamespace func(ns string) bool) error {
-				hasCode := false
-				directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-				var sortedNames []string
-				_ = gen.generateFactory(sortedNames, directImports, bytesVersion,
-					addHeader, forNamespace, &hasCode)
-				if !hasCode {
-					return nil
-				}
-				for im := range directImports.ns { // Imports of this file.
-					sortedNames = append(sortedNames, im.SubPath)
-				}
-				slices.Sort(sortedNames)
-				factoryCode := gen.generateFactory(sortedNames, directImports, bytesVersion,
-					addHeader, forNamespace, &hasCode)
-				return outdir.AddCodeFile(filepath.Join(addBytesLower(FactoryGoPackageName, bytesVersion), fileName), gen.options.CopyrightText+factoryCode)
-			}
-			if err := genFac(FactoryGoPackageName+".go", true, func(ns string) bool {
-				return !gen.options.Go.SplitInternal || !startsWithAnyLetter(ns)
-			}); err != nil {
-				return err
-			}
-			for letter := byte('a'); letter <= 'z'; letter++ {
-				if err := genFac(string(letter)+".go", false, func(ns string) bool {
-					return gen.options.Go.SplitInternal && len(ns) != 0 && ns[0] == letter
-				}); err != nil {
-					return err
-				}
+	} else if gen.options.Kernel.Verbose {
+		fmt.Printf("basictl code not written, expected to be available at %q\n", gen.options.Go.BasicPackageNameFull)
+	}
+	startsWithAnyLetter := func(ns string) bool {
+		for letter := byte('a'); letter <= 'z'; letter++ {
+			if len(ns) != 0 && ns[0] == letter {
+				return true
 			}
 		}
-		if gen.options.Go.SplitInternal {
-			metaCode := gen.generateMetaMini(utils.AppVersion())
-			if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageNameMini, MetaGoPackageName+".go"), gen.options.CopyrightText+metaCode); err != nil {
-				return err
+		return false
+	}
+	for _, bytesVersion := range []bool{false, true} {
+		genFac := func(fileName string, addHeader bool, forNamespace func(ns string) bool) error {
+			hasCode := false
+			directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+			var sortedNames []string
+			_ = gen.generateFactory(sortedNames, directImports, bytesVersion,
+				addHeader, forNamespace, &hasCode)
+			if !hasCode {
+				return nil
 			}
+			for im := range directImports.ns { // Imports of this file.
+				sortedNames = append(sortedNames, im.SubPath)
+			}
+			slices.Sort(sortedNames)
+			factoryCode := gen.generateFactory(sortedNames, directImports, bytesVersion,
+				addHeader, forNamespace, &hasCode)
+			return outdir.AddCodeFile(filepath.Join(addBytesLower(FactoryGoPackageName, bytesVersion), fileName), gen.options.CopyrightText+factoryCode)
 		}
-		metaCode := gen.generateMeta(utils.AppVersion())
-		metaCode += gen.generateMetaInit(false, gen.generatedTypesList, func(ns string) bool {
+		if err := genFac(FactoryGoPackageName+".go", true, func(ns string) bool {
 			return !gen.options.Go.SplitInternal || !startsWithAnyLetter(ns)
-		}, nil, MetaGoPackageName)
-
-		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+".go"), gen.options.CopyrightText+metaCode); err != nil {
+		}); err != nil {
 			return err
 		}
 		for letter := byte('a'); letter <= 'z'; letter++ {
-			hasTypes := false
-			metaCode := gen.generateMetaInit(true, gen.generatedTypesList, func(ns string) bool {
+			if err := genFac(string(letter)+".go", false, func(ns string) bool {
 				return gen.options.Go.SplitInternal && len(ns) != 0 && ns[0] == letter
-			}, &hasTypes, MetaGoPackageName)
-			if hasTypes {
-				if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, string(letter)+".go"), gen.options.CopyrightText+metaCode); err != nil {
-					return err
-				}
+			}); err != nil {
+				return err
 			}
 		}
-		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go")
-		code = gen.generateHelpers(HeaderComment, "internal")
-
-		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
-			return err
-		}
-		filepathName = filepath.Join("internal/metainternal", "metainternal.go")
-		code = gen.generateMetaInternal(HeaderComment)
-
-		if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
+	}
+	if gen.options.Go.SplitInternal {
+		metaCode := gen.generateMetaMini(utils.AppVersion())
+		if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageNameMini, MetaGoPackageName+".go"), gen.options.CopyrightText+metaCode); err != nil {
 			return err
 		}
 	}
+	metaCode := gen.generateMeta(utils.AppVersion())
+	metaCode += gen.generateMetaInit(false, gen.generatedTypesList, func(ns string) bool {
+		return !gen.options.Go.SplitInternal || !startsWithAnyLetter(ns)
+	}, nil, MetaGoPackageName)
 
-	if err := outdir.Write(gen.options, markerFile, "tlgen2_version.txt"); err != nil {
+	markerFile := filepath.Join(MetaGoPackageName, MetaGoPackageName+".go")
+	if err := outdir.AddCodeFile(markerFile, gen.options.CopyrightText+metaCode); err != nil {
+		return err
+	}
+	for letter := byte('a'); letter <= 'z'; letter++ {
+		hasTypes := false
+		metaCode := gen.generateMetaInit(true, gen.generatedTypesList, func(ns string) bool {
+			return gen.options.Go.SplitInternal && len(ns) != 0 && ns[0] == letter
+		}, &hasTypes, MetaGoPackageName)
+		if hasTypes {
+			if err := outdir.AddCodeFile(filepath.Join(MetaGoPackageName, string(letter)+".go"), gen.options.CopyrightText+metaCode); err != nil {
+				return err
+			}
+		}
+	}
+	filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go")
+	code = gen.generateHelpers(HeaderComment, "internal")
+
+	if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
+		return err
+	}
+	filepathName = filepath.Join("internal/metainternal", "metainternal.go")
+	code = gen.generateMetaInternal(HeaderComment)
+
+	if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+code); err != nil {
+		return err
+	}
+
+	if err := outdir.Write(gen.options, markerFile); err != nil {
 		return err // Context is already in err
 	}
 	return nil
