@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 	"github.com/VKCOM/tl/internal/utils"
 )
 
@@ -702,21 +703,22 @@ func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType s
 	if len(argNames) != len(argTypes) {
 		return ""
 	}
-	result := make([]string, 0)
-	result = append(result, shift+"/**")
+	cc := codecreator.NewPhpCodeCreator()
+	cc.AddLines("/**")
+
 	if len(argNames) == 0 {
-		result = append(result, shift+" * @kphp-inline")
+		cc.AddLines(" * @kphp-inline")
 	} else {
 		for i := range argNames {
-			result = append(result, shift+fmt.Sprintf(" * @param %[2]s $%[1]s", argNames[i], argTypes[i]))
+			cc.AddLines(fmt.Sprintf(" * @param %[2]s $%[1]s", argNames[i], argTypes[i]))
 		}
 	}
 	if returnType != "" {
-		result = append(result, shift+" *")
-		result = append(result, shift+" * @return "+returnType)
+		cc.AddLines(" *")
+		cc.AddLines(" * @return " + returnType)
 	}
-	result = append(result, shift+" */")
-	return strings.Join(result, "\n")
+	cc.AddLines(" */")
+	return strings.Join(utils.ShiftAll(cc.Print(), shift), "\n")
 }
 
 func phpFunctionArgumentsFormat(argNames []string) string {
