@@ -18,43 +18,11 @@ type TypeRWUnion struct {
 func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWUnion) AllPossibleRecursionProducers() []*TypeRWWrapper {
-	var result []*TypeRWWrapper
-	for _, typeDep := range trw.wr.arguments {
-		if typeDep.tip != nil {
-			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
-		}
-	}
-	result = append(result, trw.wr)
-	return result
-}
-
-func (trw *TypeRWUnion) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
-	for _, f := range trw.Fields {
-		res = append(res, f.t)
-	}
-	return
-}
-
-func (trw *TypeRWUnion) IsWrappingType() bool {
-	return false
-}
-
 func (trw *TypeRWUnion) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return true
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-	//	for _, f := range trw.Fields {
-	//		if !f.recursive {
-	//			f.t.FillRecursiveChildren(visitedNodes)
-	//		}
-	//	}
-	//}
 }
 
 func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {

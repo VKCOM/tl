@@ -52,51 +52,8 @@ func phpIsDictionary(wr *TypeRWWrapper) bool {
 	return false
 }
 
-//func cppIsDictionaryElement(wr *TypeRWWrapper) bool {
-//	isDict, _, _, _ := isDictionaryElement(wr)
-//	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
-//		return true
-//	}
-//	return false
-//}
-
-func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
-	var result []*TypeRWWrapper
-	for _, typeDep := range trw.wr.arguments {
-		if typeDep.tip != nil {
-			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
-		}
-	}
-	return result
-}
-
-func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
-	if !generic {
-		if trw.dictLike && len(trw.element.t.origTL[0].TemplateArguments) == 1 {
-			pairType := trw.element.t.trw.(*TypeRWStruct)
-
-			keyValue := pairType.Fields[0]
-			valueType := pairType.Fields[1]
-
-			res = append(res, keyValue.t)
-			res = append(res, valueType.t)
-		} else {
-			res = append(res, trw.element.t)
-		}
-	}
-	return
-}
-
 func (trw *TypeRWBrackets) IsBuiltinVector() bool {
 	return len(trw.wr.origTL) == 1 && trw.wr.origTL[0].Builtin
-}
-
-func (trw *TypeRWBrackets) IsWrappingType() bool {
-	return trw.IsBuiltinVector()
-	//if trw.IsBuiltinVector() {
-	//	return trw.element.t.trw.IsWrappingType()
-	//}
-	//return false
 }
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
@@ -108,19 +65,6 @@ func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 			trw.dictValueField = vf
 		}
 	}
-}
-
-func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-		// We can make vector break the loop, but then we'd need forward declaration of each type used
-		trw.element.t.FillRecursiveChildren(visitedNodes)
-		return
-	}
-	// for golang
-	if trw.vectorLike || trw.dynamicSize {
-		return
-	}
-	trw.element.t.FillRecursiveChildren(visitedNodes)
 }
 
 func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {

@@ -30,29 +30,7 @@ func (trw *TypeRWPrimitive) isFloat() bool {
 func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
-	return nil
-}
-
-func (trw *TypeRWPrimitive) AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper {
-	return nil
-}
-
-func (trw *TypeRWPrimitive) IsWrappingType() bool {
-	return true
-}
-
-func (trw *TypeRWPrimitive) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return false
-}
-
-func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
-}
-
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWPrimitive) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
 func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {

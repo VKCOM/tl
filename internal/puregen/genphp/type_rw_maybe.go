@@ -17,26 +17,7 @@ type TypeRWMaybe struct {
 func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWMaybe) AllPossibleRecursionProducers() []*TypeRWWrapper {
-	return trw.element.t.trw.AllPossibleRecursionProducers()
-}
-
-func (trw *TypeRWMaybe) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
-	if !generic {
-		res = append(res, trw.element.t)
-	}
-	return
-}
-
-func (trw *TypeRWMaybe) IsWrappingType() bool {
-	return true
-}
-
 func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWMaybe) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	trw.element.t.FillRecursiveChildren(visitedNodes)
 }
 
 func (trw *TypeRWMaybe) IsDictKeySafe() (isSafe bool, isString bool) {

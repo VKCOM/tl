@@ -536,14 +536,6 @@ func (w *TypeRWWrapper) FillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool
 	w.trw.fillRecursiveUnwrap(visitedNodes)
 }
 
-func (w *TypeRWWrapper) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
-	}
-	visitedNodes[w] = true
-	w.trw.fillRecursiveChildren(visitedNodes)
-}
-
 func (w *TypeRWWrapper) IsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if !ok {
@@ -964,12 +956,9 @@ type TypeRW interface {
 	// methods below are target language independent
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
-	AllPossibleRecursionProducers() []*TypeRWWrapper
-	IsWrappingType() bool
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 
 	// methods below depend on target language
-	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
 	CanBeBareBoxed() (canBare bool, canBoxed bool)
 
@@ -1128,22 +1117,6 @@ func joinWithCommas(natArgs []string) string {
 		s.WriteString(fmt.Sprintf(", %s", arg))
 	}
 	return s.String()
-}
-
-func addBytes(val string, bytesVersion bool) string {
-	return ifString(bytesVersion, val+"Bytes", val)
-}
-
-func addBare(bare bool) string {
-	return ifString(bare, "", "Boxed")
-}
-
-func addAsterisk(ref bool, val string) string {
-	return ifString(ref, "*"+val, val)
-}
-
-func addAsteriskAndBrackets(ref bool, val string) string {
-	return ifString(ref, "(*"+val+")", val)
 }
 
 func ifString(value bool, t string, f string) string {
