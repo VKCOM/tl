@@ -251,6 +251,21 @@ testpuremigr: build
 	@echo "Checking that generated code actually compiles..."
 	time $(GO) build ./target/gennew/...
 
+
+.PHONY: testrust
+testrust: build
+	@./target/bin/tl2gen --language=rust -v \
+		--tl2WhiteList=* \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./target/gentl \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
+		--schemaCommit=abcdefgh \
+		--schemaTimestamp=301822800 \
+		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+		# genold will not compile due to import statements with gennew
+		# @echo "Checking that generated code actually compiles..."
+		# time $(GO) build ./target/genold/...
+
 # /home/user/go/src/gitlab.mvk.com/go/vkgo/pkg/vktl/combined.tl
 # ./cmd/tl2client/test.tl
 
