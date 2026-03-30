@@ -1057,8 +1057,6 @@ type TypeRW interface {
 	CanBeBareBoxed() (canBare bool, canBoxed bool)
 
 	TypeRWPHPData
-
-	TypeRWTL2
 }
 
 type Field struct {

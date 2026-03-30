@@ -31,11 +31,11 @@ import (
 )
 
 var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) error{
-	"canonical": gencanonical.Generate,
-	"go":        gengo.Generate,
-	"php": func(kernel *pure.Kernel, options *puregen.Options) error {
-		return genphp.Generate(kernel.TL1(), tlast.TL2File{Combinators: kernel.TL2()}, options)
-	},
+	// languages
+	"go":  gengo.Generate,
+	"php": genphp.Generate,
+	// other options
+	"canonical":    gencanonical.Generate,
 	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Compile() }, // nothing more than lint
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
 	"tljson.html":  gentljsonhtml.Generate,

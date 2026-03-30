@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/TwiN/go-color"
+	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/purelegacy"
 	"github.com/VKCOM/tl/internal/tlast"
@@ -1835,8 +1836,13 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 	return nil
 }
 
-func Generate(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) error {
-	gen, err := generateCode(tl, tl2, options)
+func Generate(kernel *pure.Kernel, options *puregen.Options) error {
+	options.Kernel.InstantiateConstants = false
+	if err := kernel.Compile(); err != nil {
+		return err
+	}
+
+	gen, err := generateCode(kernel.TL1(), options)
 	if gen == nil {
 		return err
 	}
@@ -1846,9 +1852,10 @@ func Generate(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) error {
 	return err
 }
 
-func generateCode(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) (*Gen2, error) {
+func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 	if options.Kernel.Verbose {
 		DEBUG = true
+		Debugf(">>> ENABLE DEBUG MODE <<<\n")
 	}
 	gen := &Gen2{
 		options:    options,
@@ -2164,11 +2171,6 @@ func generateCode(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) (*Ge
 		return nil, err
 	}
 
-	err = gen.validateTL2AstAndCollectInfo(tl2)
-	if err != nil {
-		return nil, err
-	}
-
 	// Now we replace all builtin legitimate builtin wrapper constructors to constructors of builtins
 	// Int and %Int will reference wrappers, while int will reference builtin constructor.
 	// To avoid 2 canonical forms, resolveType will replace %Int to int for wrappers
@@ -2274,27 +2276,6 @@ func generateCode(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) (*Ge
 				}
 			}
 		}
-		for _, combinator := range tl2.Combinators {
-			if combinator.IsFunction {
-				for _, m := range combinator.Annotations {
-					// to ignore diagonal legacy
-					if m.Name == tl1Diagonal {
-						continue
-					}
-					if _, ok := allAnnotations[m.Name]; !ok {
-						if _, ok := gen.supportedAnnotations[m.Name]; !ok {
-							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
-							if gen.options.Kernel.WarningsAreErrors {
-								return nil, e1
-							}
-							e1.PrintWarning(options.ErrorWriter, nil)
-						}
-						allAnnotations[m.Name] = struct{}{}
-						gen.allAnnotations = append(gen.allAnnotations, m.Name)
-					}
-				}
-			}
-		}
 		if len(gen.allAnnotations) > 32 {
 			return nil, fmt.Errorf("too many (%d) different annotations, max is 32 for now", len(gen.allAnnotations))
 		}
@@ -2350,20 +2331,6 @@ func generateCode(tl tlast.TL, tl2 tlast.TL2File, options *puregen.Options) (*Ge
 			if err != nil {
 				return nil, err
 			}
-		}
-	}
-
-	for _, combinator := range tl2.Combinators {
-		if combinator.HasAnnotation(tl1Diagonal) {
-			continue
-		}
-		ref := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: combinator.ReferenceName()}}
-		if !combinator.IsFunction && len(combinator.TypeDecl.TemplateArguments) > 0 {
-			continue
-		}
-		_, err = gen.genTypeTL2(ref)
-		if err != nil {
-			return nil, err
 		}
 	}
 
