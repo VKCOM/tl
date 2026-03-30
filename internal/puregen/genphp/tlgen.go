@@ -1201,6 +1201,7 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 		}
 	}
 
+	// TODO!
 	//// additional php check
 	//if gen.options.LinterPHPCheck {
 	//	storedOption := gen.options.PHP.InplaceSimpleStructs

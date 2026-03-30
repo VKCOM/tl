@@ -94,35 +94,10 @@ func (trw *TypeRWStruct) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]boo
 	trw.Fields[0].t.FillRecursiveUnwrap(visitedNodes)
 }
 
-func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
-	var result []*TypeRWWrapper
-	for _, typeDep := range trw.wr.arguments {
-		if typeDep.tip != nil {
-			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
-		}
-	}
-	if !trw.isTypeDef() {
-		result = append(result, trw.wr)
-	}
-	return result
-}
-
-func (trw *TypeRWStruct) IsWrappingType() bool {
-	return trw.isUnwrapType()
-}
-
 func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))
-}
-
-func (trw *TypeRWStruct) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	for _, f := range trw.Fields {
-		if !f.recursive {
-			f.t.FillRecursiveChildren(visitedNodes)
-		}
-	}
 }
 
 func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
