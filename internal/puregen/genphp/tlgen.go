@@ -650,23 +650,26 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return err
 	}
 
-	kernel.AllTypeInstances()
-
-	gen, err := generateCode(kernel.TL1(), options)
+	gen, err := generateCode(kernel, options)
 	if gen == nil {
 		return err
 	}
+
 	if err = gen.WriteToDir(options.Outdir); err != nil {
 		return err // Context is already in err
 	}
 	return err
 }
 
-func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
+func generateCode(kernel *pure.Kernel, options *puregen.Options) (*Gen2, error) {
+	// TODO! REMOVE DEPENDENCY
+	tl := kernel.TL1()
+
 	if options.Kernel.Verbose {
 		DEBUG = true
 		Debugf(">>> ENABLED DEBUG MODE <<<\n")
 	}
+
 	gen := &Gen2{
 		options:    options,
 		Code:       map[string]string{},
@@ -690,71 +693,36 @@ func generateCode(tl tlast.TL, options *puregen.Options) (*Gen2, error) {
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
-			gen:            gen,
-			tlType:         "#",
-			goType:         "uint32",
-			writeJSONValue: "basictl.JSONWriteUint32",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomUint",
-			writeValue:     "basictl.NatWrite",
-			readValue:      "basictl.NatRead",
+			gen:    gen,
+			tlType: "#",
+			goType: "uint32",
 		}, {
-			gen:            gen,
-			tlType:         "int",
-			goType:         "int32",
-			writeJSONValue: "basictl.JSONWriteInt32",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomInt",
-			writeValue:     "basictl.IntWrite",
-			readValue:      "basictl.IntRead",
+			gen:    gen,
+			tlType: "int",
+			goType: "int32",
 		}, {
-			gen:            gen,
-			tlType:         "long",
-			goType:         "int64",
-			writeJSONValue: "basictl.JSONWriteInt64",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomLong",
-			writeValue:     "basictl.LongWrite",
-			readValue:      "basictl.LongRead",
+			gen:    gen,
+			tlType: "long",
+			goType: "int64",
 		}, {
-			gen:            gen,
-			tlType:         "float",
-			goType:         "float32",
-			writeJSONValue: "basictl.JSONWriteFloat32",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomFloat",
-			writeValue:     "basictl.FloatWrite",
-			readValue:      "basictl.FloatRead",
+			gen:    gen,
+			tlType: "float",
+			goType: "float32",
 		}, {
-			gen:            gen,
-			tlType:         "double",
-			goType:         "float64",
-			writeJSONValue: "basictl.JSONWriteFloat64",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomDouble",
-			writeValue:     "basictl.DoubleWrite",
-			readValue:      "basictl.DoubleRead",
+			gen:    gen,
+			tlType: "double",
+			goType: "float64",
 		}, {
-			gen:            gen,
-			tlType:         "string",
-			goType:         "string",
-			writeJSONValue: "basictl.JSONWriteString",
-			resetValue:     "%s = \"\"",
-			randomValue:    "basictl.RandomString",
-			writeValue:     "basictl.StringWrite",
-			readValue:      "basictl.StringRead",
+			gen:    gen,
+			tlType: "string",
+			goType: "string",
 		},
 	}
 	if gen.options.GenerateTL2() {
 		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
-			gen:            gen,
-			tlType:         "uint32",
-			goType:         "uint32",
-			writeJSONValue: "basictl.JSONWriteUint32",
-			resetValue:     "%s = 0",
-			randomValue:    "basictl.RandomUint",
-			writeValue:     "basictl.NatWrite",
-			readValue:      "basictl.NatRead",
+			gen:    gen,
+			tlType: "uint32",
+			goType: "uint32",
 		})
 	}
 	builtinBeautifulText := fmt.Sprintf(`

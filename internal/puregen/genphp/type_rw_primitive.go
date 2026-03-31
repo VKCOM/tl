@@ -10,12 +10,7 @@ type TypeRWPrimitive struct {
 	gen    *Gen2
 	tlType string
 
-	goType         string
-	resetValue     string
-	randomValue    string
-	writeValue     string
-	readValue      string
-	writeJSONValue string
+	goType string
 }
 
 func (trw *TypeRWPrimitive) isFloat() bool {
