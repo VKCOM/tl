@@ -69,11 +69,11 @@ func (item AllocSlotEvent) String() string {
 }
 
 func (item *AllocSlotEvent) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *AllocSlotEvent) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *AllocSlotEvent) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propSlotPresented bool
 	if in != nil {
@@ -90,7 +90,7 @@ func (item *AllocSlotEvent) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return ErrorInvalidJSONWithDuplicatingKeys("allocSlotEvent", "key")
 				}
 				propKeyPresented = true
-				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "slot":
@@ -98,7 +98,7 @@ func (item *AllocSlotEvent) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 					return ErrorInvalidJSONWithDuplicatingKeys("allocSlotEvent", "slot")
 				}
 				propSlotPresented = true
-				if err := item.Slot.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Slot.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -121,22 +121,21 @@ func (item *AllocSlotEvent) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AllocSlotEvent) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *AllocSlotEvent) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *AllocSlotEvent) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *AllocSlotEvent) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *AllocSlotEvent) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	w = item.Key.WriteJSONOpt(tctx, w)
+	w = item.Key.WriteJSONOpt(jctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"slot":`...)
-	w = item.Slot.WriteJSONOpt(tctx, w)
+	w = item.Slot.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -145,7 +144,8 @@ func (item *AllocSlotEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (item *AllocSlotEvent) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("allocSlotEvent", err.Error())
 	}
 	return nil

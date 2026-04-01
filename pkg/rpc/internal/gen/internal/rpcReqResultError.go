@@ -76,11 +76,11 @@ func (item RpcReqResultError) String() string {
 }
 
 func (item *RpcReqResultError) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcReqResultError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcReqResultError) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propQueryIdPresented bool
 	var propErrorCodePresented bool
 	var propErrorPresented bool
@@ -140,15 +140,14 @@ func (item *RpcReqResultError) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcReqResultError) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcReqResultError) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcReqResultError) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcReqResultError) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcReqResultError) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexQueryId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -179,7 +178,8 @@ func (item *RpcReqResultError) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcReqResultError) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcReqResultError", err.Error())
 	}
 	return nil

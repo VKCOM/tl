@@ -62,11 +62,11 @@ func (item RpcReqResultHeader) String() string {
 }
 
 func (item *RpcReqResultHeader) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcReqResultHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcReqResultHeader) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propQueryIdPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -102,15 +102,14 @@ func (item *RpcReqResultHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcReqResultHeader) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcReqResultHeader) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcReqResultHeader) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcReqResultHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcReqResultHeader) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexQueryId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -127,7 +126,8 @@ func (item *RpcReqResultHeader) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcReqResultHeader) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcReqResultHeader", err.Error())
 	}
 	return nil

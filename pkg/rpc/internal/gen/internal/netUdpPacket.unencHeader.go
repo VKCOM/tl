@@ -264,11 +264,11 @@ func (item NetUdpPacketUnencHeader) String() string {
 }
 
 func (item *NetUdpPacketUnencHeader) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var propLocalPidPresented bool
 	var propRemotePidPresented bool
@@ -304,7 +304,7 @@ func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(tctx *basictl.JSONReadConte
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.unencHeader", "local_pid")
 				}
 				propLocalPidPresented = true
-				if err := item.LocalPid.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.LocalPid.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "remote_pid":
@@ -312,7 +312,7 @@ func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(tctx *basictl.JSONReadConte
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.unencHeader", "remote_pid")
 				}
 				propRemotePidPresented = true
-				if err := item.RemotePid.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.RemotePid.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "generation":
@@ -352,7 +352,7 @@ func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(tctx *basictl.JSONReadConte
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.unencHeader", "crypto_random")
 				}
 				propCryptoRandomPresented = true
-				if err := BuiltinTuple8NatReadJSONGeneral(tctx, in, &item.CryptoRandom); err != nil {
+				if err := BuiltinTuple8NatReadJSONGeneral(jctx, in, &item.CryptoRandom); err != nil {
 					return err
 				}
 			case "encrypted_data":
@@ -442,15 +442,14 @@ func (item *NetUdpPacketUnencHeader) ReadJSONGeneral(tctx *basictl.JSONReadConte
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NetUdpPacketUnencHeader) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *NetUdpPacketUnencHeader) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *NetUdpPacketUnencHeader) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NetUdpPacketUnencHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *NetUdpPacketUnencHeader) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -462,12 +461,12 @@ func (item *NetUdpPacketUnencHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext
 	if item.Flags&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"local_pid":`...)
-		w = item.LocalPid.WriteJSONOpt(tctx, w)
+		w = item.LocalPid.WriteJSONOpt(jctx, w)
 	}
 	if item.Flags&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"remote_pid":`...)
-		w = item.RemotePid.WriteJSONOpt(tctx, w)
+		w = item.RemotePid.WriteJSONOpt(jctx, w)
 	}
 	if item.Flags&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -491,7 +490,7 @@ func (item *NetUdpPacketUnencHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext
 	if item.Flags&(1<<5) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"crypto_random":`...)
-		w = BuiltinTuple8NatWriteJSONOpt(tctx, w, &item.CryptoRandom)
+		w = BuiltinTuple8NatWriteJSONOpt(jctx, w, &item.CryptoRandom)
 	}
 	if item.Flags&(1<<7) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -509,7 +508,8 @@ func (item *NetUdpPacketUnencHeader) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NetUdpPacketUnencHeader) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("netUdpPacket.unencHeader", err.Error())
 	}
 	return nil

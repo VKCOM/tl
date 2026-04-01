@@ -74,7 +74,7 @@ func BuiltinDictStringLongWriteTL1(w []byte, m map[string]int64) []byte {
 	return w
 }
 
-func BuiltinDictStringLongReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]int64) error {
+func BuiltinDictStringLongReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]int64) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]int64, 0)
@@ -105,10 +105,10 @@ func BuiltinDictStringLongReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 func BuiltinDictStringLongWriteJSON(w []byte, m map[string]int64) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringLongWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringLongWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]int64) []byte {
+func BuiltinDictStringLongWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]int64) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -184,7 +184,7 @@ func BuiltinDictStringStringWriteTL1(w []byte, m map[string]string) []byte {
 	return w
 }
 
-func BuiltinDictStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
+func BuiltinDictStringStringReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
 	clear(*m)
 	if *m == nil {
 		*m = make(map[string]string, 0)
@@ -215,10 +215,10 @@ func BuiltinDictStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
 }
 
 func BuiltinDictStringStringWriteJSON(w []byte, m map[string]string) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinDictStringStringWriteJSONOpt(&tctx, w, m)
+	jctx := basictl.JSONWriteContext{}
+	return BuiltinDictStringStringWriteJSONOpt(&jctx, w, m)
 }
-func BuiltinDictStringStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
+func BuiltinDictStringStringWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -272,11 +272,11 @@ func (item DictFieldStringLong) String() string {
 }
 
 func (item *DictFieldStringLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictFieldStringLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *DictFieldStringLong) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -324,15 +324,14 @@ func (item *DictFieldStringLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictFieldStringLong) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictFieldStringLong) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictFieldStringLong) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *DictFieldStringLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *DictFieldStringLong) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -356,7 +355,8 @@ func (item *DictFieldStringLong) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldStringLong) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil
@@ -399,11 +399,11 @@ func (item DictFieldStringString) String() string {
 }
 
 func (item *DictFieldStringString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *DictFieldStringString) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 	if in != nil {
@@ -451,15 +451,14 @@ func (item *DictFieldStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictFieldStringString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *DictFieldStringString) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *DictFieldStringString) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *DictFieldStringString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *DictFieldStringString) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -483,7 +482,8 @@ func (item *DictFieldStringString) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictFieldStringString) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("__dict_field", err.Error())
 	}
 	return nil

@@ -362,11 +362,11 @@ func (item RpcReqResultExtra) String() string {
 }
 
 func (item *RpcReqResultExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcReqResultExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcReqResultExtra) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var propBinlogPosPresented bool
 	var propBinlogTimePresented bool
@@ -417,7 +417,7 @@ func (item *RpcReqResultExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcReqResultExtra", "engine_pid")
 				}
 				propEnginePidPresented = true
-				if err := item.EnginePid.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.EnginePid.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "request_size":
@@ -457,7 +457,7 @@ func (item *RpcReqResultExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcReqResultExtra", "stats")
 				}
 				propStatsPresented = true
-				if err := BuiltinDictStringStringReadJSONGeneral(tctx, in, &item.Stats); err != nil {
+				if err := BuiltinDictStringStringReadJSONGeneral(jctx, in, &item.Stats); err != nil {
 					return err
 				}
 			case "shards_binlog_pos":
@@ -465,7 +465,7 @@ func (item *RpcReqResultExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcReqResultExtra", "shards_binlog_pos")
 				}
 				propShardsBinlogPosPresented = true
-				if err := BuiltinDictStringLongReadJSONGeneral(tctx, in, &item.ShardsBinlogPos); err != nil {
+				if err := BuiltinDictStringLongReadJSONGeneral(jctx, in, &item.ShardsBinlogPos); err != nil {
 					return err
 				}
 			case "epoch_number":
@@ -567,15 +567,14 @@ func (item *RpcReqResultExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcReqResultExtra) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcReqResultExtra) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcReqResultExtra) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcReqResultExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcReqResultExtra) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -597,7 +596,7 @@ func (item *RpcReqResultExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.Flags&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"engine_pid":`...)
-		w = item.EnginePid.WriteJSONOpt(tctx, w)
+		w = item.EnginePid.WriteJSONOpt(jctx, w)
 	}
 	if item.Flags&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -622,12 +621,12 @@ func (item *RpcReqResultExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.Flags&(1<<6) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"stats":`...)
-		w = BuiltinDictStringStringWriteJSONOpt(tctx, w, item.Stats)
+		w = BuiltinDictStringStringWriteJSONOpt(jctx, w, item.Stats)
 	}
 	if item.Flags&(1<<14) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"shards_binlog_pos":`...)
-		w = BuiltinDictStringLongWriteJSONOpt(tctx, w, item.ShardsBinlogPos)
+		w = BuiltinDictStringLongWriteJSONOpt(jctx, w, item.ShardsBinlogPos)
 	}
 	if item.Flags&(1<<27) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -647,7 +646,8 @@ func (item *RpcReqResultExtra) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcReqResultExtra) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcReqResultExtra", err.Error())
 	}
 	return nil

@@ -187,11 +187,11 @@ func (item TracingTraceContext) String() string {
 }
 
 func (item *TracingTraceContext) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *TracingTraceContext) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *TracingTraceContext) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTraceIdPresented bool
 	var propParentIdPresented bool
@@ -230,7 +230,7 @@ func (item *TracingTraceContext) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 					return ErrorInvalidJSONWithDuplicatingKeys("tracing.traceContext", "trace_id")
 				}
 				propTraceIdPresented = true
-				if err := item.TraceId.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.TraceId.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "parent_id":
@@ -365,15 +365,14 @@ func (item *TracingTraceContext) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TracingTraceContext) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *TracingTraceContext) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *TracingTraceContext) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *TracingTraceContext) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *TracingTraceContext) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -384,7 +383,7 @@ func (item *TracingTraceContext) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"trace_id":`...)
-	w = item.TraceId.WriteJSONOpt(tctx, w)
+	w = item.TraceId.WriteJSONOpt(jctx, w)
 	if item.FieldsMask&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"parent_id":`...)
@@ -427,7 +426,8 @@ func (item *TracingTraceContext) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TracingTraceContext) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tracing.traceContext", err.Error())
 	}
 	return nil

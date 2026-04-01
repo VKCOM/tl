@@ -62,11 +62,11 @@ func (item NetUdpPacketResendRequest) String() string {
 }
 
 func (item *NetUdpPacketResendRequest) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NetUdpPacketResendRequest) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NetUdpPacketResendRequest) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propRangesPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -82,7 +82,7 @@ func (item *NetUdpPacketResendRequest) ReadJSONGeneral(tctx *basictl.JSONReadCon
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.resendRequest", "ranges")
 				}
 				propRangesPresented = true
-				if err := BuiltinVectorNetUdpPacketResendRangeReadJSONGeneral(tctx, in, &item.Ranges); err != nil {
+				if err := BuiltinVectorNetUdpPacketResendRangeReadJSONGeneral(jctx, in, &item.Ranges); err != nil {
 					return err
 				}
 			default:
@@ -102,20 +102,19 @@ func (item *NetUdpPacketResendRequest) ReadJSONGeneral(tctx *basictl.JSONReadCon
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NetUdpPacketResendRequest) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *NetUdpPacketResendRequest) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *NetUdpPacketResendRequest) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NetUdpPacketResendRequest) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *NetUdpPacketResendRequest) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexRanges := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"ranges":`...)
-	w = BuiltinVectorNetUdpPacketResendRangeWriteJSONOpt(tctx, w, item.Ranges)
+	w = BuiltinVectorNetUdpPacketResendRangeWriteJSONOpt(jctx, w, item.Ranges)
 	if !(len(item.Ranges) != 0) {
 		w = w[:backupIndexRanges]
 	}
@@ -127,7 +126,8 @@ func (item *NetUdpPacketResendRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NetUdpPacketResendRequest) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("netUdpPacket.resendRequest", err.Error())
 	}
 	return nil

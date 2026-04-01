@@ -43,7 +43,7 @@ func BuiltinTuple8NatWriteTL1(w []byte, vec *[8]uint32) []byte {
 	return w
 }
 
-func BuiltinTuple8NatReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[8]uint32) error {
+func BuiltinTuple8NatReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[8]uint32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -71,10 +71,9 @@ func BuiltinTuple8NatReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 func BuiltinTuple8NatWriteJSON(w []byte, vec *[8]uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinTuple8NatWriteJSONOpt(&tctx, w, vec)
+	return BuiltinTuple8NatWriteJSONOpt(nil, w, vec)
 }
-func BuiltinTuple8NatWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[8]uint32) []byte {
+func BuiltinTuple8NatWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec *[8]uint32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -121,7 +120,7 @@ func BuiltinVectorNatWriteTL1(w []byte, vec []uint32) []byte {
 	return w
 }
 
-func BuiltinVectorNatReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]uint32) error {
+func BuiltinVectorNatReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -150,10 +149,9 @@ func BuiltinVectorNatReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 }
 
 func BuiltinVectorNatWriteJSON(w []byte, vec []uint32) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorNatWriteJSONOpt(&tctx, w, vec)
+	return BuiltinVectorNatWriteJSONOpt(nil, w, vec)
 }
-func BuiltinVectorNatWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []uint32) []byte {
+func BuiltinVectorNatWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []uint32) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

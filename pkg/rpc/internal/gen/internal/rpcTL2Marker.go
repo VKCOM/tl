@@ -57,11 +57,11 @@ func (item RpcTL2Marker) String() string {
 }
 
 func (item *RpcTL2Marker) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcTL2Marker) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcTL2Marker) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -79,15 +79,14 @@ func (item *RpcTL2Marker) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcTL2Marker) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcTL2Marker) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcTL2Marker) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcTL2Marker) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcTL2Marker) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -97,7 +96,8 @@ func (item *RpcTL2Marker) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcTL2Marker) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcTL2Marker", err.Error())
 	}
 	return nil

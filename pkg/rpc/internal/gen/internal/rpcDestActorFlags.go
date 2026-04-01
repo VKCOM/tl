@@ -69,11 +69,11 @@ func (item RpcDestActorFlags) String() string {
 }
 
 func (item *RpcDestActorFlags) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcDestActorFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcDestActorFlags) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propActorIdPresented bool
 	var propExtraPresented bool
 	if in != nil {
@@ -98,7 +98,7 @@ func (item *RpcDestActorFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcDestActorFlags", "extra")
 				}
 				propExtraPresented = true
-				if err := item.Extra.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Extra.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -121,15 +121,14 @@ func (item *RpcDestActorFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcDestActorFlags) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcDestActorFlags) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcDestActorFlags) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcDestActorFlags) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcDestActorFlags) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexActorId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -140,7 +139,7 @@ func (item *RpcDestActorFlags) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"extra":`...)
-	w = item.Extra.WriteJSONOpt(tctx, w)
+	w = item.Extra.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -149,7 +148,8 @@ func (item *RpcDestActorFlags) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcDestActorFlags) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcDestActorFlags", err.Error())
 	}
 	return nil

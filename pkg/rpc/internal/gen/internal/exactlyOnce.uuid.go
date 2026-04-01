@@ -69,11 +69,11 @@ func (item ExactlyOnceUuid) String() string {
 }
 
 func (item *ExactlyOnceUuid) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *ExactlyOnceUuid) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *ExactlyOnceUuid) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLoPresented bool
 	var propHiPresented bool
 	if in != nil {
@@ -121,15 +121,14 @@ func (item *ExactlyOnceUuid) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *ExactlyOnceUuid) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *ExactlyOnceUuid) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *ExactlyOnceUuid) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *ExactlyOnceUuid) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *ExactlyOnceUuid) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexLo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -153,7 +152,8 @@ func (item *ExactlyOnceUuid) MarshalJSON() ([]byte, error) {
 }
 
 func (item *ExactlyOnceUuid) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("exactlyOnce.uuid", err.Error())
 	}
 	return nil
