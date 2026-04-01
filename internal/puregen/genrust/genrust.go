@@ -76,7 +76,7 @@ func (gen *genRust) generateCode() error {
 		code := typeRw.trw.GenerateCode(false, directImports)
 		s.WriteString(code)
 		if code != "" {
-			filepathName := filepath.Join("internal", typeRw.fileName+".go")
+			filepathName := filepath.Join("src/types", typeRw.goGlobalName+".rs")
 			if err := outdir.AddCodeFile(filepathName, gen.options.CopyrightText+s.String()); err != nil {
 				return err
 			}
@@ -236,7 +236,9 @@ edition = "2024"
 		return err
 	}
 	filepathName = "src/lib.rs"
-	code = `pub fn add(left: u64, right: u64) -> u64 {
+	code = `mod types;
+
+pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
 
@@ -250,6 +252,12 @@ mod tests {
         assert_eq!(result, 4);
     }
 }
+`
+	if err := outdir.AddCodeFile(filepathName, code); err != nil {
+		return err
+	}
+	filepathName = "src/types/mod.rs"
+	code = `
 `
 	if err := outdir.AddCodeFile(filepathName, code); err != nil {
 		return err
