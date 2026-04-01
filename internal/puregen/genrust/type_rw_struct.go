@@ -16,6 +16,7 @@ import (
 
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 type TypeRWStruct struct {
@@ -274,5 +275,10 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 }
 
 func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	cc := codecreator.NewRustCodeCreator()
+	cc.AddLines("#[derive(Debug)]")
+	cc.AddLines(fmt.Sprintf("struct %s {", trw.wr.goGlobalName))
+	cc.AddLines("}")
+
+	return strings.Join(cc.Print(), "\n")
 }
