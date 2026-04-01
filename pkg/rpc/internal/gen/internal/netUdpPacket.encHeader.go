@@ -530,11 +530,11 @@ func (item NetUdpPacketEncHeader) String() string {
 }
 
 func (item *NetUdpPacketEncHeader) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NetUdpPacketEncHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NetUdpPacketEncHeader) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var propTimePresented bool
 	var propVersionPresented bool
@@ -625,7 +625,7 @@ func (item *NetUdpPacketEncHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.encHeader", "packet_ack_set")
 				}
 				propPacketAckSetPresented = true
-				if err := BuiltinVectorNatReadJSONGeneral(tctx, in, &item.PacketAckSet); err != nil {
+				if err := BuiltinVectorNatReadJSONGeneral(jctx, in, &item.PacketAckSet); err != nil {
 					return err
 				}
 			case "packet_num":
@@ -891,15 +891,14 @@ func (item *NetUdpPacketEncHeader) ReadJSONGeneral(tctx *basictl.JSONReadContext
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NetUdpPacketEncHeader) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *NetUdpPacketEncHeader) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *NetUdpPacketEncHeader) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NetUdpPacketEncHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *NetUdpPacketEncHeader) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -936,7 +935,7 @@ func (item *NetUdpPacketEncHeader) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	if item.Flags&(1<<15) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"packet_ack_set":`...)
-		w = BuiltinVectorNatWriteJSONOpt(tctx, w, item.PacketAckSet)
+		w = BuiltinVectorNatWriteJSONOpt(jctx, w, item.PacketAckSet)
 	}
 	if item.Flags&(1<<20) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -1015,7 +1014,8 @@ func (item *NetUdpPacketEncHeader) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NetUdpPacketEncHeader) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("netUdpPacket.encHeader", err.Error())
 	}
 	return nil

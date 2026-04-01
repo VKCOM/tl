@@ -63,11 +63,11 @@ func (item ExactlyOnceAckResponse) String() string {
 }
 
 func (item *ExactlyOnceAckResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *ExactlyOnceAckResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *ExactlyOnceAckResponse) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPersistentQueryUuidPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -83,7 +83,7 @@ func (item *ExactlyOnceAckResponse) ReadJSONGeneral(tctx *basictl.JSONReadContex
 					return ErrorInvalidJSONWithDuplicatingKeys("exactlyOnce.ackResponse", "persistent_query_uuid")
 				}
 				propPersistentQueryUuidPresented = true
-				if err := item.PersistentQueryUuid.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.PersistentQueryUuid.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -103,19 +103,18 @@ func (item *ExactlyOnceAckResponse) ReadJSONGeneral(tctx *basictl.JSONReadContex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *ExactlyOnceAckResponse) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *ExactlyOnceAckResponse) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *ExactlyOnceAckResponse) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *ExactlyOnceAckResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *ExactlyOnceAckResponse) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"persistent_query_uuid":`...)
-	w = item.PersistentQueryUuid.WriteJSONOpt(tctx, w)
+	w = item.PersistentQueryUuid.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -124,7 +123,8 @@ func (item *ExactlyOnceAckResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (item *ExactlyOnceAckResponse) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("exactlyOnce.ackResponse", err.Error())
 	}
 	return nil

@@ -69,11 +69,11 @@ func (item NetUdpPacketObsoleteHash) String() string {
 }
 
 func (item *NetUdpPacketObsoleteHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *NetUdpPacketObsoleteHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *NetUdpPacketObsoleteHash) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propHashPresented bool
 	var propPidPresented bool
 	if in != nil {
@@ -98,7 +98,7 @@ func (item *NetUdpPacketObsoleteHash) ReadJSONGeneral(tctx *basictl.JSONReadCont
 					return ErrorInvalidJSONWithDuplicatingKeys("netUdpPacket.obsoleteHash", "pid")
 				}
 				propPidPresented = true
-				if err := item.Pid.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Pid.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -121,15 +121,14 @@ func (item *NetUdpPacketObsoleteHash) ReadJSONGeneral(tctx *basictl.JSONReadCont
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NetUdpPacketObsoleteHash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *NetUdpPacketObsoleteHash) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *NetUdpPacketObsoleteHash) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *NetUdpPacketObsoleteHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *NetUdpPacketObsoleteHash) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexHash := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -140,7 +139,7 @@ func (item *NetUdpPacketObsoleteHash) WriteJSONOpt(tctx *basictl.JSONWriteContex
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"pid":`...)
-	w = item.Pid.WriteJSONOpt(tctx, w)
+	w = item.Pid.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -149,7 +148,8 @@ func (item *NetUdpPacketObsoleteHash) MarshalJSON() ([]byte, error) {
 }
 
 func (item *NetUdpPacketObsoleteHash) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("netUdpPacket.obsoleteHash", err.Error())
 	}
 	return nil

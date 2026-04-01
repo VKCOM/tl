@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"log"
 	"net"
-	"strings"
 	"time"
 )
 
@@ -161,22 +160,6 @@ func ServerWithTransportHijackHandler(handler func(conn *PacketConn)) ServerOpti
 	}
 }
 
-func TrustedSubnetGroupsString(groups [][]string) string {
-	b := strings.Builder{}
-	for i, g := range groups {
-		if i != 0 {
-			b.WriteString(";")
-		}
-		for j, m := range g {
-			if j != 0 {
-				b.WriteString(",")
-			}
-			b.WriteString(m)
-		}
-	}
-	return b.String()
-}
-
 func ServerWithTrustedSubnetGroups(groups [][]string) ServerOptionsFunc {
 	return func(opts *ServerOptions) {
 		gs, errs := ParseTrustedSubnets(groups)
@@ -185,7 +168,7 @@ func ServerWithTrustedSubnetGroups(groups [][]string) ServerOptionsFunc {
 			log.Panicf("[rpc] failed to parse server trusted subnet: %v", err)
 		}
 		opts.TrustedSubnetGroups = gs
-		opts.TrustedSubnetGroupsSt = TrustedSubnetGroupsString(groups)
+		opts.TrustedSubnetGroupsSt = JoinSubnetsString(groups)
 	}
 }
 

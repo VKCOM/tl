@@ -48,10 +48,7 @@ func ParseTrustedSubnets(groups [][]string) (trustedSubnetGroups [][]*net.IPNet,
 	return trustedSubnetGroups, errs
 }
 
-func ParseTrustedSubnetGroupsFromString(groups string) (trustedSubnetGroups [][]*net.IPNet, errs []error) {
-	if len(groups) == 0 {
-		return
-	}
+func SplitSubnetsString(groups string) [][]string {
 	var trustedSubnetGroupsS [][]string
 	for _, group := range strings.Split(groups, ";") {
 		var s []string
@@ -65,7 +62,23 @@ func ParseTrustedSubnetGroupsFromString(groups string) (trustedSubnetGroups [][]
 			trustedSubnetGroupsS = append(trustedSubnetGroupsS, s)
 		}
 	}
-	return ParseTrustedSubnets(trustedSubnetGroupsS)
+	return trustedSubnetGroupsS
+}
+
+func JoinSubnetsString(groups [][]string) string {
+	b := strings.Builder{}
+	for i, g := range groups {
+		if i != 0 {
+			b.WriteString(";")
+		}
+		for j, m := range g {
+			if j != 0 {
+				b.WriteString(",")
+			}
+			b.WriteString(m)
+		}
+	}
+	return b.String()
 }
 
 func (pc *PacketConn) HandshakeClient(cryptoKey string, trustedSubnetGroups [][]*net.IPNet, forceEncryption bool, startTime uint32, flags uint32, packetTimeout time.Duration, protocolVersion uint32) error {

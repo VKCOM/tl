@@ -231,8 +231,6 @@ func (s *Server) closeHandlerUDP(conn *udp.Connection) {
 			}
 
 			sc.cancelCloseCtx(errUdpConnClose)
-
-			sc.conn = nil
 		}
 	}
 	// TODO - will all sending hctx be released?

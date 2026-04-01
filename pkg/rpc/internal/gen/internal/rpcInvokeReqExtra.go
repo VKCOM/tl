@@ -531,11 +531,11 @@ func (item RpcInvokeReqExtra) String() string {
 }
 
 func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcInvokeReqExtra) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var propReturnBinlogPosPresented bool
 	var trueTypeReturnBinlogPosValue bool
@@ -672,7 +672,7 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "wait_shards_binlog_pos")
 				}
 				propWaitShardsBinlogPosPresented = true
-				if err := BuiltinDictStringLongReadJSONGeneral(tctx, in, &item.WaitShardsBinlogPos); err != nil {
+				if err := BuiltinDictStringLongReadJSONGeneral(jctx, in, &item.WaitShardsBinlogPos); err != nil {
 					return err
 				}
 			case "wait_binlog_pos":
@@ -688,7 +688,7 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "string_forward_keys")
 				}
 				propStringForwardKeysPresented = true
-				if err := BuiltinVectorStringReadJSONGeneral(tctx, in, &item.StringForwardKeys); err != nil {
+				if err := BuiltinVectorStringReadJSONGeneral(jctx, in, &item.StringForwardKeys); err != nil {
 					return err
 				}
 			case "int_forward_keys":
@@ -696,7 +696,7 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "int_forward_keys")
 				}
 				propIntForwardKeysPresented = true
-				if err := BuiltinVectorLongReadJSONGeneral(tctx, in, &item.IntForwardKeys); err != nil {
+				if err := BuiltinVectorLongReadJSONGeneral(jctx, in, &item.IntForwardKeys); err != nil {
 					return err
 				}
 			case "string_forward":
@@ -752,7 +752,7 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "persistent_query")
 				}
 				propPersistentQueryPresented = true
-				if err := item.PersistentQuery.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.PersistentQuery.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "trace_context":
@@ -760,7 +760,7 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "trace_context")
 				}
 				propTraceContextPresented = true
-				if err := item.TraceContext.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.TraceContext.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			case "execution_context":
@@ -926,15 +926,14 @@ func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcInvokeReqExtra) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcInvokeReqExtra) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcInvokeReqExtra) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcInvokeReqExtra) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlags := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -987,7 +986,7 @@ func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.Flags&(1<<15) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"wait_shards_binlog_pos":`...)
-		w = BuiltinDictStringLongWriteJSONOpt(tctx, w, item.WaitShardsBinlogPos)
+		w = BuiltinDictStringLongWriteJSONOpt(jctx, w, item.WaitShardsBinlogPos)
 	}
 	if item.Flags&(1<<16) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -997,12 +996,12 @@ func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.Flags&(1<<18) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"string_forward_keys":`...)
-		w = BuiltinVectorStringWriteJSONOpt(tctx, w, item.StringForwardKeys)
+		w = BuiltinVectorStringWriteJSONOpt(jctx, w, item.StringForwardKeys)
 	}
 	if item.Flags&(1<<19) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"int_forward_keys":`...)
-		w = BuiltinVectorLongWriteJSONOpt(tctx, w, item.IntForwardKeys)
+		w = BuiltinVectorLongWriteJSONOpt(jctx, w, item.IntForwardKeys)
 	}
 	if item.Flags&(1<<20) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -1036,12 +1035,12 @@ func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.Flags&(1<<28) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"persistent_query":`...)
-		w = item.PersistentQuery.WriteJSONOpt(tctx, w)
+		w = item.PersistentQuery.WriteJSONOpt(jctx, w)
 	}
 	if item.Flags&(1<<29) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"trace_context":`...)
-		w = item.TraceContext.WriteJSONOpt(tctx, w)
+		w = item.TraceContext.WriteJSONOpt(jctx, w)
 	}
 	if item.Flags&(1<<30) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -1056,7 +1055,8 @@ func (item *RpcInvokeReqExtra) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcInvokeReqExtra) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcInvokeReqExtra", err.Error())
 	}
 	return nil

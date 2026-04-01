@@ -62,11 +62,11 @@ func (item RpcDestFlags) String() string {
 }
 
 func (item *RpcDestFlags) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
-	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	return item.ReadJSONGeneral(&tctx, in)
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
 }
 
-func (item *RpcDestFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+func (item *RpcDestFlags) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propExtraPresented bool
 	if in != nil {
 		in.Delim('{')
@@ -82,7 +82,7 @@ func (item *RpcDestFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 					return ErrorInvalidJSONWithDuplicatingKeys("rpcDestFlags", "extra")
 				}
 				propExtraPresented = true
-				if err := item.Extra.ReadJSONGeneral(tctx, in); err != nil {
+				if err := item.Extra.ReadJSONGeneral(jctx, in); err != nil {
 					return err
 				}
 			default:
@@ -102,19 +102,18 @@ func (item *RpcDestFlags) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcDestFlags) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(tctx, w), nil
+func (item *RpcDestFlags) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
 }
 
 func (item *RpcDestFlags) WriteJSON(w []byte) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return item.WriteJSONOpt(&tctx, w)
+	return item.WriteJSONOpt(nil, w)
 }
-func (item *RpcDestFlags) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
+func (item *RpcDestFlags) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"extra":`...)
-	w = item.Extra.WriteJSONOpt(tctx, w)
+	w = item.Extra.WriteJSONOpt(jctx, w)
 	return append(w, '}')
 }
 
@@ -123,7 +122,8 @@ func (item *RpcDestFlags) MarshalJSON() ([]byte, error) {
 }
 
 func (item *RpcDestFlags) UnmarshalJSON(b []byte) error {
-	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("rpcDestFlags", err.Error())
 	}
 	return nil

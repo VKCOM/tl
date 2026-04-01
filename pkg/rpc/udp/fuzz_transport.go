@@ -771,7 +771,7 @@ func doGoReadStep(fctx *FuzzTransportContext, transportId int, dgrmId int) {
 		if t.debugUdpRPC >= 1 {
 			log.Printf("bump generation for %s", conn.remoteAddr().String())
 		}
-		t.goReadOnRegenerate(conn)
+		t.renewConnection(conn, conn.generation+1, conn.remotePid())
 	}
 
 	l := len(fctx.network[transportId])
@@ -784,52 +784,13 @@ func doGoReadStep(fctx *FuzzTransportContext, transportId int, dgrmId int) {
 	fctx.network[transportId] = fctx.network[transportId][:l-1]
 
 	var enc tlnetUdpPacket.EncHeader
-	var closed bool
 	var resendReq tlnetUdpPacket.ResendRequest
-	conn, closed, err := fctx.ts[transportId].processIncomingDatagram(fuzzDatagram.addr, fctx.ts[transportId].localPid.Ip, fuzzDatagram.datagram, &enc, &resendReq)
+	conn, err := fctx.ts[transportId].processIncomingDatagram(fuzzDatagram.addr, fctx.ts[transportId].localPid.Ip, fuzzDatagram.datagram, &enc, &resendReq)
 	if err != nil {
 		panic(err)
 	}
 
 	if conn != nil {
-		if closed {
-			remoteAddr := conn.remoteAddr()
-			connID := conn.id
-
-			if conn.id.Hash != 0 {
-				delete(t.connectionById, conn.id)
-				t.stats.ConnectionsMapSize.Store(int64(len(t.connectionById)))
-			}
-
-			handshakeCid := conn.id
-			handshakeCid.Hash = 0
-			delete(t.handshakeByPid, handshakeCid)
-			t.closeHandler(conn)
-
-			conn.SetFlag(closedFlag, true)
-			conn.resetLockedState()
-			t.closedConnections.PushBack(conn)
-			conn.resetGoReadUnlockedState()
-
-			if t.debugUdpRPC >= 1 {
-				log.Printf("closed connection %s (%+v)", remoteAddr, connID)
-			}
-
-			// need to process this datagram again, to create new connection
-			// TODO remove this kostil sraniy and create new connection directly in place, where we closed this one !!!!!!
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			conn, closed, err = t.processIncomingDatagram(fuzzDatagram.addr, fctx.ts[transportId].localPid.Ip, fuzzDatagram.datagram, &enc, &resendReq)
-			if err != nil {
-				panic(err)
-			}
-			if closed {
-				log.Panicf("unreachable: connection %s closed again. It is bug in udp rpc code. Send this log to https://vk.com/udp2", conn.remoteAddr().String())
-			}
-			if conn == nil {
-				return
-			}
-		}
 
 		if conn.GetFlag(inRegenerateQueue) {
 			conn.SetFlag(stopRegenerateTimerFlag, true)
