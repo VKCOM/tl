@@ -22,15 +22,16 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return specialCase
 	}
-	name := trw.wr.tlName.Name
-	if len(trw.wr.tlName.Namespace) != 0 {
-		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
+	name := trw.wr.TLName().Name
+	if len(trw.wr.TLName().Namespace) != 0 {
+		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
 
 	elems := make([]string, 0, len(trw.wr.arguments))
-	for _, arg := range trw.wr.arguments {
-		if arg.tip != nil {
-			argText := arg.tip.trw.PhpClassName(false, false)
+	for _, arg := range trw.wr.pureType.Common().ResolvedType().SomeType.Arguments {
+		if !arg.IsNumber && arg.Type.SomeType.Name.String() != "*" {
+			tip, _ := trw.wr.gen.getTypeWrapperMust(arg.Type)
+			argText := tip.trw.PhpClassName(false, false)
 			if argText != "" {
 				elems = append(elems, "__", argText)
 			}
@@ -199,9 +200,9 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		)
 		for i, field := range trw.Fields {
 			curType := field.t
-			name := variantName(field.t.tlTag, i)
+			name := variantName(field.t.TLTag(), i)
 			result = append(result,
-				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
 				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args.ListAllValues(), true), name),
 				"    if (!$success) {",
@@ -226,9 +227,9 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		)
 		for i, field := range trw.Fields {
 			curType := field.t
-			name := variantName(field.t.tlTag, i)
+			name := variantName(field.t.TLTag(), i)
 			result = append(result,
-				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
 				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args.ListAllValues(), false), name),
 				"    if (!$success) {",

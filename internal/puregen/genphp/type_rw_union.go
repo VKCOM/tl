@@ -6,7 +6,11 @@
 
 package genphp
 
+import "github.com/VKCOM/tl/internal/pure"
+
 type TypeRWUnion struct {
+	pureType *pure.TypeInstanceUnion
+
 	wr     *TypeRWWrapper
 	Fields []Field
 	IsEnum bool

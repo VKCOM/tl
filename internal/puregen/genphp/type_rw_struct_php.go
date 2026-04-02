@@ -19,12 +19,12 @@ import (
 
 func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDeps int) {
 	for i, field := range trw.Fields {
-		if field.originalName == name {
+		if field.pureField.Name() == name {
 			return true, i
 		}
 	}
-	for i, argument := range trw.wr.origTL[0].TemplateArguments {
-		if argument.FieldName == name {
+	for i, argument := range trw.wr.pureType.KernelType().Templates() {
+		if argument.Name == name {
 			return false, i
 		}
 	}
@@ -51,7 +51,8 @@ func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex i
 	}
 
 	field.t.PHPGetNatTypeDependenciesDecl(&localTree)
-	trw.phpGetFieldArgsTree(field.t, &field.origTL.FieldType, &localTree, &genericsMap)
+	ftp := field.pureField.TypeInstance().Common().ResolvedType()
+	trw.phpGetFieldArgsTree(field.t, &ftp, &localTree, &genericsMap)
 	return localTree
 }
 
@@ -72,7 +73,8 @@ func (trw *TypeRWStruct) PHPGetResultNatDependenciesValuesAsTypeTree() (TypeArgu
 	}
 
 	trw.ResultType.PHPGetNatTypeDependenciesDecl(&localTree)
-	trw.phpGetFieldArgsTree(trw.ResultType, &trw.wr.origTL[0].FuncDecl, &localTree, &genericsMap)
+	rtp := trw.pureType.ResultType().Common().ResolvedType()
+	trw.phpGetFieldArgsTree(trw.ResultType, &rtp, &localTree, &genericsMap)
 	return localTree, true
 }
 
@@ -81,22 +83,22 @@ func phpFieldMaskNullCheck(value string) string {
 }
 
 func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs *TypeArgumentsTree, fieldIndex int) string {
-	fieldMask := trw.Fields[fieldIndex].fieldMask
+	fieldMask := trw.Fields[fieldIndex].pureField.FieldMask()
 	if fieldMask != nil {
-		if fieldMask.isField {
-			fieldMaskOrigin := trw.Fields[fieldMask.FieldIndex]
-			fieldUsage := fmt.Sprintf("%[1]s->%[2]s", targetName, fieldMaskOrigin.originalName)
-			if fieldMaskOrigin.fieldMask != nil {
+		if fieldMask.IsField() {
+			fieldMaskOrigin := trw.Fields[fieldMask.FieldIndex()]
+			fieldUsage := fmt.Sprintf("%[1]s->%[2]s", targetName, fieldMaskOrigin.pureField.FieldMask())
+			if fieldMaskOrigin.pureField.FieldMask() != nil {
 				return phpFieldMaskNullCheck(fieldUsage)
 			} else {
 				return fieldUsage
 			}
 		}
 		if calculatedArgs == nil {
-			return "$" + fieldMask.name
+			return "$" + fieldMask.NatParamName()
 		} else {
 			for _, child := range calculatedArgs.children {
-				if child != nil && child.name == fieldMask.name {
+				if child != nil && child.name == fieldMask.NatParamName() {
 					return *child.value
 				}
 			}
@@ -106,40 +108,47 @@ func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs *Type
 	return ""
 }
 
-func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, currentTypeRef *tlast.TypeRef, tree *TypeArgumentsTree, genericsToTrees *map[string]*TypeArgumentsTree) {
-	if len(currentTypeRef.Args) != len(currentType.origTL[0].TemplateArguments) {
-		generic := currentTypeRef.Type.String()
+func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, currentTypeRef *tlast.TL2TypeRef, tree *TypeArgumentsTree, genericsToTrees *map[string]*TypeArgumentsTree) {
+	if len(currentTypeRef.SomeType.Arguments) != len(currentType.pureType.KernelType().Templates()) {
+		generic := currentTypeRef.SomeType.String()
 		tree.CloneValuesFrom((*genericsToTrees)[generic])
 		return
 	}
-	for i := range currentType.origTL[0].TemplateArguments {
-		actualArg := currentType.arguments[i]
-		actualArgRef := currentTypeRef.Args[i]
-		if actualArg.isNat {
-			if actualArg.isArith {
-				if actualArgRef.IsArith {
-					value := strconv.FormatUint(uint64(actualArg.Arith.Res), 10)
+	for i, template := range currentType.pureType.KernelType().Templates() {
+		actualArg := currentType.pureType.Common().ResolvedType().SomeType.Arguments[i]
+		actualArgRef := currentTypeRef.SomeType.Arguments[i]
+		if template.Category.IsNat() {
+			if actualArg.IsNumber {
+				if actualArgRef.IsNumber {
+					value := strconv.FormatUint(uint64(actualArg.Number), 10)
 					(*tree).children[i].value = &value
 				} else {
 					// argument resolving to constant by in definition it is outer nat
-					_, index := trw.PHPFindNatByName(actualArgRef.T.String())
-					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.origTL[0].TemplateArguments[index].FieldName])
+					_, index := trw.PHPFindNatByName(actualArgRef.OriginalArgumentName)
+					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.pureType.KernelType().Templates()[index].Name])
 				}
 			} else {
-				isLocal, index := trw.PHPFindNatByName(actualArgRef.T.String())
-				if isLocal {
-					value := fmt.Sprintf("$this->%s", trw.Fields[index].originalName)
-					if trw.Fields[index].fieldMask != nil {
-						value = phpFieldMaskNullCheck(value)
-					}
+				if PHPIsArgumentNumber(actualArg) {
+					value := strconv.FormatUint(uint64(actualArg.Number), 10)
 					(*tree).children[i].value = &value
 				} else {
-					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.origTL[0].TemplateArguments[index].FieldName])
+					// todo!  friends.getRecentFriends
+					isLocal, index := trw.PHPFindNatByName(actualArgRef.OriginalArgumentName)
+					if isLocal {
+						value := fmt.Sprintf("$this->%s", trw.Fields[index].pureField.FieldMask())
+						if trw.Fields[index].pureField.FieldMask() != nil {
+							value = phpFieldMaskNullCheck(value)
+						}
+						(*tree).children[i].value = &value
+					} else {
+						(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.pureType.KernelType().Templates()[index].Name])
+					}
 				}
 			}
 		} else {
 			if tree != nil {
-				trw.phpGetFieldArgsTree(actualArg.tip, &actualArgRef.T, tree.children[i], genericsToTrees)
+				tip, _ := trw.wr.gen.getTypeWrapperMust(actualArg.Type)
+				trw.phpGetFieldArgsTree(tip, &actualArgRef.Type, tree.children[i], genericsToTrees)
 			}
 		}
 	}
@@ -161,8 +170,8 @@ func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
 		}
 
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			return true
 		}
 	}
@@ -189,24 +198,26 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 		}
 
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
 		}
 	}
 
-	name := trw.wr.tlName.Name
+	name := trw.wr.TLName().Name
 	if !bare {
-		name = trw.wr.origTL[0].TypeDecl.Name.Name
+		name = ToUpperFirst(name)
+		//name = trw.wr.origTL[0].TypeDecl.Name.Name
 	}
-	if trw.wr.tlName.Namespace != "" {
-		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
+	if trw.wr.TLName().Namespace != "" {
+		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
 
 	elems := make([]string, 0, len(trw.wr.arguments))
-	for _, arg := range trw.wr.arguments {
-		if arg.tip != nil {
-			argText := arg.tip.trw.PhpClassName(false, false)
+	for _, arg := range trw.wr.pureType.Common().ResolvedType().SomeType.Arguments {
+		if !arg.IsNumber && arg.Type.SomeType.Name.String() != "*" {
+			tip, _ := trw.wr.gen.getTypeWrapperMust(arg.Type)
+			argText := tip.trw.PhpClassName(false, false)
 			if argText != "" {
 				elems = append(elems, "__", argText)
 			}
@@ -236,8 +247,8 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 		}
 
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
 		}
 	}
@@ -254,13 +265,13 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	usedFieldMasksIndecies := make([]int, 0)
 	usedFieldMasks := make(map[int][]Field)
 	for _, f := range trw.Fields {
-		if f.fieldMask == nil {
+		if f.pureField.FieldMask() == nil {
 			necessaryFieldsInConstructor = append(necessaryFieldsInConstructor, f)
 		} else {
-			index := f.fieldMask.FieldIndex
-			if !f.fieldMask.isField {
-				for i, argument := range trw.wr.origTL[0].TemplateArguments {
-					if argument.IsNat && argument.FieldName == f.fieldMask.name {
+			index := f.pureField.FieldMask().FieldIndex()
+			if !f.pureField.FieldMask().IsField() {
+				for i, argument := range trw.wr.pureType.KernelType().Templates() {
+					if argument.Category.IsNat() && argument.Name == f.pureField.FieldMask().NatParamName() {
 						index = -(i + 1)
 						break
 					}
@@ -367,9 +378,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			writeCall := strings.Builder{}
 
 			/** TODO make it better */
-			if trw.wr.origTL[0].OriginalDescriptor != nil &&
-				trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil &&
-				len(trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor.TemplateArguments) != 0 {
+			if len(trw.wr.pureType.KernelType().Templates()) != 0 {
 				readCall.WriteString(`    /** TODO FOR DIAGONAL */`)
 				writeCall.WriteString(`    /** TODO FOR DIAGONAL */`)
 			} else {
@@ -567,7 +576,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 `,
 				trw.PhpClassName(false, true),
 				trw.PhpClassName(true, true),
-				trw.wr.tlName.String(),
+				trw.wr.TLName().String(),
 				phpResultType(trw),
 				kphpSpecialCode,
 			),
@@ -592,8 +601,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     return '%[1]s';
   }
 `,
-			trw.wr.tlName.String(),
-			trw.wr.tlTag,
+			trw.wr.TLName().String(),
+			trw.wr.TLTag(),
 		))
 
 		args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
@@ -615,7 +624,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 
 		if trw.wr.gen.options.PHP.AddFetchers &&
 			// diagonal
-			len(trw.wr.origTL[0].MostOriginalVersion().TemplateArguments) == 0 &&
+			len(trw.wr.pureType.KernelType().Templates()) == 0 &&
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies {
 			if !trw.wr.wantsTL2 {
@@ -636,8 +645,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
   }
 `,
 						trw.PhpClassName(false, true),
-						trw.wr.tlName.String(),
-						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						trw.wr.TLName().String(),
+						fmt.Sprintf("0x%08x", trw.wr.TLTag()),
 						argsArray,
 						phpFunctionCommentFormat(
 							fetchArgNames,
@@ -659,7 +668,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
       return null;
     }
 `,
-								trw.wr.tlName.Namespace,
+								trw.wr.TLName().Namespace,
 							),
 							"",
 						),
@@ -713,8 +722,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
   }
 `,
 						trw.PhpClassName(false, true),
-						trw.wr.tlName.String(),
-						fmt.Sprintf("0x%08x", trw.wr.tlTag),
+						trw.wr.TLName().String(),
+						fmt.Sprintf("0x%08x", trw.wr.TLTag()),
 						argsArray,
 						phpFunctionCommentFormat(
 							fetchArgNames,
@@ -731,8 +740,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						phpFunctionArgumentsFormat(fetchArgNames),
 						phpFunctionArgumentsFormat(storeArgNames),
 						ifString(trw.wr.gen.options.PHP.AddFetchersEchoComments, "", "//"),
-						trw.wr.tlName.Namespace,
-						trw.wr.tlTag,
+						trw.wr.TLName().Namespace,
+						trw.wr.TLTag(),
 					),
 				)
 			}
@@ -741,9 +750,9 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies &&
 			// diagonal
-			len(trw.wr.origTL[0].MostOriginalVersion().TemplateArguments) != 0 &&
+			len(trw.wr.pureType.KernelType().Templates()) != 0 &&
 			// from _common
-			trw.wr.origTL[0].MostOriginalVersion().Construct.Name.Namespace == "" {
+			trw.wr.pureType.KernelType().CanonicalName().Namespace == "" {
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
@@ -764,8 +773,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
   }
 `,
 					trw.PhpClassName(false, true),
-					trw.wr.tlName.String(),
-					fmt.Sprintf("0x%08x", trw.wr.tlTag),
+					trw.wr.TLName().String(),
+					fmt.Sprintf("0x%08x", trw.wr.TLTag()),
 					argsArray,
 					phpFunctionCommentFormat(
 						fetchArgNames,
@@ -807,8 +816,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
   }
 `,
 					trw.PhpClassName(false, true),
-					trw.wr.tlName.String(),
-					fmt.Sprintf("0x%08x", trw.wr.tlTag),
+					trw.wr.TLName().String(),
+					fmt.Sprintf("0x%08x", trw.wr.TLTag()),
 					argsArray,
 					phpFunctionCommentFormat(
 						fetchArgNames,
@@ -852,7 +861,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 
 		magicRead := []string{
 			"    [$magic, $success] = $stream->read_uint32();",
-			fmt.Sprintf("    if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+			fmt.Sprintf("    if (!$success || $magic != 0x%08[1]x) {", trw.wr.TLTag()),
 			"      return false;",
 			"    }",
 		}
@@ -860,7 +869,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		if useBuiltin {
 			magicRead = []string{
 				"    $magic = fetch_int() & 0xFFFFFFFF;",
-				fmt.Sprintf("    if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+				fmt.Sprintf("    if ($magic != 0x%08[1]x) {", trw.wr.TLTag()),
 				"      return false;",
 				"    }",
 			}
@@ -934,13 +943,13 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {",
 					textTab(),
 					fieldMask,
-					field.BitNumber,
+					field.pureField.BitNumber(),
 				),
 			)
 			shift += 1
 		}
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, calculatedArgs)
-		fieldRead := field.t.trw.PhpReadMethodCall(targetName+"->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
+		fieldRead := field.t.trw.PhpReadMethodCall(targetName+"->"+field.pureField.Name(), field.bare, true, &tree, strconv.Itoa(i))
 		for _, line := range fieldRead {
 			result = append(result, textTab()+line)
 		}
@@ -952,7 +961,7 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 			result = append(result, fmt.Sprintf(
 				"%[1]s%[2]s = %[3]s;",
 				textTab(),
-				targetName+"->"+field.originalName,
+				targetName+"->"+field.pureField.Name(),
 				defaultValue,
 			))
 			shift -= 1
@@ -1016,7 +1025,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 
 	for fieldIndex, field := range trw.Fields {
 		isTrue := field.t.PHPIsTrueType()
-		fieldName := fmt.Sprintf("%[1]s->%[2]s", targetName, field.originalName)
+		fieldName := fmt.Sprintf("%[1]s->%[2]s", targetName, field.pureField.Name())
 		inBlockIndex := (fieldIndex + 1) % 8
 
 		// add new block
@@ -1048,7 +1057,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			cc.Comments("local size for this field")
 			cc.AddLines(fmt.Sprintf("%[1]s = 0;", localUsedBytes))
 			cc.AddLines(
-				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), callLevel+1, localUsedBytes, field.fieldMask == nil)...,
+				field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), callLevel+1, localUsedBytes, field.pureField.FieldMask() == nil)...,
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
 			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func() {
@@ -1085,7 +1094,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 		}
 
 		magicWrite := []string{
-			fmt.Sprintf("    $success = $stream->write_uint32(0x%08[1]x)", trw.wr.tlTag),
+			fmt.Sprintf("    $success = $stream->write_uint32(0x%08[1]x)", trw.wr.TLTag()),
 			"    if (!$success) {",
 			"      return false;",
 			"    }",
@@ -1093,7 +1102,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 
 		if useBuiltin {
 			magicWrite = []string{
-				fmt.Sprintf("    store_int(0x%08[1]x);", trw.wr.tlTag),
+				fmt.Sprintf("    store_int(0x%08[1]x);", trw.wr.TLTag()),
 			}
 		}
 
@@ -1189,7 +1198,7 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs *T
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, calculatedArgs)
-		fieldRead := field.t.trw.PhpWriteMethodCall(targetName+"->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
+		fieldRead := field.t.trw.PhpWriteMethodCall(targetName+"->"+field.pureField.Name(), field.bare, &tree, strconv.Itoa(i))
 		if fieldRead == nil {
 			continue
 		}
@@ -1199,7 +1208,7 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs *T
 					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {",
 					textTab(),
 					fieldMask,
-					field.BitNumber,
+					field.pureField.BitNumber(),
 				),
 			)
 			shift += 1
@@ -1278,13 +1287,13 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 			if field.IsTL2Omitted() {
 				continue
 			}
-			cc.AddLines(fmt.Sprintf("// write field %s", field.originalName))
+			cc.AddLines(fmt.Sprintf("// write field %s", field.pureField.Name()))
 			// skip bit since it is written in block
 			if field.IsBit() {
 				continue
 			}
 
-			fieldTarget := fmt.Sprintf("%s->%s", targetName, field.originalName)
+			fieldTarget := fmt.Sprintf("%s->%s", targetName, field.pureField.Name())
 			if useItself {
 				fieldTarget = targetName
 			}
@@ -1370,14 +1379,14 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 
 		var fieldUsed string
 
-		fieldTarget := fmt.Sprintf("%s->%s", targetName, field.originalName)
+		fieldTarget := fmt.Sprintf("%s->%s", targetName, field.pureField.Name())
 		if useItself {
 			fieldTarget = targetName
 		}
 
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
 
-		cc.AddLines(fmt.Sprintf("// calculate field %s", field.originalName))
+		cc.AddLines(fmt.Sprintf("// calculate field %s", field.pureField.Name()))
 		cc.AddLines(fmt.Sprintf("%[1]s = 0;", fieldSize))
 		if field.IsBit() {
 			fieldUsed = fmt.Sprintf("%[1]s", fieldTarget)
@@ -1444,9 +1453,9 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 	names := utils.MapSlice(usedFieldMasksIndecies, func(natIndex int) string {
 		natName := ""
 		if natIndex < 0 {
-			natName = trw.wr.origTL[0].TemplateArguments[-(natIndex + 1)].FieldName
+			natName = trw.wr.pureType.KernelType().Templates()[-(natIndex + 1)].Name
 		} else {
-			natName = trw.Fields[natIndex].originalName
+			natName = trw.Fields[natIndex].pureField.Name()
 		}
 		return natName
 	})
@@ -1459,7 +1468,7 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 
 	fieldNameToFieldOrder := make(map[string]int)
 	for i := range trw.Fields {
-		fieldNameToFieldOrder[trw.Fields[i].originalName] = i
+		fieldNameToFieldOrder[trw.Fields[i].pureField.Name()] = i
 	}
 
 	for _, name := range names {
@@ -1471,8 +1480,8 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 		// arguments with ambiguous existence
 		for _, dependentField := range usedFieldMasks[natIndex] {
 			if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
-				additionalArgs = append(additionalArgs, fmt.Sprintf("$has_%s", dependentField.originalName))
-				code.WriteString(fmt.Sprintf("\n   * @param bool $has_%s", dependentField.originalName))
+				additionalArgs = append(additionalArgs, fmt.Sprintf("$has_%s", dependentField.pureField.Name()))
+				code.WriteString(fmt.Sprintf("\n   * @param bool $has_%s", dependentField.pureField.Name()))
 			}
 		}
 		code.WriteString(`
@@ -1490,16 +1499,16 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 
 		fields := usedFieldMasks[natIndex]
 		sort.Slice(fields, func(i, j int) bool {
-			if fields[i].BitNumber == fields[j].BitNumber {
+			if fields[i].pureField.BitNumber() == fields[j].pureField.BitNumber() {
 				return i < j
 			}
-			return fields[i].BitNumber < fields[j].BitNumber
+			return fields[i].pureField.BitNumber() < fields[j].pureField.BitNumber()
 		})
 
 		fieldsGroupedByBitNumber := make([][]Field, 0)
 		for _, dependentField := range fields {
 			if len(fieldsGroupedByBitNumber) == 0 ||
-				fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1][0].BitNumber != dependentField.BitNumber {
+				fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1][0].pureField.BitNumber() != dependentField.pureField.BitNumber() {
 				fieldsGroupedByBitNumber = append(fieldsGroupedByBitNumber, make([]Field, 0))
 			}
 			fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1] = append(fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1], dependentField)
@@ -1509,28 +1518,28 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 			conditions := make([]string, 0)
 			bitConstants := make([]string, 0)
 			sort.Slice(dependentFields, func(i, j int) bool {
-				return fieldNameToFieldOrder[dependentFields[i].originalName] < fieldNameToFieldOrder[dependentFields[j].originalName]
+				return fieldNameToFieldOrder[dependentFields[i].pureField.Name()] < fieldNameToFieldOrder[dependentFields[j].pureField.Name()]
 			})
 			for _, dependentField := range dependentFields {
 				condition := ""
 				if dependentField.t.PHPIsTrueType() || dependentField.t.PHPGenCoreType().PHPNeedsCode() {
 					condition = fmt.Sprintf(
 						"$this->%[1]s",
-						dependentField.originalName,
+						dependentField.pureField.Name(),
 					)
 				} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
-					condition = fmt.Sprintf("$has_%s", dependentField.originalName)
+					condition = fmt.Sprintf("$has_%s", dependentField.pureField.Name())
 				} else {
 					condition = fmt.Sprintf(
 						"$this->%[1]s !== null",
-						dependentField.originalName,
+						dependentField.pureField.Name(),
 					)
 				}
 				conditions = append(conditions, condition)
 				bitConstants = append(bitConstants, fmt.Sprintf(
 					"self::BIT_%[1]s_%[2]d",
-					strings.ToUpper(dependentField.originalName),
-					dependentField.BitNumber))
+					strings.ToUpper(dependentField.pureField.Name()),
+					dependentField.pureField.BitNumber()))
 			}
 
 			finalCondition := conditions[0]
@@ -1566,7 +1575,7 @@ func (trw *TypeRWStruct) PHPStructConstructor(code *strings.Builder, necessaryFi
 `)
 	for _, f := range necessaryFieldsInConstructor {
 		fieldType, _ := fieldTypeAndDefaultValue(f)
-		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.originalName))
+		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.pureField.Name()))
 	}
 	if len(necessaryFieldsInConstructor) == 0 {
 		code.WriteString("   * @kphp-inline\n")
@@ -1581,12 +1590,12 @@ func (trw *TypeRWStruct) PHPStructConstructor(code *strings.Builder, necessaryFi
 		if i != 0 {
 			code.WriteString(", ")
 		}
-		code.WriteString(fmt.Sprintf("$%[1]s = %[2]s", f.originalName, defaultValue))
+		code.WriteString(fmt.Sprintf("$%[1]s = %[2]s", f.pureField.Name(), defaultValue))
 	}
 
 	code.WriteString(") {\n")
 	for _, f := range necessaryFieldsInConstructor {
-		code.WriteString(fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", f.originalName))
+		code.WriteString(fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", f.pureField.Name()))
 	}
 	code.WriteString("  }\n")
 }
@@ -1634,7 +1643,7 @@ func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
 
 	containsSuchField := func(name, ifTrue, ifFalse string) string {
 		for _, field := range trw.Fields {
-			if field.originalName == name {
+			if field.pureField.Name() == name {
 				return ifTrue
 			}
 		}
@@ -1711,6 +1720,10 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
+		if fieldType == "TL\\tops\\Types\\tops_objectInfo" {
+			Debugf(">>>>")
+			fieldType, defaultValue = fieldTypeAndDefaultValue(f)
+		}
 		code.WriteString(
 			fmt.Sprintf(
 				`
@@ -1718,7 +1731,7 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
   public $%[2]s = %[3]s;
 `,
 				fieldType,
-				f.originalName,
+				f.pureField.Name(),
 				defaultValue,
 			),
 		)
@@ -1728,7 +1741,7 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 func (trw *TypeRWStruct) PHPStructFieldMasks(code *strings.Builder) {
 	// print fieldmasks
 	for _, f := range trw.Fields {
-		if f.fieldMask == nil {
+		if f.pureField.FieldMask() == nil {
 			continue
 		}
 		code.WriteString(
@@ -1737,9 +1750,9 @@ func (trw *TypeRWStruct) PHPStructFieldMasks(code *strings.Builder) {
   /** Field mask for $%[1]s field */
   const BIT_%[2]s_%[3]d = (1 << %[3]d);
 `,
-				f.originalName,
-				strings.ToUpper(f.originalName),
-				f.BitNumber,
+				f.pureField.Name(),
+				strings.ToUpper(f.pureField.Name()),
+				f.pureField.BitNumber(),
 			),
 		)
 	}
@@ -1772,7 +1785,7 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 
 	if trw.wr.gen.options.PHP.AddFunctionBodies &&
 		trw.wr.phpInfo.RequireFunctionBodies &&
-		len(trw.wr.origTL[0].TemplateArguments) == 0 &&
+		trw.wr.pureType.Common().IsTopLevel() &&
 		!trw.wr.gen.options.PHP.UseBuiltinDataProviders {
 		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
 		implementingInterfaces = append(implementingInterfaces, "TL\\Writeable")
@@ -1814,11 +1827,11 @@ func fieldTypeAndDefaultValue(f Field) (string, string) {
 	if f.t.PHPIsTrueType() {
 		fieldType = "boolean"
 		defaultValue = "true"
-		if f.fieldMask != nil {
+		if f.pureField.FieldMask() != nil {
 			defaultValue = "false"
 		}
 	} else {
-		if f.fieldMask != nil {
+		if f.pureField.FieldMask() != nil {
 			defaultValue = "null"
 			if _, isMaybe := f.t.PHPGenCoreType().trw.(*TypeRWMaybe); !isMaybe {
 				fieldType = fieldType + "|null"
@@ -1837,8 +1850,8 @@ func (trw *TypeRWStruct) PhpDefaultValue() string {
 		return "true"
 	}
 	if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-		strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-		trw.wr.tlName.Namespace == "" {
+		strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+		trw.wr.TLName().Namespace == "" {
 		return trw.Fields[0].t.trw.PhpDefaultValue()
 	}
 	return "null"
@@ -1857,7 +1870,8 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	if trw.ResultType == nil {
 		if trw.wr.unionParent != nil {
 			return trw.wr.unionParent.wr
-		} else if !strings.EqualFold(trw.wr.tlName.Name, trw.wr.origTL[0].TypeDecl.Name.Name) {
+		} else if !strings.EqualFold(trw.wr.TLName().String(), trw.pureType.Common().CanonicalName()) {
+			//} else if !strings.EqualFold(trw.wr.TLName().Name, trw.wr.origTL[0].TypeDecl.Name.Name) {
 			// NOTE: constructor name is not same as type => type can become union in future?
 			return trw.wr
 		}
@@ -1898,12 +1912,12 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 			return result
 		}
 		//isDict, _, _, valueType := isDictionaryElement(trw.wr)
-		//if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+		//if isDict && trw.wr.TLName().Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		//	return valueType.t.trw.PhpTypeName(withPath, bare)
 		//}
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			var result []string
 			if !bare {
 				result = trw.phpStructReadMagic(useBuiltIn, result)
@@ -1945,14 +1959,14 @@ func (trw *TypeRWStruct) phpStructReadMagic(useBuiltIn bool, result []string) []
 	if useBuiltIn {
 		result = append(result,
 			"$magic = fetch_int() & 0xFFFFFFFF;",
-			fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+			fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.TLTag()),
 			"  return false;",
 			"}",
 		)
 	} else {
 		result = append(result,
 			"[$magic, $success] = $stream->read_uint32();",
-			fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+			fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.TLTag()),
 			"  return false;",
 			"}",
 		)
@@ -1995,8 +2009,8 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 		//	return valueType.t.trw.PhpTypeName(withPath, bare)
 		//}
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			var result []string
 			if !bare {
 				result = trw.phpStructWriteMagic(useBuiltIn, result)
@@ -2088,8 +2102,8 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 			return result
 		}
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			var result []string
 			result = append(result, trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, bare, initIfDefault, args, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)...)
 			return result
@@ -2165,8 +2179,8 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 			return result
 		}
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-			trw.wr.tlName.Namespace == "" {
+			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+			trw.wr.TLName().Namespace == "" {
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
 			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 			return calcText
@@ -2257,10 +2271,10 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 
 func (trw *TypeRWStruct) phpStructWriteMagic(useBuiltIn bool, result []string) []string {
 	if useBuiltIn {
-		result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+		result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.TLTag()))
 	} else {
 		result = append(result,
-			fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+			fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.TLTag()),
 			"if (!$success) {",
 			"  return false;",
 			"}",
@@ -2278,8 +2292,8 @@ func (trw *TypeRWStruct) PhpDefaultInit() string {
 		return "true"
 	}
 	if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
-		strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
-		trw.wr.tlName.Namespace == "" {
+		strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+		trw.wr.TLName().Namespace == "" {
 		return trw.Fields[0].t.trw.PhpDefaultInit()
 	}
 	return fmt.Sprintf("new %s()", core.trw.PhpClassName(true, true))
@@ -2288,6 +2302,6 @@ func (trw *TypeRWStruct) PhpDefaultInit() string {
 func (trw *TypeRWStruct) PhpCanBeSimplify() bool {
 	return len(trw.Fields) == 1 &&
 		trw.ResultType == nil &&
-		trw.Fields[0].fieldMask == nil &&
+		trw.Fields[0].pureField.FieldMask() == nil &&
 		(trw.wr.gen.options.PHP.InplaceSimpleStructs || trw.Fields[0].t.PHPIsPrimitiveType(false))
 }

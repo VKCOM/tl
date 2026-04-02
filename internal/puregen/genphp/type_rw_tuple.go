@@ -34,10 +34,10 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	// because it is typedef to Vector or built-in brackets.
 	// TODO: FIX IT, because len(structElement.Fields) != 2 is true
 	structElement, ok := wr.trw.(*TypeRWStruct)
-	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.tlName.Name), "dictionary") {
+	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.TLName().Name), "dictionary") {
 		return false, false, Field{}, Field{}
 	}
-	if structElement.Fields[0].fieldMask != nil { // TODO - allowing this complicates json serialization
+	if structElement.Fields[0].pureField.FieldMask() != nil { // TODO - allowing this complicates json serialization
 		return false, false, Field{}, Field{}
 	}
 	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()
@@ -46,7 +46,7 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 
 func phpIsDictionary(wr *TypeRWWrapper) bool {
 	isDict, _, _, _ := isDictionaryElement(wr)
-	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+	if isDict && wr.TLName().Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		return true
 	}
 	return false

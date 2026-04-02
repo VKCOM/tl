@@ -6,12 +6,16 @@
 
 package genphp
 
+import "github.com/VKCOM/tl/internal/pure"
+
 type TypeRWStruct struct {
+	pureType *pure.TypeInstanceStruct
+
 	wr     *TypeRWWrapper
 	Fields []Field
 
 	ResultType         *TypeRWWrapper
-	ResultNatArgs      []ActualNatArg
+	ResultNatArgs      []pure.ActualNatArg
 	ResultHalfResolved HalfResolvedArgument
 
 	fieldsDec    Deconflicter // TODO - add all generated methods here
@@ -22,7 +26,7 @@ type TypeRWStruct struct {
 }
 
 func (trw *TypeRWStruct) isTypeDef() bool {
-	return len(trw.Fields) == 1 && trw.Fields[0].originalName == "" && trw.Fields[0].fieldMask == nil && !trw.Fields[0].recursive
+	return len(trw.Fields) == 1 && trw.Fields[0].pureField.Name() == "" && trw.Fields[0].pureField.FieldMask() == nil && !trw.Fields[0].recursive
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
@@ -31,11 +35,11 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	}
 	// Motivation - we want default wrappers for primitive types, vector and tuple to generate primitive language types
 	primitive, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
-	if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
+	if isPrimitive && primitive.tlType == trw.wr.TLName().String() {
 		return true
 	}
 	brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
-	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
+	if isBuiltinBrackets && (brackets.dictLike || trw.wr.TLName().String() == "vector" || trw.wr.TLName().String() == "tuple") {
 		return true
 	}
 	//if trw.wr.gen.options.Language != "cpp" {
@@ -44,7 +48,7 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	//TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
 	str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
-	if isStruct && str.wr.tlName.String() == "vector" {
+	if isStruct && str.wr.TLName().String() == "vector" {
 		// repeat check above 1 level deeper
 		brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
 		if isBuiltinBrackets && brackets.dictLike {
