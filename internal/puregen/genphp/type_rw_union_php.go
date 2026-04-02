@@ -27,7 +27,7 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
 
-	elems := make([]string, 0, len(trw.wr.arguments))
+	elems := make([]string, 0)
 	for _, arg := range trw.wr.pureType.Common().ResolvedType().SomeType.Arguments {
 		if !arg.IsNumber && arg.Type.SomeType.Name.String() != "*" {
 			tip, _ := trw.wr.gen.getTypeWrapperMust(arg.Type)

@@ -206,14 +206,14 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 
 	name := trw.wr.TLName().Name
 	if !bare {
-		name = ToUpperFirst(name)
+		name = trw.wr.pureType.KernelType().LegacyTypeName().Name
 		//name = trw.wr.origTL[0].TypeDecl.Name.Name
 	}
 	if trw.wr.TLName().Namespace != "" {
 		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
 
-	elems := make([]string, 0, len(trw.wr.arguments))
+	elems := make([]string, 0)
 	for _, arg := range trw.wr.pureType.Common().ResolvedType().SomeType.Arguments {
 		if !arg.IsNumber && arg.Type.SomeType.Name.String() != "*" {
 			tip, _ := trw.wr.gen.getTypeWrapperMust(arg.Type)
@@ -299,6 +299,10 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 
 func (trw *TypeRWStruct) PHPStructFunctionSpecificTypes(code *strings.Builder) {
 	if trw.wr.gen.options.PHP.AddRPCTypes && trw.ResultType != nil {
+		if phpResultType(trw) == "TL\\ch_proxy\\Types\\ch_proxy_Table_stats" {
+			Debugf("????")
+			_ = phpResultType(trw)
+		}
 		code.WriteString(
 			fmt.Sprintf(
 				`
@@ -1720,7 +1724,7 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
-		if fieldType == "TL\\_common\\Types\\VectorTotal__string" {
+		if fieldType == "TL\\ch_proxy\\Types\\ch_proxy_Table_stats" {
 			Debugf(">>>>")
 			fieldType, defaultValue = fieldTypeAndDefaultValue(f)
 		}
