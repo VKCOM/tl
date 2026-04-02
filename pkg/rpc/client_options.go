@@ -7,6 +7,7 @@
 package rpc
 
 import (
+	"log"
 	"net"
 	"time"
 )
@@ -32,8 +33,6 @@ type ClientOptions struct {
 	sendLatencyHandler           LatencyHandler
 	proxyLatencyHandler          LatencyHandler
 	receiveLatencyHandler        LatencyHandler
-
-	trustedSubnetGroupsParseErrors []error
 }
 
 type ClientOptionsFunc func(*ClientOptions)
@@ -59,8 +58,11 @@ func ClientWithTracingInject(inject TracingInjectFunc) ClientOptionsFunc {
 func ClientWithTrustedSubnetGroups(groups [][]string) ClientOptionsFunc {
 	return func(o *ClientOptions) {
 		gs, errs := ParseTrustedSubnets(groups)
+		for _, err := range errs {
+			// we do not return error from this function, and do not want to ignore this error
+			log.Panicf("[rpc] failed to parse client trusted subnet: %v", err)
+		}
 		o.TrustedSubnetGroups = gs
-		o.trustedSubnetGroupsParseErrors = errs
 	}
 }
 
