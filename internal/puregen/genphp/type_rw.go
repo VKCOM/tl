@@ -270,7 +270,7 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType(recursiveCheck bool) bool {
 	}
 	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
 		if phpIsDictionary(struct_.wr) {
-			_, _, _, valueType := isDictionaryElement(struct_.wr)
+			valueType := phpDictionaryElement(struct_.wr)
 			return valueType.t.PHPIsPrimitiveType(true)
 		}
 	}

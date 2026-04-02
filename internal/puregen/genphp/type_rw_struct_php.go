@@ -193,7 +193,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 		}
 
 		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
-			_, _, _, valueType := isDictionaryElement(trw.wr)
+			valueType := phpDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpClassName(withPath, bare)
 		}
 
@@ -242,7 +242,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 		}
 
 		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
-			_, _, _, valueType := isDictionaryElement(trw.wr)
+			valueType := phpDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpTypeName(withPath, bare)
 		}
 
@@ -1720,7 +1720,7 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
-		if fieldType == "TL\\_common\\Types\\Vector__accountCheckUserAction_ValidationMethod|null" {
+		if fieldType == "TL\\_common\\Types\\__dict_field__string__float[]" {
 			Debugf(">>>>")
 			fieldType, defaultValue = fieldTypeAndDefaultValue(f)
 		}

@@ -141,5 +141,5 @@ func (t *KernelType) DifferConstructorAndTypeName() bool {
 	if t.originTL2 {
 		return false
 	}
-	return len(t.combTL1) == 1 && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
+	return len(t.combTL1) == 1 && !t.builtin && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
 }
