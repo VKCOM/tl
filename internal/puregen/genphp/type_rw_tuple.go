@@ -7,6 +7,7 @@
 package genphp
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -44,7 +45,18 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
 }
 
+func phpDictionaryElement(wr *TypeRWWrapper) Field {
+	if !phpIsDictionary(wr) {
+		panic(fmt.Sprintf("not a dict: %s", wr.TLName()))
+	}
+	structElement, _ := wr.trw.(*TypeRWStruct)
+	return structElement.Fields[1]
+}
+
 func phpIsDictionary(wr *TypeRWWrapper) bool {
+	if PHPIsDict(wr.pureType.KernelType()) {
+		return true
+	}
 	isDict, _, _, _ := isDictionaryElement(wr)
 	if isDict && wr.TLName().Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		return true
