@@ -1720,7 +1720,7 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
-		if fieldType == "TL\\tops\\Types\\tops_objectInfo" {
+		if fieldType == "TL\\_common\\Types\\Vector__accountCheckUserAction_ValidationMethod|null" {
 			Debugf(">>>>")
 			fieldType, defaultValue = fieldTypeAndDefaultValue(f)
 		}
@@ -1870,8 +1870,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	if trw.ResultType == nil {
 		if trw.wr.unionParent != nil {
 			return trw.wr.unionParent.wr
-		} else if !strings.EqualFold(trw.wr.TLName().String(), trw.pureType.Common().CanonicalName()) {
-			//} else if !strings.EqualFold(trw.wr.TLName().Name, trw.wr.origTL[0].TypeDecl.Name.Name) {
+		} else if trw.pureType.KernelType().DifferConstructorAndTypeName() {
 			// NOTE: constructor name is not same as type => type can become union in future?
 			return trw.wr
 		}

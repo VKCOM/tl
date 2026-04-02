@@ -87,9 +87,6 @@ type TypeRWWrapper struct {
 	// php info
 	phpInfo PhpClassMeta
 
-	// tl1 info
-	origTL []*tlast.Combinator
-
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
 }

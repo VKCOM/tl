@@ -8,6 +8,7 @@ package pure
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/VKCOM/tl/internal/tlast"
 )
@@ -134,4 +135,11 @@ func (t *KernelType) CombinatorTexts() []string {
 
 func (t *KernelType) Templates() []tlast.TL2TypeTemplate {
 	return t.templateArguments
+}
+
+func (t *KernelType) DifferConstructorAndTypeName() bool {
+	if t.originTL2 {
+		return false
+	}
+	return len(t.combTL1) == 1 && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
 }
