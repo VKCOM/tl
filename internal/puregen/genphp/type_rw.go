@@ -501,7 +501,6 @@ type Field struct {
 	pureField pure.Field
 
 	t         *TypeRWWrapper
-	bare      bool
 	goName    string
 	recursive bool
 
@@ -509,7 +508,7 @@ type Field struct {
 }
 
 func (f *Field) Bare() bool {
-	return f.bare
+	return f.pureField.Bare()
 }
 
 // do not generate fields, but affect block position and skip during reading
