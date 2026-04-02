@@ -143,3 +143,10 @@ func (t *KernelType) DifferConstructorAndTypeName() bool {
 	}
 	return len(t.combTL1) == 1 && !t.builtin && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
 }
+
+func (t *KernelType) LegacyTypeName() tlast.TL2TypeName {
+	if t.originTL2 {
+		return t.canonicalName
+	}
+	return tlast.TL2TypeName(t.combTL1[0].TypeDecl.Name)
+}

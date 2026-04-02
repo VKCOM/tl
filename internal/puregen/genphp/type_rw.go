@@ -73,11 +73,8 @@ type TypeRWWrapper struct {
 
 	gen *Gen2 // options.PHP and packages are here
 
-	ns        *Namespace
-	trw       TypeRW
-	NatParams []string // external params of type Read/Write method, with nat_ prefix
-
-	arguments []ResolvedArgument
+	ns  *Namespace
+	trw TypeRW
 
 	wantsTL2      bool
 	preventUnwrap bool // we can have infinite typedef loop in rare cases
@@ -111,25 +108,6 @@ func (w *TypeRWWrapper) AnnotationsMask() uint32 {
 		}
 	}
 	return mask
-}
-
-// Assign structural names to external arguments
-func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNatArg {
-	for i, a := range w.arguments {
-		fieldName := w.pureType.KernelType().Templates()[i].Name // arguments must be the same for all union elements
-		if a.isNat {
-			if !a.isArith {
-				result = append(result, ActualNatArg{
-					isArith: a.isArith,
-					Arith:   a.Arith,
-					name:    prefix + fieldName,
-				})
-			}
-		} else {
-			result = a.tip.NatArgs(result, prefix+fieldName)
-		}
-	}
-	return result
 }
 
 func stringCompare(a string, b string) int {
