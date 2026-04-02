@@ -7,8 +7,9 @@
 package genphp
 
 type TypeRWPrimitive struct {
-	gen    *Gen2
-	tlType string
+	gen           *Gen2
+	canonicalType string
+	tlType        string
 
 	goType string
 }

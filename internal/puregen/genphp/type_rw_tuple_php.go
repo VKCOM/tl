@@ -14,11 +14,8 @@ import (
 )
 
 func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
-	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
-		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
-		return "array_" + trw.element.t.trw.PhpClassName(false, false)
-	}
-	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
+	return "array_" + trw.element.t.trw.PhpClassName(false, false)
+	//return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
 
 func (trw *TypeRWBrackets) PhpClassNameReplaced() bool {
@@ -26,15 +23,12 @@ func (trw *TypeRWBrackets) PhpClassNameReplaced() bool {
 }
 
 func (trw *TypeRWBrackets) PhpTypeName(withPath bool, bare bool) string {
-	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
-		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
-		elementText := trw.element.t.trw.PhpTypeName(withPath, trw.element.t.PHPIsBare())
-		if _, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
-			elementText = "(" + elementText + ")"
-		}
-		return elementText + "[]"
+	elementText := trw.element.t.trw.PhpTypeName(withPath, trw.element.t.PHPIsBare())
+	if _, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
+		elementText = "(" + elementText + ")"
 	}
-	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
+	return elementText + "[]"
+	//return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
 
 func (trw *TypeRWBrackets) PhpGenerateCode(code *strings.Builder, bytes bool) error {
@@ -164,7 +158,8 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		)
 		return result
 	}
-	return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
+	//return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
+	panic("???")
 }
 
 func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
@@ -257,7 +252,8 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		result = append(result, "}")
 		return result
 	}
-	return []string{fmt.Sprintf("<??? %s write>", trw.wr.goGlobalName)}
+	//return []string{fmt.Sprintf("<??? %s write>", trw.wr.goGlobalName)}
+	panic("???")
 }
 
 func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {

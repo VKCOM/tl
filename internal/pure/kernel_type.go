@@ -131,3 +131,7 @@ func (t *KernelType) CombinatorTexts() []string {
 	}
 	return result
 }
+
+func (t *KernelType) Templates() []tlast.TL2TypeTemplate {
+	return t.templateArguments
+}

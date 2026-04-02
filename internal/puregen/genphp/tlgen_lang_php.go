@@ -51,94 +51,7 @@ type PhpClassMeta struct {
 	RequireFunctionBodies bool
 }
 
-func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL {
-	typesToIgnore := PHPMockTypesToIgnore()
-
-	result := make(map[string]tlast.TL)
-	commonPart := tlast.TL{}
-	commonPartNsDependencies := map[string]bool{
-		"": true,
-	}
-
-	if ns, ok := gen.Namespaces[""]; ok && ns != nil {
-		reachableTypes := make(map[*TypeRWWrapper]bool)
-		for _, wrapper := range ns.types {
-			reachableTypes[wrapper] = true
-			wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
-		}
-		for wrapper := range reachableTypes {
-			commonPartNsDependencies[wrapper.tlName.Namespace] = true
-		}
-	}
-
-	for _, combinator := range originalTL {
-		if commonPartNsDependencies[combinator.Construct.Name.Namespace] &&
-			!typesToIgnore[combinator.Construct.Name.Name] {
-			commonPart = append(commonPart, combinator.MostOriginalVersion())
-		}
-	}
-
-	for s, namespace := range gen.Namespaces {
-		if commonPartNsDependencies[s] {
-			continue
-		}
-		nsResult := tlast.TL{}
-		reachableTypes := make(map[*TypeRWWrapper]bool)
-		for _, wrapper := range namespace.types {
-			if wrapper.IsFunction() {
-				reachableTypes[wrapper] = true
-				wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
-			}
-		}
-		typs := utils.SetToSlice(reachableTypes)
-		sort.Slice(typs, func(i, j int) bool {
-			return TypeComparator(typs[i], typs[j]) > 0
-		})
-		visitedCombinators := make(map[tlast.Name]bool)
-		for _, typ := range typs {
-			for _, combinator := range typ.origTL {
-				mostOriginal := combinator.MostOriginalVersion()
-				if commonPartNsDependencies[mostOriginal.Construct.Name.Namespace] {
-					continue
-				}
-				if visitedCombinators[mostOriginal.Construct.Name] {
-					continue
-				}
-				visitedCombinators[mostOriginal.Construct.Name] = true
-				nsResult = append(nsResult, mostOriginal)
-			}
-		}
-
-		sort.Slice(nsResult, func(i, j int) bool {
-			return nsResult[i].OriginalOrderIndex > nsResult[j].OriginalOrderIndex
-		})
-
-		result[s] = append(result[s], commonPart...)
-		result[s] = append(result[s], nsResult...)
-	}
-
-	for ns := range commonPartNsDependencies {
-		result[ns] = commonPart
-	}
-
-	// replace to kphp for tests
-	for ns := range result {
-		for i, combinator := range result[ns] {
-			if combinator.IsFunction && len(combinator.TemplateArguments) > 0 {
-				continue
-			}
-			finalCombinator := *combinator
-			if finalCombinator.IsFunction {
-				finalCombinator.Modifiers = []tlast.Modifier{{Name: "kphp"}}
-			}
-			result[ns][i] = &finalCombinator
-		}
-	}
-
-	return result
-}
-
-func (gen *Gen2) generateCodePHP(bytesWhiteList []string) error {
+func (gen *Gen2) generateCodePHP() error {
 	// select files where to write code
 	gen.PhpMarkAllInternalTypes()
 	gen.PhpChoosePaths()
@@ -172,40 +85,41 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfac
 `
 		definitionText := ""
 		if strct, isStruct := wrapper.trw.(*TypeRWStruct); isStruct {
-			desc := wrapper.origTL[0].MostOriginalVersion()
+			desc := strct.pureType
 			unionParent := strct.PhpConstructorNeedsUnion()
 			if unionParent != nil && unionParent == wrapper && !createInterfaceIfNeeded {
 				// skip comment generation
 			} else {
-				if desc.IsFunction || len(desc.Fields) >= 0 {
-					// TODO strange grisha generation
-					savedIDExplicit := desc.Construct.IDExplicit
-					desc.Construct.IDExplicit = true
-
-					definitionText += "\n *\n"
-					definitionText += " * " + desc.Construct.String()
-
-					desc.Construct.IDExplicit = savedIDExplicit
-					hasFields := len(desc.TemplateArguments) > 0 || len(desc.Fields) > 0
-					for _, template := range desc.TemplateArguments {
-						definitionText += "\n"
-						definitionText += " *   " + template.String()
-					}
-					for _, field := range desc.Fields {
-						definitionText += "\n"
-						definitionText += " *   " + field.ToCrc32()
-					}
-					if hasFields {
-						definitionText += "\n *  "
-					}
-					definitionText += " = "
-					resultType := ""
-					if desc.IsFunction {
-						resultType = desc.FuncDecl.ToCrc32()
-					} else {
-						resultType = desc.TypeDecl.String()
-					}
-					definitionText += resultType + `;`
+				if desc.KernelType().IsFunction() || len(desc.Fields()) >= 0 {
+					// TODO!
+					//// TODO strange grisha generation
+					//savedIDExplicit := desc.Construct.IDExplicit
+					//desc.Construct.IDExplicit = true
+					//
+					//definitionText += "\n *\n"
+					//definitionText += " * " + desc.Construct.String()
+					//
+					//desc.Construct.IDExplicit = savedIDExplicit
+					//hasFields := len(desc.KernelType().Templates()) > 0 || len(desc.Fields()) > 0
+					//for _, template := range desc.KernelType().Templates() {
+					//	definitionText += "\n"
+					//	definitionText += " *   " + template.Name + ":" + template.Category.String()
+					//}
+					//for _, field := range desc.Fields() {
+					//	definitionText += "\n"
+					//	definitionText += " *   " + field.ToCrc32()
+					//}
+					//if hasFields {
+					//	definitionText += "\n *  "
+					//}
+					//definitionText += " = "
+					//resultType := ""
+					//if desc.IsFunction {
+					//	resultType = desc.FuncDecl.ToCrc32()
+					//} else {
+					//	resultType = desc.TypeDecl.String()
+					//}
+					//definitionText += resultType + `;`
 				}
 			}
 		}
@@ -370,12 +284,15 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 			} else {
 				nonInternalFunctions = append(nonInternalFunctions, wrapper)
 			}
-			if inNameFilter(wrapper.tlName, bodiesGenerationFilter) {
+			if inNameFilter(tlast.Name{
+				Namespace: wrapper.TLName().Namespace,
+				Name:      wrapper.TLName().Name,
+			}, bodiesGenerationFilter) {
 				bodiesGenerationFunctions = append(bodiesGenerationFunctions, wrapper)
 			}
 		}
 		// TODO: CHANGE SOMEHOW
-		if gen.options.PHP.AddRPCTypes && rpcResults[wrapper.tlName.String()] {
+		if gen.options.PHP.AddRPCTypes && rpcResults[wrapper.TLName().String()] {
 			nonInternalFunctions = append(nonInternalFunctions, wrapper)
 		}
 	}
@@ -406,11 +323,7 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
 	strct, iStruct := wr.trw.(*TypeRWStruct)
 	if iStruct && strct.ResultType != nil {
-		if strct.wr.origTL[0].OriginalDescriptor != nil &&
-			strct.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil {
-			return len(strct.wr.origTL[0].OriginalDescriptor.OriginalDescriptor.TemplateArguments) == 0
-		}
-		return true
+		return strct.wr.pureType.Common().IsTopLevel()
 	}
 	return false
 }
@@ -501,9 +414,9 @@ class tl_meta {
     $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
     $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
     $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
-				wr.tlTag,
+				wr.TLTag(),
 				wr.AnnotationsMask(),
-				wr.tlName.String(),
+				wr.TLName().String(),
 			))
 		}
 	}
@@ -640,9 +553,9 @@ class tl_factory {
     $this->tl_factory_by_name["%[3]s"] = $item%08[1]x;
     $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;
     $this->tl_json_printer_for_response_by_name["%[3]s"] = $item_json_print%08[1]x;`,
-				wr.tlTag,
+				wr.TLTag(),
 				wr.AnnotationsMask(),
-				wr.tlName.String(),
+				wr.TLName().String(),
 				wr.trw.PhpClassName(true, true),
 			))
 		}
@@ -667,13 +580,13 @@ func PHPGetAllReachableTypes(startTypes []*TypeRWWrapper) map[*TypeRWWrapper]boo
 }
 
 func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
-	if wrapper.tlName.String() == PHPRPCFunctionMock {
+	if wrapper.TLName().String() == PHPRPCFunctionMock {
 		return "TL\\RpcFunction"
 	}
-	if wrapper.tlName.String() == PHPRPCFunctionResultMock {
+	if wrapper.TLName().String() == PHPRPCFunctionResultMock {
 		return "TL\\RpcFunctionReturnResult"
 	}
-	if wrapper.tlName.String() == PHPRPCResponseMock {
+	if wrapper.TLName().String() == PHPRPCResponseMock {
 		return "TL\\RpcResponse"
 	}
 	return ""
