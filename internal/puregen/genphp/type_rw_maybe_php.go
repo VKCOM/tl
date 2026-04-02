@@ -16,7 +16,7 @@ import (
 
 func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	return "maybe_" + target.t.trw.PhpClassName(withPath, target.bare)
+	return "maybe_" + target.t.trw.PhpClassName(withPath, target.Bare())
 }
 
 func (trw *TypeRWMaybe) PhpClassNameReplaced() bool {
@@ -92,7 +92,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		if args != nil {
 			newArgs = args.children[0]
 		}
-		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix)
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.Bare(), initIfDefault, newArgs, supportSuffix)
 		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}
@@ -139,7 +139,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 			if args != nil {
 				newArgs = args.children[0]
 			}
-			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs, supportSuffix)
+			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.Bare(), newArgs, supportSuffix)
 			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]
 			}
@@ -205,7 +205,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 		if args != nil {
 			newArgs = args.children[0]
 		}
-		bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.Bare(), initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		cc.AddLines(bodyReader...)
 	}, func() {
 		cc.If(fmt.Sprintf("!%[1]s", maybeOk), func() {

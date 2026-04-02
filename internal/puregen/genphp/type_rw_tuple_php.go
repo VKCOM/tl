@@ -61,7 +61,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
 		vectorSizeName := fmt.Sprintf("$vector_size_%d", len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[0], supportSuffix)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args.children[0], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -97,7 +97,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[1], supportSuffix)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args.children[1], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -123,11 +123,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
 		dictSizeName := fmt.Sprintf("$dict_size_%d", len(trw.PhpClassName(false, true)))
-		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix)
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.Bare(), true, args.children[0], supportSuffix)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
 		}
-		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix)
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.Bare(), true, args.children[0], supportSuffix)
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
@@ -187,7 +187,7 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		)
 		{
 			result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, index)))
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.bare, args.children[0], supportSuffix)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.Bare(), args.children[0], supportSuffix)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -207,7 +207,7 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		)
 		{
 			result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, index)))
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.bare, elementArgs, supportSuffix)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.Bare(), elementArgs, supportSuffix)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -238,11 +238,11 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 			fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 		)
 		{
-			keyRead := trw.dictKeyField.t.trw.PhpWriteMethodCall(keyElement, trw.dictKeyField.bare, args, supportSuffix)
+			keyRead := trw.dictKeyField.t.trw.PhpWriteMethodCall(keyElement, trw.dictKeyField.Bare(), args, supportSuffix)
 			for i := range keyRead {
 				keyRead[i] = "  " + keyRead[i]
 			}
-			valueRead := trw.dictValueField.t.trw.PhpWriteMethodCall(valueElement, trw.dictValueField.bare, args, supportSuffix)
+			valueRead := trw.dictValueField.t.trw.PhpWriteMethodCall(valueElement, trw.dictValueField.Bare(), args, supportSuffix)
 			for i := range valueRead {
 				valueRead[i] = "  " + valueRead[i]
 			}
@@ -271,7 +271,7 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.bare, false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -324,7 +324,7 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.bare, false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -428,13 +428,13 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 
 				cc.If(cc.CheckBit(pairBlock, 1), func() {
 					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
-					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.Bare(), true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
 					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 
 				cc.If(cc.CheckBit(pairBlock, 2), func() {
 					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
-					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.Bare(), true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
 					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 			})
