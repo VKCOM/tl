@@ -196,10 +196,6 @@ func NewClient(options ...ClientOptionsFunc) Client {
 		opt(&opts)
 	}
 
-	for _, err := range opts.trustedSubnetGroupsParseErrors {
-		opts.Logf("rpc: failed to parse client trusted subnet %q, ignoring", err)
-	}
-
 	c := &ClientImpl{
 		opts:      opts,
 		conns:     map[NetAddr]*clientConn{},
