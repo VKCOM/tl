@@ -69,6 +69,17 @@ func (gen *Gen2) generateCodePHP() error {
 	return nil
 }
 
+func phpMapConstructor(constructor tlast.Constructor) tlast.Constructor {
+	if constructor.Name.String() == "_" {
+		constructor.Name.Name = "rpcResponseOk"
+	} else if constructor.Name.String() == "reqResultHeader" {
+		constructor.Name.Name = "rpcResponseHeader"
+	} else if constructor.Name.String() == "reqError" {
+		constructor.Name.Name = "rpcResponseError"
+	}
+	return constructor
+}
+
 func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
 	var code strings.Builder
 	// add start symbol
@@ -91,35 +102,34 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfac
 				// skip comment generation
 			} else {
 				if desc.KernelType().IsFunction() || len(desc.Fields()) >= 0 {
-					// TODO!
-					//// TODO strange grisha generation
-					//savedIDExplicit := desc.Construct.IDExplicit
-					//desc.Construct.IDExplicit = true
-					//
-					//definitionText += "\n *\n"
-					//definitionText += " * " + desc.Construct.String()
-					//
-					//desc.Construct.IDExplicit = savedIDExplicit
-					//hasFields := len(desc.KernelType().Templates()) > 0 || len(desc.Fields()) > 0
-					//for _, template := range desc.KernelType().Templates() {
-					//	definitionText += "\n"
-					//	definitionText += " *   " + template.Name + ":" + template.Category.String()
-					//}
-					//for _, field := range desc.Fields() {
-					//	definitionText += "\n"
-					//	definitionText += " *   " + field.ToCrc32()
-					//}
-					//if hasFields {
-					//	definitionText += "\n *  "
-					//}
-					//definitionText += " = "
-					//resultType := ""
-					//if desc.IsFunction {
-					//	resultType = desc.FuncDecl.ToCrc32()
-					//} else {
-					//	resultType = desc.TypeDecl.String()
-					//}
-					//definitionText += resultType + `;`
+					desc := desc.KernelType().TL1()[wrapper.unionIndex]
+					savedIDExplicit := desc.Construct.IDExplicit
+					desc.Construct.IDExplicit = true
+
+					definitionText += "\n *\n"
+					definitionText += " * " + phpMapConstructor(desc.Construct).String()
+
+					desc.Construct.IDExplicit = savedIDExplicit
+					hasFields := len(desc.TemplateArguments) > 0 || len(desc.Fields) > 0
+					for _, template := range desc.TemplateArguments {
+						definitionText += "\n"
+						definitionText += " *   " + template.String()
+					}
+					for _, field := range desc.Fields {
+						definitionText += "\n"
+						definitionText += " *   " + field.ToCrc32()
+					}
+					if hasFields {
+						definitionText += "\n *  "
+					}
+					definitionText += " = "
+					resultType := ""
+					if desc.IsFunction {
+						resultType = desc.FuncDecl.ToCrc32()
+					} else {
+						resultType = desc.TypeDecl.String()
+					}
+					definitionText += resultType + `;`
 				}
 			}
 		}
