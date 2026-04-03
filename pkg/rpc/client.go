@@ -273,10 +273,15 @@ func (c *ClientImpl) do(ctx context.Context, network string, address string, req
 	}
 
 	response.result = response.singleResult // delivery to singleResult channel
-	pc, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
+	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
 	if err != nil {
 		// response.singleResult is empty (not sent), reuse
 		return err
+	}
+	if needCtx {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithDeadline(ctx, deadline)
+		defer cancel() // hopefully this call is efficient
 	}
 	select {
 	case <-ctx.Done():
@@ -317,7 +322,8 @@ func (c *ClientImpl) DoCallback(ctx context.Context, network string, address str
 	resp.userData = userData
 
 	queryID := req.QueryID() // must not access cctx or req after setupCall, because callback can be already called and cctx reused
-	pc, err := c.setupCall(ctx, NetAddr{network, address}, req, resp)
+	pc, _, _, err := c.setupCall(ctx, NetAddr{network, address}, req, resp)
+	// if we need local cancellation, we cannot provide it with current API.
 
 	return CallbackContext{pc: pc, queryID: queryID}, err
 }
@@ -336,12 +342,12 @@ func (c *ClientImpl) CancelDoCallback(cc CallbackContext) (cancelled bool) {
 }
 
 // Common code for all requests independent of transport
-func (c *ClientImpl) prepareCall(ctx context.Context, req *Request, startTime time.Time) (deadline time.Time, err error) {
+func (c *ClientImpl) prepareCall(ctx context.Context, req *Request) (err error) {
 	if req.Extra.IsSetNoResult() {
 		// We consider it antipattern.
 		// If you ever need them, do not implement).
 		// If you still need them, call finishCall from sendLoop after sending for correct in flight accounting.
-		return time.Time{}, fmt.Errorf("sending no_result requests is not supported")
+		return fmt.Errorf("sending no_result requests is not supported")
 	}
 	// hctx := GetHandlerContext(ctx) <-- we must never touch hctx outside handler,
 	// ctx lifetime can be larger, so we actually store copies of EC and TC
@@ -362,22 +368,21 @@ func (c *ClientImpl) prepareCall(ctx context.Context, req *Request, startTime ti
 			}
 		}
 	}
-	deadline, err = c.fillRequestTimeout(ctx, req, startTime)
-	if err != nil {
-		return time.Time{}, err
-	}
 	if err = preparePacket(req); err != nil {
-		return time.Time{}, err
+		return err
 	}
-	return deadline, err
+	return err
 }
 
 // Starts if it needs to
-// We must setupCall inside client lock, otherwise connection might decide to quit before we can setup call
-func (c *ClientImpl) setupCall(ctx context.Context, address NetAddr, req *Request, resp *Response) (*clientConn, error) {
-	deadline, err := c.prepareCall(ctx, req, req.startTime)
+// We must setupCall inside client lock, otherwise connection might decide to quit before we can set up call
+func (c *ClientImpl) setupCall(ctx context.Context, address NetAddr, req *Request, resp *Response) (*clientConn, time.Time, bool, error) {
+	deadline, needCtx, err := c.fillRequestTimeout(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, time.Time{}, false, err
+	}
+	if err := c.prepareCall(ctx, req); err != nil {
+		return nil, time.Time{}, false, err
 	}
 	resp.deadline = deadline
 
@@ -385,7 +390,7 @@ func (c *ClientImpl) setupCall(ctx context.Context, address NetAddr, req *Reques
 	// ------ to test RACE detector, replace lines below
 	if c.closed {
 		c.mu.RUnlock()
-		return nil, ErrClientClosed
+		return nil, time.Time{}, false, ErrClientClosed
 	}
 	pc := c.conns[address]
 	// ------ with
@@ -402,19 +407,19 @@ func (c *ClientImpl) setupCall(ctx context.Context, address NetAddr, req *Reques
 		err = pc.setupCallLocked(req, resp)
 		pc.mu.Unlock()
 		pc.writeQCond.Signal() // signal without holding the mutex to reduce contention
-		return pc, err
+		return pc, deadline, needCtx, err
 	}
 	c.mu.RUnlock()
 
 	if address.Network != "tcp4" && address.Network != "tcp6" && address.Network != "tcp" && address.Network != "unix" { // optimization: check only if not found in c.conns
-		return nil, fmt.Errorf("unsupported network type %q", address.Network)
+		return nil, time.Time{}, false, fmt.Errorf("unsupported network type %q", address.Network)
 	}
 
 	c.mu.Lock()
 	defer c.mu.Unlock() // for simplicity, this is not a fastpath
 
 	if c.closed {
-		return nil, ErrClientClosed
+		return nil, time.Time{}, false, ErrClientClosed
 	}
 
 	pc = c.conns[address]
@@ -441,34 +446,38 @@ func (c *ClientImpl) setupCall(ctx context.Context, address NetAddr, req *Reques
 	err = pc.setupCallLocked(req, resp)
 	pc.mu.Unlock()
 	pc.writeQCond.Signal() // signal without holding the mutex to reduce contention
-	return pc, err
+	return pc, deadline, needCtx, err
 }
 
-func (c *ClientImpl) fillRequestTimeout(ctx context.Context, req *Request, startTime time.Time) (time.Time, error) {
+func (c *ClientImpl) fillRequestTimeout(ctx context.Context, req *Request) (_ time.Time, needCtx bool, _ error) {
 	UpdateExtraTimeout(&req.Extra, c.opts.DefaultTimeout)
 	if !req.Extra.IsSetCustomTimeoutMs() && req.Extra.CustomTimeoutMs != 0 { // protect against programmer's mistake
-		return time.Time{}, fmt.Errorf("rpc: custom timeout should be set with extra.SetCustomTimeoutMs function, otherwise custom timeout is ignored")
+		return time.Time{}, false, fmt.Errorf("rpc: custom timeout should be set with extra.SetCustomTimeoutMs function, otherwise custom timeout is ignored")
 	}
 	if req.Extra.CustomTimeoutMs < 0 { // TODO - change TL scheme to have unsigned type
-		return time.Time{}, fmt.Errorf("rpc: extra.CustomTimeoutMs (%d) should not be negative", req.Extra.CustomTimeoutMs)
+		return time.Time{}, false, fmt.Errorf("rpc: extra.CustomTimeoutMs (%d) should not be negative", req.Extra.CustomTimeoutMs)
+	}
+	if req.Extra.CustomTimeoutMs == 0 {
+		req.Extra.ClearCustomTimeoutMs() // normalize by not sending infinite timeout
 	}
 	if deadline, ok := ctx.Deadline(); ok {
-		to := deadline.Sub(startTime)
+		to := deadline.Sub(req.startTime)
 		if to <= 0 { // local timeout, <= is the only correct comparison
-			return time.Time{}, context.DeadlineExceeded
+			return time.Time{}, false, context.DeadlineExceeded
 		}
-		if req.Extra.CustomTimeoutMs == 0 || to < time.Millisecond*time.Duration(req.Extra.CustomTimeoutMs) {
-			// there is no point to set timeout larger than set in context, as client will fail locally before server returns response
-			req.Extra.ClearCustomTimeoutMs()
-			UpdateExtraTimeout(&req.Extra, to)
-			return deadline, nil
+		toMs := roundTimeoutToInt32(to)
+		if req.Extra.CustomTimeoutMs == 0 || toMs <= req.Extra.CustomTimeoutMs {
+			// there is no point to send timeout larger than set in context, as client will fail locally before server returns response
+			req.Extra.SetCustomTimeoutMs(toMs)
+			return deadline, false, nil
 		}
+		// custom timeout is before context deadline, so we need another context for correct local cancellation
+		return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), true, nil
 	}
 	if req.Extra.CustomTimeoutMs == 0 { //  infinite
-		req.Extra.ClearCustomTimeoutMs() // normalize by not sending infinite timeout
-		return time.Time{}, nil
+		return time.Time{}, false, nil
 	}
-	return startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), nil
+	return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), true, nil
 }
 
 // ResetReconnectDelay resets timer before the next reconnect attempt.
@@ -613,9 +622,9 @@ func roundTimeoutToInt32(timeout time.Duration) int32 {
 	}
 	timeoutMilli := timeout.Milliseconds()
 	if timeoutMilli > math.MaxInt32 {
-		return 0 // large timeouts round to infinite
+		return math.MaxInt32 // large, but not infinite timeouts clamp
 	}
-	if timeoutMilli < 1 { // do not round small timeouts to infinite
+	if timeoutMilli < 1 { // do not round small timeouts to 0 (infinite)
 		return 1
 	}
 	return int32(timeoutMilli)

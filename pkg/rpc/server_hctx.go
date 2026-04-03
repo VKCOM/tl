@@ -78,38 +78,7 @@ type HandlerContext struct {
 type handlerContextKey struct{}
 type tracingContextKey struct{}
 type executionContextKey struct{}
-
-// rpc.HandlerContext must never be used outside of the handler
-func GetHandlerContext(ctx context.Context) *HandlerContext {
-	hctx, _ := ctx.Value(handlerContextKey{}).(*HandlerContext)
-	return hctx
-}
-
-// Tracing context is a copy and may be used anywhere
-func GetTracingContext(ctx context.Context) tltracing.TraceContext {
-	trc, _ := ctx.Value(tracingContextKey{}).(tltracing.TraceContext)
-	return trc
-}
-
-// Execution context is a copy and may be used anywhere
-func GetExecutionContext(ctx context.Context) string {
-	ec, _ := ctx.Value(executionContextKey{}).(string)
-	return ec
-}
-
-func WithTracingContext(ctx context.Context, tc tltracing.TraceContext) context.Context {
-	if GetTracingContext(ctx) != tc {
-		ctx = context.WithValue(ctx, tracingContextKey{}, tc)
-	}
-	return ctx
-}
-
-func WithExecutionContext(ctx context.Context, ec string) context.Context {
-	if GetExecutionContext(ctx) != ec {
-		ctx = context.WithValue(ctx, executionContextKey{}, ec)
-	}
-	return ctx
-}
+type preferTLVersionFuncKey struct{}
 
 // Sets also Execution Context and Tracing Context
 func (hctx *HandlerContext) WithContext(ctx context.Context) context.Context {
@@ -121,6 +90,56 @@ func (hctx *HandlerContext) WithContext(ctx context.Context) context.Context {
 		ctx = context.WithValue(ctx, executionContextKey{}, hctx.RequestExtra.ExecutionContext)
 	}
 	return ctx
+}
+
+// rpc.HandlerContext must never be used outside of the handler
+func GetHandlerContext(ctx context.Context) *HandlerContext {
+	hctx, _ := ctx.Value(handlerContextKey{}).(*HandlerContext)
+	return hctx
+}
+
+func WithTracingContext(ctx context.Context, tc tltracing.TraceContext) context.Context {
+	if GetTracingContext(ctx) != tc {
+		ctx = context.WithValue(ctx, tracingContextKey{}, tc)
+	}
+	return ctx
+}
+
+// Tracing context is a copy and may be used anywhere
+func GetTracingContext(ctx context.Context) tltracing.TraceContext {
+	trc, _ := ctx.Value(tracingContextKey{}).(tltracing.TraceContext)
+	return trc
+}
+
+func WithExecutionContext(ctx context.Context, ec string) context.Context {
+	if GetExecutionContext(ctx) != ec {
+		ctx = context.WithValue(ctx, executionContextKey{}, ec)
+	}
+	return ctx
+}
+
+// Execution context is a copy and may be used anywhere
+func GetExecutionContext(ctx context.Context) string {
+	ec, _ := ctx.Value(executionContextKey{}).(string)
+	return ec
+}
+
+// Should not modify req. All req fields are set before call, except Body and BodyFormatTL2.
+// If only TL1 or TL2 code exists for function, PreferTLVersionFunc is not called at all.
+// If both versions of code exist for function, PreferTLVersionFunc will be called.
+// If it returns 2, body will be serialized to TL2. Otherwise, to TL1.
+// defaultTLVersion is 2 if function is in --rpcPreferTL2WhiteList
+// Beware, version returned by this function is overriden by Extra.PreferTLVersion which has highest priority.
+type PreferTLVersionFunc = func(ctx context.Context, req *Request, defaultTLVersion int) int
+
+func WithPreferTLVersionFunc(ctx context.Context, f PreferTLVersionFunc) context.Context {
+	ctx = context.WithValue(ctx, preferTLVersionFuncKey{}, f)
+	return ctx
+}
+
+func GetPreferTLVersionFunc(ctx context.Context) PreferTLVersionFunc {
+	f, _ := ctx.Value(preferTLVersionFuncKey{}).(PreferTLVersionFunc)
+	return f
 }
 
 func (hctx *HandlerContext) ActorID() int64              { return hctx.actorID }

@@ -161,21 +161,19 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         req.ReadOnly = true
     {%- endif -%}
     req.FunctionName = "{%s= tlName %}"
-{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
-    preferTLVersion := {%- if fun.pureTypeStruct.RPCPreferTL2() -%}2{%- else -%}1{%- endif -%}
-
-{%- endif -%}
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
-{%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
-{%- endif -%}
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 {%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
+    preferTLVersion := {%- if fun.pureTypeStruct.RPCPreferTL2() -%}2{%- else -%}1{%- endif %}
+    if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+        preferTLVersion = f(ctx, req, preferTLVersion)
+    }
+    if extra != nil && extra.PreferTLVersion != 0 {
+        preferTLVersion = extra.PreferTLVersion
+    }
     if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
