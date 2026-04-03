@@ -416,6 +416,8 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	options.Kernel.InstantiateConstants = false
+	options.Kernel.InstantiateExclamationWrappers = true
+
 	if err := kernel.Compile(); err != nil {
 		return err
 	}

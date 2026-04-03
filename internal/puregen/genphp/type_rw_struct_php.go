@@ -205,6 +205,19 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	}
 
 	name := trw.wr.TLName().Name
+
+	// TODO!
+	switch name {
+	case "_":
+		name = "rpcResponseOk"
+	case "reqError":
+		name = "rpcResponseError"
+	case "reqResultHeader":
+		name = "rpcResponseHeader"
+	case "ReqResult":
+		return "TL\\RpcResponse"
+	}
+
 	if !bare {
 		name = trw.wr.pureType.KernelType().LegacyTypeName().Name
 		//name = trw.wr.origTL[0].TypeDecl.Name.Name
@@ -1608,7 +1621,7 @@ func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
 	if !trw.wr.gen.options.PHP.AddRPCTypes {
 		return
 	}
-	if unionParent := trw.wr.PHPUnionParent(); unionParent == nil || PHPSpecialMembersTypes(unionParent) == "" {
+	if trw.wr.pureType.KernelType().CanonicalName().String() != "ReqResult" {
 		return
 	}
 
@@ -1776,6 +1789,10 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
  * @kphp-tl-class
  */
 `)
+	if "rpcResponseError" == trw.PhpClassName(false, true) {
+		Debugf("rpcResponseError")
+		_ = trw.PhpClassName(false, true)
+	}
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
 	implementingInterfaces := make([]string, 0)
 

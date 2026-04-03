@@ -23,6 +23,12 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 		return specialCase
 	}
 	name := trw.wr.TLName().Name
+
+	switch name {
+	case "ReqResult":
+		return "TL\\RpcResponse"
+	}
+
 	if len(trw.wr.TLName().Namespace) != 0 {
 		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
