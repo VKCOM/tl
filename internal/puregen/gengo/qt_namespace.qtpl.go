@@ -296,6 +296,11 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`    req.FunctionName = "`)
 	qw422016.N().S(tlName)
 	qw422016.N().S(`"
+    if extra != nil {
+        req.Extra = extra.RequestExtra
+        req.FailIfNoConnection = extra.FailIfNoConnection
+    }
+    rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
 	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
 		qw422016.N().S(`    preferTLVersion :=`)
@@ -305,23 +310,13 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 			qw422016.N().S(`1`)
 		}
 		qw422016.N().S(`
-`)
-	}
-	qw422016.N().S(`    if extra != nil {
-        req.Extra = extra.RequestExtra
-        req.FailIfNoConnection = extra.FailIfNoConnection
-`)
-	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
-		qw422016.N().S(`		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
-`)
-	}
-	qw422016.N().S(`    }
-    rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-`)
-	if fun.wr.HasTL2() && !fun.wr.OriginTL2() {
-		qw422016.N().S(`    if preferTLVersion == 2 {
+    if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+        preferTLVersion = f(ctx, req, preferTLVersion)
+    }
+    if extra != nil && extra.PreferTLVersion != 0 {
+        preferTLVersion = extra.PreferTLVersion
+    }
+    if preferTLVersion == 2 {
         req.BodyFormatTL2 = true
         req.Body = basictl.NatWrite(req.Body, args.TLTag())
         req.Body = args.WriteTL2(req.Body, nil)

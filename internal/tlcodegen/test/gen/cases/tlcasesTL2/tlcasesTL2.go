@@ -56,15 +56,18 @@ func (c *Client) TestFunctionNoDep1(ctx context.Context, args TestFunctionNoDep1
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep1"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -101,15 +104,18 @@ func (c *Client) TestFunctionNoDep2(ctx context.Context, args TestFunctionNoDep2
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep2"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -146,15 +152,18 @@ func (c *Client) TestFunctionNoDep3(ctx context.Context, args TestFunctionNoDep3
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep3"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -191,15 +200,18 @@ func (c *Client) TestFunctionNoDep4(ctx context.Context, args TestFunctionNoDep4
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep4"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -236,15 +248,18 @@ func (c *Client) TestFunctionNoDep5(ctx context.Context, args TestFunctionNoDep5
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep5"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -281,15 +296,18 @@ func (c *Client) TestFunctionNoDep6(ctx context.Context, args TestFunctionNoDep6
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep6"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -326,15 +344,18 @@ func (c *Client) TestFunctionNoDep7(ctx context.Context, args TestFunctionNoDep7
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep7"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -371,15 +392,18 @@ func (c *Client) TestFunctionWithDep1(ctx context.Context, args TestFunctionWith
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionWithDep1"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())
@@ -416,15 +440,18 @@ func (c *Client) TestFunctionWithDep2(ctx context.Context, args TestFunctionWith
 	req.ActorID = c.ActorID
 	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionWithDep2"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())

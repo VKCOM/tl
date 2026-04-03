@@ -99,7 +99,8 @@ func (m *Multi) Start(ctx context.Context, network string, address string, req *
 	queryID := req.QueryID() // must not access req after setupCall
 	cctx := m.c.getResponse(req)
 	cctx.result = m.multiResult // does not touch cctx.singleResult
-	pc, err := m.c.setupCall(ctx, NetAddr{network, address}, req, cctx)
+	pc, _, _, err := m.c.setupCall(ctx, NetAddr{network, address}, req, cctx)
+	// if we need local cancellation, we cannot provide it with current API.
 	if err != nil {
 		m.sem.Release(1)
 		return err

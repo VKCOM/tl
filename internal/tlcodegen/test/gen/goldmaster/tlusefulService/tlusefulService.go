@@ -51,15 +51,18 @@ func (c *Client) GetUserEntity(ctx context.Context, args GetUserEntity, extra *r
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
 	req.FunctionName = "usefulService.getUserEntity"
-	preferTLVersion := 1
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
-		if extra.PreferTLVersion != 0 {
-			preferTLVersion = extra.PreferTLVersion
-		}
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	preferTLVersion := 1
+	if f := rpc.GetPreferTLVersionFunc(ctx); f != nil {
+		preferTLVersion = f(ctx, req, preferTLVersion)
+	}
+	if extra != nil && extra.PreferTLVersion != 0 {
+		preferTLVersion = extra.PreferTLVersion
+	}
 	if preferTLVersion == 2 {
 		req.BodyFormatTL2 = true
 		req.Body = basictl.NatWrite(req.Body, args.TLTag())

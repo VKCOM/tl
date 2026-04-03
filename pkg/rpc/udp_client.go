@@ -158,10 +158,15 @@ func (c *udpClient) Do(ctx context.Context, network string, address string, req 
 func (c *udpClient) do(ctx context.Context, network string, address string, req *Request, response *Response) error {
 
 	response.result = response.singleResult // delivery to singleResult channel
-	pc, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
+	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
 	if err != nil {
 		// response.singleResult is empty (not sent), reuse
 		return err
+	}
+	if needCtx {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithDeadline(ctx, deadline)
+		defer cancel() // hopefully this call is efficient
 	}
 	select {
 	case <-ctx.Done():
@@ -180,10 +185,13 @@ func (c *udpClient) do(ctx context.Context, network string, address string, req 
 	}
 }
 
-func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request, cctx *Response) (*udpClientConn, error) {
-	deadline, err := c.client.prepareCall(ctx, req, req.startTime)
+func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request, cctx *Response) (*udpClientConn, time.Time, bool, error) {
+	deadline, needCtx, err := c.client.fillRequestTimeout(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, time.Time{}, false, err
+	}
+	if err := c.client.prepareCall(ctx, req); err != nil {
+		return nil, time.Time{}, false, err
 	}
 	cctx.deadline = deadline
 
@@ -191,7 +199,7 @@ func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request
 	// ------ to test RACE detector, replace lines below
 	if c.closed {
 		c.mu.RUnlock()
-		return nil, ErrClientClosed
+		return nil, time.Time{}, false, ErrClientClosed
 	}
 	pc := c.conns[address]
 
@@ -200,19 +208,19 @@ func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request
 		c.mu.RUnlock() // Do not hold while working with pc
 		err := pc.setupCallLocked(req, cctx)
 		pc.mu.Unlock()
-		return pc, err
+		return pc, deadline, needCtx, err
 	}
 	c.mu.RUnlock()
 
 	if address.Network != "udp4" && address.Network != "udp6" && address.Network != "udp" { // optimization: check only if not found in client.conns
-		return nil, fmt.Errorf("unsupported network type %q", address.Network)
+		return nil, time.Time{}, false, fmt.Errorf("unsupported network type %q", address.Network)
 	}
 
 	c.mu.Lock()
 	defer c.mu.Unlock() // for simplicity, this is not a fastpath
 
 	if c.closed {
-		return nil, ErrClientClosed
+		return nil, time.Time{}, false, ErrClientClosed
 	}
 
 	pc = c.conns[address]
@@ -220,18 +228,18 @@ func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request
 		host, portStr, err := net.SplitHostPort(address.Address)
 		if err != nil {
 			// TODO return understandable error
-			return nil, err
+			return nil, time.Time{}, false, err
 		}
 		port, err := strconv.Atoi(portStr)
 		if err != nil {
-			return nil, err
+			return nil, time.Time{}, false, err
 		}
 
 		if ip := net.ParseIP(host); ip == nil {
 			if hostIP := etchosts.Resolve(host); hostIP != "" {
 				host = hostIP
 			} else {
-				return nil, fmt.Errorf("cannot resolve hostname %s", host)
+				return nil, time.Time{}, false, fmt.Errorf("cannot resolve hostname %s", host)
 			}
 		}
 
@@ -254,9 +262,9 @@ func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request
 		)
 		if err != nil {
 			if err == udp.ErrTransportClosed {
-				return nil, ErrClientClosed
+				return nil, time.Time{}, false, ErrClientClosed
 			}
-			return nil, err
+			return nil, time.Time{}, false, err
 		}
 		if conn.UserData != nil {
 			pc = conn.UserData.(*udpClientConn)
@@ -271,7 +279,7 @@ func (c *udpClient) setupCall(ctx context.Context, address NetAddr, req *Request
 	pc.mu.Lock()
 	err = pc.setupCallLocked(req, cctx)
 	pc.mu.Unlock()
-	return pc, err
+	return pc, deadline, needCtx, err
 }
 
 func (c *udpClient) Close() error {
