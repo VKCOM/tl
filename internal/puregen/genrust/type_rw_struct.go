@@ -276,9 +276,43 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 
 func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
 	cc := codecreator.NewRustCodeCreator()
+	printCommentsType(trw.pureTypeStruct)
 	cc.AddLines("#[derive(Debug)]")
-	cc.AddLines(fmt.Sprintf("struct %s {", trw.wr.goGlobalName))
-	cc.AddLines("}")
-
+	if trw.isAlias() || trw.isTypedef() {
+		asterisk := ifString(trw.Fields[0].recursive, "*", "")
+		fieldTypeString := trw.Fields[0].t.TypeString2(bytesVersion, directImports, false, false)
+		printCommentsField(trw.Fields[0])
+		cc.AddLines(fmt.Sprintf("struct %s (%s%s)", trw.wr.goGlobalName, asterisk, fieldTypeString))
+	} else {
+		cc.AddLines(fmt.Sprintf("struct %s {", trw.wr.goGlobalName))
+		for _, field := range trw.Fields {
+			printCommentsField(field)
+			if field.IsTL2Omitted() {
+				continue
+			}
+			asterisk := ifString(field.recursive, "*", "")
+			fieldTypeString := ""
+			fieldsMaskComment := ""
+			if field.FieldMask() != nil {
+				fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", trw.wr.formatNatArg(trw.Fields, *field.FieldMask()), field.BitNumber())
+			} else if field.MaskTL2Bit() != nil {
+				fieldsMaskComment = fmt.Sprintf(" // Optional, use Set%s", field.goName)
+			}
+			prefixComment := ""
+			if field.IsBit() {
+				prefixComment = "// "
+				fieldTypeString = ifString(field.t.OriginTL2(), "bit", "(TrueType)")
+			} else {
+				fieldTypeString = field.t.TypeString2(bytesVersion, directImports, false, false)
+			}
+			cc.AddLines(fmt.Sprintf("%s%s: %s%s,%s", prefixComment, field.goName, asterisk, fieldTypeString, fieldsMaskComment))
+		}
+		if trw.wr.HasTL2() {
+			for _, tl2mask := range trw.AllNewTL2Masks() {
+				cc.AddLines(fmt.Sprintf("%s: u8,", tl2mask))
+			}
+		}
+		cc.AddLines("}")
+	}
 	return strings.Join(cc.Print(), "\n")
 }

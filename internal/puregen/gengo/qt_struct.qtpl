@@ -156,10 +156,10 @@ func (item {%s= goName %}) String({%s= struct_.wr.formatNatArgsDeclNoComma() %})
             asterisk := ifString(struct_.Fields[0].recursive, "*", "")
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
-    {%s= printCommentsField(struct_.Fields[0]) -%} {%- code -%}
-type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
+        {%s= printCommentsField(struct_.Fields[0]) -%} {%- code -%}
+        type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
 
-func (item *{%s= goName %}) ptr() *{%s= fieldTypeString %} { return (*{%s= fieldTypeString %})(item) }
+        func (item *{%s= goName %}) ptr() *{%s= fieldTypeString %} { return (*{%s= fieldTypeString %})(item) }
         {%- return -%}
     {%- endif -%}
 type {%s= goName %} struct {
@@ -185,11 +185,9 @@ type {%s= goName %} struct {
         -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
-    {%- if struct_.wr.HasTL2() -%}
-        {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
-             {%s= tl2mask %} byte
-        {%- endfor -%}
-    {%- endif -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         {%s= tl2mask %} byte
+    {%- endfor -%}
 }
 {%- endfunc -%}
 
@@ -396,11 +394,9 @@ func (item *{%s= goName %}) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *b
 // BLOCK: read rest fields
 теперь все маски установлены в финальные значения, и можно прочитать поля, зависящие от локальных масок
 {% endcomment -%}
-{%- if struct_.wr.HasTL2() -%}
-    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
-         item.{%s= tl2mask %} = 0
-    {%- endfor -%}
-{%- endif -%}
+{%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+     item.{%s= tl2mask %} = 0
+{%- endfor -%}
 {%- comment %} if struct_.wr.OriginTL2()
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
