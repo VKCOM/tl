@@ -359,17 +359,17 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		asterisk := ifString(struct_.Fields[0].recursive, "*", "")
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		qw422016.N().S(`    `)
+		qw422016.N().S(`        `)
 		qw422016.N().S(printCommentsField(struct_.Fields[0]))
 
-		qw422016.N().S(`type `)
+		qw422016.N().S(`        type `)
 		qw422016.N().S(goName)
 		qw422016.N().S(` `)
 		qw422016.N().S(asterisk)
 		qw422016.N().S(fieldTypeString)
 		qw422016.N().S(`
 
-func (item *`)
+        func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ptr() *`)
 		qw422016.N().S(fieldTypeString)
@@ -416,13 +416,11 @@ func (item *`)
 		qw422016.N().S(`
 `)
 	}
-	if struct_.wr.HasTL2() {
-		for _, tl2mask := range struct_.AllNewTL2Masks() {
-			qw422016.N().S(`             `)
-			qw422016.N().S(tl2mask)
-			qw422016.N().S(` byte
+	for _, tl2mask := range struct_.AllNewTL2Masks() {
+		qw422016.N().S(`         `)
+		qw422016.N().S(tl2mask)
+		qw422016.N().S(` byte
 `)
-		}
 	}
 	qw422016.N().S(`}
 `)
@@ -822,13 +820,11 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
-	if struct_.wr.HasTL2() {
-		for _, tl2mask := range struct_.AllNewTL2Masks() {
-			qw422016.N().S(`         item.`)
-			qw422016.N().S(tl2mask)
-			qw422016.N().S(` = 0
+	for _, tl2mask := range struct_.AllNewTL2Masks() {
+		qw422016.N().S(`     item.`)
+		qw422016.N().S(tl2mask)
+		qw422016.N().S(` = 0
 `)
-		}
 	}
 	for _, field := range struct_.Fields {
 		if field.IsTL2Omitted() {
