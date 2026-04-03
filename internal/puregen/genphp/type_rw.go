@@ -275,6 +275,17 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 		return false
 	}
 
+	if w.pureType.KernelType().CanonicalName().String() == "ReqResult" {
+		_, isUnion := w.pureType.(*pure.TypeInstanceUnion)
+		if isUnion {
+			return false
+		}
+	}
+
+	if w.pureType.KernelType().CanonicalName().String() == "RpcReqResult" {
+		return false
+	}
+
 	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
 		unionParent := strct.PhpConstructorNeedsUnion()
 		if strct.ResultType == nil && strct.wr.PHPIsTrueType() && unionParent == nil {

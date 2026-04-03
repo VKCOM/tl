@@ -14,6 +14,12 @@ import (
 )
 
 func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {
+	switch trw.canonicalType {
+	case "__function":
+		return ""
+	case "__function_result":
+		return ""
+	}
 	switch trw.goType {
 	case "int32", "int64", "uint32":
 		return "int"
@@ -31,6 +37,12 @@ func (trw *TypeRWPrimitive) PhpClassNameReplaced() bool {
 }
 
 func (trw *TypeRWPrimitive) PhpTypeName(withPath bool, bare bool) string {
+	switch trw.canonicalType {
+	case "__function":
+		return "TL\\RpcFunction"
+	case "__function_result":
+		return "TL\\RpcFunctionReturnResult"
+	}
 	return trw.PhpClassName(withPath, true)
 }
 
@@ -39,6 +51,12 @@ func (trw *TypeRWPrimitive) PhpGenerateCode(code *strings.Builder, bytes bool) e
 }
 
 func (trw *TypeRWPrimitive) PhpDefaultValue() string {
+	switch trw.canonicalType {
+	case "__function":
+		return "null"
+	case "__function_result":
+		return "null"
+	}
 	switch trw.goType {
 	case "int32", "int64", "uint32":
 		return "0"
@@ -69,6 +87,12 @@ func (trw *TypeRWPrimitive) phpIOMethodsSuffix() string {
 func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		panic("can't be boxed")
+	}
+	switch trw.canonicalType {
+	case "__function":
+		return nil
+	case "__function_result":
+		return nil
 	}
 	if trw.gen.options.PHP.UseBuiltinDataProviders {
 		switch trw.goType {
