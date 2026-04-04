@@ -19,7 +19,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		{
 			canonicalType:  "byte",
 			historicalName: "byte",
-			goType:         "byte",
+			goType:         "u8",
 			writeJSONValue: "basictl.JSONWriteByte",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadByte",
 			resetValue:     "%s = 0",
@@ -29,7 +29,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "uint32",
 			historicalName: "nat",
-			goType:         "uint32",
+			goType:         "u32",
 			writeJSONValue: "basictl.JSONWriteUint32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint32",
 			resetValue:     "%s = 0",
@@ -39,7 +39,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "int32",
 			historicalName: "int",
-			goType:         "int32",
+			goType:         "i32",
 			writeJSONValue: "basictl.JSONWriteInt32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt32",
 			resetValue:     "%s = 0",
@@ -49,7 +49,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "int64",
 			historicalName: "long",
-			goType:         "int64",
+			goType:         "i64",
 			writeJSONValue: "basictl.JSONWriteInt64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt64",
 			resetValue:     "%s = 0",
@@ -59,7 +59,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "uint64",
 			historicalName: "uint64",
-			goType:         "uint64",
+			goType:         "u64",
 			writeJSONValue: "basictl.JSONWriteUint64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint64",
 			resetValue:     "%s = 0",
@@ -69,7 +69,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "float32",
 			historicalName: "float",
-			goType:         "float32",
+			goType:         "f32",
 			writeJSONValue: "basictl.JSONWriteFloat32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat32",
 			resetValue:     "%s = 0",
@@ -79,7 +79,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "float64",
 			historicalName: "double",
-			goType:         "float64",
+			goType:         "f64",
 			writeJSONValue: "basictl.JSONWriteFloat64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat64",
 			resetValue:     "%s = 0",
@@ -89,7 +89,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "string",
 			historicalName: "string",
-			goType:         "string",
+			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
 			resetValue:     "%s = \"\"",
@@ -104,7 +104,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			// TODO - finish exclamation wrappers support in golang
 			canonicalType:  "__function",
 			historicalName: "function",
-			goType:         "string",
+			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
 			resetValue:     "%s = \"\"",
@@ -114,7 +114,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 		}, {
 			canonicalType:  "__function_result",
 			historicalName: "function_result",
-			goType:         "string",
+			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
 			resetValue:     "%s = \"\"",

@@ -61,7 +61,7 @@ func (trw *TypeRWStruct) typeString2(bytesVersion bool, directImports *DirectImp
 	if isLocal {
 		return addBytes(trw.wr.goLocalName, bytesVersion)
 	}
-	return addBytes(trw.wr.goGlobalName, bytesVersion)
+	return "crate::types::" + trw.wr.goGlobalName + "::" + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -274,45 +274,48 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	return fmt.Sprintf("if err := %s.ReadJSONGeneral(jctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
+// TODO - move to separate file
 func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
 	cc := codecreator.NewRustCodeCreator()
 	printCommentsType(trw.pureTypeStruct)
-	cc.AddLines("#[derive(Debug)]")
+	cc.AddLinef("#[derive(Debug)]")
 	if trw.isAlias() || trw.isTypedef() {
 		asterisk := ifString(trw.Fields[0].recursive, "*", "")
 		fieldTypeString := trw.Fields[0].t.TypeString2(bytesVersion, directImports, false, false)
 		printCommentsField(trw.Fields[0])
-		cc.AddLines(fmt.Sprintf("struct %s (%s%s)", trw.wr.goGlobalName, asterisk, fieldTypeString))
+		cc.AddLinef("pub struct %s (%s%s);", trw.wr.goGlobalName, asterisk, fieldTypeString)
 	} else {
-		cc.AddLines(fmt.Sprintf("struct %s {", trw.wr.goGlobalName))
-		for _, field := range trw.Fields {
-			printCommentsField(field)
-			if field.IsTL2Omitted() {
-				continue
+		cc.AddLinef("pub struct %s {", trw.wr.goGlobalName)
+		cc.AddBlock(func() {
+			for _, field := range trw.Fields {
+				printCommentsField(field)
+				if field.IsTL2Omitted() {
+					continue
+				}
+				asterisk := ifString(field.recursive, "*", "")
+				fieldTypeString := ""
+				fieldsMaskComment := ""
+				if field.FieldMask() != nil {
+					fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", trw.wr.formatNatArg(trw.Fields, *field.FieldMask()), field.BitNumber())
+				} else if field.MaskTL2Bit() != nil {
+					fieldsMaskComment = fmt.Sprintf(" // Optional, use Set%s", field.goName)
+				}
+				prefixComment := ""
+				if field.IsBit() {
+					prefixComment = "// "
+					fieldTypeString = ifString(field.t.OriginTL2(), "bit", "(TrueType)")
+				} else {
+					fieldTypeString = field.t.TypeString2(bytesVersion, directImports, false, false)
+				}
+				cc.AddLinef("%s%s: %s%s,%s", prefixComment, field.goName, asterisk, fieldTypeString, fieldsMaskComment)
 			}
-			asterisk := ifString(field.recursive, "*", "")
-			fieldTypeString := ""
-			fieldsMaskComment := ""
-			if field.FieldMask() != nil {
-				fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", trw.wr.formatNatArg(trw.Fields, *field.FieldMask()), field.BitNumber())
-			} else if field.MaskTL2Bit() != nil {
-				fieldsMaskComment = fmt.Sprintf(" // Optional, use Set%s", field.goName)
+			if trw.wr.HasTL2() {
+				for _, tl2mask := range trw.AllNewTL2Masks() {
+					cc.AddLinef("%s: u8,", tl2mask)
+				}
 			}
-			prefixComment := ""
-			if field.IsBit() {
-				prefixComment = "// "
-				fieldTypeString = ifString(field.t.OriginTL2(), "bit", "(TrueType)")
-			} else {
-				fieldTypeString = field.t.TypeString2(bytesVersion, directImports, false, false)
-			}
-			cc.AddLines(fmt.Sprintf("%s%s: %s%s,%s", prefixComment, field.goName, asterisk, fieldTypeString, fieldsMaskComment))
-		}
-		if trw.wr.HasTL2() {
-			for _, tl2mask := range trw.AllNewTL2Masks() {
-				cc.AddLines(fmt.Sprintf("%s: u8,", tl2mask))
-			}
-		}
-		cc.AddLines("}")
+		})
+		cc.AddLinef("}")
 	}
-	return strings.Join(cc.Print(), "\n")
+	return cc.Text()
 }
