@@ -24,9 +24,9 @@ var _ TypeRW = &TypeRWBrackets{}
 
 func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectImports, isLocal bool, skipAlias bool) string {
 	if trw.vectorLike || trw.dynamicSize {
-		return fmt.Sprintf("[]%s", trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
+		return fmt.Sprintf("Vec<%s>", trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
 	}
-	return fmt.Sprintf("[%d]%s", trw.size, trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
+	return fmt.Sprintf("[%s; %d]", trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias), trw.size)
 }
 
 func (trw *TypeRWBrackets) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {

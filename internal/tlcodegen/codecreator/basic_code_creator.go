@@ -22,16 +22,34 @@ func (cc *CodeCreator) AddLines(lines ...string) {
 	}
 }
 
+func (cc *CodeCreator) AddLinef(format string, args ...any) {
+	cc.lines = append(cc.lines, fmt.Sprintf(format, args...))
+	cc.linesShift = append(cc.linesShift, cc.currentShift)
+}
+
 func (cc *CodeCreator) AddShift(shift int) {
 	cc.currentShift += shift
 }
 
+// TODO - remove, use Lines()
 func (cc *CodeCreator) Print() []string {
 	s := make([]string, len(cc.lines))
 	for i, line := range cc.lines {
 		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
 	}
 	return s
+}
+
+func (cc *CodeCreator) Lines() []string {
+	s := make([]string, len(cc.lines))
+	for i, line := range cc.lines {
+		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
+	}
+	return s
+}
+
+func (cc *CodeCreator) Text() string {
+	return strings.Join(cc.Lines(), "\n")
 }
 
 func (cc *CodeCreator) AddBlock(block func()) {

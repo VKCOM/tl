@@ -29,6 +29,7 @@ type TypeRWWrapper struct {
 	ins *InternalNamespace
 	trw TypeRW
 
+	// TODO - rename fields to rust* once version 0.1 of generator is finished
 	goCanonicalName tlast.TL2TypeName // name element for names below and template full names
 
 	goGlobalName string // globally unique
