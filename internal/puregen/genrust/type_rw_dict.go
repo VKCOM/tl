@@ -8,6 +8,8 @@ package genrust
 
 import (
 	"fmt"
+
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 // check that brackets cannot be function return type
@@ -102,14 +104,10 @@ func (trw *TypeRWDict) typeWritingCode(bytesVersion bool, directImports *DirectI
 	return wrapLastW(last, fmt.Sprintf("%sWriteTL1%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)), needError)
 }
 
-func (trw *TypeRWDict) typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	//prefix := ""
-	//if !bare {
-	//	prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.wr.tlTag)
-	//}
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	//return prefix + wrapLastW(last, fmt.Sprintf("%sRead(w, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs)), true)
-	return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+func (trw *TypeRWDict) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
+	cc.AddLines("TypeRWDict::typeReadingCode")
+	//goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	//return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWDict) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

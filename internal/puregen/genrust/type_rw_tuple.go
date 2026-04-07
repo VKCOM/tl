@@ -8,6 +8,8 @@ package genrust
 
 import (
 	"fmt"
+
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 // check that brackets cannot be function return type
@@ -98,9 +100,10 @@ func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *Dir
 	return wrapLastW(last, fmt.Sprintf("%sWriteTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
-func (trw *TypeRWBrackets) typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+func (trw *TypeRWBrackets) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
+	//goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	//return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+	cc.AddLinef("crate::types::%s::read_tl1(&mut %s, buf%s%s)?;", trw.wr.goGlobalName, addAsterisk(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -130,5 +133,42 @@ func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports
 }
 
 func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	cc := codecreator.NewRustCodeCreator()
+
+	//goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	natDecl := trw.wr.formatNatArgsDecl()
+	//natCall := trw.wr.formatNatArgsDeclCall()
+	typeString := trw.wr.TypeString2(bytesVersion, directImports, false, false)
+	elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
+
+	cc.AddLinef("use basictl::TLRead as _;")
+	cc.AddEmptyLine()
+	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
+	cc.AddBlock(func() {
+		if trw.wr.OriginTL2() {
+			cc.AddLinef(`Err(basictl::Error::NoTL2("%s")`, trw.wr.pureType.CanonicalName())
+			return
+		}
+		switch {
+		case trw.vectorLike:
+			cc.AddLinef("let l = buf.read_u32()?;")
+			// TODO - use length sanity check
+			cc.AddLinef("value.resize_with(l as usize, %s::default);", elementTypeString)
+			cc.For("element", "value.iter_mut()", "", func() {
+				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
+			})
+		case trw.dynamicSize:
+			cc.AddLinef("value.resize_with(nat_n as usize, %s::default);", elementTypeString)
+			cc.For("element", "value.iter_mut()", "", func() {
+				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
+			})
+		default:
+			cc.For("element", "value.iter_mut()", "", func() {
+				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
+			})
+		}
+		cc.AddLinef("Ok(())")
+	})
+	cc.AddLinef("}")
+	return cc.Text()
 }

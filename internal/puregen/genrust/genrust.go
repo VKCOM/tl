@@ -222,7 +222,6 @@ func (gen *genRust) generateCode() error {
 	//		return err
 	//	}
 	//}
-	filepathName := "Cargo.toml"
 	code := fmt.Sprintf(`[package]
 name = "%s"
 version = "0.1.0"
@@ -230,19 +229,22 @@ edition = "2024"
 
 [lints.rust]
 non_snake_case = { level = "allow" } # TODO - we can solve naming later
+dead_code = "allow" # TODO - remove after no more important warnings
+unused = "allow" # TODO - remove after no more important warnings
+unused_variables = "allow" # TODO - remove after no more important warnings
 
 [dependencies]
+basictl = { path = "../basictl" }
+bytes = "1"
 `, gen.options.Rust.CrateName)
-	if err := outdir.AddCodeFile(filepathName, code); err != nil {
+	if err := outdir.AddCodeFile("Cargo.toml", code); err != nil {
 		return err
 	}
-	filepathName = ".gitignore"
 	code = `/target
 `
-	if err := outdir.AddCodeFile(filepathName, code); err != nil {
+	if err := outdir.AddCodeFile(".gitignore", code); err != nil {
 		return err
 	}
-	filepathName = "src/lib.rs"
 	code = `pub mod types;
 
 pub fn add(left: u64, right: u64) -> u64 {
@@ -260,13 +262,10 @@ mod tests {
     }
 }
 `
-	if err := outdir.AddCodeFile(filepathName, code); err != nil {
+	if err := outdir.AddCodeFile("src/lib.rs", code); err != nil {
 		return err
 	}
-	filepathName = "src/types/mod.rs"
-	code = `
-`
-	if err := outdir.AddCodeFile(filepathName, srcTypesModRS.Text()); err != nil {
+	if err := outdir.AddCodeFile("src/types/mod.rs", srcTypesModRS.Text()); err != nil {
 		return err
 	}
 

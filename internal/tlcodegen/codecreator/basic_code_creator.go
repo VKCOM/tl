@@ -22,8 +22,17 @@ func (cc *CodeCreator) AddLines(lines ...string) {
 	}
 }
 
+func (cc *CodeCreator) AddEmptyLine() {
+	cc.lines = append(cc.lines, "")
+	cc.linesShift = append(cc.linesShift, cc.currentShift)
+}
+
 func (cc *CodeCreator) AddLinef(format string, args ...any) {
-	cc.lines = append(cc.lines, fmt.Sprintf(format, args...))
+	line := fmt.Sprintf(format, args...)
+	if line == "" {
+		return
+	}
+	cc.lines = append(cc.lines, line)
 	cc.linesShift = append(cc.linesShift, cc.currentShift)
 }
 

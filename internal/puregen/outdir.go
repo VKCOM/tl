@@ -21,12 +21,6 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const buildVersionFormat = `tl2gen version: %s
-schema url: %s
-schema commit: %s
-schema version: %d (%v)
-`
-
 type OutDir struct {
 	Code map[string]string // fileName->Content, split by file names relative to output dir
 }

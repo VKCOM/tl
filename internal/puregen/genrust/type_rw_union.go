@@ -12,6 +12,7 @@ import (
 
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 type Variant struct {
@@ -133,11 +134,12 @@ func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *Direct
 	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
-func (trw *TypeRWUnion) typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
+func (trw *TypeRWUnion) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
 	if bare && !trw.wr.OriginTL2() {
 		panic(fmt.Errorf("trying to read bare union %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+	cc.AddLines("TypeRWUnion::typeReadingCode")
+	//return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }
 
 func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

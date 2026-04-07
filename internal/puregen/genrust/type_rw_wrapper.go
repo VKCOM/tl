@@ -14,6 +14,7 @@ import (
 
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 // During recursive generation, we store wrappers to type when they are needed, so that
@@ -26,7 +27,6 @@ type TypeRWWrapper struct {
 	pureType pure.TypeInstance
 
 	ns  *Namespace
-	ins *InternalNamespace
 	trw TypeRW
 
 	// TODO - rename fields to rust* once version 0.1 of generator is finished
@@ -264,9 +264,9 @@ func (w *TypeRWWrapper) TypeWritingCode(bytesVersion bool, directImports *Direct
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeWritingCode(bytesVersion, directImports, val, bare, natArgs, ref, last, needError)
 }
-func (w *TypeRWWrapper) TypeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
+func (w *TypeRWWrapper) TypeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeReadingCode(bytesVersion, directImports, val, bare, natArgs, ref, last)
+	w.trw.typeReadingCode(cc, bytesVersion, directImports, val, bare, natArgs, ref)
 }
 func (w *TypeRWWrapper) TypeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
@@ -301,7 +301,7 @@ func (w *TypeRWWrapper) IsFunction() bool {
 func (w *TypeRWWrapper) formatNatArgsDecl() string {
 	var s strings.Builder
 	for _, arg := range w.NatParams() {
-		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
+		s.WriteString(fmt.Sprintf(",nat_%s: u32", arg))
 	}
 	return s.String()
 }
@@ -325,7 +325,7 @@ func (w *TypeRWWrapper) formatNatArg(fields []Field, arg pure.ActualNatArg) stri
 		return strconv.FormatUint(uint64(arg.Number()), 10)
 	}
 	if arg.IsField() {
-		return "item." + fields[arg.FieldIndex()].goName
+		return "value." + fields[arg.FieldIndex()].goName
 	}
 	if arg.NatParamName() != w.NatParams()[arg.FieldIndex()] {
 		panic("error with nat params names")
