@@ -25,7 +25,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomByte",
 			writeValue:     "basictl.ByteWrite",
-			readValue:      "basictl.ByteRead",
+			readValue:      "%s = buf.read_u8()?;",
 		}, {
 			canonicalType:  "uint32",
 			historicalName: "nat",
@@ -35,7 +35,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomUint",
 			writeValue:     "basictl.NatWrite",
-			readValue:      "basictl.NatRead",
+			readValue:      "%s = buf.read_u32()?;",
 		}, {
 			canonicalType:  "int32",
 			historicalName: "int",
@@ -45,7 +45,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomInt",
 			writeValue:     "basictl.IntWrite",
-			readValue:      "basictl.IntRead",
+			readValue:      "%s = buf.read_i32()?;",
 		}, {
 			canonicalType:  "int64",
 			historicalName: "long",
@@ -55,7 +55,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomLong",
 			writeValue:     "basictl.LongWrite",
-			readValue:      "basictl.LongRead",
+			readValue:      "%s = buf.read_i64()?;",
 		}, {
 			canonicalType:  "uint64",
 			historicalName: "uint64",
@@ -65,7 +65,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomUint64",
 			writeValue:     "basictl.Uint64Write",
-			readValue:      "basictl.Uint64Read",
+			readValue:      "%s = buf.read_u64()?;",
 		}, {
 			canonicalType:  "float32",
 			historicalName: "float",
@@ -75,7 +75,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomFloat",
 			writeValue:     "basictl.FloatWrite",
-			readValue:      "basictl.FloatRead",
+			readValue:      "%s = buf.read_f32()?;",
 		}, {
 			canonicalType:  "float64",
 			historicalName: "double",
@@ -85,7 +85,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = 0",
 			randomValue:    "basictl.RandomDouble",
 			writeValue:     "basictl.DoubleWrite",
-			readValue:      "basictl.DoubleRead",
+			readValue:      "%s = buf.read_f64()?;",
 		}, {
 			canonicalType:  "string",
 			historicalName: "string",
@@ -95,7 +95,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			resetValue:     "%s = \"\"",
 			randomValue:    "basictl.RandomString",
 			writeValue:     "basictl.StringWrite",
-			readValue:      "basictl.StringRead",
+			readValue:      "buf.read_string(&mut %s)?;",
 		}, {
 			// function and function_result support is not finished,
 			// they must be generics, and wrap source function.

@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 	"github.com/VKCOM/tl/internal/utils"
 )
 
@@ -35,20 +36,13 @@ type TypeRW interface {
 	typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string
 	typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string
 	typeWritingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string
-	typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string
+	typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool)
 	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string
 	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool, needError bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, jvalue string, val string, natArgs []string, ref bool) string
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
 	TypeRWTL2
-}
-
-func wrapWithError(wrap bool, wrappedType string) string {
-	if !wrap {
-		return wrappedType
-	}
-	return "(_ " + wrappedType + ", err error)"
 }
 
 // simply adds commas, natArgs are already fully formatted. Difference to strings.Join is leading comma
@@ -64,12 +58,8 @@ func addBytes(val string, bytesVersion bool) string {
 	return ifString(bytesVersion, val+"Bytes", val)
 }
 
-func addBytesLower(val string, bytesVersion bool) string {
-	return ifString(bytesVersion, val+"_bytes", val)
-}
-
 func addBare(bare bool) string {
-	return ifString(bare, "", "Boxed")
+	return ifString(bare, "", "_boxed")
 }
 
 func addAmpersand(ref bool, val string) string {

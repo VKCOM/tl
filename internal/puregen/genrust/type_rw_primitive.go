@@ -9,6 +9,8 @@ package genrust
 import (
 	"fmt"
 	"log"
+
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 type TypeRWPrimitive struct {
@@ -116,16 +118,14 @@ func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string
 	return fmt.Sprintf("%s != 0", addAsterisk(ref, val))
 }
 
-func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	prefix := ""
+func (trw *TypeRWPrimitive) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
 	if !bare && trw.canonicalType != "__function_result" {
 		log.Panicf("trw %q cannot be boxed", trw.canonicalType)
-		//prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.tlTag)
 	}
-	if bytesVersion {
-		return prefix + wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)
-	}
-	return prefix + wrapLastW(last, fmt.Sprintf("%s(w, %s)", trw.readValue, addAmpersand(ref, val)), true)
+	//if bytesVersion {
+	//	return wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)
+	//}
+	cc.AddLinef(trw.readValue, addAsterisk(ref, val))
 }
 
 func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool, needError bool) string {

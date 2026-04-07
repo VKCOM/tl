@@ -19,15 +19,3 @@ type Namespace struct {
 	types []*TypeRWWrapper
 	decGo puregen.Deconflicter
 }
-
-type InternalNamespace struct {
-	DebugID      int   // for identification in logs
-	FloodCounter int64 // beware!
-
-	Namespaces    map[string]struct{}
-	DirectImports *DirectImports
-	Types         []*TypeRWWrapper
-
-	SubPath string
-	Name    string
-}

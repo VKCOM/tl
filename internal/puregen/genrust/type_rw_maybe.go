@@ -9,6 +9,8 @@ package genrust
 import (
 	"fmt"
 	strings "strings"
+
+	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 )
 
 type TypeRWMaybe struct {
@@ -80,8 +82,9 @@ func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *Direct
 	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
-func (trw *TypeRWMaybe) typeReadingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+func (trw *TypeRWMaybe) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
+	cc.AddLines("TypeRWMaybe::typeReadingCode")
+	//	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
