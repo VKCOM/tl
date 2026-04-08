@@ -52,7 +52,7 @@ func (trw *TypeRWBrackets) PhpHasPrimitiveInnerElement() bool {
 	return ok
 }
 
-func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
@@ -61,7 +61,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
 		vectorSizeName := fmt.Sprintf("$vector_size_%d", len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args.children[0], supportSuffix)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args, supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -95,9 +95,9 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
-		tupleSize := *args.children[0].value
+		tupleSize := args[0]
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args.children[1], supportSuffix)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.Bare(), false, args[1:], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -123,11 +123,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
 		dictSizeName := fmt.Sprintf("$dict_size_%d", len(trw.PhpClassName(false, true)))
-		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.Bare(), true, args.children[0], supportSuffix)
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.Bare(), true, args, supportSuffix)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
 		}
-		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.Bare(), true, args.children[0], supportSuffix)
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.Bare(), true, args, supportSuffix)
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
@@ -162,7 +162,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	panic("???")
 }
 
-func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args []string, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	layerIndex := len(trw.PhpClassName(false, true))
 	index := fmt.Sprintf("$i%d", layerIndex)
@@ -187,7 +187,7 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		)
 		{
 			result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, index)))
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.Bare(), args.children[0], supportSuffix)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.Bare(), args, supportSuffix)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -199,8 +199,8 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		return result
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
-		tupleSize := *args.children[0].value
-		elementArgs := args.children[1]
+		tupleSize := args[0]
+		elementArgs := args[1:]
 		result = append(result,
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),

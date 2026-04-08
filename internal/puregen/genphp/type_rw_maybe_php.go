@@ -48,7 +48,7 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string) []string {
 	if !bare {
 		maybeContainsValueName := fmt.Sprintf("$maybeContainsValue_%[1]s", supportSuffix)
 		var result []string
@@ -88,10 +88,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			)
 			initIfDefault = false
 		}
-		var newArgs *TypeArgumentsTree
-		if args != nil {
-			newArgs = args.children[0]
-		}
+		var newArgs = args
 		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.Bare(), initIfDefault, newArgs, supportSuffix)
 		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
@@ -107,7 +104,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 	return nil
 }
 
-func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []string, supportSuffix string) []string {
 	if !bare {
 		var result []string
 		if trw.wr.gen.options.PHP.UseBuiltinDataProviders {
@@ -135,10 +132,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 			fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 		)
 		{
-			var newArgs *TypeArgumentsTree
-			if args != nil {
-				newArgs = args.children[0]
-			}
+			var newArgs = args
 			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.Bare(), newArgs, supportSuffix)
 			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]

@@ -34,8 +34,8 @@ type TypeRWPHPData interface {
 	// PhpDefaultValue return default value for field of this type (can be null)
 	PhpDefaultValue() string
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
-	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
-	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string) []string
+	PhpWriteMethodCall(targetName string, bare bool, args []string, supportSuffix string) []string
 	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 	PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string
