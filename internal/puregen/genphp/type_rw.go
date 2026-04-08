@@ -448,23 +448,110 @@ func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDeclAsArray() []string {
 }
 
 func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDecl(tree *TypeArgumentsTree) {
-	for i, template := range w.pureType.KernelType().Templates() {
-		tree.children = append(tree.children, nil)
-		if template.Category.IsNat() {
+	rt := w.pureType.Common().ResolvedType()
+	if rt.BracketType == nil {
+		for i, template := range w.pureType.KernelType().Templates() {
+			tree.children = append(tree.children, nil)
+			if template.Category.IsNat() {
+				tree.children[i] = &TypeArgumentsTree{}
+				tree.children[i].leaf = true
+				tree.children[i].name = template.Name
+			} else {
+				tree.children[i] = &TypeArgumentsTree{}
+				tree.children[i].leaf = true
+				tree.children[i].name = template.Name
+
+				tp := rt.SomeType.Arguments[i].Type
+				if tp.String() != "*" {
+					tree.children[i].leaf = false
+					tip, _ := w.gen.getTypeWrapperMust(rt.SomeType.Arguments[i].Type)
+					tip.PHPGetNatTypeDependenciesDecl(tree.children[i])
+					if tree.children[i].IsEmpty() {
+						tree.children[i] = nil
+					}
+				}
+			}
+		}
+	} else {
+		if rt.BracketType.HasIndex {
+			i := len(tree.children)
+			tree.children = append(tree.children, nil)
+
 			tree.children[i] = &TypeArgumentsTree{}
 			tree.children[i].leaf = true
-			tree.children[i].name = template.Name
-		} else {
-			tip, _ := w.gen.getTypeWrapperMust(w.pureType.Common().ResolvedType().SomeType.Arguments[i].Type)
-			tree.children[i] = &TypeArgumentsTree{}
+			tree.children[i].name = "N"
+
+			tp := rt.BracketType.IndexType
+			if tp.String() != "*" {
+				tree.children[i].leaf = false
+				tip, _ := w.gen.getTypeWrapperMust(tp.Type)
+				tip.PHPGetNatTypeDependenciesDecl(tree.children[i])
+				if tree.children[i].IsEmpty() {
+					tree.children[i] = nil
+				}
+			}
+		}
+
+		i := len(tree.children)
+		tree.children = append(tree.children, nil)
+
+		tree.children[i] = &TypeArgumentsTree{}
+		tree.children[i].leaf = true
+		tree.children[i].name = "X"
+
+		tp := rt.BracketType.ArrayType
+		if tp.String() != "*" {
 			tree.children[i].leaf = false
-			tree.children[i].name = template.Name
+			tip, _ := w.gen.getTypeWrapperMust(tp)
 			tip.PHPGetNatTypeDependenciesDecl(tree.children[i])
 			if tree.children[i].IsEmpty() {
 				tree.children[i] = nil
 			}
 		}
 	}
+	//rt := w.pureType.Common().ResolvedType()
+	//
+	//handleTemplate := func(ta tlast.TL2TypeArgument) {
+	//	subTree := &TypeArgumentsTree{}
+	//
+	//	treeIndex := len(tree.children)
+	//	tree.children = append(tree.children, subTree)
+	//	if ta.IsNumber {
+	//		subTree.leaf = true
+	//		subTree.name = ta.OriginalArgumentName
+	//	} else {
+	//		tip, _ := w.gen.getTypeWrapperMust(ta.Type)
+	//		subTree.leaf = false
+	//		subTree.name = ta.OriginalArgumentName
+	//		tip.PHPGetNatTypeDependenciesDecl(subTree)
+	//		if subTree.IsEmpty() {
+	//			tree.children[treeIndex] = nil
+	//		}
+	//	}
+	//}
+	//
+	//if rt.BracketType == nil {
+	//	for _, template := range w.pureType.Common().ResolvedType().SomeType.Arguments {
+	//		handleTemplate(template)
+	//	}
+	//} else {
+	//	if rt.BracketType.HasIndex {
+	//		handleTemplate(rt.BracketType.IndexType)
+	//	}
+	//	ta := rt.BracketType.ArrayType
+	//	subTree := &TypeArgumentsTree{}
+	//
+	//	treeIndex := len(tree.children)
+	//	tree.children = append(tree.children, subTree)
+	//
+	//	tip, _ := w.gen.getTypeWrapperMust(ta)
+	//	subTree.leaf = false
+	//	subTree.name = "X"
+	//	tip.PHPGetNatTypeDependenciesDecl(subTree)
+	//	if subTree.IsEmpty() {
+	//		tree.children[treeIndex] = nil
+	//	}
+	//}
 }
 
 func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {

@@ -17,33 +17,43 @@ import (
 func (gen *Gen2) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.TypeInstance) error {
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
+			gen:           gen,
 			canonicalType: "byte",
 			goType:        "byte",
 		}, {
+			gen:           gen,
 			canonicalType: "uint32",
 			goType:        "uint32",
 		}, {
+			gen:           gen,
 			canonicalType: "int32",
 			goType:        "int32",
 		}, {
+			gen:           gen,
 			canonicalType: "int64",
 			goType:        "int64",
 		}, {
+			gen:           gen,
 			canonicalType: "uint64",
 			goType:        "uint64",
 		}, {
+			gen:           gen,
 			canonicalType: "float32",
 			goType:        "float32",
 		}, {
+			gen:           gen,
 			canonicalType: "float64",
 			goType:        "float64",
 		}, {
+			gen:           gen,
 			canonicalType: "string",
 			goType:        "string",
 		}, {
+			gen:           gen,
 			canonicalType: "__function",
 			goType:        "string",
 		}, {
+			gen:           gen,
 			canonicalType: "__function_result",
 			goType:        "string",
 		},
@@ -227,6 +237,8 @@ func (gen *Gen2) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeI
 	res := &TypeRWBrackets{
 		wr: myWrapper,
 		//structElement: structElement,
+		vectorLike: true,
+		dictLike:   true,
 		element: Field{
 			pureField: field,
 			t:         fieldType,

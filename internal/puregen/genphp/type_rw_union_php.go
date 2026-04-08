@@ -191,7 +191,7 @@ func (trw *TypeRWUnion) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	}
 }
 
-func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string) []string {
 	if bare {
 		panic("union can't be bare")
 	}
@@ -210,7 +210,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
-				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args.ListAllValues(), true), name),
+				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args, true), name),
 				"    if (!$success) {",
 				"      return false;",
 				"    }",
@@ -237,7 +237,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
-				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args.ListAllValues(), false), name),
+				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args, false), name),
 				"    if (!$success) {",
 				"      return false;",
 				"    }",
@@ -254,7 +254,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 	return result
 }
 
-func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
+func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args []string, supportSuffix string) []string {
 	if bare {
 		panic("union can't be bare")
 	}
@@ -264,7 +264,7 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *T
 			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 			"}",
-			fmt.Sprintf("$success = %[1]s->write_boxed(%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), true)),
+			fmt.Sprintf("$success = %[1]s->write_boxed(%[2]s);", targetName, phpFormatArgs(args, true)),
 			"if (!$success) {",
 			"  return false;",
 			"}",
@@ -274,7 +274,7 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *T
 			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 			"}",
-			fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), false)),
+			fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args, false)),
 			"if (!$success) {",
 			"  return false;",
 			"}",
