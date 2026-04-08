@@ -146,7 +146,7 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
 	cc.AddBlock(func() {
 		if trw.wr.OriginTL2() {
-			cc.AddLinef(`Err(basictl::Error::NoTL2("%s")`, trw.wr.pureType.CanonicalName())
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
 		}
 		switch {

@@ -226,7 +226,7 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.TLTag())
+			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)\n", trw.wr.TLTag())
 		}
 		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref, last, needError)
 	}
@@ -235,13 +235,13 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 
 func (trw *TypeRWStruct) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
 	if !bare {
-		cc.AddLinef("buf.read_exact_tag(0x%08x)?;\n", trw.wr.TLTag())
+		cc.AddLinef("buf.read_exact_tag(0x%08x)?;", trw.wr.TLTag())
 	}
 	if trw.isUnwrapType() {
 		trw.Fields[0].t.TypeReadingCode(cc, bytesVersion, directImports, val, trw.Fields[0].Bare(), trw.pureTypeStruct.ReplaceUnwrapArgs(0, natArgs), ref)
 		return
 	}
-	cc.AddLinef("crate::types::%s::read_tl1(&mut %s, buf%s%s)?;", trw.wr.goGlobalName, addAsterisk(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
+	cc.AddLinef("crate::types::%s::read_tl1(%s, buf%s%s)?;", trw.wr.goGlobalName, addMutableRef(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -323,6 +323,18 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 				cc.AddLinef("self::read_tl1(self, buf)")
 			})
 			cc.AddLinef("}")
+			if trw.wr.TLTag() != 0 || trw.wr.OriginTL2() {
+				cc.AddLinef("pub fn read_tl1_boxed<B: bytes::Buf + Copy>(&mut self, buf: &mut B) -> basictl::Result<()> {")
+				cc.AddBlock(func() {
+					if trw.wr.OriginTL2() {
+						cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
+						return
+					}
+					cc.AddLinef("buf.read_exact_tag(0x%08x)?;", trw.wr.TLTag())
+					cc.AddLinef("self::read_tl1(self, buf)")
+				})
+				cc.AddLinef("}")
+			}
 		})
 		cc.AddLinef("}")
 	}
@@ -332,7 +344,7 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", trw.wr.goGlobalName, natArgsDecl)
 	cc.AddBlock(func() {
 		if trw.wr.OriginTL2() {
-			cc.AddLinef(`Err(basictl::Error::NoTL2("%s")`, trw.wr.pureType.CanonicalName())
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
 		}
 		for _, field := range trw.Fields {
