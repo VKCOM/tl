@@ -85,14 +85,14 @@ func (trw *TypeRWPrimitive) phpIOMethodsSuffix() string {
 }
 
 func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string) []string {
-	if !bare {
-		panic("can't be boxed")
-	}
 	switch trw.canonicalType {
 	case "__function":
 		return nil
 	case "__function_result":
 		return nil
+	}
+	if !bare {
+		panic("can't be boxed")
 	}
 	if trw.gen.options.PHP.UseBuiltinDataProviders {
 		switch trw.goType {
@@ -123,6 +123,12 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, init
 }
 
 func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, args []string, supportSuffix string) []string {
+	switch trw.canonicalType {
+	case "__function":
+		return nil
+	case "__function_result":
+		return nil
+	}
 	if !bare {
 		panic("can't be boxed")
 	}

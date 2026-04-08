@@ -642,6 +642,10 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
 		}
 
+		if trw.pureType.KernelType().CanonicalName().String() == "rpcDestActorFlags" {
+			Debugf("")
+		}
+
 		if trw.wr.gen.options.PHP.AddFetchers &&
 			// diagonal
 			len(trw.wr.pureType.KernelType().Templates()) == 0 &&
@@ -951,15 +955,9 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []string) []string {
-	if trw.pureType.KernelType().CanonicalName().String() == "memcache.savedQuery" {
-		Debugf("")
-	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
-		if trw.pureType.KernelType().CanonicalName().String() == "memcache.savedQuery" && i == 3 {
-			Debugf("")
-		}
 		fieldMask := trw.PHPGetFieldMask(targetName, calculatedArgs, i)
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
@@ -974,7 +972,7 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []s
 			)
 			shift += 1
 		}
-		tree := trw.pureType.ReplaceUnwrapArgs(i, calculatedArgs)
+		tree := trw.PhpGetArgsForField(i, calculatedArgs)
 		fieldRead := field.t.trw.PhpReadMethodCall(targetName+"->"+field.pureField.Name(), field.Bare(), true, tree, strconv.Itoa(i))
 		for _, line := range fieldRead {
 			result = append(result, textTab()+line)
@@ -1223,7 +1221,7 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs []
 		fieldMask := trw.PHPGetFieldMask(targetName, calculatedArgs, i)
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
-		tree := trw.pureType.ReplaceUnwrapArgs(i, calculatedArgs)
+		tree := trw.PhpGetArgsForField(i, calculatedArgs)
 		fieldRead := field.t.trw.PhpWriteMethodCall(targetName+"->"+field.pureField.Name(), field.Bare(), tree, strconv.Itoa(i))
 		if fieldRead == nil {
 			continue
@@ -2333,4 +2331,28 @@ func (trw *TypeRWStruct) PhpCanBeSimplify() bool {
 		trw.ResultType == nil &&
 		trw.Fields[0].pureField.FieldMask() == nil &&
 		(trw.wr.gen.options.PHP.InplaceSimpleStructs || trw.Fields[0].t.PHPIsPrimitiveType(false))
+}
+
+func (trw *TypeRWStruct) PhpGetArgsForField(fieldIndex int, calculatedArgs []string) []string {
+	f := trw.Fields[fieldIndex].pureField
+
+	result := make([]string, 0)
+	for _, arg := range f.NatArgs() {
+		if arg.IsNumber() {
+			result = append(result, fmt.Sprintf("%d", arg.Number()))
+			continue
+		}
+		if arg.IsField() {
+			result = append(result, fmt.Sprintf("$this->%s", trw.Fields[arg.FieldIndex()].pureField.Name()))
+			continue
+		}
+		for i, param := range trw.pureType.NatParams() {
+			if param == arg.NatParamName() {
+				result = append(result, calculatedArgs[i])
+				break
+			}
+		}
+	}
+
+	return result
 }
