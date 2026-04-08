@@ -115,8 +115,8 @@ func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
 func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
-	return fmt.Sprintf("%s.Reset()", val)
+func (trw *TypeRWUnion) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
+	cc.AddLinef("%s.Reset()", val)
 }
 
 func (trw *TypeRWUnion) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -219,7 +219,7 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 						cc.AddLinef("*self = Self::%s;", field.goName)
 					} else {
 						cc.IfElse(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
-							cc.AddLinef("// TODO - reset here")
+							field.t.TypeResettingCode(cc, bytesVersion, directImports, "subValue", true)
 						}, func() {
 							fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
 							cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
@@ -293,7 +293,7 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 		//	if field.FieldMask() != nil {
 		//		arg := trw.wr.formatNatArg(trw.Fields, *field.FieldMask())
 		//		cc.IfElse(fmt.Sprintf("%s & (1 << %v) != 0", arg, field.BitNumber()), bodyFunc, func() {
-		//			cc.AddLinef("%s", field.TypeResettingCode(bytesVersion, directImports))
+		//			field.TypeResettingCode(cc, bytesVersion, directImports)
 		//		})
 		//	} else {
 		//		bodyFunc()

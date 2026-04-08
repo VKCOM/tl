@@ -32,7 +32,7 @@ type TypeRW interface {
 
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	typeString2(bytesVersion bool, directImports *DirectImports, isLocal bool, skipAlias bool) string
-	typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string
+	typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool)
 	typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string
 	typeRepairMasksCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string
 	typeWritingCode(bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string
