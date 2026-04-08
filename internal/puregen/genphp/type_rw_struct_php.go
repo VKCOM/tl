@@ -84,7 +84,7 @@ func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs []str
 			}
 		}
 		for _, child := range calculatedArgs {
-			if child == fieldMask.NatParamName() {
+			if child == "$"+fieldMask.NatParamName() {
 				return child
 			}
 		}
@@ -951,9 +951,15 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []string) []string {
+	if trw.pureType.KernelType().CanonicalName().String() == "memcache.savedQuery" {
+		Debugf("")
+	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
+		if trw.pureType.KernelType().CanonicalName().String() == "memcache.savedQuery" && i == 3 {
+			Debugf("")
+		}
 		fieldMask := trw.PHPGetFieldMask(targetName, calculatedArgs, i)
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
