@@ -22,7 +22,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "u8",
 			writeJSONValue: "basictl.JSONWriteByte",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadByte",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomByte",
 			writeValue:     "basictl.ByteWrite",
 			readValue:      "%s = buf.read_u8()?;",
@@ -32,7 +32,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "u32",
 			writeJSONValue: "basictl.JSONWriteUint32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint32",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomUint",
 			writeValue:     "basictl.NatWrite",
 			readValue:      "%s = buf.read_u32()?;",
@@ -42,7 +42,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "i32",
 			writeJSONValue: "basictl.JSONWriteInt32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt32",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomInt",
 			writeValue:     "basictl.IntWrite",
 			readValue:      "%s = buf.read_i32()?;",
@@ -52,7 +52,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "i64",
 			writeJSONValue: "basictl.JSONWriteInt64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadInt64",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomLong",
 			writeValue:     "basictl.LongWrite",
 			readValue:      "%s = buf.read_i64()?;",
@@ -62,7 +62,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "u64",
 			writeJSONValue: "basictl.JSONWriteUint64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadUint64",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomUint64",
 			writeValue:     "basictl.Uint64Write",
 			readValue:      "%s = buf.read_u64()?;",
@@ -72,7 +72,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "f32",
 			writeJSONValue: "basictl.JSONWriteFloat32",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat32",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomFloat",
 			writeValue:     "basictl.FloatWrite",
 			readValue:      "%s = buf.read_f32()?;",
@@ -82,7 +82,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "f64",
 			writeJSONValue: "basictl.JSONWriteFloat64",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadFloat64",
-			resetValue:     "%s = 0",
+			resetValue:     "%s = 0;",
 			randomValue:    "basictl.RandomDouble",
 			writeValue:     "basictl.DoubleWrite",
 			readValue:      "%s = buf.read_f64()?;",
@@ -92,7 +92,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
-			resetValue:     "%s.truncate(0)",
+			resetValue:     "%s.clear()",
 			randomValue:    "basictl.RandomString",
 			writeValue:     "basictl.StringWrite",
 			readValue:      "buf.read_string(&mut %s)?;",
@@ -107,7 +107,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
-			resetValue:     "%s.truncate(0)",
+			resetValue:     "%s.clear()",
 			randomValue:    "basictl.RandomString",
 			writeValue:     "basictl.StringWrite",
 			readValue:      "basictl.StringRead",
@@ -117,7 +117,7 @@ func (gen *genRust) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pur
 			goType:         "Vec<u8>",
 			writeJSONValue: "basictl.JSONWriteString",
 			readJSON2Value: gen.InternalPrefix() + "Json2ReadString",
-			resetValue:     "%s.truncate(0)",
+			resetValue:     "%s.clear()",
 			randomValue:    "basictl.RandomString",
 			writeValue:     "basictl.StringWrite",
 			readValue:      "basictl.StringRead",
@@ -183,6 +183,8 @@ func (gen *genRust) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.
 		}
 		if field.Name() != "" { // empty only for typedef single field
 			newField.goName = res.fieldsDec.DeconflictName(utils.CNameToCamelName(field.Name()))
+		} else {
+			newField.goName = "0"
 		}
 		res.Fields = append(res.Fields, newField)
 	}

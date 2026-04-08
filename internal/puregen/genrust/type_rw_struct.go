@@ -201,11 +201,12 @@ func (trw *TypeRWStruct) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
-func (trw *TypeRWStruct) typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
+func (trw *TypeRWStruct) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeResettingCode(bytesVersion, directImports, val, ref)
+		trw.Fields[0].t.TypeResettingCode(cc, bytesVersion, directImports, val, ref)
+		return
 	}
-	return fmt.Sprintf("%s.Reset()", val)
+	cc.AddLinef("%s.reset();", val)
 }
 
 func (trw *TypeRWStruct) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -338,6 +339,22 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 		})
 		cc.AddLinef("}")
 	}
+	cc.AddEmptyLine()
+	cc.AddLinef("impl %s {", trw.wr.goGlobalName)
+	cc.AddBlock(func() {
+		cc.AddLinef("pub fn reset(&mut self) {")
+		cc.AddBlock(func() {
+			for _, field := range trw.Fields {
+				if field.IsTL2Omitted() {
+					continue
+				}
+				fieldAccess, fieldAsterisk := field.FieldAccess("self", bytesVersion, directImports)
+				field.t.TypeResettingCode(cc, bytesVersion, directImports, fieldAccess, fieldAsterisk)
+			}
+		})
+		cc.AddLinef("}")
+	})
+	cc.AddLinef("}")
 
 	natArgsDecl := trw.wr.formatNatArgsDecl()
 	cc.AddEmptyLine()
@@ -357,7 +374,7 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 				}
 				continue
 			}
-			fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports)
+			fieldAccess, fieldAsterisk := field.FieldAccess("value", bytesVersion, directImports)
 			bodyFunc := func() {
 				cc.AddLinef("%s", field.EnsureRecursive(bytesVersion, directImports))
 				field.t.TypeReadingCode(cc, bytesVersion, directImports, fieldAccess, field.Bare(), trw.wr.formatNatArgs(trw.Fields, field.NatArgs()), fieldAsterisk)
@@ -365,7 +382,7 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 			if field.FieldMask() != nil {
 				arg := trw.wr.formatNatArg(trw.Fields, *field.FieldMask())
 				cc.IfElse(fmt.Sprintf("%s & (1 << %v) != 0", arg, field.BitNumber()), bodyFunc, func() {
-					cc.AddLinef("%s", field.TypeResettingCode(bytesVersion, directImports))
+					field.t.TypeResettingCode(cc, bytesVersion, directImports, fieldAccess, fieldAsterisk)
 				})
 			} else {
 				bodyFunc()

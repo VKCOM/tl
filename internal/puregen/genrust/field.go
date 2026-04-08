@@ -84,28 +84,22 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports)
 	if !f.recursive {
 		return ""
 	}
-	fieldAccess, _ := f.FieldAccess(bytesVersion, directImports)
+	fieldAccess, _ := f.FieldAccess("self", bytesVersion, directImports)
 	myType := f.t.TypeString2(bytesVersion, directImports, false, false)
 	return fmt.Sprintf(`	if %s == nil { %s = new(%s) }
 `, fieldAccess, fieldAccess, myType)
 }
 
-func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports) string {
-	fieldAccess, fieldAsterisk := f.FieldAccess(bytesVersion, directImports)
-	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, fieldAccess, fieldAsterisk)
-	if f.recursive {
-		return fmt.Sprintf(`	if %s != nil {
-		%s
-	}`, fieldAccess, resetCode)
-	}
-	return resetCode
-}
+//func (f *Field) TypeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports) {
+//	fieldAccess, fieldAsterisk := f.FieldAccess(bytesVersion, directImports)
+//	f.t.TypeResettingCode(cc, bytesVersion, directImports, fieldAccess, fieldAsterisk)
+//if f.recursive {
+//	return fmt.Sprintf(`	if %s != nil {
+//	%s
+//}`, fieldAccess, resetCode)
+//}
+//}
 
-func (f *Field) FieldAccess(bytesVersion bool, directImports *DirectImports) (string, bool) {
-	// presumably, the only case when we have an empty name, is single first field of alias-like defs
-	if f.pureField.Name() != "" {
-		return fmt.Sprintf("value.%s", f.goName), f.recursive
-	}
-	//myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
-	return "value.0", false
+func (f *Field) FieldAccess(val string, bytesVersion bool, directImports *DirectImports) (string, bool) {
+	return fmt.Sprintf("%s.%s", val, f.goName), f.recursive
 }

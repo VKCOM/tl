@@ -71,14 +71,16 @@ func (trw *TypeRWPrimitive) BeforeCodeGenerationStep2() {
 func (trw *TypeRWPrimitive) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
+func (trw *TypeRWPrimitive) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	if bytesVersion {
 		if ref {
-			return fmt.Sprintf("*%[1]s = (*%[1]s)[:0]", val)
+			cc.AddLinef("*%[1]s = (*%[1]s)[:0]", val)
+			return
 		}
-		return fmt.Sprintf("%[1]s = %[1]s[:0]", val)
+		cc.AddLinef("%[1]s = %[1]s[:0]", val)
+		return
 	}
-	return fmt.Sprintf(trw.resetValue, addAsterisk(ref, val))
+	cc.AddLinef(trw.resetValue, addAsterisk(ref, val))
 }
 
 func (trw *TypeRWPrimitive) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {

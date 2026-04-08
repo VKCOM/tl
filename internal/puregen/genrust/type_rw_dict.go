@@ -73,15 +73,17 @@ func (trw *TypeRWDict) BeforeCodeGenerationStep2() {
 func (trw *TypeRWDict) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWDict) typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
+func (trw *TypeRWDict) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if !bytesVersion {
-		return fmt.Sprintf("%[1]sReset(%s)", goGlobalName, addAsterisk(ref, val))
+		cc.AddLinef("%[1]sReset(%s)", goGlobalName, addAsterisk(ref, val))
+		return
 	}
 	if ref {
-		return fmt.Sprintf("*%[1]s = (*%[1]s)[:0]", val)
+		cc.AddLinef("*%[1]s = (*%[1]s)[:0]", val)
+		return
 	}
-	return fmt.Sprintf("%[1]s = %[1]s[:0]", val)
+	cc.AddLinef("%[1]s = %[1]s[:0]", val)
 }
 
 func (trw *TypeRWDict) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {

@@ -248,9 +248,9 @@ func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImpo
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeString2(bytesVersion, directImports, isLocal, skipAlias)
 }
-func (w *TypeRWWrapper) TypeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
+func (w *TypeRWWrapper) TypeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeResettingCode(bytesVersion, directImports, val, ref)
+	w.trw.typeResettingCode(cc, bytesVersion, directImports, val, ref)
 }
 func (w *TypeRWWrapper) TypeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion

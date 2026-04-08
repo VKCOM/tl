@@ -70,15 +70,12 @@ func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	trw.element.t.FillRecursiveChildren(visitedNodes)
 }
 
-func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *DirectImports, val string, ref bool) string {
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+func (trw *TypeRWBrackets) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	if trw.dynamicSize || trw.vectorLike {
-		if ref {
-			return fmt.Sprintf("*%[1]s = (*%[1]s)[:0]", val)
-		}
-		return fmt.Sprintf("%[1]s = %[1]s[:0]", val)
+		cc.AddLinef("%s.clear()", val)
+		return
 	}
-	return fmt.Sprintf("%[1]sReset(%[2]s)", goGlobalName, addAmpersand(ref, val))
+	cc.AddLinef("crate::types::%s::reset(%s);", trw.wr.goGlobalName, addMutableRef(ref, val))
 }
 
 func (trw *TypeRWBrackets) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -143,6 +140,16 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 
 	cc.AddLinef("use basictl::TLRead as _;")
 	cc.AddEmptyLine()
+	if !trw.vectorLike && !trw.dynamicSize {
+		cc.AddLinef("pub(crate) fn reset(value: &mut %s) {", typeString)
+		cc.AddBlock(func() {
+			cc.For("element", "value.iter_mut()", "", func() {
+				trw.element.t.TypeResettingCode(cc, bytesVersion, directImports, "*element", false)
+			})
+		})
+		cc.AddLinef("}")
+	}
+
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
 	cc.AddBlock(func() {
 		if trw.wr.OriginTL2() {
