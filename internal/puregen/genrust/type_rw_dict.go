@@ -27,6 +27,7 @@ type TypeRWDict struct {
 
 var _ TypeRW = &TypeRWDict{}
 
+//lint:ignore U1000 will be used later
 func (trw *TypeRWDict) formatValueNatArgs() []string {
 	return trw.structElement.wr.formatNatArgs(nil, trw.dictValueField.NatArgs())
 }

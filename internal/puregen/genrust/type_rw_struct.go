@@ -38,6 +38,7 @@ type TypeRWStruct struct {
 
 var _ TypeRW = &TypeRWStruct{}
 
+//lint:ignore U1000 will be used later
 func (trw *TypeRWStruct) resultHasFetcher() bool {
 	return trw.ResultType != nil && trw.ResultType.HasFetcher()
 }

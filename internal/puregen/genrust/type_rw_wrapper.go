@@ -301,17 +301,20 @@ func (w *TypeRWWrapper) IsFunction() bool {
 func (w *TypeRWWrapper) formatNatArgsDecl() string {
 	var s strings.Builder
 	for _, arg := range w.NatParams() {
-		s.WriteString(fmt.Sprintf(",nat_%s: u32", arg))
+		s.WriteString(fmt.Sprintf(", nat_%s: u32", arg))
 	}
 	return s.String()
 }
 
+//lint:ignore U1000 will be used later
 func (w *TypeRWWrapper) formatNatArgsDeclNoComma() string {
 	return strings.TrimPrefix(w.formatNatArgsDecl(), ",")
 }
 
 // if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
 // and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
+//
+//lint:ignore U1000 will be used later
 func (w *TypeRWWrapper) formatNatArgsDeclCall() string {
 	var s strings.Builder
 	for _, arg := range w.NatParams() {
@@ -345,6 +348,7 @@ func (w *TypeRWWrapper) HasFetcher() bool {
 	return w.pureType.Common().HasFetcher()
 }
 
+//lint:ignore U1000 will be used later
 func (w *TypeRWWrapper) fetcherDecl() string {
 	if w.HasFetcher() {
 		return ", fetcher any"
