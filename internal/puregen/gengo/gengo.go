@@ -16,6 +16,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/TwiN/go-color"
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/tlast"
@@ -75,10 +76,10 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return err
 	}
 	if err := gen.bytesWhiteList.UnusedWarning(); err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("%v\n", color.InYellow(err))
 	}
 	if err := gen.rawHandlerWhileList.UnusedWarning(); err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("%v\n", color.InYellow(err))
 	}
 	return nil
 }
