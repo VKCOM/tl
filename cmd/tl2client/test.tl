@@ -29,6 +29,17 @@ a.inner {I:#} a:I*[int] = a.Inner I;
 a.middle {W:#} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;
 a.top2 n:# m:# c:(a.middle 4 (pair (a.inner 5) (a.inner n)) (a.Inner 3)) = a.Top2;
 
+ab.empty = ab.Response; // Union comment - Empty
+ab.code x:int = ab.Response; // Union comment - Code
+ab.alias int = ab.Response;
+
+// Also union comment
+// Multiline Alias
+cd.response x:int str:string = ab.Response;
+
+
+useResponse n:# x:[ab.Response] = UseResponse;
+
 //@read a.call1#12345678 x:int => Int;
 
 //@read a.call2#12345679 x:int => True;

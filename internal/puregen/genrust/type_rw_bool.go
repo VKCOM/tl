@@ -82,8 +82,7 @@ func (trw *TypeRWBool) typeWritingCode(bytesVersion bool, directImports *DirectI
 }
 
 func (trw *TypeRWBool) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
-	cc.AddLines("TypeRWBool::typeReadingCode")
-	// return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	cc.AddLinef("%s = crate::types::%s::read_tl1(buf%s%s)?;", addAsterisk(ref, val), trw.wr.goGlobalName, joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWBool) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -99,5 +98,27 @@ func (trw *TypeRWBool) typeJSON2ReadingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWBool) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	if trw.isBit {
+		return ""
+	}
+	cc := codecreator.NewRustCodeCreator()
+
+	cc.AddLinef("use basictl::TLRead as _;")
+	cc.AddEmptyLine()
+	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(buf: &mut B) -> basictl::Result<bool> {")
+	cc.AddBlock(func() {
+		if trw.wr.OriginTL2() {
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
+			return
+		}
+		cc.AddLinef("match buf.read_u32()? {")
+		cc.AddBlock(func() {
+			cc.AddLinef("0x%08x => Ok(true),", trw.trueTag)
+			cc.AddLinef("0x%08x => Ok(false),", trw.falseTag)
+			cc.AddLinef("other => Err(basictl::Error::UnexpectedMagic(other)),")
+		})
+		cc.AddLinef("}")
+	})
+	cc.AddLinef("}")
+	return cc.Text()
 }

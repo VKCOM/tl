@@ -50,7 +50,7 @@ func (trw *TypeRWUnion) typeString2(bytesVersion bool, directImports *DirectImpo
 	if isLocal {
 		return addBytes(trw.wr.goLocalName, bytesVersion)
 	}
-	return addBytes(trw.wr.goGlobalName, bytesVersion)
+	return "crate::types::" + trw.wr.goGlobalName + "::" + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWUnion) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -138,8 +138,7 @@ func (trw *TypeRWUnion) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVe
 	if bare && !trw.wr.OriginTL2() {
 		panic(fmt.Errorf("trying to read bare union %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
 	}
-	cc.AddLines("TypeRWUnion::typeReadingCode")
-	//return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(false), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+	cc.AddLinef("crate::types::%s::read_tl1_boxed(&mut %s, buf%s%s)?;", trw.wr.goGlobalName, addAsterisk(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -174,6 +173,134 @@ func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	return false
 }
 
+// TODO - move to separate file
 func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	cc := codecreator.NewRustCodeCreator()
+	printCommentsType(trw.wr.pureType)
+	cc.AddLinef("use basictl::TLRead as _;")
+	cc.AddEmptyLine()
+	cc.AddLinef("#[derive(Default, Debug)]")
+
+	cc.AddLinef("pub enum %s {", trw.wr.goGlobalName)
+	cc.AddBlock(func() {
+		cc.AddLinef("#[default]")
+		for _, field := range trw.Fields {
+			if field.t.IsTrueType() {
+				cc.AddLinef("%s,", field.goName)
+			} else {
+				fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
+				cc.AddLinef("%s(%s%s),", field.goName, ifString(field.recursive, "*", ""), fieldTypeString)
+			}
+		}
+	})
+	cc.AddLinef("}")
+	if len(trw.wr.NatParams()) == 0 {
+		cc.AddEmptyLine()
+		cc.AddLinef("impl %s {", trw.wr.goGlobalName)
+		cc.AddBlock(func() {
+			// comment for now to avoid confusion
+			//if trw.wr.HasTL2() && len(trw.wr.NatParams()) == 0 && !trw.wr.HasFetcher() {
+			// for interface requirements for TL2 Type, also for tests
+			//cc.AddLinef("pub fn read_tl1<B: bytes::Buf + Copy>(&mut self, buf: &mut B) -> basictl::Result<()> {")
+			//cc.AddBlock(func() {
+			//	cc.AddLinef("self::read_tl1_boxed(self, buf)")
+			//})
+			//cc.AddLinef("}")
+			//}
+			cc.AddLinef("pub fn read_tl1_boxed<B: bytes::Buf + Copy>(&mut self, buf: &mut B) -> basictl::Result<()> {")
+			cc.AddBlock(func() {
+				cc.AddLinef("self::read_tl1_boxed(self, buf)")
+			})
+			cc.AddLinef("}")
+			for _, field := range trw.Fields {
+				cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) {", field.goName)
+				cc.AddBlock(func() {
+					if field.t.IsTrueType() {
+						cc.AddLinef("*self = Self::%s;", field.goName)
+					} else {
+						cc.IfElse(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
+							cc.AddLinef("// TODO - reset here")
+						}, func() {
+							fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
+							cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
+						})
+					}
+				})
+				cc.AddLinef("}")
+			}
+		})
+		cc.AddLinef("}")
+	}
+
+	natArgsDecl := trw.wr.formatNatArgsDecl()
+	cc.AddEmptyLine()
+	cc.AddLinef("pub(crate) fn read_tl1_boxed<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", trw.wr.goGlobalName, natArgsDecl)
+	cc.AddBlock(func() {
+		if trw.wr.OriginTL2() {
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
+			return
+		}
+		cc.AddLinef("match buf.read_u32()? {")
+		cc.AddBlock(func() {
+			for _, field := range trw.Fields {
+				cc.AddLinef("0x%08x => {", field.t.TLTag())
+				cc.AddBlock(func() {
+					cc.AddLinef("value.reset_to_%s();", field.goName)
+					if !field.t.IsTrueType() {
+						cc.If(fmt.Sprintf("let %s::%s(subValue) = value", trw.wr.goGlobalName, field.goName), func() {
+							natArgs := trw.wr.formatNatArgs(nil, trw.ElementNatArgs())
+							field.t.TypeReadingCode(cc, bytesVersion, directImports, "subValue", true, natArgs, true)
+						})
+					}
+					cc.AddLinef("Ok(())")
+				})
+				cc.AddLinef("}")
+			}
+			cc.AddLinef("other => Err(basictl::Error::UnexpectedMagic(other)),") // TODO - for type
+		})
+		cc.AddLinef("}")
+
+		//switch tag {
+		//	{%- for i, field := range union.Fields -%}
+		//case {%s= fmt.Sprintf("0x%08x", field.t.TLTag()) %}:
+		//	item.index = {%d i %}
+		//	{%- if field.t.IsTrueType() -%}
+		//	return w, nil
+		//	{%- continue -%}
+		//	{%- endif -%}
+		//	{%s= field.EnsureRecursive(bytesVersion, directImports, union.wr.ins) -%}
+		//	{%s=  %}
+		//	{%- endfor -%}
+		//default:
+		//	return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= tlName %}, tag)
+		//}
+
+		//for _, field := range trw.Fields {
+		//	if field.IsBit() {
+		//		if !field.Bare() { // special rare case for TL1, let optimizer combine 2 expressions
+		//			arg := trw.wr.formatNatArg(trw.Fields, *field.FieldMask())
+		//			cc.If(fmt.Sprintf("%s & (1 << %v) != 0", arg, field.BitNumber()), func() {
+		//				cc.AddLinef("buf.read_exact_tag(0x%08x)?;", field.t.TLTag())
+		//			})
+		//		}
+		//		continue
+		//	}
+		//	fieldAccess, fieldAsterisk := field.FieldAccess(bytesVersion, directImports)
+		//	bodyFunc := func() {
+		//		cc.AddLinef("%s", field.EnsureRecursive(bytesVersion, directImports))
+		//		field.t.TypeReadingCode(cc, bytesVersion, directImports, fieldAccess, field.Bare(), trw.wr.formatNatArgs(trw.Fields, field.NatArgs()), fieldAsterisk)
+		//	}
+		//	if field.FieldMask() != nil {
+		//		arg := trw.wr.formatNatArg(trw.Fields, *field.FieldMask())
+		//		cc.IfElse(fmt.Sprintf("%s & (1 << %v) != 0", arg, field.BitNumber()), bodyFunc, func() {
+		//			cc.AddLinef("%s", field.TypeResettingCode(bytesVersion, directImports))
+		//		})
+		//	} else {
+		//		bodyFunc()
+		//	}
+		//}
+		//cc.AddLinef("Ok(())")
+	})
+	cc.AddLinef("}")
+	return cc.Text()
 }

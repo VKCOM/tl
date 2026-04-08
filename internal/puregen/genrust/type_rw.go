@@ -70,6 +70,10 @@ func addAsterisk(ref bool, val string) string {
 	return ifString(ref, "*"+val, val)
 }
 
+func addMutableRef(ref bool, val string) string {
+	return ifString(ref, val, "&mut "+val)
+}
+
 func addAsteriskAndBrackets(ref bool, val string) string {
 	return ifString(ref, "(*"+val+")", val)
 }

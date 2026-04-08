@@ -262,6 +262,15 @@ testrust: build
 		--schemaCommit=abcdefgh \
 		--schemaTimestamp=301822800 \
 		./cmd/tl2client/test.tl ./cmd/tl2client/test.tl2
+	@./target/bin/tl2gen --language=rust -v \
+		--tl2WhiteList=* \
+		--copyrightPath=./COPYRIGHT \
+		--crate-name=gengoldmaster \
+		--outdir=./target/gengoldmaster \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
+		--schemaCommit=abcdefgh \
+		--schemaTimestamp=301822800 \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 		# genold will not compile due to import statements with gennew
 		# @echo "Checking that generated code actually compiles..."
 		# time $(GO) build ./target/genold/...
