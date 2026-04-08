@@ -692,7 +692,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
       return null;
     }
 `,
-								trw.wr.TLName().Namespace,
+								ifString(trw.wr.TLName().Namespace == "", "_common", trw.wr.TLName().Namespace),
 							),
 							"",
 						),
