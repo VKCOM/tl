@@ -111,13 +111,7 @@ func (trw *TypeRWBool) GenerateCode(bytesVersion bool, directImports *DirectImpo
 			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
 		}
-		cc.AddLinef("match buf.read_u32()? {")
-		cc.AddBlock(func() {
-			cc.AddLinef("0x%08x => Ok(true),", trw.trueTag)
-			cc.AddLinef("0x%08x => Ok(false),", trw.falseTag)
-			cc.AddLinef("other => Err(basictl::Error::UnexpectedMagic(other)),")
-		})
-		cc.AddLinef("}")
+		cc.AddLinef("buf.read_bool(0x%08x, 0x%08x)", trw.falseTag, trw.trueTag)
 	})
 	cc.AddLinef("}")
 	return cc.Text()
