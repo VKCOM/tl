@@ -33,12 +33,12 @@ func (trw *TypeRWDict) formatValueNatArgs() []string {
 }
 
 func (trw *TypeRWDict) typeString2(bytesVersion bool, directImports *DirectImports, isLocal bool, skipAlias bool) string {
-	if !bytesVersion {
-		return fmt.Sprintf("map[%s]%s",
-			trw.dictKeyField.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias),
-			trw.dictValueField.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
-	}
-	return fmt.Sprintf("[]%s", trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
+	//if !bytesVersion {
+	//	return fmt.Sprintf("map[%s]%s",
+	//		trw.dictKeyField.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias),
+	//		trw.dictValueField.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
+	//}
+	return fmt.Sprintf("Vec<%s>", trw.element.t.TypeString2(bytesVersion, directImports, isLocal, skipAlias))
 }
 
 func (trw *TypeRWDict) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -74,16 +74,7 @@ func (trw *TypeRWDict) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]boo
 }
 
 func (trw *TypeRWDict) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	if !bytesVersion {
-		cc.AddLinef("%[1]sReset(%s)", goGlobalName, addAsterisk(ref, val))
-		return
-	}
-	if ref {
-		cc.AddLinef("*%[1]s = (*%[1]s)[:0]", val)
-		return
-	}
-	cc.AddLinef("%[1]s = %[1]s[:0]", val)
+	cc.AddLinef("%s.clear();", val)
 }
 
 func (trw *TypeRWDict) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -108,9 +99,7 @@ func (trw *TypeRWDict) typeWritingCode(bytesVersion bool, directImports *DirectI
 }
 
 func (trw *TypeRWDict) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
-	cc.AddLines("TypeRWDict::typeReadingCode")
-	//goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	//return wrapLastW(last, fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	cc.AddLinef("crate::types::%s::read_tl1(&mut %s, buf%s%s)?;", trw.wr.goGlobalName, addAsterisk(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWDict) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -137,5 +126,31 @@ func (trw *TypeRWDict) typeJSON2ReadingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWDict) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	cc := codecreator.NewRustCodeCreator()
+
+	//goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	natDecl := trw.wr.formatNatArgsDecl()
+	//natCall := trw.wr.formatNatArgsDeclCall()
+	typeString := trw.wr.TypeString2(bytesVersion, directImports, false, false)
+	//elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
+
+	cc.AddLinef("use basictl::TLRead as _;")
+	cc.AddEmptyLine()
+
+	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
+	cc.AddBlock(func() {
+		if trw.wr.OriginTL2() {
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
+			return
+		}
+		cc.AddLinef("let l = buf.read_u32()?;")
+		// TODO - use length sanity check
+		cc.AddLinef("value.resize_with(l as usize, Default::default);")
+		cc.For("element", "value.iter_mut()", "", func() {
+			trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
+		})
+		cc.AddLinef("Ok(())")
+	})
+	cc.AddLinef("}")
+	return cc.Text()
 }

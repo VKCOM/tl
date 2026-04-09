@@ -136,7 +136,7 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 	natDecl := trw.wr.formatNatArgsDecl()
 	//natCall := trw.wr.formatNatArgsDeclCall()
 	typeString := trw.wr.TypeString2(bytesVersion, directImports, false, false)
-	elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
+	//elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
 
 	cc.AddLinef("use basictl::TLRead as _;")
 	cc.AddEmptyLine()
@@ -160,12 +160,12 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 		case trw.vectorLike:
 			cc.AddLinef("let l = buf.read_u32()?;")
 			// TODO - use length sanity check
-			cc.AddLinef("value.resize_with(l as usize, %s::default);", elementTypeString)
+			cc.AddLinef("value.resize_with(l as usize, Default::default);")
 			cc.For("element", "value.iter_mut()", "", func() {
 				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
 			})
 		case trw.dynamicSize:
-			cc.AddLinef("value.resize_with(nat_n as usize, %s::default);", elementTypeString)
+			cc.AddLinef("value.resize_with(nat_n as usize, Default::default);")
 			cc.For("element", "value.iter_mut()", "", func() {
 				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
 			})
