@@ -116,7 +116,7 @@ func (trw *TypeRWUnion) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 }
 
 func (trw *TypeRWUnion) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
-	cc.AddLinef("%s.Reset()", val)
+	cc.AddLinef("%s.reset();", val)
 }
 
 func (trw *TypeRWUnion) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -228,6 +228,12 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 				})
 				cc.AddLinef("}")
 			}
+			cc.AddEmptyLine()
+			cc.AddLinef("pub fn reset(&mut self) {")
+			cc.AddBlock(func() {
+				cc.AddLinef("self.reset_to_%s();", trw.Fields[0].goName)
+			})
+			cc.AddLinef("}")
 		})
 		cc.AddLinef("}")
 	}
