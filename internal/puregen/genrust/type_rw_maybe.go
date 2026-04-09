@@ -24,10 +24,11 @@ type TypeRWMaybe struct {
 var _ TypeRW = &TypeRWMaybe{}
 
 func (trw *TypeRWMaybe) typeString2(bytesVersion bool, directImports *DirectImports, isLocal bool, skipAlias bool) string {
-	if isLocal {
-		return addBytes(trw.wr.goLocalName, bytesVersion)
-	}
-	return addBytes(trw.wr.goGlobalName, bytesVersion)
+	elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
+	//if isLocal {
+	//	return addBytes(trw.wr.goLocalName, bytesVersion)
+	//}
+	return fmt.Sprintf("Option<%s>", elementTypeString)
 }
 
 func (trw *TypeRWMaybe) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -67,7 +68,7 @@ func (trw *TypeRWMaybe) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 }
 
 func (trw *TypeRWMaybe) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
-	cc.AddLinef("%s.Reset()", val)
+	cc.AddLinef("%s = None;", val)
 }
 
 func (trw *TypeRWMaybe) typeRandomCode(bytesVersion bool, directImports *DirectImports, val string, natArgs []string, ref bool) string {
@@ -83,8 +84,7 @@ func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *Direct
 }
 
 func (trw *TypeRWMaybe) typeReadingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, bare bool, natArgs []string, ref bool) {
-	cc.AddLines("TypeRWMaybe::typeReadingCode")
-	//	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+	cc.AddLinef("crate::types::%s::read_tl1_boxed(&mut %s, buf%s%s)?;", trw.wr.goGlobalName, addAsterisk(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall())
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -107,5 +107,37 @@ func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *D
 }
 
 func (trw *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) string {
-	return ""
+	cc := codecreator.NewRustCodeCreator()
+
+	//goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	natDecl := trw.wr.formatNatArgsDecl()
+	//natCall := trw.wr.formatNatArgsDeclCall()
+	typeString := trw.wr.TypeString2(bytesVersion, directImports, false, false)
+	//elementTypeString := trw.element.t.TypeString2(bytesVersion, directImports, false, false)
+
+	cc.AddLinef("use basictl::TLRead as _;")
+	cc.AddEmptyLine()
+
+	cc.AddLinef("pub(crate) fn read_tl1_boxed<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
+	cc.AddBlock(func() {
+		if trw.wr.OriginTL2() {
+			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
+			return
+		}
+		cc.AddLinef("let ok = buf.read_bool(0x%08x, 0x%08x)?;", trw.emptyTag, trw.okTag)
+		cc.IfElse("ok", func() {
+			cc.If("value.is_none()", func() {
+				cc.AddLinef("*value = Some(Default::default())")
+			})
+			cc.If("let Some(subValue) = value", func() {
+				natArgs := trw.wr.formatNatArgs(nil, trw.element.NatArgs())
+				trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "subValue", trw.element.Bare(), natArgs, true)
+			})
+		}, func() {
+			cc.AddLinef("*value = None")
+		})
+		cc.AddLinef("Ok(())")
+	})
+	cc.AddLinef("}")
+	return cc.Text()
 }
