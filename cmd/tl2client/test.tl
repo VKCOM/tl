@@ -18,8 +18,8 @@ tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
 dictionaryField {t:Type} key:string value:t = DictionaryField t;
 dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
-//dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
-//dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
+dictionaryAnyField {k:Type} {v:Type} key:k value:v = DictionaryAnyField k v;
+dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryAnyField k v)] = DictionaryAny k v;
 
 true = True; // this can be used as void type and serialized to empty array in PHP
 
@@ -54,3 +54,36 @@ useResponse n:# x:[ab.Response] y:4*[ab.Response] = UseResponse;
 //@readwrite tree_stats.preferMaster {X:Type} query:!X => X;
 //@any rpcProxy.diagonal {X:Type} query:!X => Vector (Maybe X);
 //@any rpcProxy.diagonalTargets {X:Type} offset:int limit:int query:!X => Vector (%Vector (Maybe X));
+
+
+intKeyDictionaryField {t:Type}
+    key:int
+    value:t
+    = IntKeyDictionaryField t;
+
+intKeyDictionary#07bafc42 {t:Type}
+    %(Vector %(intKeyDictionaryField t))
+    = IntKeyDictionary t;
+
+longKeyDictionaryField {t:Type}
+    key:long
+    value:t
+    = LongKeyDictionaryField t;
+
+longKeyDictionary#b424d8f1 {t:Type}
+    %(Vector %(longKeyDictionaryField t))
+    = LongKeyDictionary t;
+
+useDictUgly#fb9ce817 n:#
+    // c:dictionaryAny<pair<int,int>, int>
+    d:intKeyDictionary<tuple<string,n>>
+    e:longKeyDictionary<tuple<string,n>>
+    // f:dictionary<pair<tuple<string,n>, tuple<string,n>>>
+    x:dictionaryAny<int, pair<int,int>>
+    y:dictionaryAny<long, pair<int,int>>
+    z:dictionaryAny<string, pair<int,int>>
+     = UseDictUgly;
+
+ab.useDictString#3325d884 fields_mask:#
+  tags:    %(Dictionary string)
+  = ab.UseDictString;
