@@ -72,7 +72,7 @@ func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 
 func (trw *TypeRWBrackets) typeResettingCode(cc *codecreator.RustCodeCreator, bytesVersion bool, directImports *DirectImports, val string, ref bool) {
 	if trw.dynamicSize || trw.vectorLike {
-		cc.AddLinef("%s.clear()", val)
+		cc.AddLinef("%s.clear();", val)
 		return
 	}
 	cc.AddLinef("crate::types::%s::reset(%s);", trw.wr.goGlobalName, addMutableRef(ref, val))
@@ -144,7 +144,7 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 		cc.AddLinef("pub(crate) fn reset(value: &mut %s) {", typeString)
 		cc.AddBlock(func() {
 			cc.For("element", "value.iter_mut()", "", func() {
-				trw.element.t.TypeResettingCode(cc, bytesVersion, directImports, "*element", false)
+				trw.element.t.TypeResettingCode(cc, bytesVersion, directImports, "(*element)", false)
 			})
 		})
 		cc.AddLinef("}")

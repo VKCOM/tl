@@ -38,7 +38,7 @@ ab.alias int = ab.Response;
 cd.response x:int str:string = ab.Response;
 
 
-useResponse n:# x:[ab.Response] = UseResponse;
+useResponse n:# x:[ab.Response] y:4*[ab.Response] = UseResponse;
 
 //@read a.call1#12345678 x:int => Int;
 
