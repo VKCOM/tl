@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/VKCOM/tl/internal/tlast"
 	"github.com/VKCOM/tl/internal/tlcodegen/codecreator"
 	"github.com/VKCOM/tl/internal/utils"
 )
@@ -73,6 +72,9 @@ func phpFieldMaskNullCheck(value string) string {
 
 func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs []string, fieldIndex int) string {
 	fieldMask := trw.Fields[fieldIndex].pureField.FieldMask()
+	if trw.wr.pureType.KernelType().CanonicalName().String() == "targLong.userAdGetAdsResults" {
+		Debugf("")
+	}
 	if fieldMask != nil {
 		if fieldMask.IsField() {
 			fieldMaskOrigin := trw.Fields[fieldMask.FieldIndex()]
@@ -91,52 +93,6 @@ func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs []str
 	}
 
 	return ""
-}
-
-func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, currentTypeRef *tlast.TL2TypeRef, tree *TypeArgumentsTree, genericsToTrees *map[string]*TypeArgumentsTree) {
-	if len(currentTypeRef.SomeType.Arguments) != len(currentType.pureType.KernelType().Templates()) {
-		generic := currentTypeRef.SomeType.String()
-		tree.CloneValuesFrom((*genericsToTrees)[generic])
-		return
-	}
-	for i, template := range currentType.pureType.KernelType().Templates() {
-		actualArg := currentType.pureType.Common().ResolvedType().SomeType.Arguments[i]
-		actualArgRef := currentTypeRef.SomeType.Arguments[i]
-		if template.Category.IsNat() {
-			if actualArg.IsNumber {
-				if actualArgRef.IsNumber {
-					value := strconv.FormatUint(uint64(actualArg.Number), 10)
-					(*tree).children[i].value = &value
-				} else {
-					// argument resolving to constant by in definition it is outer nat
-					_, index := trw.PHPFindNatByName(actualArgRef.OriginalArgumentName)
-					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.pureType.KernelType().Templates()[index].Name])
-				}
-			} else {
-				if PHPIsArgumentNumber(actualArg) {
-					value := strconv.FormatUint(uint64(actualArg.Number), 10)
-					(*tree).children[i].value = &value
-				} else {
-					// todo!  friends.getRecentFriends
-					isLocal, index := trw.PHPFindNatByName(actualArgRef.OriginalArgumentName)
-					if isLocal {
-						value := fmt.Sprintf("$this->%s", trw.Fields[index].pureField.FieldMask())
-						if trw.Fields[index].pureField.FieldMask() != nil {
-							value = phpFieldMaskNullCheck(value)
-						}
-						(*tree).children[i].value = &value
-					} else {
-						(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.pureType.KernelType().Templates()[index].Name])
-					}
-				}
-			}
-		} else {
-			if tree != nil {
-				tip, _ := trw.wr.gen.getTypeWrapperMust(actualArg.Type)
-				trw.phpGetFieldArgsTree(tip, &actualArgRef.Type, tree.children[i], genericsToTrees)
-			}
-		}
-	}
 }
 
 func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
@@ -2343,7 +2299,11 @@ func (trw *TypeRWStruct) PhpGetArgsForField(fieldIndex int, calculatedArgs []str
 			continue
 		}
 		if arg.IsField() {
-			result = append(result, fmt.Sprintf("$this->%s", trw.Fields[arg.FieldIndex()].pureField.Name()))
+			fieldMask := fmt.Sprintf("$this->%s", trw.Fields[arg.FieldIndex()].pureField.Name())
+			if trw.Fields[arg.FieldIndex()].pureField.FieldMask() != nil {
+				fieldMask = phpFieldMaskNullCheck(fieldMask)
+			}
+			result = append(result, fieldMask)
 			continue
 		}
 		for i, param := range trw.pureType.NatParams() {
