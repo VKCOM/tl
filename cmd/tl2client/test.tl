@@ -42,6 +42,8 @@ ab.alias int = ab.Response;
 // Multiline Alias
 cd.response x:int str:string = ab.Response;
 
+a.uNionA a:int = a.MyUnion;
+au.nionA b:int = a.MyUnion;
 
 useResponse n:# x:[ab.Response] y:4*[ab.Response] = UseResponse;
 

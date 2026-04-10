@@ -179,11 +179,10 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 	printCommentsType(trw.wr.pureType)
 	cc.AddLinef("use basictl::TLRead as _;")
 	cc.AddEmptyLine()
-	cc.AddLinef("#[derive(Default, Debug)]")
+	cc.AddLinef("#[derive(Debug)]")
 
 	cc.AddLinef("pub enum %s {", trw.wr.goGlobalName)
 	cc.AddBlock(func() {
-		cc.AddLinef("#[default]")
 		for _, field := range trw.Fields {
 			if field.t.IsTrueType() {
 				cc.AddLinef("%s,", field.goName)
@@ -194,6 +193,22 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 		}
 	})
 	cc.AddLinef("}")
+
+	cc.AddEmptyLine()
+	cc.AddLinef("impl Default for %s {", trw.wr.goGlobalName)
+	cc.AddBlock(func() {
+		cc.AddLinef("fn default() -> Self {")
+		cc.AddBlock(func() {
+			if trw.Fields[0].t.IsTrueType() {
+				cc.AddLinef("Self::%s", trw.Fields[0].goName)
+			} else {
+				cc.AddLinef("Self::%s(Default::default())", trw.Fields[0].goName)
+			}
+		})
+		cc.AddLinef("}")
+	})
+	cc.AddLinef("}")
+
 	if len(trw.wr.NatParams()) == 0 {
 		cc.AddEmptyLine()
 		cc.AddLinef("impl %s {", trw.wr.goGlobalName)
@@ -212,31 +227,37 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 				cc.AddLinef("self::read_tl1_boxed(self, buf)")
 			})
 			cc.AddLinef("}")
-			for _, field := range trw.Fields {
-				cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) {", field.goName)
-				cc.AddBlock(func() {
-					if field.t.IsTrueType() {
-						cc.AddLinef("*self = Self::%s;", field.goName)
-					} else {
-						cc.IfElse(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
-							field.t.TypeResettingCode(cc, bytesVersion, directImports, "subValue", true)
-						}, func() {
-							fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
-							cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
-						})
-					}
-				})
-				cc.AddLinef("}")
-			}
-			cc.AddEmptyLine()
-			cc.AddLinef("pub fn reset(&mut self) {")
-			cc.AddBlock(func() {
-				cc.AddLinef("self.reset_to_%s();", trw.Fields[0].goName)
-			})
-			cc.AddLinef("}")
 		})
 		cc.AddLinef("}")
 	}
+
+	cc.AddEmptyLine()
+	cc.AddLinef("impl %s {", trw.wr.goGlobalName)
+	cc.AddBlock(func() {
+		for _, field := range trw.Fields {
+			cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) {", field.goName)
+			cc.AddBlock(func() {
+				if field.t.IsTrueType() {
+					cc.AddLinef("*self = Self::%s;", field.goName)
+				} else {
+					cc.IfElse(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
+						field.t.TypeResettingCode(cc, bytesVersion, directImports, "subValue", true)
+					}, func() {
+						fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
+						cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
+					})
+				}
+			})
+			cc.AddLinef("}")
+		}
+		cc.AddEmptyLine()
+		cc.AddLinef("pub fn reset(&mut self) {")
+		cc.AddBlock(func() {
+			cc.AddLinef("self.reset_to_%s();", trw.Fields[0].goName)
+		})
+		cc.AddLinef("}")
+	})
+	cc.AddLinef("}")
 
 	natArgsDecl := trw.wr.formatNatArgsDecl()
 	cc.AddEmptyLine()

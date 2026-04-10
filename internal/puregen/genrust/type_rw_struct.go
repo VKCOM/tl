@@ -348,6 +348,9 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 				if field.IsTL2Omitted() {
 					continue
 				}
+				if field.t.IsTrueType() || field.IsBit() {
+					continue
+				}
 				fieldAccess, fieldAsterisk := field.FieldAccess("self", bytesVersion, directImports)
 				field.t.TypeResettingCode(cc, bytesVersion, directImports, fieldAccess, fieldAsterisk)
 			}
