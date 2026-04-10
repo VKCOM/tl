@@ -33,6 +33,9 @@ type OptionsKernel struct {
 
 	// TODO - remove after migration code stabilized
 	TL2MigrationDevMode bool
+
+	NatArgsDelimiter   string
+	NotSimplifyNatArgs bool
 }
 
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {

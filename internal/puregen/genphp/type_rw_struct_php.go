@@ -72,9 +72,6 @@ func phpFieldMaskNullCheck(value string) string {
 
 func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs []string, fieldIndex int) string {
 	fieldMask := trw.Fields[fieldIndex].pureField.FieldMask()
-	if trw.wr.pureType.KernelType().CanonicalName().String() == "targLong.userAdGetAdsResults" {
-		Debugf("")
-	}
 	if fieldMask != nil {
 		if fieldMask.IsField() {
 			fieldMaskOrigin := trw.Fields[fieldMask.FieldIndex()]
@@ -144,21 +141,14 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	name := trw.wr.TLName().Name
 
 	// TODO!
-	switch name {
-	case "_":
-		name = "rpcResponseOk"
-	case "reqError":
-		name = "rpcResponseError"
-	case "reqResultHeader":
-		name = "rpcResponseHeader"
-	case "ReqResult":
-		return "TL\\RpcResponse"
+	if isRPCPrim, newName := PHPRPCPrimitive(name); isRPCPrim {
+		name = newName
 	}
 
 	if !bare {
 		name = trw.wr.pureType.KernelType().LegacyTypeName().Name
-		//name = trw.wr.origTL[0].TypeDecl.Name.Name
 	}
+
 	if trw.wr.TLName().Namespace != "" {
 		name = fmt.Sprintf("%s_%s", trw.wr.TLName().Namespace, name)
 	}
@@ -818,7 +808,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	if trw.wr.gen.options.PHP.AddFunctionBodies &&
-		trw.wr.phpInfo.RequireFunctionBodies {
+		trw.wr.phpInfo.RequireFunctionBodies &&
+		!trw.wr.phpInfo.RPCPrimitive {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
@@ -1055,7 +1046,8 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	if trw.wr.gen.options.PHP.AddFunctionBodies &&
-		trw.wr.phpInfo.RequireFunctionBodies {
+		trw.wr.phpInfo.RequireFunctionBodies &&
+		!trw.wr.phpInfo.RPCPrimitive {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
@@ -1751,10 +1743,6 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
  * @kphp-tl-class
  */
 `)
-	if "rpcResponseError" == trw.PhpClassName(false, true) {
-		Debugf("rpcResponseError")
-		_ = trw.PhpClassName(false, true)
-	}
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
 	implementingInterfaces := make([]string, 0)
 

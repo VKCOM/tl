@@ -50,6 +50,8 @@ type PhpClassMeta struct {
 	MappingOrigin *TypeRWWrapper // not nil if IsDuplicate = true
 
 	RequireFunctionBodies bool
+
+	RPCPrimitive bool
 }
 
 func (gen *Gen2) generateCodePHP() error {
@@ -191,11 +193,12 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		wrappers = append(wrappers, wrapper)
 	}
 
+	// STEP 1: clean dublicates
 	duplicatedNames := utils.Keys(duplicates)
 	sort.Strings(duplicatedNames)
 
 	for _, name := range duplicatedNames {
-		fmt.Printf("Duplicates for php type %q:\n", name)
+		//fmt.Printf("Duplicates for php type %q:\n", name)
 		var original *TypeRWWrapper
 
 		// TO HAVE LESS DIFF WITH TLGEN
@@ -211,10 +214,17 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 				wrapper.phpInfo.IsDuplicate = true
 				wrapper.phpInfo.MappingOrigin = original
 			}
-			fmt.Printf("\t%s\n", wrapper.pureType.CanonicalName())
+			//fmt.Printf("\t%s\n", wrapper.pureType.CanonicalName())
 		}
 
 		wrappers[createdTypes[name]] = original
+	}
+
+	// STEP 2: remove temporary generation read / write for rpcResponse
+	for _, wrapper := range wrappers {
+		if isPrim, _ := PHPRPCPrimitive(wrapper.TLName().Name); isPrim {
+			wrapper.phpInfo.RPCPrimitive = true
+		}
 	}
 
 	return wrappers
