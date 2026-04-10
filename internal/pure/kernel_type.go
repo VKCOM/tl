@@ -112,6 +112,7 @@ func (t *KernelType) functionCanNotBeReferencedError(PR tlast.PositionRange) err
 
 // We do not want to give generators access to combinators directly.
 // We want every piece of information to come through strict pure public interface.
+// TODO! ONLY FOR COMMENT IN PHP GEN
 func (t *KernelType) TL1() []*tlast.Combinator {
 	return t.combTL1
 }
