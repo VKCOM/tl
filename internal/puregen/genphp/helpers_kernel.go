@@ -37,3 +37,17 @@ func PHPLegacyGoNameToCompare(canonicalName string) string {
 	canonicalName = strings.Replace(canonicalName, ".", "", -1)
 	return canonicalName
 }
+
+func PHPRPCPrimitive(originalName string) (bool, string) {
+	switch originalName {
+	case "_":
+		return true, "rpcResponseOk"
+	case "reqError":
+		return true, "rpcResponseError"
+	case "reqResultHeader":
+		return true, "rpcResponseHeader"
+	case "ReqResult":
+		return true, "TL\\RpcResponse"
+	}
+	return false, ""
+}

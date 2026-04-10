@@ -113,9 +113,17 @@ func (ins *TypeInstanceStruct) ReplaceUnwrapArgs(fieldIndex int, natArgs []strin
 	// When unwrapping, we do the job of golang compiler, replacing references to outer nat parameters,
 	// so that at the calling site outer.Read(   , nat_x, nat_y) is replaced to
 	// inner.Read(   , nat_y, nat_y)
+	return ins.replaceUnwrapArgsGeneral(ins.fields[fieldIndex].natArgs, natArgs)
+}
+
+//func (ins *TypeInstanceStruct) ReplaceUnwrapArgsResult(natArgs []string) []string {
+//	return ins.replaceUnwrapArgsGeneral(ins.resultNatArgs, natArgs)
+//}
+
+func (ins *TypeInstanceStruct) replaceUnwrapArgsGeneral(args []ActualNatArg, natArgs []string) []string {
 	var result []string
 outer:
-	for _, arg := range ins.fields[fieldIndex].natArgs {
+	for _, arg := range args {
 		if arg.IsNumber() || arg.IsField() {
 			panic("cannot replace to child arith or field nat param")
 		}
@@ -295,15 +303,15 @@ func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]stri
 	}
 	if br := rt.Type.BracketType; br != nil {
 		if !br.HasIndex {
-			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+k.opts.NatArgsDelimiter+"t")
 			return
 		}
 		if br.IndexType.IsNumber {
-			k.fillNatParamFromArg(br.IndexType, natParams, prefix+"n")
-			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"t")
+			k.fillNatParamFromArg(br.IndexType, natParams, prefix+k.opts.NatArgsDelimiter+"n")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+k.opts.NatArgsDelimiter+"t")
 		} else {
-			k.fillNatParamFromArg(br.IndexType, natParams, prefix+"k")
-			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+"v")
+			k.fillNatParamFromArg(br.IndexType, natParams, prefix+k.opts.NatArgsDelimiter+"k")
+			k.fillNatParamFromArg(tlast.TL2TypeArgument{Type: br.ArrayType}, natParams, prefix+k.opts.NatArgsDelimiter+"v")
 		}
 		return
 	}
@@ -314,7 +322,7 @@ func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]stri
 	}
 	for i, arg := range rt.Type.SomeType.Arguments {
 		leftArg := tip.templateArguments[i]
-		k.fillNatParamFromArg(arg, natParams, prefix+leftArg.Name)
+		k.fillNatParamFromArg(arg, natParams, prefix+k.opts.NatArgsDelimiter+leftArg.Name)
 	}
 }
 
@@ -322,7 +330,7 @@ func (k *Kernel) fillNatParamFromArg(rt tlast.TL2TypeArgument, natParams *[]stri
 func (k *Kernel) fillLocalArg(arg tlast.TL2TypeArgument, targName string, natParams []string) (LocalArg, []string) {
 	var localNatParams []string
 	k.fillNatParamFromArg(arg, &localNatParams, targName)
-	if len(localNatParams) == 1 {
+	if len(localNatParams) == 1 && !k.opts.NotSimplifyNatArgs {
 		localNatParams[0] = targName
 	}
 	localArg := LocalArg{
