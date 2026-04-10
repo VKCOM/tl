@@ -273,7 +273,7 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		var original *TypeRWWrapper
 		for i, wrapper := range duplicates[name] {
 			if i != 0 {
-				wrapper.phpInfo.IsDuplicate = true
+				wrapper.phpInfo.IsDuplicate = wrapper.canonicalString(false, false) != original.canonicalString(false, false)
 				wrapper.phpInfo.MappingOrigin = original
 			} else {
 				original = wrapper

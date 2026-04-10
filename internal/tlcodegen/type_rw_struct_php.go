@@ -1875,14 +1875,15 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		return []string{
-			"/** TODO */",
-			fmt.Sprintf("/** $success = RPC_READ%s(%s%s); */",
-				ifString(bare, "", "_boxed"),
-				ifString(useBuiltIn, "", "$stream, "),
-				targetName,
-			),
-		}
+		return nil
+		//return []string{
+		//	"/** TODO */",
+		//	fmt.Sprintf("/** $success = RPC_READ%s(%s%s); */",
+		//		ifString(bare, "", "_boxed"),
+		//		ifString(useBuiltIn, "", "$stream, "),
+		//		targetName,
+		//	),
+		//}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
@@ -1969,14 +1970,15 @@ func (trw *TypeRWStruct) phpStructReadMagic(useBuiltIn bool, result []string) []
 func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		return []string{
-			"/** TODO */",
-			fmt.Sprintf("/** $success = RPC_WRITE%s(%s%s); */",
-				ifString(bare, "", "_boxed"),
-				ifString(useBuiltIn, "", "$stream, "),
-				targetName,
-			),
-		}
+		return nil
+		//return []string{
+		//	"/** TODO */",
+		//	fmt.Sprintf("/** $success = RPC_WRITE%s(%s%s); */",
+		//		ifString(bare, "", "_boxed"),
+		//		ifString(useBuiltIn, "", "$stream, "),
+		//		targetName,
+		//	),
+		//}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {

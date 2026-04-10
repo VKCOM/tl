@@ -1,6 +1,8 @@
 package genphp
 
 import (
+	"strings"
+
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/tlast"
 	"github.com/VKCOM/tl/internal/utils"
@@ -25,4 +27,13 @@ func PHPAddThisSign(s []string) []string {
 	return utils.MapSlice(s, func(a string) string {
 		return "this->" + a
 	})
+}
+
+// TODO!
+func PHPLegacyGoNameToCompare(canonicalName string) string {
+	canonicalName = strings.Replace(canonicalName, "<", "", -1)
+	canonicalName = strings.Replace(canonicalName, ">", "", -1)
+	canonicalName = strings.Replace(canonicalName, "*", "", -1)
+	canonicalName = strings.Replace(canonicalName, ".", "", -1)
+	return canonicalName
 }

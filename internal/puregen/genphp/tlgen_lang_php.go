@@ -9,6 +9,7 @@ package genphp
 import (
 	"fmt"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -194,17 +195,26 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 	sort.Strings(duplicatedNames)
 
 	for _, name := range duplicatedNames {
-		//fmt.Printf("Duplicates for php type %q:\n", name)
+		fmt.Printf("Duplicates for php type %q:\n", name)
 		var original *TypeRWWrapper
-		for i, wrapper := range duplicates[name] {
-			if i != 0 {
+
+		// TO HAVE LESS DIFF WITH TLGEN
+		duplicates := duplicates[name]
+		slices.SortFunc(duplicates, func(a, b *TypeRWWrapper) int {
+			return strings.Compare(PHPLegacyGoNameToCompare(a.pureType.CanonicalName()), PHPLegacyGoNameToCompare(b.pureType.CanonicalName()))
+		})
+
+		for i, wrapper := range duplicates {
+			if i == 0 {
+				original = wrapper
+			} else {
 				wrapper.phpInfo.IsDuplicate = true
 				wrapper.phpInfo.MappingOrigin = original
-			} else {
-				original = wrapper
 			}
-			//fmt.Printf("\t%s\n", wrapper.goGlobalName)
+			fmt.Printf("\t%s\n", wrapper.pureType.CanonicalName())
 		}
+
+		wrappers[createdTypes[name]] = original
 	}
 
 	return wrappers
