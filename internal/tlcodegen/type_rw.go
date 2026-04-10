@@ -261,6 +261,10 @@ func (w *TypeRWWrapper) CanonicalStringTop() string {
 }
 
 func (w *TypeRWWrapper) CanonicalString(bare bool) string {
+	return w.canonicalString(bare, true)
+}
+
+func (w *TypeRWWrapper) canonicalString(bare bool, printConstants bool) string {
 	var s strings.Builder
 	if w.originateFromTL2 {
 		if w.unionParent == nil {
@@ -308,7 +312,11 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 		}
 		if a.isNat {
 			if a.isArith {
-				s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+				if printConstants {
+					s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+				} else {
+					s.WriteString("#")
+				}
 			} else {
 				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
 			}

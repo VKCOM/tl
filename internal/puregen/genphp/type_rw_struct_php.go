@@ -85,11 +85,7 @@ func (trw *TypeRWStruct) PHPGetFieldMask(targetName string, calculatedArgs []str
 				return fieldUsage
 			}
 		}
-		for _, child := range calculatedArgs {
-			if child == "$"+fieldMask.NatParamName() {
-				return child
-			}
-		}
+		return calculatedArgs[fieldMask.FieldIndex()]
 	}
 
 	return ""
@@ -914,6 +910,9 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []s
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
+		if trw.PhpClassName(false, true) == "targLong_changeUserGroups" && i == 1 {
+			Debugf("")
+		}
 		fieldMask := trw.PHPGetFieldMask(targetName, calculatedArgs, i)
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
@@ -1905,7 +1904,8 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 			if !bare {
 				result = trw.phpStructReadMagic(useBuiltIn, result)
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args, supportSuffix)...)
+			newArgs := trw.PhpGetArgsForField(0, args)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, newArgs, supportSuffix)...)
 			return result
 		}
 	}
@@ -1998,7 +1998,8 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 			if !bare {
 				result = trw.phpStructWriteMagic(useBuiltIn, result)
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args, supportSuffix)...)
+			newArgs := trw.PhpGetArgsForField(0, args)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, newArgs, supportSuffix)...)
 			return result
 		}
 	}
