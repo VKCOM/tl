@@ -89,7 +89,7 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, init
 	case "__function":
 		return nil
 	case "__function_result":
-		return nil
+		return []string{fmt.Sprintf("%s = $this->fetcher->typedFetch();", targetName)}
 	}
 	if !bare {
 		panic("can't be boxed")
@@ -127,7 +127,7 @@ func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, arg
 	case "__function":
 		return nil
 	case "__function_result":
-		return nil
+		return []string{fmt.Sprintf("%s = $this->fetcher->typedStore();", targetName)}
 	}
 	if !bare {
 		panic("can't be boxed")
