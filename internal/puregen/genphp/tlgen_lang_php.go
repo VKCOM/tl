@@ -51,7 +51,10 @@ type PhpClassMeta struct {
 
 	RequireFunctionBodies bool
 
-	RPCPrimitive bool
+	IsRPCPrimitive bool // for TL\Response special case
+
+	IsDiagonalFunction      bool
+	DiagonalQueryFieldIndex int // make sense if IsDiagonalFunction = true
 }
 
 func (gen *Gen2) generateCodePHP() error {
@@ -221,9 +224,28 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 	}
 
 	// STEP 2: remove temporary generation read / write for rpcResponse
+	// STEP 3: find diagonals
 	for _, wrapper := range wrappers {
 		if isPrim, _ := PHPRPCPrimitive(wrapper.TLName().Name); isPrim {
-			wrapper.phpInfo.RPCPrimitive = true
+			wrapper.phpInfo.IsRPCPrimitive = true
+		}
+		if wrapper.IsFunction() {
+			fun, _ := wrapper.trw.(*TypeRWStruct)
+			queryFieldIndex := -1
+
+			for i, field := range fun.Fields {
+				if field.t.pureType.CanonicalName() == "__function" {
+					queryFieldIndex = i
+					break
+				}
+			}
+
+			if queryFieldIndex != -1 {
+				wrapper.phpInfo.IsDiagonalFunction = true
+				wrapper.phpInfo.DiagonalQueryFieldIndex = queryFieldIndex
+
+				Debugf("[!] diagonal: %s\n", wrapper.pureType.CanonicalName())
+			}
 		}
 	}
 

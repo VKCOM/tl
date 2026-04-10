@@ -237,12 +237,53 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	return nil
 }
 
+type ArgInfo struct {
+	FieldName    string
+	TypeName     string
+	DefaultValue string
+
+	FieldValue string
+
+	SpecialArgument bool
+}
+
+func (trw *TypeRWStruct) PHPFetcherArguments() []ArgInfo {
+	structuredArgs := make([]ArgInfo, 0)
+	if trw.wr.phpInfo.IsDiagonalFunction {
+		structuredArgs = append(structuredArgs, ArgInfo{
+			FieldName:       "fetcher",
+			TypeName:        "TL\\RpcFunctionFetcher",
+			DefaultValue:    "null",
+			FieldValue:      "$fetcher",
+			SpecialArgument: true,
+		})
+	}
+
+	if trw.wr.wantsTL2 {
+		structuredArgs = append(structuredArgs, ArgInfo{
+			FieldName:       "use_tl2",
+			TypeName:        "int",
+			DefaultValue:    "0",
+			FieldValue:      "$use_tl2",
+			SpecialArgument: true,
+		})
+	}
+
+	actualArgs, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+	for i, arg := range trw.pureType.ResultType().Common().NatParams() {
+		structuredArgs = append(structuredArgs, ArgInfo{
+			FieldName:    arg,
+			TypeName:     "int",
+			DefaultValue: "0",
+			FieldValue:   actualArgs[i],
+		})
+	}
+
+	return structuredArgs
+}
+
 func (trw *TypeRWStruct) PHPStructFunctionSpecificTypes(code *strings.Builder) {
 	if trw.wr.gen.options.PHP.AddRPCTypes && trw.ResultType != nil {
-		if phpResultType(trw) == "TL\\ch_proxy\\Types\\ch_proxy_Table_stats" {
-			Debugf("????")
-			_ = phpResultType(trw)
-		}
 		code.WriteString(
 			fmt.Sprintf(
 				`
@@ -263,36 +304,19 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 		)
 
 		if trw.wr.gen.options.PHP.AddFetchers && trw.wr.phpInfo.RequireFunctionBodies {
-			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
-
-			//results, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
-			if trw.pureType.Common().CanonicalName() == "memcache.getWildcard" {
-				//args := trw.pureType.ResultNatArgs()
-				//actualArgs := trw.pureType.TransformNatArgsToChild(nil)
-				//stringValues := utils.MapSlice(results.children, func(a *TypeArgumentsTree) string {
-				//	return *a.value
-				//})
-				//replacedArgs := trw.pureType.ReplaceUnwrapArgsResult(stringValues)
-				//Debugf("%v\n", replacedArgs)
-				//_, _ = trw.PHPGetResultNatDependenciesValuesAsTypeTree()
-			}
-
-			argsAsArray := args
-
-			argAsArrayCopy := argsAsArray
-			if trw.wr.wantsTL2 {
-				argAsArrayCopy = append(argAsArrayCopy, "$use_tl2")
-			}
+			structuredArgs := trw.PHPFetcherArguments()
 
 			argsAsFields := strings.Join(
 				utils.MapSlice(
-					trw.pureType.ResultType().Common().NatParams(),
-					func(arg string) string {
+					structuredArgs,
+					func(arg ArgInfo) string {
 						return fmt.Sprintf(
-							`  /** @var int */
-  public $%[1]s = 0;
+							`  /** @var %[1]s */
+  public $%[2]s = %[3]s;
 `,
-							arg,
+							arg.TypeName,
+							arg.FieldName,
+							arg.DefaultValue,
 						)
 					},
 				),
@@ -309,17 +333,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			constructorArgs := ""
 			constructorBody := ""
 
-			if len(argsAsArray) > 0 {
+			if len(structuredArgs) > 0 {
 				constructorComment = "  /**\n"
-				for i, arg := range trw.pureType.ResultType().Common().NatParams() {
-					constructorComment += fmt.Sprintf("   * @param int $%s\n", arg)
+				for i, arg := range structuredArgs {
+					constructorComment += fmt.Sprintf("   * @param %[1]s $%[2]s\n", arg.TypeName, arg.FieldName)
 
 					if i != 0 {
 						constructorArgs += ", "
 					}
-					constructorArgs += "$" + arg
+					constructorArgs += "$" + arg.FieldName
 
-					constructorBody += fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", arg)
+					constructorBody += fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", arg.FieldName)
 				}
 				constructorComment += "   */"
 			}
@@ -327,88 +351,93 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			readCall := strings.Builder{}
 			writeCall := strings.Builder{}
 
-			innerArgs := PHPAddDollarSign(PHPAddThisSign(trw.pureType.ResultType().Common().NatParams()))
+			innerArgs :=
+				utils.MapSlice(
+					utils.FilterSlice(structuredArgs,
+						func(info ArgInfo) bool {
+							return !info.SpecialArgument
+						},
+					),
+					func(info ArgInfo) string {
+						return "$this->" + info.FieldName
+					},
+				)
 
 			/** TODO make it better */
-			if len(trw.wr.pureType.KernelType().Templates()) != 0 {
-				readCall.WriteString(`    /** TODO FOR DIAGONAL */`)
-				writeCall.WriteString(`    /** TODO FOR DIAGONAL */`)
-			} else {
-				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
-				if trw.wr.wantsTL2 {
-					cc := codecreator.NewPhpCodeCreator()
-					cc.IfElse("$this->use_tl2 == 0", func() {
-						// tl1 case
-						cc.AddLines(readCallLines...)
-					}, func() {
-						// tl2 case
-						cc.AddLines("$used_bytes = 0;")
-						cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
-						cc.If("$obj_size != 0", func() {
-							cc.AddLines("$obj_block = fetch_byte();")
-							cc.AddLines("$used_bytes += 1;")
-							cc.If("$obj_block == (1 << 1)", func() {
-								// TODO!
-								cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, nil, "", 0, "$used_bytes", false)...)
-							})
-						})
-						// skip rest
-						cc.AddLines(fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s - %[2]s);", "$obj_size", "$used_bytes"))
-					})
-					readCallLines = cc.Print()
-				}
-				for _, line := range readCallLines {
-					targetLines := []string{line}
-					if strings.Contains(line, "return false;") {
-						prefix, _, _ := strings.Cut(line, "return false;")
-						targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t fetch %s_result');", trw.PhpClassName(false, true))
-						targetLines = append(targetLines, prefix+"return null;")
-					}
-					for _, targetLine := range targetLines {
-						readCall.WriteString(strings.Repeat(" ", 4))
-						readCall.WriteString(targetLine)
-						readCall.WriteString("\n")
-					}
-				}
-
-				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
-				if trw.wr.wantsTL2 {
-					cc := codecreator.NewPhpCodeCreator()
-					cc.IfElse("$this->use_tl2 == 0", func() {
-						cc.AddLines(writeCallLines...)
-					}, func() {
-						cc.AddLines(
-							"$used_bytes = 0;",
-							`$context_sizes = new TL\tl2_context();`,
-							`$context_blocks = new TL\tl2_context();`,
-						)
-						cc.Comments("calculate sizes")
-						// TODO!
-						cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", true)...)
-						cc.Comments("write result")
-						cc.IfElse("$used_bytes != 0", func() {
-							cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
-							cc.AddLines("store_byte(2);")
+			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
+			if trw.wr.wantsTL2 {
+				cc := codecreator.NewPhpCodeCreator()
+				cc.IfElse("$this->use_tl2 == 0", func() {
+					// tl1 case
+					cc.AddLines(readCallLines...)
+				}, func() {
+					// tl2 case
+					cc.AddLines("$used_bytes = 0;")
+					cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
+					cc.If("$obj_size != 0", func() {
+						cc.AddLines("$obj_block = fetch_byte();")
+						cc.AddLines("$used_bytes += 1;")
+						cc.If("$obj_block == (1 << 1)", func() {
 							// TODO!
-							cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", false)...)
-						}, func() {
-							cc.AddLines("TL\\tl2_support::store_size(0);")
+							cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, nil, "", 0, "$used_bytes", false)...)
 						})
 					})
-					writeCallLines = cc.Print()
+					// skip rest
+					cc.AddLines(fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s - %[2]s);", "$obj_size", "$used_bytes"))
+				})
+				readCallLines = cc.Print()
+			}
+			for _, line := range readCallLines {
+				targetLines := []string{line}
+				if strings.Contains(line, "return false;") {
+					prefix, _, _ := strings.Cut(line, "return false;")
+					targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t fetch %s_result');", trw.PhpClassName(false, true))
+					targetLines = append(targetLines, prefix+"return null;")
 				}
-				for _, line := range writeCallLines {
-					targetLines := []string{line}
-					if strings.Contains(line, "return false;") {
-						prefix, _, _ := strings.Cut(line, "return false;")
-						targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t store %s_result');", trw.PhpClassName(false, true))
-						targetLines = append(targetLines, prefix+"return;")
-					}
-					for _, targetLine := range targetLines {
-						writeCall.WriteString(strings.Repeat(" ", 6))
-						writeCall.WriteString(targetLine)
-						writeCall.WriteString("\n")
-					}
+				for _, targetLine := range targetLines {
+					readCall.WriteString(strings.Repeat(" ", 4))
+					readCall.WriteString(targetLine)
+					readCall.WriteString("\n")
+				}
+			}
+
+			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
+			if trw.wr.wantsTL2 {
+				cc := codecreator.NewPhpCodeCreator()
+				cc.IfElse("$this->use_tl2 == 0", func() {
+					cc.AddLines(writeCallLines...)
+				}, func() {
+					cc.AddLines(
+						"$used_bytes = 0;",
+						`$context_sizes = new TL\tl2_context();`,
+						`$context_blocks = new TL\tl2_context();`,
+					)
+					cc.Comments("calculate sizes")
+					// TODO!
+					cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", true)...)
+					cc.Comments("write result")
+					cc.IfElse("$used_bytes != 0", func() {
+						cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
+						cc.AddLines("store_byte(2);")
+						// TODO!
+						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", false)...)
+					}, func() {
+						cc.AddLines("TL\\tl2_support::store_size(0);")
+					})
+				})
+				writeCallLines = cc.Print()
+			}
+			for _, line := range writeCallLines {
+				targetLines := []string{line}
+				if strings.Contains(line, "return false;") {
+					prefix, _, _ := strings.Cut(line, "return false;")
+					targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t store %s_result');", trw.PhpClassName(false, true))
+					targetLines = append(targetLines, prefix+"return;")
+				}
+				for _, targetLine := range targetLines {
+					writeCall.WriteString(strings.Repeat(" ", 6))
+					writeCall.WriteString(targetLine)
+					writeCall.WriteString("\n")
 				}
 			}
 
@@ -584,13 +613,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
 		}
 
-		if trw.pureType.KernelType().CanonicalName().String() == "rpcDestActorFlags" {
+		if trw.pureType.KernelType().CanonicalName().String() == "rpcDestFlags" {
 			Debugf("")
 		}
 
 		if trw.wr.gen.options.PHP.AddFetchers &&
 			// diagonal
-			len(trw.wr.pureType.KernelType().Templates()) == 0 &&
+			!trw.wr.phpInfo.IsDiagonalFunction &&
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies {
 			if !trw.wr.wantsTL2 {
@@ -657,14 +686,14 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
       %[9]sprint('%[1]s::typedStore()<br/>');
       $this->write_boxed(%[8]s);
+      $use_tl2 = 0;
       return new %[1]s_fetcher(%[4]s);
     } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
       %[9]sprint('%[1]s::typedStore() in tl2<br/>');
       store_int(0x%08[11]x); 
       $this->write_tl2(%[8]s);
-      $f = new %[1]s_fetcher(%[4]s);
-      $f->use_tl2 = 1;
-      return $f; 
+      $use_tl2 = 1;
+      return new %[1]s_fetcher(%[4]s);
     } else {
       return null;
     }
@@ -675,13 +704,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
       %[9]sprint('%[1]s::typedFetch()<br/>');
       $this->read(%[7]s);
+      $use_tl2 = 0;
       return new %[1]s_fetcher(%[4]s);
     } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
       %[9]sprint('%[1]s::typedFetch() in tl2<br/>');
       $this->read_tl2(%[7]s);
-      $f = new %[1]s_fetcher(%[4]s);
-      $f->use_tl2 = 1;
-      return $f;
+      $use_tl2 = 1;
+      return new %[1]s_fetcher(%[4]s);
     } else {
       return null;
     }
@@ -716,9 +745,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies &&
 			// diagonal
-			len(trw.wr.pureType.KernelType().Templates()) != 0 &&
-			// from _common
-			trw.wr.pureType.KernelType().CanonicalName().Namespace == "" {
+			trw.wr.phpInfo.IsDiagonalFunction {
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
@@ -729,8 +756,10 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
     if ($fetcher === null) {
       %[9]sprint('%[1]s rpc_clean()<br/>');
       rpc_clean();
+      return null;
     }
-    return $fetcher;
+    $use_tl2 = 0;
+    return %[1]s_fetcher(%[4]s);
   }
 
 %[5]s
@@ -741,7 +770,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					trw.PhpClassName(false, true),
 					trw.wr.TLName().String(),
 					fmt.Sprintf("0x%08x", trw.wr.TLTag()),
-					argsArray,
+					ifString(argsArray == "", "$fetcher", "$fetcher, "+argsArray),
 					phpFunctionCommentFormat(
 						fetchArgNames,
 						fetchArgTypes,
@@ -809,7 +838,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	if trw.wr.gen.options.PHP.AddFunctionBodies &&
 		trw.wr.phpInfo.RequireFunctionBodies &&
-		!trw.wr.phpInfo.RPCPrimitive {
+		!trw.wr.phpInfo.IsRPCPrimitive {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
@@ -1047,7 +1076,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.PHP.UseBuiltinDataProviders
 	if trw.wr.gen.options.PHP.AddFunctionBodies &&
 		trw.wr.phpInfo.RequireFunctionBodies &&
-		!trw.wr.phpInfo.RPCPrimitive {
+		!trw.wr.phpInfo.IsRPCPrimitive {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
