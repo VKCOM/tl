@@ -1,0 +1,10 @@
+// myschema.fbs
+namespace speed;
+
+table PointFlat {
+  x:uint;
+  y:uint;
+  z:uint;
+}
+
+root_type PointFlat;

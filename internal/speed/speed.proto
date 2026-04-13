@@ -1,0 +1,39 @@
+syntax = "proto3";
+package statshouse;
+
+option go_package = "github.com/VKCOM/tl/internal/speed/pb";
+
+message PointPB {
+    uint32              x      = 1;
+    uint32              y      = 2;
+    uint32              z      = 3;
+}
+
+// to compile
+// sudo apt-get install libprotobuf-dev
+// go install google.golang.org/protobuf/cmd/protoc-gen-go
+// /go/src/gitlab.corp.mail.ru/vkgo/vkgo$ protoc -I=projects/vktl/internal/speed --go_out=../../.. speed.proto
+
+// or
+// go install github.com/gogo/protobuf/protoc-gen-gofast@latest
+// user@boot3879:~/go/src/github.com/VKCOM/tl/internal/speed$ protoc --gofast_out=../../../../../../.. speed.proto
+
+
+// to compile if proto3 format not supported, for example by protocute
+
+// 1. comment out line: option go_package = "github.com/VKCOM/statshouse/internal/receiver/pb";
+// 2. add
+// message MapFieldEntry {
+//   optional string key = 1;
+//   optional string value = 2;
+// }
+// 3. replace Metric with
+// message Metric {
+// string              name    = 1;
+// map<string, string> tags    = 2;
+// double              counter = 3;
+// uint32              ts      = 4;  // UNIX seconds UTC
+// repeated double     value   = 5;
+// repeated int64      unique  = 6;
+// }
+// 4. ./protocute --cpp_out=. ~/go/src/github.com/VKCOM/statshouse/internal/receiver/statshouse.proto
