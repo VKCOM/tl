@@ -32,6 +32,9 @@ func (trw *TypeRWPrimitive) isFloat() bool {
 func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWPrimitive) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+}
+
 func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return nil
 }

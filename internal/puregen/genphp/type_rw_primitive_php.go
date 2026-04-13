@@ -160,7 +160,7 @@ func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, arg
 	}
 }
 
-func (trw *TypeRWPrimitive) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWPrimitive) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if trw.gen.options.PHP.UseBuiltinDataProviders {
 		switch trw.goType {
 		case "int32":
@@ -206,7 +206,7 @@ func (trw *TypeRWPrimitive) PhpReadTL2MethodCall(targetName string, bare bool, i
 	}
 }
 
-func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if trw.gen.options.PHP.UseBuiltinDataProviders {
 		switch trw.goType {
 		case "int32":
@@ -249,7 +249,7 @@ func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, 
 	panic("unsupported generation for primitive in php")
 }
 
-func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	if trw.gen.options.PHP.UseBuiltinDataProviders {
 		calcText := make([]string, 0)
 		checkZeroTarget := targetName

@@ -630,6 +630,15 @@ func (w *TypeRWWrapper) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bo
 	w.trw.fillRecursiveChildren(visitedNodes)
 }
 
+func (w *TypeRWWrapper) MarkWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	if visitedNodes[w] {
+		return
+	}
+	w.wantsTL2 = true
+	visitedNodes[w] = true
+	w.trw.markWantsTL2(visitedNodes)
+}
+
 func (w *TypeRWWrapper) IsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if !ok {
@@ -1204,6 +1213,7 @@ outer:
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
+	markWantsTL2(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)

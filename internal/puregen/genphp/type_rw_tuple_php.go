@@ -256,7 +256,10 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 	panic("???")
 }
 
-func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if trw.dictLike {
+		callLevel += 1
+	}
 	result := make([]string, 0)
 
 	//panic("not implemented")
@@ -271,7 +274,8 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		// TODO!
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -322,9 +326,9 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
-		tupleSize := *args.children[0].value
+		tupleSize := args[0]
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.Bare(), false, args[1:], supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -428,13 +432,13 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 
 				cc.If(cc.CheckBit(pairBlock, 1), func() {
 					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
-					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.Bare(), true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.Bare(), true, args, supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
 					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 
 				cc.If(cc.CheckBit(pairBlock, 2), func() {
 					cc.AddLines(cc.Assign(fieldUsedBytesPointer, "0"))
-					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.Bare(), true, args.children[0], supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
+					cc.AddLines(trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.Bare(), true, args, supportSuffix, callLevel+1, fieldUsedBytesPointer, false)...)
 					cc.AddLines(cc.SubAssign(pairCurrentSize, fieldUsedBytesPointer))
 				})
 			})
@@ -513,7 +517,11 @@ func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, in
 //	return result
 //}
 
-func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if trw.dictLike {
+		callLevel += 1
+	}
+
 	uniqueSuffix := fmt.Sprintf("_%[1]s_%[2]d", supportSuffix, callLevel)
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
 	currentLen := fmt.Sprintf("$current_len%s", uniqueSuffix)
@@ -551,7 +559,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
 				cc.AddLines(
-					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
+					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args, supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
 				)
 			})
 			cc.AddLines("}")
@@ -567,7 +575,7 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
 				cc.AddLines(
-					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
+					trw.element.t.trw.PhpWriteTL2MethodCall(elementObj, false, args[1:], supportSuffix, callLevel+1, localUsedBytesPointer, false)...,
 				)
 			})
 			cc.AddLines("}")
@@ -620,7 +628,10 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 	return cc.Print()
 }
 
-func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+	if trw.dictLike {
+		callLevel += 1
+	}
 	uniqueSuffix := fmt.Sprintf("_%[1]s_%[2]d", supportSuffix, callLevel)
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
 	currentSizeIndex := fmt.Sprintf("$current_size_index%s", uniqueSuffix)
@@ -653,7 +664,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
 				cc.AddLines(
-					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args.children[0], supportSuffix, callLevel+1, currentSize, false)...,
+					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args, supportSuffix, callLevel+1, currentSize, false)...,
 				)
 			})
 			cc.AddLines("}")
@@ -669,7 +680,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 					fmt.Sprintf("%[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, currentIndex)),
 				)
 				cc.AddLines(
-					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args.children[1], supportSuffix, callLevel+1, currentSize, false)...,
+					trw.element.t.trw.PhpCalculateSizesTL2MethodCall(elementObj, false, args[1:], supportSuffix, callLevel+1, currentSize, false)...,
 				)
 			})
 			cc.AddLines("}")

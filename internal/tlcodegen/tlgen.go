@@ -2392,6 +2392,14 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 
 	typesCounterMarkBytes := 0
 	typesCounterMarkTL2 := 0
+
+	tl2Children := map[*TypeRWWrapper]bool{}
+	for _, v := range gen.generatedTypesList {
+		if inNameFilter(v.tlName, tl2WhiteList) {
+			v.MarkWantsTL2(tl2Children)
+			typesCounterMarkTL2++
+		}
+	}
 	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
 		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
 			for i := range str.Fields {

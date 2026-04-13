@@ -30,25 +30,6 @@ func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDe
 	panic(fmt.Sprintf("no such nat \"%s\"", name))
 }
 
-func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex int, calculatedArgs *TypeArgumentsTree) TypeArgumentsTree {
-	field := trw.Fields[fieldIndex]
-	localTree := TypeArgumentsTree{}
-
-	for _, p := range field.pureField.NatArgs() {
-		p_ := new(string)
-		if p.IsNumber() {
-			*p_ = fmt.Sprintf("%d", p.Number())
-		} else if p.IsField() {
-			*p_ = fmt.Sprintf("$this->%s", trw.pureType.Fields()[p.FieldIndex()].Name())
-		} else {
-			*p_ = fmt.Sprintf("$%s", p.NatParamName())
-		}
-		localTree.children = append(localTree.children, &TypeArgumentsTree{value: p_, leaf: true})
-	}
-
-	return localTree
-}
-
 func (trw *TypeRWStruct) PHPGetResultNatDependenciesValuesAsTypeTree() ([]string, bool) {
 	if trw.ResultType == nil {
 		return nil, false
@@ -259,7 +240,11 @@ func (trw *TypeRWStruct) PHPFetcherArguments() []ArgInfo {
 		})
 	}
 
-	if trw.wr.wantsTL2 {
+	if trw.PhpClassName(false, true) == "memcache_touch" {
+		Debugf("")
+	}
+
+	if trw.wr.pureType.Common().HasTL2() {
 		structuredArgs = append(structuredArgs, ArgInfo{
 			FieldName:       "use_tl2",
 			TypeName:        "int",
@@ -365,7 +350,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 			/** TODO make it better */
 			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
-			if trw.wr.wantsTL2 {
+			if trw.wr.pureType.Common().HasTL2() {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
@@ -379,7 +364,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.AddLines("$used_bytes += 1;")
 						cc.If("$obj_block == (1 << 1)", func() {
 							// TODO!
-							cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, nil, "", 0, "$used_bytes", false)...)
+							cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false)...)
 						})
 					})
 					// skip rest
@@ -402,7 +387,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			}
 
 			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
-			if trw.wr.wantsTL2 {
+			if trw.wr.pureType.Common().HasTL2() {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					cc.AddLines(writeCallLines...)
@@ -414,13 +399,13 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					)
 					cc.Comments("calculate sizes")
 					// TODO!
-					cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", true)...)
+					cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true)...)
 					cc.Comments("write result")
 					cc.IfElse("$used_bytes != 0", func() {
 						cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 						cc.AddLines("store_byte(2);")
 						// TODO!
-						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, nil, "", 0, "$used_bytes", false)...)
+						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false)...)
 					}, func() {
 						cc.AddLines("TL\\tl2_support::store_size(0);")
 					})
@@ -589,14 +574,11 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			trw.wr.TLTag(),
 		))
 
-		if trw.pureType.CanonicalName() == "memcache.getQueriesStat" {
-			//args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
-			//argsArray := strings.Join(args.ListAllValues(), ", ")
-			//print(argsArray)
-			Debugf("memcache.getQueriesStat")
+		args := make([]string, 0)
+		for _, arg := range trw.PHPFetcherArguments() {
+			args = append(args, arg.FieldValue)
 		}
 
-		args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
 		argsArray := strings.Join(args, ", ")
 
 		var fetchArgNames []string
@@ -613,7 +595,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
 		}
 
-		if trw.pureType.KernelType().CanonicalName().String() == "rpcDestFlags" {
+		if trw.pureType.KernelType().CanonicalName().String() == "memcache.touch" {
 			Debugf("")
 		}
 
@@ -622,7 +604,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			!trw.wr.phpInfo.IsDiagonalFunction &&
 			// don't have write / read
 			trw.wr.phpInfo.RequireFunctionBodies {
-			if !trw.wr.wantsTL2 {
+			if !trw.wr.pureType.Common().HasTL2() {
 				code.WriteString(
 					fmt.Sprintf(`
 %[6]s
@@ -898,7 +880,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.wantsTL2 {
+		if trw.wr.pureType.Common().HasTL2() {
 			// TODO: add block calculated currentSize and block if union
 			if trw.wr.PHPUnionParent() != nil {
 				argNames = append(argNames, "block", "current_size")
@@ -916,7 +898,11 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			usedBytes := "$used_bytes"
 			code.WriteString(fmt.Sprintf("%[1]s%[2]s = 0;\n", tab, usedBytes))
 
-			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, nil, "", 0, true) {
+			if trw.PhpClassName(false, true) == "memcache_wildcardResult" {
+				Debugf("")
+			}
+
+			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, PHPAddDollarSign(trw.pureType.NatParams()), "", 0, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 
@@ -971,7 +957,7 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []s
 	return result
 }
 
-func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree, supportSuffix string, callLevel int, topLevel bool) []string {
+func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs []string, supportSuffix string, callLevel int, topLevel bool) []string {
 	currentSize := "$current_size"
 	block := "$block"
 
@@ -1051,12 +1037,12 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
 		}
 		cc.If(fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", block, inBlockIndex), func() {
-			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
+			tree := trw.PhpGetArgsForField(fieldIndex, calculatedArgs)
 			localUsedBytes := fmt.Sprintf("$local_used_bytes_%s_%d", supportSuffix, callLevel)
 			cc.Comments("local size for this field")
 			cc.AddLines(fmt.Sprintf("%[1]s = 0;", localUsedBytes))
 			cc.AddLines(
-				field.t.trw.PhpReadTL2MethodCall(fieldName, field.Bare(), true, &tree, strconv.Itoa(fieldIndex), callLevel+1, localUsedBytes, field.pureField.FieldMask() == nil)...,
+				field.t.trw.PhpReadTL2MethodCall(fieldName, field.Bare(), true, tree, strconv.Itoa(fieldIndex), callLevel+1, localUsedBytes, field.pureField.FieldMask() == nil)...,
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
 			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func() {
@@ -1133,7 +1119,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.wantsTL2 {
+		if trw.wr.pureType.Common().HasTL2() {
 			// TODO: add block calculated currentSize and block if union
 			argNames = append(argNames, "context_sizes", "context_blocks")
 			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)
@@ -1163,7 +1149,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			tab := strings.Repeat("  ", 2)
 
 			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructWriteTL2Code("$this", nil, "", 0, "$used_bytes", false) {
+			for _, line := range trw.phpStructWriteTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, "$used_bytes", false) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 			code.WriteString("    return $used_bytes;\n")
@@ -1178,7 +1164,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			))
 
 			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil, "", 0, "$used_bytes", false, true) {
+			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, "$used_bytes", false, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 			code.WriteString(fmt.Sprintf("%sif ($used_bytes == 0) {\n", tab))
@@ -1224,7 +1210,7 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs []
 	return result
 }
 
-func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool) []string {
+func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args []string, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool) []string {
 	if useItself && len(trw.Fields) != 1 {
 		panic("can't use itself (for case similar to typedef)")
 	}
@@ -1297,16 +1283,16 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 			if useItself {
 				fieldTarget = targetName
 			}
-			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
+			tree := trw.PhpGetArgsForField(i, args)
 
 			cc.AddLines(fmt.Sprintf("if ((%[1]s & (1 << %[2]d)) != 0) {", currentBlock, indexInBlock))
 			cc.AddBlock(func() {
-				if field.MaskTL2Bit != nil {
+				if field.pureField.MaskTL2Bit() != nil {
 					cc.AddLines(fmt.Sprintf("if (%[1]s !== null) {", fieldTarget))
 					cc.AddShift(1)
 				}
-				cc.AddLines(field.t.trw.PhpWriteTL2MethodCall(fieldTarget, true, &tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, writeSize, true)...)
-				if field.MaskTL2Bit != nil {
+				cc.AddLines(field.t.trw.PhpWriteTL2MethodCall(fieldTarget, true, tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, writeSize, true)...)
+				if field.pureField.MaskTL2Bit() != nil {
 					cc.AddShift(-1)
 					cc.AddLines("}")
 				}
@@ -1319,7 +1305,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	return cc.Print()
 }
 
-func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool, canOmit bool) []string {
+func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args []string, supportSuffix string, callLevel int, usedBytesPointer string, useItself bool, canOmit bool) []string {
 	if useItself && len(trw.Fields) != 1 {
 		panic("can't use itself (for case similar to typedef)")
 	}
@@ -1384,7 +1370,7 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			fieldTarget = targetName
 		}
 
-		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, args)
+		tree := trw.PhpGetArgsForField(i, args)
 
 		cc.AddLines(fmt.Sprintf("// calculate field %s", field.pureField.Name()))
 		cc.AddLines(fmt.Sprintf("%[1]s = 0;", fieldSize))
@@ -1392,14 +1378,14 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			fieldUsed = fmt.Sprintf("%[1]s", fieldTarget)
 		} else {
 			fieldUsed = fmt.Sprintf("%[1]s != 0", fieldSize)
-			if field.MaskTL2Bit != nil {
+			if field.pureField.MaskTL2Bit() != nil {
 				cc.AddLines(fmt.Sprintf("if (%[1]s !== null) {", fieldTarget))
 				cc.AddShift(1)
 			}
 			cc.AddLines(
-				field.t.trw.PhpCalculateSizesTL2MethodCall(fieldTarget, false, &tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, fieldSize, true)...,
+				field.t.trw.PhpCalculateSizesTL2MethodCall(fieldTarget, false, tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, fieldSize, true)...,
 			)
-			if field.MaskTL2Bit != nil {
+			if field.pureField.MaskTL2Bit() != nil {
 				cc.AddShift(-1)
 				cc.AddLines("}")
 			}
@@ -2047,7 +2033,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 	return result
 }
 
-func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
@@ -2057,10 +2043,10 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
-			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
 				// inplace
-				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 				return readText
 			} else {
 				localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
@@ -2068,7 +2054,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 				localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
 				localConstructor := fmt.Sprintf("$index_%[1]s_%[2]d", supportSuffix, callLevel)
 
-				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, &newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, canDependOnLocalBit)
+				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, canDependOnLocalBit)
 
 				var result []string
 				result = append(result,
@@ -2148,7 +2134,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->read_tl2(%[2]s);",
 				targetName,
-				phpFormatArgs(utils.Append(args.ListAllValues(), additionalArguments...), true),
+				phpFormatArgs(utils.Append(args, additionalArguments...), true),
 				usedBytesPointer,
 			),
 		)
@@ -2156,7 +2142,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 	return result
 }
 
-func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
@@ -2166,9 +2152,9 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
-			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
-				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 				return calcText
 			} else {
 				calcText := trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true)
@@ -2182,8 +2168,8 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
 			strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
 			trw.wr.TLName().Namespace == "" {
-			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+			newArgs := trw.PhpGetArgsForField(0, args)
+			calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
 			return calcText
 		}
 	}
@@ -2199,7 +2185,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->internal_write_tl2(%[2]s);",
 				targetName,
-				phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true),
+				phpFormatArgs(utils.Append(args, "$context_sizes", "$context_blocks"), true),
 				usedBytesPointer,
 			),
 		)
@@ -2207,7 +2193,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 	return result
 }
 
-func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
 		panic("generation tl2 for non builtin data providers is forbidden")
 	}
@@ -2217,9 +2203,9 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
-			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
-				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].Bare(), &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
+				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
 				return calcText
 			} else {
 				calcText := trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true, canOmit)
@@ -2247,7 +2233,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 			fmt.Sprintf("%[1]s = 0;", localSize),
 			fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);",
 				targetName,
-				phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true),
+				phpFormatArgs(utils.Append(args, "$context_sizes", "$context_blocks"), true),
 				localSize,
 			),
 		)

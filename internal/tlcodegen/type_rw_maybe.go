@@ -17,6 +17,10 @@ type TypeRWMaybe struct {
 func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWMaybe) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	trw.element.t.MarkWantsTL2(visitedNodes)
+}
+
 func (trw *TypeRWMaybe) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return trw.element.t.trw.AllPossibleRecursionProducers()
 }

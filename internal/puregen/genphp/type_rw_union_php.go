@@ -141,7 +141,7 @@ func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper
 		phpFunctionArgumentsFormat(writeArgNames),
 	)
 
-	if targetType.wantsTL2 {
+	if targetType.pureType.Common().HasTL2() {
 		ioCode += fmt.Sprintf(`
 %[5]s
   public function read_tl2(%[6]s);
@@ -284,7 +284,7 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args []
 	return result
 }
 
-func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
@@ -321,7 +321,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			result = append(result,
 				fmt.Sprintf("  case %[1]d:", i),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
-				fmt.Sprintf("    %[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args.ListAllValues(), localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name),
+				fmt.Sprintf("    %[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args, localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name),
 				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
 				"    break;",
 			)
@@ -336,18 +336,18 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	return result
 }
 
-func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	result := make([]string, 0)
 	result = append(result,
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("%[3]s += %[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), usedBytesPointer),
+		fmt.Sprintf("%[3]s += %[1]s->internal_write_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args, "$context_sizes", "$context_blocks"), true), usedBytesPointer),
 	)
 	return result
 }
 
-func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	localSize := fmt.Sprintf("$local_size_%[1]s_%[2]d", supportSuffix, callLevel)
 
 	cc := codecreator.NewPhpCodeCreator()
@@ -356,7 +356,7 @@ func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 	})
 	cc.AddLines(
 		fmt.Sprintf("%[1]s = 0;", localSize),
-		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args.ListAllValues(), "$context_sizes", "$context_blocks"), true), localSize),
+		fmt.Sprintf("%[3]s += %[1]s->calculate_sizes_tl2(%[2]s);", targetName, phpFormatArgs(utils.Append(args, "$context_sizes", "$context_blocks"), true), localSize),
 	)
 	if !canOmit {
 		cc.If(fmt.Sprintf("%[1]s == 0", localSize), func() {
