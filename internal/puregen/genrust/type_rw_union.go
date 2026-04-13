@@ -230,19 +230,26 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 	cc.AddLinef("impl %s {", trw.wr.goGlobalName)
 	cc.FinishBlock(func() {
 		for _, field := range trw.Fields {
-			cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) {", field.goName)
-			cc.FinishBlock(func() {
-				if field.t.IsTrueType() {
+			if field.t.IsTrueType() {
+				cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) {", field.goName)
+				cc.FinishBlock(func() {
 					cc.AddLinef("*self = Self::%s;", field.goName)
-				} else {
-					cc.IfElse(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
+				}, "}")
+			} else {
+				fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
+				cc.AddLinef("pub(crate) fn reset_to_%s(&mut self) -> &mut %s {", field.goName, fieldTypeString)
+				cc.FinishBlock(func() {
+					cc.If(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
 						field.t.TypeResettingCode(cc, bytesVersion, directImports, "subValue", true)
-					}, func() {
-						fieldTypeString := field.t.TypeString2(bytesVersion, directImports, false, false)
-						cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
+						cc.AddLinef("return subValue")
 					})
-				}
-			}, "}")
+					cc.AddLinef("*self = Self::%s(%s::default());", field.goName, fieldTypeString)
+					cc.If(fmt.Sprintf("let Self::%s(subValue) = self", field.goName), func() {
+						cc.AddLinef("return subValue")
+					})
+					cc.AddLinef(`panic!("impossible")`)
+				}, "}")
+			}
 		}
 		cc.AddEmptyLine()
 		cc.AddLinef("pub fn reset(&mut self) {")
@@ -264,14 +271,15 @@ func (trw *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImp
 			for _, field := range trw.Fields {
 				cc.AddLinef("0x%08x => {", field.t.TLTag())
 				cc.FinishBlock(func() {
-					cc.AddLinef("value.reset_to_%s();", field.goName)
-					if !field.t.IsTrueType() {
-						cc.If(fmt.Sprintf("let %s::%s(subValue) = value", trw.wr.goGlobalName, field.goName), func() {
-							natArgs := trw.wr.formatNatArgs(nil, trw.ElementNatArgs())
-							field.t.TypeReadingCode(cc, bytesVersion, directImports, "subValue", true, natArgs, true)
-						})
+					if field.t.IsTrueType() {
+						cc.AddLinef("value.reset_to_%s();", field.goName)
+						cc.AddLinef("Ok(())")
+					} else {
+						cc.AddLinef("let subValue = value.reset_to_%s();", field.goName)
+						natArgs := trw.wr.formatNatArgs(nil, trw.ElementNatArgs())
+						field.t.TypeReadingCode(cc, bytesVersion, directImports, "subValue", true, natArgs, true)
+						cc.AddLinef("Ok(())")
 					}
-					cc.AddLinef("Ok(())")
 				}, "}")
 			}
 			cc.AddLinef("other => Err(basictl::Error::UnexpectedMagic(other)),") // TODO - for type
