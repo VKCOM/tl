@@ -1,15 +1,5 @@
 package codecreator
 
-var cppLanguageBundle = LanguageBundle{
-	ifPrefixTemplate:   "if (%[1]s) {",
-	ifSuffixTemplate:   "}",
-	elsePrefixTemplate: "} else {",
-	forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
-	forSuffixTemplate:  "}",
-	commentPrefix:      "// ",
-	varTemplate:        "%[1]s_%[2]s",
-}
-
 type CppCodeCreator struct {
 	BasicCodeCreator
 }
@@ -17,8 +7,14 @@ type CppCodeCreator struct {
 func NewCppCodeCreator() *CppCodeCreator {
 	return &CppCodeCreator{
 		BasicCodeCreator: BasicCodeCreator{
-			Shift:          "\t",
-			LanguageBundle: cppLanguageBundle,
+			shift:              "\t",
+			ifPrefixTemplate:   "if (%[1]s) {",
+			ifSuffixTemplate:   "}",
+			elsePrefixTemplate: "} else {",
+			forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
+			forSuffixTemplate:  "}",
+			commentPrefix:      "// ",
+			varTemplate:        "%[1]s_%[2]s",
 		},
 	}
 }

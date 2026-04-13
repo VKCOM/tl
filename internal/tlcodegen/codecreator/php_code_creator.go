@@ -2,16 +2,6 @@ package codecreator
 
 import "fmt"
 
-var phpLanguageBundle = LanguageBundle{
-	ifPrefixTemplate:   "if (%[1]s) {",
-	ifSuffixTemplate:   "}",
-	elsePrefixTemplate: "} else {",
-	forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
-	forSuffixTemplate:  "}",
-	commentPrefix:      "// ",
-	varTemplate:        "$%[1]s_%[2]s",
-}
-
 type PhpCodeCreator struct {
 	BasicCodeCreator
 }
@@ -19,8 +9,14 @@ type PhpCodeCreator struct {
 func NewPhpCodeCreator() *PhpCodeCreator {
 	return &PhpCodeCreator{
 		BasicCodeCreator: BasicCodeCreator{
-			Shift:          "  ",
-			LanguageBundle: phpLanguageBundle,
+			shift:              "  ",
+			ifPrefixTemplate:   "if (%[1]s) {",
+			ifSuffixTemplate:   "}",
+			elsePrefixTemplate: "} else {",
+			forPrefixTemplate:  "for (%[1]s;%[2]s;%[3]s) {",
+			forSuffixTemplate:  "}",
+			commentPrefix:      "// ",
+			varTemplate:        "$%[1]s_%[2]s",
 		},
 	}
 }
