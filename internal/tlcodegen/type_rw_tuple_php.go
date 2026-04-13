@@ -634,7 +634,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 
 	elementObj := fmt.Sprintf("$obj%s", uniqueSuffix)
 
-	cc := codecreator.CodeCreator{Shift: "  "}
+	cc := codecreator.NewPhpCodeCreator()
 
 	cc.AddLines(
 		fmt.Sprintf("%[1]s = 0;", currentSize),

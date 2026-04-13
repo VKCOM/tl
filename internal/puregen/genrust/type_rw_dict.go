@@ -138,7 +138,7 @@ func (trw *TypeRWDict) GenerateCode(bytesVersion bool, directImports *DirectImpo
 	cc.AddEmptyLine()
 
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
-	cc.AddBlock(func() {
+	cc.FinishBlock(func() {
 		if trw.wr.OriginTL2() {
 			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
@@ -150,7 +150,6 @@ func (trw *TypeRWDict) GenerateCode(bytesVersion bool, directImports *DirectImpo
 			trw.element.t.TypeReadingCode(cc, bytesVersion, directImports, "*element", trw.element.Bare(), trw.wr.formatNatArgs(nil, trw.element.NatArgs()), false)
 		})
 		cc.AddLinef("Ok(())")
-	})
-	cc.AddLinef("}")
+	}, "}")
 	return cc.Text()
 }

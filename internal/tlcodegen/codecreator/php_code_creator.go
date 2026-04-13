@@ -10,22 +10,23 @@ var phpLanguageBundle = LanguageBundle{
 	forSuffixTemplate:  "}",
 	commentPrefix:      "// ",
 	varTemplate:        "$%[1]s_%[2]s",
-	allowIndexedFor:    true,
 }
 
 type PhpCodeCreator struct {
 	BasicCodeCreator
 }
 
-func NewPhpCodeCreator() PhpCodeCreator {
-	return PhpCodeCreator{
+func NewPhpCodeCreator() *PhpCodeCreator {
+	return &PhpCodeCreator{
 		BasicCodeCreator: BasicCodeCreator{
-			CodeCreator: CodeCreator{
-				Shift: "  ",
-			},
+			Shift:          "  ",
 			LanguageBundle: phpLanguageBundle,
 		},
 	}
+}
+
+func (bcc *PhpCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
+	bcc.forIndexed(indexVar, startValue, upperBound, step, block)
 }
 
 func (ph PhpCodeCreator) Assign(name, value string) string {

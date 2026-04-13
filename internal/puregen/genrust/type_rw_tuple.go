@@ -142,16 +142,15 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 	cc.AddEmptyLine()
 	if !trw.vectorLike && !trw.dynamicSize {
 		cc.AddLinef("pub(crate) fn reset(value: &mut %s) {", typeString)
-		cc.AddBlock(func() {
+		cc.FinishBlock(func() {
 			cc.For("element", "value.iter_mut()", "", func() {
 				trw.element.t.TypeResettingCode(cc, bytesVersion, directImports, "(*element)", false)
 			})
-		})
-		cc.AddLinef("}")
+		}, "}")
 	}
 
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
-	cc.AddBlock(func() {
+	cc.FinishBlock(func() {
 		if trw.wr.OriginTL2() {
 			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
@@ -175,7 +174,6 @@ func (trw *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *Direct
 			})
 		}
 		cc.AddLinef("Ok(())")
-	})
-	cc.AddLinef("}")
+	}, "}")
 	return cc.Text()
 }

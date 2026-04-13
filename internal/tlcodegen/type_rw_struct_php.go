@@ -1224,7 +1224,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args *TypeArgu
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
 	writeSize := fmt.Sprintf("$write_size%s", uniqueSuffix)
 
-	cc := codecreator.CodeCreator{Shift: "  "}
+	cc := codecreator.NewPhpCodeCreator()
 
 	// add size
 	cc.AddLines(
@@ -2103,7 +2103,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 
 		additionalArguments = append(additionalArguments, currentBlock, currentSize)
 
-		cc := codecreator.CodeCreator{Shift: "  "}
+		cc := codecreator.NewPhpCodeCreator()
 		cc.AddLines(
 			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
 			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
