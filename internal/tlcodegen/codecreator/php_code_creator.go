@@ -14,7 +14,6 @@ var phpLanguageBundle = LanguageBundle{
 }
 
 type PhpCodeCreator struct {
-	PhpHelder
 	BasicCodeCreator
 }
 
@@ -29,52 +28,50 @@ func NewPhpCodeCreator() PhpCodeCreator {
 	}
 }
 
-type PhpHelder struct{}
-
-func (ph PhpHelder) Assign(name, value string) string {
+func (ph PhpCodeCreator) Assign(name, value string) string {
 	return fmt.Sprintf("%[1]s = %[2]s;", name, value)
 }
 
-func (ph PhpHelder) AddAssign(name, value string) string {
+func (ph PhpCodeCreator) AddAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s += %[2]s;", name, value)
 }
 
-func (ph PhpHelder) SubAssign(name, value string) string {
+func (ph PhpCodeCreator) SubAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s -= %[2]s;", name, value)
 }
 
-func (ph PhpHelder) OrAssign(name, value string) string {
+func (ph PhpCodeCreator) OrAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s |= %[2]s;", name, value)
 }
 
-func (ph PhpHelder) TL2CountBytes(value string) string {
+func (ph PhpCodeCreator) TL2CountBytes(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::count_used_bytes(%[1]s)", value)
 }
 
-func (ph PhpHelder) TL2FetchSize() string {
+func (ph PhpCodeCreator) TL2FetchSize() string {
 	return "TL\\tl2_support::fetch_size()"
 }
 
-func (ph PhpHelder) TL2FetchSizeTo(name string) string {
+func (ph PhpCodeCreator) TL2FetchSizeTo(name string) string {
 	return ph.Assign(name, ph.TL2FetchSize())
 }
 
-func (ph PhpHelder) TL2StoreSize(value string) string {
+func (ph PhpCodeCreator) TL2StoreSize(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::store_size(%[1]s);", value)
 }
 
-func (ph PhpHelder) TL2SkipBytes(value string) string {
+func (ph PhpCodeCreator) TL2SkipBytes(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", value)
 }
 
-func (ph PhpHelder) CheckBit(target string, bit int) string {
+func (ph PhpCodeCreator) CheckBit(target string, bit int) string {
 	return fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", target, bit)
 }
 
-func (ph PhpHelder) Equal(left, right string) string {
+func (ph PhpCodeCreator) Equal(left, right string) string {
 	return fmt.Sprintf("%[1]s == %[2]s", left, right)
 }
 
-func (ph PhpHelder) NotEqual(left, right string) string {
+func (ph PhpCodeCreator) NotEqual(left, right string) string {
 	return fmt.Sprintf("%[1]s != %[2]s", left, right)
 }

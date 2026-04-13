@@ -13,7 +13,6 @@ var rustLanguageBundle = LanguageBundle{
 
 type RustCodeCreator struct {
 	BasicCodeCreator
-	RustHelper
 }
 
 func NewRustCodeCreator() *RustCodeCreator {
@@ -26,5 +25,3 @@ func NewRustCodeCreator() *RustCodeCreator {
 		},
 	}
 }
-
-type RustHelper struct{}

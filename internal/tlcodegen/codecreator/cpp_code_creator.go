@@ -13,7 +13,6 @@ var cppLanguageBundle = LanguageBundle{
 
 type CppCodeCreator struct {
 	BasicCodeCreator
-	CppHelper
 }
 
 func NewCppCodeCreator() CppCodeCreator {
@@ -26,5 +25,3 @@ func NewCppCodeCreator() CppCodeCreator {
 		},
 	}
 }
-
-type CppHelper struct{}
