@@ -18,6 +18,12 @@ type TypeRWUnion struct {
 func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWUnion) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	for _, f := range trw.Fields {
+		f.t.MarkWantsTL2(visitedNodes)
+	}
+}
+
 func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return

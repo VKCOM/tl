@@ -29,6 +29,10 @@ func (trw *TypeRWBrackets) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]b
 	trw.element.t.FillRecursiveUnwrap(visitedNodes)
 }
 
+func (trw *TypeRWBrackets) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	trw.element.t.MarkWantsTL2(visitedNodes)
+}
+
 func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	// it is hard to mark Dictionary constructor as dictionary,
 	// because it is typedef to Vector or built-in brackets.

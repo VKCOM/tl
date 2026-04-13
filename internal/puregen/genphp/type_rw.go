@@ -76,9 +76,6 @@ type TypeRWWrapper struct {
 	ns  *Namespace
 	trw TypeRW
 
-	wantsTL2      bool
-	preventUnwrap bool // we can have infinite typedef loop in rare cases
-
 	fileName string
 
 	// php info
@@ -579,8 +576,6 @@ type Field struct {
 	t         *TypeRWWrapper
 	goName    string
 	recursive bool
-
-	MaskTL2Bit *int
 }
 
 func (f *Field) Bare() bool {
@@ -606,17 +601,7 @@ func (f *Field) IsBit() bool {
 }
 
 func (f *Field) TL2MaskForOP(op string) string {
-	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
-}
-
-// if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
-// and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
-func formatNatArgsDeclCall(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", nat_%s", arg))
-	}
-	return s.String()
+	return fmt.Sprintf("tl2mask%d %s %d", *f.pureField.MaskTL2Bit()/8, op, 1<<(*f.pureField.MaskTL2Bit()%8))
 }
 
 func ifString(value bool, t string, f string) string {

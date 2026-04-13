@@ -147,7 +147,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []
 	return nil
 }
 
-func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	maybeContainsValueName := fmt.Sprintf("$maybe_contains_value_%[1]s_%[2]d", supportSuffix, callLevel)
 	maybeOk := fmt.Sprintf("$maybe_ok_%[1]s_%[2]d", supportSuffix, callLevel)
 
@@ -195,10 +195,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 		initIfDefault = false
 	}
 	cc.IfElse(maybeContainsValueName, func() {
-		var newArgs *TypeArgumentsTree
-		if args != nil {
-			newArgs = args.children[0]
-		}
+		var newArgs = args
 		bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.Bare(), initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
 		cc.AddLines(bodyReader...)
 	}, func() {
@@ -214,7 +211,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	return cc.Print()
 }
 
-func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
 	localUsedSizePointer := fmt.Sprintf("$used_size_%[1]s_%[2]d", supportSuffix, callLevel)
@@ -248,10 +245,7 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 		fmt.Sprintf("if ((%[1]s & (1 << 1)) != 0) {", localBlock),
 	)
 
-	var newArgs *TypeArgumentsTree
-	if args != nil {
-		newArgs = args.children[0]
-	}
+	var newArgs = args
 
 	innerPart = append(innerPart, fmt.Sprintf("  %[1]s = 0;", localUsedSizePointer))
 	innerPart = append(innerPart, utils.ShiftAll(trw.element.t.trw.PhpWriteTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, localUsedSizePointer, false), "  ")...)
@@ -263,7 +257,7 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	return result
 }
 
-func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
+func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
 
@@ -281,10 +275,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 			fmt.Sprintf("%[1]s_index = $context_blocks->push_back(0);", localBlock),
 			cc.AddAssign(localCurrentSize, "2"), // add for block and constructor id
 		)
-		var newArgs *TypeArgumentsTree
-		if args != nil {
-			newArgs = args.children[0]
-		}
+		var newArgs = args
 		cc.AddLines(trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, innerUsedBytes, true)...)
 		cc.AddLines(cc.AddAssign(localCurrentSize, innerUsedBytes))
 

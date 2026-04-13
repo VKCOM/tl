@@ -30,7 +30,7 @@ func (trw *TypeRWStruct) isTypeDef() bool {
 }
 
 func (trw *TypeRWStruct) isUnwrapType() bool {
-	if !trw.isTypeDef() || trw.wr.preventUnwrap {
+	if !trw.isTypeDef() {
 		return false
 	}
 	// Motivation - we want default wrappers for primitive types, vector and tuple to generate primitive language types

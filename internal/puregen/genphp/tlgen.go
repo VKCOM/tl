@@ -380,32 +380,6 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	return nil
 }
 
-func (gen *Gen2) cppFilterFile(file string, filters []string) bool {
-	if strings.HasSuffix(file, ".o") {
-		return true
-	}
-	// for future?
-	//if !gen.options.DeleteUnrelatedFiles {
-	//	cleanFile := filepath.Clean(file)
-	//	folders := make([]string, 0)
-	//	for cleanFile != "." {
-	//		cleanFile = filepath.Dir(cleanFile)
-	//		folders = append(folders, cleanFile)
-	//	}
-	//	if len(folders) < 2 {
-	//		return true
-	//	}
-	//	folder := folders[len(folders)-2]
-	//	if folder == CommonGroup {
-	//		folder = ""
-	//	}
-	//	return !inNameFilter(tlast.Name{Namespace: folder}, filters)
-	//}
-
-	// TODO change for future development
-	return false
-}
-
 func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 	if _, ok := gen.Code[filepathName]; ok {
 		return fmt.Errorf("generator %s: source file %q is generated twice", color.InRed("internal error"), filepathName)
@@ -419,6 +393,10 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	options.Kernel.InstantiateExclamationWrappers = true
 	options.Kernel.NatArgsDelimiter = "_"
 	options.Kernel.NotSimplifyNatArgs = true
+
+	if !options.PHP.UseBuiltinDataProviders {
+		panic("usage of \"UseBuiltinDataProviders\" is currently mandatory")
+	}
 
 	if err := kernel.Compile(); err != nil {
 		return err
@@ -436,9 +414,12 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 }
 
 func generateCode(kernel *pure.Kernel, options *puregen.Options) (*Gen2, error) {
-	if options.Kernel.Verbose {
+	if options.Kernel.Verbose || DEBUG {
+		if DEBUG {
+			Debugf(">>> [WARNING] DEBUG = true <<<\n")
+		}
 		DEBUG = true
-		Debugf(">>> ENABLED DEBUG MODE <<<\n")
+		Debugf(">>> [WARNING] ENABLED DEBUG MODE <<<\n")
 	}
 
 	gen := &Gen2{
@@ -476,25 +457,4 @@ func generateCode(kernel *pure.Kernel, options *puregen.Options) (*Gen2, error) 
 	}
 
 	return gen, nil
-}
-
-func phpRemoveTemplateFromGeneric(combinator *tlast.Combinator, newTypeRef, newTypeResultRef *tlast.TypeRef) {
-	template := combinator.TemplateArguments[0].FieldName
-	combinator.TemplateArguments = nil
-	for i := range combinator.Fields {
-		phpRemoveTemplateFromTypeDecl(&combinator.Fields[i].FieldType, template, newTypeRef)
-	}
-	phpRemoveTemplateFromTypeDecl(&combinator.FuncDecl, template, newTypeResultRef)
-}
-
-func phpRemoveTemplateFromTypeDecl(declaration *tlast.TypeRef, template string, newTypeRef *tlast.TypeRef) {
-	if declaration.Type.String() == template {
-		*declaration = *newTypeRef
-	} else {
-		for i := range declaration.Args {
-			if !declaration.Args[i].IsArith {
-				phpRemoveTemplateFromTypeDecl(&declaration.Args[i].T, template, newTypeRef)
-			}
-		}
-	}
 }
