@@ -8,7 +8,7 @@ GEN_PATH := $(TEST_PATH)/gen
 TLOS_PATH := $(GEN_PATH)
 BASIC_TL_PATH := github.com/VKCOM/tl/pkg/basictl
 
-TL_BYTE_VERSIONS := ch_proxy.,ab.
+TL_BYTE_VERSIONS := ch_proxy.,ab.,memcache.
 
 all: build
 

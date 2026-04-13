@@ -117,6 +117,7 @@ service5Long.stringOutput#dc170ff7 http_code:long response:string = service5Long
 @read ab.call9#75de906c x:typeA = TypeB //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read ab.call10#8db2a4f8 = a.Color //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read ab.call11#ecb2a36c x:a.Color = a.Color //  ./internal/tlcodegen/test/tls/goldmaster.tl
+@readwrite memcache.add#a358f31c key:string flags:int delay:int value:string = Bool //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read call1#a7302fbc x:ab.typeA = ab.TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl
 @read call2#f02024c6 x:ab.typeA = cd.TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl
 @read call3#6ace6718 x:ab.typeA = TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl

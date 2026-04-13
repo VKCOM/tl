@@ -53,5 +53,6 @@ func init() {
 	metainternal.SetGlobalFactoryCreateForObjectBytes("ab.topLevel2", func() metainternal.Object { return new(internal.AbTopLevel2Bytes) })
 	metainternal.SetGlobalFactoryCreateForObjectBytes("ab.useDictString", func() metainternal.Object { return new(internal.AbUseDictStringBytes) })
 	metainternal.SetGlobalFactoryCreateForObjectBytes("cd.response", func() metainternal.Object { return new(internal.CdResponseBytes) })
+	metainternal.SetGlobalFactoryCreateForFunctionBytes("memcache.add", func() metainternal.Function { return new(internal.MemcacheAddBytes) }, nil)
 	metainternal.SetGlobalFactoryCreateForObjectBytes("useStr", func() metainternal.Object { return new(internal.UseStrBytes) })
 }

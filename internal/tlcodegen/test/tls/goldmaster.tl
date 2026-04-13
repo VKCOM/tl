@@ -267,3 +267,6 @@ service5Long.stringOutput#dc170ff7 http_code:long response:string = service5Long
 // antispam.patternNotFound = antispam.PatternFull;
 
 // @read antispam.match#591edc92 mode:# ip:int uahash:int text:string limit:int type:mode.2?long => Vector (%(antispam.Pattern mode));
+
+// sets value iff the key is absent
+@readwrite memcache.add key:string flags:int delay:int value:string => Bool;

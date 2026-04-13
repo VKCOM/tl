@@ -122,6 +122,7 @@ func init() {
 	metainternal.SetGlobalFactoryCreateForObject("int64s", func() metainternal.Object { return new(internal.Int64s) })
 	metainternal.SetGlobalFactoryCreateForObject("long", func() metainternal.Object { return new(internal.Long) })
 	metainternal.SetGlobalFactoryCreateForObject("maybeTest1", func() metainternal.Object { return new(internal.MaybeTest1) })
+	metainternal.SetGlobalFactoryCreateForFunction("memcache.add", func() metainternal.Function { return new(internal.MemcacheAdd) }, nil)
 	metainternal.SetGlobalFactoryCreateForObject("multiPoint", func() metainternal.Object { return new(internal.MultiPoint) })
 	metainternal.SetGlobalFactoryCreateForObject("myInt32", func() metainternal.Object { return new(internal.MyInt32) })
 	metainternal.SetGlobalFactoryCreateForObject("myInt64", func() metainternal.Object { return new(internal.MyInt64) })

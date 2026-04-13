@@ -122,6 +122,11 @@
         → <code><a href="#curl.Response">curl.Response</a></code>
       </li>
       <li>
+        <a href="#memcache.add">
+        <code>memcache.add</code></a>
+        → <code>&lt;bool&gt;</code>
+      </li>
+      <li>
         <a href="#service5.insert">
         <code>service5.insert</code></a>
         → <code><a href="#service5.Output">service5.Output</a></code>
@@ -3554,6 +3559,53 @@ External # (nat) arguments: <b>N</b>
   <dt>TL</dt>
   <dd>
     <code>maybeWrapper {T:Type} {N:#} a:(Maybe (tuple T N)) = MaybeWrapper T N;</code>
+  </dd>
+</dl>
+
+<h2 id="memcache.add">memcache.add</h2>
+    <code style="color:DarkCyan">// sets value iff the key is absent</code></br>
+
+<p></p>
+  Returns <code>&lt;bool&gt;</code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"flags"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"delay"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>@readwrite memcache.add key:string flags:int delay:int value:string = Bool;</code>
   </dd>
 </dl>
 

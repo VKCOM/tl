@@ -194,6 +194,8 @@ func init() {
 		&metainternal.TLItemImpl{Name: "long", Tag: 0x22076cba, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "maybeTest1", Tag: 0xc457763c, HaTL1: true, HaTL2: true})
+	metainternal.FillFunction(
+		&metainternal.TLItemImpl{Name: "memcache.add", Tag: 0xa358f31c, HaTL1: true, HaTL2: true, Annotations: 0x10})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "multiPoint", Tag: 0x0e1ae81e, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(

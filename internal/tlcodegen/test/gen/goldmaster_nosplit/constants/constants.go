@@ -92,6 +92,7 @@ const (
 	LongKeyDictionaryField                  = 0x19701e0b // longKeyDictionaryField
 	MaybeTest1                              = 0xc457763c // maybeTest1
 	MaybeWrapper                            = 0x723390c4 // maybeWrapper
+	MemcacheAdd                             = 0xa358f31c // memcache.add
 	MultiPoint                              = 0x0e1ae81e // multiPoint
 	MyInt32                                 = 0xba59e151 // myInt32
 	MyInt64                                 = 0x1d95db9d // myInt64

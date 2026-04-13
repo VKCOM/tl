@@ -7596,7 +7596,7 @@
       }
     }
   ],
-  "functions_num": 25,
+  "functions_num": 26,
   "functions": [
     {
       "type": "tls.combinator_v4",
@@ -8534,6 +8534,71 @@
           }
         },
         "flags": 8
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": -1554451684,
+        "id": "memcache.add",
+        "type_name": 621535874,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 4,
+            "args": [
+              {
+                "id": "key",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "flags",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "delay",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1471112230,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -1255641564,
+                    "flags": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": 621535874
+            }
+          }
+        },
+        "flags": 3
       }
     },
     {
