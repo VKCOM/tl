@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-type LanguageBundle struct {
+type BasicCodeCreator struct {
+	shift string
 	// condition -> if
 	ifPrefixTemplate string
 	ifSuffixTemplate string
@@ -20,13 +21,8 @@ type LanguageBundle struct {
 
 	// (name, suffixSupport) -> variable initialization
 	varTemplate string
-}
 
-type BasicCodeCreator struct {
-	LanguageBundle
 	lastVarIdentifier uint32
-
-	Shift string
 
 	lines      []string
 	linesShift []int
@@ -67,7 +63,7 @@ func (bcc *BasicCodeCreator) Print() []string {
 func (bcc *BasicCodeCreator) Lines() []string {
 	s := make([]string, len(bcc.lines))
 	for i, line := range bcc.lines {
-		s[i] = fmt.Sprintf("%s%s", strings.Repeat(bcc.Shift, bcc.linesShift[i]), line)
+		s[i] = fmt.Sprintf("%s%s", strings.Repeat(bcc.shift, bcc.linesShift[i]), line)
 	}
 	return s
 }
