@@ -8,7 +8,6 @@ var rustLanguageBundle = LanguageBundle{
 	forSuffixTemplate:  "}",
 	commentPrefix:      "// ",
 	varTemplate:        "%[1]s_%[2]s",
-	allowIndexedFor:    true,
 }
 
 type RustCodeCreator struct {
@@ -18,9 +17,7 @@ type RustCodeCreator struct {
 func NewRustCodeCreator() *RustCodeCreator {
 	return &RustCodeCreator{
 		BasicCodeCreator: BasicCodeCreator{
-			CodeCreator: CodeCreator{
-				Shift: "    ",
-			},
+			Shift:          "    ",
 			LanguageBundle: rustLanguageBundle,
 		},
 	}

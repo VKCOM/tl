@@ -119,7 +119,7 @@ func (trw *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImp
 	cc.AddEmptyLine()
 
 	cc.AddLinef("pub(crate) fn read_tl1_boxed<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", typeString, natDecl)
-	cc.AddBlock(func() {
+	cc.FinishBlock(func() {
 		if trw.wr.OriginTL2() {
 			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
@@ -137,7 +137,6 @@ func (trw *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImp
 			cc.AddLinef("*value = None")
 		})
 		cc.AddLinef("Ok(())")
-	})
-	cc.AddLinef("}")
+	}, "}")
 	return cc.Text()
 }

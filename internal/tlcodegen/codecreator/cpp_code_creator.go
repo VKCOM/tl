@@ -8,20 +8,21 @@ var cppLanguageBundle = LanguageBundle{
 	forSuffixTemplate:  "}",
 	commentPrefix:      "// ",
 	varTemplate:        "%[1]s_%[2]s",
-	allowIndexedFor:    true,
 }
 
 type CppCodeCreator struct {
 	BasicCodeCreator
 }
 
-func NewCppCodeCreator() CppCodeCreator {
-	return CppCodeCreator{
+func NewCppCodeCreator() *CppCodeCreator {
+	return &CppCodeCreator{
 		BasicCodeCreator: BasicCodeCreator{
-			CodeCreator: CodeCreator{
-				Shift: "\t",
-			},
+			Shift:          "\t",
 			LanguageBundle: cppLanguageBundle,
 		},
 	}
+}
+
+func (bcc *CppCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
+	bcc.forIndexed(indexVar, startValue, upperBound, step, block)
 }

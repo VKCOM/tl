@@ -6,77 +6,6 @@ import (
 	"strings"
 )
 
-type CodeCreator struct {
-	Shift string
-
-	lines      []string
-	linesShift []int
-
-	currentShift int
-}
-
-func (cc *CodeCreator) AddLines(lines ...string) {
-	cc.lines = append(cc.lines, lines...)
-	for range lines {
-		cc.linesShift = append(cc.linesShift, cc.currentShift)
-	}
-}
-
-func (cc *CodeCreator) AddEmptyLine() {
-	cc.lines = append(cc.lines, "")
-	cc.linesShift = append(cc.linesShift, cc.currentShift)
-}
-
-func (cc *CodeCreator) AddLinef(format string, args ...any) {
-	line := fmt.Sprintf(format, args...)
-	if line == "" {
-		return
-	}
-	cc.lines = append(cc.lines, line)
-	cc.linesShift = append(cc.linesShift, cc.currentShift)
-}
-
-func (cc *CodeCreator) AddShift(shift int) {
-	cc.currentShift += shift
-}
-
-// TODO - remove, use Lines()
-func (cc *CodeCreator) Print() []string {
-	s := make([]string, len(cc.lines))
-	for i, line := range cc.lines {
-		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
-	}
-	return s
-}
-
-func (cc *CodeCreator) Lines() []string {
-	s := make([]string, len(cc.lines))
-	for i, line := range cc.lines {
-		s[i] = fmt.Sprintf("%s%s", strings.Repeat(cc.Shift, cc.linesShift[i]), line)
-	}
-	return s
-}
-
-func (cc *CodeCreator) Text() string {
-	return strings.Join(cc.Lines(), "\n")
-}
-
-func (cc *CodeCreator) AddBlock(block func()) {
-	cc.AddShift(1)
-	block()
-	cc.AddShift(-1)
-}
-
-func (cc *CodeCreator) addFullBlock(prefix, suffix string, block func()) {
-	if prefix != "" {
-		cc.AddLines(prefix)
-	}
-	cc.AddBlock(block)
-	if suffix != "" {
-		cc.AddLines(suffix)
-	}
-}
-
 type LanguageBundle struct {
 	// condition -> if
 	ifPrefixTemplate string
@@ -91,19 +20,89 @@ type LanguageBundle struct {
 
 	// (name, suffixSupport) -> variable initialization
 	varTemplate string
-
-	// allow Indexed For
-	allowIndexedFor bool
 }
 
 type BasicCodeCreator struct {
-	CodeCreator
 	LanguageBundle
 	lastVarIdentifier uint32
+
+	Shift string
+
+	lines      []string
+	linesShift []int
+
+	currentShift int
+}
+
+func (bcc *BasicCodeCreator) AddLines(lines ...string) {
+	bcc.lines = append(bcc.lines, lines...)
+	for range lines {
+		bcc.linesShift = append(bcc.linesShift, bcc.currentShift)
+	}
+}
+
+func (bcc *BasicCodeCreator) AddEmptyLine() {
+	bcc.lines = append(bcc.lines, "")
+	bcc.linesShift = append(bcc.linesShift, bcc.currentShift)
+}
+
+func (bcc *BasicCodeCreator) AddLinef(format string, args ...any) {
+	line := fmt.Sprintf(format, args...)
+	if line == "" {
+		return
+	}
+	bcc.lines = append(bcc.lines, line)
+	bcc.linesShift = append(bcc.linesShift, bcc.currentShift)
+}
+
+func (bcc *BasicCodeCreator) AddShift(shift int) {
+	bcc.currentShift += shift
+}
+
+// TODO - remove, use Lines()
+func (bcc *BasicCodeCreator) Print() []string {
+	return bcc.Lines()
+}
+
+func (bcc *BasicCodeCreator) Lines() []string {
+	s := make([]string, len(bcc.lines))
+	for i, line := range bcc.lines {
+		s[i] = fmt.Sprintf("%s%s", strings.Repeat(bcc.Shift, bcc.linesShift[i]), line)
+	}
+	return s
+}
+
+func (bcc *BasicCodeCreator) Text() string {
+	b := strings.Builder{}
+	for _, line := range bcc.Lines() {
+		b.WriteString(line)
+		b.WriteString("\n")
+	}
+	return b.String()
+}
+
+func (bcc *BasicCodeCreator) AddBlock(block func()) {
+	bcc.AddShift(1)
+	block()
+	bcc.AddShift(-1)
+}
+
+func (bcc *BasicCodeCreator) addFullBlock(prefix, suffix string, block func()) {
+	if prefix != "" {
+		bcc.AddLines(prefix)
+	}
+	bcc.AddBlock(block)
+	if suffix != "" {
+		bcc.AddLines(suffix)
+	}
 }
 
 func (bcc *BasicCodeCreator) Block(prefix string, block func(), suffix string) {
 	bcc.addFullBlock(prefix, suffix, block)
+}
+
+func (bcc *BasicCodeCreator) FinishBlock(block func(), suffix string) {
+	bcc.addFullBlock("", suffix, block)
 }
 
 func (bcc *BasicCodeCreator) If(condition string, block func()) {
@@ -128,10 +127,7 @@ func (bcc *BasicCodeCreator) For(initState, condition, iterationStep string, blo
 	)
 }
 
-func (bcc *BasicCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
-	if !bcc.allowIndexedFor {
-		panic("can't use for by index")
-	}
+func (bcc *BasicCodeCreator) forIndexed(indexVar, startValue, upperBound, step string, block func()) {
 	bcc.For(
 		fmt.Sprintf("%[1]s = %[2]s", indexVar, startValue),
 		fmt.Sprintf("%[1]s < %[2]s", indexVar, upperBound),

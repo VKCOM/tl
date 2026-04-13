@@ -284,7 +284,7 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 		cc.AddLinef("pub struct %s (%s%s);", trw.wr.goGlobalName, asterisk, fieldTypeString)
 	} else {
 		cc.AddLinef("pub struct %s {", trw.wr.goGlobalName)
-		cc.AddBlock(func() {
+		cc.FinishBlock(func() {
 			for _, field := range trw.Fields {
 				printCommentsField(field)
 				if field.IsTL2Omitted() {
@@ -312,38 +312,34 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 					cc.AddLinef("%s: u8,", tl2mask)
 				}
 			}
-		})
-		cc.AddLinef("}")
+		}, "}")
 	}
 	if len(trw.wr.NatParams()) == 0 {
 		cc.AddEmptyLine()
 		cc.AddLinef("impl %s {", trw.wr.goGlobalName)
-		cc.AddBlock(func() {
+		cc.FinishBlock(func() {
 			cc.AddLinef("pub fn read_tl1<B: bytes::Buf + Copy>(&mut self, buf: &mut B) -> basictl::Result<()> {")
-			cc.AddBlock(func() {
+			cc.FinishBlock(func() {
 				cc.AddLinef("self::read_tl1(self, buf)")
-			})
-			cc.AddLinef("}")
+			}, "}")
 			if trw.wr.TLTag() != 0 || trw.wr.OriginTL2() {
 				cc.AddLinef("pub fn read_tl1_boxed<B: bytes::Buf + Copy>(&mut self, buf: &mut B) -> basictl::Result<()> {")
-				cc.AddBlock(func() {
+				cc.FinishBlock(func() {
 					if trw.wr.OriginTL2() {
 						cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 						return
 					}
 					cc.AddLinef("buf.read_exact_tag(0x%08x)?;", trw.wr.TLTag())
 					cc.AddLinef("self::read_tl1(self, buf)")
-				})
-				cc.AddLinef("}")
+				}, "}")
 			}
-		})
-		cc.AddLinef("}")
+		}, "}")
 	}
 	cc.AddEmptyLine()
 	cc.AddLinef("impl %s {", trw.wr.goGlobalName)
-	cc.AddBlock(func() {
+	cc.FinishBlock(func() {
 		cc.AddLinef("pub fn reset(&mut self) {")
-		cc.AddBlock(func() {
+		cc.FinishBlock(func() {
 			for _, field := range trw.Fields {
 				if field.IsTL2Omitted() {
 					continue
@@ -354,15 +350,13 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 				fieldAccess, fieldAsterisk := field.FieldAccess("self", bytesVersion, directImports)
 				field.t.TypeResettingCode(cc, bytesVersion, directImports, fieldAccess, fieldAsterisk)
 			}
-		})
-		cc.AddLinef("}")
-	})
-	cc.AddLinef("}")
+		}, "}")
+	}, "}")
 
 	natArgsDecl := trw.wr.formatNatArgsDecl()
 	cc.AddEmptyLine()
 	cc.AddLinef("pub(crate) fn read_tl1<B: bytes::Buf + Copy>(value: &mut %s, buf: &mut B%s) -> basictl::Result<()> {", trw.wr.goGlobalName, natArgsDecl)
-	cc.AddBlock(func() {
+	cc.FinishBlock(func() {
 		if trw.wr.OriginTL2() {
 			cc.AddLinef(`Err(basictl::Error::NoTL1("%s")`, trw.wr.pureType.CanonicalName())
 			return
@@ -392,7 +386,6 @@ func (trw *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *DirectIm
 			}
 		}
 		cc.AddLinef("Ok(())")
-	})
-	cc.AddLinef("}")
+	}, "}")
 	return cc.Text()
 }

@@ -370,9 +370,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 							"};",
 						)
 					}
-					for _, l := range cc.Print() {
-						hpp.WriteString(l + "\n")
-					}
+					hpp.WriteString(cc.Text())
 				}
 			}
 

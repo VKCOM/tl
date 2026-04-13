@@ -311,12 +311,12 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 
 	if canOmit {
 		cc.IfElse(fmt.Sprintf("%[1]s != 0", localCurrentSize), func() {
-			updateSizeState(&cc)
+			updateSizeState(cc)
 		}, func() {
 			cc.AddLines(fmt.Sprintf("$context_sizes->cut_tail(%s_index);", localCurrentSize))
 		})
 	} else {
-		updateSizeState(&cc)
+		updateSizeState(cc)
 	}
 
 	return cc.Print()
