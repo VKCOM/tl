@@ -107,7 +107,7 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfac
 			if unionParent != nil && unionParent == wrapper && !createInterfaceIfNeeded {
 				// skip comment generation
 			} else {
-				if desc.KernelType().IsFunction() || len(desc.Fields()) >= 0 {
+				if (desc.KernelType().IsFunction() || len(desc.Fields()) >= 0) && !desc.OriginTL2() {
 					desc := desc.KernelType().TL1()[wrapper.unionIndex]
 					savedIDExplicit := desc.Construct.IDExplicit
 					desc.Construct.IDExplicit = true
@@ -229,7 +229,7 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		if isPrim, _ := PHPRPCPrimitive(wrapper.TLName().Name); isPrim {
 			wrapper.phpInfo.IsRPCPrimitive = true
 		}
-		if wrapper.IsFunction() {
+		if wrapper.IsFunction() && wrapper.pureType.Common().KernelType().IsExclamationWrapper() {
 			fun, _ := wrapper.trw.(*TypeRWStruct)
 			queryFieldIndex := -1
 
@@ -240,12 +240,10 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 				}
 			}
 
-			if queryFieldIndex != -1 {
-				wrapper.phpInfo.IsDiagonalFunction = true
-				wrapper.phpInfo.DiagonalQueryFieldIndex = queryFieldIndex
+			wrapper.phpInfo.IsDiagonalFunction = true
+			wrapper.phpInfo.DiagonalQueryFieldIndex = queryFieldIndex
 
-				Debugf("[!] diagonal: %s\n", wrapper.pureType.CanonicalName())
-			}
+			Debugf("[!] diagonal: %s\n", wrapper.pureType.CanonicalName())
 		}
 	}
 

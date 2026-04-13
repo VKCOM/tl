@@ -350,7 +350,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 			/** TODO make it better */
 			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() {
+			if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
@@ -387,7 +387,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			}
 
 			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() {
+			if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					cc.AddLines(writeCallLines...)
@@ -880,7 +880,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.pureType.Common().HasTL2() {
+		if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
 			// TODO: add block calculated currentSize and block if union
 			if trw.wr.PHPUnionParent() != nil {
 				argNames = append(argNames, "block", "current_size")
@@ -1119,7 +1119,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.pureType.Common().HasTL2() {
+		if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
 			// TODO: add block calculated currentSize and block if union
 			argNames = append(argNames, "context_sizes", "context_blocks")
 			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)
