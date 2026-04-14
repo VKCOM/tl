@@ -606,7 +606,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			}
 			fetcherArgsCombined := strings.Join(fetcherArgs, ", ")
 
-			namespace := trw.wr.TLName().String()
+			namespace := trw.wr.TLName().Namespace
 			if namespace == "" {
 				namespace = "_common"
 			}
