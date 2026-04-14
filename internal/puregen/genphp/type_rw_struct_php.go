@@ -230,7 +230,7 @@ type ArgInfo struct {
 
 func (trw *TypeRWStruct) PHPFetcherArguments() []ArgInfo {
 	structuredArgs := make([]ArgInfo, 0)
-	if trw.wr.phpInfo.IsDiagonalFunction {
+	if trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 		structuredArgs = append(structuredArgs, ArgInfo{
 			FieldName:       "fetcher",
 			TypeName:        "TL\\RpcFunctionFetcher",
@@ -350,7 +350,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 			/** TODO make it better */
 			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
+			if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
@@ -387,7 +387,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			}
 
 			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
+			if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					cc.AddLines(writeCallLines...)
@@ -574,12 +574,11 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			trw.wr.TLTag(),
 		))
 
-		args := make([]string, 0)
-		for _, arg := range trw.PHPFetcherArguments() {
-			args = append(args, arg.FieldValue)
-		}
-
-		argsArray := strings.Join(args, ", ")
+		//args := make([]string, 0)
+		//for _, arg := range trw.PHPFetcherArguments() {
+		//	args = append(args, arg.FieldValue)
+		//}
+		//argsArray := strings.Join(args, ", ")
 
 		var fetchArgNames []string
 		var fetchArgTypes []string
@@ -599,219 +598,132 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			Debugf("")
 		}
 
-		if trw.wr.gen.options.PHP.AddFetchers &&
-			// diagonal
-			!trw.wr.phpInfo.IsDiagonalFunction &&
-			// don't have write / read
-			trw.wr.phpInfo.RequireFunctionBodies {
-			if !trw.wr.pureType.Common().HasTL2() {
-				code.WriteString(
-					fmt.Sprintf(`
-%[6]s
-  public function typedStore(%[8]s) {
-%[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
-    $this->write_boxed(%[8]s);
-    return new %[1]s_fetcher(%[4]s);
-  }
-
-%[5]s
-  public function typedFetch(%[7]s) {
-%[10]s    %[9]sprint('%[1]s::typedFetch()<br/>');
-    $this->read(%[7]s);
-    return new %[1]s_fetcher(%[4]s);
-  }
-`,
-						trw.PhpClassName(false, true),
-						trw.wr.TLName().String(),
-						fmt.Sprintf("0x%08x", trw.wr.TLTag()),
-						argsArray,
-						phpFunctionCommentFormat(
-							fetchArgNames,
-							fetchArgTypes,
-							`TL\RpcFunctionFetcher`,
-							"  ",
-						),
-						phpFunctionCommentFormat(
-							storeArgNames,
-							storeArgTypes,
-							`TL\RpcFunctionFetcher`,
-							"  ",
-						),
-						phpFunctionArgumentsFormat(fetchArgNames),
-						phpFunctionArgumentsFormat(storeArgNames),
-						ifString(trw.wr.gen.options.PHP.AddFetchersEchoComments, "", "//"),
-						ifString(trw.wr.gen.options.PHP.AddSwitcher,
-							fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
-      return null;
-    }
-`,
-								ifString(trw.wr.TLName().Namespace == "", "_common", trw.wr.TLName().Namespace),
-							),
-							"",
-						),
-					),
-				)
-			} else {
-				if !trw.wr.gen.options.PHP.AddSwitcher {
-					// TODO
-					panic("can't create tl2 call without switcher")
-				}
-				if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-					// TODO
-					panic("can't create tl2 without builtin providers")
-				}
-
-				code.WriteString(
-					fmt.Sprintf(`
-%[6]s
-  public function typedStore(%[8]s) {
-    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
-      %[9]sprint('%[1]s::typedStore()<br/>');
-      $this->write_boxed(%[8]s);
-      $use_tl2 = 0;
-      return new %[1]s_fetcher(%[4]s);
-    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
-      %[9]sprint('%[1]s::typedStore() in tl2<br/>');
-      store_int(0x%08[11]x); 
-      $this->write_tl2(%[8]s);
-      $use_tl2 = 1;
-      return new %[1]s_fetcher(%[4]s);
-    } else {
-      return null;
-    }
-  }
-
-%[5]s
-  public function typedFetch(%[7]s) {
-    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
-      %[9]sprint('%[1]s::typedFetch()<br/>');
-      $this->read(%[7]s);
-      $use_tl2 = 0;
-      return new %[1]s_fetcher(%[4]s);
-    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
-      %[9]sprint('%[1]s::typedFetch() in tl2<br/>');
-      $this->read_tl2(%[7]s);
-      $use_tl2 = 1;
-      return new %[1]s_fetcher(%[4]s);
-    } else {
-      return null;
-    }
-  }
-`,
-						trw.PhpClassName(false, true),
-						trw.wr.TLName().String(),
-						fmt.Sprintf("0x%08x", trw.wr.TLTag()),
-						argsArray,
-						phpFunctionCommentFormat(
-							fetchArgNames,
-							fetchArgTypes,
-							`TL\RpcFunctionFetcher`,
-							"  ",
-						),
-						phpFunctionCommentFormat(
-							storeArgNames,
-							storeArgTypes,
-							`TL\RpcFunctionFetcher`,
-							"  ",
-						),
-						phpFunctionArgumentsFormat(fetchArgNames),
-						phpFunctionArgumentsFormat(storeArgNames),
-						ifString(trw.wr.gen.options.PHP.AddFetchersEchoComments, "", "//"),
-						trw.wr.TLName().Namespace,
-						trw.wr.TLTag(),
-					),
-				)
+		if trw.wr.gen.options.PHP.AddFetchers {
+			fetcherClass := fmt.Sprintf("%[1]s_fetcher", trw.PhpClassName(false, true))
+			fetcherArgs := make([]string, 0)
+			for _, arg := range trw.PHPFetcherArguments() {
+				fetcherArgs = append(fetcherArgs, arg.FieldValue)
 			}
-			// only for rpcDest*
-		} else if trw.wr.gen.options.PHP.AddFetchers &&
-			// don't have write / read
-			trw.wr.phpInfo.RequireFunctionBodies &&
-			// diagonal
-			trw.wr.phpInfo.IsDiagonalFunction {
-			code.WriteString(
-				fmt.Sprintf(`
-%[6]s
-  public function typedStore(%[8]s) {
-%[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
-    $this->write_boxed(%[8]s);
-    $fetcher = $this->query->typedStore(%[8]s);
-    if ($fetcher === null) {
-      %[9]sprint('%[1]s rpc_clean()<br/>');
-      rpc_clean();
-      return null;
-    }
-    $use_tl2 = 0;
-    return %[1]s_fetcher(%[4]s);
-  }
+			fetcherArgsCombined := strings.Join(fetcherArgs, ", ")
 
-%[5]s
-  public function typedFetch(%[7]s) {
-    return null;
-  }
-`,
-					trw.PhpClassName(false, true),
-					trw.wr.TLName().String(),
-					fmt.Sprintf("0x%08x", trw.wr.TLTag()),
-					ifString(argsArray == "", "$fetcher", "$fetcher, "+argsArray),
-					phpFunctionCommentFormat(
-						fetchArgNames,
-						fetchArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionCommentFormat(
-						storeArgNames,
-						storeArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionArgumentsFormat(fetchArgNames),
-					phpFunctionArgumentsFormat(storeArgNames),
-					ifString(trw.wr.gen.options.PHP.AddFetchersEchoComments, "", "//"),
-					ifString(trw.wr.gen.options.PHP.AddSwitcher,
-						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
-      return null;
-    }
-`,
-							"_common",
-						),
-						"",
-					),
-				),
-			)
-		} else {
-			code.WriteString(
-				fmt.Sprintf(`
-%[6]s
-  public function typedStore(%[8]s) {
-    return null;
-  }
+			namespace := trw.wr.TLName().String()
+			if namespace == "" {
+				namespace = "_common"
+			}
 
-%[5]s
-  public function typedFetch(%[7]s) {
-    return null;
-  }
-`,
-					trw.PhpClassName(false, true),
-					trw.wr.TLName().String(),
-					fmt.Sprintf("0x%08x", trw.wr.TLTag()),
-					argsArray,
-					phpFunctionCommentFormat(
-						fetchArgNames,
-						fetchArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionCommentFormat(
-						storeArgNames,
-						storeArgTypes,
-						`TL\RpcFunctionFetcher`,
-						"  ",
-					),
-					phpFunctionArgumentsFormat(fetchArgNames),
-					phpFunctionArgumentsFormat(storeArgNames),
-				),
+			tlMode := "$tl_mode"
+			innerFetcher := "$fetcher"
+
+			hasTL2 := trw.wr.pureType.Common().HasTL2()
+			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
+
+			cc := codecreator.NewPhpCodeCreator()
+			cc.AddShift(1)
+
+			cc.AddEmptyLine()
+			cc.Function(
+				[]string{"public"},
+				"typedStore",
+				nil,
+				`TL\RpcFunctionFetcher`,
+				func() {
+					if trw.wr.phpInfo.RequireFunctionBodies {
+						if trw.wr.gen.options.PHP.AddSwitcher {
+							cc.Comments("get mode from switcher")
+							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode(\"%[2]s\");", tlMode, namespace))
+						} else {
+							cc.Comments("default mode")
+							cc.AddLines(fmt.Sprintf("%[1]s = 1;", tlMode))
+						}
+						// force tlMode to be 1
+						if hasTL2 && hasFetcher {
+							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.Comments("diagonal functions can be only in tl1")
+								cc.AddLines(cc.Assign(tlMode, "1"))
+							})
+						}
+						cc.If(cc.Equal(tlMode, "1"), func() {
+							cc.AddLines("$this->write_boxed();")
+							if hasFetcher {
+								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedStore()"))
+								cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+									cc.AddLines("rpc_clean();")
+									cc.AddLines("return null;")
+								})
+							}
+							if hasTL2 {
+								cc.AddLines("$use_tl2 = 0;")
+							}
+							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+						})
+						if hasTL2 && !hasFetcher {
+							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.AddLines(fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.TLTag()))
+								cc.AddLines("$this->write_tl2();")
+								if hasTL2 {
+									cc.AddLines("$use_tl2 = 1;")
+								}
+								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+							})
+						}
+						cc.Comments("else fallback")
+					}
+					cc.AddLines("return null;")
+				},
 			)
+
+			cc.AddEmptyLine()
+			cc.Function(
+				[]string{"public"},
+				"typedFetch",
+				nil,
+				`TL\RpcFunctionFetcher`,
+				func() {
+					if trw.wr.phpInfo.RequireFunctionBodies {
+						if trw.wr.gen.options.PHP.AddSwitcher {
+							cc.Comments("get mode from switcher")
+							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode(\"%[2]s\");", tlMode, namespace))
+						} else {
+							cc.Comments("default mode")
+							cc.AddLines(fmt.Sprintf("%[1]s = 1;", tlMode))
+						}
+						// force tlMode to be 1
+						if hasTL2 && hasFetcher {
+							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.Comments("diagonal functions can be only in tl1")
+								cc.AddLines(cc.Assign(tlMode, "1"))
+							})
+						}
+						cc.If(cc.Equal(tlMode, "1"), func() {
+							cc.AddLines("$this->read();")
+							if hasFetcher {
+								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
+								cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+									cc.AddLines("rpc_clean();")
+									cc.AddLines("return null;")
+								})
+							}
+							if hasTL2 {
+								cc.AddLines("$use_tl2 = 0;")
+							}
+							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+						})
+						if hasTL2 && !hasFetcher {
+							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.AddLines("$this->read_tl2();")
+								if hasTL2 {
+									cc.AddLines("$use_tl2 = 1;")
+								}
+								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+							})
+						}
+						cc.Comments("else fallback")
+					}
+					cc.AddLines("return null;")
+				},
+			)
+
+			code.WriteString(cc.Println())
 		}
 	}
 }
@@ -880,7 +792,11 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
+		if trw.PhpClassName(false, true) == "tree_stats_preferMaster" {
+			Debugf("> %v\n", trw.wr.pureType.Common().KernelType().IsExclamationWrapper())
+		}
+
+		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 			// TODO: add block calculated currentSize and block if union
 			if trw.wr.PHPUnionParent() != nil {
 				argNames = append(argNames, "block", "current_size")
@@ -1119,7 +1035,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.wr.pureType.Common().HasTL2() && !trw.wr.phpInfo.IsDiagonalFunction {
+		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 			// TODO: add block calculated currentSize and block if union
 			argNames = append(argNames, "context_sizes", "context_blocks")
 			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)

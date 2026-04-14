@@ -42,6 +42,11 @@ func (bcc *BasicCodeCreator) AddEmptyLine() {
 	bcc.linesShift = append(bcc.linesShift, bcc.currentShift)
 }
 
+func (bcc *BasicCodeCreator) AddFullEmptyLine() {
+	bcc.lines = append(bcc.lines, "")
+	bcc.linesShift = append(bcc.linesShift, 0)
+}
+
 func (bcc *BasicCodeCreator) AddLinef(format string, args ...any) {
 	line := fmt.Sprintf(format, args...)
 	if line == "" {
