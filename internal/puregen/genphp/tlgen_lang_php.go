@@ -52,9 +52,6 @@ type PhpClassMeta struct {
 	RequireFunctionBodies bool
 
 	IsRPCPrimitive bool // for TL\Response special case
-
-	IsDiagonalFunction      bool
-	DiagonalQueryFieldIndex int // make sense if IsDiagonalFunction = true
 }
 
 func (gen *Gen2) generateCodePHP() error {
@@ -229,20 +226,7 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		if isPrim, _ := PHPRPCPrimitive(wrapper.TLName().Name); isPrim {
 			wrapper.phpInfo.IsRPCPrimitive = true
 		}
-		if wrapper.IsFunction() && wrapper.pureType.Common().KernelType().IsExclamationWrapper() {
-			fun, _ := wrapper.trw.(*TypeRWStruct)
-			queryFieldIndex := -1
-
-			for i, field := range fun.Fields {
-				if field.t.pureType.CanonicalName() == "__function" {
-					queryFieldIndex = i
-					break
-				}
-			}
-
-			wrapper.phpInfo.IsDiagonalFunction = true
-			wrapper.phpInfo.DiagonalQueryFieldIndex = queryFieldIndex
-
+		if wrapper.IsFunction() && wrapper.pureType.KernelType().IsExclamationWrapper() {
 			Debugf("[!] diagonal: %s\n", wrapper.pureType.CanonicalName())
 		}
 	}
