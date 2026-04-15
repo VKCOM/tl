@@ -604,7 +604,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			cc := codecreator.NewPhpCodeCreator()
 			cc.AddShift(1)
 
-			cc.AddEmptyLine()
+			cc.AddFullEmptyLine()
 			cc.Function(
 				[]string{"public"},
 				"typedStore",
@@ -657,7 +657,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 				},
 			)
 
-			cc.AddEmptyLine()
+			cc.AddFullEmptyLine()
 			cc.Function(
 				[]string{"public"},
 				"typedFetch",
@@ -724,7 +724,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 				},
 			)
 
-			code.WriteString(cc.Println())
+			code.WriteString(cc.Text() + "\n")
 		}
 	}
 }
