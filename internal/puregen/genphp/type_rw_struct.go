@@ -14,9 +14,8 @@ type TypeRWStruct struct {
 	wr     *TypeRWWrapper
 	Fields []Field
 
-	ResultType         *TypeRWWrapper
-	ResultNatArgs      []pure.ActualNatArg
-	ResultHalfResolved HalfResolvedArgument
+	ResultType    *TypeRWWrapper
+	ResultNatArgs []pure.ActualNatArg
 
 	fieldsDec    Deconflicter // TODO - add all generated methods here
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
