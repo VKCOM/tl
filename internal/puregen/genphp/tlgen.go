@@ -125,7 +125,7 @@ func (opt *Gen2Options) GenerateTL2() bool {
 	return opt.TL2WhiteList != ""
 }
 
-type Gen2 struct {
+type genphp struct {
 	kernel *pure.Kernel
 
 	// options
@@ -153,7 +153,7 @@ func canonicalGoName(name tlast.Name, insideNamespace string) string {
 	return utils.CNameToCamelName(name.Namespace) + utils.CNameToCamelName(name.Name)
 }
 
-func (gen *Gen2) getNamespace(n string) *Namespace {
+func (gen *genphp) getNamespace(n string) *Namespace {
 	na, ok := gen.Namespaces[n]
 	if !ok {
 		na = &Namespace{}
@@ -222,7 +222,7 @@ func collectRelativePaths(absDirName string, relDirName string, relativeFiles ma
 }
 
 // WriteToDir Most common action with generated code, so clients do not repeat it
-func (gen *Gen2) WriteToDir(outdir string) error {
+func (gen *genphp) WriteToDir(outdir string) error {
 	if err := os.Mkdir(outdir, 0755); err != nil && !os.IsExist(err) { // we thus require parent directory to exist
 		return fmt.Errorf("error creating outdir %q: %w", outdir, err)
 	}
@@ -291,7 +291,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	return nil
 }
 
-func (gen *Gen2) addCodeFile(filepathName string, code string) error {
+func (gen *genphp) addCodeFile(filepathName string, code string) error {
 	if _, ok := gen.Code[filepathName]; ok {
 		return fmt.Errorf("generator %s: source file %q is generated twice", color.InRed("internal error"), filepathName)
 	}
@@ -324,7 +324,7 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	return err
 }
 
-func generateCode(kernel *pure.Kernel, options *puregen.Options) (*Gen2, error) {
+func generateCode(kernel *pure.Kernel, options *puregen.Options) (*genphp, error) {
 	if options.Kernel.Verbose || DEBUG {
 		if DEBUG {
 			Debugf(">>> [WARNING] DEBUG = true <<<\n")
@@ -333,7 +333,7 @@ func generateCode(kernel *pure.Kernel, options *puregen.Options) (*Gen2, error) 
 		Debugf(">>> [WARNING] ENABLED DEBUG MODE <<<\n")
 	}
 
-	gen := &Gen2{
+	gen := &genphp{
 		kernel: kernel,
 
 		options:    options,

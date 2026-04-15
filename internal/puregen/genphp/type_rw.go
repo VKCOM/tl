@@ -53,7 +53,7 @@ func (d *Deconflicter) DeconflictName(s string) string {
 type TypeRWWrapper struct {
 	pureType pure.TypeInstance
 
-	gen *Gen2 // options.PHP and packages are here
+	gen *genphp // options.PHP and packages are here
 
 	ns  *Namespace
 	trw TypeRW

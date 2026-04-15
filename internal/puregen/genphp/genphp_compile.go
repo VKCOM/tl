@@ -15,7 +15,7 @@ import (
 )
 
 // create parallel hierarchy of wrappers, suitable for go generator
-func (gen *Gen2) compile() error {
+func (gen *genphp) compile() error {
 	if err := gen.addTypeWrappers(); err != nil {
 		return err
 	}
@@ -52,10 +52,6 @@ func (gen *Gen2) compile() error {
 	for _, myWrapper := range gen.generatedTypesList {
 		switch pureType := myWrapper.pureType.(type) {
 		case *pure.TypeInstanceDict:
-			//head, tail := myWrapper.resolvedT2GoName("")
-			//myWrapper.goGlobalName = gen.globalDec.DeconflictName(head + tail)
-			//head, tail = myWrapper.resolvedT2GoName(myWrapper.ns.name)
-			//myWrapper.goLocalName = myWrapper.ns.decGo.DeconflictName(head + tail)
 			if err := gen.GenerateTypeDict(myWrapper, pureType); err != nil {
 				return err
 			}
@@ -67,7 +63,7 @@ func (gen *Gen2) compile() error {
 	return nil
 }
 
-func (gen *Gen2) addTypeWrappers() error {
+func (gen *genphp) addTypeWrappers() error {
 	for _, pureType := range gen.kernel.AllTypeInstances() {
 		myWrapper := &TypeRWWrapper{
 			gen:      gen,
@@ -94,49 +90,15 @@ func (gen *Gen2) addTypeWrappers() error {
 	return nil
 }
 
-func (gen *Gen2) prepareGeneration() error {
-	//options := gen.options
-	//typesCounterMarkBytes := 0
-
+func (gen *genphp) prepareGeneration() error {
 	slices.SortStableFunc(gen.generatedTypesList, func(a, b *TypeRWWrapper) int { //  TODO - better idea?
 		return stringCompare(a.pureType.CanonicalName(), b.pureType.CanonicalName())
 	})
 	sortedTypes := gen.generatedTypesList
-	// for _, st := range sortedTypes {
-	//	fmt.Printf("sorted type %q\n", st.localTypeArg.rt.String())
-	// }
-	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
+
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()
 	}
-	// in BeforeCodeGenerationStep2 we split recursion in unions.
-	//for _, v := range sortedTypes {
-	//	v.trw.BeforeCodeGenerationStep2()
-	//}
-	// TODO - long adapters
-	// we link normal and long types for VK int->long conversion. This code is VK-specific and will be removed after full migration
-	//for _, v := range sortedTypes {
-	//	gen.findLongAdapter(v)
-	//	v.trw.BeforeCodeGenerationStep2()
-	//}
-	// Order of these 2 loops is important, for example see TypeRWTuple where bytes version depends on whether it is dict_like
-	//for _, v := range sortedTypes {
-	//	visitedNodes := map[*TypeRWWrapper]bool{}
-	//	v.hasBytesVersion = v.MarkHasBytesVersion(visitedNodes)
-	//	visitedNodes = map[*TypeRWWrapper]bool{}
-	//	v.hasErrorInWriteMethods = v.MarkWriteHasError(visitedNodes)
-	//	// TODO - move into pure kernel
-	//	visitedNodes = map[*TypeRWWrapper]bool{}
-	//	v.hasRepairMasks = v.MarkHasRepairMasks(visitedNodes)
-	//}
 
-	//if options.Kernel.Verbose {
-	//	//if skippedDueToWhitelist != 0 {
-	//	//	fmt.Printf("skipped %d object roots by the whitelist filter: %s\n", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
-	//	//}
-	//	if !gen.bytesWhiteList.Empty() {
-	//		fmt.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s\n", typesCounterMarkBytes, options.BytesWhiteList)
-	//	}
-	//}
 	return nil
 }

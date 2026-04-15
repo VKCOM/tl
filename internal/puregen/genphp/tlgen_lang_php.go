@@ -54,7 +54,7 @@ type PhpClassMeta struct {
 	IsRPCPrimitive bool // for TL\Response special case
 }
 
-func (gen *Gen2) generateCodePHP() error {
+func (gen *genphp) generateCodePHP() error {
 	// select files where to write code
 	gen.PhpMarkAllInternalTypes()
 	gen.PhpChoosePaths()
@@ -83,7 +83,7 @@ func phpMapConstructor(constructor tlast.Constructor) tlast.Constructor {
 	return constructor
 }
 
-func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
+func phpGenerateCodeForWrapper(gen *genphp, wrapper *TypeRWWrapper, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
 	var code strings.Builder
 	// add start symbol
 	code.WriteString(PHPFileStart)
@@ -167,11 +167,11 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfac
 	return nil
 }
 
-func (gen *Gen2) PhpChoosePaths() {
+func (gen *genphp) PhpChoosePaths() {
 
 }
 
-func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
+func (gen *genphp) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 	createdTypes := make(map[string]int)
 	wrappers := make([]*TypeRWWrapper, 0)
 
@@ -234,7 +234,7 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 	return wrappers
 }
 
-func (gen *Gen2) PhpAdditionalFiles() error {
+func (gen *genphp) PhpAdditionalFiles() error {
 	if gen.options.PHP.AddFunctionBodies {
 		if gen.options.PHP.UseBuiltinDataProviders {
 			//if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
@@ -298,7 +298,7 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 	return nil
 }
 
-func (gen *Gen2) PhpMarkAllInternalTypes() {
+func (gen *genphp) PhpMarkAllInternalTypes() {
 	rpcResults := map[string]bool{
 		"rpcResponseError":  true,
 		"rpcResponseHeader": true,
@@ -361,7 +361,7 @@ func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
 	return false
 }
 
-func (gen *Gen2) phpCreateSwitcher() error {
+func (gen *genphp) phpCreateSwitcher() error {
 	var code strings.Builder
 
 	code.WriteString(fmt.Sprintf(TLSwitcherPHP, gen.copyrightText))
@@ -372,7 +372,7 @@ func (gen *Gen2) phpCreateSwitcher() error {
 	return nil
 }
 
-func (gen *Gen2) phpCreateTL2Support() error {
+func (gen *genphp) phpCreateTL2Support() error {
 	var code strings.Builder
 
 	code.WriteString(fmt.Sprintf(`<?php
@@ -386,7 +386,7 @@ use VK\TL;
 	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_support.php"), code.String())
 }
 
-func (gen *Gen2) phpCreateTL2Context() error {
+func (gen *genphp) phpCreateTL2Context() error {
 	var code strings.Builder
 
 	code.WriteString(fmt.Sprintf(TL2ContextPHP, gen.copyrightText))
@@ -394,7 +394,7 @@ func (gen *Gen2) phpCreateTL2Context() error {
 	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_context.php"), code.String())
 }
 
-func (gen *Gen2) phpCreateMeta() error {
+func (gen *genphp) phpCreateMeta() error {
 	var code strings.Builder
 
 	code.WriteString(fmt.Sprintf(`<?php
@@ -499,7 +499,7 @@ class tl_item {
 	return nil
 }
 
-func (gen *Gen2) phpCreateFactory() error {
+func (gen *genphp) phpCreateFactory() error {
 	var code strings.Builder
 
 	includes := ""
