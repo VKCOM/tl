@@ -573,36 +573,36 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			trw.wr.TLTag(),
 		))
 
-		if trw.wr.gen.options.PHP.AddFetchers {
-			fetcherClass := fmt.Sprintf("%[1]s_fetcher", trw.PhpClassName(false, true))
-			fetcherArgs := make([]string, 0)
-			for _, arg := range trw.PHPFetcherArguments() {
-				fetcherArgs = append(fetcherArgs, arg.FieldValue)
-			}
-			fetcherArgsCombined := strings.Join(fetcherArgs, ", ")
+		fetcherClass := fmt.Sprintf("%[1]s_fetcher", trw.PhpClassName(false, true))
+		fetcherArgs := make([]string, 0)
+		for _, arg := range trw.PHPFetcherArguments() {
+			fetcherArgs = append(fetcherArgs, arg.FieldValue)
+		}
+		fetcherArgsCombined := strings.Join(fetcherArgs, ", ")
 
-			namespace := trw.wr.TLName().Namespace
-			if namespace == "" {
-				namespace = "_common"
-			}
+		namespace := trw.wr.TLName().Namespace
+		if namespace == "" {
+			namespace = "_common"
+		}
 
-			tlMode := "$tl_mode"
-			innerFetcher := "$fetcher"
-			marker := "$marker"
+		tlMode := "$tl_mode"
+		innerFetcher := "$fetcher"
+		marker := "$marker"
 
-			hasTL2 := trw.wr.pureType.Common().HasTL2()
-			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
+		hasTL2 := trw.wr.pureType.Common().HasTL2()
+		hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 
-			cc := codecreator.NewPhpCodeCreator()
-			cc.AddShift(1)
+		cc := codecreator.NewPhpCodeCreator()
+		cc.AddShift(1)
 
-			cc.AddFullEmptyLine()
-			cc.Function(
-				[]string{"public"},
-				"typedStore",
-				nil,
-				`TL\RpcFunctionFetcher`,
-				func() {
+		cc.AddFullEmptyLine()
+		cc.Function(
+			[]string{"public"},
+			"typedStore",
+			nil,
+			`TL\RpcFunctionFetcher`,
+			func() {
+				if trw.wr.gen.options.PHP.AddFetchers {
 					if trw.wr.phpInfo.RequireFunctionBodies {
 						if trw.wr.gen.options.PHP.AddSwitcher {
 							cc.Comments("get mode from switcher")
@@ -645,17 +645,19 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						}
 						cc.Comments("else fallback")
 					}
-					cc.AddLines("return null;")
-				},
-			)
+				}
+				cc.AddLines("return null;")
+			},
+		)
 
-			cc.AddFullEmptyLine()
-			cc.Function(
-				[]string{"public"},
-				"typedFetch",
-				nil,
-				`TL\RpcFunctionFetcher`,
-				func() {
+		cc.AddFullEmptyLine()
+		cc.Function(
+			[]string{"public"},
+			"typedFetch",
+			nil,
+			`TL\RpcFunctionFetcher`,
+			func() {
+				if trw.wr.gen.options.PHP.AddFetchers {
 					if trw.wr.phpInfo.RequireFunctionBodies {
 						if trw.wr.gen.options.PHP.AddSwitcher {
 							cc.Comments("get mode from switcher")
@@ -712,12 +714,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						}
 						cc.Comments("else fallback")
 					}
-					cc.AddLines("return null;")
-				},
-			)
+				}
+				cc.AddLines("return null;")
+			},
+		)
 
-			code.WriteString(cc.Text() + "\n")
-		}
+		code.WriteString(cc.Text())
 	}
 }
 
@@ -1117,7 +1119,7 @@ func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, args []string,
 	currentSize := fmt.Sprintf("$current_size%s", uniqueSuffix)
 	writeSize := fmt.Sprintf("$write_size%s", uniqueSuffix)
 
-	cc := codecreator.CodeCreator{Shift: "  "}
+	cc := codecreator.NewPhpCodeCreator()
 
 	// add size
 	cc.AddLines(
@@ -1998,7 +2000,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 
 		additionalArguments = append(additionalArguments, currentBlock, currentSize)
 
-		cc := codecreator.CodeCreator{Shift: "  "}
+		cc := codecreator.NewPhpCodeCreator()
 		cc.AddLines(
 			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", currentSize),
 			fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, currentSize),
