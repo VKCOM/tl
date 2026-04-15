@@ -39,13 +39,6 @@ schema commit: %s
 schema version: %d (%v)
 `
 
-var (
-	errSeeHere                = fmt.Errorf("see here")
-	errFieldNameCollision     = fmt.Errorf("field name collision")
-	errNatParamNameCollision  = fmt.Errorf("nat-parameter name collision")
-	errTypeParamNameCollision = fmt.Errorf("type-parameter name collision ")
-)
-
 // For debugging
 var DEBUG = true
 
@@ -56,12 +49,8 @@ func Debugf(format string, args ...interface{}) {
 }
 
 type Namespace struct {
-	name string
-
-	types        []*TypeRWWrapper
-	cppTemplates map[string]*TypeRWWrapper // canonical C++ template names like cross, cross<I,J>, cross<i>, cross<J> to avoid duplicates
-	decGo        Deconflicter
-	decCpp       Deconflicter
+	types []*TypeRWWrapper
+	decGo Deconflicter
 }
 
 type Gen2Options struct {
@@ -143,8 +132,7 @@ type Gen2 struct {
 	options *puregen.Options // pointer so code modifying options in GenerateCode refers to the same structure
 
 	// parsed TL
-	supportedAnnotations map[string]struct{}
-	allAnnotations       []string // position is bit
+	allAnnotations []string // position is bit
 
 	// generation
 	builtinTypes       map[string]*TypeRWWrapper
@@ -168,7 +156,7 @@ func canonicalGoName(name tlast.Name, insideNamespace string) string {
 func (gen *Gen2) getNamespace(n string) *Namespace {
 	na, ok := gen.Namespaces[n]
 	if !ok {
-		na = &Namespace{cppTemplates: map[string]*TypeRWWrapper{}}
+		na = &Namespace{}
 		gen.Namespaces[n] = na
 		// TODO - ALL golang-specific names
 		na.decGo.deconflictName("Handler")

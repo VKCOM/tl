@@ -17,11 +17,10 @@ type TypeRWStruct struct {
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []pure.ActualNatArg
 
-	fieldsDec    Deconflicter // TODO - add all generated methods here
-	fieldsDecCPP Deconflicter // TODO - add all generated methods here
-	setNames     []string     // method names should be the same for bytes and normal versions, so we remember them here
-	clearNames   []string
-	isSetNames   []string
+	fieldsDec  Deconflicter // TODO - add all generated methods here
+	setNames   []string     // method names should be the same for bytes and normal versions, so we remember them here
+	clearNames []string
+	isSetNames []string
 }
 
 func (trw *TypeRWStruct) isTypeDef() bool {

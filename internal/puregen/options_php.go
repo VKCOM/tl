@@ -19,16 +19,19 @@ type OptionsPHP struct {
 	InplaceSimpleStructs         bool
 	UseBuiltinDataProviders      bool
 	AddTypeComments              bool
+
+	AddMetaData    bool
+	AddFactoryData bool
 }
 
 func (opt *OptionsPHP) Bind(f *flag.FlagSet) {
 	// PHP
 	f.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
 		`whether to generate body to write/read generated structs and functions`)
-	//f.BoolVar(&opt.AddMetaData, "php-generate-meta", false,
-	//	`whether to generate methods to get meta information about tl objects`)
-	//f.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
-	//	`whether to generate factory of tl objects`)
+	f.BoolVar(&opt.AddMetaData, "php-generate-meta", false,
+		`whether to generate methods to get meta information about tl objects`)
+	f.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
+		`whether to generate factory of tl objects`)
 	f.BoolVar(&opt.IgnoreUnusedInFunctionsTypes, "php-ignore-unused-types", true,
 		`whether to not generate types without usages in functions (default:true)`)
 	f.BoolVar(&opt.AddRPCTypes, "php-rpc-support", true,
