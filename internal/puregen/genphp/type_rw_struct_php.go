@@ -357,6 +357,10 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					cc.AddLines(readCallLines...)
 				}, func() {
 					// tl2 case
+					cc.AddLines(cc.TLFetchUint32To("$marker"))
+					cc.If(cc.NotEqual("$marker", "TL\\tl2_support::Marker"), func() {
+						cc.AddLines("throw new \\Exception('can\\'t fetch tl2 marker');")
+					})
 					cc.AddLines("$used_bytes = 0;")
 					cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
 					cc.If("$obj_size != 0", func() {
@@ -393,18 +397,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					cc.AddLines(writeCallLines...)
 				}, func() {
 					cc.AddLines(
-						"$used_bytes = 0;",
-						`$context_sizes = new TL\tl2_context();`,
-						`$context_blocks = new TL\tl2_context();`,
+						cc.Assign("$used_bytes", "0"),
+						cc.Assign("$context_sizes", `new TL\tl2_context()`),
+						cc.Assign("$context_blocks", `new TL\tl2_context()`),
 					)
 					cc.Comments("calculate sizes")
-					// TODO!
 					cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true)...)
 					cc.Comments("write result")
+					cc.AddLines(cc.TLStoreUint32("TL\\tl2_support::Marker"))
 					cc.IfElse("$used_bytes != 0", func() {
 						cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 						cc.AddLines("store_byte(2);")
-						// TODO!
 						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false)...)
 					}, func() {
 						cc.AddLines("TL\\tl2_support::store_size(0);")
@@ -574,26 +577,6 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			trw.wr.TLTag(),
 		))
 
-		//args := make([]string, 0)
-		//for _, arg := range trw.PHPFetcherArguments() {
-		//	args = append(args, arg.FieldValue)
-		//}
-		//argsArray := strings.Join(args, ", ")
-
-		var fetchArgNames []string
-		var fetchArgTypes []string
-
-		var storeArgNames []string
-		var storeArgTypes []string
-
-		if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-			fetchArgNames = append(fetchArgNames, "stream")
-			fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
-
-			storeArgNames = append(storeArgNames, "stream")
-			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
-		}
-
 		if trw.pureType.KernelType().CanonicalName().String() == "memcache.touch" {
 			Debugf("")
 		}
@@ -613,6 +596,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 
 			tlMode := "$tl_mode"
 			innerFetcher := "$fetcher"
+			marker := "$marker"
 
 			hasTL2 := trw.wr.pureType.Common().HasTL2()
 			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
@@ -658,6 +642,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						})
 						if hasTL2 && !hasFetcher {
 							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.AddLines(fmt.Sprintf("store_int(TL\\tl2_support::Marker);"))
 								cc.AddLines(fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.TLTag()))
 								cc.AddLines("$this->write_tl2();")
 								if hasTL2 {
@@ -694,7 +679,11 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 								cc.AddLines(cc.Assign(tlMode, "1"))
 							})
 						}
+						cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
 						cc.If(cc.Equal(tlMode, "1"), func() {
+							cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+								cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag:" + 0x%08[1]x);`, trw.wr.TLTag()))
+							})
 							cc.AddLines("$this->read();")
 							if hasFetcher {
 								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
@@ -709,6 +698,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 						})
 						if hasTL2 && !hasFetcher {
+							cc.If(cc.NotEqual(marker, "TL\\tl2_support::Marker"), func() {
+								cc.AddLines(`throw new \Exception("expected tl2 marker");`)
+							})
+							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+							cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+								cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
+							})
 							cc.If(cc.Equal(tlMode, "2"), func() {
 								cc.AddLines("$this->read_tl2();")
 								if hasTL2 {
