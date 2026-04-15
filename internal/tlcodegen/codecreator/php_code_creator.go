@@ -86,6 +86,18 @@ func (ph PhpCodeCreator) NotStrongEqual(left, right string) string {
 	return fmt.Sprintf("%[1]s !== %[2]s", left, right)
 }
 
+func (ph PhpHelder) TLFetchUint32To(target string) string {
+	return ph.Assign(target, ph.TLFetchUint32())
+}
+
+func (ph PhpHelder) TLFetchUint32() string {
+	return "fetch_int() & 0xFFFFFFFF"
+}
+
+func (ph PhpHelder) TLStoreUint32(target string) string {
+	return fmt.Sprintf("store_int(%[1]s);", target)
+}
+
 type FunctionArgument struct {
 	Name     string
 	TypeName string

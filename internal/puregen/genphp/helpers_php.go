@@ -461,6 +461,7 @@ interface TL_Object extends Readable, Writeable {}
 `
 
 const TL2SupportPHP = `class tl2_support {
+  const Marker = 0x30324c54;
   const TinyStringLen = 253;
   const BigStringMarker = 254;
   const HugeStringMarker = 255;
