@@ -55,83 +55,6 @@ func Debugf(format string, args ...interface{}) {
 	}
 }
 
-type LocalResolveContext struct {
-	localTypeArgs map[string]LocalTypeArg
-	localNatArgs  map[string]LocalNatArg
-
-	allowAnyConstructor bool   // we can reference all constructors (functions, union elements) directly internally
-	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
-}
-
-// checkArgsCollision checks if passed name is already used in local context.
-// pr: PR of the name we want to check
-// err: will be returned (wrapped in beautiful error) if collision was NOT in type-parameter,
-// must be defined depending on call context
-func (lrc *LocalResolveContext) checkArgsCollision(name string, pr tlast.PositionRange, err error) error {
-	if nat, ok := lrc.localNatArgs[name]; ok {
-		e1 := pr.BeautifulError(err)
-		e2 := nat.NamePR.BeautifulError(errSeeHere)
-		return tlast.BeautifulError2(e1, e2)
-	}
-	if typ, ok := lrc.localTypeArgs[name]; ok {
-		e1 := pr.BeautifulError(errTypeParamNameCollision)
-		e2 := typ.PR.BeautifulError(errSeeHere)
-		return tlast.BeautifulError2(e1, e2)
-	}
-	return nil
-}
-
-type LocalNatArg struct {
-	wrongTypeErr error // we must add all field names to local context, because they must correctly shadow names outside, but we check the type
-
-	NamePR tlast.PositionRange
-	TypePR tlast.PositionRange
-	natArg ActualNatArg
-}
-
-type LocalTypeArg struct {
-	arg     ResolvedArgument
-	PR      tlast.PositionRange // original template arg reference
-	natArgs []ActualNatArg      // nat args associated with this type argument, if type argument itself has some nat args
-}
-
-type ResolvedArgument struct {
-	isNat   bool
-	isArith bool
-	Arith   tlast.Arithmetic
-	tip     *TypeRWWrapper
-	bare    bool // vector Int is not the same as vector int, we must capture the difference somewhere
-}
-
-type ActualNatArg struct {
-	isArith    bool
-	Arith      tlast.Arithmetic
-	isField    bool // otherwise it is # param with name
-	FieldIndex int
-	name       string // param name
-}
-
-func (arg *ActualNatArg) IsNumber() bool {
-	return arg.isArith
-}
-
-func (arg *ActualNatArg) Number() uint32 {
-	return arg.Arith.Res
-}
-
-func (arg *ActualNatArg) IsField() bool {
-	return arg.isField
-}
-
-func (arg *ActualNatArg) IsTL2() bool {
-	return arg.isField && arg.FieldIndex < 0
-}
-
-type HalfResolvedArgument struct { // TODO - better name
-	Name string                 // if empty, this is not argument position
-	Args []HalfResolvedArgument // recursion
-}
-
 type Namespace struct {
 	name string
 
@@ -355,7 +278,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				continue
 			} else {
 				Debugf("File \"%s\":\n", f)
-				Debugf(cmp.Diff(string(was), code))
+				Debugf("%s\n", cmp.Diff(string(was), code))
 			}
 		}
 		written++

@@ -240,10 +240,6 @@ func (trw *TypeRWStruct) PHPFetcherArguments() []ArgInfo {
 		})
 	}
 
-	if trw.PhpClassName(false, true) == "memcache_touch" {
-		Debugf("")
-	}
-
 	if trw.wr.pureType.Common().HasTL2() {
 		structuredArgs = append(structuredArgs, ArgInfo{
 			FieldName:       "use_tl2",
@@ -577,10 +573,6 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			trw.wr.TLTag(),
 		))
 
-		if trw.pureType.KernelType().CanonicalName().String() == "memcache.touch" {
-			Debugf("")
-		}
-
 		if trw.wr.gen.options.PHP.AddFetchers {
 			fetcherClass := fmt.Sprintf("%[1]s_fetcher", trw.PhpClassName(false, true))
 			fetcherArgs := make([]string, 0)
@@ -793,10 +785,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 
-		if trw.PhpClassName(false, true) == "tree_stats_preferMaster" {
-			Debugf("> %v\n", trw.wr.pureType.Common().KernelType().IsExclamationWrapper())
-		}
-
 		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 			// TODO: add block calculated currentSize and block if union
 			if trw.wr.PHPUnionParent() != nil {
@@ -815,10 +803,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			usedBytes := "$used_bytes"
 			code.WriteString(fmt.Sprintf("%[1]s%[2]s = 0;\n", tab, usedBytes))
 
-			if trw.PhpClassName(false, true) == "memcache_wildcardResult" {
-				Debugf("")
-			}
-
 			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, PHPAddDollarSign(trw.pureType.NatParams()), "", 0, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
@@ -833,9 +817,6 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []s
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
-		if trw.PhpClassName(false, true) == "targLong_changeUserGroups" && i == 1 {
-			Debugf("")
-		}
 		fieldMask := trw.PHPGetFieldMask(targetName, calculatedArgs, i)
 		shift := 0
 		textTab := func() string { return strings.Repeat(tab, shift) }
@@ -1623,10 +1604,6 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
-		if fieldType == "TL\\ch_proxy\\Types\\ch_proxy_Table_stats" {
-			Debugf(">>>>")
-			fieldType, defaultValue = fieldTypeAndDefaultValue(f)
-		}
 		code.WriteString(
 			fmt.Sprintf(
 				`
