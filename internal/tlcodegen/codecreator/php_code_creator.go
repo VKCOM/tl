@@ -133,3 +133,17 @@ func (ph *PhpCodeCreator) Function(modifiers []string, name string, args []Funct
 	ph.AddBlock(block)
 	ph.AddLines("}")
 }
+
+// class body without any comment
+func (ph *PhpCodeCreator) Class(modifiers []string, name string, interfaces []string, block func()) {
+	mds_ := append(modifiers, "class", name)
+	if len(interfaces) > 0 {
+		mds_ = append(mds_, "implements")
+		mds_ = append(mds_, strings.Join(interfaces, ", "))
+	}
+	s := strings.Join(mds_, " ")
+	s += " {"
+	ph.AddLines(s)
+	ph.AddBlock(block)
+	ph.AddLines("}")
+}

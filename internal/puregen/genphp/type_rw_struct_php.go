@@ -287,51 +287,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 		if trw.wr.gen.options.PHP.AddFetchers && trw.wr.phpInfo.RequireFunctionBodies {
 			structuredArgs := trw.PHPFetcherArguments()
 
-			argsAsFields := strings.Join(
-				utils.MapSlice(
-					structuredArgs,
-					func(arg ArgInfo) string {
-						return fmt.Sprintf(
-							`  /** @var %[1]s */
-  public $%[2]s = %[3]s;
-`,
-							arg.TypeName,
-							arg.FieldName,
-							arg.DefaultValue,
-						)
-					},
-				),
-				"\n",
-			)
-
-			if argsAsFields != "" {
-				argsAsFields += "\n"
-			}
-
-			constructorComment := `  /**
-   * @kphp-inline
-   */`
-			constructorArgs := ""
-			constructorBody := ""
-
-			if len(structuredArgs) > 0 {
-				constructorComment = "  /**\n"
-				for i, arg := range structuredArgs {
-					constructorComment += fmt.Sprintf("   * @param %[1]s $%[2]s\n", arg.TypeName, arg.FieldName)
-
-					if i != 0 {
-						constructorArgs += ", "
-					}
-					constructorArgs += "$" + arg.FieldName
-
-					constructorBody += fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", arg.FieldName)
-				}
-				constructorComment += "   */"
-			}
-
-			readCall := strings.Builder{}
-			writeCall := strings.Builder{}
-
 			innerArgs :=
 				utils.MapSlice(
 					utils.FilterSlice(structuredArgs,
@@ -372,6 +327,8 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				})
 				readCallLines = cc.Print()
 			}
+
+			readLines := make([]string, 0)
 			for _, line := range readCallLines {
 				targetLines := []string{line}
 				if strings.Contains(line, "return false;") {
@@ -379,11 +336,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t fetch %s_result');", trw.PhpClassName(false, true))
 					targetLines = append(targetLines, prefix+"return null;")
 				}
-				for _, targetLine := range targetLines {
-					readCall.WriteString(strings.Repeat(" ", 4))
-					readCall.WriteString(targetLine)
-					readCall.WriteString("\n")
-				}
+				readLines = append(readLines, targetLines...)
 			}
 
 			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
@@ -411,6 +364,8 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				})
 				writeCallLines = cc.Print()
 			}
+
+			writeLines := make([]string, 0)
 			for _, line := range writeCallLines {
 				targetLines := []string{line}
 				if strings.Contains(line, "return false;") {
@@ -418,79 +373,79 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t store %s_result');", trw.PhpClassName(false, true))
 					targetLines = append(targetLines, prefix+"return;")
 				}
-				for _, targetLine := range targetLines {
-					writeCall.WriteString(strings.Repeat(" ", 6))
-					writeCall.WriteString(targetLine)
-					writeCall.WriteString("\n")
-				}
+				writeLines = append(writeLines, targetLines...)
 			}
 
-			var fetchArgNames []string
-			var fetchArgTypes []string
+			className := trw.PhpClassName(false, true)
 
-			var storeArgNames []string
-			var storeArgTypes []string
+			cc := codecreator.NewPhpCodeCreator()
 
-			if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-				fetchArgNames = append(fetchArgNames, "stream")
-				fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
+			cc.AddFullEmptyLine()
+			cc.Class(
+				nil,
+				fmt.Sprintf("%[1]s_fetcher", className),
+				[]string{"TL\\RpcFunctionFetcher"},
+				func() {
+					fetcherFields := trw.PHPFetcherArguments()
 
-				storeArgNames = append(storeArgNames, "stream")
-				storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
-			}
+					for _, arg := range fetcherFields {
+						cc.AddLinef("/** @var %[1]s */", arg.TypeName)
+						cc.AddLinef("public $%[1]s = %[2]s", arg.FieldName, arg.DefaultValue)
+					}
 
-			storeArgNames = append(storeArgNames, "result")
-			storeArgTypes = append(storeArgTypes, `TL\RpcFunctionReturnResult`)
+					if len(fetcherFields) > 0 {
+						cc.AddFullEmptyLine()
+					}
 
-			code.WriteString(
-				fmt.Sprintf(
-					`
-class %[1]s_fetcher implements TL\RpcFunctionFetcher {
-%[4]s%[6]s
-  public function __construct(%[7]s) {
-%[8]s  }
+					cc.Function(
+						[]string{"public"},
+						"__construct",
+						utils.MapSlice(fetcherFields, func(a ArgInfo) codecreator.FunctionArgument {
+							return codecreator.FunctionArgument{Name: a.FieldName, TypeName: a.TypeName}
+						}),
+						"",
+						func() {
+							for _, arg := range fetcherFields {
+								cc.AddLinef("$this->%[1]s = $%[1]s;", arg.FieldName)
+							}
+						},
+					)
 
-%[9]s
-  public function typedFetch(%[11]s) {
-    $result = new %[1]s_result();
-%[3]s
-    return $result;
-  }
+					cc.AddFullEmptyLine()
 
-%[10]s
-  public function typedStore(%[12]s) {
-    if ($result instanceof %[1]s_result) {
-%[5]s
-    } else {
-      throw new \Exception("can\'t store: %[1]s_result expected");
-    }
-  }
-}
-`,
-					trw.PhpClassName(false, true),
-					trw.ResultType.trw.PhpTypeName(true, true),
-					readCall.String(),
-					argsAsFields,
-					writeCall.String(),
-					constructorComment,
-					constructorArgs,
-					constructorBody,
-					phpFunctionCommentFormat(
-						fetchArgNames,
-						fetchArgTypes,
+					cc.Function(
+						[]string{"public"},
+						"typedFetch",
+						nil,
 						`TL\RpcFunctionReturnResult`,
-						"  ",
-					),
-					phpFunctionCommentFormat(
-						storeArgNames,
-						storeArgTypes,
+						func() {
+							cc.AddLinef("$result = new %[1]s_result();", className)
+							cc.AddLines(readLines...)
+							cc.AddLines("return $result;")
+						},
+					)
+
+					cc.AddFullEmptyLine()
+
+					cc.Function(
+						[]string{"public"},
+						"typedStore",
+						[]codecreator.FunctionArgument{
+							{TypeName: `TL\RpcFunctionReturnResult`, Name: "result"},
+						},
 						``,
-						"  ",
-					),
-					phpFunctionArgumentsFormat(fetchArgNames),
-					phpFunctionArgumentsFormat(storeArgNames),
-				),
+						func() {
+							cc.IfElse(fmt.Sprintf("$result instanceof %[1]s_result", className), func() {
+								cc.AddLines(writeLines...)
+							}, func() {
+								cc.AddLinef(`throw new \Exception("can\'t store: %[1]s_result expected");`, className)
+							})
+						},
+					)
+				},
 			)
+
+			code.WriteString(cc.Text())
 		}
 	}
 }
