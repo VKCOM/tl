@@ -26,75 +26,75 @@ func NewPhpCodeCreator() *PhpCodeCreator {
 	}
 }
 
-func (bcc *PhpCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
-	bcc.forIndexed(indexVar, startValue, upperBound, step, block)
+func (ph *PhpCodeCreator) ForIndexed(indexVar, startValue, upperBound, step string, block func()) {
+	ph.forIndexed(indexVar, startValue, upperBound, step, block)
 }
 
-func (ph PhpCodeCreator) Assign(name, value string) string {
+func (ph *PhpCodeCreator) Assign(name, value string) string {
 	return fmt.Sprintf("%[1]s = %[2]s;", name, value)
 }
 
-func (ph PhpCodeCreator) AddAssign(name, value string) string {
+func (ph *PhpCodeCreator) AddAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s += %[2]s;", name, value)
 }
 
-func (ph PhpCodeCreator) SubAssign(name, value string) string {
+func (ph *PhpCodeCreator) SubAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s -= %[2]s;", name, value)
 }
 
-func (ph PhpCodeCreator) OrAssign(name, value string) string {
+func (ph *PhpCodeCreator) OrAssign(name, value string) string {
 	return fmt.Sprintf("%[1]s |= %[2]s;", name, value)
 }
 
-func (ph PhpCodeCreator) TL2CountBytes(value string) string {
+func (ph *PhpCodeCreator) TL2CountBytes(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::count_used_bytes(%[1]s)", value)
 }
 
-func (ph PhpCodeCreator) TL2FetchSize() string {
+func (ph *PhpCodeCreator) TL2FetchSize() string {
 	return "TL\\tl2_support::fetch_size()"
 }
 
-func (ph PhpCodeCreator) TL2FetchSizeTo(name string) string {
+func (ph *PhpCodeCreator) TL2FetchSizeTo(name string) string {
 	return ph.Assign(name, ph.TL2FetchSize())
 }
 
-func (ph PhpCodeCreator) TL2StoreSize(value string) string {
+func (ph *PhpCodeCreator) TL2StoreSize(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::store_size(%[1]s);", value)
 }
 
-func (ph PhpCodeCreator) TL2SkipBytes(value string) string {
+func (ph *PhpCodeCreator) TL2SkipBytes(value string) string {
 	return fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", value)
 }
 
-func (ph PhpCodeCreator) CheckBit(target string, bit int) string {
+func (ph *PhpCodeCreator) CheckBit(target string, bit int) string {
 	return fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", target, bit)
 }
 
-func (ph PhpCodeCreator) Equal(left, right string) string {
+func (ph *PhpCodeCreator) Equal(left, right string) string {
 	return fmt.Sprintf("%[1]s == %[2]s", left, right)
 }
 
-func (ph PhpCodeCreator) NotEqual(left, right string) string {
+func (ph *PhpCodeCreator) NotEqual(left, right string) string {
 	return fmt.Sprintf("%[1]s != %[2]s", left, right)
 }
 
-func (ph PhpCodeCreator) StrongEqual(left, right string) string {
+func (ph *PhpCodeCreator) StrongEqual(left, right string) string {
 	return fmt.Sprintf("%[1]s === %[2]s", left, right)
 }
 
-func (ph PhpCodeCreator) NotStrongEqual(left, right string) string {
+func (ph *PhpCodeCreator) NotStrongEqual(left, right string) string {
 	return fmt.Sprintf("%[1]s !== %[2]s", left, right)
 }
 
-func (ph PhpHelder) TLFetchUint32To(target string) string {
+func (ph *PhpCodeCreator) TLFetchUint32To(target string) string {
 	return ph.Assign(target, ph.TLFetchUint32())
 }
 
-func (ph PhpHelder) TLFetchUint32() string {
+func (ph *PhpCodeCreator) TLFetchUint32() string {
 	return "fetch_int() & 0xFFFFFFFF"
 }
 
-func (ph PhpHelder) TLStoreUint32(target string) string {
+func (ph *PhpCodeCreator) TLStoreUint32(target string) string {
 	return fmt.Sprintf("store_int(%[1]s);", target)
 }
 
@@ -103,25 +103,25 @@ type FunctionArgument struct {
 	TypeName string
 }
 
-func (cc *PhpCodeCreator) FunctionComment(args []FunctionArgument, returnType string) {
-	cc.AddLines("/**")
+func (ph *PhpCodeCreator) FunctionComment(args []FunctionArgument, returnType string) {
+	ph.AddLines("/**")
 
 	if len(args) == 0 {
-		cc.AddLines(" * @kphp-inline")
+		ph.AddLines(" * @kphp-inline")
 	} else {
 		for i := range args {
-			cc.AddLines(fmt.Sprintf(" * @param %[1]s $%[2]s", args[i].TypeName, args[i].Name))
+			ph.AddLines(fmt.Sprintf(" * @param %[1]s $%[2]s", args[i].TypeName, args[i].Name))
 		}
 	}
 	if returnType != "" {
-		cc.AddLines(" *")
-		cc.AddLines(" * @return " + returnType)
+		ph.AddLines(" *")
+		ph.AddLines(" * @return " + returnType)
 	}
-	cc.AddLines(" */")
+	ph.AddLines(" */")
 }
 
-func (cc *PhpCodeCreator) Function(modifiers []string, name string, args []FunctionArgument, returnType string, block func()) {
-	cc.FunctionComment(args, returnType)
+func (ph *PhpCodeCreator) Function(modifiers []string, name string, args []FunctionArgument, returnType string, block func()) {
+	ph.FunctionComment(args, returnType)
 	mds_ := append(modifiers, "function", name)
 	s := strings.Join(mds_, " ")
 	s += "("
@@ -129,7 +129,7 @@ func (cc *PhpCodeCreator) Function(modifiers []string, name string, args []Funct
 		return fmt.Sprintf("$%[1]s", a.Name)
 	}), ", ")
 	s += ") {"
-	cc.AddLines(s)
-	cc.AddBlock(block)
-	cc.AddLines("}")
+	ph.AddLines(s)
+	ph.AddBlock(block)
+	ph.AddLines("}")
 }
