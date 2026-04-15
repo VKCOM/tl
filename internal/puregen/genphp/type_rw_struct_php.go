@@ -679,11 +679,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 								cc.AddLines(cc.Assign(tlMode, "1"))
 							})
 						}
-						cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
 						cc.If(cc.Equal(tlMode, "1"), func() {
+							cc.Comments("check correct tl prefix")
+							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
 							cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
 								cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag:" + 0x%08[1]x);`, trw.wr.TLTag()))
 							})
+							cc.Comments("read body")
 							cc.AddLines("$this->read();")
 							if hasFetcher {
 								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
@@ -698,14 +700,17 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 						})
 						if hasTL2 && !hasFetcher {
-							cc.If(cc.NotEqual(marker, "TL\\tl2_support::Marker"), func() {
-								cc.AddLines(`throw new \Exception("expected tl2 marker");`)
-							})
-							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-							cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
-								cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
-							})
 							cc.If(cc.Equal(tlMode, "2"), func() {
+								cc.Comments("check correct tl2 prefix")
+								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+								cc.If(cc.NotEqual(marker, "TL\\tl2_support::Marker"), func() {
+									cc.AddLines(`throw new \Exception("expected tl2 marker");`)
+								})
+								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+								cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+									cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
+								})
+								cc.Comments("read body")
 								cc.AddLines("$this->read_tl2();")
 								if hasTL2 {
 									cc.AddLines("$use_tl2 = 1;")
