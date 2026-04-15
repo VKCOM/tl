@@ -634,7 +634,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						})
 						if hasTL2 && !hasFetcher {
 							cc.If(cc.Equal(tlMode, "2"), func() {
-								cc.AddLines(fmt.Sprintf("store_int(TL\\tl2_support::Marker);"))
+								cc.AddLines("store_int(TL\\tl2_support::Marker);")
 								cc.AddLines(fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.TLTag()))
 								cc.AddLines("$this->write_tl2();")
 								if hasTL2 {

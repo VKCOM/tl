@@ -24,11 +24,6 @@ type Deconflicter struct {
 	usedNames map[string]bool
 }
 
-func (d *Deconflicter) hasConflict(s string) bool {
-	_, ok := d.usedNames[s]
-	return ok
-}
-
 func (d *Deconflicter) deconflictName(s string) string {
 	if d.usedNames == nil {
 		d.usedNames = map[string]bool{}
@@ -53,19 +48,6 @@ func (d *Deconflicter) DeconflictName(s string) string {
 	s += suffix
 	d.usedNames[s] = true
 	return s
-}
-
-func (d *Deconflicter) removeName(s string) {
-	if d.hasConflict(s) {
-		delete(d.usedNames, s)
-	}
-}
-
-func (d *Deconflicter) fillGolangIdentifies() {
-	d.deconflictName("Write")
-	d.deconflictName("Read")
-	d.deconflictName("WriteTL2")
-	d.deconflictName("ReadTL2")
 }
 
 type TypeRWWrapper struct {

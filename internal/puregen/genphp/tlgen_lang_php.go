@@ -285,17 +285,16 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 			}
 		}
 	}
-	// TODO!
-	//if gen.options.PHP.AddMetaData {
-	//	if err := gen.phpCreateMeta(); err != nil {
-	//		return err
-	//	}
-	//}
-	//if gen.options.PHP.AddFactoryData {
-	//	if err := gen.phpCreateFactory(); err != nil {
-	//		return err
-	//	}
-	//}
+	if gen.options.PHP.AddMetaData {
+		if err := gen.phpCreateMeta(); err != nil {
+			return err
+		}
+	}
+	if gen.options.PHP.AddFactoryData {
+		if err := gen.phpCreateFactory(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
