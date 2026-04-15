@@ -14,7 +14,7 @@ import (
 	"github.com/VKCOM/tl/internal/utils"
 )
 
-func (gen *Gen2) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.TypeInstance) error {
+func (gen *genphp) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.TypeInstance) error {
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
 			gen:           gen,
@@ -75,7 +75,7 @@ func (gen *Gen2) generateTypePrimitive(myWrapper *TypeRWWrapper, pureType pure.T
 	return nil // fmt.Errorf("unknown primitive type")
 }
 
-func (gen *Gen2) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct,
+func (gen *genphp) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceStruct,
 	unionParent *TypeRWUnion, unionIndex int) error {
 
 	//if pureType.ResultType() == nil && myWrapper.unionParent == nil && len(myWrapper.pureType.KernelType().TL1()) != 0 {
@@ -130,7 +130,7 @@ func (gen *Gen2) generateTypeStruct(myWrapper *TypeRWWrapper, pureType *pure.Typ
 	return nil
 }
 
-func (gen *Gen2) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive, isBit bool) error {
+func (gen *genphp) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeInstancePrimitive, isBit bool) error {
 	res := &TypeRWBool{
 		isBit: isBit,
 		wr:    myWrapper,
@@ -145,7 +145,7 @@ func (gen *Gen2) generateTypeBool(myWrapper *TypeRWWrapper, pureType *pure.TypeI
 	return nil
 }
 
-func (gen *Gen2) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
+func (gen *genphp) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceUnion) error {
 	if isMaybe, elementField := pureType.IsUnionMaybe(); isMaybe {
 		fieldType, err := gen.getType(elementField.TypeInstance())
 		if err != nil {
@@ -201,7 +201,7 @@ func (gen *Gen2) generateTypeUnion(myWrapper *TypeRWWrapper, pureType *pure.Type
 	return nil
 }
 
-func (gen *Gen2) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
+func (gen *genphp) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceArray) error {
 	field := pureType.Field()
 	fieldType, err := gen.getType(field.TypeInstance())
 	if err != nil {
@@ -222,7 +222,7 @@ func (gen *Gen2) GenerateTypeArray(myWrapper *TypeRWWrapper, pureType *pure.Type
 	return nil
 }
 
-func (gen *Gen2) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceDict) error {
+func (gen *genphp) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeInstanceDict) error {
 	field := pureType.Field()
 	fieldType, err := gen.getType(field.TypeInstance())
 	if err != nil {
@@ -251,7 +251,7 @@ func (gen *Gen2) GenerateTypeDict(myWrapper *TypeRWWrapper, pureType *pure.TypeI
 	return nil
 }
 
-func (gen *Gen2) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
+func (gen *genphp) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
 	result, ok := gen.generatedTypes[t.CanonicalName()]
 	if !ok {
 		return nil, fmt.Errorf("internal error: type %q not found", t.CanonicalName())
@@ -259,7 +259,7 @@ func (gen *Gen2) getType(t pure.TypeInstance) (*TypeRWWrapper, error) {
 	return result, nil
 }
 
-func (gen *Gen2) getTypeMust(t pure.TypeInstance) *TypeRWWrapper {
+func (gen *genphp) getTypeMust(t pure.TypeInstance) *TypeRWWrapper {
 	result, ok := gen.generatedTypes[t.CanonicalName()]
 	if !ok {
 		panic(fmt.Errorf("internal error: type instance %q not found", t.CanonicalName()))
@@ -267,7 +267,7 @@ func (gen *Gen2) getTypeMust(t pure.TypeInstance) *TypeRWWrapper {
 	return result
 }
 
-func (gen *Gen2) getTypeWrapperMust(rt tlast.TL2TypeRef) (*TypeRWWrapper, bool) {
+func (gen *genphp) getTypeWrapperMust(rt tlast.TL2TypeRef) (*TypeRWWrapper, bool) {
 	ref, fieldBare, err := gen.kernel.GetInstance(rt)
 	if err != nil {
 		panic(fmt.Errorf("internal error: cannot get type of argument %s: %w", rt.String(), err))
