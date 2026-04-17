@@ -52,7 +52,7 @@ type KernelType struct {
 
 	namePR tlast.PositionRange // for "see here" in beautiful errors
 
-	// usage tracking for migration/compilcation.
+	// usage tracking for migration/compilation.
 	// common for union types, so cannot be in combinator itself
 	templateArguments []tlast.TL2TypeTemplate
 	targs             []KernelTypeTarg
