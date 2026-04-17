@@ -104,36 +104,7 @@ func phpGenerateCodeForWrapper(gen *genphp, wrapper *TypeRWWrapper, createInterf
 			if unionParent != nil && unionParent == wrapper && !createInterfaceIfNeeded {
 				// skip comment generation
 			} else {
-				if (desc.KernelType().IsFunction() || len(desc.Fields()) >= 0) && !desc.OriginTL2() {
-					desc := desc.KernelType().TL1()[wrapper.unionIndex]
-					savedIDExplicit := desc.Construct.IDExplicit
-					desc.Construct.IDExplicit = true
-
-					definitionText += "\n *\n"
-					definitionText += " * " + phpMapConstructor(desc.Construct).String()
-
-					desc.Construct.IDExplicit = savedIDExplicit
-					hasFields := len(desc.TemplateArguments) > 0 || len(desc.Fields) > 0
-					for _, template := range desc.TemplateArguments {
-						definitionText += "\n"
-						definitionText += " *   " + template.String()
-					}
-					for _, field := range desc.Fields {
-						definitionText += "\n"
-						definitionText += " *   " + field.ToCrc32()
-					}
-					if hasFields {
-						definitionText += "\n *  "
-					}
-					definitionText += " = "
-					resultType := ""
-					if desc.IsFunction {
-						resultType = desc.FuncDecl.ToCrc32()
-					} else {
-						resultType = desc.TypeDecl.String()
-					}
-					definitionText += resultType + `;`
-				}
+				definitionText = desc.KernelType().SpecialPHPCommentForTL1Combinator(wrapper.unionIndex)
 			}
 		}
 		code.WriteString(fmt.Sprintf(copyrightText, definitionText))

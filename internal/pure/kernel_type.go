@@ -112,10 +112,9 @@ func (t *KernelType) functionCanNotBeReferencedError(PR tlast.PositionRange) err
 
 // We do not want to give generators access to combinators directly.
 // We want every piece of information to come through strict pure public interface.
-// TODO! ONLY FOR COMMENT IN PHP GEN
-func (t *KernelType) TL1() []*tlast.Combinator {
-	return t.combTL1
-}
+//func (t *KernelType) TL1() []*tlast.Combinator {
+//	return t.combTL1
+//}
 
 //
 //func (t *KernelType) TL2() tlast.TL2Combinator {
@@ -150,4 +149,61 @@ func (t *KernelType) LegacyTypeName() tlast.TL2TypeName {
 		return t.canonicalName
 	}
 	return tlast.TL2TypeName(t.combTL1[0].TypeDecl.Name)
+}
+
+func phpMapConstructor(constructor tlast.Constructor) tlast.Constructor {
+	if constructor.Name.String() == "_" {
+		constructor.Name.Name = "rpcResponseOk"
+	} else if constructor.Name.String() == "reqResultHeader" {
+		constructor.Name.Name = "rpcResponseHeader"
+	} else if constructor.Name.String() == "reqError" {
+		constructor.Name.Name = "rpcResponseError"
+	}
+	return constructor
+}
+
+func (t *KernelType) SpecialPHPCommentForTL1Combinator(constructorIndex int) string {
+	if t.originTL2 {
+		return ""
+	}
+
+	if constructorIndex >= len(t.combTL1) || 0 > constructorIndex {
+		return ""
+	}
+
+	definitionText := ""
+	comb := t.combTL1[constructorIndex]
+
+	if t.IsFunction() || len(comb.Fields) >= 0 {
+		desc := comb
+		savedIDExplicit := desc.Construct.IDExplicit
+		desc.Construct.IDExplicit = true
+
+		definitionText += "\n *\n"
+		definitionText += " * " + phpMapConstructor(desc.Construct).String()
+
+		desc.Construct.IDExplicit = savedIDExplicit
+		hasFields := len(desc.TemplateArguments) > 0 || len(desc.Fields) > 0
+		for _, template := range desc.TemplateArguments {
+			definitionText += "\n"
+			definitionText += " *   " + template.String()
+		}
+		for _, field := range desc.Fields {
+			definitionText += "\n"
+			definitionText += " *   " + field.ToCrc32()
+		}
+		if hasFields {
+			definitionText += "\n *  "
+		}
+		definitionText += " = "
+		resultType := ""
+		if desc.IsFunction {
+			resultType = desc.FuncDecl.ToCrc32()
+		} else {
+			resultType = desc.TypeDecl.String()
+		}
+		definitionText += resultType + `;`
+	}
+
+	return definitionText
 }
