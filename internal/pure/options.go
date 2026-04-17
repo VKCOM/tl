@@ -33,8 +33,6 @@ type OptionsKernel struct {
 
 	// TODO - remove after migration code stabilized
 	TL2MigrationDevMode bool
-	// TODO - quickly adapt new rules, remove these options
-	NewBrackets bool // TODO - implement new brackets
 }
 
 func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
@@ -53,6 +51,4 @@ func (opt *OptionsKernel) Bind(f *flag.FlagSet) {
 
 	f.BoolVar(&opt.TL2MigrationDevMode, "tl2migrationDevMode", false,
 		"during migration, do not overwrite existing files")
-	f.BoolVar(&opt.NewBrackets, "newBrackets", false,
-		"generate vectors/tuples in pure kernel")
 }
