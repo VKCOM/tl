@@ -224,6 +224,9 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return specialCase
 	}
+	if trw.wr.goGlobalName == "EngineMetafilesStat" {
+		Debugf("")
+	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
@@ -241,7 +244,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
 		}
 	}
-	return trw.PhpClassName(withPath, bare)
+	return trw.PhpClassName(withPath, bare && unionParent == nil)
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
@@ -520,6 +523,9 @@ class %[1]s_fetcher implements TL\RpcFunctionFetcher {
 
 func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder) {
 	// print function specific methods and types
+	if trw.PhpClassName(false, true) == "engine_getExpectedMetafilesStats" {
+		Debugf("")
+	}
 	if trw.wr.gen.options.AddRPCTypes && trw.ResultType != nil {
 		kphpSpecialCode := ""
 		if trw.wr.HasAnnotation("kphp") {
@@ -1647,7 +1653,7 @@ func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
 		if field.Type == ThisType &&
 			strings.Contains(strings.ToLower(trw.PhpClassName(false, true)), strings.ToLower(field.Name)) {
 			returnObject = "$this"
-			returnType = trw.PhpTypeName(true, true)
+			returnType = trw.PhpClassName(true, true)
 		} else {
 			if field.Type != ThisType {
 				returnObject = "$this->" + field.Name
