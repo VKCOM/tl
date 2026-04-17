@@ -286,7 +286,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 		if trw.wr.gen.options.PHP.AddFetchers && trw.wr.phpInfo.RequireFunctionBodies {
 			structuredArgs := trw.PHPFetcherArguments()
-
 			innerArgs :=
 				utils.MapSlice(
 					utils.FilterSlice(structuredArgs,
@@ -298,6 +297,8 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						return "$this->" + info.FieldName
 					},
 				)
+
+			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 
 			/** TODO make it better */
 			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
@@ -421,7 +422,12 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						func() {
 							cc.AddLinef("$result = new %[1]s_result();", className)
 							cc.AddLines(readLines...)
-							cc.AddLines("return $result;")
+							// can be inlined
+							if hasFetcher && phpResultType(trw) == `TL\RpcFunctionReturnResult` {
+								cc.AddLines("return $result->value;")
+							} else {
+								cc.AddLines("return $result;")
+							}
 						},
 					)
 
@@ -435,11 +441,15 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						},
 						``,
 						func() {
-							cc.IfElse(fmt.Sprintf("$result instanceof %[1]s_result", className), func() {
-								cc.AddLines(writeLines...)
-							}, func() {
-								cc.AddLinef(`throw new \Exception("can\'t store: %[1]s_result expected");`, className)
-							})
+							if hasFetcher {
+								cc.AddLinef(`throw new \Exception("store is not implemented for %[1]s - it is diagonal");`, className)
+							} else {
+								cc.IfElse(fmt.Sprintf("$result instanceof %[1]s_result", className), func() {
+									cc.AddLines(writeLines...)
+								}, func() {
+									cc.AddLinef(`throw new \Exception("can\'t store: %[1]s_result expected");`, className)
+								})
+							}
 						},
 					)
 				},
