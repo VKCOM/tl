@@ -72,17 +72,6 @@ func (gen *genphp) generateCodePHP() error {
 	return nil
 }
 
-func phpMapConstructor(constructor tlast.Constructor) tlast.Constructor {
-	if constructor.Name.String() == "_" {
-		constructor.Name.Name = "rpcResponseOk"
-	} else if constructor.Name.String() == "reqResultHeader" {
-		constructor.Name.Name = "rpcResponseHeader"
-	} else if constructor.Name.String() == "reqError" {
-		constructor.Name.Name = "rpcResponseError"
-	}
-	return constructor
-}
-
 func phpGenerateCodeForWrapper(gen *genphp, wrapper *TypeRWWrapper, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
 	var code strings.Builder
 	// add start symbol
