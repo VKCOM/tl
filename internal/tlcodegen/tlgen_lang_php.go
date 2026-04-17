@@ -388,8 +388,10 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 	}
 
 	for wrapper := range internalReachable {
-		if !nonInternalReachable[wrapper] {
-			wrapper.phpInfo.UsedOnlyInInternal = true
+		if !gen.options.EnableInternalFunctions {
+			if !nonInternalReachable[wrapper] {
+				wrapper.phpInfo.UsedOnlyInInternal = true
+			}
 		}
 		wrapper.phpInfo.UsedInFunctions = true
 		checkWrapperRequireBody(wrapper)

@@ -200,6 +200,7 @@ type Gen2Options struct {
 	InplaceSimpleStructs         bool
 	UseBuiltinDataProviders      bool
 	AddTypeComments              bool
+	EnableInternalFunctions      bool
 
 	// PHP Unique actions
 	CreateTLFilesWithAllTypesInReturn          bool
