@@ -265,7 +265,7 @@ func (gen *genphp) PhpMarkAllInternalTypes() {
 		"rpcResponseOk":     true,
 	}
 
-	bodiesGenerationFilter := prepareNameFilter(gen.options.PHP.FunctionsBodiesWhiteList)
+	bodiesGenerationFilter := prepareNameFilter("bodies", gen.options.PHP.FunctionsBodiesWhiteList)
 	bodiesGenerationFunctions := make([]*TypeRWWrapper, 0)
 
 	internalFunctions := make([]*TypeRWWrapper, 0)

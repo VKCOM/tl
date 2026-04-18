@@ -130,7 +130,7 @@ func (w *TypeRWWrapper) PHPIsTrueType() bool {
 		if unionParent != nil {
 			return false
 		}
-		for _, argument := range w.pureType.KernelType().Templates() {
+		for _, argument := range w.pureType.KernelType().TemplateArguments() {
 			if argument.Category.IsNat() {
 				return false
 			}
@@ -429,7 +429,7 @@ func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDeclAsArray() []string {
 func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDecl(tree *TypeArgumentsTree) {
 	rt := w.pureType.Common().ResolvedType()
 	if rt.BracketType == nil {
-		for i, template := range w.pureType.KernelType().Templates() {
+		for i, template := range w.pureType.KernelType().TemplateArguments() {
 			tree.children = append(tree.children, nil)
 			if template.Category.IsNat() {
 				tree.children[i] = &TypeArgumentsTree{}
@@ -576,10 +576,7 @@ func (f *Field) IsTL2Omitted() bool {
 // TL1: x:fm.b?true x:fm.b?True
 // TL2: x:bit
 func (f *Field) IsBit() bool {
-	if b, ok := f.t.trw.(*TypeRWBool); ok {
-		return b.isTL2 && b.isBit
-	}
-	return f.pureField.FieldMask() != nil && (f.t.IsTrueType() && (f.t.TLName().String() == "true" || f.t.TLName().String() == "True"))
+	return f.pureField.IsBit()
 }
 
 func (f *Field) TL2MaskForOP(op string) string {

@@ -8,36 +8,12 @@ package genphp
 
 import (
 	"fmt"
-	"io"
-	//"log"
-	"os"
-	"path/filepath"
 
-	"strings"
-	"time"
-
-	"github.com/TwiN/go-color"
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/tlast"
 	"github.com/VKCOM/tl/internal/utils"
-	"github.com/google/go-cmp/cmp"
-	//"golang.org/x/exp/slices"
 )
-
-const BuiltinTupleName = "__tuple"
-const BuiltinVectorName = "__vector"
-const markerFile = "tlgen2_version.txt"
-const EnableWarningsUnionNamespace = true
-const EnableWarningsUnionNamePrefix = true
-const EnableWarningsUnionNameExact = true
-const EnableWarningsSimpleTypeName = true
-
-const buildVersionFormat = `tlgen version: %s
-schema url: %s
-schema commit: %s
-schema version: %d (%v)
-`
 
 // For debugging
 var DEBUG = true
@@ -51,78 +27,6 @@ func Debugf(format string, args ...interface{}) {
 type Namespace struct {
 	types []*TypeRWWrapper
 	decGo Deconflicter
-}
-
-type Gen2Options struct {
-	// General
-	Language          string
-	Outdir            string
-	CopyrightFilePath string
-	WarningsAreErrors bool
-	Verbose           bool
-	PrintDiff         bool
-	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
-	SplitInternal     bool
-	AddMetaData       bool
-	AddFactoryData    bool
-
-	// TL2
-	TL2WhiteList string
-
-	// Linter
-	Schema2Compare string
-
-	// Linter php
-	LinterPHPCheck                  bool
-	LinterPHPNonPolymorphicBoxedRef bool
-
-	// Go
-	GenerateRPCCode      bool
-	BytesWhiteList       string
-	TypesWhiteList       string
-	GenerateRandomCode   bool
-	SchemaDocumentation  bool
-	SchemaURL            string
-	SchemaTimestamp      uint // for TLO version/date
-	SchemaCommit         string
-	UseCheckLengthSanity bool
-
-	// C++
-	RootCPP                string
-	RootCPPNamespace       string
-	SeparateFiles          bool
-	GenerateCommonMakefile bool
-	DeleteUnrelatedFiles   bool
-	BasicTLNamespace       string
-	GenerateFieldMasks     bool
-
-	// PHP
-	AddFunctionBodies            bool
-	FunctionsBodiesWhiteList     string
-	IgnoreUnusedInFunctionsTypes bool
-	AddRPCTypes                  bool
-	AddFetchers                  bool
-	AddSwitcher                  bool
-	AddFetchersEchoComments      bool
-	InplaceSimpleStructs         bool
-	UseBuiltinDataProviders      bool
-	AddTypeComments              bool
-
-	// PHP Unique actions
-	CreateTLFilesWithAllTypesInReturn          bool
-	CreateTLSplitedFilesForEachNamespace       bool
-	CreateTLSplitedFilesForEachNamespaceFolder string
-
-	// .tlo
-	TLOPath           string
-	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
-
-	// Other modes
-	PrintVersion bool
-}
-
-func (opt *Gen2Options) GenerateTL2() bool {
-	return opt.TL2WhiteList != ""
 }
 
 type genphp struct {
@@ -142,7 +46,7 @@ type genphp struct {
 	globalDec  Deconflicter
 	Namespaces map[string]*Namespace // Handlers Code is inside
 
-	Code          map[string]string // fileName->Content, split by file names relative to output dir
+	Output        puregen.OutDir
 	copyrightText string
 }
 
@@ -170,133 +74,21 @@ func (gen *genphp) getNamespace(n string) *Namespace {
 	return na
 }
 
-func prepareNameFilter(filter string) []string {
-	var result []string
-	for _, str := range strings.Split(filter, ",") {
-		str = strings.TrimSpace(str)
-		if str == "" {
-			continue
-		}
-		result = append(result, str)
-	}
-	return result
+func prepareNameFilter(name string, filter string) pure.Whitelist {
+	return pure.NewWhiteList(name, filter)
 }
 
-func inNameFilter(name tlast.Name, filters []string) bool {
-	for _, filter := range filters {
-		if inNameFilterElement(name, filter) {
-			return true
-		}
-	}
-	return false
-}
-
-func inNameFilterElement(name tlast.Name, filter string) bool {
-	if filter == "*" {
-		return true
-	}
-	if !strings.HasSuffix(filter, ".") {
-		return name.String() == filter
-	}
-	return name.Namespace == strings.TrimSuffix(filter, ".")
-}
-
-func collectRelativePaths(absDirName string, relDirName string, relativeFiles map[string]bool, relativeDirs *[]string) error {
-	fis, err := os.ReadDir(absDirName)
-	if err != nil {
-		return err
-	}
-	for _, fi := range fis { // try all snapshots, loading the latest
-		relFilename := filepath.Join(relDirName, fi.Name())
-		absFilename := filepath.Join(absDirName, fi.Name())
-		if fi.IsDir() {
-			*relativeDirs = append(*relativeDirs, relFilename)
-			if err = collectRelativePaths(absFilename, relFilename, relativeFiles, relativeDirs); err != nil {
-				return err
-			}
-			continue
-		}
-		relativeFiles[relFilename] = true
-	}
-	return nil
+func inNameFilter(name tlast.Name, filter pure.Whitelist) bool {
+	return filter.HasName(name)
 }
 
 // WriteToDir Most common action with generated code, so clients do not repeat it
 func (gen *genphp) WriteToDir(outdir string) error {
-	if err := os.Mkdir(outdir, 0755); err != nil && !os.IsExist(err) { // we thus require parent directory to exist
-		return fmt.Errorf("error creating outdir %q: %w", outdir, err)
-	}
-	// We do not want to touch files which did not change at all.
-	relativeFiles := map[string]bool{}
-	var relativeDirs []string
-	if err := collectRelativePaths(outdir, "", relativeFiles, &relativeDirs); err != nil {
-		return fmt.Errorf("error reading outdir content %q: %w", outdir, err)
-	}
-	if len(relativeFiles) != 0 && !relativeFiles[markerFile] {
-		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", outdir, markerFile)
-	}
-	markerContent := fmt.Sprintf(buildVersionFormat,
-		strings.TrimSpace(utils.AppVersion()),
-		strings.TrimSpace(gen.options.SchemaURL),
-		strings.TrimSpace(gen.options.SchemaCommit),
-		gen.options.SchemaTimestamp, time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC())
-	if err := gen.addCodeFile(markerFile, markerContent); err != nil {
-		return err
-	}
-	notTouched := 0
-	written := 0
-	deleted := 0
-	for filepathName, code := range gen.Code {
-		d := filepath.Join(outdir, filepath.Dir(filepathName))
-		f := filepath.Join(outdir, filepathName)
-		if !strings.HasPrefix(filepathName, "..") {
-			// we allow relative paths outside gen folder for basictl*
-			if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
-				return fmt.Errorf("error creating dir %q: %w", d, err)
-			}
-		}
-		if relativeFiles[filepathName] {
-			delete(relativeFiles, filepathName)
-			was, err := os.ReadFile(f)
-			if err != nil {
-				return fmt.Errorf("error reading previous file %q: %w", f, err)
-			}
-			if string(was) == code {
-				notTouched++
-				continue
-			} else {
-				Debugf("File \"%s\":\n", f)
-				Debugf("%s\n", cmp.Diff(string(was), code))
-			}
-		}
-		written++
-		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
-			return fmt.Errorf("error writing file %q: %w", f, err)
-		}
-	}
-	for filepathName := range relativeFiles {
-		f := filepath.Join(outdir, filepathName)
-
-		deleted++
-		if err := os.Remove(f); err != nil {
-			return fmt.Errorf("error deleting previous file %q: %w", f, err)
-		}
-	}
-	for i := len(relativeDirs) - 1; i >= 0; i-- {
-		f := filepath.Join(outdir, relativeDirs[i])
-		_ = os.Remove(f) // non-empty dirs simply will not remove. This is good enough for us
-	}
-	// do not check Verbose
-	fmt.Printf("%d target files did not change so were not touched, %d written, %d deleted\n", notTouched, written, deleted)
-	return nil
+	return gen.Output.Write(gen.options, outdir)
 }
 
 func (gen *genphp) addCodeFile(filepathName string, code string) error {
-	if _, ok := gen.Code[filepathName]; ok {
-		return fmt.Errorf("generator %s: source file %q is generated twice", color.InRed("internal error"), filepathName)
-	}
-	gen.Code[filepathName] = code
-	return nil
+	return gen.Output.AddCodeFile(filepathName, code)
 }
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
@@ -337,7 +129,6 @@ func generateCode(kernel *pure.Kernel, options *puregen.Options) (*genphp, error
 		kernel: kernel,
 
 		options:    options,
-		Code:       map[string]string{},
 		Namespaces: map[string]*Namespace{},
 		// Files:                 map[string][]*TypeRWWrapper{},
 		builtinTypes:   map[string]*TypeRWWrapper{},
