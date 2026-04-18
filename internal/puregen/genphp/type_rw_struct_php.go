@@ -159,7 +159,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
 		}
 	}
-	return trw.PhpClassName(withPath, bare)
+	return trw.PhpClassName(withPath, bare && unionParent == nil)
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
@@ -1493,7 +1493,7 @@ func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
 		if field.Type == ThisType &&
 			strings.Contains(strings.ToLower(trw.PhpClassName(false, true)), strings.ToLower(field.Name)) {
 			returnObject = "$this"
-			returnType = trw.PhpTypeName(true, true)
+			returnType = trw.PhpClassName(true, true)
 		} else {
 			if field.Type != ThisType {
 				returnObject = "$this->" + field.Name

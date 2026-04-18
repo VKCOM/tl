@@ -209,7 +209,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			name := variantName(field.t.TLTag(), i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
-				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpClassName(true, true), name),
 				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args, true), name),
 				"    if (!$success) {",
 				"      return false;",
@@ -236,7 +236,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			name := variantName(field.t.TLTag(), i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.TLTag()),
-				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpClassName(true, true), name),
 				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args, false), name),
 				"    if (!$success) {",
 				"      return false;",
@@ -320,7 +320,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			name := variantName(i)
 			result = append(result,
 				fmt.Sprintf("  case %[1]d:", i),
-				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpClassName(true, true), name),
 				fmt.Sprintf("    %[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args, localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name),
 				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
 				"    break;",
