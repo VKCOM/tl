@@ -22,7 +22,7 @@ func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDe
 			return true, i
 		}
 	}
-	for i, argument := range trw.wr.pureType.KernelType().Templates() {
+	for i, argument := range trw.wr.pureType.KernelType().TemplateArguments() {
 		if argument.Name == name {
 			return false, i
 		}
@@ -127,7 +127,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	}
 
 	if !bare {
-		name = trw.wr.pureType.KernelType().LegacyTypeName().Name
+		name = trw.wr.pureType.KernelType().TL1TypeDeclName().Name
 	}
 
 	if trw.wr.TLName().Namespace != "" {
@@ -191,7 +191,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		} else {
 			index := f.pureField.FieldMask().FieldIndex()
 			if !f.pureField.FieldMask().IsField() {
-				for i, argument := range trw.wr.pureType.KernelType().Templates() {
+				for i, argument := range trw.wr.pureType.KernelType().TemplateArguments() {
 					if argument.Category.IsNat() && argument.Name == f.pureField.FieldMask().NatParamName() {
 						index = -(i + 1)
 						break
@@ -1304,7 +1304,7 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 	names := utils.MapSlice(usedFieldMasksIndecies, func(natIndex int) string {
 		natName := ""
 		if natIndex < 0 {
-			natName = trw.wr.pureType.KernelType().Templates()[-(natIndex + 1)].Name
+			natName = trw.wr.pureType.KernelType().TemplateArguments()[-(natIndex + 1)].Name
 		} else {
 			natName = trw.Fields[natIndex].pureField.Name()
 		}

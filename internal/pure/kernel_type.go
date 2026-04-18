@@ -133,7 +133,7 @@ func (t *KernelType) CombinatorTexts() []string {
 	return result
 }
 
-func (t *KernelType) Templates() []tlast.TL2TypeTemplate {
+func (t *KernelType) TemplateArguments() []tlast.TL2TypeTemplate {
 	return t.templateArguments
 }
 
@@ -144,7 +144,7 @@ func (t *KernelType) DifferConstructorAndTypeName() bool {
 	return len(t.combTL1) == 1 && !t.builtin && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
 }
 
-func (t *KernelType) LegacyTypeName() tlast.TL2TypeName {
+func (t *KernelType) TL1TypeDeclName() tlast.TL2TypeName {
 	if t.originTL2 {
 		return t.canonicalName
 	}

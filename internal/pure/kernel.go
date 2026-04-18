@@ -169,10 +169,6 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 	return result
 }
 
-func (k *Kernel) AllTypePrimitives() []*TypeInstancePrimitive {
-	return AllSelectedTypeInstances[*TypeInstancePrimitive](k)
-}
-
 //func (k *Kernel) FunctionInstances() []*TypeInstanceStruct {
 //	return k.functionsOrdered
 //}
@@ -580,14 +576,4 @@ func (k *Kernel) PrintUnusedWarnings() {
 	if err := k.tl2WhiteList.UnusedWarning(); err != nil {
 		fmt.Printf("%v\n", err)
 	}
-}
-
-func AllSelectedTypeInstances[T any](k *Kernel) []T {
-	result := make([]T, 0)
-	for _, tip := range k.AllTypeInstances() {
-		if exactTip, ok := tip.(T); ok {
-			result = append(result, exactTip)
-		}
-	}
-	return result
 }
