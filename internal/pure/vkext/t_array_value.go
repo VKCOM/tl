@@ -7,6 +7,7 @@
 package vkext
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"strings"
 
@@ -23,7 +24,7 @@ type KernelValueArray struct {
 var _ KernelValue = &KernelValueArray{}
 
 func (v *KernelValueArray) resize(count int) {
-	v.elements = v.elements[:min(count, cap(v.elements))]
+	// v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
 		v.elements = append(v.elements, CreateValue(v.instance.Field().TypeInstance()))
 	}
@@ -63,7 +64,12 @@ func (v *KernelValueArray) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueArray) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueArray) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	if !bare {
+		panic(fmt.Errorf("trying to read TL1 boxed brackets %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
 	var err error
 	switch {
 	case !v.instance.IsTuple():
@@ -73,37 +79,41 @@ func (v *KernelValueArray) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) (
 		}
 		v.resize(int(count))
 	case v.instance.DynamicSize():
-		v.resize(int(natArgs[len(natArgs)-1])) // RepairMasks
+		v.resize(int(myNatArgs[0])) // RepairMasks
 	default:
 		v.resize(int(v.instance.Count())) // RepairMasks
 	}
 
 	for _, elem := range v.elements {
-		if r, natArgs, err = elem.ReadTL1(r, ctx, natArgs); err != nil {
+		natArgs = formatNatArgs(natArgs[:natArgsFinish], myNatArgs, v.instance.Field().NatArgs())
+		if r, natArgs, err = elem.ReadTL1(r, ctx, v.instance.Field().Bare(), natArgs); err != nil {
 			return r, natArgs, err
 		}
 	}
 	return r, natArgs, nil
 }
 
-func (v *KernelValueArray) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueArray) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if !bare {
+		panic(fmt.Errorf("trying to write TL1 boxed brackets %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
 	switch {
 	case !v.instance.IsTuple():
 		w.WriteElementCountTL1(uint32(len(v.elements)))
 	case v.instance.DynamicSize():
-		v.resize(int(natArgs[len(natArgs)-1])) // RepairMasks
+		v.resize(int(myNatArgs[0])) // RepairMasks
 	default:
 		v.resize(int(v.instance.Count())) // RepairMasks
 	}
 
 	for i, elem := range v.elements {
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		if fieldOnPath {
-			elem.WriteTL1(w, natArgs, true, level+1, model)
-		} else {
-			elem.WriteTL1(w, natArgs, false, 0, model)
-		}
+		natArgs = formatNatArgs(natArgs[:natArgsFinish], myNatArgs, v.instance.Field().NatArgs())
+		natArgs = elem.WriteTL1(w, v.instance.Field().Bare(), natArgs, fieldOnPath, level+1, model)
 	}
+	return natArgs
 }
 
 func (v *KernelValueArray) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -116,11 +126,7 @@ func (v *KernelValueArray) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 
 	for i, elem := range v.elements {
 		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
-		if fieldOnPath {
-			elem.WriteTL2(w, false, true, level+1, model)
-		} else {
-			elem.WriteTL2(w, false, false, 0, model)
-		}
+		elem.WriteTL2(w, false, fieldOnPath, level+1, model)
 	}
 
 	lastUsedByte := w.Len()

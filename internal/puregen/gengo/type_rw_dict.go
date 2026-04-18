@@ -92,24 +92,20 @@ func (trw *TypeRWDict) typeRepairMasksCode(bytesVersion bool, directImports *Dir
 }
 
 func (trw *TypeRWDict) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	//prefix := ""
-	//if !bare {
-	//	prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.tlTag)
-	//}
+	if !bare {
+		panic(fmt.Errorf("trying to write boxed dict %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
 	refVal := addAsterisk(ref, val)
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	//return prefix + wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite(w, %s%s)", goGlobalName, refVal, joinWithCommas(natArgs)), needError)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)), needError)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWriteTL1(w, %s%s)", goGlobalName, refVal, joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWDict) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	//prefix := ""
-	//if !bare {
-	//	prefix = fmt.Sprintf("if w, err = basictl.NatReadExactTag(w, 0x%x); err != nil {\nreturn w, err\n}\n", trw.wr.tlTag)
-	//}
+	if !bare {
+		panic(fmt.Errorf("trying to read boxed dict %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	//return prefix + wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead(w, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs)), true)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)), true)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1(w, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWDict) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

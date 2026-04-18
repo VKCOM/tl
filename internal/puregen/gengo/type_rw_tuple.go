@@ -90,6 +90,9 @@ func (trw *TypeRWBrackets) typeRepairMasksCode(bytesVersion bool, directImports 
 }
 
 func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
+	if !bare {
+		panic(fmt.Errorf("trying to write boxed brackets %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
 	refVal := addAmpersand(ref, val)
 	if trw.vectorLike || trw.dynamicSize {
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
@@ -99,6 +102,9 @@ func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *Dir
 }
 
 func (trw *TypeRWBrackets) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
+	if !bare {
+		panic(fmt.Errorf("trying to read boxed brackets %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sReadTL1%s(w, %s%s %s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }

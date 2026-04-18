@@ -249,7 +249,7 @@ func (rws *RepeatWithScale) toDot(s *strings.Builder) {
 	if !rws.Scale.IsEmpty() {
 		scaleID := fmt.Sprintf("\"%pScaleFactor\"", &rws.Scale)
 		createNode(s, parent, scaleID, "Scale", "white")
-		id := fmt.Sprintf("\"%s\"", rws.Scale.String())
+		id := fmt.Sprintf("%q", rws.Scale.String())
 		createNode(s, scaleID, id, rws.Scale.String(), "orange")
 	}
 	for i := 0; i < len(rws.Rep); i++ {

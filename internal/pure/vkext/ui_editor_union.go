@@ -91,7 +91,7 @@ func (e *UIEditorUnion) OnEscape(model *UIModel) {
 }
 
 func (e *UIEditorUnion) FinishOK() {
-	e.value.index = e.index
+	e.value.setIndex(e.index)
 }
 
 func (e *UIEditorUnion) Value() KernelValue {

@@ -40,8 +40,10 @@ type Kernel struct {
 	allAnnotations       []string // position is bit
 }
 
-// Add builtin types
 func NewKernel(opts *OptionsKernel) *Kernel {
+	if opts.ErrorWriter == nil {
+		opts.ErrorWriter = os.Stdout
+	}
 	k := &Kernel{
 		opts:                  opts,
 		rpcPreferTL2WhiteList: NewWhiteList("--rpcPreferTL2WhiteList", opts.RPCPreferTL2WhiteList),
@@ -64,7 +66,7 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 	_ = k.addPrimitive("byte", "", "byte", 1, true)
 	{
 		ktBool := k.addPrimitive("bool", "", "bool", 1, true)
-		//ktBool.originTL2 = false
+		// initially ktBool.originTL2 = false, if TL1 bool is found, kernel will modify bool kernel type
 		ktBool.canBeBare = false
 		ktBool.tl1BoxedName = tlast.TL2TypeName{Name: "bool"}
 		// Bool is special, we treat as unions, they are boxed in TL1, therefore we are making them boxed in TL2
@@ -173,21 +175,24 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 	return result
 }
 
-//func (k *Kernel) FunctionInstances() []*TypeInstanceStruct {
-//	return k.functionsOrdered
-//}
+func (k *Kernel) GetObjectInstance(name string) TypeInstance {
+	tip, ok := k.tips[name]
+	if !ok {
+		return nil
+	}
+	ref, ok := tip.instances[name]
+	if !ok {
+		return nil
+	}
+	return ref.ins
+}
 
-// TODO - remove or fix
-func (k *Kernel) GetFunctionInstance(name tlast.TL2TypeName) *TypeInstanceStruct {
-	tip, ok := k.tips[name.String()]
-	if !ok {
+func (k *Kernel) GetFunctionInstance(name string) *TypeInstanceStruct {
+	obj := k.GetObjectInstance(name)
+	if obj == nil {
 		return nil
 	}
-	ref, ok := tip.instances[name.String()]
-	if !ok {
-		return nil
-	}
-	ins2, _ := ref.ins.(*TypeInstanceStruct)
+	ins2, _ := obj.(*TypeInstanceStruct)
 	return ins2
 }
 

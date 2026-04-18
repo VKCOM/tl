@@ -145,7 +145,13 @@ func (b *ByteBuilder) WriteStringTL2(v string) {
 	b.fixColors(ByteColorStringData)
 }
 
-func (b *ByteBuilder) WriteVariantIndex(v int) {
+func (b *ByteBuilder) WriteTL1ObjectMagic(v uint32) {
+	b.fixColors(ByteColorNormal)
+	b.buf = basictl.NatWrite(b.buf, v)
+	b.fixColors(ByteColorTL2VariantIndex)
+}
+
+func (b *ByteBuilder) WriteTL2VariantIndex(v int) {
 	b.fixColors(ByteColorNormal)
 	b.buf = basictl.TL2WriteSize(b.buf, v)
 	b.fixColors(ByteColorTL2VariantIndex)

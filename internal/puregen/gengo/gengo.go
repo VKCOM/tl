@@ -265,7 +265,7 @@ import (
 		if directImports.importSort {
 			s.WriteString("\"sort\"\n\n")
 		}
-		s.WriteString(fmt.Sprintf("\"%s\"\n", gen.BasicPackageNameFull))
+		s.WriteString(fmt.Sprintf("%q\n", gen.BasicPackageNameFull))
 		if gen.options.Go.SplitInternal {
 			s.WriteString(fmt.Sprintf("    \"%s/%s\"\n", gen.options.Go.TLPackageNameFull, "internal"))
 		}

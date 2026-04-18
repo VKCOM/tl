@@ -18,8 +18,9 @@ import (
 type TypeInstancePrimitive struct {
 	TypeInstanceCommon
 	goodForMapKey bool
-	isString      bool
-	fixedSize     int // bytes, 0 for bit and string
+	fixedSize     int    // bytes, 0 for bit and string
+	falseTag      uint32 // for TL1 bool only
+	trueTag       uint32 // for TL1 bool only
 }
 
 func (ins *TypeInstancePrimitive) GoodForMapKey() bool {
@@ -30,6 +31,14 @@ func (ins *TypeInstancePrimitive) IsBit() bool {
 	return ins.canonicalName == "bit"
 }
 
+func (ins *TypeInstancePrimitive) IsBool() bool {
+	return ins.canonicalName == "bool"
+}
+
+func (ins *TypeInstancePrimitive) IsString() bool {
+	return ins.canonicalName == "string"
+}
+
 func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder, prName tlast.PositionRange) {
 }
 
@@ -38,7 +47,7 @@ func (ins *TypeInstancePrimitive) GetChildren(children []TypeInstance, withRetur
 }
 
 func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
-	if ins.isString {
+	if ins.IsString() {
 		return basictl.SkipSizedValue(r)
 	}
 	if len(r) < ins.fixedSize {
@@ -48,8 +57,8 @@ func (ins *TypeInstancePrimitive) SkipTL2(r []byte) ([]byte, error) {
 }
 
 func (ins *TypeInstancePrimitive) IsTL1Bool() (ok bool, falseTag uint32, trueTag uint32) {
-	if ins.canonicalName == "bool" && len(ins.tip.combTL1) == 2 {
-		return true, ins.tip.combTL1[0].Crc32(), ins.tip.combTL1[1].Crc32()
+	if ins.IsBool() && ins.falseTag != 0 && ins.trueTag != 0 {
+		return true, ins.falseTag, ins.trueTag
 	}
 	return false, 0, 0
 }
@@ -75,7 +84,6 @@ func (k *Kernel) addPrimitive(name string, tl1name string, historicalName string
 			canonicalName: name,
 			tlName:        tlast.TL2TypeName{Name: historicalName},
 		},
-		isString:      name == "string",
 		fixedSize:     fixedSize,
 		goodForMapKey: goodForMapKey,
 	}

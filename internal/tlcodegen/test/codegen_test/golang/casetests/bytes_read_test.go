@@ -301,9 +301,9 @@ func TestAppendNewCasesForTesting(t *testing.T) {
 			return
 		}
 
-		fmt.Printf("To \"%s\" were added %d test cases\n", PathToBytesData, newSamplesCount)
+		fmt.Printf("To %q were added %d test cases\n", PathToBytesData, newSamplesCount)
 	} else {
-		fmt.Printf("Nothing to add to \"%s\"\n", PathToBytesData)
+		fmt.Printf("Nothing to add to %q\n", PathToBytesData)
 	}
 
 	fmt.Println("")
@@ -319,7 +319,7 @@ func TestGeneralCasesBytes(t *testing.T) {
 		t.Run(testValues.TestingType, func(t *testing.T) {
 			testObject := factory.CreateObjectFromName(testValues.TestingType)
 			if testObject == nil {
-				t.Fatalf("No testing object for test \"%s\"", testName)
+				t.Fatalf("No testing object for test %q", testName)
 				return
 			}
 			runMappingTestBytes(t, mappingTestBytes{
@@ -416,13 +416,13 @@ func updateTestData(t *testing.T) {
 				if !success.IsTL2DataFixed {
 					testObject := factory.CreateObjectFromName(testValues.TestingType)
 					if testObject == nil {
-						t.Fatalf("No testing object for test \"%s\"", testName)
+						t.Fatalf("No testing object for test %q", testName)
 						return
 					}
 					bytes := utils.ParseHexToBytes(success.Bytes)
 					_, readErr := testObject.ReadTL1(bytes)
 					if readErr != nil {
-						t.Logf(">>> BYTES \"%s\" <<<<", success.Bytes)
+						t.Logf(">>> BYTES %q <<<<", success.Bytes)
 						t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
 						return
 					}

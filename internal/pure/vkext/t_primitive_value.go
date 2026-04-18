@@ -8,7 +8,6 @@ package vkext
 
 import (
 	"cmp"
-	"encoding/binary"
 	"errors"
 	"io"
 	"math/rand/v2"
@@ -16,6 +15,8 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/pkg/basictl"
 )
 
 type KernelValuePrimitive interface {
@@ -38,13 +39,20 @@ func (v *KernelValueUint32) Random(rg *rand.Rand) {
 	v.value = rg.Uint32()
 }
 
-func (v *KernelValueUint32) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	rr, err := basictl.
-	return r, natArgs, nil
+func (v *KernelValueUint32) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	r, err := basictl.NatRead(r, &v.value)
+	return r, natArgs, err
 }
 
-func (v *KernelValueUint32) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	v.WriteTL2(w, false, onPath, level, model)
+func (v *KernelValueUint32) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if onPath {
+		w.SetCursorStart()
+	}
+	w.buf = basictl.NatWrite(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
+	return natArgs
 }
 
 func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -54,18 +62,14 @@ func (v *KernelValueUint32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if onPath {
 		w.SetCursorStart()
 	}
-	w.buf = binary.LittleEndian.AppendUint32(w.buf, v.value)
+	w.buf = basictl.NatWrite(w.buf, v.value)
 	if onPath {
 		w.SetCursorFinish()
 	}
 }
 
 func (v *KernelValueUint32) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
-	if len(r) < 4 {
-		return r, io.ErrUnexpectedEOF
-	}
-	v.value = binary.LittleEndian.Uint32(r)
-	return r[4:], nil
+	return basictl.NatRead(r, &v.value)
 }
 
 func (v *KernelValueUint32) WriteJSON(w []byte, ctx *TLContext) []byte {
@@ -134,12 +138,20 @@ func (v *KernelValueInt32) Random(rg *rand.Rand) {
 	v.value = int32(rg.Uint32())
 }
 
-func (v *KernelValueInt32) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	return r, natArgs, nil
+func (v *KernelValueInt32) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	r, err := basictl.IntRead(r, &v.value)
+	return r, natArgs, err
 }
 
-func (v *KernelValueInt32) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	v.WriteTL2(w, false, onPath, level, model)
+func (v *KernelValueInt32) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if onPath {
+		w.SetCursorStart()
+	}
+	w.buf = basictl.IntWrite(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
+	return natArgs
 }
 
 func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -149,18 +161,14 @@ func (v *KernelValueInt32) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	if onPath {
 		w.SetCursorStart()
 	}
-	w.buf = binary.LittleEndian.AppendUint32(w.buf, uint32(v.value))
+	w.buf = basictl.IntWrite(w.buf, v.value)
 	if onPath {
 		w.SetCursorFinish()
 	}
 }
 
 func (v *KernelValueInt32) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
-	if len(r) < 4 {
-		return r, io.ErrUnexpectedEOF
-	}
-	v.value = int32(binary.LittleEndian.Uint32(r))
-	return r[4:], nil
+	return basictl.IntRead(r, &v.value)
 }
 
 func (v *KernelValueInt32) WriteJSON(w []byte, ctx *TLContext) []byte {
@@ -229,11 +237,12 @@ func (v *KernelValueUint64) Random(rg *rand.Rand) {
 	v.value = rg.Uint64()
 }
 
-func (v *KernelValueUint64) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	return r, natArgs, errors.New("uint64 cannot be read from TL1")
+func (v *KernelValueUint64) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	r, err := basictl.Uint64Read(r, &v.value)
+	return r, natArgs, err
 }
 
-func (v *KernelValueUint64) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueUint64) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
 	panic("uint64 cannot be saved to TL1")
 }
 
@@ -244,18 +253,14 @@ func (v *KernelValueUint64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	if onPath {
 		w.SetCursorStart()
 	}
-	w.buf = binary.LittleEndian.AppendUint64(w.buf, v.value)
+	w.buf = basictl.Uint64Write(w.buf, v.value)
 	if onPath {
 		w.SetCursorFinish()
 	}
 }
 
 func (v *KernelValueUint64) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
-	if len(r) < 8 {
-		return r, io.ErrUnexpectedEOF
-	}
-	v.value = binary.LittleEndian.Uint64(r)
-	return r[8:], nil
+	return basictl.Uint64Read(r, &v.value)
 }
 
 func (v *KernelValueUint64) WriteJSON(w []byte, ctx *TLContext) []byte {
@@ -324,12 +329,20 @@ func (v *KernelValueInt64) Random(rg *rand.Rand) {
 	v.value = int64(rg.Uint64())
 }
 
-func (v *KernelValueInt64) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	return r, natArgs, nil
+func (v *KernelValueInt64) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	r, err := basictl.LongRead(r, &v.value)
+	return r, natArgs, err
 }
 
-func (v *KernelValueInt64) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	v.WriteTL2(w, false, onPath, level, model)
+func (v *KernelValueInt64) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if onPath {
+		w.SetCursorStart()
+	}
+	w.buf = basictl.LongWrite(w.buf, v.value)
+	if onPath {
+		w.SetCursorFinish()
+	}
+	return natArgs
 }
 
 func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -339,18 +352,14 @@ func (v *KernelValueInt64) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath b
 	if onPath {
 		w.SetCursorStart()
 	}
-	w.buf = binary.LittleEndian.AppendUint64(w.buf, uint64(v.value))
+	w.buf = basictl.LongWrite(w.buf, v.value)
 	if onPath {
 		w.SetCursorFinish()
 	}
 }
 
 func (v *KernelValueInt64) ReadTL2(r []byte, ctx *TLContext) ([]byte, error) {
-	if len(r) < 8 {
-		return r, io.ErrUnexpectedEOF
-	}
-	v.value = int64(binary.LittleEndian.Uint64(r))
-	return r[8:], nil
+	return basictl.LongRead(r, &v.value)
 }
 
 func (v *KernelValueInt64) WriteJSON(w []byte, ctx *TLContext) []byte {
@@ -419,11 +428,11 @@ func (v *KernelValueByte) Random(rg *rand.Rand) {
 	v.value = byte(rg.Uint32())
 }
 
-func (v *KernelValueByte) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueByte) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
 	return r, natArgs, errors.New("byte cannot be read from TL1")
 }
 
-func (v *KernelValueByte) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueByte) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
 	panic("byte cannot be saved to TL1")
 }
 
@@ -501,6 +510,7 @@ func (v *KernelValueByte) CompareForMapKey(other KernelValue) int {
 }
 
 type KernelValueBool struct {
+	ins   *pure.TypeInstancePrimitive // for tags
 	value bool
 }
 
@@ -514,12 +524,26 @@ func (v *KernelValueBool) Random(rg *rand.Rand) {
 	v.value = (rg.Uint32() & 1) != 0
 }
 
-func (v *KernelValueBool) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	panic("TODO - have no magics to write")
+func (v *KernelValueBool) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	ok, falseTag, trueTag := v.ins.IsTL1Bool()
+	if !ok {
+		panic("TL2 bool cannot be saved to TL1")
+	}
+	r, err := basictl.ReadBool(r, &v.value, falseTag, trueTag)
+	return r, natArgs, err
 }
 
-func (v *KernelValueBool) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	panic("TODO - have no magics to write")
+func (v *KernelValueBool) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	ok, falseTag, trueTag := v.ins.IsTL1Bool()
+	if !ok {
+		panic("TL2 bool cannot be saved to TL1")
+	}
+	if v.value {
+		w.WriteTL1ObjectMagic(trueTag)
+	} else {
+		w.WriteTL1ObjectMagic(falseTag)
+	}
+	return natArgs
 }
 
 func (v *KernelValueBool) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -607,11 +631,11 @@ func (v *KernelValueBit) Reset() {
 func (v *KernelValueBit) Random(rg *rand.Rand) {
 }
 
-func (v *KernelValueBit) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueBit) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
 	return r, natArgs, errors.New("bit cannot be read from TL1")
 }
 
-func (v *KernelValueBit) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueBit) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
 	panic("bit cannot be saved to TL1")
 }
 

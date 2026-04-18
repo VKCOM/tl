@@ -38,11 +38,12 @@ func (v *KernelValueString) Random(rg *rand.Rand) {
 	v.value = string(res)
 }
 
-func (v *KernelValueString) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	return r, natArgs, nil
+func (v *KernelValueString) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	r, err := basictl.StringRead(r, &v.value)
+	return r, natArgs, err
 }
 
-func (v *KernelValueString) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueString) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
 	if onPath {
 		w.SetCursorStart()
 	}
@@ -50,6 +51,7 @@ func (v *KernelValueString) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bo
 	if onPath {
 		w.SetCursorFinish()
 	}
+	return natArgs
 }
 
 func (v *KernelValueString) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {

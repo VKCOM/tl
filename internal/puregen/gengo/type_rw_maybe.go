@@ -77,11 +77,17 @@ func (trw *TypeRWMaybe) typeRepairMasksCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
+	if bare && !trw.wr.OriginTL2() {
+		panic(fmt.Errorf("trying to write bare maybe %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
+	return wrapLastW(last, fmt.Sprintf("%s.WriteTL1Boxed(w %s %s)", val, joinWithCommas(natArgs), trw.wr.fetcherCall()), needError)
 }
 
 func (trw *TypeRWMaybe) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1%s(w %s %s)", val, addBare(bare), joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
+	if bare && !trw.wr.OriginTL2() {
+		panic(fmt.Errorf("trying to read bare maybe %s, please report TL which caused this", trw.wr.pureType.CanonicalName()))
+	}
+	return wrapLastW(last, fmt.Sprintf("%s.ReadTL1Boxed(w %s %s)", val, joinWithCommas(natArgs), trw.wr.fetcherCall()), true)
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

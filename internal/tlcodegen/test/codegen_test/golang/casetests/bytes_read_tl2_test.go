@@ -24,7 +24,7 @@ func TestGeneralCasesTL2(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			testObject := factory.CreateObjectFromName(testValues.TestingType)
 			if testObject == nil {
-				t.Fatalf("No testing object for test \"%s\"", testName)
+				t.Fatalf("No testing object for test %q", testName)
 				return
 			}
 			runMappingTestBytesTL2(t, mappingTestBytes{

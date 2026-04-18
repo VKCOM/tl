@@ -995,14 +995,14 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 				if ref.Type == combinator.TypeDecl.Name {
 					if ref.Bare {
 						return tlast.ParseError{
-							Err: fmt.Errorf("type \"%s\" can't change to union type due to backward compaibilty and its bare usage here", combinator.TypeDecl.Name),
+							Err: fmt.Errorf("type %q can't change to union type due to backward compaibilty and its bare usage here", combinator.TypeDecl.Name),
 							Pos: ref.PR,
 						}
 					}
 				}
 				if ref.Type == combinator.Construct.Name {
 					return tlast.ParseError{
-						Err: fmt.Errorf("type \"%s\" can't change to union type due to backward compaibilty and its usage by constructor here", combinator.TypeDecl.Name),
+						Err: fmt.Errorf("type %q can't change to union type due to backward compaibilty and its usage by constructor here", combinator.TypeDecl.Name),
 						Pos: ref.PR,
 					}
 				}
@@ -1305,12 +1305,12 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 								var errToCmp tlast.ParseError
 								if newField.Mask == nil {
 									errToCmp = tlast.ParseError{
-										Err: fmt.Errorf("add field mask \"%s\" with some bit", firstAppendingField.FieldName),
+										Err: fmt.Errorf("add field mask %q with some bit", firstAppendingField.FieldName),
 										Pos: newField.PRName,
 									}
 								} else {
 									errToCmp = tlast.ParseError{
-										Err: fmt.Errorf("change field mask to \"%s\"", firstAppendingField.FieldName),
+										Err: fmt.Errorf("change field mask to %q", firstAppendingField.FieldName),
 										Pos: newField.Mask.PRName,
 									}
 								}
@@ -1776,7 +1776,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				continue
 			} else {
 				if gen.options.PrintDiff {
-					fmt.Printf("File \"%s\":\n", f)
+					fmt.Printf("File %q:\n", f)
 					fmt.Println(cmp.Diff(string(was), code))
 				}
 			}
