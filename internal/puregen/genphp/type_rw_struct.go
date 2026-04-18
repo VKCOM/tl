@@ -17,10 +17,7 @@ type TypeRWStruct struct {
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []pure.ActualNatArg
 
-	fieldsDec  Deconflicter // TODO - add all generated methods here
-	setNames   []string     // method names should be the same for bytes and normal versions, so we remember them here
-	clearNames []string
-	isSetNames []string
+	fieldsDec Deconflicter // TODO - add all generated methods here
 }
 
 func (trw *TypeRWStruct) isTypeDef() bool {
@@ -55,28 +52,4 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	}
 	//}
 	return false
-}
-
-func (trw *TypeRWStruct) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-	if !trw.isTypeDef() {
-		return
-	}
-	trw.Fields[0].t.FillRecursiveUnwrap(visitedNodes)
-}
-
-func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
-	trw.setNames = make([]string, len(trw.Fields))
-	trw.clearNames = make([]string, len(trw.Fields))
-	trw.isSetNames = make([]string, len(trw.Fields))
-}
-
-func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
-	if trw.isTypeDef() {
-		return trw.Fields[0].t.trw.IsDictKeySafe()
-	}
-	return false, false
-}
-
-func (trw *TypeRWStruct) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return true, true
 }

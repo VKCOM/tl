@@ -16,20 +16,6 @@ import (
 	"github.com/VKCOM/tl/internal/utils"
 )
 
-func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDeps int) {
-	for i, field := range trw.Fields {
-		if field.pureField.Name() == name {
-			return true, i
-		}
-	}
-	for i, argument := range trw.wr.pureType.KernelType().TemplateArguments() {
-		if argument.Name == name {
-			return false, i
-		}
-	}
-	panic(fmt.Sprintf("no such nat \"%s\"", name))
-}
-
 func (trw *TypeRWStruct) PHPGetResultNatDependenciesValuesAsTypeTree() ([]string, bool) {
 	if trw.ResultType == nil {
 		return nil, false

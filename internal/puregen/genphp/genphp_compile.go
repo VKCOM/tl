@@ -94,11 +94,6 @@ func (gen *genphp) prepareGeneration() error {
 	slices.SortStableFunc(gen.generatedTypesList, func(a, b *TypeRWWrapper) int { //  TODO - better idea?
 		return stringCompare(a.pureType.CanonicalName(), b.pureType.CanonicalName())
 	})
-	sortedTypes := gen.generatedTypesList
-
-	for _, v := range sortedTypes {
-		v.trw.BeforeCodeGenerationStep1()
-	}
 
 	return nil
 }
