@@ -66,7 +66,7 @@
 			]
 		},
 		"Test[a.uNionA]": {
-			"TestingType": "a.uNionA",
+			"TestingType": "a.MyUnion",
 			"Successes": [
 				{
 					"Bytes": "a7662843 5da68ea4",
@@ -131,7 +131,7 @@
 			]
 		},
 		"Test[ab.alias]": {
-			"TestingType": "ab.alias",
+			"TestingType": "ab.Response",
 			"Successes": [
 				{
 					"Bytes": "944aaa97 5ffcc3f2",
@@ -911,7 +911,7 @@
 			]
 		},
 		"Test[ab.code]": {
-			"TestingType": "ab.code",
+			"TestingType": "ab.Response",
 			"Successes": [
 				{
 					"Bytes": "7651b1ac 0f06c4bf",
@@ -976,7 +976,7 @@
 			]
 		},
 		"Test[ab.counterChangeRequestPeriodsMany]": {
-			"TestingType": "ab.counterChangeRequestPeriodsMany",
+			"TestingType": "ab.CounterChangeRequestPeriods",
 			"Successes": [
 				{
 					"Bytes": "14a35d80 00000000",
@@ -1041,7 +1041,7 @@
 			]
 		},
 		"Test[ab.counterChangeRequestPeriodsOne]": {
-			"TestingType": "ab.counterChangeRequestPeriodsOne",
+			"TestingType": "ab.CounterChangeRequestPeriods",
 			"Successes": [
 				{
 					"Bytes": "d9c36de5 0759b23f 03166ae6",
@@ -1106,7 +1106,7 @@
 			]
 		},
 		"Test[ab.empty]": {
-			"TestingType": "ab.empty",
+			"TestingType": "ab.Response",
 			"Successes": [
 				{
 					"Bytes": "1ec6a63e",
@@ -1821,7 +1821,7 @@
 			]
 		},
 		"Test[au.nionA]": {
-			"TestingType": "au.nionA",
+			"TestingType": "a.MyUnion",
 			"Successes": [
 				{
 					"Bytes": "df61f632 04e87304",
@@ -2536,7 +2536,7 @@
 			]
 		},
 		"Test[cd.response]": {
-			"TestingType": "cd.response",
+			"TestingType": "ab.Response",
 			"Successes": [
 				{
 					"Bytes": "8c202f64 7ccfab05 6a7a7904 00000032",
@@ -3901,7 +3901,7 @@
 			]
 		},
 		"Test[myPlus3]": {
-			"TestingType": "myPlus3",
+			"TestingType": "MyNat3",
 			"Successes": [
 				{
 					"Bytes": "692c291b 103a40cf",
@@ -3966,7 +3966,7 @@
 			]
 		},
 		"Test[myPlus]": {
-			"TestingType": "myPlus",
+			"TestingType": "MyNat2",
 			"Successes": [
 				{
 					"Bytes": "79e0c6df 8d868379",
@@ -4031,7 +4031,7 @@
 			]
 		},
 		"Test[myZero3]": {
-			"TestingType": "myZero3",
+			"TestingType": "MyNat3",
 			"Successes": [
 				{
 					"Bytes": "103a40cf",
@@ -4096,7 +4096,7 @@
 			]
 		},
 		"Test[myZero]": {
-			"TestingType": "myZero",
+			"TestingType": "MyNat2",
 			"Successes": [
 				{
 					"Bytes": "8d868379",
@@ -4681,7 +4681,7 @@
 			]
 		},
 		"Test[service5.emptyOutput]": {
-			"TestingType": "service5.emptyOutput",
+			"TestingType": "service5.Output",
 			"Successes": [
 				{
 					"Bytes": "ff8f7db8",
@@ -4876,7 +4876,7 @@
 			]
 		},
 		"Test[service5.stringOutput]": {
-			"TestingType": "service5.stringOutput",
+			"TestingType": "service5.Output",
 			"Successes": [
 				{
 					"Bytes": "dc170ff4 10e42031 00003101",
@@ -4941,7 +4941,7 @@
 			]
 		},
 		"Test[service5Long.emptyOutput]": {
-			"TestingType": "service5Long.emptyOutput",
+			"TestingType": "service5Long.Output",
 			"Successes": [
 				{
 					"Bytes": "ff8f7db9",
@@ -5071,7 +5071,7 @@
 			]
 		},
 		"Test[service5Long.stringOutput]": {
-			"TestingType": "service5Long.stringOutput",
+			"TestingType": "service5Long.Output",
 			"Successes": [
 				{
 					"Bytes": "dc170ff7 bbb3fa22 49589d68 4f763516 394b4530 4f76445a 794e546f 694f4d58 00327953",
