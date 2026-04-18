@@ -17,17 +17,3 @@ type TypeRWUnion struct {
 
 	fieldsDec Deconflicter // TODO - add all generated methods here
 }
-
-func (trw *TypeRWUnion) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
-}
-
-func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWUnion) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // trw.IsEnum - TODO - in the future?
-}
-
-func (trw *TypeRWUnion) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return false, true
-}

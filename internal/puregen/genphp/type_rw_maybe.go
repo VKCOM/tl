@@ -13,16 +13,3 @@ type TypeRWMaybe struct {
 	emptyTag uint32
 	okTag    uint32
 }
-
-func (trw *TypeRWMaybe) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
-
-func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWMaybe) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false
-}
-
-func (trw *TypeRWMaybe) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return false, true
-}

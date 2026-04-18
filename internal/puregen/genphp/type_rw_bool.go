@@ -13,19 +13,5 @@ type TypeRWBool struct {
 	falseTag    uint32
 	trueTag     uint32
 
-	isTL2 bool
 	isBit bool
-}
-
-func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
-
-func (trw *TypeRWBool) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWBool) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // TODO - low priority future
-}
-
-func (trw *TypeRWBool) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return false, true
 }

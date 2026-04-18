@@ -13,20 +13,3 @@ type TypeRWPrimitive struct {
 
 	goType string
 }
-
-func (trw *TypeRWPrimitive) isFloat() bool {
-	return trw.tlType == "float" || trw.tlType == "double"
-}
-
-func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {}
-
-func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
-}
-
-func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
-	return !trw.isFloat(), trw.tlType == "string"
-}
-
-func (trw *TypeRWPrimitive) CanBeBareBoxed() (canBare bool, canBoxed bool) {
-	return true, false
-}

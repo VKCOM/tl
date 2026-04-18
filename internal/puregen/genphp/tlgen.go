@@ -8,6 +8,7 @@ package genphp
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/puregen"
@@ -83,8 +84,8 @@ func inNameFilter(name tlast.Name, filter pure.Whitelist) bool {
 }
 
 // WriteToDir Most common action with generated code, so clients do not repeat it
-func (gen *genphp) WriteToDir(outdir string) error {
-	return gen.Output.Write(gen.options, outdir)
+func (gen *genphp) WriteToDir() error {
+	return gen.Output.Write(gen.options, filepath.Join("VK", "TL", "RpcFunctionFetcher.php"))
 }
 
 func (gen *genphp) addCodeFile(filepathName string, code string) error {
@@ -110,7 +111,7 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return err
 	}
 
-	if err = gen.WriteToDir(options.Outdir); err != nil {
+	if err = gen.WriteToDir(); err != nil {
 		return err // Context is already in err
 	}
 	return err
