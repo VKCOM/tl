@@ -196,20 +196,20 @@ func (l *lexer) validateTokens() ([]token, error) {
 		case TL1:
 			switch curToken.tokenType {
 			case verticalBar, underscore:
-				err = parseErrToken(fmt.Errorf("illegal token for TL1: \"%s\"", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL1: %q", curToken.val), curToken, curToken.pos)
 			}
 		case TL2:
 			switch curToken.tokenType {
 			case lCurlyBracket, rCurlyBracket,
 				exclamation,
 				lRoundBracket, rRoundBracket:
-				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\"", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: %q", curToken.val), curToken, curToken.pos)
 			case plus, asterisk:
-				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - ariphmetic operations are mot allowed", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: %q - ariphmetic operations are mot allowed", curToken.val), curToken, curToken.pos)
 			case percentSign:
-				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - boxed types are not supported in TL2", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: %q - boxed types are not supported in TL2", curToken.val), curToken, curToken.pos)
 			case typesSection, functionsSection:
-				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: %q - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
 			}
 		default:
 			return l.tokens, fmt.Errorf("unknown language code \"%d\"", l.opts.LexerLanguage)

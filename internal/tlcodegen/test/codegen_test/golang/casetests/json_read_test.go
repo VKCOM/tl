@@ -206,7 +206,7 @@ func TestGeneralCases(t *testing.T) {
 				testObject = factory_bytes.CreateObjectFromName(testValues.TestingType)
 			}
 			if testObject == nil {
-				t.Fatalf("No testing object for test \"%s\"", testName)
+				t.Fatalf("No testing object for test %q", testName)
 				return
 			}
 			runMappingTest(t, mappingTest{

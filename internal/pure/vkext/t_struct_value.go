@@ -48,55 +48,89 @@ func (v *KernelValueStruct) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueStruct) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueStruct) formatNatArg(myNatArgs []uint32, arg pure.ActualNatArg) uint32 {
+	if arg.IsNumber() {
+		return arg.Number()
+	}
+	if arg.IsField() {
+		field := v.fields[arg.FieldIndex()]
+		if field == nil {
+			return 0 // not set optional #
+		}
+		fieldNat := field.(*KernelValueUint32) // panic if wrong type
+		return fieldNat.value
+	}
+	return myNatArgs[arg.FieldIndex()]
+}
+
+func (v *KernelValueStruct) formatNatArgs(natArgsStack []uint32, myNatArgs []uint32, natArgs []pure.ActualNatArg) []uint32 {
+	for _, arg := range natArgs {
+		natArgsStack = append(natArgsStack, v.formatNatArg(myNatArgs, arg))
+	}
+	return natArgsStack
+}
+
+func (v *KernelValueStruct) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	var err error
+	if !bare {
+		r, err = basictl.NatReadExactTag(r, v.instance.TLTag())
+		if err != nil {
+			return r, natArgs, err
+		}
+	}
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
+
+	for i, field := range v.fields {
+		fieldDef := v.instance.Fields()[i]
+		natArgs = v.formatNatArgs(natArgs[:natArgsFinish], myNatArgs, fieldDef.NatArgs())
+
+		fieldPresent := true
+		if fieldDef.FieldMask() != nil {
+			fieldPresent = v.formatNatArg(myNatArgs, *fieldDef.FieldMask())&(1<<fieldDef.BitNumber()) != 0
+		}
+		if !fieldPresent {
+			continue
+		}
+		if field == nil {
+			field = CreateValue(v.instance.Fields()[i].TypeInstance())
+			v.fields[i] = field
+		}
+		r, natArgs, err = field.ReadTL1(r, ctx, fieldDef.Bare(), natArgs)
+		if err != nil {
+			return r, natArgs, err
+		}
+	}
 	return r, natArgs, nil
 }
 
-func (v *KernelValueStruct) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	var currentBlock byte
-	currentBlockPosition := w.Len()
-	w.WriteFieldmask()
-
-	if v.instance.IsUnionElement() {
-		w.WriteVariantIndex(v.instance.UnionIndex())
-		currentBlock |= 1
+func (v *KernelValueStruct) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if !bare {
+		w.WriteTL1ObjectMagic(v.instance.TLTag())
 	}
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
 
 	for i, field := range v.fields {
-		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
 		fieldDef := v.instance.Fields()[i]
-		if (i+1)%8 == 0 {
-			w.buf[currentBlockPosition] = currentBlock
-			currentBlock = 0
-			// start the next block
-			currentBlockPosition = w.Len()
-			w.WriteFieldmask()
-		}
-		if strings.HasPrefix(fieldDef.Name(), "_") { // IsOmitted
-			continue
-		}
+
+		fieldOnPath := onPath && len(model.Path) > level && model.Path[level] == i
+		natArgs = v.formatNatArgs(natArgs[:natArgsFinish], myNatArgs, fieldDef.NatArgs())
+
+		fieldPresent := true
 		if fieldDef.FieldMask() != nil {
-			if field != nil {
-				if fieldOnPath {
-					field.WriteTL2(w, false, true, level+1, model)
-				} else {
-					field.WriteTL2(w, false, false, 0, model)
-				}
-				currentBlock |= 1 << ((i + 1) % 8)
-			}
+			fieldPresent = v.formatNatArg(myNatArgs, *fieldDef.FieldMask())&(1<<fieldDef.BitNumber()) != 0
+		}
+		if !fieldPresent {
 			continue
 		}
-		wasLen := w.Len()
-		if fieldOnPath {
-			field.WriteTL2(w, true, true, level+1, model)
-		} else {
-			field.WriteTL2(w, true, false, 0, model)
+		if field == nil {
+			field = CreateValue(v.instance.Fields()[i].TypeInstance())
+			v.fields[i] = field
 		}
-		if w.Len() != wasLen {
-			currentBlock |= 1 << ((i + 1) % 8)
-		}
+		natArgs = field.WriteTL1(w, fieldDef.Bare(), natArgs, fieldOnPath, level+1, model)
 	}
-	w.buf[currentBlockPosition] = currentBlock
+	return natArgs
 }
 
 func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -108,7 +142,7 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 	w.WriteFieldmask()
 
 	if v.instance.IsUnionElement() && v.instance.UnionIndex() != 0 {
-		w.WriteVariantIndex(v.instance.UnionIndex())
+		w.WriteTL2VariantIndex(v.instance.UnionIndex())
 		lastUsedByte = w.Len()
 		currentBlock |= 1
 	}
@@ -128,22 +162,14 @@ func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath 
 		}
 		if fieldDef.FieldMask() != nil {
 			if field != nil {
-				if fieldOnPath {
-					field.WriteTL2(w, false, true, level+1, model)
-				} else {
-					field.WriteTL2(w, false, false, 0, model)
-				}
+				field.WriteTL2(w, false, fieldOnPath, level+1, model)
 				lastUsedByte = w.Len()
 				currentBlock |= 1 << ((i + 1) % 8)
 			}
 			continue
 		}
 		wasLen := w.Len()
-		if fieldOnPath {
-			field.WriteTL2(w, true, true, level+1, model)
-		} else {
-			field.WriteTL2(w, true, false, 0, model)
-		}
+		field.WriteTL2(w, true, fieldOnPath, level+1, model)
 		if w.Len() != wasLen {
 			lastUsedByte = w.Len()
 			currentBlock |= 1 << ((i + 1) % 8)

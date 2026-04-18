@@ -17,7 +17,6 @@ import (
 
 	"github.com/VKCOM/tl/internal/pure"
 	"github.com/VKCOM/tl/internal/pure/vkext"
-	"github.com/VKCOM/tl/internal/tlast"
 	"github.com/VKCOM/tl/internal/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -150,7 +149,7 @@ func main() {
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
 	flag.Parse()
 
-	kernel := pure.NewKernel(&pure.OptionsKernel{ErrorWriter: os.Stdout})
+	kernel := pure.NewKernel(&pure.OptionsKernel{})
 	if len(flag.Args()) == 0 {
 		log.Printf("tl2client requires 1 or more .tl and/or tl2 files")
 		os.Exit(2)
@@ -199,10 +198,7 @@ func main() {
 		return
 	}
 
-	name := tlast.TL2TypeName{
-		Namespace: "a",
-		Name:      "top2",
-	}
+	name := "a.top2"
 	fun := kernel.GetFunctionInstance(name)
 	if fun == nil {
 		log.Printf("function %q not found", name)

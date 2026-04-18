@@ -7,6 +7,7 @@
 package vkext
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"slices"
 	"strings"
@@ -23,7 +24,7 @@ type KernelValueDict struct {
 var _ KernelValue = &KernelValueDict{}
 
 func (v *KernelValueDict) resize(count int) {
-	v.elements = v.elements[:min(count, cap(v.elements))]
+	// v.elements = v.elements[:min(count, cap(v.elements))]
 	for len(v.elements) < count {
 		v.elements = append(v.elements, CreateValueStruct(v.instance.FieldType()))
 	}
@@ -57,7 +58,14 @@ func (v *KernelValueDict) Random(rg *rand.Rand) {
 	v.sort()
 }
 
-func (v *KernelValueDict) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueDict) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	if !bare {
+		panic(fmt.Errorf("trying to read TL1 boxed dict %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
+
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
+
 	var err error
 	var count uint32
 	if r, err = basictl.NatRead(r, &count); err != nil {
@@ -66,7 +74,8 @@ func (v *KernelValueDict) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([
 	v.resize(int(count))
 
 	for i, elem := range v.elements {
-		if r, natArgs, err = elem.ReadTL1(r, ctx, natArgs); err != nil {
+		natArgs = formatNatArgs(natArgs[:natArgsFinish], myNatArgs, v.instance.Field().NatArgs())
+		if r, natArgs, err = elem.ReadTL1(r, ctx, v.instance.Field().Bare(), natArgs); err != nil {
 			// leave container in good shape
 			v.resize(i)
 			v.sort()
@@ -77,15 +86,23 @@ func (v *KernelValueDict) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([
 	return r, natArgs, nil
 }
 
-func (v *KernelValueDict) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueDict) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if !bare {
+		panic(fmt.Errorf("trying to write TL1 boxed dict %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
 	v.sort() // TODO - remove, sort when container changes
+
+	natArgsFinish := len(natArgs)
+	myNatArgs := natArgs[natArgsFinish-len(v.instance.NatParams()):]
 
 	w.WriteElementCountTL1(uint32(len(v.elements)))
 
 	for _, elem := range v.elements {
 		// TODO - onPath
-		elem.WriteTL1(w, natArgs, false, 0, model)
+		natArgs = formatNatArgs(natArgs[:natArgsFinish], myNatArgs, v.instance.Field().NatArgs())
+		natArgs = elem.WriteTL1(w, v.instance.Field().Bare(), natArgs, false, 0, model)
 	}
+	return natArgs
 }
 
 func (v *KernelValueDict) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {

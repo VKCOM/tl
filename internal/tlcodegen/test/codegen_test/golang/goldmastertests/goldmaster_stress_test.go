@@ -8,6 +8,8 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure/vkext"
 	testformat "github.com/VKCOM/tl/internal/tlcodegen/test/codegen_test/golang/common"
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/factory"
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/meta"
@@ -31,15 +33,40 @@ func TestGoldmasterStressTest(t *testing.T) {
 	testNames := utils.Keys(tests.Tests)
 	sort.Strings(testNames)
 
+	kernel := pure.NewKernel(&pure.OptionsKernel{})
+	if err := kernel.AddFileTL1("../../../tls/goldmaster.tl"); err != nil {
+		t.Fatal(err.Error())
+	}
+	if err := kernel.AddFileTL1("../../../tls/goldmaster2.tl"); err != nil {
+		t.Fatal(err.Error())
+	}
+	if err := kernel.AddFileTL1("../../../tls/goldmaster3.tl"); err != nil {
+		t.Fatal(err.Error())
+	}
+	if err := kernel.Compile(); err != nil {
+		t.Fatal(err.Error())
+	}
+
 	for _, testName := range testNames {
 		t.Run(testName, func(t *testing.T) {
 			testingInfo := tests.Tests[testName]
 			t.Run(testingInfo.TestingType, func(t *testing.T) {
 				dst := factory.CreateObjectFromName(testingInfo.TestingType)
 				if dst == nil {
-					t.Fatalf("can't create object of type\"%s\"", testingInfo.TestingType)
+					t.Fatalf("can't create object of type %q", testingInfo.TestingType)
 				}
 				dst.FillRandom(rg)
+				ins := kernel.GetObjectInstance(testingInfo.TestingType)
+				var dst2 vkext.KernelValue
+				if ins == nil {
+					fmt.Printf("probably union variant %q, skipping\n", testingInfo.TestingType)
+					//t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
+				} else {
+					if _, ok := ins.(*pure.TypeInstancePrimitive); !ok {
+						// factory and canonical types are different for string, canonical is String for wrapper
+						dst2 = vkext.CreateValue(ins)
+					}
+				}
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						writeFunc := dst.WriteTL1General
@@ -50,7 +77,8 @@ func TestGoldmasterStressTest(t *testing.T) {
 							readFunc = dst.ReadTL1Boxed
 						}
 
-						_, err := readFunc(utils.ParseHexToBytes(success.Bytes))
+						origBytes := utils.ParseHexToBytes(success.Bytes)
+						_, err := readFunc(origBytes)
 						if err != nil {
 							t.Fatalf("read error: %s", err.Error())
 						}
@@ -60,6 +88,19 @@ func TestGoldmasterStressTest(t *testing.T) {
 							t.Fatalf("write error: %s", err.Error())
 						}
 						if !assert.Equal(t, success.Bytes, utils.SprintHexDump(writeReturn)) {
+							return
+						}
+						if dst2 == nil {
+							return // skipping
+						}
+						_, _, err = dst2.ReadTL1(origBytes, nil, !success.IsTLBytesBoxed, nil)
+						if err != nil {
+							t.Fatalf("read vkext error: %s", err.Error())
+						}
+
+						var writeReturn2 vkext.ByteBuilder
+						_ = dst2.WriteTL1(&writeReturn2, !success.IsTLBytesBoxed, nil, false, 0, nil)
+						if !assert.Equal(t, success.Bytes, utils.SprintHexDump(writeReturn2.Buf())) {
 							return
 						}
 					})
@@ -91,7 +132,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 				}
 				dst := factory.CreateObjectFromName(testingInfo.TestingType)
 				if dst == nil {
-					t.Fatalf("can't create object of type\"%s\"", testingInfo.TestingType)
+					t.Fatalf("can't create object of type %q", testingInfo.TestingType)
 				}
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
@@ -147,7 +188,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 			for i, testCase := range restoredValues.Tests[testName].Successes {
 				obj := factory.CreateObjectFromName(testingType)
 				if obj == nil {
-					t.Fatalf("can't create \"%s\"", testingType)
+					t.Fatalf("can't create %q", testingType)
 				}
 				tl1Data := utils.ParseHexToBytes(testCase.Bytes)
 				if testCase.IsTLBytesBoxed {

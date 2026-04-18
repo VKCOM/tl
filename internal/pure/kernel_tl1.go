@@ -45,6 +45,11 @@ func (k *Kernel) CompileBoolTL1(tlType []*tlast.Combinator) error {
 		// TODO - see here
 		return tlType[0].TypeDecl.NamePR.BeautifulError(errors.New("builtin type Bool already defined as not builtin"))
 	}
+	for _, instance := range tip.instances { // must be 1 instance, but we do not care to check
+		ins := instance.ins.(*TypeInstancePrimitive)
+		ins.falseTag = tlType[0].Crc32()
+		ins.trueTag = tlType[1].Crc32()
+	}
 	tip.combTL1 = tlType
 	tip.originTL2 = false // allow references from TL1
 	k.tips["Bool"] = tip

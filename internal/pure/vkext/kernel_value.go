@@ -24,8 +24,8 @@ type KernelValue interface {
 	Reset()
 	Random(rg *rand.Rand)
 
-	WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel)
-	ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error)
+	WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32
+	ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error)
 
 	WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel)
 	ReadTL2(r []byte, ctx *TLContext) ([]byte, error)
@@ -50,7 +50,6 @@ var primitiveValues = map[string]KernelValue{
 	"int64":   &KernelValueInt64{},
 	"float64": &KernelValueInt64{},
 	"byte":    &KernelValueByte{},
-	"bool":    &KernelValueBool{},
 	"bit":     &KernelValueBit{},
 	"string":  &KernelValueString{},
 }
@@ -68,8 +67,8 @@ func CreateValueStruct(ins *pure.TypeInstanceStruct) KernelValueStruct {
 	return value
 }
 
-func CreateValue(ins pure.TypeInstance) KernelValue {
-	switch ins := ins.(type) {
+func CreateValue(instance pure.TypeInstance) KernelValue {
+	switch ins := instance.(type) {
 	case *pure.TypeInstanceArray:
 		if ins.Field().IsBit() {
 			value := &KernelValueArrayBit{
@@ -93,6 +92,9 @@ func CreateValue(ins pure.TypeInstance) KernelValue {
 		}
 		return value
 	case *pure.TypeInstancePrimitive:
+		if ins.CanonicalName() == "bool" {
+			return &KernelValueBool{ins: ins}
+		}
 		return primitiveValues[ins.CanonicalName()].Clone()
 	case *pure.TypeInstanceStruct:
 		value := CreateValueStruct(ins)
@@ -100,13 +102,10 @@ func CreateValue(ins pure.TypeInstance) KernelValue {
 	case *pure.TypeInstanceUnion:
 		value := &KernelValueUnion{
 			instance: ins,
-			index:    0,
 			variants: make([]KernelValueStruct, len(ins.VariantTypes())),
 		}
-		for i, vt := range ins.VariantTypes() {
-			value.variants[i] = CreateValueStruct(vt)
-		}
+		_ = value.setIndex(0)
 		return value
 	}
-	panic(fmt.Errorf("type instance %s not implemented in vkext", ins.CanonicalName()))
+	panic(fmt.Errorf("type instance %s not implemented in vkext", instance.CanonicalName()))
 }

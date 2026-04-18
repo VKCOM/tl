@@ -348,7 +348,7 @@ func assertNamespaceTranslation(t *testing.T, files []tlcodegen.FileToWrite, ns 
 	}
 
 	if !found {
-		t.Error(fmt.Errorf("can't find file for namespace \"%s\"", ns))
+		t.Error(fmt.Errorf("can't find file for namespace %q", ns))
 		return
 	}
 

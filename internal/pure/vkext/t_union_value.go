@@ -7,6 +7,7 @@
 package vkext
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"strings"
 
@@ -18,27 +19,50 @@ import (
 type KernelValueUnion struct {
 	instance *pure.TypeInstanceUnion
 	index    int
-	variants []KernelValueStruct // we remember state of all variants to improve editing experience
+	variants []KernelValueStruct // we remember state of all variants to improve editing experience (but cannot always create them all due to possible recursion)
 }
 
 var _ KernelValue = &KernelValueUnion{}
 
+func (v *KernelValueUnion) setIndex(index int) *KernelValueStruct {
+	v.index = index
+	if v.variants[v.index].instance == nil {
+		v.variants[v.index] = CreateValueStruct(v.instance.VariantTypes()[v.index])
+	}
+	return &v.variants[v.index]
+}
+
 func (v *KernelValueUnion) Reset() {
-	v.index = 0
-	v.variants[0].Reset()
+	v.setIndex(0).Reset()
 }
 
 func (v *KernelValueUnion) Random(rg *rand.Rand) {
-	v.index = rg.IntN(len(v.variants))
-	v.variants[v.index].Random(rg)
+	v.setIndex(rg.IntN(len(v.variants))).Random(rg)
 }
 
-func (v *KernelValueUnion) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
-	return r, natArgs, nil
+func (v *KernelValueUnion) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
+	if bare {
+		panic(fmt.Errorf("trying to read TL1 bare union %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
+	var tag uint32
+	r, err := basictl.NatRead(r, &tag)
+	if err != nil {
+		return r, natArgs, err
+	}
+	for i, variant := range v.instance.VariantTypes() {
+		if tag == variant.TLTag() {
+			return v.setIndex(i).ReadTL1(r, ctx, true, natArgs)
+			//return v.variants[v.index].ReadTL1(r, ctx, true, natArgs)
+		}
+	}
+	return r, natArgs, fmt.Errorf("no TL1 union variant found for tag %d in %s", tag, v.instance.CanonicalName())
 }
 
-func (v *KernelValueUnion) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
-	v.variants[v.index].WriteTL1(w, natArgs, onPath, level, model)
+func (v *KernelValueUnion) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
+	if bare {
+		panic(fmt.Errorf("trying to write TL1 bare union %s, please report TL which caused this", v.instance.CanonicalName()))
+	}
+	return v.variants[v.index].WriteTL1(w, false, natArgs, onPath, level, model)
 }
 
 func (v *KernelValueUnion) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
@@ -65,19 +89,16 @@ func (v *KernelValueUnion) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err erro
 		return currentR, err
 	}
 	// read No of constructor
+	var index int
 	if block&1 != 0 {
-		var index int
 		if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return currentR, err
 		}
 		if index < 0 || index >= len(v.variants) {
 			return currentR, basictl.TL2Error("unexpected variant index %d, must be [0..%d)", index, len(v.variants))
 		}
-		v.index = index
-	} else {
-		v.index = 0
 	}
-	return r, v.variants[v.index].ReadFieldsTL2(block, currentR, ctx)
+	return r, v.setIndex(index).ReadFieldsTL2(block, currentR, ctx)
 }
 
 func (v *KernelValueUnion) WriteJSON(w []byte, ctx *TLContext) []byte {
@@ -146,7 +167,9 @@ func (v *KernelValueUnion) UIKey(level int, model *UIModel, insert bool, delete 
 func (v *KernelValueUnion) Clone() KernelValue {
 	clone := *v
 	for i, va := range clone.variants {
-		clone.variants[i] = va.CloneObject()
+		if va.instance != nil {
+			clone.variants[i] = va.CloneObject()
+		}
 	}
 	return &clone
 }

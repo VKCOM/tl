@@ -53,11 +53,11 @@ func (v *KernelValueArrayBit) Random(rg *rand.Rand) {
 	}
 }
 
-func (v *KernelValueArrayBit) ReadTL1(r []byte, ctx *TLContext, natArgs []uint32) ([]byte, []uint32, error) {
+func (v *KernelValueArrayBit) ReadTL1(r []byte, ctx *TLContext, bare bool, natArgs []uint32) ([]byte, []uint32, error) {
 	return r, natArgs, errors.New("array bit cannot be read from TL1")
 }
 
-func (v *KernelValueArrayBit) WriteTL1(w *ByteBuilder, natArgs []uint32, onPath bool, level int, model *UIModel) {
+func (v *KernelValueArrayBit) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32, onPath bool, level int, model *UIModel) []uint32 {
 	panic("array bit cannot be saved to TL1")
 }
 
@@ -117,8 +117,11 @@ func (v *KernelValueArrayBit) WriteJSON(w []byte, ctx *TLContext) []byte {
 			w = append(w, ',')
 		}
 		first = false
-		value := KernelValueBool{el}
-		w = value.WriteJSON(w, ctx)
+		if el {
+			w = append(w, "true"...)
+		} else {
+			w = append(w, "false"...)
+		}
 	}
 	w = append(w, ']')
 	return w
