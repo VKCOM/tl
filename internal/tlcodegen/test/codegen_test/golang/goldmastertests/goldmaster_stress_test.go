@@ -56,17 +56,21 @@ func TestGoldmasterStressTest(t *testing.T) {
 					t.Fatalf("can't create object of type %q", testingInfo.TestingType)
 				}
 				dst.FillRandom(rg)
-				ins := kernel.GetObjectInstance(testingInfo.TestingType)
-				var dst2 vkext.KernelValue
-				if ins == nil {
-					fmt.Printf("probably union variant %q, skipping\n", testingInfo.TestingType)
-					//t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
-				} else {
-					if _, ok := ins.(*pure.TypeInstancePrimitive); !ok {
-						// factory and canonical types are different for string, canonical is String for wrapper
-						dst2 = vkext.CreateValue(ins)
-					}
+				testingTypeVkext := testingInfo.TestingType
+				// canonical types are different for string, canonical is String for wrapper
+				switch testingTypeVkext {
+				case "int":
+					testingTypeVkext = "Int"
+				case "long":
+					testingTypeVkext = "Long"
+				case "string":
+					testingTypeVkext = "String"
 				}
+				ins := kernel.GetObjectInstance(testingTypeVkext)
+				if ins == nil {
+					t.Fatalf("can't create vkext object of type %q", testingTypeVkext)
+				}
+				dst2 := vkext.CreateValue(ins)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						writeFunc := dst.WriteTL1General
@@ -90,9 +94,7 @@ func TestGoldmasterStressTest(t *testing.T) {
 						if !assert.Equal(t, success.Bytes, utils.SprintHexDump(writeReturn)) {
 							return
 						}
-						if dst2 == nil {
-							return // skipping
-						}
+
 						_, _, err = dst2.ReadTL1(origBytes, nil, !success.IsTLBytesBoxed, nil)
 						if err != nil {
 							t.Fatalf("read vkext error: %s", err.Error())
