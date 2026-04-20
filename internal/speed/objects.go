@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/VKCOM/tl/internal/speed/speed_proto/pb"
+	"github.com/VKCOM/tl/internal/speed/speed_tl/basictl"
+	"github.com/VKCOM/tl/internal/speed/speed_tl/tl"
+
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlmemcache"
 )
 
@@ -65,7 +68,16 @@ func preparePointsBuffer() ([]point, []byte) {
 	return values, buf
 }
 
-func prepareGeneratedPointsBuffer() ([]pb.PointPB, []byte) {
+func prepareTLPointsBuffer() ([]tl.Point, []byte, basictl.TL2WriteContext) {
+	points, buf := preparePointsBuffer()
+	tlPoints := make([]tl.Point, len(points))
+	for i, p := range points {
+		tlPoints[i] = tl.Point{X: p.x, Y: p.y, Z: p.z}
+	}
+	return tlPoints, buf, basictl.TL2WriteContext{}
+}
+
+func prepareProtoPointsBuffer() ([]pb.PointPB, []byte) {
 	values := make([]pb.PointPB, 0)
 	for _, p := range basePoints {
 		values = append(values, pb.PointPB{X: p.x, Y: p.y, Z: p.z})
