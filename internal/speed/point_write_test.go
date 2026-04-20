@@ -209,6 +209,31 @@ func BenchmarkPointWriteProtobufGen(b *testing.B) {
 	printSizes(b, total+int64(len(buf)))
 }
 
+func BenchmarkPointWriteProtobufFastGen(b *testing.B) {
+	values, buf := prepareProtoFastPointsBuffer()
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for vIndex := range values {
+			s := values[vIndex].Size()
+			pointer := len(buf)
+			buf = append(buf, make([]byte, s)...)
+
+			_, err := values[vIndex].MarshalToSizedBuffer(buf[pointer:])
+			if err != nil {
+				b.Fatal(err)
+			}
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
 func TestFlatbuffers(t *testing.T) {
 	fb := flatbuffers.NewBuilder(0)
 	p1 := point{x: 1, y: 0, z: 3}

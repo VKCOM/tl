@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/VKCOM/tl/internal/speed/speed_proto/pb"
+	"github.com/VKCOM/tl/internal/speed/speed_proto_fast/pb_fast"
+
 	"github.com/VKCOM/tl/internal/speed/speed_tl/basictl"
 	"github.com/VKCOM/tl/internal/speed/speed_tl/tl"
 
@@ -81,6 +83,19 @@ func prepareProtoPointsBuffer() ([]pb.PointPB, []byte) {
 	values := make([]pb.PointPB, 0)
 	for _, p := range basePoints {
 		values = append(values, pb.PointPB{X: p.x, Y: p.y, Z: p.z})
+	}
+	for len(values) < chunkSize {
+		values = append(values, values...)
+	}
+	values = values[:chunkSize]
+	buf := make([]byte, 0, bufferSize) // worst case
+	return values, buf
+}
+
+func prepareProtoFastPointsBuffer() ([]pb_fast.PointPB, []byte) {
+	values := make([]pb_fast.PointPB, 0)
+	for _, p := range basePoints {
+		values = append(values, pb_fast.PointPB{X: p.x, Y: p.y, Z: p.z})
 	}
 	for len(values) < chunkSize {
 		values = append(values, values...)

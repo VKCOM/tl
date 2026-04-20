@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/VKCOM/tl/internal/speed/speed_proto/pb"
+	"github.com/VKCOM/tl/internal/speed/speed_proto_fast/pb_fast"
 	"github.com/VKCOM/tl/internal/speed/speed_tl/tl"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
@@ -315,6 +316,39 @@ func BenchmarkPointReadProtobufGen(b *testing.B) {
 			}
 			buf2 = buf2[n:]
 			err = proto.UnmarshalOptions{}.Unmarshal(str, &res)
+			if err != nil {
+				b.Fatalf("bad")
+			}
+			if res.X != values[v].X || res.Y != values[v].Y || res.Z != values[v].Z {
+				b.Fatalf("bad")
+			}
+		}
+		if len(buf2) != 0 {
+			b.Fatalf("bad")
+		}
+	}
+	printSizes(b, int64(len(buf))*int64(finish))
+}
+
+func BenchmarkPointReadProtobufFastGen(b *testing.B) {
+	values, buf := prepareProtoFastPointsBuffer()
+	for v := range values {
+		buf = protobufAppendPoint(buf, &point{x: values[v].X, y: values[v].Y, z: values[v].Z}, writeExcessField)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		buf2 := buf
+		for v := range values {
+			var err error
+			var res pb_fast.PointPB // reuse
+			str, n := protowire.ConsumeBytes(buf2)
+			if n < 0 {
+				b.Fatalf("bad")
+			}
+			buf2 = buf2[n:]
+			err = res.Unmarshal(str)
 			if err != nil {
 				b.Fatalf("bad")
 			}
