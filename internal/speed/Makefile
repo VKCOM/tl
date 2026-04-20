@@ -14,7 +14,7 @@ point_write_gen:
 	go test -bench='^BenchmarkPointWrite.*Gen' -count=$(COUNT)
 
 .PHONY: point_write
-point_read:
+point_write:
 	go test -bench='^BenchmarkPointWrite' -count=$(COUNT)
 
 .PHONY: point_read_gen
