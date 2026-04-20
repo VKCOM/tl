@@ -27,6 +27,24 @@ func BenchmarkPointWriteTL(b *testing.B) {
 	printSizes(b, total+int64(len(buf)))
 }
 
+func BenchmarkPointWriteTLGen(b *testing.B) {
+	values, buf, _ := prepareTLPointsBuffer()
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for _, v := range values {
+			buf = v.WriteTL1(buf)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
 func BenchmarkPointWriteTLBad(b *testing.B) {
 	values, buf := preparePointsBuffer()
 	b.ReportAllocs()
@@ -72,6 +90,25 @@ func BenchmarkPointWriteTL2Dumb(b *testing.B) {
 	for i := 0; i < finish; i++ {
 		for _, v := range values {
 			buf = v.writeTL2Dumb(buf)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteTL2Gen(b *testing.B) {
+	values, buf, ctx := prepareTLPointsBuffer()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for _, v := range values {
+			buf = v.WriteTL2(buf, &ctx)
 		}
 		if len(buf) > bufferSize/2 {
 			total += int64(len(buf))
@@ -153,8 +190,8 @@ func BenchmarkPointWriteProtobuf(b *testing.B) {
 	printSizes(b, total+int64(len(buf)))
 }
 
-func BenchmarkPointWriteProtobufGenerated(b *testing.B) {
-	values, buf := prepareGeneratedPointsBuffer()
+func BenchmarkPointWriteProtobufGen(b *testing.B) {
+	values, buf := prepareProtoPointsBuffer()
 	opts := proto.MarshalOptions{}
 	b.ReportAllocs()
 	b.ResetTimer()
