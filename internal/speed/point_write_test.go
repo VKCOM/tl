@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"capnproto.org/go/capnp/v3"
+	"google.golang.org/protobuf/proto"
 
 	flatbuffers "github.com/google/flatbuffers/go"
 )
@@ -143,6 +144,25 @@ func BenchmarkPointWriteProtobuf(b *testing.B) {
 	for i := 0; i < finish; i++ {
 		for _, v := range values {
 			buf = protobufAppendPoint(buf, &v, writeExcessField)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteProtobufGenerated(b *testing.B) {
+	values, buf := prepareGeneratedPointsBuffer()
+	opts := proto.MarshalOptions{}
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for vIndex := range values {
+			buf, _ = opts.MarshalAppend(buf, &values[vIndex])
 		}
 		if len(buf) > bufferSize/2 {
 			total += int64(len(buf))

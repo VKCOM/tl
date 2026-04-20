@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/VKCOM/tl/internal/speed/speed_proto/pb"
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlmemcache"
 )
 
@@ -48,10 +49,27 @@ func prepareStringsBuffer() ([]string, []byte) {
 	return values, buf
 }
 
+var basePoints = []point{{1, 0, 1}, {5, 5, 0}, {0, 10, 0}, {100, 100, 100},
+	{1024, 1024, 1024}, {10000000, 10000000, 10000000}, {1000, 1000, 1000},
+	{50, 50, 50}, {200, 200, 200}, {0, 0, 0}}
+
 func preparePointsBuffer() ([]point, []byte) {
-	values := []point{{1, 0, 1}, {5, 5, 0}, {0, 10, 0}, {100, 100, 100},
-		{1024, 1024, 1024}, {10000000, 10000000, 10000000}, {1000, 1000, 1000},
-		{50, 50, 50}, {200, 200, 200}, {0, 0, 0}}
+	values := make([]point, len(basePoints))
+	copy(values, basePoints)
+
+	for len(values) < chunkSize {
+		values = append(values, values...)
+	}
+	values = values[:chunkSize]
+	buf := make([]byte, 0, bufferSize) // worst case
+	return values, buf
+}
+
+func prepareGeneratedPointsBuffer() ([]pb.PointPB, []byte) {
+	values := make([]pb.PointPB, 0)
+	for _, p := range basePoints {
+		values = append(values, pb.PointPB{X: p.x, Y: p.y, Z: p.z})
+	}
 	for len(values) < chunkSize {
 		values = append(values, values...)
 	}
