@@ -7,6 +7,161 @@ import (
 
 var _ = basictl.NatWrite
 
+func BuiltinVectorMemcacheValueReadTL1(w []byte, vec *[]MemcacheValue) (_ []byte, err error) {
+	var l uint32
+	if w, err = basictl.NatRead(w, &l); err != nil {
+		return w, err
+	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
+	if uint32(cap(*vec)) < l {
+		*vec = make([]MemcacheValue, l)
+	} else {
+		*vec = (*vec)[:l]
+	}
+	for i := range *vec {
+		if w, err = (*vec)[i].ReadTL1Boxed(w); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinVectorMemcacheValueWriteTL1(w []byte, vec []MemcacheValue) []byte {
+	w = basictl.NatWrite(w, uint32(len(vec)))
+	for _, elem := range vec {
+		w = elem.WriteTL1Boxed(w)
+	}
+	return w
+}
+
+func BuiltinVectorMemcacheValueCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]MemcacheValue) ([]int, int) {
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return sizes, 0
+		}
+		return sizes, 1
+	}
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	var sz int
+
+	currentSize += basictl.TL2CalculateSize(len(*vec))
+	for i := 0; i < len(*vec); i++ {
+		sizes, sz = (*vec)[i].CalculateLayout(sizes, false)
+		currentSize += sz
+	}
+	sizes[sizePosition] = currentSize
+	currentSize += basictl.TL2CalculateSize(currentSize)
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func BuiltinVectorMemcacheValueInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]MemcacheValue) ([]byte, []int, int) {
+	if len(*vec) == 0 {
+		if optimizeEmpty {
+			return w, sizes, 0
+		}
+		w = append(w, 0)
+		return w, sizes, 1
+	}
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes, 1
+	}
+	oldLen := len(w)
+	w = basictl.TL2WriteSize(w, len(*vec))
+
+	var sz int
+	for i := 0; i < len(*vec); i++ {
+		w, sizes, _ = (*vec)[i].InternalWriteTL2(w, sizes, false)
+	}
+	Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
+}
+
+func BuiltinVectorMemcacheValueInternalReadTL2(r []byte, vec *[]MemcacheValue) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+		if elementCount > len(currentR) {
+			return r, basictl.TL2ElementCountError(elementCount, currentR)
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]MemcacheValue, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	}
+	return r, nil
+}
+
+func BuiltinVectorMemcacheValueReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]MemcacheValue) error {
+	*vec = (*vec)[:cap(*vec)]
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]MemcacheValue", "expected json array")
+		}
+		for ; !in.IsDelim(']'); index++ {
+			if len(*vec) <= index {
+				var newValue MemcacheValue
+				*vec = append(*vec, newValue)
+				*vec = (*vec)[:cap(*vec)]
+			}
+			if err := (*vec)[index].ReadJSONGeneral(jctx, in); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]MemcacheValue", "expected json array's end")
+		}
+	}
+	*vec = (*vec)[:index]
+	return nil
+}
+
+func BuiltinVectorMemcacheValueWriteJSON(w []byte, vec []MemcacheValue) []byte {
+	return BuiltinVectorMemcacheValueWriteJSONOpt(nil, w, vec)
+}
+func BuiltinVectorMemcacheValueWriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte, vec []MemcacheValue) []byte {
+	w = append(w, '[')
+	for _, elem := range vec {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = elem.WriteJSONOpt(jctx, w)
+	}
+	return append(w, ']')
+}
+
 func (item MemcacheLongvalue) AsUnion() MemcacheValue {
 	var ret MemcacheValue
 	ret.SetLongvalue(item)

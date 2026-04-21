@@ -54,6 +54,10 @@ message Value {
   }
 }
 
+message Values {
+  repeated Value values = 1;
+}
+
 // to compile
 // sudo apt-get install libprotobuf-dev
 // go install google.golang.org/protobuf/cmd/protoc-gen-go

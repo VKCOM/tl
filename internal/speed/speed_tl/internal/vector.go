@@ -7,6 +7,116 @@ import (
 
 var _ = basictl.NatWrite
 
+type VectorMemcacheValue []MemcacheValue
+
+func (item *VectorMemcacheValue) ptr() *[]MemcacheValue { return (*[]MemcacheValue)(item) }
+
+func (VectorMemcacheValue) TLName() string { return "vector" }
+func (VectorMemcacheValue) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorMemcacheValue) Reset() {
+	*item.ptr() = (*item.ptr())[:0]
+}
+
+func (item *VectorMemcacheValue) ReadTL1(w []byte) (_ []byte, err error) {
+	return BuiltinVectorMemcacheValueReadTL1(w, item.ptr())
+}
+
+func (item *VectorMemcacheValue) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
+}
+
+func (item *VectorMemcacheValue) WriteTL1(w []byte) []byte {
+	w = BuiltinVectorMemcacheValueWriteTL1(w, *item.ptr())
+	return w
+}
+
+func (item *VectorMemcacheValue) ReadTL1Boxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.ReadTL1(w)
+}
+
+func (item *VectorMemcacheValue) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
+}
+
+func (item *VectorMemcacheValue) WriteTL1Boxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.WriteTL1(w)
+}
+
+func (item VectorMemcacheValue) String() string {
+	return string(item.WriteJSON(nil))
+}
+func (item *VectorMemcacheValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
+}
+
+func (item *VectorMemcacheValue) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinVectorMemcacheValueReadJSONGeneral(jctx, in, item.ptr()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorMemcacheValue) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
+}
+
+func (item *VectorMemcacheValue) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(nil, w)
+}
+
+func (item *VectorMemcacheValue) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinVectorMemcacheValueWriteJSONOpt(jctx, w, *item.ptr())
+	return w
+}
+func (item *VectorMemcacheValue) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *VectorMemcacheValue) UnmarshalJSON(b []byte) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
+		return ErrorInvalidJSON("vector", err.Error())
+	}
+	return nil
+}
+
+func (item *VectorMemcacheValue) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
+	}
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorMemcacheValueCalculateLayout(sizes, false, item.ptr())
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorMemcacheValueInternalWriteTL2(w, sizes, false, item.ptr())
+
+	Unused(currentSize)
+	Unused(sz)
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorMemcacheValue) InternalReadTL2(r []byte) (_ []byte, err error) {
+	if r, err = BuiltinVectorMemcacheValueInternalReadTL2(r, item.ptr()); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorMemcacheValue) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
 type VectorPointBoxed []Point
 
 func (item *VectorPointBoxed) ptr() *[]Point { return (*[]Point)(item) }

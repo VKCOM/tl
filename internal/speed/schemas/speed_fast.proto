@@ -53,3 +53,7 @@ message Value {
     StrValueWithDelay strvalue_with_delay = 6;
   }
 }
+
+message Values {
+  repeated Value values = 1;
+}

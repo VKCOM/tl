@@ -50,6 +50,7 @@ func init() {
 	metainternal.SetGlobalFactoryCreateForObject("memcache.strvalueWithDelay", func() metainternal.Object { return new(internal.MemcacheStrvalueWithDelay) })
 	metainternal.SetGlobalFactoryCreateForObject("memcache.strvalueWithTime", func() metainternal.Object { return new(internal.MemcacheStrvalueWithTime) })
 	metainternal.SetGlobalFactoryCreateForObject("memcache.Value", func() metainternal.Object { return new(internal.MemcacheValue) })
+	metainternal.SetGlobalFactoryCreateForObject("memcache.values", func() metainternal.Object { return new(internal.MemcacheValues) })
 	metainternal.SetGlobalFactoryCreateForObject("point", func() metainternal.Object { return new(internal.Point) })
 	metainternal.SetGlobalFactoryCreateForObject("points", func() metainternal.Object { return new(internal.Points) })
 }

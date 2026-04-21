@@ -8,6 +8,7 @@ const (
 	MemcacheStrvalue          = 0xa6bebb1a // memcache.strvalue
 	MemcacheStrvalueWithDelay = 0x1bbf7044 // memcache.strvalueWithDelay
 	MemcacheStrvalueWithTime  = 0xa064c821 // memcache.strvalueWithTime
+	MemcacheValues            = 0xc894cef8 // memcache.values
 	Point                     = 0x8ec1a27e // point
 	Points                    = 0xebf9dd56 // points
 	Vector                    = 0x1cb5c415 // vector

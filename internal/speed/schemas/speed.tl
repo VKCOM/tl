@@ -9,3 +9,5 @@ memcache.longvalue value:long flags:int                               = memcache
 memcache.strvalueWithTime value:string flags:int modificationTime:int = memcache.Value;
 memcache.longvalueWithTime value:long flags:int modificationTime:int  = memcache.Value;
 memcache.strvalueWithDelay value:string flags:int delay:int           = memcache.Value;
+
+memcache.values values:vector<memcache.Value> = memcache.Values;
