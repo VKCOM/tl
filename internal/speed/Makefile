@@ -59,6 +59,15 @@ memcache_value_read_gen:
 memcache_value_write_gen:
 	go test -bench='^BenchmarkMemcacheValueWrite.*Gen' -count=$(COUNT)
 
+.PHONY: memcache_value_new_read_gen
+memcache_value_new_read_gen:
+	go test -bench='^BenchmarkNewMemcacheValue/Read' -count=$(COUNT)
+
+.PHONY: memcache_value_new_write_gen
+memcache_value_new_write_gen:
+	go test -bench='^BenchmarkNewMemcacheValue/Write' -count=$(COUNT)
+
+
 # ----------- memcache.values ---------------
 .PHONY: memcache_values_read_gen
 memcache_values_read_gen:
@@ -67,3 +76,11 @@ memcache_values_read_gen:
 .PHONY: memcache_values_write_gen
 memcache_values_write_gen:
 	go test -bench='^BenchmarkMemcacheValuesWrite.*Gen' -count=$(COUNT)
+
+.PHONY: memcache_values_new_read_gen
+memcache_values_new_read_gen:
+	go test -bench='^BenchmarkNewMemcacheValues/Read' -count=$(COUNT)
+
+.PHONY: memcache_values_new_write_gen
+memcache_values_new_write_gen:
+	go test -bench='^BenchmarkNewMemcacheValues/Write' -count=$(COUNT)
