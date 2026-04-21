@@ -60,6 +60,8 @@ func init() {
 		&metainternal.TLItemImpl{Name: "memcache.strvalueWithTime", Tag: 0xa064c821, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(&metainternal.TLItemImpl{Name: "memcache.Value", HaTL1: true, HaTL2: true})
 	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "memcache.values", Tag: 0xc894cef8, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "point", Tag: 0x8ec1a27e, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "points", Tag: 0xebf9dd56, HaTL1: true, HaTL2: true})

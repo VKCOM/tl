@@ -40,3 +40,11 @@ points_read_gen:
 .PHONY: points_write_gen
 points_write_gen:
 	go test -bench='^BenchmarkPointsWrite.*Gen' -count=$(COUNT)
+
+.PHONY: memcache_value_read_gen
+memcache_value_read_gen:
+	go test -bench='^BenchmarkMemcacheValueRead.*Gen' -count=$(COUNT)
+
+.PHONY: memcache_value_write_gen
+memcache_value_write_gen:
+	go test -bench='^BenchmarkMemcacheValueWrite.*Gen' -count=$(COUNT)

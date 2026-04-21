@@ -13,4 +13,6 @@ type (
 	StrvalueWithDelay = internal.MemcacheStrvalueWithDelay
 	StrvalueWithTime  = internal.MemcacheStrvalueWithTime
 	Value             = internal.MemcacheValue
+	Values            = internal.MemcacheValues
+	VectorValue       = internal.VectorMemcacheValue
 )

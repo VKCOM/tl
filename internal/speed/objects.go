@@ -9,6 +9,7 @@ import (
 
 	"github.com/VKCOM/tl/internal/speed/speed_tl/basictl"
 	"github.com/VKCOM/tl/internal/speed/speed_tl/tl"
+	tlmem "github.com/VKCOM/tl/internal/speed/speed_tl/tlmemcache"
 
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/tlmemcache"
 )
@@ -53,6 +54,62 @@ func prepareStringsBuffer() ([]string, []byte) {
 	values = values[:chunkSize]
 	buf := make([]byte, 0, bufferSize) // worst case
 	return values, buf
+}
+
+func prepareTLMemValuesBuffer() ([]tlmem.Value, []byte) {
+	basicValues := make([]tlmem.Value, 0, 5)
+	// empty
+	v := tlmem.Value{}
+	v.SetNotFound()
+	basicValues = append(basicValues, v)
+	// some long value
+	v = tlmem.Value{}
+	v.SetLongvalue(tlmem.Longvalue{Value: 1212123213, Flags: 0x110101})
+	basicValues = append(basicValues, v)
+	// some long str value
+	v = tlmem.Value{}
+	v.SetStrvalueWithDelay(tlmem.StrvalueWithDelay{Value: strings.Repeat("a", 257), Flags: 0x111011})
+	basicValues = append(basicValues, v)
+	// some sh0rt str value
+	v = tlmem.Value{}
+	v.SetStrvalueWithTime(tlmem.StrvalueWithTime{Value: strings.Repeat("b", 10), Flags: 0x111011})
+	basicValues = append(basicValues, v)
+
+	values := make([]tlmem.Value, smallerChunkSize)
+	for i := 0; i < smallerChunkSize; i++ {
+		values[i] = basicValues[(i*53+17)%len(basicValues)]
+	}
+	buf := make([]byte, 0, bufferSize)
+	return values, buf
+}
+
+func prepareProtoMemValuesBuffer() ([]pb_fast.Value, []byte) {
+	values, buf := prepareTLMemValuesBuffer()
+
+	result := make([]pb_fast.Value, len(values))
+	for i, value := range values {
+		switch {
+		case value.IsNotFound():
+			result[i].Kind = &pb_fast.Value_NotFound{NotFound: &pb_fast.NotFound{}}
+		case value.IsLongvalue():
+			x, _ := value.AsLongvalue()
+			result[i].Kind = &pb_fast.Value_Longvalue{Longvalue: &pb_fast.LongValue{Value: x.Value, Flags: x.Flags}}
+		case value.IsStrvalue():
+			x, _ := value.AsStrvalue()
+			result[i].Kind = &pb_fast.Value_Strvalue{Strvalue: &pb_fast.StrValue{Value: x.Value, Flags: x.Flags}}
+		case value.IsLongvalueWithTime():
+			x, _ := value.AsLongvalueWithTime()
+			result[i].Kind = &pb_fast.Value_LongvalueWithTime{LongvalueWithTime: &pb_fast.LongValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
+		case value.IsStrvalueWithTime():
+			x, _ := value.AsStrvalueWithTime()
+			result[i].Kind = &pb_fast.Value_StrvalueWithTime{StrvalueWithTime: &pb_fast.StrValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
+		case value.IsStrvalueWithDelay():
+			x, _ := value.AsStrvalueWithDelay()
+			result[i].Kind = &pb_fast.Value_StrvalueWithDelay{StrvalueWithDelay: &pb_fast.StrValueWithDelay{Value: x.Value, Flags: x.Flags, Delay: x.Delay}}
+		}
+	}
+
+	return result, buf
 }
 
 var basePoints = []point{{1, 0, 1}, {5, 5, 0}, {0, 10, 0}, {100, 100, 100},

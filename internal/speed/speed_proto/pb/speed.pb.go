@@ -591,6 +591,50 @@ func (*Value_LongvalueWithTime) isValue_Kind() {}
 
 func (*Value_StrvalueWithDelay) isValue_Kind() {}
 
+type Values struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Values        []*Value               `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Values) Reset() {
+	*x = Values{}
+	mi := &file_speed_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Values) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Values) ProtoMessage() {}
+
+func (x *Values) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Values.ProtoReflect.Descriptor instead.
+func (*Values) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *Values) GetValues() []*Value {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
 var File_speed_proto protoreflect.FileDescriptor
 
 const file_speed_proto_rawDesc = "" +
@@ -630,7 +674,9 @@ const file_speed_proto_rawDesc = "" +
 	"\x12strvalue_with_time\x18\x04 \x01(\v2\x1c.statshouse.StrValueWithTimeH\x00R\x10strvalueWithTime\x12O\n" +
 	"\x13longvalue_with_time\x18\x05 \x01(\v2\x1d.statshouse.LongValueWithTimeH\x00R\x11longvalueWithTime\x12O\n" +
 	"\x13strvalue_with_delay\x18\x06 \x01(\v2\x1d.statshouse.StrValueWithDelayH\x00R\x11strvalueWithDelayB\x06\n" +
-	"\x04kindB'Z%github.com/VKCOM/tl/internal/speed/pbb\x06proto3"
+	"\x04kind\"3\n" +
+	"\x06Values\x12)\n" +
+	"\x06values\x18\x01 \x03(\v2\x11.statshouse.ValueR\x06valuesB'Z%github.com/VKCOM/tl/internal/speed/pbb\x06proto3"
 
 var (
 	file_speed_proto_rawDescOnce sync.Once
@@ -644,7 +690,7 @@ func file_speed_proto_rawDescGZIP() []byte {
 	return file_speed_proto_rawDescData
 }
 
-var file_speed_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_speed_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_speed_proto_goTypes = []any{
 	(*PointPB)(nil),           // 0: statshouse.PointPB
 	(*PointsPB)(nil),          // 1: statshouse.PointsPB
@@ -655,6 +701,7 @@ var file_speed_proto_goTypes = []any{
 	(*LongValueWithTime)(nil), // 6: statshouse.LongValueWithTime
 	(*StrValueWithDelay)(nil), // 7: statshouse.StrValueWithDelay
 	(*Value)(nil),             // 8: statshouse.Value
+	(*Values)(nil),            // 9: statshouse.Values
 }
 var file_speed_proto_depIdxs = []int32{
 	0, // 0: statshouse.PointsPB.points:type_name -> statshouse.PointPB
@@ -664,11 +711,12 @@ var file_speed_proto_depIdxs = []int32{
 	5, // 4: statshouse.Value.strvalue_with_time:type_name -> statshouse.StrValueWithTime
 	6, // 5: statshouse.Value.longvalue_with_time:type_name -> statshouse.LongValueWithTime
 	7, // 6: statshouse.Value.strvalue_with_delay:type_name -> statshouse.StrValueWithDelay
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	8, // 7: statshouse.Values.values:type_name -> statshouse.Value
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_speed_proto_init() }
@@ -690,7 +738,7 @@ func file_speed_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_speed_proto_rawDesc), len(file_speed_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
