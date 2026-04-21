@@ -200,7 +200,7 @@ func prepareTLPointssBuffer() ([]tl.Points, []byte) {
 		for j := range result[i].Values {
 			result[i].Values[j].X = p[i][j].x
 			result[i].Values[j].Y = p[i][j].y
-			result[i].Values[j].Y = p[i][j].z
+			result[i].Values[j].Z = p[i][j].z
 		}
 	}
 
