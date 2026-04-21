@@ -25,6 +25,7 @@ func (p *point) Reset() {
 	p.z = 0
 }
 
+const smallerChunkSize = 100
 const chunkSize = 1000
 const bufferSize = 1024 * 1024 * 128
 const writeExcessField = false
@@ -68,6 +69,60 @@ func preparePointsBuffer() ([]point, []byte) {
 	values = values[:chunkSize]
 	buf := make([]byte, 0, bufferSize) // worst case
 	return values, buf
+}
+
+func preparePointssBuffer() ([][]point, []byte) {
+	values := make([][]point, 4)
+	// empty array
+	values[0] = make([]point, 0)
+	// some array
+	values[1] = basePoints
+	// big array
+	values[2] = make([]point, 100)
+	for i := range values[2] {
+		values[2][i] = basePoints[i%len(basePoints)]
+	}
+	// huge array
+	values[3] = make([]point, 1000)
+	for i := range values[3] {
+		values[3][i] = basePoints[(i*41+7)%len(basePoints)]
+	}
+	buf := make([]byte, 0, bufferSize)
+
+	result := make([][]point, smallerChunkSize)
+	for i := range result {
+		result[i] = values[i%len(values)]
+	}
+
+	return result, buf
+}
+
+func prepareTLPointssBuffer() ([]tl.Points, []byte) {
+	p, buf := preparePointssBuffer()
+	result := make([]tl.Points, len(p))
+	for i := range result {
+		result[i] = tl.Points{Values: make([]tl.Point, len(p[i]))}
+		for j := range result[i].Values {
+			result[i].Values[j].X = p[i][j].x
+			result[i].Values[j].Y = p[i][j].y
+			result[i].Values[j].Y = p[i][j].z
+		}
+	}
+
+	return result, buf
+}
+
+func prepareProtoPointssBuffer() ([]pb_fast.PointsPB, []byte) {
+	p, buf := preparePointssBuffer()
+	result := make([]pb_fast.PointsPB, len(p))
+	for i := range result {
+		result[i] = pb_fast.PointsPB{Points: make([]*pb_fast.PointPB, len(p[i]))}
+		for j := range result[i].Points {
+			result[i].Points[j] = &pb_fast.PointPB{X: p[i][j].x, Y: p[i][j].y, Z: p[i][j].z}
+		}
+	}
+
+	return result, buf
 }
 
 func prepareTLPointsBuffer() ([]tl.Point, []byte, basictl.TL2WriteContext) {
