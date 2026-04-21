@@ -83,29 +83,67 @@ func prepareTLMemValuesBuffer() ([]tlmem.Value, []byte) {
 	return values, buf
 }
 
+func prepareTLMemValuessBuffer() ([]tlmem.Values, []byte) {
+	values, buf := prepareTLMemValuesBuffer()
+
+	result := make([]tlmem.Values, smallerChunkSize)
+	for i := 0; i < smallerChunkSize; i++ {
+		start := (i*83 + 11) % len(values)
+		sz := (i*29 + 43) % len(values)
+
+		for j := 0; j < sz; j++ {
+			result[i].Values = append(result[i].Values, values[(start+j)%len(values)])
+		}
+	}
+
+	return result, buf
+}
+
+func mapTLMemcacheValueToProto(value tlmem.Value) pb_fast.Value {
+	result := pb_fast.Value{}
+	switch {
+	case value.IsNotFound():
+		result.Kind = &pb_fast.Value_NotFound{NotFound: &pb_fast.NotFound{}}
+	case value.IsLongvalue():
+		x, _ := value.AsLongvalue()
+		result.Kind = &pb_fast.Value_Longvalue{Longvalue: &pb_fast.LongValue{Value: x.Value, Flags: x.Flags}}
+	case value.IsStrvalue():
+		x, _ := value.AsStrvalue()
+		result.Kind = &pb_fast.Value_Strvalue{Strvalue: &pb_fast.StrValue{Value: x.Value, Flags: x.Flags}}
+	case value.IsLongvalueWithTime():
+		x, _ := value.AsLongvalueWithTime()
+		result.Kind = &pb_fast.Value_LongvalueWithTime{LongvalueWithTime: &pb_fast.LongValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
+	case value.IsStrvalueWithTime():
+		x, _ := value.AsStrvalueWithTime()
+		result.Kind = &pb_fast.Value_StrvalueWithTime{StrvalueWithTime: &pb_fast.StrValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
+	case value.IsStrvalueWithDelay():
+		x, _ := value.AsStrvalueWithDelay()
+		result.Kind = &pb_fast.Value_StrvalueWithDelay{StrvalueWithDelay: &pb_fast.StrValueWithDelay{Value: x.Value, Flags: x.Flags, Delay: x.Delay}}
+	}
+
+	return result
+}
+
 func prepareProtoMemValuesBuffer() ([]pb_fast.Value, []byte) {
 	values, buf := prepareTLMemValuesBuffer()
 
 	result := make([]pb_fast.Value, len(values))
 	for i, value := range values {
-		switch {
-		case value.IsNotFound():
-			result[i].Kind = &pb_fast.Value_NotFound{NotFound: &pb_fast.NotFound{}}
-		case value.IsLongvalue():
-			x, _ := value.AsLongvalue()
-			result[i].Kind = &pb_fast.Value_Longvalue{Longvalue: &pb_fast.LongValue{Value: x.Value, Flags: x.Flags}}
-		case value.IsStrvalue():
-			x, _ := value.AsStrvalue()
-			result[i].Kind = &pb_fast.Value_Strvalue{Strvalue: &pb_fast.StrValue{Value: x.Value, Flags: x.Flags}}
-		case value.IsLongvalueWithTime():
-			x, _ := value.AsLongvalueWithTime()
-			result[i].Kind = &pb_fast.Value_LongvalueWithTime{LongvalueWithTime: &pb_fast.LongValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
-		case value.IsStrvalueWithTime():
-			x, _ := value.AsStrvalueWithTime()
-			result[i].Kind = &pb_fast.Value_StrvalueWithTime{StrvalueWithTime: &pb_fast.StrValueWithTime{Value: x.Value, Flags: x.Flags, ModificationTime: x.ModificationTime}}
-		case value.IsStrvalueWithDelay():
-			x, _ := value.AsStrvalueWithDelay()
-			result[i].Kind = &pb_fast.Value_StrvalueWithDelay{StrvalueWithDelay: &pb_fast.StrValueWithDelay{Value: x.Value, Flags: x.Flags, Delay: x.Delay}}
+		result[i] = mapTLMemcacheValueToProto(value)
+	}
+
+	return result, buf
+}
+
+func prepareProtoMemValuessBuffer() ([]pb_fast.Values, []byte) {
+	values, buf := prepareTLMemValuessBuffer()
+
+	result := make([]pb_fast.Values, len(values))
+	for i, value := range values {
+		result[i] = pb_fast.Values{Values: make([]*pb_fast.Value, 0)}
+		for _, tlValue := range value.Values {
+			protoValue := mapTLMemcacheValueToProto(tlValue)
+			result[i].Values = append(result[i].Values, &protoValue)
 		}
 	}
 

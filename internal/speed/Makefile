@@ -41,6 +41,7 @@ points_read_gen:
 points_write_gen:
 	go test -bench='^BenchmarkPointsWrite.*Gen' -count=$(COUNT)
 
+# ----------- memcache.value ---------------
 .PHONY: memcache_value_read_gen
 memcache_value_read_gen:
 	go test -bench='^BenchmarkMemcacheValueRead.*Gen' -count=$(COUNT)
@@ -48,3 +49,12 @@ memcache_value_read_gen:
 .PHONY: memcache_value_write_gen
 memcache_value_write_gen:
 	go test -bench='^BenchmarkMemcacheValueWrite.*Gen' -count=$(COUNT)
+
+# ----------- memcache.values ---------------
+.PHONY: memcache_values_read_gen
+memcache_values_read_gen:
+	go test -bench='^BenchmarkMemcacheValuesRead.*Gen' -count=$(COUNT)
+
+.PHONY: memcache_values_write_gen
+memcache_values_write_gen:
+	go test -bench='^BenchmarkMemcacheValuesWrite.*Gen' -count=$(COUNT)
