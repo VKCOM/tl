@@ -41,6 +41,15 @@ points_read_gen:
 points_write_gen:
 	go test -bench='^BenchmarkPointsWrite.*Gen' -count=$(COUNT)
 
+.PHONY: points_new_write_gen
+points_new_write_gen:
+	go test -bench='^BenchmarkNewPoints/Write' -count=$(COUNT)
+
+.PHONY: points_new_read_gen
+points_new_read_gen:
+	go test -bench='^BenchmarkNewPoints/Read' -count=$(COUNT)
+
+
 # ----------- memcache.value ---------------
 .PHONY: memcache_value_read_gen
 memcache_value_read_gen:
