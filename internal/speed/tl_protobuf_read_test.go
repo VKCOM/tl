@@ -210,7 +210,105 @@ func BenchmarkMemcacheValueReadProtoFastGen(b *testing.B) {
 		buf2 := buf
 		for j, v := range values {
 			var err error
-			var p pb_fast.PointsPB
+			var p pb_fast.Value
+			str, n := protowire.ConsumeBytes(buf2)
+			if n < 0 {
+				b.Fatalf("bad")
+			}
+			buf2 = buf2[n:]
+			err = p.Unmarshal(str)
+			if err != nil {
+				b.Fatalf("bad")
+			}
+
+			_ = j
+			_ = v
+			//if !compareProtoPoints(&p, &v) {
+			//	b.Fatalf("bad %d", j)
+			//}
+		}
+		if len(buf2) != 0 {
+			b.Fatalf("bad")
+		}
+	}
+	printSizes(b, int64(len(buf))*int64(finish))
+}
+
+func BenchmarkMemcacheValuesReadTLGen(b *testing.B) {
+	values, buf := prepareTLMemValuessBuffer()
+	for _, v := range values {
+		buf = v.WriteTL1(buf)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		buf2 := buf
+		for _, v := range values {
+			var err error
+			var p tlmem.Values
+			buf2, err = p.ReadTL1(buf2)
+			if err != nil {
+				b.Fatalf("bad")
+			}
+			if !slices.Equal(p.Values, v.Values) {
+				b.Fatalf("bad")
+			}
+		}
+		if len(buf2) != 0 {
+			b.Fatalf("bad")
+		}
+	}
+	printSizes(b, int64(len(buf))*int64(finish))
+}
+
+func BenchmarkMemcacheValuesReadTL2Gen(b *testing.B) {
+	values, buf := prepareTLMemValuessBuffer()
+	ctx := basictl.TL2WriteContext{SizeBuffer: make([]int, 1000)}
+
+	for _, v := range values {
+		buf = v.WriteTL2(buf, &ctx)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		buf2 := buf
+		for _, v := range values {
+			var err error
+			var p tlmem.Values
+			buf2, err = p.ReadTL2(buf2, nil)
+			if err != nil {
+				b.Fatalf("bad")
+			}
+			if !slices.Equal(p.Values, v.Values) {
+				b.Fatalf("bad")
+			}
+		}
+		if len(buf2) != 0 {
+			b.Fatalf("bad")
+		}
+	}
+	printSizes(b, int64(len(buf))*int64(finish))
+}
+
+func BenchmarkMemcacheValuesReadProtoFastGen(b *testing.B) {
+	values, buf := prepareProtoMemValuessBuffer()
+	for _, v := range values {
+		tmpBuf, err := v.Marshal()
+		if err != nil {
+			b.Fatalf("bad")
+		}
+		buf = protowire.AppendBytes(buf, tmpBuf)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		buf2 := buf
+		for j, v := range values {
+			var err error
+			var p pb_fast.Values
 			str, n := protowire.ConsumeBytes(buf2)
 			if n < 0 {
 				b.Fatalf("bad")
