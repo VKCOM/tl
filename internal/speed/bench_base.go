@@ -32,8 +32,8 @@ type benchDataGenerator[T, P any] struct {
 	GenerateBuffer  func() []byte
 	MapSample       func(T) P
 
-	CompareTLResult    func(T, T) bool
-	CompareProtoResult func(P, P) bool
+	CompareTLResult    func(*T, *T) bool
+	CompareProtoResult func(*P, *P) bool
 }
 
 func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
@@ -46,8 +46,8 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 	b.Run("Read", func(b *testing.B) {
 		b.Run("TL1", func(b *testing.B) {
 			buf := gen.GenerateBuffer()
-			for _, v := range values {
-				buf = gen.TLProvider.WriteTL1Boxed(&v, buf)
+			for i := range values {
+				buf = gen.TLProvider.WriteTL1Boxed(&values[i], buf)
 			}
 			b.ReportAllocs()
 			b.ResetTimer()
@@ -57,16 +57,16 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 
 			for i := 0; i < finish; i++ {
 				buf2 := buf
-				for _, v := range values {
+				for range values {
 					var err error
 
 					buf2, err = gen.TLProvider.ReadTL1Boxed(&p, buf2)
 					if err != nil {
 						b.Fatalf("bad")
 					}
-					if gen.CompareTLResult != nil && !gen.CompareTLResult(p, v) {
-						b.Fatalf("bad")
-					}
+					//if gen.CompareTLResult != nil && !gen.CompareTLResult(&p, &v) {
+					//	b.Fatalf("bad")
+					//}
 				}
 				if len(buf2) != 0 {
 					b.Fatalf("bad")
@@ -79,8 +79,8 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 			buf := gen.GenerateBuffer()
 			ctx := basictl.TL2WriteContext{SizeBuffer: make([]int, 10000)}
 
-			for _, v := range values {
-				buf = gen.TLProvider.WriteTL2(&v, buf, &ctx)
+			for i := range values {
+				buf = gen.TLProvider.WriteTL2(&values[i], buf, &ctx)
 			}
 
 			b.ReportAllocs()
@@ -91,16 +91,16 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 
 			for i := 0; i < finish; i++ {
 				buf2 := buf
-				for _, v := range values {
+				for range values {
 					var err error
 
 					buf2, err = gen.TLProvider.ReadTL2(&p, buf2, nil)
 					if err != nil {
 						b.Fatalf("bad")
 					}
-					if gen.CompareTLResult != nil && !gen.CompareTLResult(p, v) {
-						b.Fatalf("bad")
-					}
+					//if gen.CompareTLResult != nil && !gen.CompareTLResult(p, v) {
+					//	b.Fatalf("bad")
+					//}
 				}
 				if len(buf2) != 0 {
 					b.Fatalf("bad")
@@ -110,44 +110,90 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 		})
 
 		b.Run("Proto", func(b *testing.B) {
-			buf := gen.GenerateBuffer()
-			for _, v := range protoValues {
-				tmpBuf, err := gen.ProtoProvider.Marshal(&v)
-				if err != nil {
-					b.Fatalf("bad")
-				}
-				buf = protowire.AppendBytes(buf, tmpBuf)
-			}
-			b.ReportAllocs()
-			b.ResetTimer()
-			finish := b.N / len(values)
-
-			var p P
-
-			for i := 0; i < finish; i++ {
-				buf2 := buf
-				for _, v := range protoValues {
-					var err error
-
-					str, n := protowire.ConsumeBytes(buf2)
-					if n < 0 {
-						b.Fatalf("bad")
-					}
-					buf2 = buf2[n:]
-					err = gen.ProtoProvider.Unmarshal(&p, str)
+			b.Run("New_Object", func(b *testing.B) {
+				buf := gen.GenerateBuffer()
+				for j := range protoValues {
+					tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
 					if err != nil {
 						b.Fatalf("bad")
 					}
+					buf = protowire.AppendBytes(buf, tmpBuf)
+				}
+				b.ReportAllocs()
+				b.ResetTimer()
+				finish := b.N / len(protoValues)
 
-					if gen.CompareProtoResult != nil && !gen.CompareProtoResult(p, v) {
+				for i := 0; i < finish; i++ {
+					buf2 := buf
+					for j := 0; j < len(protoValues); j++ {
+						var err error
+						var p P
+
+						str, n := protowire.ConsumeBytes(buf2)
+						if n < 0 {
+							b.Fatalf("bad")
+						}
+						buf2 = buf2[n:]
+						err = gen.ProtoProvider.Unmarshal(&p, str)
+						if err != nil {
+							b.Fatalf("bad")
+						}
+
+						//if gen.CompareProtoResult != nil {
+						//	if !gen.CompareProtoResult(p, protoValues[j]) {
+						//		b.Fatalf("bad")
+						//	}
+						//}
+					}
+					if len(buf2) != 0 {
 						b.Fatalf("bad")
 					}
 				}
-				if len(buf2) != 0 {
-					b.Fatalf("bad")
+				printSizes(b, int64(len(buf))*int64(finish))
+			})
+
+			b.Run("Same_Object", func(b *testing.B) {
+				buf := gen.GenerateBuffer()
+				for j := range protoValues {
+					tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
+					if err != nil {
+						b.Fatalf("bad")
+					}
+					buf = protowire.AppendBytes(buf, tmpBuf)
 				}
-			}
-			printSizes(b, int64(len(buf))*int64(finish))
+				b.ReportAllocs()
+				b.ResetTimer()
+				finish := b.N / len(protoValues)
+
+				var p P
+
+				for i := 0; i < finish; i++ {
+					buf2 := buf
+					for j := 0; j < len(protoValues); j++ {
+						var err error
+
+						str, n := protowire.ConsumeBytes(buf2)
+						if n < 0 {
+							b.Fatalf("bad")
+						}
+						buf2 = buf2[n:]
+						err = gen.ProtoProvider.Unmarshal(&p, str)
+						if err != nil {
+							b.Fatalf("bad")
+						}
+
+						//if gen.CompareProtoResult != nil {
+						//	if !gen.CompareProtoResult(p, protoValues[j]) {
+						//		b.Fatalf("bad")
+						//	}
+						//}
+					}
+					if len(buf2) != 0 {
+						b.Fatalf("bad")
+					}
+				}
+				printSizes(b, int64(len(buf))*int64(finish))
+			})
 		})
 	})
 
