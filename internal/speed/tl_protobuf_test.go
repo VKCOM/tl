@@ -207,6 +207,53 @@ func BenchmarkMemcacheValuesWriteProtobufFastGen(b *testing.B) {
 	printSizes(b, total+int64(len(buf)))
 }
 
+func BenchmarkNewPoint(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.Point, pb_fast.PointPB](b, benchDataGenerator[tl.Point, pb_fast.PointPB]{
+		GenerateSamples: func() []tl.Point {
+			ps, _, _ := prepareTLPointsBuffer()
+			return ps
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: func(p tl.Point) pb_fast.PointPB {
+			return pb_fast.PointPB{X: p.X, Y: p.Y, Z: p.Z}
+		},
+
+		TLProvider: TLData[tl.Point]{
+			WriteTL1Boxed: func(x *tl.Point, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.Point, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.Point, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.Point, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.PointPB]{
+			Size: func(x *pb_fast.PointPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.PointPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.PointPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.PointPB, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
 func BenchmarkNewPoints(b *testing.B) {
 	buffer_ := make([]byte, 0, bufferSize)
 

@@ -109,92 +109,94 @@ func benchBase[T, P any](b *testing.B, gen benchDataGenerator[T, P]) {
 			printSizes(b, int64(len(buf))*int64(finish))
 		})
 
-		b.Run("Proto", func(b *testing.B) {
-			b.Run("New_Object", func(b *testing.B) {
-				buf := gen.GenerateBuffer()
-				for j := range protoValues {
-					tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
+		//b.Run("Proto", func(b *testing.B) {
+		//	b.Run("New_Object", func(b *testing.B) {
+		b.Run("Proto_New_Object", func(b *testing.B) {
+			buf := gen.GenerateBuffer()
+			for j := range protoValues {
+				tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
+				if err != nil {
+					b.Fatalf("bad")
+				}
+				buf = protowire.AppendBytes(buf, tmpBuf)
+			}
+			b.ReportAllocs()
+			b.ResetTimer()
+			finish := b.N / len(protoValues)
+
+			for i := 0; i < finish; i++ {
+				buf2 := buf
+				for j := 0; j < len(protoValues); j++ {
+					var err error
+					var p P
+
+					str, n := protowire.ConsumeBytes(buf2)
+					if n < 0 {
+						b.Fatalf("bad")
+					}
+					buf2 = buf2[n:]
+					err = gen.ProtoProvider.Unmarshal(&p, str)
 					if err != nil {
 						b.Fatalf("bad")
 					}
-					buf = protowire.AppendBytes(buf, tmpBuf)
+
+					//if gen.CompareProtoResult != nil {
+					//	if !gen.CompareProtoResult(p, protoValues[j]) {
+					//		b.Fatalf("bad")
+					//	}
+					//}
 				}
-				b.ReportAllocs()
-				b.ResetTimer()
-				finish := b.N / len(protoValues)
-
-				for i := 0; i < finish; i++ {
-					buf2 := buf
-					for j := 0; j < len(protoValues); j++ {
-						var err error
-						var p P
-
-						str, n := protowire.ConsumeBytes(buf2)
-						if n < 0 {
-							b.Fatalf("bad")
-						}
-						buf2 = buf2[n:]
-						err = gen.ProtoProvider.Unmarshal(&p, str)
-						if err != nil {
-							b.Fatalf("bad")
-						}
-
-						//if gen.CompareProtoResult != nil {
-						//	if !gen.CompareProtoResult(p, protoValues[j]) {
-						//		b.Fatalf("bad")
-						//	}
-						//}
-					}
-					if len(buf2) != 0 {
-						b.Fatalf("bad")
-					}
+				if len(buf2) != 0 {
+					b.Fatalf("bad")
 				}
-				printSizes(b, int64(len(buf))*int64(finish))
-			})
-
-			b.Run("Same_Object", func(b *testing.B) {
-				buf := gen.GenerateBuffer()
-				for j := range protoValues {
-					tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
-					if err != nil {
-						b.Fatalf("bad")
-					}
-					buf = protowire.AppendBytes(buf, tmpBuf)
-				}
-				b.ReportAllocs()
-				b.ResetTimer()
-				finish := b.N / len(protoValues)
-
-				var p P
-
-				for i := 0; i < finish; i++ {
-					buf2 := buf
-					for j := 0; j < len(protoValues); j++ {
-						var err error
-
-						str, n := protowire.ConsumeBytes(buf2)
-						if n < 0 {
-							b.Fatalf("bad")
-						}
-						buf2 = buf2[n:]
-						err = gen.ProtoProvider.Unmarshal(&p, str)
-						if err != nil {
-							b.Fatalf("bad")
-						}
-
-						//if gen.CompareProtoResult != nil {
-						//	if !gen.CompareProtoResult(p, protoValues[j]) {
-						//		b.Fatalf("bad")
-						//	}
-						//}
-					}
-					if len(buf2) != 0 {
-						b.Fatalf("bad")
-					}
-				}
-				printSizes(b, int64(len(buf))*int64(finish))
-			})
+			}
+			printSizes(b, int64(len(buf))*int64(finish))
 		})
+
+		b.Run("Proto_Same_Object", func(b *testing.B) {
+			//b.Run("Same_Object", func(b *testing.B) {
+			buf := gen.GenerateBuffer()
+			for j := range protoValues {
+				tmpBuf, err := gen.ProtoProvider.Marshal(&protoValues[j])
+				if err != nil {
+					b.Fatalf("bad")
+				}
+				buf = protowire.AppendBytes(buf, tmpBuf)
+			}
+			b.ReportAllocs()
+			b.ResetTimer()
+			finish := b.N / len(protoValues)
+
+			var p P
+
+			for i := 0; i < finish; i++ {
+				buf2 := buf
+				for j := 0; j < len(protoValues); j++ {
+					var err error
+
+					str, n := protowire.ConsumeBytes(buf2)
+					if n < 0 {
+						b.Fatalf("bad")
+					}
+					buf2 = buf2[n:]
+					err = gen.ProtoProvider.Unmarshal(&p, str)
+					if err != nil {
+						b.Fatalf("bad")
+					}
+
+					//if gen.CompareProtoResult != nil {
+					//	if !gen.CompareProtoResult(p, protoValues[j]) {
+					//		b.Fatalf("bad")
+					//	}
+					//}
+				}
+				if len(buf2) != 0 {
+					b.Fatalf("bad")
+				}
+			}
+			printSizes(b, int64(len(buf))*int64(finish))
+		})
+		//})
 	})
 
 	b.Run("Write", func(b *testing.B) {
