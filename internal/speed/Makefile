@@ -15,6 +15,11 @@ COUNT ?= 3
 all_benchmarks:
 	go test -bench=. -count=$(COUNT)
 
+.PHONY: all_new_benchmarks
+all_new_benchmarks:
+	go test -bench='^BenchmarkNew' -count=$(COUNT)
+
+
 # ----------- POINT ---------------
 .PHONY: point_write_gen
 point_write_gen:
