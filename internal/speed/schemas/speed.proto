@@ -58,6 +58,40 @@ message Values {
   repeated Value values = 1;
 }
 
+message PartialPointPB {
+  uint32           mask = 1;
+  uint32              x = 2;
+  uint32              y = 3;
+  uint32              z = 4;
+}
+
+message PartialPointsPB {
+  repeated PartialPointPB points = 1;
+}
+
+message UnionPointValuePB {
+  uint32           mask = 1;
+  uint32              x = 2;
+  uint32              y = 3;
+  uint32              z = 4;
+}
+
+message UnionPointErrorPB {
+  string           err = 1;
+}
+
+
+message UnionPointPB {
+  oneof kind {
+    UnionPointValuePB          value = 1;
+    UnionPointErrorPB          error = 2;
+  }
+}
+
+message UnionPointsPB {
+  repeated UnionPointPB points = 1;
+}
+
 // to compile
 // sudo apt-get install libprotobuf-dev
 // go install google.golang.org/protobuf/cmd/protoc-gen-go

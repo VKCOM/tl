@@ -117,6 +117,124 @@ func (item *VectorMemcacheValue) ReadTL2(r []byte, tctx *basictl.TL2ReadContext)
 	return item.InternalReadTL2(r)
 }
 
+type VectorPartialPointBoxed []PartialPoint
+
+func (item *VectorPartialPointBoxed) ptr() *[]PartialPoint { return (*[]PartialPoint)(item) }
+
+func (VectorPartialPointBoxed) TLName() string { return "vector" }
+func (VectorPartialPointBoxed) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorPartialPointBoxed) Reset() {
+	*item.ptr() = (*item.ptr())[:0]
+}
+
+func (item VectorPartialPointBoxed) RepairMasksValue() VectorPartialPointBoxed {
+	item.RepairMasks()
+	return item
+}
+func (item *VectorPartialPointBoxed) RepairMasks() {
+	BuiltinVectorPartialPointBoxedRepairMasks(item.ptr())
+}
+
+func (item *VectorPartialPointBoxed) ReadTL1(w []byte) (_ []byte, err error) {
+	return BuiltinVectorPartialPointBoxedReadTL1(w, item.ptr())
+}
+
+func (item *VectorPartialPointBoxed) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
+}
+
+func (item *VectorPartialPointBoxed) WriteTL1(w []byte) []byte {
+	w = BuiltinVectorPartialPointBoxedWriteTL1(w, *item.ptr())
+	return w
+}
+
+func (item *VectorPartialPointBoxed) ReadTL1Boxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.ReadTL1(w)
+}
+
+func (item *VectorPartialPointBoxed) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
+}
+
+func (item *VectorPartialPointBoxed) WriteTL1Boxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.WriteTL1(w)
+}
+
+func (item VectorPartialPointBoxed) String() string {
+	return string(item.WriteJSON(nil))
+}
+func (item *VectorPartialPointBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
+}
+
+func (item *VectorPartialPointBoxed) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinVectorPartialPointBoxedReadJSONGeneral(jctx, in, item.ptr()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorPartialPointBoxed) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
+}
+
+func (item *VectorPartialPointBoxed) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(nil, w)
+}
+
+func (item *VectorPartialPointBoxed) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinVectorPartialPointBoxedWriteJSONOpt(jctx, w, *item.ptr())
+	return w
+}
+func (item *VectorPartialPointBoxed) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *VectorPartialPointBoxed) UnmarshalJSON(b []byte) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
+		return ErrorInvalidJSON("vector", err.Error())
+	}
+	return nil
+}
+
+func (item *VectorPartialPointBoxed) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
+	}
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorPartialPointBoxedCalculateLayout(sizes, false, item.ptr())
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorPartialPointBoxedInternalWriteTL2(w, sizes, false, item.ptr())
+
+	Unused(currentSize)
+	Unused(sz)
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorPartialPointBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
+	if r, err = BuiltinVectorPartialPointBoxedInternalReadTL2(r, item.ptr()); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorPartialPointBoxed) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
 type VectorPointBoxed []Point
 
 func (item *VectorPointBoxed) ptr() *[]Point { return (*[]Point)(item) }
@@ -224,5 +342,123 @@ func (item *VectorPointBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
 }
 
 func (item *VectorPointBoxed) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
+}
+
+type VectorUnionPoint []UnionPoint
+
+func (item *VectorUnionPoint) ptr() *[]UnionPoint { return (*[]UnionPoint)(item) }
+
+func (VectorUnionPoint) TLName() string { return "vector" }
+func (VectorUnionPoint) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorUnionPoint) Reset() {
+	*item.ptr() = (*item.ptr())[:0]
+}
+
+func (item VectorUnionPoint) RepairMasksValue() VectorUnionPoint {
+	item.RepairMasks()
+	return item
+}
+func (item *VectorUnionPoint) RepairMasks() {
+	BuiltinVectorUnionPointRepairMasks(item.ptr())
+}
+
+func (item *VectorUnionPoint) ReadTL1(w []byte) (_ []byte, err error) {
+	return BuiltinVectorUnionPointReadTL1(w, item.ptr())
+}
+
+func (item *VectorUnionPoint) WriteTL1General(w []byte) (_ []byte, err error) {
+	return item.WriteTL1(w), nil
+}
+
+func (item *VectorUnionPoint) WriteTL1(w []byte) []byte {
+	w = BuiltinVectorUnionPointWriteTL1(w, *item.ptr())
+	return w
+}
+
+func (item *VectorUnionPoint) ReadTL1Boxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.ReadTL1(w)
+}
+
+func (item *VectorUnionPoint) WriteTL1BoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteTL1Boxed(w), nil
+}
+
+func (item *VectorUnionPoint) WriteTL1Boxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.WriteTL1(w)
+}
+
+func (item VectorUnionPoint) String() string {
+	return string(item.WriteJSON(nil))
+}
+func (item *VectorUnionPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&jctx, in)
+}
+
+func (item *VectorUnionPoint) ReadJSONGeneral(jctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
+	if err := BuiltinVectorUnionPointReadJSONGeneral(jctx, in, item.ptr()); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorUnionPoint) WriteJSONGeneral(jctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(jctx, w), nil
+}
+
+func (item *VectorUnionPoint) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(nil, w)
+}
+
+func (item *VectorUnionPoint) WriteJSONOpt(jctx *basictl.JSONWriteContext, w []byte) []byte {
+	w = BuiltinVectorUnionPointWriteJSONOpt(jctx, w, *item.ptr())
+	return w
+}
+func (item *VectorUnionPoint) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *VectorUnionPoint) UnmarshalJSON(b []byte) error {
+	jctx := basictl.JSONReadContext{LegacyTypeNames: true}
+	if err := item.ReadJSONGeneral(&jctx, &basictl.JsonLexer{Data: b}); err != nil {
+		return ErrorInvalidJSON("vector", err.Error())
+	}
+	return nil
+}
+
+func (item *VectorUnionPoint) WriteTL2(w []byte, tctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if tctx != nil {
+		sizes = tctx.SizeBuffer[:0]
+	}
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorUnionPointCalculateLayout(sizes, false, item.ptr())
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorUnionPointInternalWriteTL2(w, sizes, false, item.ptr())
+
+	Unused(currentSize)
+	Unused(sz)
+	if tctx != nil {
+		tctx.SizeBuffer = sizes
+	}
+	return w
+}
+
+func (item *VectorUnionPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
+	if r, err = BuiltinVectorUnionPointInternalReadTL2(r, item.ptr()); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
+func (item *VectorUnionPoint) ReadTL2(r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	return item.InternalReadTL2(r)
 }

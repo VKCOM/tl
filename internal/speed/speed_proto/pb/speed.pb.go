@@ -635,6 +635,356 @@ func (x *Values) GetValues() []*Value {
 	return nil
 }
 
+type PartialPointPB struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Mask          uint32                 `protobuf:"varint,1,opt,name=mask,proto3" json:"mask,omitempty"`
+	X             uint32                 `protobuf:"varint,2,opt,name=x,proto3" json:"x,omitempty"`
+	Y             uint32                 `protobuf:"varint,3,opt,name=y,proto3" json:"y,omitempty"`
+	Z             uint32                 `protobuf:"varint,4,opt,name=z,proto3" json:"z,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PartialPointPB) Reset() {
+	*x = PartialPointPB{}
+	mi := &file_speed_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PartialPointPB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PartialPointPB) ProtoMessage() {}
+
+func (x *PartialPointPB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PartialPointPB.ProtoReflect.Descriptor instead.
+func (*PartialPointPB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PartialPointPB) GetMask() uint32 {
+	if x != nil {
+		return x.Mask
+	}
+	return 0
+}
+
+func (x *PartialPointPB) GetX() uint32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *PartialPointPB) GetY() uint32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *PartialPointPB) GetZ() uint32 {
+	if x != nil {
+		return x.Z
+	}
+	return 0
+}
+
+type PartialPointsPB struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Points        []*PartialPointPB      `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PartialPointsPB) Reset() {
+	*x = PartialPointsPB{}
+	mi := &file_speed_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PartialPointsPB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PartialPointsPB) ProtoMessage() {}
+
+func (x *PartialPointsPB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PartialPointsPB.ProtoReflect.Descriptor instead.
+func (*PartialPointsPB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *PartialPointsPB) GetPoints() []*PartialPointPB {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+type UnionPointValuePB struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Mask          uint32                 `protobuf:"varint,1,opt,name=mask,proto3" json:"mask,omitempty"`
+	X             uint32                 `protobuf:"varint,2,opt,name=x,proto3" json:"x,omitempty"`
+	Y             uint32                 `protobuf:"varint,3,opt,name=y,proto3" json:"y,omitempty"`
+	Z             uint32                 `protobuf:"varint,4,opt,name=z,proto3" json:"z,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnionPointValuePB) Reset() {
+	*x = UnionPointValuePB{}
+	mi := &file_speed_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnionPointValuePB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnionPointValuePB) ProtoMessage() {}
+
+func (x *UnionPointValuePB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnionPointValuePB.ProtoReflect.Descriptor instead.
+func (*UnionPointValuePB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *UnionPointValuePB) GetMask() uint32 {
+	if x != nil {
+		return x.Mask
+	}
+	return 0
+}
+
+func (x *UnionPointValuePB) GetX() uint32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *UnionPointValuePB) GetY() uint32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *UnionPointValuePB) GetZ() uint32 {
+	if x != nil {
+		return x.Z
+	}
+	return 0
+}
+
+type UnionPointErrorPB struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Err           string                 `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnionPointErrorPB) Reset() {
+	*x = UnionPointErrorPB{}
+	mi := &file_speed_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnionPointErrorPB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnionPointErrorPB) ProtoMessage() {}
+
+func (x *UnionPointErrorPB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnionPointErrorPB.ProtoReflect.Descriptor instead.
+func (*UnionPointErrorPB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *UnionPointErrorPB) GetErr() string {
+	if x != nil {
+		return x.Err
+	}
+	return ""
+}
+
+type UnionPointPB struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Kind:
+	//
+	//	*UnionPointPB_Value
+	//	*UnionPointPB_Error
+	Kind          isUnionPointPB_Kind `protobuf_oneof:"kind"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnionPointPB) Reset() {
+	*x = UnionPointPB{}
+	mi := &file_speed_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnionPointPB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnionPointPB) ProtoMessage() {}
+
+func (x *UnionPointPB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnionPointPB.ProtoReflect.Descriptor instead.
+func (*UnionPointPB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *UnionPointPB) GetKind() isUnionPointPB_Kind {
+	if x != nil {
+		return x.Kind
+	}
+	return nil
+}
+
+func (x *UnionPointPB) GetValue() *UnionPointValuePB {
+	if x != nil {
+		if x, ok := x.Kind.(*UnionPointPB_Value); ok {
+			return x.Value
+		}
+	}
+	return nil
+}
+
+func (x *UnionPointPB) GetError() *UnionPointErrorPB {
+	if x != nil {
+		if x, ok := x.Kind.(*UnionPointPB_Error); ok {
+			return x.Error
+		}
+	}
+	return nil
+}
+
+type isUnionPointPB_Kind interface {
+	isUnionPointPB_Kind()
+}
+
+type UnionPointPB_Value struct {
+	Value *UnionPointValuePB `protobuf:"bytes,1,opt,name=value,proto3,oneof"`
+}
+
+type UnionPointPB_Error struct {
+	Error *UnionPointErrorPB `protobuf:"bytes,2,opt,name=error,proto3,oneof"`
+}
+
+func (*UnionPointPB_Value) isUnionPointPB_Kind() {}
+
+func (*UnionPointPB_Error) isUnionPointPB_Kind() {}
+
+type UnionPointsPB struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Points        []*UnionPointPB        `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnionPointsPB) Reset() {
+	*x = UnionPointsPB{}
+	mi := &file_speed_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnionPointsPB) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnionPointsPB) ProtoMessage() {}
+
+func (x *UnionPointsPB) ProtoReflect() protoreflect.Message {
+	mi := &file_speed_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnionPointsPB.ProtoReflect.Descriptor instead.
+func (*UnionPointsPB) Descriptor() ([]byte, []int) {
+	return file_speed_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UnionPointsPB) GetPoints() []*UnionPointPB {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
 var File_speed_proto protoreflect.FileDescriptor
 
 const file_speed_proto_rawDesc = "" +
@@ -676,7 +1026,27 @@ const file_speed_proto_rawDesc = "" +
 	"\x13strvalue_with_delay\x18\x06 \x01(\v2\x1d.statshouse.StrValueWithDelayH\x00R\x11strvalueWithDelayB\x06\n" +
 	"\x04kind\"3\n" +
 	"\x06Values\x12)\n" +
-	"\x06values\x18\x01 \x03(\v2\x11.statshouse.ValueR\x06valuesB'Z%github.com/VKCOM/tl/internal/speed/pbb\x06proto3"
+	"\x06values\x18\x01 \x03(\v2\x11.statshouse.ValueR\x06values\"N\n" +
+	"\x0ePartialPointPB\x12\x12\n" +
+	"\x04mask\x18\x01 \x01(\rR\x04mask\x12\f\n" +
+	"\x01x\x18\x02 \x01(\rR\x01x\x12\f\n" +
+	"\x01y\x18\x03 \x01(\rR\x01y\x12\f\n" +
+	"\x01z\x18\x04 \x01(\rR\x01z\"E\n" +
+	"\x0fPartialPointsPB\x122\n" +
+	"\x06points\x18\x01 \x03(\v2\x1a.statshouse.PartialPointPBR\x06points\"Q\n" +
+	"\x11UnionPointValuePB\x12\x12\n" +
+	"\x04mask\x18\x01 \x01(\rR\x04mask\x12\f\n" +
+	"\x01x\x18\x02 \x01(\rR\x01x\x12\f\n" +
+	"\x01y\x18\x03 \x01(\rR\x01y\x12\f\n" +
+	"\x01z\x18\x04 \x01(\rR\x01z\"%\n" +
+	"\x11UnionPointErrorPB\x12\x10\n" +
+	"\x03err\x18\x01 \x01(\tR\x03err\"\x84\x01\n" +
+	"\fUnionPointPB\x125\n" +
+	"\x05value\x18\x01 \x01(\v2\x1d.statshouse.UnionPointValuePBH\x00R\x05value\x125\n" +
+	"\x05error\x18\x02 \x01(\v2\x1d.statshouse.UnionPointErrorPBH\x00R\x05errorB\x06\n" +
+	"\x04kind\"A\n" +
+	"\rUnionPointsPB\x120\n" +
+	"\x06points\x18\x01 \x03(\v2\x18.statshouse.UnionPointPBR\x06pointsB'Z%github.com/VKCOM/tl/internal/speed/pbb\x06proto3"
 
 var (
 	file_speed_proto_rawDescOnce sync.Once
@@ -690,7 +1060,7 @@ func file_speed_proto_rawDescGZIP() []byte {
 	return file_speed_proto_rawDescData
 }
 
-var file_speed_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_speed_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_speed_proto_goTypes = []any{
 	(*PointPB)(nil),           // 0: statshouse.PointPB
 	(*PointsPB)(nil),          // 1: statshouse.PointsPB
@@ -702,21 +1072,31 @@ var file_speed_proto_goTypes = []any{
 	(*StrValueWithDelay)(nil), // 7: statshouse.StrValueWithDelay
 	(*Value)(nil),             // 8: statshouse.Value
 	(*Values)(nil),            // 9: statshouse.Values
+	(*PartialPointPB)(nil),    // 10: statshouse.PartialPointPB
+	(*PartialPointsPB)(nil),   // 11: statshouse.PartialPointsPB
+	(*UnionPointValuePB)(nil), // 12: statshouse.UnionPointValuePB
+	(*UnionPointErrorPB)(nil), // 13: statshouse.UnionPointErrorPB
+	(*UnionPointPB)(nil),      // 14: statshouse.UnionPointPB
+	(*UnionPointsPB)(nil),     // 15: statshouse.UnionPointsPB
 }
 var file_speed_proto_depIdxs = []int32{
-	0, // 0: statshouse.PointsPB.points:type_name -> statshouse.PointPB
-	2, // 1: statshouse.Value.not_found:type_name -> statshouse.NotFound
-	3, // 2: statshouse.Value.strvalue:type_name -> statshouse.StrValue
-	4, // 3: statshouse.Value.longvalue:type_name -> statshouse.LongValue
-	5, // 4: statshouse.Value.strvalue_with_time:type_name -> statshouse.StrValueWithTime
-	6, // 5: statshouse.Value.longvalue_with_time:type_name -> statshouse.LongValueWithTime
-	7, // 6: statshouse.Value.strvalue_with_delay:type_name -> statshouse.StrValueWithDelay
-	8, // 7: statshouse.Values.values:type_name -> statshouse.Value
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	0,  // 0: statshouse.PointsPB.points:type_name -> statshouse.PointPB
+	2,  // 1: statshouse.Value.not_found:type_name -> statshouse.NotFound
+	3,  // 2: statshouse.Value.strvalue:type_name -> statshouse.StrValue
+	4,  // 3: statshouse.Value.longvalue:type_name -> statshouse.LongValue
+	5,  // 4: statshouse.Value.strvalue_with_time:type_name -> statshouse.StrValueWithTime
+	6,  // 5: statshouse.Value.longvalue_with_time:type_name -> statshouse.LongValueWithTime
+	7,  // 6: statshouse.Value.strvalue_with_delay:type_name -> statshouse.StrValueWithDelay
+	8,  // 7: statshouse.Values.values:type_name -> statshouse.Value
+	10, // 8: statshouse.PartialPointsPB.points:type_name -> statshouse.PartialPointPB
+	12, // 9: statshouse.UnionPointPB.value:type_name -> statshouse.UnionPointValuePB
+	13, // 10: statshouse.UnionPointPB.error:type_name -> statshouse.UnionPointErrorPB
+	14, // 11: statshouse.UnionPointsPB.points:type_name -> statshouse.UnionPointPB
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_speed_proto_init() }
@@ -732,13 +1112,17 @@ func file_speed_proto_init() {
 		(*Value_LongvalueWithTime)(nil),
 		(*Value_StrvalueWithDelay)(nil),
 	}
+	file_speed_proto_msgTypes[14].OneofWrappers = []any{
+		(*UnionPointPB_Value)(nil),
+		(*UnionPointPB_Error)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_speed_proto_rawDesc), len(file_speed_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

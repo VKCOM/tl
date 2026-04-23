@@ -658,6 +658,378 @@ func (m *Values) GetValues() []*Value {
 	return nil
 }
 
+type PartialPointPB struct {
+	Mask                 uint32   `protobuf:"varint,1,opt,name=mask,proto3" json:"mask,omitempty"`
+	X                    uint32   `protobuf:"varint,2,opt,name=x,proto3" json:"x,omitempty"`
+	Y                    uint32   `protobuf:"varint,3,opt,name=y,proto3" json:"y,omitempty"`
+	Z                    uint32   `protobuf:"varint,4,opt,name=z,proto3" json:"z,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PartialPointPB) Reset()         { *m = PartialPointPB{} }
+func (m *PartialPointPB) String() string { return proto.CompactTextString(m) }
+func (*PartialPointPB) ProtoMessage()    {}
+func (*PartialPointPB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{10}
+}
+func (m *PartialPointPB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PartialPointPB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PartialPointPB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PartialPointPB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PartialPointPB.Merge(m, src)
+}
+func (m *PartialPointPB) XXX_Size() int {
+	return m.Size()
+}
+func (m *PartialPointPB) XXX_DiscardUnknown() {
+	xxx_messageInfo_PartialPointPB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PartialPointPB proto.InternalMessageInfo
+
+func (m *PartialPointPB) GetMask() uint32 {
+	if m != nil {
+		return m.Mask
+	}
+	return 0
+}
+
+func (m *PartialPointPB) GetX() uint32 {
+	if m != nil {
+		return m.X
+	}
+	return 0
+}
+
+func (m *PartialPointPB) GetY() uint32 {
+	if m != nil {
+		return m.Y
+	}
+	return 0
+}
+
+func (m *PartialPointPB) GetZ() uint32 {
+	if m != nil {
+		return m.Z
+	}
+	return 0
+}
+
+type PartialPointsPB struct {
+	Points               []*PartialPointPB `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *PartialPointsPB) Reset()         { *m = PartialPointsPB{} }
+func (m *PartialPointsPB) String() string { return proto.CompactTextString(m) }
+func (*PartialPointsPB) ProtoMessage()    {}
+func (*PartialPointsPB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{11}
+}
+func (m *PartialPointsPB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PartialPointsPB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PartialPointsPB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PartialPointsPB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PartialPointsPB.Merge(m, src)
+}
+func (m *PartialPointsPB) XXX_Size() int {
+	return m.Size()
+}
+func (m *PartialPointsPB) XXX_DiscardUnknown() {
+	xxx_messageInfo_PartialPointsPB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PartialPointsPB proto.InternalMessageInfo
+
+func (m *PartialPointsPB) GetPoints() []*PartialPointPB {
+	if m != nil {
+		return m.Points
+	}
+	return nil
+}
+
+type UnionPointValuePB struct {
+	Mask                 uint32   `protobuf:"varint,1,opt,name=mask,proto3" json:"mask,omitempty"`
+	X                    uint32   `protobuf:"varint,2,opt,name=x,proto3" json:"x,omitempty"`
+	Y                    uint32   `protobuf:"varint,3,opt,name=y,proto3" json:"y,omitempty"`
+	Z                    uint32   `protobuf:"varint,4,opt,name=z,proto3" json:"z,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UnionPointValuePB) Reset()         { *m = UnionPointValuePB{} }
+func (m *UnionPointValuePB) String() string { return proto.CompactTextString(m) }
+func (*UnionPointValuePB) ProtoMessage()    {}
+func (*UnionPointValuePB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{12}
+}
+func (m *UnionPointValuePB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UnionPointValuePB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UnionPointValuePB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UnionPointValuePB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnionPointValuePB.Merge(m, src)
+}
+func (m *UnionPointValuePB) XXX_Size() int {
+	return m.Size()
+}
+func (m *UnionPointValuePB) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnionPointValuePB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnionPointValuePB proto.InternalMessageInfo
+
+func (m *UnionPointValuePB) GetMask() uint32 {
+	if m != nil {
+		return m.Mask
+	}
+	return 0
+}
+
+func (m *UnionPointValuePB) GetX() uint32 {
+	if m != nil {
+		return m.X
+	}
+	return 0
+}
+
+func (m *UnionPointValuePB) GetY() uint32 {
+	if m != nil {
+		return m.Y
+	}
+	return 0
+}
+
+func (m *UnionPointValuePB) GetZ() uint32 {
+	if m != nil {
+		return m.Z
+	}
+	return 0
+}
+
+type UnionPointErrorPB struct {
+	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UnionPointErrorPB) Reset()         { *m = UnionPointErrorPB{} }
+func (m *UnionPointErrorPB) String() string { return proto.CompactTextString(m) }
+func (*UnionPointErrorPB) ProtoMessage()    {}
+func (*UnionPointErrorPB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{13}
+}
+func (m *UnionPointErrorPB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UnionPointErrorPB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UnionPointErrorPB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UnionPointErrorPB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnionPointErrorPB.Merge(m, src)
+}
+func (m *UnionPointErrorPB) XXX_Size() int {
+	return m.Size()
+}
+func (m *UnionPointErrorPB) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnionPointErrorPB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnionPointErrorPB proto.InternalMessageInfo
+
+func (m *UnionPointErrorPB) GetErr() string {
+	if m != nil {
+		return m.Err
+	}
+	return ""
+}
+
+type UnionPointPB struct {
+	// Types that are valid to be assigned to Kind:
+	//
+	//	*UnionPointPB_Value
+	//	*UnionPointPB_Error
+	Kind                 isUnionPointPB_Kind `protobuf_oneof:"kind"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *UnionPointPB) Reset()         { *m = UnionPointPB{} }
+func (m *UnionPointPB) String() string { return proto.CompactTextString(m) }
+func (*UnionPointPB) ProtoMessage()    {}
+func (*UnionPointPB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{14}
+}
+func (m *UnionPointPB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UnionPointPB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UnionPointPB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UnionPointPB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnionPointPB.Merge(m, src)
+}
+func (m *UnionPointPB) XXX_Size() int {
+	return m.Size()
+}
+func (m *UnionPointPB) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnionPointPB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnionPointPB proto.InternalMessageInfo
+
+type isUnionPointPB_Kind interface {
+	isUnionPointPB_Kind()
+	MarshalTo([]byte) (int, error)
+	Size() int
+}
+
+type UnionPointPB_Value struct {
+	Value *UnionPointValuePB `protobuf:"bytes,1,opt,name=value,proto3,oneof" json:"value,omitempty"`
+}
+type UnionPointPB_Error struct {
+	Error *UnionPointErrorPB `protobuf:"bytes,2,opt,name=error,proto3,oneof" json:"error,omitempty"`
+}
+
+func (*UnionPointPB_Value) isUnionPointPB_Kind() {}
+func (*UnionPointPB_Error) isUnionPointPB_Kind() {}
+
+func (m *UnionPointPB) GetKind() isUnionPointPB_Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return nil
+}
+
+func (m *UnionPointPB) GetValue() *UnionPointValuePB {
+	if x, ok := m.GetKind().(*UnionPointPB_Value); ok {
+		return x.Value
+	}
+	return nil
+}
+
+func (m *UnionPointPB) GetError() *UnionPointErrorPB {
+	if x, ok := m.GetKind().(*UnionPointPB_Error); ok {
+		return x.Error
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*UnionPointPB) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*UnionPointPB_Value)(nil),
+		(*UnionPointPB_Error)(nil),
+	}
+}
+
+type UnionPointsPB struct {
+	Points               []*UnionPointPB `protobuf:"bytes,1,rep,name=points,proto3" json:"points,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *UnionPointsPB) Reset()         { *m = UnionPointsPB{} }
+func (m *UnionPointsPB) String() string { return proto.CompactTextString(m) }
+func (*UnionPointsPB) ProtoMessage()    {}
+func (*UnionPointsPB) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8a78604d82c90401, []int{15}
+}
+func (m *UnionPointsPB) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UnionPointsPB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UnionPointsPB.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UnionPointsPB) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnionPointsPB.Merge(m, src)
+}
+func (m *UnionPointsPB) XXX_Size() int {
+	return m.Size()
+}
+func (m *UnionPointsPB) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnionPointsPB.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnionPointsPB proto.InternalMessageInfo
+
+func (m *UnionPointsPB) GetPoints() []*UnionPointPB {
+	if m != nil {
+		return m.Points
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*PointPB)(nil), "tl_fast.PointPB")
 	proto.RegisterType((*PointsPB)(nil), "tl_fast.PointsPB")
@@ -669,43 +1041,57 @@ func init() {
 	proto.RegisterType((*StrValueWithDelay)(nil), "tl_fast.StrValueWithDelay")
 	proto.RegisterType((*Value)(nil), "tl_fast.Value")
 	proto.RegisterType((*Values)(nil), "tl_fast.Values")
+	proto.RegisterType((*PartialPointPB)(nil), "tl_fast.PartialPointPB")
+	proto.RegisterType((*PartialPointsPB)(nil), "tl_fast.PartialPointsPB")
+	proto.RegisterType((*UnionPointValuePB)(nil), "tl_fast.UnionPointValuePB")
+	proto.RegisterType((*UnionPointErrorPB)(nil), "tl_fast.UnionPointErrorPB")
+	proto.RegisterType((*UnionPointPB)(nil), "tl_fast.UnionPointPB")
+	proto.RegisterType((*UnionPointsPB)(nil), "tl_fast.UnionPointsPB")
 }
 
 func init() { proto.RegisterFile("speed_fast.proto", fileDescriptor_8a78604d82c90401) }
 
 var fileDescriptor_8a78604d82c90401 = []byte{
-	// 484 bytes of a gzipped FileDescriptorProto
+	// 618 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0x8e, 0xeb, 0xda, 0x75, 0xa6, 0x80, 0xec, 0xa5, 0x87, 0xc0, 0x21, 0xaa, 0x7c, 0x40, 0x11,
-	0x48, 0x71, 0x95, 0x22, 0xb8, 0x70, 0x0a, 0x08, 0x05, 0x51, 0x20, 0x5a, 0xa0, 0x48, 0x5c, 0x22,
-	0xa7, 0x76, 0x92, 0x55, 0x9d, 0xdd, 0xc8, 0xde, 0x40, 0xd3, 0x77, 0xe0, 0xce, 0x23, 0x71, 0xe4,
-	0x11, 0x50, 0x78, 0x11, 0xb4, 0xb3, 0xf6, 0x62, 0x9a, 0x0a, 0x29, 0x52, 0x6f, 0xfb, 0x79, 0xe6,
-	0xfb, 0xd9, 0x19, 0x79, 0xc1, 0x2f, 0x16, 0x69, 0x9a, 0x8c, 0x26, 0x71, 0x21, 0xbb, 0x8b, 0x5c,
-	0x48, 0x41, 0xf6, 0x64, 0x86, 0x30, 0x3c, 0x86, 0xbd, 0xa1, 0x60, 0x5c, 0x0e, 0xfb, 0xe4, 0x16,
-	0x58, 0x17, 0x2d, 0xeb, 0xd0, 0xea, 0xdc, 0xa6, 0xd6, 0x85, 0x42, 0xab, 0xd6, 0x8e, 0x46, 0x2b,
-	0x85, 0x2e, 0x5b, 0xb6, 0x46, 0x97, 0xe1, 0x63, 0xf0, 0x90, 0x54, 0x0c, 0xfb, 0xa4, 0x03, 0xee,
-	0x02, 0xcf, 0x2d, 0xeb, 0xd0, 0xee, 0xec, 0xf7, 0xfc, 0x6e, 0x29, 0xdd, 0x2d, 0x75, 0x69, 0x59,
-	0x0f, 0x01, 0xbc, 0xb7, 0x42, 0xbe, 0x14, 0x4b, 0x9e, 0x84, 0x4f, 0xc0, 0x7b, 0x2f, 0xf3, 0xd3,
-	0x38, 0x5b, 0xa6, 0xe4, 0x00, 0x9c, 0x2f, 0xea, 0x80, 0xde, 0x4d, 0xaa, 0x81, 0xfa, 0x3a, 0xc9,
-	0xe2, 0x69, 0x81, 0x19, 0x1c, 0xaa, 0x41, 0xf8, 0x14, 0x9a, 0x27, 0x82, 0x4f, 0xaf, 0x21, 0xda,
-	0xff, 0x27, 0x9e, 0x83, 0x5f, 0x19, 0x7e, 0x62, 0x72, 0xf6, 0x81, 0xcd, 0xb7, 0x32, 0x26, 0x8f,
-	0x20, 0x98, 0x8b, 0x84, 0x4d, 0xd8, 0x59, 0x2c, 0x99, 0xe0, 0x23, 0xc9, 0xe6, 0x29, 0x0e, 0xc4,
-	0xa1, 0x7e, 0xbd, 0xa0, 0x84, 0xc3, 0x0c, 0x02, 0x93, 0xf2, 0x7a, 0x37, 0xfb, 0x06, 0xdd, 0x3e,
-	0x42, 0x50, 0xbf, 0xda, 0x8b, 0x34, 0x8b, 0x57, 0x5b, 0xdd, 0xed, 0x00, 0x9c, 0x44, 0x91, 0x4a,
-	0x07, 0x0d, 0xc2, 0x6f, 0x36, 0x38, 0x7a, 0xce, 0x47, 0xd0, 0xe4, 0x42, 0x8e, 0x26, 0x6a, 0x73,
-	0xa8, 0xb7, 0xdf, 0x0b, 0xcc, 0x96, 0xab, 0x95, 0x0e, 0x1a, 0xd4, 0xe3, 0xe5, 0x99, 0x44, 0xe0,
-	0x15, 0x32, 0xd7, 0x01, 0x76, 0xae, 0x10, 0xaa, 0xac, 0x8a, 0x50, 0x35, 0x91, 0x1e, 0x34, 0x33,
-	0xc1, 0xa7, 0x9a, 0x61, 0x23, 0x83, 0x18, 0x86, 0x99, 0xe5, 0xa0, 0x41, 0xff, 0xb6, 0x91, 0x57,
-	0x40, 0x2a, 0xfe, 0xe8, 0x2b, 0x93, 0x33, 0x3d, 0xa5, 0x5d, 0x24, 0xdf, 0xdb, 0xb0, 0xab, 0xf6,
-	0x30, 0x68, 0x50, 0xbf, 0xa2, 0x99, 0xdd, 0x9c, 0xc0, 0x5d, 0xa3, 0x5b, 0xd3, 0x72, 0x50, 0xeb,
-	0xfe, 0x66, 0x90, 0x9a, 0x58, 0x60, 0x88, 0x75, 0xb5, 0x7f, 0x83, 0xe9, 0xe9, 0xba, 0x57, 0xd4,
-	0x36, 0x96, 0xa6, 0xd4, 0xea, 0xd1, 0xf0, 0x63, 0xdf, 0x85, 0xdd, 0x73, 0xc6, 0x93, 0xf0, 0x08,
-	0x5c, 0x6c, 0x2f, 0xc8, 0x03, 0x70, 0xb1, 0xa7, 0xfa, 0xe5, 0xee, 0x18, 0x49, 0x6c, 0xa0, 0x65,
-	0xb5, 0xff, 0xec, 0xc7, 0xba, 0x6d, 0xfd, 0x5c, 0xb7, 0xad, 0x5f, 0xeb, 0xb6, 0xf5, 0xfd, 0x77,
-	0xbb, 0xf1, 0xf9, 0xe1, 0x94, 0xc9, 0xd9, 0x72, 0xdc, 0x3d, 0x13, 0xf3, 0xe8, 0xf4, 0xf5, 0xf3,
-	0x77, 0x6f, 0x22, 0x99, 0x45, 0x8c, 0xcb, 0x34, 0xe7, 0x71, 0x16, 0xe1, 0x2b, 0x11, 0x2d, 0xc6,
-	0xa8, 0x35, 0x76, 0xf1, 0xa5, 0x38, 0xfe, 0x13, 0x00, 0x00, 0xff, 0xff, 0x9c, 0x73, 0xc3, 0xf6,
-	0x3d, 0x04, 0x00, 0x00,
+	0x10, 0x8e, 0xeb, 0xd8, 0x4d, 0xa6, 0x3f, 0xd8, 0x4b, 0x11, 0x81, 0x43, 0x54, 0x59, 0x02, 0x55,
+	0x20, 0xe2, 0x2a, 0x45, 0x70, 0x41, 0x1c, 0xcc, 0x8f, 0x82, 0x28, 0xc5, 0x18, 0x5a, 0x24, 0x2e,
+	0x91, 0xd3, 0x38, 0xc9, 0x2a, 0xce, 0x6e, 0x64, 0x6f, 0xa0, 0xe9, 0x81, 0x37, 0xe0, 0xce, 0x23,
+	0x71, 0xe4, 0x11, 0x50, 0x78, 0x11, 0xb4, 0xbb, 0x5e, 0xc7, 0xf9, 0x11, 0x52, 0x05, 0xb7, 0x99,
+	0xdd, 0xf9, 0xbe, 0xf9, 0x3c, 0xe3, 0x6f, 0xc1, 0x4a, 0xc7, 0x51, 0xd4, 0x6d, 0xf7, 0xc2, 0x94,
+	0x35, 0xc6, 0x09, 0x65, 0x14, 0x6d, 0xb2, 0x58, 0xa4, 0xce, 0x11, 0x6c, 0xfa, 0x14, 0x13, 0xe6,
+	0x7b, 0x68, 0x1b, 0xb4, 0x8b, 0x9a, 0xb6, 0xaf, 0x1d, 0xec, 0x04, 0xda, 0x05, 0xcf, 0xa6, 0xb5,
+	0x0d, 0x99, 0x4d, 0x79, 0x76, 0x59, 0xd3, 0x65, 0x76, 0xe9, 0x3c, 0x84, 0x8a, 0x00, 0xa5, 0xbe,
+	0x87, 0x0e, 0xc0, 0x1c, 0x8b, 0xb8, 0xa6, 0xed, 0xeb, 0x07, 0x5b, 0x4d, 0xab, 0x91, 0x51, 0x37,
+	0x32, 0xde, 0x20, 0xbb, 0x77, 0x00, 0x2a, 0x27, 0x94, 0xbd, 0xa4, 0x13, 0xd2, 0x75, 0x1e, 0x41,
+	0xe5, 0x3d, 0x4b, 0xce, 0xc2, 0x78, 0x12, 0xa1, 0x3d, 0x30, 0x3e, 0xf3, 0x40, 0xf4, 0xae, 0x06,
+	0x32, 0xe1, 0xa7, 0xbd, 0x38, 0xec, 0xa7, 0x42, 0x83, 0x11, 0xc8, 0xc4, 0x79, 0x0c, 0xd5, 0x63,
+	0x4a, 0xfa, 0x6b, 0x80, 0xfa, 0xdf, 0x81, 0x43, 0xb0, 0x54, 0xc3, 0x8f, 0x98, 0x0d, 0x3e, 0xe0,
+	0xd1, 0x95, 0x1a, 0xa3, 0xfb, 0x60, 0x8f, 0x68, 0x17, 0xf7, 0xf0, 0x79, 0xc8, 0x30, 0x25, 0x6d,
+	0x86, 0x47, 0x91, 0x18, 0x88, 0x11, 0x58, 0xc5, 0x0b, 0x4e, 0xec, 0xc4, 0x60, 0xe7, 0x2a, 0xd7,
+	0x77, 0xd3, 0xff, 0x63, 0xb7, 0x53, 0xb0, 0x8b, 0x9f, 0xf6, 0x3c, 0x8a, 0xc3, 0xe9, 0x95, 0xbe,
+	0x6d, 0x0f, 0x8c, 0x2e, 0x07, 0x65, 0x1d, 0x64, 0xe2, 0x7c, 0xd3, 0xc1, 0x90, 0x73, 0x3e, 0x84,
+	0x2a, 0xa1, 0xac, 0xdd, 0xe3, 0x9b, 0x13, 0x7c, 0x5b, 0x4d, 0x3b, 0xdf, 0xb2, 0x5a, 0x69, 0xab,
+	0x14, 0x54, 0x48, 0x16, 0x23, 0x17, 0x2a, 0x29, 0x4b, 0xa4, 0x80, 0x8d, 0x25, 0x80, 0xd2, 0xca,
+	0x01, 0xaa, 0x08, 0x35, 0xa1, 0x1a, 0x53, 0xd2, 0x97, 0x08, 0x5d, 0x20, 0x50, 0x8e, 0xc8, 0x67,
+	0xd9, 0x2a, 0x05, 0xf3, 0x32, 0xf4, 0x0a, 0x90, 0xc2, 0xb7, 0xbf, 0x60, 0x36, 0x90, 0x53, 0x2a,
+	0x0b, 0xf0, 0xad, 0x95, 0x76, 0x6a, 0x0f, 0xad, 0x52, 0x60, 0x29, 0x58, 0xbe, 0x9b, 0x63, 0xb8,
+	0x9e, 0xf3, 0x16, 0xb8, 0x0c, 0xc1, 0x75, 0x7b, 0x55, 0x48, 0x81, 0xcc, 0xce, 0x81, 0x45, 0xb6,
+	0x45, 0x61, 0x72, 0xba, 0xe6, 0x12, 0xdb, 0xca, 0xd2, 0x38, 0x5b, 0x51, 0x9a, 0x38, 0xf4, 0x4c,
+	0x28, 0x0f, 0x31, 0xe9, 0x3a, 0x87, 0x60, 0x8a, 0xf2, 0x14, 0xdd, 0x05, 0x53, 0xd4, 0x28, 0xcb,
+	0xed, 0xe6, 0x94, 0xa2, 0x20, 0xc8, 0x6e, 0x9d, 0x13, 0xd8, 0xf5, 0xc3, 0x84, 0xe1, 0x30, 0x56,
+	0x16, 0x47, 0x50, 0x1e, 0x85, 0xe9, 0x30, 0x73, 0xb9, 0x88, 0xa5, 0xed, 0x37, 0x16, 0x6c, 0xaf,
+	0x2f, 0xd8, 0xbe, 0xac, 0x6c, 0xef, 0xc1, 0xb5, 0x22, 0x1f, 0x77, 0xbf, 0xbb, 0xe4, 0xfe, 0x9b,
+	0x73, 0xf7, 0x2f, 0x74, 0xce, 0x1f, 0x81, 0x77, 0x60, 0x9f, 0x12, 0x4c, 0x89, 0x38, 0x17, 0x72,
+	0xff, 0x59, 0xd6, 0x9d, 0x22, 0xe5, 0x8b, 0x24, 0xa1, 0x89, 0xef, 0x21, 0x0b, 0xf4, 0x28, 0x49,
+	0xb2, 0xbf, 0x9f, 0x87, 0xce, 0x57, 0xd8, 0x9e, 0x97, 0xf9, 0x1e, 0x6a, 0x16, 0x1d, 0x52, 0xdc,
+	0xcb, 0x8a, 0xbe, 0x56, 0x49, 0xf9, 0xa7, 0x09, 0x46, 0xc4, 0x1b, 0x64, 0x3f, 0xf5, 0x3a, 0x4c,
+	0x26, 0x80, 0x63, 0x44, 0x69, 0xbe, 0xbf, 0xa7, 0xb0, 0x33, 0xaf, 0xe2, 0xb3, 0x7b, 0xb0, 0x34,
+	0xbb, 0x1b, 0x6b, 0xd8, 0xe6, 0x93, 0xf3, 0x9e, 0xfc, 0x98, 0xd5, 0xb5, 0x9f, 0xb3, 0xba, 0xf6,
+	0x6b, 0x56, 0xd7, 0xbe, 0xff, 0xae, 0x97, 0x3e, 0xdd, 0xeb, 0x63, 0x36, 0x98, 0x74, 0x1a, 0xe7,
+	0x74, 0xe4, 0x9e, 0xbd, 0x7e, 0xf6, 0xf6, 0x8d, 0xcb, 0x62, 0x17, 0x13, 0x16, 0x25, 0x24, 0x8c,
+	0x5d, 0xf1, 0xe6, 0xbb, 0xe3, 0x8e, 0xa0, 0xec, 0x98, 0xe2, 0xdd, 0x3f, 0xfa, 0x13, 0x00, 0x00,
+	0xff, 0xff, 0x56, 0x0f, 0x7d, 0x07, 0x0b, 0x06, 0x00, 0x00,
 }
 
 func (m *PointPB) Marshal() (dAtA []byte, err error) {
@@ -1227,6 +1613,294 @@ func (m *Values) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *PartialPointPB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PartialPointPB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PartialPointPB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Z != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Z))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Y != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Y))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.X != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.X))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Mask != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Mask))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PartialPointsPB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PartialPointsPB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PartialPointsPB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Points) > 0 {
+		for iNdEx := len(m.Points) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Points[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintSpeedFast(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UnionPointValuePB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UnionPointValuePB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointValuePB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Z != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Z))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Y != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Y))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.X != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.X))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Mask != 0 {
+		i = encodeVarintSpeedFast(dAtA, i, uint64(m.Mask))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UnionPointErrorPB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UnionPointErrorPB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointErrorPB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Err) > 0 {
+		i -= len(m.Err)
+		copy(dAtA[i:], m.Err)
+		i = encodeVarintSpeedFast(dAtA, i, uint64(len(m.Err)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UnionPointPB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UnionPointPB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointPB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Kind != nil {
+		{
+			size := m.Kind.Size()
+			i -= size
+			if _, err := m.Kind.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UnionPointPB_Value) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointPB_Value) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.Value != nil {
+		{
+			size, err := m.Value.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSpeedFast(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+func (m *UnionPointPB_Error) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointPB_Error) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.Error != nil {
+		{
+			size, err := m.Error.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSpeedFast(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+func (m *UnionPointsPB) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UnionPointsPB) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnionPointsPB) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Points) > 0 {
+		for iNdEx := len(m.Points) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Points[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintSpeedFast(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintSpeedFast(dAtA []byte, offset int, v uint64) int {
 	offset -= sovSpeedFast(v)
 	base := offset
@@ -1486,6 +2160,145 @@ func (m *Values) Size() (n int) {
 	_ = l
 	if len(m.Values) > 0 {
 		for _, e := range m.Values {
+			l = e.Size()
+			n += 1 + l + sovSpeedFast(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *PartialPointPB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Mask != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Mask))
+	}
+	if m.X != 0 {
+		n += 1 + sovSpeedFast(uint64(m.X))
+	}
+	if m.Y != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Y))
+	}
+	if m.Z != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Z))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *PartialPointsPB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Points) > 0 {
+		for _, e := range m.Points {
+			l = e.Size()
+			n += 1 + l + sovSpeedFast(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UnionPointValuePB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Mask != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Mask))
+	}
+	if m.X != 0 {
+		n += 1 + sovSpeedFast(uint64(m.X))
+	}
+	if m.Y != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Y))
+	}
+	if m.Z != 0 {
+		n += 1 + sovSpeedFast(uint64(m.Z))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UnionPointErrorPB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Err)
+	if l > 0 {
+		n += 1 + l + sovSpeedFast(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UnionPointPB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Kind != nil {
+		n += m.Kind.Size()
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *UnionPointPB_Value) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Value != nil {
+		l = m.Value.Size()
+		n += 1 + l + sovSpeedFast(uint64(l))
+	}
+	return n
+}
+func (m *UnionPointPB_Error) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Error != nil {
+		l = m.Error.Size()
+		n += 1 + l + sovSpeedFast(uint64(l))
+	}
+	return n
+}
+func (m *UnionPointsPB) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Points) > 0 {
+		for _, e := range m.Points {
 			l = e.Size()
 			n += 1 + l + sovSpeedFast(uint64(l))
 		}
@@ -2608,6 +3421,634 @@ func (m *Values) Unmarshal(dAtA []byte) error {
 			}
 			m.Values = append(m.Values, &Value{})
 			if err := m.Values[len(m.Values)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PartialPointPB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PartialPointPB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PartialPointPB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mask", wireType)
+			}
+			m.Mask = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mask |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field X", wireType)
+			}
+			m.X = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.X |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Y", wireType)
+			}
+			m.Y = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Y |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Z", wireType)
+			}
+			m.Z = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Z |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PartialPointsPB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PartialPointsPB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PartialPointsPB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Points", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Points = append(m.Points, &PartialPointPB{})
+			if err := m.Points[len(m.Points)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UnionPointValuePB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UnionPointValuePB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UnionPointValuePB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mask", wireType)
+			}
+			m.Mask = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mask |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field X", wireType)
+			}
+			m.X = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.X |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Y", wireType)
+			}
+			m.Y = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Y |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Z", wireType)
+			}
+			m.Z = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Z |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UnionPointErrorPB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UnionPointErrorPB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UnionPointErrorPB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Err", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Err = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UnionPointPB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UnionPointPB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UnionPointPB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &UnionPointValuePB{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Kind = &UnionPointPB_Value{v}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &UnionPointErrorPB{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Kind = &UnionPointPB_Error{v}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSpeedFast(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UnionPointsPB) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSpeedFast
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UnionPointsPB: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UnionPointsPB: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Points", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSpeedFast
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSpeedFast
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Points = append(m.Points, &UnionPointPB{})
+			if err := m.Points[len(m.Points)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

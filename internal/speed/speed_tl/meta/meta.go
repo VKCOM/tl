@@ -62,7 +62,18 @@ func init() {
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "memcache.values", Tag: 0xc894cef8, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "partialPoint", Tag: 0xbfa57042, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "partialPoints", Tag: 0x0d7f74de, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "point", Tag: 0x8ec1a27e, HaTL1: true, HaTL2: true})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "points", Tag: 0xebf9dd56, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(&metainternal.TLItemImpl{Name: "UnionPoint", HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "unionPointError", Tag: 0xa8dbfd23, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "unionPointValue", Tag: 0xbee8f76b, HaTL1: true, HaTL2: true})
+	metainternal.FillObject(
+		&metainternal.TLItemImpl{Name: "unionPoints", Tag: 0xa8495345, HaTL1: true, HaTL2: true})
 }
