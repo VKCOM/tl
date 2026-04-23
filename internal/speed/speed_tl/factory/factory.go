@@ -51,6 +51,12 @@ func init() {
 	metainternal.SetGlobalFactoryCreateForObject("memcache.strvalueWithTime", func() metainternal.Object { return new(internal.MemcacheStrvalueWithTime) })
 	metainternal.SetGlobalFactoryCreateForObject("memcache.Value", func() metainternal.Object { return new(internal.MemcacheValue) })
 	metainternal.SetGlobalFactoryCreateForObject("memcache.values", func() metainternal.Object { return new(internal.MemcacheValues) })
+	metainternal.SetGlobalFactoryCreateForObject("partialPoint", func() metainternal.Object { return new(internal.PartialPoint) })
+	metainternal.SetGlobalFactoryCreateForObject("partialPoints", func() metainternal.Object { return new(internal.PartialPoints) })
 	metainternal.SetGlobalFactoryCreateForObject("point", func() metainternal.Object { return new(internal.Point) })
 	metainternal.SetGlobalFactoryCreateForObject("points", func() metainternal.Object { return new(internal.Points) })
+	metainternal.SetGlobalFactoryCreateForObject("UnionPoint", func() metainternal.Object { return new(internal.UnionPoint) })
+	metainternal.SetGlobalFactoryCreateForObject("unionPointError", func() metainternal.Object { return new(internal.UnionPointError) })
+	metainternal.SetGlobalFactoryCreateForObject("unionPointValue", func() metainternal.Object { return new(internal.UnionPointValue) })
+	metainternal.SetGlobalFactoryCreateForObject("unionPoints", func() metainternal.Object { return new(internal.UnionPoints) })
 }

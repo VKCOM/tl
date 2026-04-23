@@ -1,6 +1,7 @@
 package speed
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/VKCOM/tl/internal/speed/speed_proto_fast/pb_fast"
@@ -398,6 +399,333 @@ func BenchmarkNewMemcacheValues(b *testing.B) {
 				return x.Marshal()
 			},
 			Unmarshal: func(x *pb_fast.Values, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
+func makePartialPoints(ps []tl.Point, defaultMask uint32, compact bool) []tl.PartialPoint {
+	pps := make([]tl.PartialPoint, len(ps))
+	for i, p := range ps {
+		pp := tl.PartialPoint{}
+		pp.X = p.X
+		pp.Y = p.Y
+		pp.Z = p.Z
+
+		pp.Mask = uint32((i*107+31)%8) ^ defaultMask
+
+		if compact {
+			if pp.X == 0 {
+				pp.Mask &^= 1 << 0
+			}
+			if pp.Y == 0 {
+				pp.Mask &^= 1 << 1
+			}
+			if pp.Z == 0 {
+				pp.Mask &^= 1 << 2
+			}
+		}
+
+		pps[i] = pp
+	}
+
+	return pps
+}
+
+func makePartialPointPB(p tl.PartialPoint) pb_fast.PartialPointPB {
+	return pb_fast.PartialPointPB{Mask: p.Mask, X: p.X, Y: p.Y, Z: p.Z}
+}
+
+func BenchmarkNewPartialPoint(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.PartialPoint, pb_fast.PartialPointPB](b, benchDataGenerator[tl.PartialPoint, pb_fast.PartialPointPB]{
+		GenerateSamples: func() []tl.PartialPoint {
+			ps, _, _ := prepareTLPointsBuffer()
+			return makePartialPoints(ps, 0, false)
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: makePartialPointPB,
+
+		TLProvider: TLData[tl.PartialPoint]{
+			WriteTL1Boxed: func(x *tl.PartialPoint, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.PartialPoint, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.PartialPoint, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.PartialPoint, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.PartialPointPB]{
+			Size: func(x *pb_fast.PartialPointPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.PartialPointPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.PartialPointPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.PartialPointPB, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
+func BenchmarkNewPartialPoints(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.PartialPoints, pb_fast.PartialPointsPB](b, benchDataGenerator[tl.PartialPoints, pb_fast.PartialPointsPB]{
+		GenerateSamples: func() []tl.PartialPoints {
+			ps, _ := prepareTLPointssBuffer()
+			pss := make([]tl.PartialPoints, len(ps))
+			for i, po := range ps {
+				pss[i] = tl.PartialPoints{Values: makePartialPoints(po.Values, uint32((i*73)+31)%8, false)}
+			}
+			return pss
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: func(p tl.PartialPoints) pb_fast.PartialPointsPB {
+			pbb := pb_fast.PartialPointsPB{Points: make([]*pb_fast.PartialPointPB, 0)}
+			for _, value := range p.Values {
+				pb := makePartialPointPB(value)
+				pbb.Points = append(pbb.Points, &pb)
+			}
+			return pbb
+		},
+
+		TLProvider: TLData[tl.PartialPoints]{
+			WriteTL1Boxed: func(x *tl.PartialPoints, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.PartialPoints, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.PartialPoints, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.PartialPoints, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.PartialPointsPB]{
+			Size: func(x *pb_fast.PartialPointsPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.PartialPointsPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.PartialPointsPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.PartialPointsPB, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
+func BenchmarkNewPartialPointsCompact(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.PartialPoints, pb_fast.PartialPointsPB](b, benchDataGenerator[tl.PartialPoints, pb_fast.PartialPointsPB]{
+		GenerateSamples: func() []tl.PartialPoints {
+			ps, _ := prepareTLPointssBuffer()
+			pss := make([]tl.PartialPoints, len(ps))
+			for i, po := range ps {
+				pss[i] = tl.PartialPoints{Values: makePartialPoints(po.Values, uint32((i*73)+31)%8, true)}
+			}
+			return pss
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: func(p tl.PartialPoints) pb_fast.PartialPointsPB {
+			pbb := pb_fast.PartialPointsPB{Points: make([]*pb_fast.PartialPointPB, 0)}
+			for _, value := range p.Values {
+				pb := makePartialPointPB(value)
+				pbb.Points = append(pbb.Points, &pb)
+			}
+			return pbb
+		},
+
+		TLProvider: TLData[tl.PartialPoints]{
+			WriteTL1Boxed: func(x *tl.PartialPoints, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.PartialPoints, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.PartialPoints, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.PartialPoints, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.PartialPointsPB]{
+			Size: func(x *pb_fast.PartialPointsPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.PartialPointsPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.PartialPointsPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.PartialPointsPB, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
+func makeUnionPoints(ps []tl.PartialPoint, shift int) []tl.UnionPoint {
+	ups := make([]tl.UnionPoint, len(ps))
+	for i, p := range ps {
+		// random as i can
+		if ((((i+shift)*79 + 89) % 313) & (1 << 7)) == (1 << 7) {
+			ups[i].SetError(tl.UnionPointError{Err: strings.Repeat("a", (i*79+89)%313)})
+		} else {
+			ups[i].SetValue(tl.UnionPointValue{
+				Mask: p.Mask,
+				X:    p.X,
+				Y:    p.Y,
+				Z:    p.Z,
+			})
+		}
+	}
+
+	return ups
+}
+
+func makeUnionPointPB(up tl.UnionPoint) pb_fast.UnionPointPB {
+	switch {
+	case up.IsValue():
+		v, _ := up.AsValue()
+		return pb_fast.UnionPointPB{Kind: &pb_fast.UnionPointPB_Value{Value: &pb_fast.UnionPointValuePB{
+			Mask: v.Mask,
+			X:    v.X,
+			Y:    v.Y,
+			Z:    v.Z,
+		}}}
+	default:
+		v, _ := up.AsError()
+		return pb_fast.UnionPointPB{Kind: &pb_fast.UnionPointPB_Error{Error: &pb_fast.UnionPointErrorPB{
+			Err: v.Err,
+		}}}
+	}
+}
+
+func BenchmarkNewUnionPoint(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.UnionPoint, pb_fast.UnionPointPB](b, benchDataGenerator[tl.UnionPoint, pb_fast.UnionPointPB]{
+		GenerateSamples: func() []tl.UnionPoint {
+			ps, _, _ := prepareTLPointsBuffer()
+			return makeUnionPoints(makePartialPoints(ps, 0, false), 0)
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: makeUnionPointPB,
+
+		TLProvider: TLData[tl.UnionPoint]{
+			WriteTL1Boxed: func(x *tl.UnionPoint, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.UnionPoint, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.UnionPoint, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.UnionPoint, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.UnionPointPB]{
+			Size: func(x *pb_fast.UnionPointPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.UnionPointPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.UnionPointPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.UnionPointPB, dAtA []byte) error {
+				return x.Unmarshal(dAtA)
+			},
+		},
+	})
+}
+
+func BenchmarkNewUnionPoints(b *testing.B) {
+	buffer_ := make([]byte, 0, bufferSize)
+
+	benchBase[tl.UnionPoints, pb_fast.UnionPointsPB](b, benchDataGenerator[tl.UnionPoints, pb_fast.UnionPointsPB]{
+		GenerateSamples: func() []tl.UnionPoints {
+			ps, _ := prepareTLPointssBuffer()
+			pss := make([]tl.UnionPoints, len(ps))
+			for i, po := range ps {
+				pss[i] = tl.UnionPoints{Values: makeUnionPoints(makePartialPoints(po.Values, uint32((i*73)+31)%8, true), i)}
+			}
+			return pss
+		},
+		GenerateBuffer: func() []byte {
+			return buffer_
+		},
+		MapSample: func(p tl.UnionPoints) pb_fast.UnionPointsPB {
+			pbb := pb_fast.UnionPointsPB{Points: make([]*pb_fast.UnionPointPB, 0)}
+			for _, value := range p.Values {
+				pb := makeUnionPointPB(value)
+				pbb.Points = append(pbb.Points, &pb)
+			}
+			return pbb
+		},
+
+		TLProvider: TLData[tl.UnionPoints]{
+			WriteTL1Boxed: func(x *tl.UnionPoints, buf []byte) []byte {
+				return x.WriteTL1Boxed(buf)
+			},
+			ReadTL1Boxed: func(x *tl.UnionPoints, buf []byte) ([]byte, error) {
+				return x.ReadTL1Boxed(buf)
+			},
+			WriteTL2: func(x *tl.UnionPoints, w []byte, tctx *basictl.TL2WriteContext) []byte {
+				return x.WriteTL2(w, tctx)
+			},
+			ReadTL2: func(x *tl.UnionPoints, r []byte, tctx *basictl.TL2ReadContext) (_ []byte, err error) {
+				return x.ReadTL2(r, tctx)
+			},
+		},
+
+		ProtoProvider: ProtoData[pb_fast.UnionPointsPB]{
+			Size: func(x *pb_fast.UnionPointsPB) int {
+				return x.Size()
+			},
+			MarshalToSizedBuffer: func(x *pb_fast.UnionPointsPB, dAtA []byte) (int, error) {
+				return x.MarshalToSizedBuffer(dAtA)
+			},
+			Marshal: func(x *pb_fast.UnionPointsPB) ([]byte, error) {
+				return x.Marshal()
+			},
+			Unmarshal: func(x *pb_fast.UnionPointsPB, dAtA []byte) error {
 				return x.Unmarshal(dAtA)
 			},
 		},

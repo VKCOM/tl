@@ -6,7 +6,15 @@ import (
 )
 
 type (
-	Point            = internal.Point
-	Points           = internal.Points
-	VectorPointBoxed = internal.VectorPointBoxed
+	PartialPoint            = internal.PartialPoint
+	PartialPoints           = internal.PartialPoints
+	Point                   = internal.Point
+	Points                  = internal.Points
+	UnionPoint              = internal.UnionPoint
+	UnionPointError         = internal.UnionPointError
+	UnionPointValue         = internal.UnionPointValue
+	UnionPoints             = internal.UnionPoints
+	VectorPartialPointBoxed = internal.VectorPartialPointBoxed
+	VectorPointBoxed        = internal.VectorPointBoxed
+	VectorUnionPoint        = internal.VectorUnionPoint
 )

@@ -9,7 +9,12 @@ const (
 	MemcacheStrvalueWithDelay = 0x1bbf7044 // memcache.strvalueWithDelay
 	MemcacheStrvalueWithTime  = 0xa064c821 // memcache.strvalueWithTime
 	MemcacheValues            = 0xc894cef8 // memcache.values
+	PartialPoint              = 0xbfa57042 // partialPoint
+	PartialPoints             = 0x0d7f74de // partialPoints
 	Point                     = 0x8ec1a27e // point
 	Points                    = 0xebf9dd56 // points
+	UnionPointError           = 0xa8dbfd23 // unionPointError
+	UnionPointValue           = 0xbee8f76b // unionPointValue
+	UnionPoints               = 0xa8495345 // unionPoints
 	Vector                    = 0x1cb5c415 // vector
 )
