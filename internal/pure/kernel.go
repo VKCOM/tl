@@ -15,6 +15,7 @@ import (
 
 	"github.com/TwiN/go-color"
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 // TODO - name collision checks
@@ -232,6 +233,28 @@ func (k *Kernel) AddFileTL2(file string) error {
 		return err // Do not add excess info to already long parse error
 	}
 	k.filesTL2 = append(k.filesTL2, tl.Combinators...)
+	return nil
+}
+
+func (k *Kernel) AddFilesFromPaths(paths []string) error {
+	pathsTL1, err := utils.WalkDeterministic(".tl", paths...)
+	if err != nil {
+		return fmt.Errorf("error while walking through paths: %w", err)
+	}
+	for _, path := range pathsTL1 {
+		if err := k.AddFileTL1(path); err != nil {
+			return err
+		}
+	}
+	pathsTL2, err := utils.WalkDeterministic(".tl2", paths...)
+	if err != nil {
+		return fmt.Errorf("error while walking through tl2 paths: %w", err)
+	}
+	for _, path := range pathsTL2 {
+		if err := k.AddFileTL2(path); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
