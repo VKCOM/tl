@@ -10,7 +10,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
 	//"net/http"
 	//_ "net/http/pprof" // Import for side effects: registers pprof handlers
 	"os"
@@ -81,20 +80,20 @@ func main() {
 		if errors.As(err, &parseError) {
 			parseError.ConsolePrint(opt.ErrorWriter, err, false)
 		} else {
-			log.Println(err.Error())
+			fmt.Println(err.Error())
 		}
 		if opt.Language == "lint" {
-			log.Printf("TL Linter Failed") // do not check Verbose
+			fmt.Println("TL Linter Failed") // do not check Verbose
 		} else {
-			log.Printf("TL Generation Failed") // do not check Verbose
+			fmt.Println("TL Generation Failed") // do not check Verbose
 		}
 		os.Exit(1)
 		return
 	}
 	if opt.Language == "lint" {
-		log.Printf("TL Linter Success") // do not check Verbose
+		fmt.Println("TL Linter Success") // do not check Verbose
 	} else {
-		log.Printf("TL Generation Success") // do not check Verbose
+		fmt.Println("TL Generation Success") // do not check Verbose
 	}
 }
 
@@ -103,12 +102,15 @@ func runMain(opt *puregen.Options) error {
 		return err
 	}
 
-	args := flag.Args()
-	if len(args) == 0 {
+	if len(flag.Args()) == 0 {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
 	}
 
 	kernel := pure.NewKernel(&opt.Kernel)
+
+	if err := kernel.AddFilesFromPaths(flag.Args()); err != nil {
+		return err
+	}
 
 	if opt.ProfileCPU != "" {
 		f, err := os.Create(opt.ProfileCPU)
@@ -122,27 +124,6 @@ func runMain(opt *puregen.Options) error {
 				fmt.Printf("starting CPU profiling, to ananlyze run 'go tool pprof -http=:8080 %s'\n", opt.ProfileCPU)
 				defer pprof.StopCPUProfile()
 			}
-		}
-	}
-
-	// parse tl1
-	pathsTL1, err := utils.WalkDeterministic(".tl", args...)
-	if err != nil {
-		return fmt.Errorf("error while walking through paths: %w", err)
-	}
-	for _, path := range pathsTL1 {
-		if err := kernel.AddFileTL1(path); err != nil {
-			return err
-		}
-	}
-	// parse tl2
-	pathsTL2, err := utils.WalkDeterministic(".tl2", args...)
-	if err != nil {
-		return fmt.Errorf("error while walking through tl2 paths: %w", err)
-	}
-	for _, path := range pathsTL2 {
-		if err := kernel.AddFileTL2(path); err != nil {
-			return err
 		}
 	}
 

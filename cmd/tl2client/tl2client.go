@@ -9,10 +9,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"math/rand/v2"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/VKCOM/tl/internal/pure"
@@ -143,7 +141,7 @@ func (m model) View() string {
 }
 
 func main() {
-	log.Printf("tl2client WIP version: %s", utils.AppVersion())
+	fmt.Printf("tl2client WIP version: %s\n", utils.AppVersion())
 
 	var runUI bool
 	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
@@ -151,46 +149,31 @@ func main() {
 
 	kernel := pure.NewKernel(&pure.OptionsKernel{})
 	if len(flag.Args()) == 0 {
-		log.Printf("tl2client requires 1 or more .tl and/or tl2 files")
+		fmt.Printf("tl2client requires 1 or more .tl and/or tl2 files\n")
 		os.Exit(2)
 	}
-	for _, arg := range flag.Args() {
-		switch {
-		case strings.HasSuffix(arg, "tl2"):
-			err := kernel.AddFileTL2(arg)
-			if err != nil {
-				log.Printf("%v", err)
-				os.Exit(3)
-			}
-		case strings.HasSuffix(arg, "tl"):
-			err := kernel.AddFileTL1(arg)
-			if err != nil {
-				log.Printf("%v", err)
-				os.Exit(4)
-			}
-		default:
-			log.Printf("tl2client unsupported filename %q, must have .tl or tl2 suffix", arg)
-			os.Exit(5)
-		}
+	if err := kernel.AddFilesFromPaths(flag.Args()); err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(3)
 	}
 	err := kernel.Compile()
 	if err != nil {
-		log.Printf("%v", err)
+		fmt.Printf("%v\n", err)
 		os.Exit(4)
 	}
 	//	tlt := kernel.TopLevelTypeInstances()
 	tlt := kernel.AllTypeInstances()
 	rnd := rand.New(rand.NewPCG(rand.Uint64(), rand.Uint64()))
 	for _, t := range tlt {
-		log.Printf("type instance: %v", t.CanonicalName())
+		fmt.Printf("type instance: %v\n", t.CanonicalName())
 		for i := 0; i < 5; i++ {
 			val := vkext.CreateValue(t)
 			val.Random(rnd)
 			var bb vkext.ByteBuilder
 			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
-			log.Printf(".   TL2: %s", bb.Print())
-			log.Printf(".   JSON: %s", js)
+			fmt.Printf(".   TL2: %s\n", bb.Print())
+			fmt.Printf(".   JSON: %s\n", js)
 		}
 	}
 
@@ -201,7 +184,7 @@ func main() {
 	name := "a.top2"
 	fun := kernel.GetFunctionInstance(name)
 	if fun == nil {
-		log.Printf("function %q not found", name)
+		fmt.Printf("function %q not found\n", name)
 		return
 	}
 
@@ -224,7 +207,7 @@ func main() {
 		}
 	}()
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
+		fmt.Printf("Alas, there's been an error: %v\n", err)
 		os.Exit(1)
 	}
 }
