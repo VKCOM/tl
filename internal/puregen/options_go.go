@@ -19,11 +19,11 @@ type OptionsGo struct {
 }
 
 func (opt *OptionsGo) Bind(f *flag.FlagSet) {
-	f.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
+	f.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "github.com/VKCOM/tl/pkg/basictl",
 		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
 	f.StringVar(&opt.TLPackageNameFull, "pkgPath", "",
 		"package path to be used inside generated code")
-	f.StringVar(&opt.BasicRPCPath, "basicRPCPath", "",
+	f.StringVar(&opt.BasicRPCPath, "basicRPCPath", "github.com/VKCOM/tl/pkg/rpc",
 		"path to rpc package")
 	f.StringVar(&opt.RawHandlerWhileList, "rawHandlerWhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate RAW function handlers. Empty means none, '*' means all")
