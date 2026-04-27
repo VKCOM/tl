@@ -598,8 +598,9 @@ func makeUnionPoints(ps []tl.PartialPoint, shift int) []tl.UnionPoint {
 	ups := make([]tl.UnionPoint, len(ps))
 	for i, p := range ps {
 		// random as i can
-		if ((((i+shift)*79 + 89) % 313) & (1 << 7)) == (1 << 7) {
-			ups[i].SetError(tl.UnionPointError{Err: strings.Repeat("a", (i*79+89)%313)})
+		rValue := (i*79 + 89) % 313
+		if rValue < 313/5 {
+			ups[i].SetError(tl.UnionPointError{Err: strings.Repeat("a", rValue)})
 		} else {
 			ups[i].SetValue(tl.UnionPointValue{
 				Mask: p.Mask,
