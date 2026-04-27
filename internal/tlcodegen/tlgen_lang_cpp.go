@@ -796,7 +796,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string
 						newGroup := utils.SetToSlice(groups)[0]
 						oldGroup := to.groupName
 						to.groupName = newGroup
-						if to.groupName != CommonGroup && to.groupName != IndependentTypes && to.groupName != GhostTypes && oldGroup != newGroup {
+						if to.groupName != IndependentTypes && to.groupName != GhostTypes && oldGroup != newGroup {
 							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
 						}
 						to.hppDetailsFileName = to.cppDetailsFileName
@@ -911,13 +911,16 @@ func (gen *Gen2) decideGroupInConflict(to *TypeRWWrapper, edges map[*TypeRWWrapp
 	groupsList := utils.SetToSlice(groups)
 	sort.Strings(groupsList)
 
-	//fmt.Printf("%s : <-%s, ->%s\n", to.goGlobalName, groupsList, deps)
+	_, hasArgs := to.fullyResolvedClassCppNameArgs()
 
-	if len(deps) == 0 {
-		to.groupName = CommonGroup
-	} else {
+	to.groupName = CommonGroup
+
+	if len(hasArgs) > 0 && len(deps) > 0 {
+		//Debugf("> %s %v \"wrapping\"=%v \"isTop\"=%v %v\n", to.tlName.String(), to.trw.CPPAllowCurrentDefinition(), to.trw.IsWrappingType(), to.IsTopLevel(), deps)
 		to.groupName = deps[0]
-		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+		if to.groupName != CommonGroup {
+			to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+		}
 		to.hppDetailsFileName = to.cppDetailsFileName
 	}
 }
