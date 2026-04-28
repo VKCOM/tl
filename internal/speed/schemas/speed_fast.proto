@@ -1,0 +1,93 @@
+syntax = "proto3";
+package tl_fast;
+
+option go_package = "github.com/VKCOM/tl/internal/speed/pb_fast";
+
+message PointPB {
+  uint32              x = 1;
+  uint32              y = 2;
+  uint32              z = 3;
+}
+
+message PointsPB {
+  repeated PointPB points = 1;
+}
+
+message NotFound {}
+
+message StrValue {
+  string value = 1;
+  int32 flags = 2;
+}
+
+message LongValue {
+  int64 value = 1;
+  int32 flags = 2;
+}
+
+message StrValueWithTime {
+  string value = 1;
+  int32 flags = 2;
+  int32 modification_time = 3;
+}
+
+message LongValueWithTime {
+  int64 value = 1;
+  int32 flags = 2;
+  int32 modification_time = 3;
+}
+
+message StrValueWithDelay {
+  string value = 1;
+  int32 flags = 2;
+  int32 delay = 3;
+}
+
+message Value {
+  oneof kind {
+    NotFound          not_found = 1;
+    StrValue          strvalue = 2;
+    LongValue         longvalue = 3;
+    StrValueWithTime  strvalue_with_time = 4;
+    LongValueWithTime longvalue_with_time = 5;
+    StrValueWithDelay strvalue_with_delay = 6;
+  }
+}
+
+message Values {
+  repeated Value values = 1;
+}
+
+message PartialPointPB {
+  uint32           mask = 1;
+  uint32              x = 2;
+  uint32              y = 3;
+  uint32              z = 4;
+}
+
+message PartialPointsPB {
+  repeated PartialPointPB points = 1;
+}
+
+message UnionPointValuePB {
+  uint32           mask = 1;
+  uint32              x = 2;
+  uint32              y = 3;
+  uint32              z = 4;
+}
+
+message UnionPointErrorPB {
+  string           err = 1;
+}
+
+
+message UnionPointPB {
+  oneof kind {
+    UnionPointValuePB          value = 1;
+    UnionPointErrorPB          error = 2;
+  }
+}
+
+message UnionPointsPB {
+  repeated UnionPointPB points = 1;
+}
