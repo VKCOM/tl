@@ -9,7 +9,11 @@ gen_methods:
 	bash scripts/create_proto.sh
 	bash scripts/create_tl.sh
 
+
+
+
 COUNT ?= 3
+FILTER ?= '^BenchmarkNew'
 
 .PHONY: all_benchmarks
 all_benchmarks:
@@ -17,7 +21,9 @@ all_benchmarks:
 
 .PHONY: all_new_benchmarks
 all_new_benchmarks:
-	go test -bench='^BenchmarkNew' -count=$(COUNT)
+	@echo "'FILTER' USED: $(FILTER)"
+	@echo "'COUNT'  USED: $(COUNT)"
+	go test -bench=$(FILTER) -count=$(COUNT)
 
 
 # ----------- POINT ---------------
