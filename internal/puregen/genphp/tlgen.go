@@ -93,11 +93,6 @@ func (gen *genphp) addCodeFile(filepathName string, code string) error {
 }
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
-	options.Kernel.InstantiateConstants = false
-	options.Kernel.InstantiateExclamationWrappers = true
-	options.Kernel.NatArgsDelimiter = "_"
-	options.Kernel.NotSimplifyNatArgs = true
-
 	if !options.PHP.UseBuiltinDataProviders {
 		panic("usage of \"UseBuiltinDataProviders\" is currently mandatory")
 	}

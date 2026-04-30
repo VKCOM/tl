@@ -113,6 +113,11 @@ func (opt *Options) Validate() error {
  */
 
 `
+		// move here to fix read InstantiateExclamationWrappers in NewKernel
+		opt.Kernel.InstantiateConstants = false
+		opt.Kernel.InstantiateExclamationWrappers = true
+		opt.Kernel.NatArgsDelimiter = "_"
+		opt.Kernel.NotSimplifyNatArgs = true
 	}
 	if opt.CopyrightFilePath != "" {
 		buf, err := os.ReadFile(opt.CopyrightFilePath)
