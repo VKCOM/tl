@@ -262,7 +262,7 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 		if strct.ResultType == nil && strct.wr.PHPIsTrueType() && unionParent == nil {
 			return false
 		}
-		if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
+		if strct.ResultType != nil && strct.wr.phpInfo.UsedOnlyInInternal {
 			return false
 		}
 	}

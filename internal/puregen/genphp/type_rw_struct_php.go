@@ -377,7 +377,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 					for _, arg := range fetcherFields {
 						cc.AddLinef("/** @var %[1]s */", arg.TypeName)
-						cc.AddLinef("public $%[1]s = %[2]s", arg.FieldName, arg.DefaultValue)
+						cc.AddLinef("public $%[1]s = %[2]s;", arg.FieldName, arg.DefaultValue)
 					}
 
 					if len(fetcherFields) > 0 {
