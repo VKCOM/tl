@@ -189,7 +189,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		panic("union can't be bare")
 	}
 	variantName := func(tag uint32, index int) string {
-		return fmt.Sprintf("$variant0x%08x", tag)
+		return fmt.Sprintf("$variant0x%08x_%s", tag, supportSuffix)
 	}
 	var result []string
 	if trw.wr.gen.options.UseBuiltinDataProviders {

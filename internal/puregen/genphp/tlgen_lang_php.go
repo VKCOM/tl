@@ -300,8 +300,10 @@ func (gen *genphp) PhpMarkAllInternalTypes() {
 	}
 
 	for wrapper := range internalReachable {
-		if !nonInternalReachable[wrapper] {
-			wrapper.phpInfo.UsedOnlyInInternal = true
+		if !gen.options.PHP.EnableInternalFunctions {
+			if !nonInternalReachable[wrapper] {
+				wrapper.phpInfo.UsedOnlyInInternal = true
+			}
 		}
 		wrapper.phpInfo.UsedInFunctions = true
 		checkWrapperRequireBody(wrapper)
@@ -316,7 +318,7 @@ func (gen *genphp) PhpMarkAllInternalTypes() {
 func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
 	strct, iStruct := wr.trw.(*TypeRWStruct)
 	if iStruct && strct.ResultType != nil {
-		return strct.wr.pureType.Common().IsTopLevel()
+		return strct.wr.pureType.Common().IsTopLevel() && !strct.pureType.KernelType().IsExclamationWrapper()
 	}
 	return false
 }
