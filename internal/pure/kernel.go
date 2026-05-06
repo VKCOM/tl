@@ -23,6 +23,7 @@ type Kernel struct {
 	opts                  *OptionsKernel
 	rpcPreferTL2WhiteList Whitelist
 	tl2WhiteList          Whitelist
+	typesWhiteList        Whitelist
 	// each type can have up to 3 elements in this map, TL1 constructor, TL1 type and canonical primitive name
 	tips         map[string]*KernelType
 	tipsOrdered  []*KernelType
@@ -48,6 +49,7 @@ func NewKernel(opts *OptionsKernel) *Kernel {
 		opts:                  opts,
 		rpcPreferTL2WhiteList: NewWhiteList("--rpcPreferTL2WhiteList", opts.RPCPreferTL2WhiteList),
 		tl2WhiteList:          NewWhiteList("--tl2WhiteList", opts.TL2WhiteList),
+		typesWhiteList:        NewWhiteList("--typesWhiteList", opts.TypesWhiteList),
 		brackets: &KernelType{
 			originTL2: true,
 			builtin:   true,
@@ -452,6 +454,9 @@ func (k *Kernel) Compile() error {
 				continue
 			}
 			_, _ = fmt.Fprintf(k.opts.ErrorWriter, "will instantiate exclamation wrapper %s\n", tip.canonicalName)
+		}
+		if !k.typesWhiteList.HasName(tlast.Name(tip.CanonicalName())) {
+			continue
 		}
 		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.canonicalName}}
 		if _, _, err := k.getInstance(tr, true); err != nil {
