@@ -8,6 +8,9 @@ import (
 )
 
 func SprintHexDump(data []byte) string {
+	if len(data)%4 != 0 {
+		panic("must receive result of TL1 serialization which is always multiple of 4")
+	}
 	var buf bytes.Buffer
 	buf.Grow(len(data) + len(data)/4)
 	for i := 0; i < len(data); i += 4 {

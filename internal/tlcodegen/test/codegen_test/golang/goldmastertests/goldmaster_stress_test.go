@@ -23,17 +23,11 @@ const randomSeed = 123432
 const PathToBytesData = "../../data/test-stress-data-goldmaster.json"
 const NumberOfSamples = 10
 
-func TestGoldmasterStressTest(t *testing.T) {
-	tests, err := readTestData()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
-
-	testNames := utils.Keys(tests.Tests)
-	sort.Strings(testNames)
-
-	kernel := pure.NewKernel(&pure.OptionsKernel{})
+func kernelForTests(t *testing.T) *pure.Kernel {
+	kernel := pure.NewKernel(&pure.OptionsKernel{
+		TypesWhiteList: "*",
+		TL2WhiteList:   "*",
+	})
 	if err := kernel.AddFileTL1("../../../tls/goldmaster.tl"); err != nil {
 		t.Fatal(err.Error())
 	}
@@ -46,6 +40,20 @@ func TestGoldmasterStressTest(t *testing.T) {
 	if err := kernel.Compile(); err != nil {
 		t.Fatal(err.Error())
 	}
+	return kernel
+}
+
+func TestGoldmasterStressTest(t *testing.T) {
+	tests, err := readTestData()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
+
+	testNames := utils.Keys(tests.Tests)
+	sort.Strings(testNames)
+
+	kernel := kernelForTests(t)
 
 	for _, testName := range testNames {
 		t.Run(testName, func(t *testing.T) {
@@ -56,19 +64,9 @@ func TestGoldmasterStressTest(t *testing.T) {
 					t.Fatalf("can't create object of type %q", testingInfo.TestingType)
 				}
 				dst.FillRandom(rg)
-				testingTypeVkext := testingInfo.TestingType
-				// canonical types are different for string, canonical is String for wrapper
-				switch testingTypeVkext {
-				case "int":
-					testingTypeVkext = "Int"
-				case "long":
-					testingTypeVkext = "Long"
-				case "string":
-					testingTypeVkext = "String"
-				}
-				ins := kernel.GetObjectInstance(testingTypeVkext)
+				ins := kernel.GetObjectInstanceForTests(testingInfo.TestingType)
 				if ins == nil {
-					t.Fatalf("can't create vkext object of type %q", testingTypeVkext)
+					t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
 				}
 				dst2 := vkext.CreateValue(ins)
 				for _, success := range testingInfo.Successes {
@@ -103,7 +101,7 @@ func TestGoldmasterStressTest(t *testing.T) {
 						var writeReturn2 vkext.ByteBuilder
 						_ = dst2.WriteTL1(&writeReturn2, !success.IsTLBytesBoxed, nil, false, 0, nil)
 						if !assert.Equal(t, success.Bytes, utils.SprintHexDump(writeReturn2.Buf())) {
-							return
+							t.Fatalf("write tl1 unexpected result")
 						}
 					})
 				}
@@ -118,6 +116,8 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
+
+	kernel := kernelForTests(t)
 
 	testNames := utils.Keys(tests.Tests)
 	sort.Strings(testNames)
@@ -137,6 +137,11 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 					t.Fatalf("can't create object of type %q", testingInfo.TestingType)
 				}
 				dst.FillRandom(rg)
+				ins := kernel.GetObjectInstanceForTests(testingInfo.TestingType)
+				if ins == nil {
+					t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
+				}
+				dst2 := vkext.CreateValue(ins)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						readData := utils.ParseHexToBytesTL2(success.BytesTL2)
@@ -167,6 +172,19 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 							//writeReturn3 := newDst.WriteTL2(nil, &basictl.TL2WriteContext{})
 							fmt.Printf("%s %x\n", testingInfo.TestingType, writeReturn2)
 							//fmt.Printf("%s %x\n", testingInfo.TestingType, writeReturn3)
+							t.Fatalf("write tl2 unexpected result")
+						}
+
+						readOffset, err = dst2.ReadTL2(readData, nil)
+						if err != nil {
+							t.Fatalf("read error: %s", err.Error())
+						}
+						if len(readOffset) > 0 {
+							t.Fatalf("read tl2 offset not zero")
+						}
+						var writeReturn2 vkext.ByteBuilder
+						dst2.WriteTL2(&writeReturn2, false, false, 0, nil)
+						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn2.Buf())) {
 							t.Fatalf("write tl2 unexpected result")
 						}
 					})

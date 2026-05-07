@@ -178,6 +178,19 @@ func (k *Kernel) AllTypeInstances() []TypeInstance {
 	return result
 }
 
+func (k *Kernel) GetObjectInstanceForTests(name string) TypeInstance {
+	// canonical types are different for primitive wrappers, like string, canonical is String for wrapper
+	switch name {
+	case "int":
+		name = "Int"
+	case "long":
+		name = "Long"
+	case "string":
+		name = "String"
+	}
+	return k.GetObjectInstance(name)
+}
+
 func (k *Kernel) GetObjectInstance(name string) TypeInstance {
 	tip, ok := k.tips[name]
 	if !ok {

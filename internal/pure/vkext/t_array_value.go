@@ -154,10 +154,15 @@ func (v *KernelValueArray) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err erro
 			return r, basictl.TL2ElementCountError(elementCount, currentR)
 		}
 	}
-	if !v.instance.IsTuple() {
+	switch {
+	case !v.instance.IsTuple():
 		v.resize(elementCount)
+	case v.instance.DynamicSize():
+		v.resize(elementCount)
+	default:
+		v.resize(int(v.instance.Count())) // similar to RepairMasks. We are unsure if we want to run vkext kernel with or without constant instantiation
 	}
-	lastIndex := min(elementCount, elementCount)
+	lastIndex := min(elementCount, len(v.elements))
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = v.elements[i].ReadTL2(currentR, ctx); err != nil {
 			return r, err
