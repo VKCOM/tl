@@ -52,7 +52,12 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 	actualArgs []LocalArg) (tlast.TL2TypeArgument, []ActualNatArg, error) {
 	if tr.IsNumber {
 		if !k.opts.InstantiateConstants {
+			natArg := ActualNatArg{
+				isNumber: true,
+				number:   tr.Number,
+			}
 			tr.IsNumber = false
+			tr.Number = 0 // should not be necessary, for cleanness only
 			tr.Type = tlast.TL2TypeRef{
 				SomeType: tlast.TL2TypeApplication{
 					Name:        tlast.TL2TypeName{Name: "*"},
@@ -62,10 +67,7 @@ func (k *Kernel) resolveArgumentImpl(ctxTL2 bool, tr tlast.TL2TypeArgument, left
 				},
 				PR: tr.PR,
 			}
-			return tr, []ActualNatArg{{
-				isNumber: true,
-				number:   tr.Number,
-			}}, nil
+			return tr, []ActualNatArg{natArg}, nil
 		}
 		return tr, nil, nil
 	}
