@@ -446,7 +446,7 @@ const TL2SupportPHP = `class tl2_support {
   const HugeStringMarker = 255;
   const BigStringLen = 254 + (1 << 16) - 1;
   const HugeStringLen = (1 << 64) - 1;
-  
+
   /**
    * @return int
    */
@@ -649,7 +649,6 @@ class tl2_context {
 
   /**
    * @param int $value
-   * 
    * @return int
    */
   public function push_back($value) {
@@ -695,7 +694,6 @@ class tl2_context {
 
   /**
    * @param int $index
-   * 
    * @return int
    */
   public function get_value($index) {
@@ -729,4 +727,5 @@ class tl2_context {
     $s .= "]";
     return $s;
   }
-}`
+}
+`
