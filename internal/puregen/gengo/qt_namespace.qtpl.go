@@ -299,6 +299,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
+        req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)

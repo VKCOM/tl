@@ -40,6 +40,7 @@ func (c *Client) Request(ctx context.Context, args Request, extra *rpc.InvokeReq
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1

@@ -164,6 +164,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
+        req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 {%- if fun.wr.HasTL2() && !fun.wr.OriginTL2() -%}
