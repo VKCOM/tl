@@ -170,3 +170,25 @@ func testShutdownClient(t *rapid.T) {
 		t.Fatal("long poll contexts did not clear in server")
 	}
 }
+
+func TestPreferTLVersionFunc(t *testing.T) {
+	ret3 := func(ctx context.Context, req *Request, defaultTLVersion int) int {
+		return 3
+	}
+	ctx := WithPreferTLVersionFunc(context.Background(), ret3)
+	v := 0
+	if f := GetPreferTLVersionFunc(ctx); f != nil {
+		v = f(context.Background(), nil, v)
+	}
+	if v != 3 {
+		t.Fatal("preferTLVersionFunc returned unexpected value")
+	}
+	ctx = context.Background()
+	v = 0
+	if f := GetPreferTLVersionFunc(ctx); f != nil {
+		v = f(context.Background(), nil, v)
+	}
+	if v != 0 {
+		t.Fatal("preferTLVersionFunc returned unexpected value")
+	}
+}

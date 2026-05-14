@@ -20,6 +20,30 @@ var (
 	errMultiClosed = errors.New("rpc: Multi closed")
 )
 
+// DoMultiError contains address context for errors returned by ClientImpl.DoMulti.
+// Use errors.As to access Addr/ActorID, and errors.Is/errors.As with Unwrap for Err.
+type DoMultiError struct {
+	// Addr is the target address of the failed DoMulti step.
+	Addr NetAddr
+	// ActorID is request actor ID used for the failed DoMulti step.
+	ActorID int64
+	// Err is the original error returned by prepareRequest/processResponse.
+	Err error
+	msg string
+}
+
+func (e DoMultiError) Error() string {
+	if e.Err == nil {
+		return e.msg + " " + e.Addr.String()
+	}
+	return e.msg + " " + e.Addr.String() + ": " + e.Err.Error()
+}
+
+// Unwrap returns the original error.
+func (e DoMultiError) Unwrap() error {
+	return e.Err
+}
+
 // How to use:
 // - each non-nop Wait/WaitAny decreases the size of `calls` by 1
 // - trying to Wait/WaitAny for a request that was not sent yet is not a problem, Wait/WaitAny will simply wait until it is sent and received
@@ -99,7 +123,7 @@ func (m *Multi) Start(ctx context.Context, network string, address string, req *
 	queryID := req.QueryID() // must not access req after setupCall
 	cctx := m.c.getResponse(req)
 	cctx.result = m.multiResult // does not touch cctx.singleResult
-	pc, _, _, err := m.c.setupCall(ctx, NetAddr{network, address}, req, cctx)
+	pc, _, _, err := m.c.setupCall(ctx, NetAddr{Network: network, Address: address}, req, cctx)
 	// if we need local cancellation, we cannot provide it with current API.
 	if err != nil {
 		m.sem.Release(1)
@@ -195,48 +219,73 @@ func (c *ClientImpl) DoMulti(
 	prepareRequest func(addr NetAddr, req *Request) error,
 	processResponse func(addr NetAddr, resp *Response, err error) error,
 ) error {
+	// doMultiRequestInfo keeps request metadata keyed by queryID.
+	type doMultiRequestInfo struct {
+		addrIdx int
+		actorID int64
+	}
+
 	m := c.Multi(len(addresses))
 	defer m.Close()
-	queryIDtoAddr := make(map[int64]int, len(addresses))
+	queryIDtoRequestInfo := make(map[int64]doMultiRequestInfo, len(addresses))
 
 	for i, addr := range addresses {
 		r := c.GetRequest()
 		err := prepareRequest(addr, r)
 		if err != nil {
-			return fmt.Errorf("failed to prepare request for %v: %w", addr, err)
+			return DoMultiError{
+				Addr:    addr,
+				ActorID: r.ActorID,
+				Err:     err,
+				msg:     "failed to prepare request for",
+			}
 		}
 		queryID := r.QueryID()
+		actorID := r.ActorID // copy to avoid race after m.Start()
 
 		err = m.Start(ctx, addr.Network, addr.Address, r)
 		if err != nil {
 			return err
 		}
 
-		queryIDtoAddr[queryID] = i
+		queryIDtoRequestInfo[queryID] = doMultiRequestInfo{
+			addrIdx: i,
+			actorID: actorID,
+		}
 	}
 
 	var blindErrors []error
 	for range addresses {
 		queryID, resp, err := m.WaitAny(ctx)
-		i, ok := queryIDtoAddr[queryID]
+		requestInfo, ok := queryIDtoRequestInfo[queryID]
 		if !ok {
 			// some errors like timeout cannot be attributed to particular queryID, so we assign them to random addresses
 			blindErrors = append(blindErrors, err)
 			continue
 		}
-		delete(queryIDtoAddr, queryID)
-		err = processResponse(addresses[i], resp, err)
+		delete(queryIDtoRequestInfo, queryID)
+		err = processResponse(addresses[requestInfo.addrIdx], resp, err)
 		c.PutResponse(resp)
 		if err != nil {
-			return fmt.Errorf("failed to handle response from %v: %w", addresses[i], err)
+			return DoMultiError{
+				Addr:    addresses[requestInfo.addrIdx],
+				ActorID: requestInfo.actorID,
+				Err:     err,
+				msg:     "failed to handle response from",
+			}
 		}
 	}
 
-	for _, i := range queryIDtoAddr {
-		err := processResponse(addresses[i], nil, blindErrors[0])
+	for _, requestInfo := range queryIDtoRequestInfo {
+		err := processResponse(addresses[requestInfo.addrIdx], nil, blindErrors[0])
 		blindErrors = blindErrors[1:]
 		if err != nil {
-			return fmt.Errorf("failed to handle response from %v: %w", addresses[i], err)
+			return DoMultiError{
+				Addr:    addresses[requestInfo.addrIdx],
+				ActorID: requestInfo.actorID,
+				Err:     err,
+				msg:     "failed to handle response from",
+			}
 		}
 	}
 

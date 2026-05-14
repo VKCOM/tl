@@ -47,6 +47,11 @@ type Request struct {
 	FailIfNoConnection bool
 	BodyFormatTL2      bool // body is in TL2 format
 
+	// Normally, if RequestExtra.CustomTimeoutMs is set and < ctx.Timeout(), new context is created for local cancellation.
+	// Set this flag to suppress this behaviour. Only for tests, local cancellation is important mechanism and must not be
+	// suppressed in production.
+	DoNotCreateLocalCancellationContext bool
+
 	extraStart int // We serialize extra after body into Body, then write into reversed order
 
 	FunctionName string // Generated calls fill this during request serialization.
@@ -273,16 +278,21 @@ func (c *ClientImpl) do(ctx context.Context, network string, address string, req
 	}
 
 	response.result = response.singleResult // delivery to singleResult channel
-	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
+	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{Network: network, Address: address}, req, response)
+	// req must not be used after setupCall, it is reused in sendLoop, which can happen any moment
 	if err != nil {
 		// response.singleResult is empty (not sent), reuse
 		return err
 	}
-	if needCtx {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithDeadline(ctx, deadline)
-		defer cancel() // hopefully this call is efficient
+	if !needCtx {
+		return c.doWait(ctx, pc, response)
 	}
+	ctx, cancel := context.WithDeadline(ctx, deadline)
+	defer cancel() // defer is very fast, when not in conditional statement
+	return c.doWait(ctx, pc, response)
+}
+
+func (c *ClientImpl) doWait(ctx context.Context, pc *clientConn, response *Response) error {
 	select {
 	case <-ctx.Done():
 		// We check deadline inside cancelCallImpl to see if we need to send CancelReq packet.
@@ -322,7 +332,7 @@ func (c *ClientImpl) DoCallback(ctx context.Context, network string, address str
 	resp.userData = userData
 
 	queryID := req.QueryID() // must not access cctx or req after setupCall, because callback can be already called and cctx reused
-	pc, _, _, err := c.setupCall(ctx, NetAddr{network, address}, req, resp)
+	pc, _, _, err := c.setupCall(ctx, NetAddr{Network: network, Address: address}, req, resp)
 	// if we need local cancellation, we cannot provide it with current API.
 
 	return CallbackContext{pc: pc, queryID: queryID}, err
@@ -472,12 +482,12 @@ func (c *ClientImpl) fillRequestTimeout(ctx context.Context, req *Request) (_ ti
 			return deadline, false, nil
 		}
 		// custom timeout is before context deadline, so we need another context for correct local cancellation
-		return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), true, nil
+		return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), !req.DoNotCreateLocalCancellationContext, nil
 	}
 	if req.Extra.CustomTimeoutMs == 0 { //  infinite
 		return time.Time{}, false, nil
 	}
-	return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), true, nil
+	return req.startTime.Add(time.Millisecond * time.Duration(req.Extra.CustomTimeoutMs)), !req.DoNotCreateLocalCancellationContext, nil
 }
 
 // ResetReconnectDelay resets timer before the next reconnect attempt.

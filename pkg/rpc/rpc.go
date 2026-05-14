@@ -58,6 +58,11 @@ type InvokeReqExtra struct { // additional parameters to auto generated client c
 	// By settings this to 1 or 2, user selects preferred format to use, if generated code supports both
 	PreferTLVersion int
 
+	// Normally, if RequestExtra.CustomTimeoutMs is set and < ctx.Timeout(), new context is created for local cancellation.
+	// Set this flag to suppress this behaviour. Only for tests, local cancellation is important mechanism and must not be
+	// suppressed in production.
+	DoNotCreateLocalCancellationContext bool
+
 	ResponseExtra ResponseExtra // after call, response extra is available here
 }
 

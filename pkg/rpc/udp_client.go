@@ -158,16 +158,21 @@ func (c *udpClient) Do(ctx context.Context, network string, address string, req 
 func (c *udpClient) do(ctx context.Context, network string, address string, req *Request, response *Response) error {
 
 	response.result = response.singleResult // delivery to singleResult channel
-	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{network, address}, req, response)
+	pc, deadline, needCtx, err := c.setupCall(ctx, NetAddr{Network: network, Address: address}, req, response)
+	// req must not be used after setupCall, it is reused immediately
 	if err != nil {
 		// response.singleResult is empty (not sent), reuse
 		return err
 	}
-	if needCtx {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithDeadline(ctx, deadline)
-		defer cancel() // hopefully this call is efficient
+	if !needCtx {
+		return c.doWait(ctx, pc, response)
 	}
+	ctx, cancel := context.WithDeadline(ctx, deadline)
+	defer cancel() // defer is very fast, when not in conditional statement
+	return c.doWait(ctx, pc, response)
+}
+
+func (c *udpClient) doWait(ctx context.Context, pc *udpClientConn, response *Response) error {
 	select {
 	case <-ctx.Done():
 		_ = pc.cancelCall(response.queryID) // do not unblock, reuse normally
