@@ -45,6 +45,7 @@ func (c *Client) GetUserEntity(ctx context.Context, args GetUserEntity, extra *r
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1

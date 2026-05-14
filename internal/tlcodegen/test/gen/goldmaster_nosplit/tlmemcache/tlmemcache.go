@@ -37,6 +37,7 @@ func (c *Client) AddBytes(ctx context.Context, args AddBytes, extra *rpc.InvokeR
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -85,6 +86,7 @@ func (c *Client) Add(ctx context.Context, args Add, extra *rpc.InvokeReqExtra, r
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1

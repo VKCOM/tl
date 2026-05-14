@@ -46,6 +46,7 @@ func (c *Client) Insert(ctx context.Context, args Insert, extra *rpc.InvokeReqEx
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -93,6 +94,7 @@ func (c *Client) InsertList(ctx context.Context, args InsertList, extra *rpc.Inv
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1

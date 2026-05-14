@@ -147,6 +147,7 @@ func (c *Client) Call1(ctx context.Context, args Call1, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -195,6 +196,7 @@ func (c *Client) Call2(ctx context.Context, args Call2, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -243,6 +245,7 @@ func (c *Client) Call3(ctx context.Context, args Call3, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -291,6 +294,7 @@ func (c *Client) Call4(ctx context.Context, args Call4, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -339,6 +343,7 @@ func (c *Client) Call5(ctx context.Context, args Call5, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -387,6 +392,7 @@ func (c *Client) Call6(ctx context.Context, args Call6, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -435,6 +441,7 @@ func (c *Client) Call7(ctx context.Context, args Call7, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -483,6 +490,7 @@ func (c *Client) Call8(ctx context.Context, args Call8, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
@@ -531,6 +539,7 @@ func (c *Client) Call9(ctx context.Context, args Call9, extra *rpc.InvokeReqExtr
 	if extra != nil {
 		req.Extra = extra.RequestExtra
 		req.FailIfNoConnection = extra.FailIfNoConnection
+		req.DoNotCreateLocalCancellationContext = extra.DoNotCreateLocalCancellationContext
 	}
 	rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 	preferTLVersion := 1
