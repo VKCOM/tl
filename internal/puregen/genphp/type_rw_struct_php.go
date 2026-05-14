@@ -283,16 +283,20 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						return "$this->" + info.FieldName
 					},
 				)
-
+			
 			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
+			hasFetcherTL2 := trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 
-			/** TODO make it better */
-			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
+			readResultTL1 := func() []string { return trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "") }
+			readResultTL2 := func() []string { return trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false) }
+			
+			readCallLines := make([]string, 0)
+
+			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
-					cc.AddLines(readCallLines...)
+					cc.AddLines(readResultTL1()...)
 				}, func() {
 					// tl2 case
 					cc.AddLines(cc.TLFetchUint32To("$marker"))
@@ -306,13 +310,15 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.AddLines("$used_bytes += 1;")
 						cc.If("$obj_block == (1 << 1)", func() {
 							// TODO!
-							cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false)...)
+							cc.AddLines(readResultTL2()...)
 						})
 					})
 					// skip rest
 					cc.AddLines(fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s - %[2]s);", "$obj_size", "$used_bytes"))
 				})
 				readCallLines = cc.Print()
+			} else {
+				readCallLines = readResultTL1()
 			}
 
 			readLines := make([]string, 0)
@@ -326,11 +332,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				readLines = append(readLines, targetLines...)
 			}
 
-			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "")
-			if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
+			writeResultTL1 := func() []string { return trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "") }
+			calculateLayoutTL2 := func () []string { return trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true) }
+			writeResultTL2 := func() []string { return trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false) }
+			
+
+			writeCallLines := make([]string, 0)
+
+			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
-					cc.AddLines(writeCallLines...)
+					cc.AddLines(writeResultTL1()...)
 				}, func() {
 					cc.AddLines(
 						cc.Assign("$used_bytes", "0"),
@@ -338,18 +350,20 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.Assign("$context_blocks", `new TL\tl2_context()`),
 					)
 					cc.Comments("calculate sizes")
-					cc.AddLines(trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true)...)
+					cc.AddLines(calculateLayoutTL2()...)
 					cc.Comments("write result")
 					cc.AddLines(cc.TLStoreUint32("TL\\tl2_support::Marker"))
 					cc.IfElse("$used_bytes != 0", func() {
 						cc.AddLines("TL\\tl2_support::store_size(1 + $used_bytes);")
 						cc.AddLines("store_byte(2);")
-						cc.AddLines(trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false)...)
+						cc.AddLines(writeResultTL2()...)
 					}, func() {
 						cc.AddLines("TL\\tl2_support::store_size(0);")
 					})
 				})
 				writeCallLines = cc.Print()
+			} else {
+				writeCallLines = writeResultTL1()
 			}
 
 			writeLines := make([]string, 0)
