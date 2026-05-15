@@ -59,7 +59,6 @@ type PacketConn struct {
 	localAddr       net.Addr
 	timeoutAccuracy time.Duration
 
-	flagCancelReq   bool
 	protocolVersion uint32 // initially 0, will be set after nonce message is received from the peer
 
 	readMu        sync.Mutex
