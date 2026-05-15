@@ -44,6 +44,7 @@ type ServerOptions struct {
 	MinimumLongpollTimeout     time.Duration
 	DisableContextTimeout      bool
 	DisableTCPReuseAddr        bool
+	DisableSpecialHandlers     bool // normally server processes some requests internally. Should be disabled only for testing correctness of serialization of those requests (by TL team).
 	DebugRPC                   bool // prints all incoming and outgoing RPC activity (very slow, only for protocol debug)
 	DebugUdpRPC                int  // 0 - nothing; 1 - prints key udp events; 2 - prints all udp activities (<0 equals to 0; >2 equals to 2)
 	PrintKeysGenerationInfo    bool
@@ -305,6 +306,12 @@ func ServerWithDisableContextTimeout(status bool) ServerOptionsFunc {
 func ServerWithDisableTCPReuseAddr() ServerOptionsFunc {
 	return func(opts *ServerOptions) {
 		opts.DisableTCPReuseAddr = true
+	}
+}
+
+func ServerWithDisableSpecialHandlers() ServerOptionsFunc {
+	return func(opts *ServerOptions) {
+		opts.DisableSpecialHandlers = true
 	}
 }
 

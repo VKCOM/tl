@@ -227,6 +227,8 @@ netUdpPacket.wait#6e321c96
 
 @readwrite go.pprof params:string = String;
 
+@any @internal net.dumpUdpTargets = True;
+
 // definitions for invoke req 2
 // we keep identical extra definition to save complexity costs
 // it will contain unused 'flags' field in TL2 format, but this is not a big deal, maximum 1 byte wasted

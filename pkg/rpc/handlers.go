@@ -27,6 +27,7 @@ import (
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlengine"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlgo"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnet"
 	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 )
 
@@ -321,17 +322,17 @@ func (s *Server) handleEngineAsyncSleep(ctx context.Context, hctx *HandlerContex
 }
 
 func (s *Server) handleNetDumpUdpTargets(ctx context.Context, hctx *HandlerContext) (err error) {
-	/*req := tlnet.DumpUdpTargets{}
+	req := tlnet.DumpUdpTargets{}
 	if _, err = req.ReadTL1Boxed(hctx.Request); err != nil {
 		return err
-	}*/
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, t := range s.transportsUDP {
 		t.DumpUdpTargets()
 	}
-	hctx.Response = basictl.NatWrite(hctx.Response, 0x3fedd339)
-	return nil
+	hctx.Response, err = req.WriteResultTL1(hctx.Response, tl.True{})
+	return err
 }
 
 func (s *Server) respondWithMemcachedVersion(conn *PacketConn) {
