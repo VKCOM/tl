@@ -120,11 +120,6 @@ func NewDefaultPacketConn(c net.Conn) *PacketConn {
 	return NewPacketConn(c, DefaultServerConnReadBufSize, DefaultServerConnWriteBufSize)
 }
 
-// Negotiated during handshake, does not change after handshake
-func (pc *PacketConn) FlagCancelReq() bool {
-	return pc.flagCancelReq
-}
-
 func (pc *PacketConn) LocalAddr() net.Addr {
 	return pc.localAddr
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/internal/metainternal"
 )
 
-func SchemaGenerator() string { return "v1.4.4" }
+func SchemaGenerator() string { return "v1.5.3" }
 func SchemaURL() string       { return "" }
 func SchemaCommit() string    { return "" }
 func SchemaTimestamp() uint32 { return 0 }
@@ -80,6 +80,8 @@ func init() {
 		&metainternal.TLItemImpl{Name: "exactlyOnce.uuid", Tag: 0xc97c16b2, HaTL1: true})
 	metainternal.FillFunction(
 		&metainternal.TLItemImpl{Name: "go.pprof", Tag: 0xea2876a6, HaTL1: true, Annotations: 0x10})
+	metainternal.FillFunction(
+		&metainternal.TLItemImpl{Name: "net.dumpUdpTargets", Tag: 0xabcb5b38, HaTL1: true, Annotations: 0x3})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "net.pid", Tag: 0x46409ccf, HaTL1: true})
 	metainternal.FillObject(

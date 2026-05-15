@@ -152,7 +152,7 @@ func (pc *clientConn) cancelCallImpl(queryID int64) (shouldReleaseCctx *Response
 		pc.writeQCond.Signal()
 		return cctx, conn
 	}
-	if !deadlinePassed && pc.conn.FlagCancelReq() {
+	if !deadlinePassed {
 		pc.writeQ = append(pc.writeQ, writeReqCancel{queryID: queryID})
 		pc.writeQCond.Signal()
 	}

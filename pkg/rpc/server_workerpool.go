@@ -31,6 +31,9 @@ func (w *worker) run(s *Server, wg *semaphore.Weighted) {
 	defer wg.Release(1)
 	for work := range w.ch {
 		err := s.callHandler(work.ctx, work.hctx)
+		if work.hctx.longpollStarted { // app should crash here
+			panic("you can only start longpoll from SyncHandler (to keep ordering between invokeReq and subsequent cancelReq)")
+		}
 		work.hctx.SendLongpollResponse(err)
 		w.workerPool.Put(w)
 	}

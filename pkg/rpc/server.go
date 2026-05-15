@@ -25,6 +25,7 @@ import (
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tl"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlengine"
 	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlgo"
+	"github.com/VKCOM/tl/pkg/rpc/internal/gen/tlnet"
 	"github.com/VKCOM/tl/pkg/rpc/tlerrorcodes"
 	"github.com/VKCOM/tl/pkg/rpc/udp"
 )
@@ -835,17 +836,15 @@ func (s *Server) sendLoopImpl(sc *serverConnTCP) ([]*HandlerContext, error) { //
 		}
 		if writeLetsFin && !writtenLetsFin {
 			writtenLetsFin = true
-			if sc.conn.FlagCancelReq() {
-				sentNow = true
-				if s.opts.DebugRPC {
-					s.opts.Logf("rpc_debug: %s Write serverWantsFIN packet\n", sc.debugName)
-				}
-				if err := sc.conn.WritePacketHeaderUnlocked(tl.RpcServerWantsFin{}.TLTag(), 0, DefaultPacketTimeout); err != nil {
-					// No log here, presumably failing to send letsFIN to closed connection is not a problem
-					return writeQ, err // release remaining contexts
-				}
-				sc.conn.WritePacketTrailerUnlocked()
+			sentNow = true
+			if s.opts.DebugRPC {
+				s.opts.Logf("rpc_debug: %s Write serverWantsFIN packet\n", sc.debugName)
 			}
+			if err := sc.conn.WritePacketHeaderUnlocked(tl.RpcServerWantsFin{}.TLTag(), 0, DefaultPacketTimeout); err != nil {
+				// No log here, presumably failing to send letsFIN to closed connection is not a problem
+				return writeQ, err // release remaining contexts
+			}
+			sc.conn.WritePacketTrailerUnlocked()
 		}
 		for i, hctx := range writeQ {
 			sentNow = true
@@ -893,6 +892,9 @@ func (s *Server) handleRequest(ctx context.Context, reqHeaderTip uint32, hctx *H
 	}
 
 	err = s.callHandler(ctx, hctx)
+	if hctx.longpollStarted { // app should crash here
+		panic("you can only start longpoll from SyncHandler (to keep ordering between invokeReq and subsequent cancelReq)")
+	}
 	hctx.SendLongpollResponse(err)
 	return nil, ctx
 }
@@ -947,6 +949,8 @@ func (s *Server) doSyncHandler(ctx context.Context, reqHeaderTip uint32, hctx *H
 			return ctx, ErrNoHandler
 		}
 		// No deadline on sync handler context, too costly
+		// TODO - we could complain if SyncHandler is not completing fast, but for that we need to call time.Now() twice.
+		// But this will slow down engines which use SyncHandler for super fast responses.
 		return ctx, s.opts.SyncHandler(ctx, hctx)
 	}
 	hctx.noResult = true
@@ -971,49 +975,46 @@ func (s *Server) callHandler(ctx context.Context, hctx *HandlerContext) (err err
 }
 
 func (s *Server) callHandlerNoRecover(ctx context.Context, hctx *HandlerContext) (err error) {
-	switch hctx.reqTag {
-	case tlengine.Pid{}.TLTag():
-		return s.handleEnginePID(hctx)
-	case tlengine.Stat{}.TLTag():
-		return s.handleEngineStat(hctx)
-	case tlengine.FilteredStat{}.TLTag():
-		return s.handleEngineFilteredStat(hctx)
-	case tlengine.Version{}.TLTag():
-		return s.handleEngineVersion(hctx)
-	case tlengine.SetVerbosity{}.TLTag():
-		return s.handleEngineSetVerbosity(hctx)
-	case tlengine.Sleep{}.TLTag():
-		return s.handleEngineSleep(ctx, hctx)
-	case tlengine.AsyncSleep{}.TLTag():
-		return s.handleEngineAsyncSleep(ctx, hctx)
-	case tlgo.Pprof{}.TLTag():
-		return s.handleGoPProf(hctx)
-	case 0xabcb5b38: // TODO why netDumpUdpTargets is missing in internal constants?
-		return s.handleNetDumpUdpTargets(ctx, hctx)
-	default:
-		if hctx.timeout != 0 {
-			deadline := hctx.requestTime.Add(hctx.timeout)
-			dt := time.Since(deadline)
-			if dt >= 0 {
-				return &Error{
-					Code:        tlerrorcodes.Timeout,
-					Description: fmt.Sprintf("RPC query timeout (%v after deadline)", dt),
-				}
-			}
-
-			if !s.opts.DisableContextTimeout {
-				var cancel context.CancelFunc
-				ctx, cancel = context.WithDeadline(ctx, deadline)
-				defer cancel()
-			}
+	if !s.opts.DisableSpecialHandlers {
+		switch hctx.reqTag {
+		case tlengine.Pid{}.TLTag():
+			return s.handleEnginePID(hctx)
+		case tlengine.Stat{}.TLTag():
+			return s.handleEngineStat(hctx)
+		case tlengine.FilteredStat{}.TLTag():
+			return s.handleEngineFilteredStat(hctx)
+		case tlengine.Version{}.TLTag():
+			return s.handleEngineVersion(hctx)
+		case tlengine.SetVerbosity{}.TLTag():
+			return s.handleEngineSetVerbosity(hctx)
+		case tlengine.Sleep{}.TLTag():
+			return s.handleEngineSleep(ctx, hctx)
+		case tlengine.AsyncSleep{}.TLTag():
+			return s.handleEngineAsyncSleep(ctx, hctx)
+		case tlgo.Pprof{}.TLTag():
+			return s.handleGoPProf(hctx)
+		case tlnet.DumpUdpTargets{}.TLTag():
+			return s.handleNetDumpUdpTargets(ctx, hctx)
 		}
-
-		err = s.opts.Handler(ctx, hctx)
-		if hctx.longpollStarted {
-			panic("you can only start longpoll from SyncHandler (to keep ordering between invokeReq and subsequent cancelReq)")
-		}
-		return err
 	}
+	if hctx.timeout == 0 {
+		return s.opts.Handler(ctx, hctx)
+	}
+	deadline := hctx.requestTime.Add(hctx.timeout)
+	dt := time.Since(deadline)
+	if dt >= 0 {
+		return &Error{
+			Code:        tlerrorcodes.Timeout,
+			Description: fmt.Sprintf("RPC query timeout (%v after deadline)", dt),
+		}
+	}
+
+	if s.opts.DisableContextTimeout {
+		return s.opts.Handler(ctx, hctx)
+	}
+	ctx, cancel := context.WithDeadline(ctx, deadline)
+	defer cancel() // defer is very fast, when not in conditional statement
+	return s.opts.Handler(ctx, hctx)
 }
 
 func (s *Server) trackConn(sc *serverConnTCP) bool {

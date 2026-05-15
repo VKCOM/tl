@@ -26,6 +26,7 @@ const (
 	ExactlyOnceSlotResponse        = 0x95f25c81 // exactlyOnce.slotResponse
 	ExactlyOnceUuid                = 0xc97c16b2 // exactlyOnce.uuid
 	GoPprof                        = 0xea2876a6 // go.pprof
+	NetDumpUdpTargets              = 0xabcb5b38 // net.dumpUdpTargets
 	NetPid                         = 0x46409ccf // net.pid
 	NetUdpPacketEncHeader          = 0x251a7bfd // netUdpPacket.encHeader
 	NetUdpPacketObsoleteGeneration = 0xb340010b // netUdpPacket.obsoleteGeneration

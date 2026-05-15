@@ -102,9 +102,6 @@ func (pc *PacketConn) HandshakeClient(cryptoKey string, trustedSubnetGroups [][]
 	if (hs.Flags & flagCRC32C) != 0 {
 		pc.setCRC32C()
 	}
-	if (hs.Flags & flagCancelReq) != 0 {
-		pc.flagCancelReq = true
-	}
 
 	return nil
 }
@@ -125,9 +122,6 @@ func (pc *PacketConn) HandshakeServer(cryptoKeys []string, trustedSubnetGroups [
 
 	if (clientHandshake.Flags & flagCRC32C) != 0 {
 		pc.setCRC32C()
-	}
-	if (clientHandshake.Flags & flagCancelReq) != 0 {
-		pc.flagCancelReq = true
 	}
 	return nil, clientHandshake.Flags, nil
 }
@@ -443,6 +437,7 @@ func prepareHandshakeClient(localAddr net.Addr, startTime uint32, flags uint32) 
 	ip, _ := extractIPPort(localAddr) // ignore port as client
 
 	return handshakeMsg{
+		// TODO - flagCancelReq is sent only for old Golang peers who check it. TODO - remove in July 2027
 		Flags: flags | flagCRC32C | flagCancelReq,
 		SenderPID: NetPID{
 			Ip:      ip,
@@ -458,6 +453,7 @@ func prepareHandshakeServer(client handshakeMsg, localAddr net.Addr, startTime u
 		flags |= flagCRC32C
 	}
 	if client.Flags&flagCancelReq != 0 {
+		// TODO - flagCancelReq is sent only for old Golang peers who check it. TODO - remove in July 2027
 		flags |= flagCancelReq
 	}
 

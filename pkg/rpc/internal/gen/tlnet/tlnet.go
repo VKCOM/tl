@@ -12,5 +12,6 @@ import (
 )
 
 type (
-	Pid = internal.NetPid
+	DumpUdpTargets = internal.NetDumpUdpTargets
+	Pid            = internal.NetPid
 )

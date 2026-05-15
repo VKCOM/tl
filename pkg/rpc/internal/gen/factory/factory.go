@@ -63,6 +63,7 @@ func init() {
 	metainternal.SetGlobalFactoryCreateForObject("exactlyOnce.slotResponse", func() metainternal.Object { return new(internal.ExactlyOnceSlotResponse) })
 	metainternal.SetGlobalFactoryCreateForObject("exactlyOnce.uuid", func() metainternal.Object { return new(internal.ExactlyOnceUuid) })
 	metainternal.SetGlobalFactoryCreateForFunction("go.pprof", func() metainternal.Function { return new(internal.GoPprof) }, nil)
+	metainternal.SetGlobalFactoryCreateForFunction("net.dumpUdpTargets", func() metainternal.Function { return new(internal.NetDumpUdpTargets) }, nil)
 	metainternal.SetGlobalFactoryCreateForObject("net.pid", func() metainternal.Object { return new(internal.NetPid) })
 	metainternal.SetGlobalFactoryCreateForObject("netUdpPacket.encHeader", func() metainternal.Object { return new(internal.NetUdpPacketEncHeader) })
 	metainternal.SetGlobalFactoryCreateForObject("netUdpPacket.obsoleteGeneration", func() metainternal.Object { return new(internal.NetUdpPacketObsoleteGeneration) })
