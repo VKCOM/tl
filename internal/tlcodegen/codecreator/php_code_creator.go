@@ -147,3 +147,7 @@ func (ph *PhpCodeCreator) Class(modifiers []string, name string, interfaces []st
 	ph.AddBlock(block)
 	ph.AddLines("}")
 }
+
+func (ph *PhpCodeCreator) IsNull(target string) string {
+	return fmt.Sprintf("is_null(%[1]s)", target)
+}

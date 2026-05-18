@@ -299,6 +299,12 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	}
 
 	cc := codecreator.NewPhpCodeCreator()
+
+	cc.If(cc.IsNull(targetName), func() {
+		cc.Comment("setup default value")
+		cc.AddLinef("%[1]s = new %[2]s();", targetName, trw.Fields[0].t.trw.PhpClassName(true, true))
+	})
+
 	cc.AddLinef("%[1]s = 0;", localConstructor)
 	cc.AddLinef("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize)
 	cc.AddLinef("%[1]s = 0;", localUsedBytesPointer)
