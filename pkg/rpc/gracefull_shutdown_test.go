@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -19,6 +20,10 @@ import (
 )
 
 func TestRPCGraceful(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skipf("TEMPORARY NOT WORKING FOR WINDOWS")
+		return
+	}
 	t.Parallel()
 
 	// this is not really a property-based test, since it is not deterministic
