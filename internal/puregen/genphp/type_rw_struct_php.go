@@ -283,13 +283,17 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						return "$this->" + info.FieldName
 					},
 				)
-			
+
 			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 			hasFetcherTL2 := trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 
-			readResultTL1 := func() []string { return trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "") }
-			readResultTL2 := func() []string { return trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false) }
-			
+			readResultTL1 := func() []string {
+				return trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
+			}
+			readResultTL2 := func() []string {
+				return trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false)
+			}
+
 			readCallLines := make([]string, 0)
 
 			if hasFetcherTL2 {
@@ -339,9 +343,12 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			}
 
 			writeResultTL1 := func() []string { return trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, innerArgs, "") }
-			calculateLayoutTL2 := func () []string { return trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true) }
-			writeResultTL2 := func() []string { return trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false) }
-			
+			calculateLayoutTL2 := func() []string {
+				return trw.ResultType.trw.PhpCalculateSizesTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", true)
+			}
+			writeResultTL2 := func() []string {
+				return trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false)
+			}
 
 			writeCallLines := make([]string, 0)
 
@@ -787,6 +794,11 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []string) []string {
+	if trw.pureType.OriginTL2() {
+		cc := codecreator.NewPhpCodeCreator()
+		cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+		return cc.Print()
+	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
@@ -1048,6 +1060,11 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs []string) []string {
+	if trw.pureType.OriginTL2() {
+		cc := codecreator.NewPhpCodeCreator()
+		cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+		return cc.Print()
+	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
