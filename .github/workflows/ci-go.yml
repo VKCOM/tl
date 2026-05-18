@@ -33,7 +33,6 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           install-go: false
-          version: "0.7.0"
 
       - name: Run php tests
         if: matrix.os == 'ubuntu-latest'
