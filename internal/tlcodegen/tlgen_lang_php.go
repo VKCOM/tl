@@ -59,15 +59,27 @@ func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL
 		"": true,
 	}
 
-	if ns, ok := gen.Namespaces[""]; ok && ns != nil {
-		reachableTypes := make(map[*TypeRWWrapper]bool)
-		for _, wrapper := range ns.types {
-			reachableTypes[wrapper] = true
-			wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
+	// bfs
+	newNsVisited := map[string]bool{"": true}
+	for len(newNsVisited) > 0 {
+		nextNewNsVisited := make(map[string]bool)
+		for n := range newNsVisited {
+			if ns, ok := gen.Namespaces[n]; ok && ns != nil {
+				reachableTypes := make(map[*TypeRWWrapper]bool)
+				for _, wrapper := range ns.types {
+					reachableTypes[wrapper] = true
+					wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
+				}
+				for wrapper := range reachableTypes {
+					nCandidate := wrapper.tlName.Namespace
+					if _, ok := commonPartNsDependencies[nCandidate]; !ok {
+						nextNewNsVisited[nCandidate] = true
+					}
+					commonPartNsDependencies[nCandidate] = true
+				}
+			}
 		}
-		for wrapper := range reachableTypes {
-			commonPartNsDependencies[wrapper.tlName.Namespace] = true
-		}
+		newNsVisited = nextNewNsVisited
 	}
 
 	for _, combinator := range originalTL {
