@@ -309,6 +309,12 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 							cc.AddLines(trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false)...)
 						})
 					})
+					if trw.ResultType.trw.PhpDefaultValue() == "null" {
+						cc.Comment("setup default value")
+						cc.If(cc.IsNull("$result->value"), func() {
+							cc.AddLinef(cc.Assign("$result->value", trw.ResultType.trw.PhpDefaultInit()))
+						})
+					}
 					// skip rest
 					cc.AddLines(fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s - %[2]s);", "$obj_size", "$used_bytes"))
 				})

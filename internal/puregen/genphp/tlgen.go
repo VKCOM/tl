@@ -17,7 +17,7 @@ import (
 )
 
 // For debugging
-var DEBUG = true
+var DEBUG = false
 
 func Debugf(format string, args ...interface{}) {
 	if DEBUG {
