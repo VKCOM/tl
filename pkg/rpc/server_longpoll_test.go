@@ -271,6 +271,7 @@ func (s *longpollTestServer) EmptyResponsesCount() int {
 func TestLongpollTimeout(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skipf("TEMPORARY NOT WORKING FOR WINDOWS")
+		return
 	}
 	t.Run("empty body is sent after timeout", func(t *testing.T) {
 		ts := newLongpollTestServer()
