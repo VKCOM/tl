@@ -312,7 +312,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					if trw.ResultType.trw.PhpDefaultValue() == "null" {
 						cc.Comment("setup default value")
 						cc.If(cc.IsNull("$result->value"), func() {
-							cc.AddLinef(cc.Assign("$result->value", trw.ResultType.trw.PhpDefaultInit()))
+							cc.AddLines(cc.Assign("$result->value", trw.ResultType.trw.PhpDefaultInit()))
 						})
 					}
 					// skip rest
