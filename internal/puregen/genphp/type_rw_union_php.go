@@ -285,6 +285,10 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args []
 }
 
 func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
+		panic("unsupported generation for union in php")
+	}
+
 	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
 	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
 	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
@@ -293,47 +297,40 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	variantName := func(index int) string {
 		return fmt.Sprintf("$variant_%[1]s_%[2]d_%[3]d", supportSuffix, callLevel, index)
 	}
-	var result []string
-	if trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-		result = append(result,
-			fmt.Sprintf("%[1]s = 0;", localConstructor),
-			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize),
-			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
-			// add to global pointer
-			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
-			// decide should we read body
-			fmt.Sprintf("%[1]s = 0;", localBlock),
-			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
-			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
-			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
-			fmt.Sprintf("  if ((%[1]s & 1) != 0) {", localBlock),
-			fmt.Sprintf("    %[1]s = TL\\tl2_support::fetch_size();", localConstructor),
-			fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
-			"  }",
-			"}",
-			"// check variants",
-			fmt.Sprintf("switch (%[1]s) {", localConstructor),
-		)
+
+	cc := codecreator.NewPhpCodeCreator()
+	cc.AddLinef("%[1]s = 0;", localConstructor)
+	cc.AddLinef("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize)
+	cc.AddLinef("%[1]s = 0;", localUsedBytesPointer)
+	// add to global pointer
+	cc.AddLinef("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize)
+	// decide should we read body
+	cc.AddLinef("%[1]s = 0;", localBlock)
+	cc.If(fmt.Sprintf("%[1]s != 0", localCurrentSize), func() {
+		cc.AddLinef("%[1]s = fetch_byte();", localBlock)
+		cc.AddLinef("%[1]s += 1;", localUsedBytesPointer)
+		cc.If(fmt.Sprintf("(%[1]s & 1) != 0", localBlock), func() {
+			cc.AddLinef("%[1]s = TL\\tl2_support::fetch_size();", localConstructor)
+			cc.AddLinef("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor)
+		})
+	})
+	cc.Comment("check variants")
+	cc.Block(fmt.Sprintf("switch (%[1]s) {", localConstructor), func() {
 		// iterate variants
 		for i, field := range trw.Fields {
 			curType := field.t
 			name := variantName(i)
-			result = append(result,
-				fmt.Sprintf("  case %[1]d:", i),
-				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpClassName(true, true), name),
-				fmt.Sprintf("    %[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args, localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name),
-				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
-				"    break;",
-			)
+			cc.Block(fmt.Sprintf("case %[1]d:", i), func() {
+				cc.AddLinef("%[2]s = new %[1]s();", curType.trw.PhpClassName(true, true), name)
+				cc.AddLinef("%[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args, localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name)
+				cc.AddLinef("%[1]s = %[2]s;", targetName, name)
+				cc.AddLinef("break;")
+			}, "")
 		}
 		// end
-		result = append(result,
-			"}",
-		)
-	} else {
-		panic("unsupported generation for union in php")
-	}
-	return result
+	}, "}")
+
+	return cc.Lines()
 }
 
 func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
