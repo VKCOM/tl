@@ -148,6 +148,18 @@ func (ph *PhpCodeCreator) Class(modifiers []string, name string, interfaces []st
 	ph.AddLines("}")
 }
 
+func (ph *PhpCodeCreator) ThrowException(constructorArgument string) {
+	ph.AddLinef(`throw new \Exception(%s);`, constructorArgument)
+}
+
+func (ph *PhpCodeCreator) ThrowMessagedException(message string) {
+	ph.ThrowException(fmt.Sprintf("%q", message))
+}
+
+func (ph *PhpCodeCreator) ThrowDisabledTL1(typeName string) {
+	ph.ThrowMessagedException(fmt.Sprintf("no tl1 for type %s", typeName))
+}
+
 func (ph *PhpCodeCreator) IsNull(target string) string {
 	return fmt.Sprintf("is_null(%[1]s)", target)
 }
