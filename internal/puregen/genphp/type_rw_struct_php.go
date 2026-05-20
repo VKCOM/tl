@@ -172,22 +172,26 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	usedFieldMasksIndecies := make([]int, 0)
 	usedFieldMasks := make(map[int][]Field)
 	for _, f := range trw.Fields {
-		if f.pureField.FieldMask() == nil {
+		if f.pureField.FieldMask() == nil && f.pureField.MaskTL2Bit() == nil {
 			necessaryFieldsInConstructor = append(necessaryFieldsInConstructor, f)
 		} else {
-			index := f.pureField.FieldMask().FieldIndex()
-			if !f.pureField.FieldMask().IsField() {
-				for i, argument := range trw.wr.pureType.KernelType().TemplateArguments() {
-					if argument.Category.IsNat() && argument.Name == f.pureField.FieldMask().NatParamName() {
-						index = -(i + 1)
-						break
+			if f.pureField.FieldMask() != nil {
+				index := f.pureField.FieldMask().FieldIndex()
+				if !f.pureField.FieldMask().IsField() {
+					for i, argument := range trw.wr.pureType.KernelType().TemplateArguments() {
+						if argument.Category.IsNat() && argument.Name == f.pureField.FieldMask().NatParamName() {
+							index = -(i + 1)
+							break
+						}
 					}
 				}
+				if usedFieldMasks[index] == nil {
+					usedFieldMasksIndecies = append(usedFieldMasksIndecies, index)
+				}
+				usedFieldMasks[index] = append(usedFieldMasks[index], f)
+			} else if f.pureField.MaskTL2Bit() != nil {
+				//	TODO!
 			}
-			if usedFieldMasks[index] == nil {
-				usedFieldMasksIndecies = append(usedFieldMasksIndecies, index)
-			}
-			usedFieldMasks[index] = append(usedFieldMasks[index], f)
 		}
 	}
 
@@ -1697,11 +1701,11 @@ func fieldTypeAndDefaultValue(f Field) (string, string) {
 	if f.t.PHPIsTrueType() {
 		fieldType = "boolean"
 		defaultValue = "true"
-		if f.pureField.FieldMask() != nil {
+		if f.pureField.FieldMask() != nil || f.pureField.MaskTL2Bit() != nil {
 			defaultValue = "false"
 		}
 	} else {
-		if f.pureField.FieldMask() != nil {
+		if f.pureField.FieldMask() != nil || f.pureField.MaskTL2Bit() != nil {
 			defaultValue = "null"
 			if _, isMaybe := f.t.PHPGenCoreType().trw.(*TypeRWMaybe); !isMaybe {
 				fieldType = fieldType + "|null"
