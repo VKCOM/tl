@@ -115,7 +115,14 @@ func (w *TypeRWWrapper) IsFunction() bool {
 	return structElement.ResultType != nil
 }
 
+func (w *TypeRWWrapper) PHPIsItFromTL2() bool {
+	return w.pureType.KernelType() != nil && w.pureType.KernelType().OriginTL2()
+}
+
 func (w *TypeRWWrapper) PHPIsTrueType() bool {
+	if w.PHPIsItFromTL2() && w.pureType.IsBit() {
+		return true
+	}
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if ok {
 		unionParent := structElement.PhpConstructorNeedsUnion()
