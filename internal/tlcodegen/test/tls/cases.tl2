@@ -190,7 +190,7 @@ casesTL2.testParamsGeneration = n1:uint32
     x4:casesTL2.testObjectWithMuiltiParams
     ;
 
-casesTL2.testObjectWithMuiltiParams = f1?:[]int32
+casesTL2.testObjectWithMuiltiParams = f1?:[]int32 
     f2?:[]int32 ;
 
 
@@ -214,4 +214,4 @@ casesTL2.testFunctionWithDep1#b6c63b07 n:uint32
 casesTL2.testFunctionWithDep2#9d44a2fd n:uint32 
     => benchmarks.vrutoyPositions;
 
-casesGo.testNames = write:int32 read:int32 ;
+casesGo.testNames = write:int32 read:int32;
