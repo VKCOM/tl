@@ -160,6 +160,21 @@ func (ph *PhpCodeCreator) ThrowDisabledTL1(typeName string) {
 	ph.ThrowMessagedException(fmt.Sprintf("no tl1 for type %s", typeName))
 }
 
+func (ph *PhpCodeCreator) Magic(magic uint32) string {
+	return fmt.Sprintf("0x%08[1]x", magic)
+}
+
+func (ph *PhpCodeCreator) TLReadMagic(magic uint32) {
+	ph.AddLines(ph.TLFetchUint32To("$magic"))
+	ph.If(ph.NotEqual("$magic", ph.Magic(magic)), func() {
+		ph.AddLines("return false;")
+	})
+}
+
+func (ph *PhpCodeCreator) TLWriteMagic(magic uint32) {
+	ph.AddLines(ph.TLStoreUint32(ph.Magic(magic)))
+}
+
 func (ph *PhpCodeCreator) IsNull(target string) string {
 	return fmt.Sprintf("is_null(%[1]s)", target)
 }

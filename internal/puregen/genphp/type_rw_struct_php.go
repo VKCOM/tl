@@ -726,48 +726,49 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			argTypes = append(argTypes, "int")
 		}
 
-		magicRead := []string{
-			"    [$magic, $success] = $stream->read_uint32();",
-			fmt.Sprintf("    if (!$success || $magic != 0x%08[1]x) {", trw.wr.TLTag()),
-			"      return false;",
-			"    }",
-		}
+		cc := codecreator.NewPhpCodeCreator()
+		cc.AddShift(1)
 
-		if useBuiltin {
-			magicRead = []string{
-				"    $magic = fetch_int() & 0xFFFFFFFF;",
-				fmt.Sprintf("    if ($magic != 0x%08[1]x) {", trw.wr.TLTag()),
-				"      return false;",
-				"    }",
-			}
-		}
+		cc.AddFullEmptyLine()
+		cc.Function(
+			[]string{"public"},
+			"read_boxed",
+			utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+				return codecreator.FunctionArgument{
+					Name:     argNames[a],
+					TypeName: argTypes[a],
+				}
+			}),
+			"bool",
+			func() {
+				if trw.pureType.OriginTL2() {
+					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				} else {
+					cc.TLReadMagic(trw.wr.TLTag())
+					cc.AddLinef("return $this->read(%[1]s);", phpFunctionArgumentsFormat(argNames))
+				}
+			},
+		)
 
-		code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function read_boxed(%[2]s) {
-%[3]s
-    return $this->read(%[2]s);
-  }
-`,
-			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
-			phpFunctionArgumentsFormat(argNames),
-			strings.Join(magicRead, "\n"),
-		))
-
-		code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function read(%[2]s) {
-`,
-			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
-			phpFunctionArgumentsFormat(argNames),
-		))
-
-		for _, line := range trw.phpStructReadCode("$this", PHPAddDollarSign(trw.pureType.NatParams())) {
-			code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", strings.Repeat("  ", 2), line))
-		}
-
-		code.WriteString("    return true;\n")
-		code.WriteString("  }\n")
+		cc.AddFullEmptyLine()
+		cc.Function([]string{"public"},
+			"read",
+			utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+				return codecreator.FunctionArgument{
+					Name:     argNames[a],
+					TypeName: argTypes[a],
+				}
+			}),
+			"bool",
+			func() {
+				if trw.pureType.OriginTL2() {
+					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				} else {
+					cc.AddLines(trw.phpStructReadCode("$this", PHPAddDollarSign(trw.pureType.NatParams()))...)
+					cc.AddLinef("return true;")
+				}
+			},
+		)
 
 		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 			// TODO: add block calculated currentSize and block if union
@@ -775,34 +776,31 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				argNames = append(argNames, "block", "current_size")
 				argTypes = append(argTypes, "int", "int")
 			}
-			code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function read_tl2(%[2]s) {
-`,
-				phpFunctionCommentFormat(argNames, argTypes, "int", "  "),
-				phpFunctionArgumentsFormat(argNames),
-			))
 
-			tab := strings.Repeat("  ", 2)
-			usedBytes := "$used_bytes"
-			code.WriteString(fmt.Sprintf("%[1]s%[2]s = 0;\n", tab, usedBytes))
-
-			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, PHPAddDollarSign(trw.pureType.NatParams()), "", 0, true) {
-				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
-			}
-
-			code.WriteString("    return $used_bytes;\n")
-			code.WriteString("  }\n")
+			cc.AddFullEmptyLine()
+			cc.Function([]string{"public"},
+				"read_tl2",
+				utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+					return codecreator.FunctionArgument{
+						Name:     argNames[a],
+						TypeName: argTypes[a],
+					}
+				}),
+				"int",
+				func() {
+					usedBytes := "$used_bytes"
+					cc.AddLinef("%[1]s = 0;", usedBytes)
+					cc.AddLines(trw.phpStructReadTL2Code("$this", usedBytes, PHPAddDollarSign(trw.pureType.NatParams()), "", 0, true)...)
+					cc.AddLinef("return %[1]s;", usedBytes)
+				},
+			)
 		}
+
+		code.WriteString(cc.Text())
 	}
 }
 
 func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs []string) []string {
-	if trw.pureType.OriginTL2() {
-		cc := codecreator.NewPhpCodeCreator()
-		cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
-		return cc.Print()
-	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
@@ -966,100 +964,121 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			argTypes = append(argTypes, "int")
 		}
 
-		magicWrite := []string{
-			fmt.Sprintf("    $success = $stream->write_uint32(0x%08[1]x)", trw.wr.TLTag()),
-			"    if (!$success) {",
-			"      return false;",
-			"    }",
-		}
+		cc := codecreator.NewPhpCodeCreator()
+		cc.AddShift(1)
+		cc.AddFullEmptyLine()
 
-		if useBuiltin {
-			magicWrite = []string{
-				fmt.Sprintf("    store_int(0x%08[1]x);", trw.wr.TLTag()),
-			}
-		}
+		cc.Function(
+			[]string{"public"},
+			"write_boxed",
+			utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+				return codecreator.FunctionArgument{
+					Name:     argNames[a],
+					TypeName: argTypes[a],
+				}
+			}),
+			"bool",
+			func() {
+				if trw.pureType.OriginTL2() {
+					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				} else {
+					cc.TLWriteMagic(trw.wr.TLTag())
+					cc.AddLinef("return $this->write(%[1]s);", phpFunctionArgumentsFormat(argNames))
+				}
+			},
+		)
 
-		code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function write_boxed(%[2]s) {
-%[3]s
-    return $this->write(%[2]s);
-  }
-`,
-			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
-			phpFunctionArgumentsFormat(argNames),
-			strings.Join(magicWrite, "\n"),
-		))
-
-		code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function write(%[2]s) {
-`,
-			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
-			phpFunctionArgumentsFormat(argNames),
-		))
-
-		for _, line := range trw.phpStructWriteCode("$this", PHPAddDollarSign(trw.pureType.NatParams())) {
-			code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", strings.Repeat("  ", 2), line))
-		}
-
-		code.WriteString("    return true;\n")
-		code.WriteString("  }\n")
+		cc.AddFullEmptyLine()
+		cc.Function(
+			[]string{"public"},
+			"write",
+			utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+				return codecreator.FunctionArgument{
+					Name:     argNames[a],
+					TypeName: argTypes[a],
+				}
+			}),
+			"bool",
+			func() {
+				if trw.pureType.OriginTL2() {
+					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				} else {
+					cc.AddLines(trw.phpStructWriteCode("$this", PHPAddDollarSign(trw.pureType.NatParams()))...)
+					cc.AddLinef("return true;")
+				}
+			},
+		)
 
 		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
 			// TODO: add block calculated currentSize and block if union
 			argNames = append(argNames, "context_sizes", "context_blocks")
 			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)
 
-			code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function write_tl2(%[2]s) {
-    $context_sizes = new TL\tl2_context();
-    $context_blocks = new TL\tl2_context();
-    $this->calculate_sizes_tl2(%[3]s);
-    $this->internal_write_tl2(%[3]s);
-  }
-`,
-				phpFunctionCommentFormat(argNames[:len(argNames)-2], argTypes[:len(argNames)-2], "", "  "),
-				phpFunctionArgumentsFormat(argNames[:len(argNames)-2]),
-				phpFunctionArgumentsFormat(argNames),
-			))
+			cc.AddFullEmptyLine()
+			cc.Function(
+				[]string{"public"},
+				"write_tl2",
+				utils.MapSlice(utils.IntRange(0, len(argNames)-2, 1), func(a int) codecreator.FunctionArgument {
+					return codecreator.FunctionArgument{
+						Name:     argNames[a],
+						TypeName: argTypes[a],
+					}
+				}),
+				"",
+				func() {
+					cc.AddLinef("$context_sizes = new TL\\tl2_context();")
+					cc.AddLinef("$context_blocks = new TL\\tl2_context();")
 
-			code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function internal_write_tl2(%[2]s) {
-`,
-				phpFunctionCommentFormat(argNames, argTypes, "int", "  "),
-				phpFunctionArgumentsFormat(argNames),
-			))
+					innerArgs := phpFunctionArgumentsFormat(argNames)
 
-			tab := strings.Repeat("  ", 2)
+					cc.AddLinef("$this->calculate_sizes_tl2(%[1]s);", innerArgs)
+					cc.AddLinef("$this->internal_write_tl2(%[1]s);", innerArgs)
+				},
+			)
 
-			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructWriteTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, "$used_bytes", false) {
-				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
-			}
-			code.WriteString("    return $used_bytes;\n")
-			code.WriteString("  }\n")
+			cc.AddFullEmptyLine()
+			cc.Function(
+				[]string{"public"},
+				"internal_write_tl2",
+				utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+					return codecreator.FunctionArgument{
+						Name:     argNames[a],
+						TypeName: argTypes[a],
+					}
+				}),
+				"int",
+				func() {
+					usedBytes := "$used_bytes"
+					cc.AddLines(cc.Assign(usedBytes, "0"))
+					cc.AddLines(trw.phpStructWriteTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, usedBytes, false)...)
+					cc.AddLinef("return %[1]s;", usedBytes)
+				},
+			)
 
-			code.WriteString(fmt.Sprintf(`
-%[1]s
-  public function calculate_sizes_tl2(%[2]s) {
-`,
-				phpFunctionCommentFormat(argNames, argTypes, "int", "  "),
-				phpFunctionArgumentsFormat(argNames),
-			))
-
-			code.WriteString(fmt.Sprintf("%s$used_bytes = 0;\n", tab))
-			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, "$used_bytes", false, true) {
-				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
-			}
-			code.WriteString(fmt.Sprintf("%sif ($used_bytes == 0) {\n", tab))
-			code.WriteString(fmt.Sprintf("%s  $context_sizes->push_back(0);\n", tab))
-			code.WriteString(fmt.Sprintf("%s}\n", tab))
-			code.WriteString("    return $used_bytes;\n")
-			code.WriteString("  }\n")
+			cc.AddFullEmptyLine()
+			cc.Function(
+				[]string{"public"},
+				"calculate_sizes_tl2",
+				utils.MapSlice(utils.IntRange(0, len(argNames), 1), func(a int) codecreator.FunctionArgument {
+					return codecreator.FunctionArgument{
+						Name:     argNames[a],
+						TypeName: argTypes[a],
+					}
+				}),
+				"int",
+				func() {
+					usedBytes := "$used_bytes"
+					cc.AddLines(cc.Assign(usedBytes, "0"))
+					cc.AddLines(trw.phpStructCalculateSizesTL2Code("$this", PHPAddDollarSign(trw.pureType.NatParams()), "", 0, "$used_bytes", false, true)...)
+					cc.If(cc.Equal(usedBytes, "0"), func() {
+						cc.AddLinef("$context_sizes->push_back(0);")
+					})
+					cc.AddLinef("return %[1]s;", usedBytes)
+				},
+			)
 		}
+
+		code.WriteString(cc.Text())
 	}
 }
 
@@ -1647,6 +1666,11 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
  */
 `)
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
+	if "statshouseApi_queryResponse" == trw.PhpClassName(false, true) {
+		Debugf("")
+		up := trw.PhpConstructorNeedsUnion()
+		Debugf("isnil %v", up != nil)
+	}
 	implementingInterfaces := make([]string, 0)
 
 	if unionParent != nil {
