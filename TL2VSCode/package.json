@@ -1,0 +1,59 @@
+{
+  "name": "tl2",
+  "displayName": "TL2",
+  "description": "Syntax highlighting and basic navigation for TL2 (Type Language 2)",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "tl2",
+        "aliases": ["TL2", "tl2"],
+        "extensions": [".tl2"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/tl2-language-light.png",
+          "dark": "./icons/tl2-language-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tl2",
+        "scopeName": "source.tl2",
+        "path": "./syntaxes/tl2.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "TL2",
+      "properties": {
+        "tl2.diagnostics.unknownTypes": {
+          "type": "string",
+          "enum": ["error", "warning", "information", "hint", "off"],
+          "default": "warning",
+          "description": "Severity for references to types not declared anywhere in the workspace (and not a built-in or template parameter). Set to \"off\" to disable."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.4.0"
+  },
+  "publisher": "tlgen",
+  "repository": {
+    "url": "https://github.com/VKCOM/tl.git"
+  }
+}
