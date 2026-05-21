@@ -497,6 +497,10 @@ func (k *Kernel) Compile() error {
 			k.markWantsTL2(v.ins, tl2Children)
 			typesCounterMarkTL2++
 		}
+		// enforce tl2 io for types from tl1 which used for tl2 combinators
+		if v.ins.Common().OriginTL2() {
+			k.markWantsTL2(v.ins, tl2Children)
+		}
 	}
 	if k.opts.Verbose && !k.tl2WhiteList.Empty() {
 		fmt.Printf("found %d object roots for TL2 versions of types by the following filter: %s\n", typesCounterMarkTL2, k.opts.TL2WhiteList)
