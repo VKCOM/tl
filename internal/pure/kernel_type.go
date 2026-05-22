@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 type KernelTypeTarg struct {
@@ -139,14 +140,27 @@ func (t *KernelType) TemplateArguments() []tlast.TL2TypeTemplate {
 
 func (t *KernelType) DifferConstructorAndTypeName() bool {
 	if t.originTL2 {
-		return false
+		found, _ := utils.ExtractTLGenTag(t.combTL2.CommentBefore, "tlgen:tl1name")
+		return found
 	}
 	return len(t.combTL1) == 1 && !t.builtin && !strings.EqualFold(t.combTL1[0].TypeDecl.Name.String(), t.combTL1[0].Construct.Name.String())
 }
 
 func (t *KernelType) TL1TypeDeclName() tlast.TL2TypeName {
 	if t.originTL2 {
-		return t.canonicalName
+		found, legacyName := utils.ExtractTLGenTag(t.combTL2.CommentBefore, "tlgen:tl1name")
+		if !found {
+			return t.canonicalName
+		}
+		elems := strings.Split(legacyName, ".")
+		result := tlast.TL2TypeName{}
+		if len(elems) == 1 {
+			result.Name = elems[0]
+		} else {
+			result.Namespace = elems[0]
+			result.Name = elems[1]
+		}
+		return result
 	}
 	return tlast.TL2TypeName(t.combTL1[0].TypeDecl.Name)
 }
