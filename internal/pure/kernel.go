@@ -279,6 +279,9 @@ func (k *Kernel) Compile() error {
 			canBeBare:     true,
 			canonicalName: refName,
 		}
+		for _, m := range comb.Annotations {
+			kt.annotations = append(kt.annotations, m.Name)
+		}
 		if comb.IsFunction {
 			kt.namePR = comb.FuncDecl.PRName
 			if resultTlName, needsCustom, customTrue := k.functionNeedsCustomResultType(comb.FuncDecl); needsCustom && !customTrue {

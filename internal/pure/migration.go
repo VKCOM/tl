@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/tlast"
+	"github.com/VKCOM/tl/internal/utils"
 )
 
 type migrationTL1RefsTL2Errors struct {
@@ -212,6 +213,9 @@ outer:
 			}
 		}
 		bb.WriteString(comb.AllPR.Begin.FileContent()[comb.AllPR.Begin.Offset():comb.PR.Begin.Offset()])
+		for _, modifier := range comb.Modifiers {
+			bb.WriteString("@" + modifier.Name + " ")
+		}
 		bb.WriteString(tip.canonicalName.String())
 		if len(tip.combTL1) == 1 {
 			if comb.IsFunction {
@@ -226,7 +230,7 @@ outer:
 				if err != nil {
 					return nil, err
 				}
-				leftArgs, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false)
+				leftArgs, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false, 0)
 				if err != nil {
 					return nil, err
 				}
@@ -261,7 +265,7 @@ outer:
 				} else {
 					// migrate fields
 					bb.WriteString(" = ")
-					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false)
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, false, 0)
 					if err != nil {
 						return nil, err
 					}
@@ -316,7 +320,7 @@ outer:
 					}
 				} else {
 					// migrate fields
-					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, true)
+					_, err := k.MigrationFields(bb, migrateTips, tip, comb, fieldsAfterReplace, typesAfterReplace, true, i)
 					if err != nil {
 						return nil, err
 					}
@@ -390,15 +394,42 @@ func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, c
 }
 
 func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]struct{}, tip *KernelType, comb *tlast.Combinator,
-	fieldsAfterReplace []tlast.Field, typesAfterReplace []tlast.TL2TypeRef, indent bool) ([]tlast.TemplateArgument, error) {
+	fieldsAfterReplace []tlast.Field, typesAfterReplace []tlast.TL2TypeRef, indent bool, constructorId int) ([]tlast.TemplateArgument, error) {
 	leftArgs := comb.TemplateArguments
+	strct, ok := tip.instancesOrdered[0].ins.(*TypeInstanceStruct)
+	if !ok {
+		un, isUnion := tip.instancesOrdered[0].ins.(*TypeInstanceUnion)
+		ok = isUnion
+		if isUnion {
+			strct = un.variantTypes[constructorId]
+		}
+	}
+
 	for i, fieldDef := range fieldsAfterReplace {
 		fieldType := typesAfterReplace[i]
 		if fieldDef.FieldName == "" {
 			return nil, fieldDef.PR.BeautifulError(fmt.Errorf("internal error: anonymous field cannot be migrated"))
 		}
-		if fieldDef.CommentBefore != "" {
-			bb.WriteString(fieldDef.CommentBefore)
+		commentBefore := fieldDef.CommentBefore
+
+		if ok {
+			usages := strct.GetNatFieldUsage(i, true, true)
+			usedBits := usages.UsedBits()
+			if len(usedBits) > 0 {
+				fmt.Printf(">>>>> %s[%d] <- %v %v\n", tip.canonicalName, i, usedBits, indent)
+
+				commentBefore = commentBefore + "\n    "
+				if indent {
+					commentBefore = commentBefore + "    "
+				}
+				usedBitsStrings := utils.MapSlice(usedBits, func(a uint32) string {
+					return fmt.Sprintf("%d", a)
+				})
+				commentBefore += fmt.Sprintf("// tlgen:tl1mask:%q", strings.Join(usedBitsStrings, ","))
+			}
+		}
+		if commentBefore != "" {
+			bb.WriteString(commentBefore)
 			bb.WriteString("\n    ")
 			if indent {
 				bb.WriteString("    ")
