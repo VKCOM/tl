@@ -421,8 +421,6 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 			usages := strct.GetNatFieldUsage(i, true, false)
 			usedBits := usages.UsedBits()
 			if len(usedBits) > 0 {
-				fmt.Printf(">>>>> %s[%d] <- %v %v\n", tip.canonicalName, i, usedBits, indent)
-
 				commentBefore = commentBefore + "\n    "
 				if indent {
 					commentBefore = commentBefore + "    "
