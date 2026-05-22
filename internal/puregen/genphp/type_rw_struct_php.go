@@ -296,7 +296,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				)
 
 			hasFetcher := trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
-			hasFetcherTL2 := trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
+			hasFetcherTL2 := trw.PhpHasTL2Code()
 
 			readResultTL1 := func() []string {
 				return trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, innerArgs, "")
@@ -311,8 +311,8 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
-					if trw.wr.pureType.Common().KernelType().OriginTL2() {
-						cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+					if trw.PhpDisableTL1Code() {
+						cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 					} else {
 						cc.AddLines(readResultTL1()...)
 					}
@@ -370,8 +370,8 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
-					if trw.wr.pureType.Common().KernelType().OriginTL2() {
-						cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+					if trw.PhpDisableTL1Code() {
+						cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 					} else {
 						cc.AddLines(writeResultTL1()...)
 					}
@@ -617,12 +617,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						}
 						if trw.pureType.OriginTL2() {
 							cc.If(cc.Equal(tlMode, "0"), func() {
-								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 							})
 						}
 						cc.If(cc.Equal(tlMode, "1"), func() {
-							if trw.pureType.OriginTL2() {
-								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+							if trw.PhpDisableTL1Code() {
+								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 							} else {
 								cc.AddLines("$this->write_boxed();")
 								if hasFetcher {
@@ -681,12 +681,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						}
 						if trw.pureType.OriginTL2() {
 							cc.If(cc.Equal(tlMode, "0"), func() {
-								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 							})
 						}
 						cc.If(cc.Equal(tlMode, "1"), func() {
-							if trw.pureType.OriginTL2() {
-								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+							if trw.PhpDisableTL1Code() {
+								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 							} else {
 								cc.Comments("check correct tl prefix")
 								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
@@ -774,8 +774,8 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			}),
 			"bool",
 			func() {
-				if trw.pureType.OriginTL2() {
-					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				if trw.PhpDisableTL1Code() {
+					cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 				} else {
 					cc.TLReadMagic(trw.wr.TLTag())
 					cc.AddLinef("return $this->read(%[1]s);", phpFunctionArgumentsFormat(argNames))
@@ -794,8 +794,8 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			}),
 			"bool",
 			func() {
-				if trw.pureType.OriginTL2() {
-					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				if trw.PhpDisableTL1Code() {
+					cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 				} else {
 					cc.AddLines(trw.phpStructReadCode("$this", PHPAddDollarSign(trw.pureType.NatParams()))...)
 					cc.AddLinef("return true;")
@@ -803,7 +803,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			},
 		)
 
-		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
+		if trw.PhpHasTL2Code() {
 			// TODO: add block calculated currentSize and block if union
 			if trw.wr.PHPUnionParent() != nil {
 				argNames = append(argNames, "block", "current_size")
@@ -1012,8 +1012,8 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			}),
 			"bool",
 			func() {
-				if trw.pureType.OriginTL2() {
-					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				if trw.PhpDisableTL1Code() {
+					cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 				} else {
 					cc.TLWriteMagic(trw.wr.TLTag())
 					cc.AddLinef("return $this->write(%[1]s);", phpFunctionArgumentsFormat(argNames))
@@ -1033,8 +1033,8 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			}),
 			"bool",
 			func() {
-				if trw.pureType.OriginTL2() {
-					cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
+				if trw.PhpDisableTL1Code() {
+					cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 				} else {
 					cc.AddLines(trw.phpStructWriteCode("$this", PHPAddDollarSign(trw.pureType.NatParams()))...)
 					cc.AddLinef("return true;")
@@ -1042,7 +1042,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			},
 		)
 
-		if trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper() {
+		if trw.PhpHasTL2Code() {
 			// TODO: add block calculated currentSize and block if union
 			argNames = append(argNames, "context_sizes", "context_blocks")
 			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)
@@ -1116,11 +1116,6 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs []string) []string {
-	if trw.pureType.OriginTL2() {
-		cc := codecreator.NewPhpCodeCreator()
-		cc.ThrowDisabledTL1(trw.pureType.CanonicalName())
-		return cc.Print()
-	}
 	result := make([]string, 0)
 	const tab = "  "
 	for i, field := range trw.Fields {
@@ -1703,11 +1698,6 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
  */
 `)
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
-	if "statshouseApi_queryResponse" == trw.PhpClassName(false, true) {
-		Debugf("")
-		up := trw.PhpConstructorNeedsUnion()
-		Debugf("isnil %v", up != nil)
-	}
 	implementingInterfaces := make([]string, 0)
 
 	if unionParent != nil {
@@ -1995,7 +1985,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
 				// inplace
-				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				readText := trw.Fields[0].t.trw.PhpReadTL2MethodCall(targetName, trw.Fields[0].Bare(), initIfDefault, newArgs, supportSuffix, callLevel, usedBytesPointer, canDependOnLocalBit)
 				return readText
 			} else {
 				localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
@@ -2103,7 +2093,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
-				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel, usedBytesPointer, canDependOnLocalBit)
 				return calcText
 			} else {
 				calcText := trw.phpStructWriteTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true)
@@ -2154,7 +2144,7 @@ func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare 
 		if trw.PhpCanBeSimplify() {
 			newArgs := trw.pureType.ReplaceUnwrapArgs(0, args)
 			if trw.isUnwrapType() || trw.isTypeDef() {
-				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel+1, usedBytesPointer, canOmit)
+				calcText := trw.Fields[0].t.trw.PhpCalculateSizesTL2MethodCall(targetName, trw.Fields[0].Bare(), newArgs, supportSuffix, callLevel, usedBytesPointer, canOmit)
 				return calcText
 			} else {
 				calcText := trw.phpStructCalculateSizesTL2Code(targetName, args, supportSuffix, callLevel, usedBytesPointer, true, canOmit)
@@ -2268,4 +2258,18 @@ func (trw *TypeRWStruct) PhpGetArgsForField(fieldIndex int, calculatedArgs []str
 	}
 
 	return result
+}
+
+func (trw *TypeRWStruct) PhpDisableTL1Code() bool {
+	if trw.pureType.OriginTL2() {
+		return true
+	}
+	if trw.wr.gen.options.PHP.DisableTL1Generation {
+		return trw.PhpHasTL2Code()
+	}
+	return false
+}
+
+func (trw *TypeRWStruct) PhpHasTL2Code() bool {
+	return trw.wr.pureType.Common().HasTL2() && !trw.wr.pureType.Common().KernelType().IsExclamationWrapper()
 }

@@ -21,6 +21,7 @@ type OptionsPHP struct {
 	AddTypeComments              bool
 	EnableInternalFunctions      bool
 	EnableFieldMaskBitsConstants bool
+	DisableTL1Generation         bool
 
 	AddMetaData    bool
 	AddFactoryData bool
@@ -56,6 +57,8 @@ func (opt *OptionsPHP) Bind(f *flag.FlagSet) {
 		`whether to generate @internal functions`)
 	f.BoolVar(&opt.EnableFieldMaskBitsConstants, "php-enable-fieldmask-bits-constants", true,
 		`whether to generate constants for bits in fieldmasks`)
+	f.BoolVar(&opt.DisableTL1Generation, "php-disable-tl1-generation", false,
+		`whether to disable generation tl1 bodies if and only if tl2 provided (type is in tl2Whitelist)`)
 
 	//f.BoolVar(&opt.CreateTLFilesWithAllTypesInReturn, "php-create-tl-files-with-all-types-in-return", false,
 	//	`whether to create duplicates of passed tl files with all top level types in function return (option for testing)`)
