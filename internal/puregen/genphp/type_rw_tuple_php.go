@@ -14,7 +14,7 @@ import (
 )
 
 func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
-	return "array_" + trw.element.t.trw.PhpClassName(false, false)
+	return "array_" + trw.element.t.trw.PhpClassName(withPath, bare)
 	//return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
 
