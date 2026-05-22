@@ -195,6 +195,13 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		}
 	}
 
+	for index, f := range trw.Fields {
+		found, _ := utils.ExtractTLGenTag(f.pureField.CommentBefore(), "tlgen:tl1mask")
+		if found {
+			usedFieldMasksIndecies = append(usedFieldMasksIndecies, index)
+		}
+	}
+
 	trw.PHPStructConstructor(code, necessaryFieldsInConstructor)
 	trw.PHPStructRPCSpecialGetters(code)
 	trw.PHPStructReadMethods(code)
@@ -304,7 +311,11 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
 					// tl1 case
-					cc.AddLines(readResultTL1()...)
+					if trw.wr.pureType.Common().KernelType().OriginTL2() {
+						cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+					} else {
+						cc.AddLines(readResultTL1()...)
+					}
 				}, func() {
 					// tl2 case
 					cc.AddLines(cc.TLFetchUint32To("$marker"))
@@ -359,7 +370,11 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
 				cc.IfElse("$this->use_tl2 == 0", func() {
-					cc.AddLines(writeResultTL1()...)
+					if trw.wr.pureType.Common().KernelType().OriginTL2() {
+						cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+					} else {
+						cc.AddLines(writeResultTL1()...)
+					}
 				}, func() {
 					cc.AddLines(
 						cc.Assign("$used_bytes", "0"),
@@ -600,19 +615,28 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 								cc.AddLines(cc.Assign(tlMode, "1"))
 							})
 						}
+						if trw.pureType.OriginTL2() {
+							cc.If(cc.Equal(tlMode, "0"), func() {
+								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+							})
+						}
 						cc.If(cc.Equal(tlMode, "1"), func() {
-							cc.AddLines("$this->write_boxed();")
-							if hasFetcher {
-								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedStore()"))
-								cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
-									cc.AddLines("rpc_clean();")
-									cc.AddLines("return null;")
-								})
+							if trw.pureType.OriginTL2() {
+								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+							} else {
+								cc.AddLines("$this->write_boxed();")
+								if hasFetcher {
+									cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedStore()"))
+									cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+										cc.AddLines("rpc_clean();")
+										cc.AddLines("return null;")
+									})
+								}
+								if hasTL2 {
+									cc.AddLines("$use_tl2 = 0;")
+								}
+								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 							}
-							if hasTL2 {
-								cc.AddLines("$use_tl2 = 0;")
-							}
-							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 						})
 						if hasTL2 && !hasFetcher {
 							cc.If(cc.Equal(tlMode, "2"), func() {
@@ -655,25 +679,34 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 								cc.AddLines(cc.Assign(tlMode, "1"))
 							})
 						}
-						cc.If(cc.Equal(tlMode, "1"), func() {
-							cc.Comments("check correct tl prefix")
-							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-							cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
-								cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag:" + 0x%08[1]x);`, trw.wr.TLTag()))
+						if trw.pureType.OriginTL2() {
+							cc.If(cc.Equal(tlMode, "0"), func() {
+								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
 							})
-							cc.Comments("read body")
-							cc.AddLines("$this->read();")
-							if hasFetcher {
-								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
-								cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
-									cc.AddLines("rpc_clean();")
-									cc.AddLines("return null;")
+						}
+						cc.If(cc.Equal(tlMode, "1"), func() {
+							if trw.pureType.OriginTL2() {
+								cc.ThrowDisabledTL1(trw.wr.pureType.CanonicalName())
+							} else {
+								cc.Comments("check correct tl prefix")
+								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+								cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+									cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag:" + 0x%08[1]x);`, trw.wr.TLTag()))
 								})
+								cc.Comments("read body")
+								cc.AddLines("$this->read();")
+								if hasFetcher {
+									cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
+									cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+										cc.AddLines("rpc_clean();")
+										cc.AddLines("return null;")
+									})
+								}
+								if hasTL2 {
+									cc.AddLines("$use_tl2 = 0;")
+								}
+								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 							}
-							if hasTL2 {
-								cc.AddLines("$use_tl2 = 0;")
-							}
-							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 						})
 						if hasTL2 && !hasFetcher {
 							cc.If(cc.Equal(tlMode, "2"), func() {
@@ -1394,70 +1427,72 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 			),
 		)
 
-		fields := usedFieldMasks[natIndex]
-		sort.Slice(fields, func(i, j int) bool {
-			if fields[i].pureField.BitNumber() == fields[j].pureField.BitNumber() {
-				return i < j
-			}
-			return fields[i].pureField.BitNumber() < fields[j].pureField.BitNumber()
-		})
-
-		fieldsGroupedByBitNumber := make([][]Field, 0)
-		for _, dependentField := range fields {
-			if len(fieldsGroupedByBitNumber) == 0 ||
-				fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1][0].pureField.BitNumber() != dependentField.pureField.BitNumber() {
-				fieldsGroupedByBitNumber = append(fieldsGroupedByBitNumber, make([]Field, 0))
-			}
-			fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1] = append(fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1], dependentField)
-		}
-
-		for _, dependentFields := range fieldsGroupedByBitNumber {
-			conditions := make([]string, 0)
-			bitConstants := make([]string, 0)
-			sort.Slice(dependentFields, func(i, j int) bool {
-				return fieldNameToFieldOrder[dependentFields[i].pureField.Name()] < fieldNameToFieldOrder[dependentFields[j].pureField.Name()]
-			})
-			for _, dependentField := range dependentFields {
-				condition := ""
-				if dependentField.t.PHPIsTrueType() || dependentField.t.PHPGenCoreType().PHPNeedsCode() {
-					condition = fmt.Sprintf(
-						"$this->%[1]s",
-						dependentField.pureField.Name(),
-					)
-				} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
-					condition = fmt.Sprintf("$has_%s", dependentField.pureField.Name())
-				} else {
-					condition = fmt.Sprintf(
-						"$this->%[1]s !== null",
-						dependentField.pureField.Name(),
-					)
+		if trw.wr.gen.options.PHP.EnableFieldMaskBitsConstants {
+			fields := usedFieldMasks[natIndex]
+			sort.Slice(fields, func(i, j int) bool {
+				if fields[i].pureField.BitNumber() == fields[j].pureField.BitNumber() {
+					return i < j
 				}
-				conditions = append(conditions, condition)
-				bitConstants = append(bitConstants, fmt.Sprintf(
-					"self::BIT_%[1]s_%[2]d",
-					strings.ToUpper(dependentField.pureField.Name()),
-					dependentField.pureField.BitNumber()))
+				return fields[i].pureField.BitNumber() < fields[j].pureField.BitNumber()
+			})
+
+			fieldsGroupedByBitNumber := make([][]Field, 0)
+			for _, dependentField := range fields {
+				if len(fieldsGroupedByBitNumber) == 0 ||
+					fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1][0].pureField.BitNumber() != dependentField.pureField.BitNumber() {
+					fieldsGroupedByBitNumber = append(fieldsGroupedByBitNumber, make([]Field, 0))
+				}
+				fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1] = append(fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1], dependentField)
 			}
 
-			finalCondition := conditions[0]
-			finalMask := bitConstants[0]
+			for _, dependentFields := range fieldsGroupedByBitNumber {
+				conditions := make([]string, 0)
+				bitConstants := make([]string, 0)
+				sort.Slice(dependentFields, func(i, j int) bool {
+					return fieldNameToFieldOrder[dependentFields[i].pureField.Name()] < fieldNameToFieldOrder[dependentFields[j].pureField.Name()]
+				})
+				for _, dependentField := range dependentFields {
+					condition := ""
+					if dependentField.t.PHPIsTrueType() || dependentField.t.PHPGenCoreType().PHPNeedsCode() {
+						condition = fmt.Sprintf(
+							"$this->%[1]s",
+							dependentField.pureField.Name(),
+						)
+					} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
+						condition = fmt.Sprintf("$has_%s", dependentField.pureField.Name())
+					} else {
+						condition = fmt.Sprintf(
+							"$this->%[1]s !== null",
+							dependentField.pureField.Name(),
+						)
+					}
+					conditions = append(conditions, condition)
+					bitConstants = append(bitConstants, fmt.Sprintf(
+						"self::BIT_%[1]s_%[2]d",
+						strings.ToUpper(dependentField.pureField.Name()),
+						dependentField.pureField.BitNumber()))
+				}
 
-			if len(conditions) > 1 {
-				finalCondition = strings.Join(conditions, " && ")
-				finalMask = "(" + strings.Join(bitConstants, " | ") + ")"
-			}
+				finalCondition := conditions[0]
+				finalMask := bitConstants[0]
 
-			code.WriteString(
-				fmt.Sprintf(
-					`
+				if len(conditions) > 1 {
+					finalCondition = strings.Join(conditions, " && ")
+					finalMask = "(" + strings.Join(bitConstants, " | ") + ")"
+				}
+
+				code.WriteString(
+					fmt.Sprintf(
+						`
     if (%[1]s) {
       $mask |= %[2]s;
     }
 `,
-					finalCondition,
-					finalMask,
-				),
-			)
+						finalCondition,
+						finalMask,
+					),
+				)
+			}
 		}
 
 		code.WriteString("\n    return $mask;\n")
@@ -1633,21 +1668,23 @@ func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 
 func (trw *TypeRWStruct) PHPStructFieldMasks(code *strings.Builder) {
 	// print fieldmasks
-	for _, f := range trw.Fields {
-		if f.pureField.FieldMask() == nil {
-			continue
-		}
-		code.WriteString(
-			fmt.Sprintf(
-				`
+	if trw.wr.gen.options.PHP.EnableFieldMaskBitsConstants {
+		for _, f := range trw.Fields {
+			if f.pureField.FieldMask() == nil {
+				continue
+			}
+			code.WriteString(
+				fmt.Sprintf(
+					`
   /** Field mask for $%[1]s field */
   const BIT_%[2]s_%[3]d = (1 << %[3]d);
 `,
-				f.pureField.Name(),
-				strings.ToUpper(f.pureField.Name()),
-				f.pureField.BitNumber(),
-			),
-		)
+					f.pureField.Name(),
+					strings.ToUpper(f.pureField.Name()),
+					f.pureField.BitNumber(),
+				),
+			)
+		}
 	}
 }
 
