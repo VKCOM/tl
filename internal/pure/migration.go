@@ -213,6 +213,11 @@ outer:
 			}
 		}
 		bb.WriteString(comb.AllPR.Begin.FileContent()[comb.AllPR.Begin.Offset():comb.PR.Begin.Offset()])
+		// print legacy type name for php
+		if tip.DifferConstructorAndTypeName() {
+			bb.WriteString(fmt.Sprintf("// tlgen:tl1name:%q\n", comb.TypeDecl.Name.String()))
+		}
+		// add annotations
 		for _, modifier := range comb.Modifiers {
 			bb.WriteString("@" + modifier.Name + " ")
 		}
@@ -413,7 +418,7 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 		commentBefore := fieldDef.CommentBefore
 
 		if ok {
-			usages := strct.GetNatFieldUsage(i, true, true)
+			usages := strct.GetNatFieldUsage(i, true, false)
 			usedBits := usages.UsedBits()
 			if len(usedBits) > 0 {
 				fmt.Printf(">>>>> %s[%d] <- %v %v\n", tip.canonicalName, i, usedBits, indent)
