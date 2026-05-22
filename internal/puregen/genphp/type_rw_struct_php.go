@@ -305,7 +305,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				return trw.ResultType.trw.PhpReadTL2MethodCall("$result->value", false, true, innerArgs, "", 0, "$used_bytes", false)
 			}
 
-			readCallLines := make([]string, 0)
+			var readCallLines []string
 
 			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
@@ -365,7 +365,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				return trw.ResultType.trw.PhpWriteTL2MethodCall("$result->value", false, innerArgs, "", 0, "$used_bytes", false)
 			}
 
-			writeCallLines := make([]string, 0)
+			var writeCallLines []string
 
 			if hasFetcherTL2 {
 				cc := codecreator.NewPhpCodeCreator()
