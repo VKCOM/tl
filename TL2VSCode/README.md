@@ -1,6 +1,6 @@
 # TL2 for VS Code
 
-Syntax highlighting and basic navigation for [TL2](../docs/TL2Primer.pdf) — Type Language 2.
+Syntax highlighting and basic navigation for [TL2](https://github.com/VKCOM/tl/blob/master/docs/TL2Primer.pdf) — Type Language 2.
 
 ## Features
 
