@@ -3,11 +3,20 @@
   "displayName": "TL2",
   "description": "Syntax highlighting and basic navigation for TL2 (Type Language 2)",
   "version": "0.0.1",
+  "license": "MPL-2.0",
+  "icon": "icons/tl2-language-dark.png",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Programming Languages"
+  ],
+  "keywords": [
+    "tl2",
+    "type language",
+    "vkcom",
+    "serialization",
+    "rpc"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -54,6 +63,12 @@
   },
   "publisher": "tlgen",
   "repository": {
-    "url": "https://github.com/VKCOM/tl.git"
-  }
+    "type": "git",
+    "url": "https://github.com/VKCOM/tl.git",
+    "directory": "TL2VSCode"
+  },
+  "bugs": {
+    "url": "https://github.com/VKCOM/tl/issues"
+  },
+  "homepage": "https://github.com/VKCOM/tl/tree/master/TL2VSCode#readme"
 }
