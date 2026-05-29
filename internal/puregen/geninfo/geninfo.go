@@ -24,8 +24,8 @@ import (
 )
 
 const (
-	statshouseViewBase  = "https://statshouse.mvk.com/view"
-	statshouseQueryBase = "https://statshouse.mvk.com/api/query"
+	statshouseView  = "/view"
+	statshouseQuery = "/api/query"
 
 	cookieEnvVar        = "STATSHOUSE_VKUTH_DATA"
 	cookieKey           = "vkuth_data"
@@ -35,7 +35,18 @@ const (
 	sectionLengthInSeconds = "60"
 )
 
-func statshouseViewLink(queries []tlast.Name) string {
+const (
+	PartSize = 200
+)
+
+type PartitioningMode int
+
+const (
+	PartsByChunks PartitioningMode = iota + 1
+	PartByNamespaces
+)
+
+func statshouseViewLink(shURL string, queries []tlast.Name) string {
 	v := url.Values{}
 	v.Set("t", "0")
 	v.Set("f", "-7200")
@@ -49,10 +60,10 @@ func statshouseViewLink(queries []tlast.Name) string {
 	for _, entry := range queries {
 		v.Add("qf", "11-"+entry.String())
 	}
-	return statshouseViewBase + "?" + v.Encode()
+	return shURL + statshouseView + "?" + v.Encode()
 }
 
-func statshouseQueryLink(queries []tlast.Name) string {
+func statshouseQueryLink(shURL string, queries []tlast.Name) string {
 	v := url.Values{}
 	v.Set("qw", "count_norm")
 	v.Set("t", "0")
@@ -69,7 +80,7 @@ func statshouseQueryLink(queries []tlast.Name) string {
 	for _, entry := range queries {
 		v.Add("qf", "11-"+entry.String())
 	}
-	return statshouseQueryBase + "?" + v.Encode()
+	return shURL + statshouseQuery + "?" + v.Encode()
 }
 
 type reportPart struct {
@@ -175,6 +186,22 @@ func fetchCountNorm(link string, dataCookie, sessionCookie string) (map[string]f
 }
 
 func Generate(kernel *pure.Kernel, options *puregen.Options) error {
+	shURL := options.Info.StatshouseURL
+	if shURL == "" {
+		return fmt.Errorf("info-statshouse-url is required")
+	}
+
+	var mode PartitioningMode
+
+	switch options.Info.PartitioningMode {
+	case 1:
+		mode = PartsByChunks
+	case 2:
+		mode = PartByNamespaces
+	default:
+		mode = PartsByChunks
+	}
+
 	namespaces := map[string][]tlast.Name{}
 	for _, comb := range kernel.TL1() {
 		if comb.IsFunction {
@@ -194,27 +221,14 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	}
 	//fmt.Println(sum)
 
-	const PartSize = 200
-
-	parts := make([][]tlast.Name, 1)
-	partsNs := make([][]string, 1)
-
-	for _, n := range ns {
-		i := len(parts) - 1
-		parts[i] = append(parts[i], namespaces[n]...)
-		partsNs[i] = append(partsNs[i], n)
-		if len(parts[i]) >= PartSize {
-			parts = append(parts, []tlast.Name{})
-			partsNs = append(partsNs, []string{})
-		}
-	}
+	parts, partsNs := extractParts(ns, namespaces, mode)
 
 	cookieValue := os.Getenv(cookieEnvVar)
 	sessionCookie := os.Getenv(cookieSessionEnvVar)
 	if cookieValue == "" {
 		fmt.Fprintf(os.Stderr, "Warning: %s not set, printing view links only\n", cookieEnvVar)
 		for _, part := range parts {
-			fmt.Println(statshouseViewLink(part))
+			fmt.Println(statshouseViewLink(shURL, part))
 		}
 		return nil
 	}
@@ -222,14 +236,14 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	totalSeries := make(map[string]float64)
 	var reportParts []reportPart
 	for i, part := range parts {
-		queryLink := statshouseQueryLink(part)
-		viewLink := statshouseViewLink(part)
+		queryLink := statshouseQueryLink(shURL, part)
+		viewLink := statshouseViewLink(shURL, part)
 
 		seriesMap, err := fetchCountNorm(queryLink, cookieValue, sessionCookie)
 		if err != nil {
 			return fmt.Errorf("failed to fetch part %d (%d queries): %w", i, len(part), err)
 		}
-		//fmt.Printf("Part %d (%d queries): series = %d\n", i, len(part), len(seriesMap))
+		fmt.Printf("Part %d (%d queries): series = %d\n", i, len(part), len(seriesMap))
 		for k, v := range seriesMap {
 			totalSeries[k] += v
 		}
@@ -278,6 +292,17 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	tableStr := tableBuilder.String()
 	fmt.Print(tableStr)
 
+	sort.Slice(reportParts, func(i, j int) bool {
+		sumI, sumJ := 0.0, 0.0
+		for _, v := range reportParts[i].Values {
+			sumI += v
+		}
+		for _, v := range reportParts[j].Values {
+			sumJ += v
+		}
+		return sumI > sumJ
+	})
+
 	rep := report{
 		Table:  tableStr,
 		Values: totalSeries,
@@ -303,4 +328,37 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	}
 
 	return nil
+}
+
+func extractParts(ns []string, namespaces map[string][]tlast.Name, mode PartitioningMode) (parts [][]tlast.Name, partsNs [][]string) {
+	parts = make([][]tlast.Name, 0)
+	partsNs = make([][]string, 0)
+
+	switch mode {
+	case PartsByChunks:
+		parts = append(parts, []tlast.Name{})
+		partsNs = append(partsNs, []string{})
+
+		for _, n := range ns {
+			i := len(parts) - 1
+			parts[i] = append(parts[i], namespaces[n]...)
+			partsNs[i] = append(partsNs[i], n)
+			if len(parts[i]) >= PartSize {
+				parts = append(parts, []tlast.Name{})
+				partsNs = append(partsNs, []string{})
+			}
+		}
+	case PartByNamespaces:
+		for _, n := range ns {
+			i := len(parts)
+
+			parts = append(parts, []tlast.Name{})
+			partsNs = append(partsNs, []string{})
+
+			parts[i] = append(parts[i], namespaces[n]...)
+			partsNs[i] = append(partsNs[i], n)
+		}
+	}
+
+	return parts, partsNs
 }

@@ -41,6 +41,7 @@ type Options struct {
 	Go     OptionsGo
 	PHP    OptionsPHP
 	Rust   OptionsRust
+	Info   OptionsInfo
 
 	ProfileCPU string
 
@@ -94,6 +95,7 @@ func (opt *Options) Bind(f *flag.FlagSet, languagesString string) {
 	opt.Go.Bind(f)
 	opt.PHP.Bind(f)
 	opt.Rust.Bind(f)
+	opt.Info.Bind(f)
 }
 
 func (opt *Options) Validate() error {
