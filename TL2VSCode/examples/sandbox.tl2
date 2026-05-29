@@ -1,0 +1,53 @@
+// Open this file in VS Code (Extension Development Host).
+// Each block below is annotated with what you should see.
+//
+// ─── PRIMITIVES (no warnings expected) ──────────────────────────────────
+sandbox.allPrimitives =
+    a:int32 b:uint32 c:int64 d:uint64 e:float32 f:float64
+    g:byte h:string i:bool j:bit k:true;
+
+// ─── WORKSPACE REFERENCES (no warnings — these are declared in ../internal/tlcodegen/test/tls/cases.tl2)
+// Try Ctrl+Click on any of these to jump there.
+// Try hovering — you should see the original signature + doc comments.
+sandbox.usesWorkspaceTypes =
+    a:casesTL2.testObject
+    b:cases.testArray
+    c:Maybe<int32>
+    d:pair<int32, string>
+    e:benchmarks.vruhash;
+
+// ─── TEMPLATE PARAMETERS (no warnings — X, Y, Z are local to this decl)
+sandbox.usesTemplates<X:Type, Y:Type, Z:#> =
+    first:X
+    second:Y
+    countOfZ:int32
+    arr:[Z]X;
+
+// ─── ALIAS (no warnings)
+sandbox.intList <=> []int32;
+
+// ─── UNION (no warnings; ctor names are not type refs)
+sandbox.Status =
+    | active
+    | inactive
+    | unknown details:string;
+
+// ─── DELIBERATELY UNKNOWN TYPES (each line below should show a warning)
+//
+// You should see yellow squiggles under:
+//   - ThisDoesNotExist
+//   - typoInName (close to typeInName but missing letter)
+//   - missing.namespace
+//   - alsoNotReal
+sandbox.brokenStruct =
+    a:int32
+    b:ThisDoesNotExist
+    c:Maybe<typoInName>
+    d:missing.namespace
+    e:[]alsoNotReal;
+
+// ─── COMPLETION TEST
+// In the next line, after the colon, press Ctrl+Space.
+// You should see all primitives + every type from the workspace
+// (cases.testObject, Maybe, pair, sandbox.allPrimitives, etc.)
+// sandbox.completionTest = x:
