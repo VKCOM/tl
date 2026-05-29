@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -74,10 +73,12 @@ func statshouseQueryLink(queries []tlast.Name) string {
 }
 
 type reportPart struct {
-	Index      int    `json:"index"`
-	QueryCount int    `json:"query_count"`
-	ViewURL    string `json:"view_url"`
-	QueryURL   string `json:"query_url"`
+	Index      int                `json:"index"`
+	QueryCount int                `json:"query_count"`
+	ViewURL    string             `json:"view_url"`
+	QueryURL   string             `json:"query_url"`
+	Values     map[string]float64 `json:"values"`
+	Namespaces []string           `json:"namespaces"`
 }
 
 type report struct {
@@ -196,11 +197,15 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	const PartSize = 200
 
 	parts := make([][]tlast.Name, 1)
+	partsNs := make([][]string, 1)
+
 	for _, n := range ns {
 		i := len(parts) - 1
 		parts[i] = append(parts[i], namespaces[n]...)
+		partsNs[i] = append(partsNs[i], n)
 		if len(parts[i]) >= PartSize {
 			parts = append(parts, []tlast.Name{})
+			partsNs = append(partsNs, []string{})
 		}
 	}
 
@@ -219,21 +224,24 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 	for i, part := range parts {
 		queryLink := statshouseQueryLink(part)
 		viewLink := statshouseViewLink(part)
-		reportParts = append(reportParts, reportPart{
-			Index:      i,
-			QueryCount: len(part),
-			ViewURL:    viewLink,
-			QueryURL:   queryLink,
-		})
 
 		seriesMap, err := fetchCountNorm(queryLink, cookieValue, sessionCookie)
 		if err != nil {
 			return fmt.Errorf("failed to fetch part %d (%d queries): %w", i, len(part), err)
 		}
-		fmt.Printf("Part %d (%d queries): series = %d\n", i, len(part), len(seriesMap))
+		//fmt.Printf("Part %d (%d queries): series = %d\n", i, len(part), len(seriesMap))
 		for k, v := range seriesMap {
 			totalSeries[k] += v
 		}
+
+		reportParts = append(reportParts, reportPart{
+			Index:      i,
+			QueryCount: len(part),
+			ViewURL:    viewLink,
+			QueryURL:   queryLink,
+			Values:     seriesMap,
+			Namespaces: partsNs[i],
+		})
 	}
 
 	type item struct {
@@ -276,17 +284,22 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		Parts:  reportParts,
 	}
 
-	outPath := filepath.Join(options.Outdir, "info.json")
-	f, err := os.Create(outPath)
-	if err != nil {
-		return fmt.Errorf("failed to create report file: %w", err)
-	}
-	defer f.Close()
+	const infoMarker = "info.json"
 
-	enc := json.NewEncoder(f)
+	outputInfo := strings.Builder{}
+	enc := json.NewEncoder(&outputInfo)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(rep); err != nil {
 		return fmt.Errorf("failed to encode report: %w", err)
+	}
+
+	out := puregen.OutDir{}
+	if err := out.AddCodeFile(infoMarker, outputInfo.String()); err != nil {
+		return fmt.Errorf("failed to write report: %w", err)
+	}
+
+	if err := out.Write(options, infoMarker); err != nil {
+		return err
 	}
 
 	return nil
