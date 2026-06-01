@@ -40,6 +40,7 @@ type TypeInstanceCommon struct {
 	argNamespace  string // so vector<memcache.Value> is generated in memcache namespace
 
 	hasTL2        bool
+	usedForTL2    bool
 	commentBefore string
 	commentRight  string
 }
@@ -91,6 +92,10 @@ func (ins *TypeInstanceCommon) OriginTL2() bool {
 
 func (ins *TypeInstanceCommon) HasTL2() bool {
 	return ins.hasTL2
+}
+
+func (ins *TypeInstanceCommon) UsedForTL2() bool {
+	return ins.usedForTL2
 }
 
 // union has also comment per variant

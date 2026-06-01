@@ -123,6 +123,8 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	elems := make([]string, 0)
 	for _, arg := range trw.wr.pureType.Common().ResolvedType().SomeType.Arguments {
 		if !arg.IsNumber && arg.Type.SomeType.Name.String() != "*" {
+			//tip, tipBare := trw.wr.gen.getTypeWrapperMust(arg.Type)
+			//argText := tip.trw.PhpClassName(false, tipBare)
 			tip, _ := trw.wr.gen.getTypeWrapperMust(arg.Type)
 			argText := tip.trw.PhpClassName(false, false)
 			if argText != "" {
@@ -2267,7 +2269,7 @@ func (trw *TypeRWStruct) PhpDisableTL1Code() bool {
 	if trw.wr.gen.options.PHP.DisableTL1Generation {
 		return trw.PhpHasTL2Code()
 	}
-	return false
+	return trw.wr.pureType.Common().UsedForTL2()
 }
 
 func (trw *TypeRWStruct) PhpHasTL2Code() bool {
