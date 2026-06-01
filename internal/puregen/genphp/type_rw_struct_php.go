@@ -334,7 +334,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 							cc.AddLines(readResultTL2()...)
 						})
 					})
-					if trw.ResultType.trw.PhpDefaultValue() == "null" {
+					if trw.ResultType.trw.PhpDefaultValue() == "null" && trw.ResultType.trw.PhpResetValue() != "null" {
 						cc.Comment("setup default value")
 						cc.If(cc.IsNull("$result->value"), func() {
 							cc.AddLines(cc.Assign("$result->value", trw.ResultType.trw.PhpDefaultInit()))
@@ -2224,6 +2224,22 @@ func (trw *TypeRWStruct) PhpDefaultInit() string {
 		strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
 		trw.wr.TLName().Namespace == "" {
 		return trw.Fields[0].t.trw.PhpDefaultInit()
+	}
+	return fmt.Sprintf("new %s()", core.trw.PhpClassName(true, true))
+}
+
+func (trw *TypeRWStruct) PhpResetValue() string {
+	core := trw.wr.PHPGenCoreType()
+	if core != trw.wr {
+		return core.trw.PhpResetValue()
+	}
+	if core.PHPIsTrueType() {
+		return "true"
+	}
+	if !trw.wr.gen.options.PHP.InplaceSimpleStructs &&
+		strings.HasSuffix(trw.wr.TLName().String(), "dictionary") &&
+		trw.wr.TLName().Namespace == "" {
+		return trw.Fields[0].t.trw.PhpResetValue()
 	}
 	return fmt.Sprintf("new %s()", core.trw.PhpClassName(true, true))
 }

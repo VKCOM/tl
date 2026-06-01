@@ -147,3 +147,7 @@ func (trw *TypeRWBool) PhpWriteTL2MethodCall(targetName string, bare bool, args 
 func (trw *TypeRWBool) PhpDefaultInit() string {
 	return "false"
 }
+
+func (trw *TypeRWBool) PhpResetValue() string {
+	return "false"
+}

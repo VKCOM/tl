@@ -799,3 +799,7 @@ func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bar
 func (trw *TypeRWBrackets) PhpDefaultInit() string {
 	return "[]"
 }
+
+func (trw *TypeRWBrackets) PhpResetValue() string {
+	return "[]"
+}
