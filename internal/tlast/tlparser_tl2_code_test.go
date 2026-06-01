@@ -351,6 +351,24 @@ testNs.testName = Green x:int |
 				assert.Error(t, err)
 			})
 
+			t.Run("union with variant name Type", func(t *testing.T) {
+				it, _ := setupIterator(`st.type = 
+    // tlgen:tl1name:"st.typeType"
+    | Type 
+    // tlgen:tl1name:"st.typeOpenUrl"
+    | OpenUrl 
+    // tlgen:tl1name:"st.typeCall"
+    | Call 
+    // tlgen:tl1name:"st.typeMarketWrite"
+    | MarketWrite ;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.Nil(t, err)
+				assert.True(t, newIt.expect(eof))
+				assert.True(t, comb.TypeDecl.Type.StructType.IsUnionType)
+				assert.Equal(t, len(comb.TypeDecl.Type.StructType.UnionType.Variants), 4)
+				assert.Equal(t, comb.TypeDecl.Type.StructType.UnionType.Variants[0].Name, "Type")
+			})
+
 			t.Run("basic definition with templates", func(t *testing.T) {
 				it, _ := setupIterator(` testNs.testName<x:Type> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
