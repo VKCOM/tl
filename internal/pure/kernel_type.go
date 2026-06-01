@@ -150,7 +150,10 @@ func (t *KernelType) TL1TypeDeclName() tlast.TL2TypeName {
 	if t.originTL2 {
 		found, legacyName := utils.ExtractTLGenTag(t.combTL2.CommentBefore, "tlgen:tl1name")
 		if !found {
-			return t.canonicalName
+			// for non bare cases of usage for migrated types
+			canonicalName := t.canonicalName
+			canonicalName.Name = utils.ToUpperFirst(canonicalName.Name)
+			return canonicalName
 		}
 		elems := strings.Split(legacyName, ".")
 		result := tlast.TL2TypeName{}
