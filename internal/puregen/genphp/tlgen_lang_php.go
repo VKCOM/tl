@@ -40,6 +40,7 @@ type TypeRWPHPData interface {
 	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 	PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string
+	PhpResetValue() string
 }
 
 type PhpClassMeta struct {

@@ -300,3 +300,7 @@ func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, ba
 func (trw *TypeRWPrimitive) PhpDefaultInit() string {
 	return trw.PhpDefaultValue()
 }
+
+func (trw *TypeRWPrimitive) PhpResetValue() string {
+	return trw.PhpDefaultValue()
+}

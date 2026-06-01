@@ -310,3 +310,7 @@ func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 func (trw *TypeRWMaybe) PhpDefaultInit() string {
 	return trw.element.t.trw.PhpDefaultInit()
 }
+
+func (trw *TypeRWMaybe) PhpResetValue() string {
+	return "null"
+}

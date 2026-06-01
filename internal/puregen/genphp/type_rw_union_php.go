@@ -380,3 +380,7 @@ func (trw *TypeRWUnion) PhpCalculateSizesTL2MethodCall(targetName string, bare b
 func (trw *TypeRWUnion) PhpDefaultInit() string {
 	return trw.Fields[0].t.trw.PhpDefaultInit()
 }
+
+func (trw *TypeRWUnion) PhpResetValue() string {
+	return trw.Fields[0].t.trw.PhpResetValue()
+}
