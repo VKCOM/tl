@@ -491,7 +491,7 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
-	if restTokens.checkToken(ucIdent) || restTokens.checkToken(lcIdent) {
+	if restTokens.checkToken(ucIdent) || restTokens.checkToken(lcIdent) || restTokens.checkToken(tl2typeSign) {
 		state.StartProcessing = true
 
 		result.PRName = restTokens.skipWS(position)
