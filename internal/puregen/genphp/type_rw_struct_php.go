@@ -1319,14 +1319,15 @@ func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, args 
 			fieldUsed = fmt.Sprintf("%[1]s", fieldTarget)
 		} else {
 			fieldUsed = fmt.Sprintf("%[1]s != 0", fieldSize)
-			if field.pureField.MaskTL2Bit() != nil {
+			isOptional := field.pureField.MaskTL2Bit() != nil
+			if isOptional {
 				cc.AddLines(fmt.Sprintf("if (%[1]s !== null) {", fieldTarget))
 				cc.AddShift(1)
 			}
 			cc.AddLines(
-				field.t.trw.PhpCalculateSizesTL2MethodCall(fieldTarget, false, tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, fieldSize, true)...,
+				field.t.trw.PhpCalculateSizesTL2MethodCall(fieldTarget, false, tree, fmt.Sprintf("%s_%d", supportSuffix, i), callLevel+1, fieldSize, !isOptional)...,
 			)
-			if field.pureField.MaskTL2Bit() != nil {
+			if isOptional {
 				cc.AddShift(-1)
 				cc.AddLines("}")
 			}
