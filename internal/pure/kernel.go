@@ -586,9 +586,6 @@ func (k *Kernel) markWantsTL2(node TypeInstance, visitedNodes map[TypeInstance]s
 	children := make([]TypeInstance, 0, 4) // avoids the majority of heap allocations
 	children = node.GetChildren(children, true)
 	for _, child := range children {
-		if child.Common().CanonicalName() == "pair<videoCommon.fullVideoID,videoCover.CoverABTest>" {
-			print("")
-		}
 		if node.Common().OriginTL2() && !child.Common().OriginTL2() {
 			child.Common().usedForTL2 = true
 		} else if !node.Common().OriginTL2() {
