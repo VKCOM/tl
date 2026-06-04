@@ -61,7 +61,7 @@
     "@types/vscode": "^1.75.0",
     "typescript": "^5.4.0"
   },
-  "publisher": "tlgen",
+  "publisher": "brat-vseznamus",
   "repository": {
     "type": "git",
     "url": "https://github.com/VKCOM/tl.git",
