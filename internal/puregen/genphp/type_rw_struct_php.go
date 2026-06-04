@@ -672,63 +672,56 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode(\"%[2]s\");", tlMode, namespace))
 						} else {
 							cc.Comments("default mode")
-							cc.AddLines(fmt.Sprintf("%[1]s = 1;", tlMode))
-						}
-						// force tlMode to be 1
-						if hasTL2 && hasFetcher {
-							cc.If(cc.Equal(tlMode, "2"), func() {
-								cc.Comments("diagonal functions can be only in tl1")
-								cc.AddLines(cc.Assign(tlMode, "1"))
-							})
+							cc.AddLines(fmt.Sprintf("%[1]s = 0;", tlMode))
 						}
 						if trw.pureType.OriginTL2() {
 							cc.If(cc.Equal(tlMode, "0"), func() {
 								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
 							})
 						}
-						cc.If(cc.Equal(tlMode, "1"), func() {
-							if trw.PhpDisableTL1Code() {
-								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
-							} else {
-								cc.Comments("check correct tl prefix")
-								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-								cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
-									cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag:" + 0x%08[1]x);`, trw.wr.TLTag()))
-								})
-								cc.Comments("read body")
-								cc.AddLines("$this->read();")
-								if hasFetcher {
-									cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
-									cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
-										cc.AddLines("rpc_clean();")
-										cc.AddLines("return null;")
-									})
+						cc.Comment("check usage of new tl")
+						cc.If(cc.NotEqual(tlMode, "0"), func() {
+							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+							// tl1
+							cc.If(cc.Equal(marker, cc.Magic(trw.wr.TLTag())), func() {
+								cc.Comment("tl1 case")
+								if trw.PhpDisableTL1Code() {
+									cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
+								} else {
+									cc.Comments("read body")
+									cc.AddLines("$this->read();")
+									if hasFetcher {
+										cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
+										cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+											cc.AddLines("rpc_clean();")
+											cc.AddLines("return null;")
+										})
+									}
+									if hasTL2 {
+										cc.AddLines("$use_tl2 = 0;")
+									}
+									cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 								}
-								if hasTL2 {
-									cc.AddLines("$use_tl2 = 0;")
-								}
-								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
-							}
-						})
-						if hasTL2 && !hasFetcher {
-							cc.If(cc.Equal(tlMode, "2"), func() {
-								cc.Comments("check correct tl2 prefix")
-								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-								cc.If(cc.NotEqual(marker, "TL\\tl2_support::Marker"), func() {
-									cc.AddLines(`throw new \Exception("expected tl2 marker");`)
-								})
-								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-								cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
-									cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
-								})
-								cc.Comments("read body")
-								cc.AddLines("$this->read_tl2();")
-								if hasTL2 {
-									cc.AddLines("$use_tl2 = 1;")
-								}
-								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 							})
-						}
+							// has tl2
+							if hasTL2 && !hasFetcher {
+								// tl2
+								cc.If(cc.Equal(marker, "TL\\tl2_support::Marker"), func() {
+									cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+									cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+										cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
+									})
+									cc.Comments("read body")
+									cc.AddLines("$this->read_tl2();")
+									if hasTL2 {
+										cc.AddLines("$use_tl2 = 1;")
+									}
+									cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+								})
+							}
+							// unknown request
+							cc.AddLines(fmt.Sprintf(`throw new \Exception("unexpected tl tag: " . %[1]s);`, marker))
+						})
 						cc.Comments("else fallback")
 					}
 				}
