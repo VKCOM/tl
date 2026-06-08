@@ -133,9 +133,11 @@ func (c *IncomingConnection) receiveMessageChunk(
 		return true
 	}
 	if seqNo < c.ackPrefix {
+		c.transport.stats.DuplicatedSeqNumsReceived.Add(1)
 		return true
 	}
 	if !c.ensureWindowSize(seqNo, prevParts, nextParts, chunkOffset, prevLength, nextLength, chunk, payload) {
+		c.transport.stats.OutOfWindowSeqNumsReceived.Add(1)
 		return false
 	}
 
@@ -213,6 +215,8 @@ func (c *IncomingConnection) receiveMessageChunk(
 		}
 
 		c.moveWindowPrefix()
+	} else {
+		c.transport.stats.DuplicatedSeqNumsReceived.Add(1)
 	}
 	return true
 }

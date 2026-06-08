@@ -53,6 +53,8 @@ type ServerOptions struct {
 	socketReadLatencyMetric    func(millis float64)
 	writeScheduleLatencyMetric func(millis float64)
 	readScheduleLatencyMetric  func(millis float64)
+	writeMsgsCountMetric       func(count int)
+	readMsgsCountMetric        func(count int)
 }
 
 func (opts *ServerOptions) AddCryptoKey(key string) {
@@ -118,6 +120,18 @@ func ServerWithUDPWriteScheduleLatencyMetric(writeScheduleLatencyMetric func(mil
 func ServerWithUDPReadScheduleLatencyMetric(readScheduleLatencyMetric func(millis float64)) ServerOptionsFunc {
 	return func(opts *ServerOptions) {
 		opts.readScheduleLatencyMetric = readScheduleLatencyMetric
+	}
+}
+
+func ServerWithUDPWriteMsgsCountMetric(writeMsgsCountMetric func(count int)) ServerOptionsFunc {
+	return func(opts *ServerOptions) {
+		opts.writeMsgsCountMetric = writeMsgsCountMetric
+	}
+}
+
+func ServerWithUDPReadMsgsCountMetric(readMsgsCountMetric func(count int)) ServerOptionsFunc {
+	return func(opts *ServerOptions) {
+		opts.readMsgsCountMetric = readMsgsCountMetric
 	}
 }
 

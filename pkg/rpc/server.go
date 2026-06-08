@@ -1118,6 +1118,8 @@ func (s *Server) rpsCalcLoop(wg *semaphore.Weighted) {
 			s.udpStatsPerSecond.RequestedSeqNumsOutOfWindow.Store((udpStats.RequestedSeqNumsOutOfWindow.Load() - prevUdpStats.RequestedSeqNumsOutOfWindow.Load()) / rpsCalcSeconds)
 			s.udpStatsPerSecond.RequestedSeqNumsActuallyAcked.Store((udpStats.RequestedSeqNumsActuallyAcked.Load() - prevUdpStats.RequestedSeqNumsActuallyAcked.Load()) / rpsCalcSeconds)
 			s.udpStatsPerSecond.RequestedSeqNumsNotAcked.Store((udpStats.RequestedSeqNumsNotAcked.Load() - prevUdpStats.RequestedSeqNumsNotAcked.Load()) / rpsCalcSeconds)
+			s.udpStatsPerSecond.DuplicatedSeqNumsReceived.Store((udpStats.DuplicatedSeqNumsReceived.Load() - prevUdpStats.DuplicatedSeqNumsReceived.Load()) / rpsCalcSeconds)
+			s.udpStatsPerSecond.OutOfWindowSeqNumsReceived.Store((udpStats.OutOfWindowSeqNumsReceived.Load() - prevUdpStats.OutOfWindowSeqNumsReceived.Load()) / rpsCalcSeconds)
 			// absolute udp metrics
 			s.udpStatsPerSecond.IncomingMessagesInflight.Store(udpStats.IncomingMessagesInflight.Load())
 			s.udpStatsPerSecond.OutgoingMessagesInflight.Store(udpStats.OutgoingMessagesInflight.Load())
