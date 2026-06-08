@@ -106,6 +106,8 @@ func (s *Server) serveUDP(conn *net.UDPConn) (*udp.Transport, error) {
 		s.opts.socketReadLatencyMetric,
 		s.opts.writeScheduleLatencyMetric,
 		s.opts.readScheduleLatencyMetric,
+		s.opts.writeMsgsCountMetric,
+		s.opts.readMsgsCountMetric,
 	)
 	if err != nil {
 		return nil, err
@@ -116,7 +118,11 @@ func (s *Server) serveUDP(conn *net.UDPConn) (*udp.Transport, error) {
 }
 
 func (s *Server) allocateRequestBufUDP(take int) *[]byte {
-	// acquireRequestBuf will allocate more in test-server
+	if take > s.udpRequestBufPoolLimit() {
+		v := make([]byte, take)
+		return &v
+	}
+
 	v := s.reqBufPool.Get().(*[]byte)
 	if cap(*v) < take {
 		*v = make([]byte, take)
@@ -127,7 +133,14 @@ func (s *Server) allocateRequestBufUDP(take int) *[]byte {
 }
 
 func (s *Server) deAllocateRequestBufUDP(buf *[]byte) {
+	if buf != nil && cap(*buf) > s.udpRequestBufPoolLimit() {
+		return
+	}
 	s.releaseRequestBuf(0, buf)
+}
+
+func (s *Server) udpRequestBufPoolLimit() int {
+	return max(s.opts.RequestBufSize, s.opts.ResponseBufSize)
 }
 
 func (s *Server) acceptHandlerUDP(listenAddr net.Addr) func(conn *udp.Connection) {

@@ -135,6 +135,8 @@ func FuzzDyukov(fuzz []byte, withBumpGenerationsAndRestarts bool) int {
 			nil,
 			nil,
 			nil,
+			nil,
+			nil,
 		)
 		if err != nil {
 			panic(err)

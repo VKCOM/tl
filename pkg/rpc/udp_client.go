@@ -68,6 +68,8 @@ func newUdpClient(client *ClientImpl) *udpClient {
 		nil,
 		nil,
 		nil,
+		nil,
+		nil,
 	)
 	if err != nil {
 		panic(err)
