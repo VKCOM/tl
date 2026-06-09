@@ -954,7 +954,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		if isTrue {
 			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
 		} else if resetCondition {
-			cc.AddLinef(cc.Assign(fieldName, field.t.trw.PhpResetValue()))
+			cc.AddLines(cc.Assign(fieldName, field.t.trw.PhpResetValue()))
 		}
 		cc.If(fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", block, inBlockIndex), func() {
 			tree := trw.PhpGetArgsForField(fieldIndex, calculatedArgs)
