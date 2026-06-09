@@ -944,10 +944,17 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			)
 		}
 
+		resetCondition := field.t.trw.PhpDefaultValue() == "null" && // by default for php is null
+			field.t.trw.PhpResetValue() != "null" && // semantically it should not be null
+			field.pureField.MaskTL2Bit() == nil && field.pureField.FieldMask() == nil // not optional
+
 		// read field
 		cc.Comments(fmt.Sprintf("read field with index %d with name \"%s\"", fieldIndex, fieldName))
+		// reset field for s.c.
 		if isTrue {
 			cc.AddLines(fmt.Sprintf("%[1]s = false;", fieldName))
+		} else if resetCondition {
+			cc.AddLinef(cc.Assign(fieldName, field.t.trw.PhpResetValue()))
 		}
 		cc.If(fmt.Sprintf("(%[1]s & (1 << %[2]d)) != 0", block, inBlockIndex), func() {
 			tree := trw.PhpGetArgsForField(fieldIndex, calculatedArgs)
