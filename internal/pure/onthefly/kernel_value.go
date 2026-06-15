@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package vkext
+package onthefly
 
 import (
 	"fmt"
@@ -107,5 +107,5 @@ func CreateValue(instance pure.TypeInstance) KernelValue {
 		_ = value.setIndex(0)
 		return value
 	}
-	panic(fmt.Errorf("type instance %s not implemented in vkext", instance.CanonicalName()))
+	panic(fmt.Errorf("type instance %s not implemented in onthefly", instance.CanonicalName()))
 }

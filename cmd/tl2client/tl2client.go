@@ -14,13 +14,13 @@ import (
 	"time"
 
 	"github.com/VKCOM/tl/internal/pure"
-	"github.com/VKCOM/tl/internal/pure/vkext"
+	"github.com/VKCOM/tl/internal/pure/onthefly"
 	"github.com/VKCOM/tl/internal/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
-	impl *vkext.UIModel
+	impl *onthefly.UIModel
 }
 
 func (m model) Init() tea.Cmd {
@@ -30,7 +30,7 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case vkext.UIBlinkMsg:
+	case onthefly.UIBlinkMsg:
 		m.impl.Blink = msg
 	case tea.WindowSizeMsg:
 		m.impl.Width = msg.Width
@@ -167,9 +167,9 @@ func main() {
 	for _, t := range tlt {
 		fmt.Printf("type instance: %v\n", t.CanonicalName())
 		for i := 0; i < 5; i++ {
-			val := vkext.CreateValue(t)
+			val := onthefly.CreateValue(t)
 			val.Random(rnd)
-			var bb vkext.ByteBuilder
+			var bb onthefly.ByteBuilder
 			val.WriteTL2(&bb, false, false, 0, nil)
 			js := val.WriteJSON(nil, nil)
 			fmt.Printf(".   TL2: %s\n", bb.Print())
@@ -188,8 +188,8 @@ func main() {
 		return
 	}
 
-	uiModel := &vkext.UIModel{
-		Fun:           vkext.CreateValueStruct(fun),
+	uiModel := &onthefly.UIModel{
+		Fun:           onthefly.CreateValueStruct(fun),
 		Path:          nil,
 		CurrentEditor: nil,
 		LastError:     nil,
@@ -200,9 +200,9 @@ func main() {
 	p := tea.NewProgram(model{impl: uiModel})
 	go func() {
 		for {
-			p.Send(vkext.UIBlinkMsg{On: true})
+			p.Send(onthefly.UIBlinkMsg{On: true})
 			time.Sleep(500 * time.Millisecond)
-			p.Send(vkext.UIBlinkMsg{On: false})
+			p.Send(onthefly.UIBlinkMsg{On: false})
 			time.Sleep(500 * time.Millisecond)
 		}
 	}()
