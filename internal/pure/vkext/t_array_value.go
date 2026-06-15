@@ -42,7 +42,7 @@ func (v *KernelValueArray) Clone() KernelValue {
 }
 
 func (v *KernelValueArray) Reset() {
-	if !v.instance.IsTuple() {
+	if !v.instance.IsTuple() || v.instance.DynamicSize() {
 		v.elements = v.elements[:0]
 		return
 	}

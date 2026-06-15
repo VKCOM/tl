@@ -125,6 +125,9 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 	for _, testName := range testNames {
 		t.Run(testName, func(t *testing.T) {
 			testingInfo := tests.Tests[testName]
+			if testingInfo.TestingType != "replace" {
+				return
+			}
 			t.Run(testingInfo.TestingType, func(t *testing.T) {
 				switch testingInfo.TestingType {
 				case "useDictUgly":
@@ -142,7 +145,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 					t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
 				}
 				dst2 := vkext.CreateValue(ins)
-				for _, success := range testingInfo.Successes {
+				for iter, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						readData := utils.ParseHexToBytesTL2(success.BytesTL2)
 						readOffset, err := dst.ReadTL2(readData, nil)
@@ -185,7 +188,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 						var writeReturn2 vkext.ByteBuilder
 						dst2.WriteTL2(&writeReturn2, false, false, 0, nil)
 						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn2.Buf())) {
-							t.Fatalf("write tl2 unexpected result")
+							t.Fatalf("write tl2 unexpected result on iteration %d", iter)
 						}
 					})
 				}

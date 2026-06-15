@@ -33,7 +33,7 @@ func (v *KernelValueArrayBit) resize(count int) {
 }
 
 func (v *KernelValueArrayBit) Reset() {
-	if !v.instance.IsTuple() {
+	if !v.instance.IsTuple() || v.instance.DynamicSize() {
 		v.elements = v.elements[:0]
 		return
 	}
