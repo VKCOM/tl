@@ -134,6 +134,10 @@ func (v *KernelValueStruct) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32
 }
 
 func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
+	if v.instance.IsUnwrap() {
+		v.fields[0].WriteTL2(w, optimizeEmpty, onPath, level, model)
+		return
+	}
 	firstUsedByte := w.ReserveSpaceForSize()
 
 	lastUsedByte := firstUsedByte
@@ -195,6 +199,10 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TLCo
 			}
 		}
 		if block&(1<<((i+1)%8)) != 0 {
+			if ft == nil {
+				ft = CreateValue(fieldDef.TypeInstance())
+				v.fields[i] = ft
+			}
 			// we also read omitted fields for simplicity
 			if currentR, err = ft.ReadTL2(currentR, ctx); err != nil {
 				return err
@@ -211,6 +219,9 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TLCo
 }
 
 func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
+	if v.instance.IsUnwrap() {
+		return v.fields[0].ReadTL2(r, ctx)
+	}
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -243,6 +254,9 @@ func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err err
 }
 
 func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TLContext) []byte {
+	if v.instance.IsUnwrap() {
+		return v.fields[0].WriteJSON(w, ctx)
+	}
 	if v.instance.IsTypedef() {
 		return v.fields[0].WriteJSON(w, ctx)
 	}
@@ -269,6 +283,10 @@ func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TLContext) []byte {
 }
 
 func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
+	if v.instance.IsUnwrap() {
+		v.fields[0].UIWrite(sb, onPath, level, model)
+		return
+	}
 	if onPath {
 		sb.WriteString(color.InBlue("{"))
 	} else {
@@ -320,6 +338,9 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 }
 
 func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
+	if v.instance.IsUnwrap() {
+		return v.fields[0].UIFixPath(side, level, model)
+	}
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -373,6 +394,10 @@ func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode int) {
+	if v.instance.IsUnwrap() {
+		v.fields[0].UIStartEdit(level, model, createMode)
+		return
+	}
 	if len(model.Path) < level {
 		panic("unexpected path invariant")
 	}
@@ -393,6 +418,10 @@ func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode in
 }
 
 func (v *KernelValueStruct) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
+	if v.instance.IsUnwrap() {
+		v.fields[0].UIKey(level, model, insert, delete, up, down)
+		return
+	}
 	if len(model.Path) < level+1 {
 		return
 	}
