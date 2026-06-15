@@ -134,7 +134,7 @@ func (v *KernelValueStruct) WriteTL1(w *ByteBuilder, bare bool, natArgs []uint32
 }
 
 func (v *KernelValueStruct) WriteTL2(w *ByteBuilder, optimizeEmpty bool, onPath bool, level int, model *UIModel) {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		v.fields[0].WriteTL2(w, optimizeEmpty, onPath, level, model)
 		return
 	}
@@ -189,12 +189,8 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TLCo
 		if (i+1)%8 == 0 {
 			// start the next block
 			if len(currentR) == 0 {
-				for ; i < len(v.instance.Fields()); i++ {
-					ft.Reset()
-				}
-				return nil
-			}
-			if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
+				block = 0
+			} else if currentR, err = basictl.ByteRead(currentR, &block); err != nil {
 				return err
 			}
 		}
@@ -219,7 +215,7 @@ func (v *KernelValueStruct) ReadFieldsTL2(block byte, currentR []byte, ctx *TLCo
 }
 
 func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err error) {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		return v.fields[0].ReadTL2(r, ctx)
 	}
 	currentSize := 0
@@ -254,7 +250,7 @@ func (v *KernelValueStruct) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err err
 }
 
 func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TLContext) []byte {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		return v.fields[0].WriteJSON(w, ctx)
 	}
 	if v.instance.IsTypedef() {
@@ -283,7 +279,7 @@ func (v *KernelValueStruct) WriteJSON(w []byte, ctx *TLContext) []byte {
 }
 
 func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int, model *UIModel) {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		v.fields[0].UIWrite(sb, onPath, level, model)
 		return
 	}
@@ -338,7 +334,7 @@ func (v *KernelValueStruct) UIWrite(sb *strings.Builder, onPath bool, level int,
 }
 
 func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		return v.fields[0].UIFixPath(side, level, model)
 	}
 	if len(model.Path) < level {
@@ -394,7 +390,7 @@ func (v *KernelValueStruct) UIFixPath(side int, level int, model *UIModel) int {
 }
 
 func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode int) {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		v.fields[0].UIStartEdit(level, model, createMode)
 		return
 	}
@@ -418,7 +414,7 @@ func (v *KernelValueStruct) UIStartEdit(level int, model *UIModel, createMode in
 }
 
 func (v *KernelValueStruct) UIKey(level int, model *UIModel, insert bool, delete bool, up bool, down bool) {
-	if v.instance.IsUnwrap() {
+	if v.instance.IsAlias() {
 		v.fields[0].UIKey(level, model, insert, delete, up, down)
 		return
 	}
