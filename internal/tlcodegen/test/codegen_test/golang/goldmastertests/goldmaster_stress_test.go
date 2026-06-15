@@ -125,9 +125,9 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 	for _, testName := range testNames {
 		t.Run(testName, func(t *testing.T) {
 			testingInfo := tests.Tests[testName]
-			if testingInfo.TestingType != "replace" {
-				return
-			}
+			//if testingInfo.TestingType != "int32s" {
+			//	return
+			//}
 			t.Run(testingInfo.TestingType, func(t *testing.T) {
 				switch testingInfo.TestingType {
 				case "useDictUgly":
