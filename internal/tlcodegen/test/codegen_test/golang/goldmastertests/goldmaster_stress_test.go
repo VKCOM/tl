@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/VKCOM/tl/internal/pure"
-	"github.com/VKCOM/tl/internal/pure/vkext"
+	"github.com/VKCOM/tl/internal/pure/onthefly"
 	testformat "github.com/VKCOM/tl/internal/tlcodegen/test/codegen_test/golang/common"
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/factory"
 	"github.com/VKCOM/tl/internal/tlcodegen/test/gen/goldmaster/meta"
@@ -66,9 +66,9 @@ func TestGoldmasterStressTest(t *testing.T) {
 				dst.FillRandom(rg)
 				ins := kernel.GetObjectInstanceForTests(testingInfo.TestingType)
 				if ins == nil {
-					t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
+					t.Fatalf("can't create onthefly object of type %q", testingInfo.TestingType)
 				}
-				dst2 := vkext.CreateValue(ins)
+				dst2 := onthefly.CreateValue(ins)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						writeFunc := dst.WriteTL1General
@@ -95,10 +95,10 @@ func TestGoldmasterStressTest(t *testing.T) {
 
 						_, _, err = dst2.ReadTL1(origBytes, nil, !success.IsTLBytesBoxed, nil)
 						if err != nil {
-							t.Fatalf("read vkext error: %s", err.Error())
+							t.Fatalf("read onthefly error: %s", err.Error())
 						}
 
-						var writeReturn2 vkext.ByteBuilder
+						var writeReturn2 onthefly.ByteBuilder
 						_ = dst2.WriteTL1(&writeReturn2, !success.IsTLBytesBoxed, nil, false, 0, nil)
 						if !assert.Equal(t, success.Bytes, utils.SprintHexDump(writeReturn2.Buf())) {
 							t.Fatalf("write tl1 unexpected result")
@@ -142,9 +142,9 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 				dst.FillRandom(rg)
 				ins := kernel.GetObjectInstanceForTests(testingInfo.TestingType)
 				if ins == nil {
-					t.Fatalf("can't create vkext object of type %q", testingInfo.TestingType)
+					t.Fatalf("can't create onthefly object of type %q", testingInfo.TestingType)
 				}
-				dst2 := vkext.CreateValue(ins)
+				dst2 := onthefly.CreateValue(ins)
 				for iter, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
 						readData := utils.ParseHexToBytesTL2(success.BytesTL2)
@@ -185,7 +185,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 						if len(readOffset) > 0 {
 							t.Fatalf("read tl2 offset not zero")
 						}
-						var writeReturn2 vkext.ByteBuilder
+						var writeReturn2 onthefly.ByteBuilder
 						dst2.WriteTL2(&writeReturn2, false, false, 0, nil)
 						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn2.Buf())) {
 							t.Fatalf("write tl2 unexpected result on iteration %d", iter)

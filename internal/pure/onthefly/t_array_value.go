@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package vkext
+package onthefly
 
 import (
 	"fmt"
@@ -160,7 +160,7 @@ func (v *KernelValueArray) ReadTL2(r []byte, ctx *TLContext) (_ []byte, err erro
 	case v.instance.DynamicSize():
 		v.resize(elementCount)
 	default:
-		v.resize(int(v.instance.Count())) // similar to RepairMasks. We are unsure if we want to run vkext kernel with or without constant instantiation
+		v.resize(int(v.instance.Count())) // similar to RepairMasks. We are unsure if we want to run onthefly kernel with or without constant instantiation
 	}
 	lastIndex := min(elementCount, len(v.elements))
 	for i := 0; i < lastIndex; i++ {

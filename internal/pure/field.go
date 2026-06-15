@@ -34,7 +34,7 @@ func (arg *ActualNatArg) IsNatParam() bool {
 	return !arg.isNumber && !arg.isField
 }
 
-// also NatParam index in parent type, useful for vkext dynamic parsing,
+// also NatParam index in parent type, useful for onthefly dynamic parsing,
 // so we can use stack(slice) instead of map, which is faster and allocates less
 func (arg *ActualNatArg) FieldIndex() int {
 	return arg.index
