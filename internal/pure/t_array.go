@@ -162,10 +162,10 @@ func (k *Kernel) addTL1Brackets() {
 	// TODO - parse primitive definitions from local TL so Beautiful Errors work correctly for int<int>, etc.
 	str := "__dict_field {k:Type} {v:Type} key:k value:v = DictField;"
 	combs, err := tlast.ParseTLFile(str, "builtin.tl", tlast.LexerOptions{AllowBuiltin: true, AllowDirty: true})
-	if err != nil || len(combs) != 1 {
+	if err != nil || len(combs.CS) != 1 {
 		panic("error adding built in types")
 	}
-	combTL1 := combs[0]
+	combTL1 := combs.CS[0].C
 	combTL1.Construct.ID = 0
 	combTL1.TypeDecl.Name = tlast.Name{}
 	kt := &KernelType{

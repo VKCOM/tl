@@ -28,7 +28,11 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return fmt.Errorf("--outfile should not be empty")
 	}
 
-	s, err := tlast.TL(kernel.TL1()).GenerateTLO(uint32(options.SchemaTimestamp))
+	var res tlast.TL
+	for _, comb := range kernel.TL1() {
+		res.CS = append(res.CS, tlast.CombinatorOrSection{C: comb})
+	}
+	s, err := res.GenerateTLO(uint32(options.SchemaTimestamp))
 	if err != nil {
 		return fmt.Errorf("error on generating tlo: %w", err)
 	}

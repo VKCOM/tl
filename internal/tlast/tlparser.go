@@ -134,14 +134,45 @@ type Combinator struct {
 
 	TemplateArgumentsPR PositionRange // especially useful when 0 arguments
 	PR                  PositionRange
-	SectionPR           PositionRange // section headers
-	AllPR               PositionRange // with all whitespace in file (except sections and last section) accounted for
+	AllPR               PositionRange
 
 	CommentBefore string // comment before combinator
 	CommentRight  string // comment to the right of combinator
 }
 
-type TL []*Combinator
+type Section struct {
+	CommentBefore string // comment before section
+	IsFunctions   bool   // otherwise, types
+}
+
+type CombinatorOrSection struct {
+	C *Combinator // if !nil, this is combinator
+	S Section     // otherwise section
+}
+
+type TL struct {
+	CS           []CombinatorOrSection
+	CommentAfter string
+}
+
+func TLFromCombinators(combs []*Combinator) *TL {
+	result := &TL{}
+	for _, combinator := range combs {
+		result.CS = append(result.CS, CombinatorOrSection{C: combinator})
+	}
+	return result
+}
+
+func (tl TL) Combinators() []*Combinator {
+	result := make([]*Combinator, 0, len(tl.CS))
+	for _, cs := range tl.CS {
+		if cs.C == nil {
+			continue
+		}
+		result = append(result, cs.C)
+	}
+	return result
+}
 
 // only trivial methods below, parsing is in tlparser_code.go and tlparser_typeref.go files
 

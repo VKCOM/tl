@@ -100,15 +100,15 @@ func (ps *paramScope) find(f func(e param) bool) (param, bool) {
 }
 
 func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
-	allCombinators := make(map[string]*Combinator, len(tl))
-	for i, comb := range tl {
-		allCombinators[comb.Construct.Name.String()] = tl[i]
+	allCombinators := make(map[string]*Combinator, len(tl.CS))
+	for _, combinator := range tl.Combinators() {
+		allCombinators[combinator.Construct.Name.String()] = combinator
 	}
-	tlsTypes := make(map[string]*tls.Type, len(tl))
+	tlsTypes := make(map[string]*tls.Type, len(tl.CS))
 	tlsTypes["#"] = &tls.Type{Name: natTag, Id: "#"}
 	tlsTypes["Type"] = &tls.Type{Name: typeTag, Id: "Type"}
-	typeDeclNames := append(make([]string, 0, len(tl)), "#", "Type")
-	for _, combinator := range tl {
+	typeDeclNames := append(make([]string, 0, len(tl.CS)), "#", "Type")
+	for _, combinator := range tl.Combinators() {
 		if combinator.IsFunction {
 			continue
 		}
@@ -171,7 +171,7 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 	}
 
 	var constructors, functions []tls.Combinator
-	for _, c := range tl {
+	for _, c := range tl.Combinators() {
 		if builtin, ok := builtinCombinators[c.Construct.Name.String()]; ok {
 			constructors = append(constructors, builtin)
 			continue

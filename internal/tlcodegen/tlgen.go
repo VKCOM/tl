@@ -359,7 +359,7 @@ type RefEdge struct {
 	FieldIndex int
 }
 
-func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
+func checkNatUsages(tl []*tlast.Combinator) NatUsagesInfo {
 	types, functions, order, _ := extractTypes(tl)
 
 	// all names to its type names (t -> t and constructor[t] -> t)
@@ -949,7 +949,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 	}
 }
 
-func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
+func CheckBackwardCompatibility(newTL, oldTL []*tlast.Combinator) *tlast.ParseError {
 	newTypes, newFunctions, _, newFunctionsOrder := extractTypes(newTL)
 	oldTypes, oldFunctions, oldOrder, oldFunctionsOrder := extractTypes(oldTL)
 	oldNatInfos := checkNatUsages(oldTL)
@@ -1058,10 +1058,10 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 	return nil
 }
 
-func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, functions map[tlast.Name]*tlast.Combinator, order []tlast.Name, functionsOrder []tlast.Name) {
+func extractTypes(tl []*tlast.Combinator) (types map[tlast.Name][]*tlast.Combinator, functions map[tlast.Name]*tlast.Combinator, order []tlast.Name, functionsOrder []tlast.Name) {
 	types = make(map[tlast.Name][]*tlast.Combinator)
 	functions = make(map[tlast.Name]*tlast.Combinator)
-	for _, combinator := range *tl {
+	for _, combinator := range tl {
 		if !combinator.Builtin && !combinator.IsFunction {
 			name := combinator.TypeDecl.Name
 			if types[name] == nil {
@@ -1077,8 +1077,8 @@ func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, funct
 	return
 }
 
-func checkAllTypeRefs(allCombinators *tlast.TL, checkFunc func(ref tlast.TypeRef) tlast.ParseError) tlast.ParseError {
-	for _, combinator := range *allCombinators {
+func checkAllTypeRefs(allCombinators []*tlast.Combinator, checkFunc func(ref tlast.TypeRef) tlast.ParseError) tlast.ParseError {
+	for _, combinator := range allCombinators {
 		if err := checkFunc(combinator.FuncDecl); err.Err != nil {
 			return err
 		}
@@ -1448,7 +1448,7 @@ func getUsedBitsForFieldMask(combinator *tlast.Combinator, fieldId int, oldInfo,
 	return nil
 }
 
-func checkTagCollisions(tl tlast.TL) error {
+func checkTagCollisions(tl []*tlast.Combinator) error {
 	constructorTags := map[uint32]*tlast.Combinator{}
 	for _, typ := range tl {
 		crc32 := typ.Crc32()
@@ -1468,7 +1468,7 @@ func checkTagCollisions(tl tlast.TL) error {
 	return nil
 }
 
-func checkNamespaceCollisions(tl tlast.TL) error {
+func checkNamespaceCollisions(tl []*tlast.Combinator) error {
 	namespaces := map[string]struct {
 		s  string
 		pr tlast.PositionRange
@@ -1498,7 +1498,7 @@ func checkNamespaceCollisions(tl tlast.TL) error {
 	return nil
 }
 
-func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
+func (gen *Gen2) buildMapDescriptors(tl []*tlast.Combinator) error {
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	for _, typ := range tl {
 		for _, f := range typ.Fields {
@@ -1845,7 +1845,7 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 	return nil
 }
 
-func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, error) {
+func GenerateCode(tl []*tlast.Combinator, tl2 tlast.TL2File, options Gen2Options) (*Gen2, error) {
 	if options.Verbose {
 		DEBUG = true
 	}
@@ -2193,7 +2193,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	// Now we replace all builtin legitimate builtin wrapper constructors to constructors of builtins
 	// Int and %Int will reference wrappers, while int will reference builtin constructor.
 	// To avoid 2 canonical forms, resolveType will replace %Int to int for wrappers
-	for _, bt := range btl {
+	for _, bt := range btl.Combinators() {
 		bt.Construct.ID = 0
 		bt.Construct.IDExplicit = true
 		tName := bt.Construct.Name.String()

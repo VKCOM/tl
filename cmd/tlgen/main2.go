@@ -175,8 +175,8 @@ func run(opt tlcodegen.Gen2Options) {
 
 func runMain(opt *tlcodegen.Gen2Options) error {
 	// tl1
-	var ast tlast.TL
-	var fullAst tlast.TL
+	var ast []*tlast.Combinator
+	var fullAst []*tlast.Combinator
 	// tl2
 	var astTL2 tlast.TL2File
 
@@ -201,12 +201,12 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		if err != nil {
 			return err
 		}
-		ast = append(ast, tl...)
-		fullAst = append(fullAst, fullTl...)
+		ast = append(ast, tl.Combinators()...)
+		fullAst = append(fullAst, fullTl.Combinators()...)
 
 		// modifications for testing
 		if opt.Language == "php" && opt.CreateTLFilesWithAllTypesInReturn {
-			err = runCreateModifiedTLFile(path, fullTl)
+			err = runCreateModifiedTLFile(path, fullTl.Combinators())
 			if err != nil {
 				return err
 			}
@@ -236,7 +236,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		return err // Do not add excess info to already long parse error
 	}
 	if opt.Language == "" && opt.Schema2Compare != "" {
-		compErr := runCompatibilityCheck(opt, &ast)
+		compErr := runCompatibilityCheck(opt, ast)
 		if compErr != nil {
 			var parseError *tlast.ParseError
 			if errors.As(compErr, &parseError) {
@@ -291,7 +291,8 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 				ns = "__common"
 			}
 			f := filepath.Join(outdir, ns+tlExt)
-			code := tl.String()
+			tlf := tlast.TLFromCombinators(tl)
+			code := tlf.String()
 			if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 				return fmt.Errorf("error writing file %q: %w", f, err)
 			}
@@ -301,7 +302,8 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		if opt.Verbose {
 			log.Print("generating TLO file...")
 		}
-		s, err := fullAst.GenerateTLO(uint32(opt.SchemaTimestamp))
+		tlf := tlast.TLFromCombinators(fullAst)
+		s, err := tlf.GenerateTLO(uint32(opt.SchemaTimestamp))
 		if err != nil {
 			return fmt.Errorf("error on generating tlo: %w", err)
 		}
@@ -328,8 +330,9 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		if opt.Verbose {
 			log.Print("generating file with combinators in canonical form...")
 		}
+		tlf := tlast.TLFromCombinators(fullAst)
 		var buf bytes.Buffer
-		fullAst.WriteGenerate2TL(&buf)
+		tlf.WriteGenerate2TL(&buf)
 		if err := os.WriteFile(opt.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
 			return err
 		}
@@ -337,7 +340,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	return nil
 }
 
-func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
+func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast []*tlast.Combinator) error {
 	log.Print("STEP: Load old tl schema to compare...")
 
 	parsedPaths, err := utils.WalkDeterministic(tlExt, opt.Schema2Compare)
@@ -352,14 +355,14 @@ func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
 
 	log.Print("STEP: Compare old tl schema with passed...")
 
-	if compErr := tlcodegen.CheckBackwardCompatibility(ast, &oldTL); compErr != nil {
+	if compErr := tlcodegen.CheckBackwardCompatibility(ast, oldTL.Combinators()); compErr != nil {
 		return compErr
 	}
 	log.Print("RESULT: New version is backward compatible with passed schema")
 	return nil
 }
 
-func parseTlFile(file string, replaceStrange bool) (tlast.TL, error) {
+func parseTlFile(file string, replaceStrange bool) (*tlast.TL, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("error reading schema file %q - %w", file, err)
@@ -397,9 +400,9 @@ func parseTL2File(file string) (tlast.TL2File, error) {
 	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2})
 }
 
-func runCreateModifiedTLFile(path string, tl tlast.TL) error {
+func runCreateModifiedTLFile(path string, tl []*tlast.Combinator) error {
 	newPath := strings.Replace(path, tlExt, "_with_functions"+tlExt, 1)
-	newTL := tlast.TL{}
+	var newTL []*tlast.Combinator
 
 	typesVisited := make(map[tlast.Name]bool)
 	typesToCreateFunction := make([]tlast.Name, 0)
@@ -433,7 +436,8 @@ func runCreateModifiedTLFile(path string, tl tlast.TL) error {
 		})
 	}
 
-	if err := os.WriteFile(newPath, []byte(newTL.String()), 0644); err != nil {
+	tlf := tlast.TLFromCombinators(newTL)
+	if err := os.WriteFile(newPath, []byte(tlf.String()), 0644); err != nil {
 		return err
 	}
 

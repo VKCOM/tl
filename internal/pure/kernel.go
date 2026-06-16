@@ -35,7 +35,7 @@ type Kernel struct {
 	instances        map[string]*TypeInstanceRef
 	instancesOrdered []*TypeInstanceRef
 
-	filesTL1 tlast.TL
+	filesTL1 []*tlast.TL
 	filesTL2 []tlast.TL2Combinator
 
 	supportedAnnotations map[string]struct{}
@@ -213,7 +213,11 @@ func (k *Kernel) GetFunctionInstance(name string) *TypeInstanceStruct {
 }
 
 func (k *Kernel) TL1() []*tlast.Combinator {
-	return k.filesTL1
+	var result []*tlast.Combinator
+	for _, f := range k.filesTL1 {
+		result = append(result, f.Combinators()...)
+	}
+	return result
 }
 
 func (k *Kernel) TL2() []tlast.TL2Combinator {
@@ -231,7 +235,7 @@ func (k *Kernel) AddFileTL1(file string) error {
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
-	k.filesTL1 = append(k.filesTL1, tl...)
+	k.filesTL1 = append(k.filesTL1, tl)
 	return nil
 }
 
@@ -434,23 +438,25 @@ func (k *Kernel) Compile() error {
 			allAnnotations[m] = struct{}{}
 			k.allAnnotations = append(k.allAnnotations, m)
 		}
-		for _, typ := range k.filesTL1 {
-			for _, m := range typ.Modifiers {
-				if strings.ToLower(m.Name) != m.Name { // TODO - move into lexer
-					return m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
-				}
-				if _, ok := allAnnotations[m.Name]; !ok {
-					if _, ok := k.supportedAnnotations[m.Name]; !ok {
-						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen, please add to --annotations command line argument", m.Name))
-						if k.opts.WarningsAreErrors {
-							return e1
-						}
-						e1.PrintWarning(k.opts.ErrorWriter, nil)
+		for _, f := range k.filesTL1 {
+			for _, typ := range f.Combinators() {
+				for _, m := range typ.Modifiers {
+					if strings.ToLower(m.Name) != m.Name { // TODO - move into lexer
+						return m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
 					}
-					allAnnotations[m.Name] = struct{}{}
-					k.allAnnotations = append(k.allAnnotations, m.Name)
-					if len(k.allAnnotations) > 32 {
-						return m.PR.BeautifulError(errors.New("too many different annotations, max is 32 for now"))
+					if _, ok := allAnnotations[m.Name]; !ok {
+						if _, ok := k.supportedAnnotations[m.Name]; !ok {
+							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen, please add to --annotations command line argument", m.Name))
+							if k.opts.WarningsAreErrors {
+								return e1
+							}
+							e1.PrintWarning(k.opts.ErrorWriter, nil)
+						}
+						allAnnotations[m.Name] = struct{}{}
+						k.allAnnotations = append(k.allAnnotations, m.Name)
+						if len(k.allAnnotations) > 32 {
+							return m.PR.BeautifulError(errors.New("too many different annotations, max is 32 for now"))
+						}
 					}
 				}
 			}
@@ -549,19 +555,21 @@ func (k *Kernel) Compile() error {
 
 func (k *Kernel) checkTagCollisions() error {
 	constructorTags := map[uint32]*tlast.ParseError{}
-	for _, typ := range k.filesTL1 {
-		crc32 := typ.Crc32()
-		if crc32 == 0 {
-			// typeA#00000000 = TypeA;
-			return typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag 0 is prohibited, even if generated implicitly"))
+	for _, f := range k.filesTL1 {
+		for _, typ := range f.Combinators() {
+			crc32 := typ.Crc32()
+			if crc32 == 0 {
+				// typeA#00000000 = TypeA;
+				return typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag 0 is prohibited, even if generated implicitly"))
+			}
+			if err, ok := constructorTags[crc32]; ok {
+				// typeA#dfc15abf = TypeA;
+				// typeB#dfc15abf = TypeB;
+				e1 := typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag #%08x is used again by %q", crc32, typ.Construct.Name.String()))
+				return tlast.BeautifulError2(e1, err)
+			}
+			constructorTags[crc32] = typ.Construct.IDPR.BeautifulError(errSeeHere)
 		}
-		if err, ok := constructorTags[crc32]; ok {
-			// typeA#dfc15abf = TypeA;
-			// typeB#dfc15abf = TypeB;
-			e1 := typ.Construct.IDPR.BeautifulError(fmt.Errorf("constructor tag #%08x is used again by %q", crc32, typ.Construct.Name.String()))
-			return tlast.BeautifulError2(e1, err)
-		}
-		constructorTags[crc32] = typ.Construct.IDPR.BeautifulError(errSeeHere)
 	}
 	for _, typ := range k.filesTL2 {
 		if typ.IsFunction {
@@ -589,13 +597,15 @@ func (k *Kernel) checkTagCollisions() error {
 
 func (k *Kernel) checkNamespaceCollisions() error {
 	var nc NameCollision
-	for _, comb := range k.filesTL1 {
-		if err := nc.AddSameCaseName(comb.Construct.Name.Namespace, comb.Construct.NamePR, "namespace"); err != nil {
-			return err
-		}
-		if !comb.IsFunction {
-			if err := nc.AddSameCaseName(comb.TypeDecl.Name.Namespace, comb.TypeDecl.NamePR, "namespace"); err != nil {
+	for _, f := range k.filesTL1 {
+		for _, comb := range f.Combinators() {
+			if err := nc.AddSameCaseName(comb.Construct.Name.Namespace, comb.Construct.NamePR, "namespace"); err != nil {
 				return err
+			}
+			if !comb.IsFunction {
+				if err := nc.AddSameCaseName(comb.TypeDecl.Name.Namespace, comb.TypeDecl.NamePR, "namespace"); err != nil {
+					return err
+				}
 			}
 		}
 	}

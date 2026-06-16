@@ -27,7 +27,11 @@ func Generate(kernel *pure.Kernel, options *puregen.Options) error {
 		return fmt.Errorf("--outfile should not be empty")
 	}
 	var buf bytes.Buffer
-	tlast.TL(kernel.TL1()).WriteGenerate2TL(&buf)
+	var res tlast.TL
+	for _, comb := range kernel.TL1() {
+		res.CS = append(res.CS, tlast.CombinatorOrSection{C: comb})
+	}
+	res.WriteGenerate2TL(&buf)
 	if err := os.WriteFile(options.Outfile, buf.Bytes(), 0644); err != nil {
 		return fmt.Errorf("error writing canonical form file %q: %w", options.Outfile, err)
 	}

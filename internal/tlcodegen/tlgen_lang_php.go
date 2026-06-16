@@ -50,11 +50,11 @@ type PhpClassMeta struct {
 	RequireFunctionBodies bool
 }
 
-func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL {
+func (gen *Gen2) PHPSplitTLByNamespaces(originalTL []*tlast.Combinator) map[string][]*tlast.Combinator {
 	typesToIgnore := PHPMockTypesToIgnore()
 
-	result := make(map[string]tlast.TL)
-	commonPart := tlast.TL{}
+	result := make(map[string][]*tlast.Combinator)
+	var commonPart []*tlast.Combinator
 	commonPartNsDependencies := map[string]bool{
 		"": true,
 	}
@@ -93,7 +93,7 @@ func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL
 		if commonPartNsDependencies[s] {
 			continue
 		}
-		nsResult := tlast.TL{}
+		var nsResult []*tlast.Combinator
 		reachableTypes := make(map[*TypeRWWrapper]bool)
 		for _, wrapper := range namespace.types {
 			if wrapper.IsFunction() {
