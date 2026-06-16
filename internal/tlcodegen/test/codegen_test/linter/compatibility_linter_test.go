@@ -25,10 +25,10 @@ func RunCompatibilityTest(t *testing.T, prevStateFile, newStateFile string) *tla
 	if err != nil {
 		t.Fatal(err)
 	}
-	return tlcodegen.CheckBackwardCompatibility(&newTL, &prevTL)
+	return tlcodegen.CheckBackwardCompatibility(newTL.Combinators(), prevTL.Combinators())
 }
 
-func readTL(file string) (tlast.TL, error) {
+func readTL(file string) (*tlast.TL, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err

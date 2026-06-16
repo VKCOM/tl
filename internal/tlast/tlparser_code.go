@@ -629,16 +629,16 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 	return td, rest, nil
 }
 
-func ParseTL(str string) (TL, error) {
+func ParseTL(str string) (*TL, error) {
 	return ParseTLFile(str, "", LexerOptions{LexerLanguage: TL1})
 }
 
 // ParseTLFile TL := TypesSection [ type ... ] FunctionSection [ function ... ]
-func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
+func ParseTLFile(str, file string, opts LexerOptions) (*TL, error) {
 	lex := newLexer(str, file, opts)
 	allTokens, err := lex.generateTokens()
 	if err != nil {
-		return TL{}, fmt.Errorf("tokenizer error: %w", err)
+		return nil, fmt.Errorf("tokenizer error: %w", err)
 	}
 
 	recombined := lex.recombineTokens()
@@ -648,24 +648,18 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 	}
 
 	functionSection := false
-	var res TL
+	res := &TL{}
 
 	orderIndex := 0
 	rest := tokenIterator{tokens: allTokens}
-	sectionStart := rest
 	commentStart := rest
-	firstSectionAfterComb := false
-	// we must preserve sections and all whitespaces during migration,
-	// so we add them to appopriate combinator, depending on sections
+	// we must preserve sections and all whitespaces during migration
 	for !rest.checkToken(eof) {
 		switch rest.front().tokenType {
 		case typesSection, functionsSection:
-			if firstSectionAfterComb {
-				firstSectionAfterComb = false
-				res[len(res)-1].AllPR.End = rest.front().pos
-				sectionStart = rest
-			}
+			cc := commentStart.front().pos.fileContent[commentStart.front().pos.offset:rest.front().pos.offset]
 			functionSection = rest.front().tokenType == functionsSection
+			res.CS = append(res.CS, CombinatorOrSection{S: Section{CommentBefore: cc, IsFunctions: functionSection}})
 			rest.popFront()
 			commentStart = rest
 			continue
@@ -678,21 +672,13 @@ func ParseTLFile(str, file string, opts LexerOptions) (TL, error) {
 			}
 			return nil, fmt.Errorf("type declaration error: %w", err)
 		}
-		firstSectionAfterComb = true
-		td.SectionPR.Begin = sectionStart.front().pos
-		td.SectionPR.End = commentStart.front().pos
 		td.AllPR.Begin = commentStart.front().pos
 		td.AllPR.End = td.PR.End
 		td.OriginalOrderIndex = orderIndex
 		orderIndex++
-		res = append(res, &td)
-		sectionStart = rest
+		res.CS = append(res.CS, CombinatorOrSection{C: &td})
 		commentStart = rest
 	}
-	if firstSectionAfterComb {
-		// will cut trailing sections as well,
-		// this is not perfect, but OK for migration
-		res[len(res)-1].AllPR.End = rest.front().pos
-	}
+	res.CommentAfter = commentStart.front().pos.fileContent[commentStart.front().pos.offset:rest.front().pos.offset]
 	return res, nil
 }

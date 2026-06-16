@@ -67,7 +67,7 @@ func IsUnionMaybe(tlType []*tlast.Combinator) (isMaybe bool, emptyDesc *tlast.Co
 
 // all non-trivial contents of [] is turned into new types
 // we make copy deep anough to not affect original constructors
-func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
+func (gen *Gen2) ReplaceSquareBracketsElem(tl []*tlast.Combinator) ([]*tlast.Combinator, error) {
 	tl = append([]*tlast.Combinator{}, tl...)
 	constructorTags := map[uint32]*tlast.Combinator{}
 	constructorNames := map[string]*tlast.Combinator{}

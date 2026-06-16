@@ -209,7 +209,7 @@
   {%- code
     functionSection := false
   -%}
-  {%- for _, x := range tl-%}
+  {%- for _, x := range tl.Combinators() -%}
     {%- if x.IsFunction && !functionSection -%}
       {%s= functionsSectionString %}{% newline %}
       {%- code functionSection = true -%}

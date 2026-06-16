@@ -101,7 +101,12 @@ func (tl TL) StreamGenerate2TL(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`string#b5286e24 ? = String`)
 	qw422016.N().S(`
 `)
-	for _, combinator := range tl {
+	for _, cs := range tl.CS {
+		combinator := cs.C
+		if combinator == nil {
+			continue
+		}
+
 		switch combinator.Construct.Name.String() {
 		case "int", "long", "float", "double", "string":
 			continue

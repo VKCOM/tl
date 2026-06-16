@@ -500,7 +500,12 @@ func (descriptor Combinator) String() string {
 func (tl TL) StreamString(qw422016 *qt422016.Writer) {
 	functionSection := false
 
-	for _, x := range tl {
+	for _, cs := range tl.CS {
+		x := cs.C
+		if x == nil {
+			continue
+		}
+
 		if x.IsFunction && !functionSection {
 			qw422016.N().S(functionsSectionString)
 			qw422016.N().S(`

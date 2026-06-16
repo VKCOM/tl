@@ -152,103 +152,109 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 	// Collect unions, check that functions cannot form a union with each other or with normal singleConstructors
 	allConstructors := map[string]*tlast.Combinator{}
 	typeDescriptors := map[string][]*tlast.Combinator{}
-	for i := range k.filesTL1 {
-		k.filesTL1[i].OriginalOrderIndex = i
+	orderIndex := 0
+	for _, f := range k.filesTL1 {
+		for _, typ := range f.Combinators() {
+			typ.OriginalOrderIndex = orderIndex
+			orderIndex++
+		}
 	}
 	var boolCombinators []*tlast.Combinator
-	for _, typ := range k.filesTL1 {
-		if typ.Builtin {
-			if err := k.CompileBuiltinTL1(typ); err != nil {
-				return err
-			}
-			continue
-		}
-		if typ.TypeDecl.Name.String() == "Bool" {
-			boolCombinators = append(boolCombinators, typ)
-			continue
-		}
-		conName := typ.Construct.Name.String()
-		if col, ok := allConstructors[conName]; ok {
-			// typeA = TypeA;
-			// typeA = TypeB;
-			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("constructor name %q is used again here", conName))
-			e2 := col.Construct.NamePR.BeautifulError(errSeeHere)
-			return tlast.BeautifulError2(e1, e2)
-		}
-		allConstructors[conName] = typ
-		if _, ok := namespaceTL1SeeHere[typ.Construct.Name.Namespace]; !ok {
-			namespaceTL1SeeHere[typ.Construct.Name.Namespace] = typ.Construct.NamePR.BeautifulError(errSeeHere)
-		}
-		_, targs, err := k.CheckExclamationWrapper(typ)
-		if err != nil {
-			return err
-		}
-		if !typ.IsFunction {
-			if _, ok := namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace]; !ok {
-				namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace] = typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
-			}
-			typeName := typ.TypeDecl.Name.String()
-
-			// TODO - remove after ReqResult removed from combined.tl
-			if conName == "_" && typeName != "ReqResult" {
-				return typ.Construct.NamePR.BeautifulError(fmt.Errorf("constructor name _ is allowed only for legacy ReqResult wrapper, not for type %s", typeName))
-			}
-
-			if len(targs) > len(typ.TypeDecl.Arguments) {
-				// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X; <- bad
-				arg := targs[len(typ.TypeDecl.Arguments)]
-				return typ.TypeDecl.PR.CollapseToEnd().BeautifulError(fmt.Errorf("type declaration %q is missing template argument %q here", typeName, arg.FieldName))
-			}
-			if len(targs) < len(typ.TypeDecl.Arguments) {
-				// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X Y Y; <- bad
-				arg := typ.TypeDecl.Arguments[len(targs)]
-				pr := typ.TypeDecl.ArgumentsPR[len(targs)]
-				return pr.BeautifulError(fmt.Errorf("type declaration %q has excess template argument %q here", typeName, arg))
-			}
-			for j, t := range targs {
-				if t.FieldName != typ.TypeDecl.Arguments[j] {
-					// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs Y X;   <- bad
-					pr := typ.TypeDecl.ArgumentsPR[j]
-					typArg := typ.TypeDecl.Arguments[j]
-					e1 := pr.BeautifulError(fmt.Errorf("type declaration %q has wrong template argument name %q here", typeName, typArg))
-					e2 := t.PR.BeautifulError(errSeeHere)
-					return tlast.BeautifulError2(e1, e2)
+	for _, f := range k.filesTL1 {
+		for _, typ := range f.Combinators() {
+			if typ.Builtin {
+				if err := k.CompileBuiltinTL1(typ); err != nil {
+					return err
 				}
-			}
-			if typeName == "_" { // prohibit boxed type
-				return fmt.Errorf("internal error - underscore as a typename prohibited, must not pass AST parser")
-			}
-			typeDescriptors[typeName] = append(typeDescriptors[typeName], typ)
-		} else {
-			for _, t := range targs {
-				//if t.IsNat {
-				// @read funWithArg {fields_mask: #} => True;
-				return t.PR.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
-				//}
-				// TODO - sort out things with rpc wrapping later which has a form
-				// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
-			}
-			if len(typ.Modifiers) == 0 && utils.DoLint(typ.CommentRight) {
-				e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
-				if k.opts.WarningsAreErrors {
-					return e1
-				}
-				e1.PrintWarning(k.opts.ErrorWriter, nil)
-			}
-		}
-		var nc NameCollision
-		for _, targ := range typ.TemplateArguments {
-			if err := nc.AddUniqueName(targ.FieldName, targ.PR, "template argument"); err != nil {
-				return err
-			}
-		}
-		nc.ResetNormalized()
-		for _, field := range typ.Fields {
-			if field.FieldName == "" {
 				continue
 			}
-			if err := nc.AddUniqueName(field.FieldName, field.PR, "field"); err != nil {
+			if typ.TypeDecl.Name.String() == "Bool" {
+				boolCombinators = append(boolCombinators, typ)
+				continue
+			}
+			conName := typ.Construct.Name.String()
+			if col, ok := allConstructors[conName]; ok {
+				// typeA = TypeA;
+				// typeA = TypeB;
+				e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("constructor name %q is used again here", conName))
+				e2 := col.Construct.NamePR.BeautifulError(errSeeHere)
+				return tlast.BeautifulError2(e1, e2)
+			}
+			allConstructors[conName] = typ
+			if _, ok := namespaceTL1SeeHere[typ.Construct.Name.Namespace]; !ok {
+				namespaceTL1SeeHere[typ.Construct.Name.Namespace] = typ.Construct.NamePR.BeautifulError(errSeeHere)
+			}
+			_, targs, err := k.CheckExclamationWrapper(typ)
+			if err != nil {
 				return err
+			}
+			if !typ.IsFunction {
+				if _, ok := namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace]; !ok {
+					namespaceTL1SeeHere[typ.TypeDecl.Name.Namespace] = typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
+				}
+				typeName := typ.TypeDecl.Name.String()
+
+				// TODO - remove after ReqResult removed from combined.tl
+				if conName == "_" && typeName != "ReqResult" {
+					return typ.Construct.NamePR.BeautifulError(fmt.Errorf("constructor name _ is allowed only for legacy ReqResult wrapper, not for type %s", typeName))
+				}
+
+				if len(targs) > len(typ.TypeDecl.Arguments) {
+					// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X; <- bad
+					arg := targs[len(typ.TypeDecl.Arguments)]
+					return typ.TypeDecl.PR.CollapseToEnd().BeautifulError(fmt.Errorf("type declaration %q is missing template argument %q here", typeName, arg.FieldName))
+				}
+				if len(targs) < len(typ.TypeDecl.Arguments) {
+					// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs X Y Y; <- bad
+					arg := typ.TypeDecl.Arguments[len(targs)]
+					pr := typ.TypeDecl.ArgumentsPR[len(targs)]
+					return pr.BeautifulError(fmt.Errorf("type declaration %q has excess template argument %q here", typeName, arg))
+				}
+				for j, t := range targs {
+					if t.FieldName != typ.TypeDecl.Arguments[j] {
+						// rightLeftArgs {X:Type} {Y:#} = RightLeftArgs Y X;   <- bad
+						pr := typ.TypeDecl.ArgumentsPR[j]
+						typArg := typ.TypeDecl.Arguments[j]
+						e1 := pr.BeautifulError(fmt.Errorf("type declaration %q has wrong template argument name %q here", typeName, typArg))
+						e2 := t.PR.BeautifulError(errSeeHere)
+						return tlast.BeautifulError2(e1, e2)
+					}
+				}
+				if typeName == "_" { // prohibit boxed type
+					return fmt.Errorf("internal error - underscore as a typename prohibited, must not pass AST parser")
+				}
+				typeDescriptors[typeName] = append(typeDescriptors[typeName], typ)
+			} else {
+				for _, t := range targs {
+					//if t.IsNat {
+					// @read funWithArg {fields_mask: #} => True;
+					return t.PR.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
+					//}
+					// TODO - sort out things with rpc wrapping later which has a form
+					// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
+				}
+				if len(typ.Modifiers) == 0 && utils.DoLint(typ.CommentRight) {
+					e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
+					if k.opts.WarningsAreErrors {
+						return e1
+					}
+					e1.PrintWarning(k.opts.ErrorWriter, nil)
+				}
+			}
+			var nc NameCollision
+			for _, targ := range typ.TemplateArguments {
+				if err := nc.AddUniqueName(targ.FieldName, targ.PR, "template argument"); err != nil {
+					return err
+				}
+			}
+			nc.ResetNormalized()
+			for _, field := range typ.Fields {
+				if field.FieldName == "" {
+					continue
+				}
+				if err := nc.AddUniqueName(field.FieldName, field.PR, "field"); err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -258,126 +264,128 @@ func (k *Kernel) CompileTL1(namespaceTL1SeeHere map[string]*tlast.ParseError) er
 		}
 	}
 	// in order for deterministic migration
-	for _, comb := range k.filesTL1 {
-		exclArg, targs, _ := k.CheckExclamationWrapper(comb)
+	for _, f := range k.filesTL1 {
+		for _, comb := range f.Combinators() {
+			exclArg, targs, _ := k.CheckExclamationWrapper(comb)
 
-		if comb.IsFunction {
-			if len(targs) != 0 {
-				return comb.TemplateArgumentsPR.BeautifulError(fmt.Errorf("functions should not have template arguments, except very few infrastructure functions"))
+			if comb.IsFunction {
+				if len(targs) != 0 {
+					return comb.TemplateArgumentsPR.BeautifulError(fmt.Errorf("functions should not have template arguments, except very few infrastructure functions"))
+				}
+				cName := comb.Construct.Name
+				kt := &KernelType{
+					originTL2:      false,
+					combTL1:        []*tlast.Combinator{comb},
+					instances:      map[string]*TypeInstanceRef{},
+					isFunction:     true,
+					isTopLevel:     true, // despite having 1 template argument in case of excl
+					exclamationArg: exclArg,
+					// functions have no TL1 names or TL2 names set, because there is no references to functions
+					canonicalName: tlast.TL2TypeName(cName),
+					namePR:        comb.Construct.NamePR,
+					canBeBare:     true,
+				}
+				for _, m := range comb.Modifiers {
+					kt.annotations = append(kt.annotations, m.Name)
+				}
+				if err := k.addTip(kt, cName.String(), ""); err != nil {
+					return err
+				}
+				continue
 			}
-			cName := comb.Construct.Name
-			kt := &KernelType{
-				originTL2:      false,
-				combTL1:        []*tlast.Combinator{comb},
-				instances:      map[string]*TypeInstanceRef{},
-				isFunction:     true,
-				isTopLevel:     true, // despite having 1 template argument in case of excl
-				exclamationArg: exclArg,
-				// functions have no TL1 names or TL2 names set, because there is no references to functions
-				canonicalName: tlast.TL2TypeName(cName),
-				namePR:        comb.Construct.NamePR,
-				canBeBare:     true,
+			typ, ok := typeDescriptors[comb.TypeDecl.Name.String()]
+			if !ok {
+				continue
 			}
-			for _, m := range comb.Modifiers {
-				kt.annotations = append(kt.annotations, m.Name)
+			delete(typeDescriptors, comb.TypeDecl.Name.String())
+			tName := typ[0].TypeDecl.Name
+			cName := typ[0].Construct.Name
+			anyConstructorHasArgs := false // for !X wrappers not all of variants must have it
+			for _, t := range typ {
+				anyConstructorHasArgs = anyConstructorHasArgs || len(t.TemplateArguments) != 0
 			}
-			if err := k.addTip(kt, cName.String(), ""); err != nil {
-				return err
-			}
-			continue
-		}
-		typ, ok := typeDescriptors[comb.TypeDecl.Name.String()]
-		if !ok {
-			continue
-		}
-		delete(typeDescriptors, comb.TypeDecl.Name.String())
-		tName := typ[0].TypeDecl.Name
-		cName := typ[0].Construct.Name
-		anyConstructorHasArgs := false // for !X wrappers not all of variants must have it
-		for _, t := range typ {
-			anyConstructorHasArgs = anyConstructorHasArgs || len(t.TemplateArguments) != 0
-		}
-		if len(typ) == 1 {
-			if typ[0].IsFunction {
-				return fmt.Errorf("internal error - function %q must not be in type descriptors", cName)
-			}
-			typePrefix := strings.ToLower(utils.ToLowerFirst(tName.Name))
+			if len(typ) == 1 {
+				if typ[0].IsFunction {
+					return fmt.Errorf("internal error - function %q must not be in type descriptors", cName)
+				}
+				typePrefix := strings.ToLower(utils.ToLowerFirst(tName.Name))
 
-			if cName.Namespace != tName.Namespace {
-				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor namespace should exactly match type namespace"))
-				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
-				return tlast.BeautifulError2(e1, e2)
-			}
-			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
-			if strings.ToLower(cName.Name) != typePrefix &&
-				!purelegacy.EnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
-				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
-				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
-				if k.opts.WarningsAreErrors {
+				if cName.Namespace != tName.Namespace {
+					e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor namespace should exactly match type namespace"))
+					e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
 					return tlast.BeautifulError2(e1, e2)
 				}
-				tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+				// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
+				if strings.ToLower(cName.Name) != typePrefix &&
+					!purelegacy.EnableWarningsSimpleTypeNameSkip(cName.String()) && utils.DoLint(typ[0].CommentRight) {
+					e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
+					e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
+					if k.opts.WarningsAreErrors {
+						return tlast.BeautifulError2(e1, e2)
+					}
+					tlast.BeautifulError2(e1, e2).PrintWarning(k.opts.ErrorWriter, nil)
+				}
+				kt := &KernelType{
+					originTL2:         false,
+					combTL1:           typ,
+					instances:         map[string]*TypeInstanceRef{},
+					isTopLevel:        !anyConstructorHasArgs,
+					tl1Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
+					tl2Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
+					canonicalName:     tlast.TL2TypeName(cName),
+					tl1BoxedName:      tlast.TL2TypeName(tName),
+					namePR:            comb.Construct.NamePR,
+					canBeBare:         true,
+					templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
+					targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
+				}
+				for _, m := range comb.Modifiers {
+					kt.annotations = append(kt.annotations, m.Name)
+				}
+				if tName.String() == "Vector" || tName.String() == "Tuple" ||
+					cName.String() == "vector" || cName.String() == "tuple" {
+					// We want to force using new [] syntax in TL2, otherwise ppl will continue
+					// using vector and tuple wrappers forever.
+					kt.tl2Names = nil
+				}
+				//	kt.canonicalName = tName
+				//	kt.historicalName = tName
+				//	kt.tl1Names = map[string]struct{}{tName.String(): {}}
+				//	kt.tl2Names = map[string]struct{}{}
+				//	kt.builtinWrappedCanonicalName = cName.String()
+				//	if err := k.addTip(kt, tName.String(), ""); err != nil {
+				//		return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+				//	}
+				//} else {
+				if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
+					//return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+					return err
+				}
+				//}
+				continue
+			}
+			if err := k.checkUnionElementsCompatibility(typ); err != nil {
+				return err
 			}
 			kt := &KernelType{
 				originTL2:         false,
 				combTL1:           typ,
 				instances:         map[string]*TypeInstanceRef{},
 				isTopLevel:        !anyConstructorHasArgs,
-				tl1Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				tl2Names:          map[string]struct{}{cName.String(): {}, tName.String(): {}},
-				canonicalName:     tlast.TL2TypeName(cName),
+				tl1Names:          map[string]struct{}{tName.String(): {}},
+				tl2Names:          map[string]struct{}{tName.String(): {}},
+				canonicalName:     tlast.TL2TypeName(tName),
 				tl1BoxedName:      tlast.TL2TypeName(tName),
-				namePR:            comb.Construct.NamePR,
-				canBeBare:         true,
+				namePR:            comb.TypeDecl.NamePR,
 				templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
 				targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
 			}
 			for _, m := range comb.Modifiers {
-				kt.annotations = append(kt.annotations, m.Name)
+				return m.PR.BeautifulError(fmt.Errorf("annotations in TL1 are not supported for union %s", tName))
 			}
-			if tName.String() == "Vector" || tName.String() == "Tuple" ||
-				cName.String() == "vector" || cName.String() == "tuple" {
-				// We want to force using new [] syntax in TL2, otherwise ppl will continue
-				// using vector and tuple wrappers forever.
-				kt.tl2Names = nil
-			}
-			//	kt.canonicalName = tName
-			//	kt.historicalName = tName
-			//	kt.tl1Names = map[string]struct{}{tName.String(): {}}
-			//	kt.tl2Names = map[string]struct{}{}
-			//	kt.builtinWrappedCanonicalName = cName.String()
-			//	if err := k.addTip(kt, tName.String(), ""); err != nil {
-			//		return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
-			//	}
-			//} else {
-			if err := k.addTip(kt, cName.String(), tName.String()); err != nil {
-				//return typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("error adding type %s: %w", cName, err))
+			if err := k.addTip(kt, tName.String(), ""); err != nil {
 				return err
 			}
-			//}
-			continue
-		}
-		if err := k.checkUnionElementsCompatibility(typ); err != nil {
-			return err
-		}
-		kt := &KernelType{
-			originTL2:         false,
-			combTL1:           typ,
-			instances:         map[string]*TypeInstanceRef{},
-			isTopLevel:        !anyConstructorHasArgs,
-			tl1Names:          map[string]struct{}{tName.String(): {}},
-			tl2Names:          map[string]struct{}{tName.String(): {}},
-			canonicalName:     tlast.TL2TypeName(tName),
-			tl1BoxedName:      tlast.TL2TypeName(tName),
-			namePR:            comb.TypeDecl.NamePR,
-			templateArguments: k.convertTemplateArguments(typ[0].TemplateArguments),
-			targs:             make([]KernelTypeTarg, len(typ[0].TemplateArguments)),
-		}
-		for _, m := range comb.Modifiers {
-			return m.PR.BeautifulError(fmt.Errorf("annotations in TL1 are not supported for union %s", tName))
-		}
-		if err := k.addTip(kt, tName.String(), ""); err != nil {
-			return err
 		}
 	}
 	// we need both dictionaries and fields defined before checking relations between them

@@ -27,7 +27,7 @@ func TestCRC32TL(t *testing.T) {
 		for _, tst := range test {
 			tl, err := ParseTL(tst.input)
 			require.NoError(t, err)
-			require.Equal(t, tst.output, tl[0].Crc32())
+			require.Equal(t, tst.output, tl.CS[0].C.Crc32())
 		}
 	})
 	tests := []struct {
@@ -40,7 +40,7 @@ func TestCRC32TL(t *testing.T) {
 	for _, test := range tests {
 		tl, err := ParseTL(test.tlText)
 		require.NoError(t, err)
-		for i, c := range tl {
+		for i, c := range tl.Combinators() {
 			require.Equal(t, test.tlTag[i], c.Crc32())
 		}
 	}

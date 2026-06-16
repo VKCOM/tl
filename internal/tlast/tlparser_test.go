@@ -20,7 +20,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func requireEqualTL(t *testing.T, a TL, b TL) {
+func requireEqualTL(t *testing.T, a *TL, b *TL) {
 	tlText1 := a.String()
 	tlText2 := b.String()
 	//require.Equal(t, tl1, tl2)
@@ -58,26 +58,26 @@ replace5 n:# a:n*[int] = Replace5;`
 			"boolFalse#bc799737 = Bool;\n"
 		tl1, err := ParseTL(primitives)
 		require.NoError(t, err)
-		tl2 := TL{
-			{
+		tl2 := &TL{CS: []CombinatorOrSection{
+			{C: &Combinator{
 				Builtin:           true,
 				Construct:         Constructor{Name: Name{Name: "int"}, ID: 0xa8509bda, IDExplicit: true},
 				TemplateArguments: nil,
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "Int"}},
-			},
-			{
+			}},
+			{C: &Combinator{
 				Construct:         Constructor{Name: Name{Name: "positiveInt"}},
 				TemplateArguments: nil,
 				Fields:            []Field{{FieldType: TypeRef{Type: Name{Name: "int"}}}},
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "PositiveInt"}},
-			},
-			{
+			}},
+			{C: &Combinator{
 				Construct:         Constructor{Name: Name{Name: "boolFalse"}, ID: 0xbc799737, IDExplicit: true},
 				TemplateArguments: nil,
 				Fields:            nil,
 				TypeDecl:          TypeDeclaration{Name: Name{Name: "Bool"}},
-			},
-		}
+			}},
+		}}
 		requireEqualTL(t, tl1, tl2)
 	})
 
@@ -89,8 +89,9 @@ replace5 n:# a:n*[int] = Replace5;`
 			"stat#9d56e6b2 %(Dictionary string) = Stat;\n"
 		tl1, err := ParseTL(bare)
 		require.NoError(t, err)
-		tl2 := TL{
-			{
+		tl1.CS = tl1.CS[len(tl1.CS)-1:]
+		tl2 := &TL{CS: []CombinatorOrSection{
+			{C: &Combinator{
 				Construct:         Constructor{Name: Name{Name: "stat"}, ID: 0x9d56e6b2, IDExplicit: true},
 				TemplateArguments: nil,
 				Fields: []Field{
@@ -108,8 +109,9 @@ replace5 n:# a:n*[int] = Replace5;`
 							Bare: true,
 						}}},
 				TypeDecl: TypeDeclaration{Name: Name{Name: "Stat"}},
-			}}
-		requireEqualTL(t, TL{tl1[len(tl1)-1]}, TL{tl2[0]})
+			}},
+		}}
+		requireEqualTL(t, tl1, tl2)
 		// require.Equal(t, tl1[len(tl1)-1], tl2[0])
 	})
 
@@ -119,8 +121,9 @@ replace5 n:# a:n*[int] = Replace5;`
 			"foo.biba {m:#} id:(%foo.Bar m) i:int = foo.Biba m;\n"
 		tl1, err := ParseTL(bare)
 		require.NoError(t, err)
-		tl2 := TL{
-			{
+		tl1.CS = tl1.CS[1:]
+		tl2 := &TL{CS: []CombinatorOrSection{
+			{C: &Combinator{
 				Construct: Constructor{
 					Name: Name{
 						Namespace: "foo",
@@ -137,8 +140,8 @@ replace5 n:# a:n*[int] = Replace5;`
 					Arguments: []string{
 						"n",
 					}},
-			},
-			{
+			}},
+			{C: &Combinator{
 				Construct: Constructor{
 					Name: Name{
 						Namespace: "foo",
@@ -175,9 +178,10 @@ replace5 n:# a:n*[int] = Replace5;`
 					},
 					Arguments: []string{
 						"m",
-					}}}}
-		requireEqualTL(t, tl2, tl1[1:])
-
+					}},
+			}},
+		}}
+		requireEqualTL(t, tl1, tl2)
 	})
 
 	t.Run("Bare (%(vector t))", func(t *testing.T) {
@@ -199,8 +203,9 @@ replace5 n:# a:n*[int] = Replace5;`
 			"a {t:Type} (%vector<t>) = A t;"
 		tl1, err := ParseTL(str)
 		require.NoError(t, err)
-		tl2 := TL{
-			{
+		tl1.CS = tl1.CS[len(tl1.CS)-1:]
+		tl2 := &TL{CS: []CombinatorOrSection{
+			{C: &Combinator{
 				Construct: Constructor{Name: Name{Name: "a"}},
 				TemplateArguments: []TemplateArgument{
 					{FieldName: "t", IsNat: false},
@@ -218,9 +223,10 @@ replace5 n:# a:n*[int] = Replace5;`
 				TypeDecl: TypeDeclaration{
 					Name:      Name{Name: "A"},
 					Arguments: []string{"t"},
-				}}}
-		requireEqualTL(t, TL{tl1[len(tl1)-1]}, TL{tl2[0]})
-		// require.Equal(t, tl1[len(tl1)-1], tl2[0])
+				},
+			}},
+		}}
+		requireEqualTL(t, tl1, tl2)
 	})
 	t.Run("Arithmetic", func(t *testing.T) {
 		str := `
@@ -230,8 +236,8 @@ hren2 a:(foo  (((((2))))) )= Hren;
 `
 		ast, err := ParseTL(str)
 		require.NoError(t, err)
-		require.Equal(t, uint32(1+3+4+5+2), ast[1].Fields[0].FieldType.Args[0].Arith.Res)
-		require.Equal(t, uint32(2), ast[2].Fields[0].FieldType.Args[0].Arith.Res)
+		require.Equal(t, uint32(1+3+4+5+2), ast.CS[1].C.Fields[0].FieldType.Args[0].Arith.Res)
+		require.Equal(t, uint32(2), ast.CS[2].C.Fields[0].FieldType.Args[0].Arith.Res)
 		tests := []struct {
 			tlText     string
 			epectedErr error
