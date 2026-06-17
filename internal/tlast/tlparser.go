@@ -145,12 +145,20 @@ type Section struct {
 	IsFunctions   bool   // otherwise, types
 }
 
+func (s Section) String() string {
+	if s.IsFunctions {
+		return s.CommentBefore + "---functions---"
+	}
+	return s.CommentBefore + "---types---"
+}
+
 type CombinatorOrSection struct {
 	C *Combinator // if !nil, this is combinator
 	S Section     // otherwise section
 }
 
 type TL struct {
+	FileName     string
 	CS           []CombinatorOrSection
 	CommentAfter string
 }

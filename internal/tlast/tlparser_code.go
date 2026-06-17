@@ -648,7 +648,7 @@ func ParseTLFile(str, file string, opts LexerOptions) (*TL, error) {
 	}
 
 	functionSection := false
-	res := &TL{}
+	res := &TL{FileName: file}
 
 	orderIndex := 0
 	rest := tokenIterator{tokens: allTokens}

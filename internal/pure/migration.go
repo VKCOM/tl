@@ -170,14 +170,20 @@ outer:
 		_ = getBB(typ.PR.Begin.FileName(), typ.PR.Begin.FileContent())
 	}
 	for _, f := range k.filesTL1 {
-		for _, typ := range f.Combinators() {
-			bb := getBB(typ.PR.Begin.FileName(), "")
+		bb := getBB(f.FileName, "")
+		for _, cs := range f.CS {
+			if cs.C == nil {
+				bb.WriteString(cs.S.String())
+				continue
+			}
+			typ := cs.C
 			//bb.WriteString(typ.SectionPR.Begin.FileContent()[typ.SectionPR.Begin.Offset():typ.SectionPR.End.Offset()])
 			if _, ok := migrateNames[typ.Construct.Name]; !ok {
 				bb.WriteString(typ.AllPR.Begin.FileContent()[typ.AllPR.Begin.Offset():typ.AllPR.End.Offset()])
 				continue
 			}
 		}
+		bb.WriteString(f.CommentAfter)
 	}
 	// check there will be no references to TL2 combinators from TL1 combinators
 	refErrList, err := k.findTL1toTL2References(migrateTips)
