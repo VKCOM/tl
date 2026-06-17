@@ -16,9 +16,15 @@ Maybe<t:Type> =
 pair<X:Type, Y:Type> = x:X y:Y ;
 
 // BLOCK: TEST RECURSIVE TYPES
-cases.myCycle1 = fields_mask:uint32 a?:cases.myCycle2 ;
-cases.myCycle2 = fields_mask:uint32 a?:cases.myCycle3 ;
-cases.myCycle3 = fields_mask:uint32 a?:cases.myCycle1 ;
+cases.myCycle1 = 
+    // tlgen:tl1mask:"0"
+    fields_mask:uint32 a?:cases.myCycle2 ;
+cases.myCycle2 = 
+    // tlgen:tl1mask:"0"
+    fields_mask:uint32 a?:cases.myCycle3 ;
+cases.myCycle3 = 
+    // tlgen:tl1mask:"0"
+    fields_mask:uint32 a?:cases.myCycle1 ;
 
 // BLOCK: TEST BRACKETS (arrays, vectors, dicitinaries etc.)
 cases.testArray = n:uint32 arr:[]int32 ;
@@ -65,14 +71,30 @@ cases.TestEnum =
 cases.testEnumContainer = value:cases.TestEnum ;
 
 // BLOCK: TEST FIELD MASKS
-cases.testRecursiveFieldMask = f0:uint32 f1?:uint32 f2?:uint32 t1:bit t2:bit t3:bit ;
-cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bit f4:bit ;
+cases.testRecursiveFieldMask = 
+    // tlgen:tl1mask:"0"
+    f0:uint32 
+    // tlgen:tl1mask:"1"
+    f1?:uint32 
+    // tlgen:tl1mask:"2"
+    f2?:uint32 t1:bit t2:bit t3:bit ;
+cases.testLocalFieldmask = 
+    // tlgen:tl1mask:"0"
+    f1:uint32 
+    // tlgen:tl1mask:"1"
+    f2?:uint32 f3:bit f4:bit ;
 
 cases.testOutFieldMask = f1?:uint32 f2:bit f3:[]int32 ;
-cases.testOutFieldMaskContainer = f:uint32 fs:uint32 inner:cases.testOutFieldMask ;
-cases.testBeforeReadBitValidation = n:uint32 ns:uint32 a?:[]int32 b?:[]int32 ;
+cases.testOutFieldMaskContainer = 
+    // tlgen:tl1mask:"0,3"
+    f:uint32 fs:uint32 inner:cases.testOutFieldMask ;
+cases.testBeforeReadBitValidation = 
+    // tlgen:tl1mask:"0,1"
+    n:uint32 ns:uint32 a?:[]int32 b?:[]int32 ;
 
-cases.testAllPossibleFieldConfigs = local:uint32 locals:uint32
+cases.testAllPossibleFieldConfigs = 
+    // tlgen:tl1mask:"0,1,2,3"
+    local:uint32 locals:uint32
     f00:int32 // no fieldmask, no nat dependencies in type
     f01:true // no fieldmask, true type
     f02:[]int32 // no fieldmask, have some local nat dependencies in type
@@ -87,7 +109,9 @@ cases.testAllPossibleFieldConfigs = local:uint32 locals:uint32
     f23?:[]int32 // outer fieldmask, have only external nat dependencies in type
     ;
 
-cases.testAllPossibleFieldConfigsContainer = outer:uint32 outers:uint32
+cases.testAllPossibleFieldConfigsContainer = 
+    // tlgen:tl1mask:"0,1,2,3"
+    outer:uint32 outers:uint32
     value:cases.testAllPossibleFieldConfigs
     ;
 
@@ -126,7 +150,9 @@ cases_bytes.testEnumContainer = value:cases.TestEnum ;
 // BLOCK: BENCHMARKS
 benchmarks.vruhash = low:int64 high:int64 ;
 
-benchmarks.vruposition = fields_mask:uint32
+benchmarks.vruposition = 
+    // tlgen:tl1mask:"0,1,3,5,14,15"
+    fields_mask:uint32
     commit_bit:bit // we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
     meta_block:bit // this block contains meta data of VR protocol
     split_payload:bit // this position splits payload. If this set, meta_block and commit_bit are both not set
@@ -155,7 +181,9 @@ benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruposition
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions
     ;
 
-casesTL2.testObject = n:uint32
+casesTL2.testObject = 
+    // tlgen:tl1mask:"0,1,14"
+    n:uint32
     ns:uint32
     f1:bit
     f2:bool
@@ -182,7 +210,9 @@ casesTL2.testFixedParam = x:casesTL2.testObjectWithParam ;
 casesTL2.testObjectWithParam = x?:int32
     y:[]int32 ;
 
-casesTL2.testParamsGeneration = n1:uint32
+casesTL2.testParamsGeneration = 
+    // tlgen:tl1mask:"0,1"
+    n1:uint32
     n2:uint32
     x1:casesTL2.testObjectWithMuiltiParams
     x2:casesTL2.testObjectWithMuiltiParams
@@ -190,28 +220,37 @@ casesTL2.testParamsGeneration = n1:uint32
     x4:casesTL2.testObjectWithMuiltiParams
     ;
 
-casesTL2.testObjectWithMuiltiParams = f1?:[]int32 
+casesTL2.testObjectWithMuiltiParams = f1?:[]int32
     f2?:[]int32 ;
 
 
-casesTL2.testFunctionNoDep1#1b8b9feb x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep1#1b8b9feb x:int32 
     => int32;
-casesTL2.testFunctionNoDep2#0a2c0bf9 x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int32 
     => ;
-casesTL2.testFunctionNoDep3#f020849b x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep3#f020849b x:int32 
     => []int32;
-casesTL2.testFunctionNoDep4#5a933a50 x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep4#5a933a50 x:int32 
     => bool;
-casesTL2.testFunctionNoDep5#2b47b925 x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep5#2b47b925 x:int32 
     => casesTL2.testObject;
-casesTL2.testFunctionNoDep6#9a316c2e x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep6#9a316c2e x:int32 
     => casesTL2.testArrayFixedBool;
-casesTL2.testFunctionNoDep7#08824518 x:int32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionNoDep7#08824518 x:int32 
     => cases.testAllDicts;
 
-casesTL2.testFunctionWithDep1#b6c63b07 n:uint32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionWithDep1#b6c63b07 n:uint32 
     => []int32;
-casesTL2.testFunctionWithDep2#9d44a2fd n:uint32 
+// tlgen:tl1name:""
+@read casesTL2.testFunctionWithDep2#9d44a2fd n:uint32 
     => benchmarks.vrutoyPositions;
 
-casesGo.testNames = write:int32 read:int32;
+casesGo.testNames = write:int32 read:int32 ;

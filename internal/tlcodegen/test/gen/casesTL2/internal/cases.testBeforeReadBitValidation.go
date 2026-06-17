@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestBeforeReadBitValidation struct {
+	// tlgen:tl1mask:"0,1"
 	N        uint32
 	Ns       uint32
 	A        []int32 // Optional, use SetA

@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTL2TestParamsGeneration struct {
+	// tlgen:tl1mask:"0,1"
 	N1 uint32
 	N2 uint32
 	X1 CasesTL2TestObjectWithMuiltiParams

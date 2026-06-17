@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type BenchmarksVruposition struct {
+	// tlgen:tl1mask:"0,1,3,5,14,15"
 	FieldsMask uint32
 	// we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
 	// CommitBit bit // Optional, use SetCommitBit

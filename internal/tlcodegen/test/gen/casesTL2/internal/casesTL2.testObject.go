@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTL2TestObject struct {
+	// tlgen:tl1mask:"0,1,14"
 	N  uint32
 	Ns uint32
 	// F1 bit // Optional, use SetF1

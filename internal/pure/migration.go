@@ -403,12 +403,14 @@ func (k *Kernel) MigrationTemplateArguments(bb *bytes.Buffer, tip *KernelType, c
 func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]struct{}, tip *KernelType, comb *tlast.Combinator,
 	fieldsAfterReplace []tlast.Field, typesAfterReplace []tlast.TL2TypeRef, indent bool, constructorId int) ([]tlast.TemplateArgument, error) {
 	leftArgs := comb.TemplateArguments
-	strct, ok := tip.instancesOrdered[0].ins.(*TypeInstanceStruct)
-	if !ok {
-		un, isUnion := tip.instancesOrdered[0].ins.(*TypeInstanceUnion)
-		ok = isUnion
-		if isUnion {
-			strct = un.variantTypes[constructorId]
+	var strct *TypeInstanceStruct
+	if len(tip.instancesOrdered) != 0 {
+		strct, _ = tip.instancesOrdered[0].ins.(*TypeInstanceStruct)
+		if strct == nil {
+			un, _ := tip.instancesOrdered[0].ins.(*TypeInstanceUnion)
+			if un != nil {
+				strct = un.variantTypes[constructorId]
+			}
 		}
 	}
 
@@ -419,7 +421,7 @@ func (k *Kernel) MigrationFields(bb *bytes.Buffer, migrateTips map[*KernelType]s
 		}
 		commentBefore := fieldDef.CommentBefore
 
-		if ok {
+		if strct != nil {
 			usages := strct.GetNatFieldUsage(i, true, false)
 			usedBits := usages.UsedBits()
 			if len(usedBits) > 0 {

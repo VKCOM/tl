@@ -15,6 +15,7 @@ var _ = basictl.NatWrite
 
 // BLOCK: TEST RECURSIVE TYPES
 type CasesMyCycle1 struct {
+	// tlgen:tl1mask:"0"
 	FieldsMask uint32
 	A          *CasesMyCycle2 // Optional, use SetA
 	tl2mask0   byte
