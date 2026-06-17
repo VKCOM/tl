@@ -14,7 +14,9 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestLocalFieldmask struct {
+	// tlgen:tl1mask:"0"
 	F1 uint32
+	// tlgen:tl1mask:"1"
 	F2 uint32 // Optional, use SetF2
 	// F3 bit // Optional, use SetF3
 	// F4 bit // Optional, use SetF4

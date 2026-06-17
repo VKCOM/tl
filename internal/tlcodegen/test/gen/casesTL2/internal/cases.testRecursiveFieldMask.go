@@ -15,8 +15,11 @@ var _ = basictl.NatWrite
 
 // BLOCK: TEST FIELD MASKS
 type CasesTestRecursiveFieldMask struct {
+	// tlgen:tl1mask:"0"
 	F0 uint32
+	// tlgen:tl1mask:"1"
 	F1 uint32 // Optional, use SetF1
+	// tlgen:tl1mask:"2"
 	F2 uint32 // Optional, use SetF2
 	// T1 bit // Optional, use SetT1
 	// T2 bit // Optional, use SetT2

@@ -48,9 +48,11 @@ type Client struct {
 	Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep1(ctx context.Context, args TestFunctionNoDep1, extra *rpc.InvokeReqExtra, ret *int32) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep1"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -78,9 +80,11 @@ func (c *Client) TestFunctionNoDep1(ctx context.Context, args TestFunctionNoDep1
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep2(ctx context.Context, args TestFunctionNoDep2, extra *rpc.InvokeReqExtra, ret *TestFunctionNoDep2__Result) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep2"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -108,9 +112,11 @@ func (c *Client) TestFunctionNoDep2(ctx context.Context, args TestFunctionNoDep2
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep3(ctx context.Context, args TestFunctionNoDep3, extra *rpc.InvokeReqExtra, ret *[]int32) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep3"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -138,9 +144,11 @@ func (c *Client) TestFunctionNoDep3(ctx context.Context, args TestFunctionNoDep3
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep4(ctx context.Context, args TestFunctionNoDep4, extra *rpc.InvokeReqExtra, ret *bool) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep4"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -168,9 +176,11 @@ func (c *Client) TestFunctionNoDep4(ctx context.Context, args TestFunctionNoDep4
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep5(ctx context.Context, args TestFunctionNoDep5, extra *rpc.InvokeReqExtra, ret *TestObject) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep5"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -198,9 +208,11 @@ func (c *Client) TestFunctionNoDep5(ctx context.Context, args TestFunctionNoDep5
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep6(ctx context.Context, args TestFunctionNoDep6, extra *rpc.InvokeReqExtra, ret *TestArrayFixedBool) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep6"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -228,9 +240,11 @@ func (c *Client) TestFunctionNoDep6(ctx context.Context, args TestFunctionNoDep6
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionNoDep7(ctx context.Context, args TestFunctionNoDep7, extra *rpc.InvokeReqExtra, ret *TestFunctionNoDep7__Result) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionNoDep7"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -258,9 +272,11 @@ func (c *Client) TestFunctionNoDep7(ctx context.Context, args TestFunctionNoDep7
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionWithDep1(ctx context.Context, args TestFunctionWithDep1, extra *rpc.InvokeReqExtra, ret *[]int32) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionWithDep1"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -288,9 +304,11 @@ func (c *Client) TestFunctionWithDep1(ctx context.Context, args TestFunctionWith
 	return nil
 }
 
+// tlgen:tl1name:""
 func (c *Client) TestFunctionWithDep2(ctx context.Context, args TestFunctionWithDep2, extra *rpc.InvokeReqExtra, ret *TestFunctionWithDep2__Result) (err error) {
 	req := c.Client.GetRequest()
 	req.ActorID = c.ActorID
+	req.ReadOnly = true
 	req.FunctionName = "casesTL2.testFunctionWithDep2"
 	if extra != nil {
 		req.Extra = extra.RequestExtra
@@ -319,14 +337,23 @@ func (c *Client) TestFunctionWithDep2(ctx context.Context, args TestFunctionWith
 }
 
 type Handler struct {
-	TestFunctionNoDep1   func(ctx context.Context, args TestFunctionNoDep1) (int32, error)                          // casesTL2.testFunctionNoDep1
-	TestFunctionNoDep2   func(ctx context.Context, args TestFunctionNoDep2) (TestFunctionNoDep2__Result, error)     // casesTL2.testFunctionNoDep2
-	TestFunctionNoDep3   func(ctx context.Context, args TestFunctionNoDep3) ([]int32, error)                        // casesTL2.testFunctionNoDep3
-	TestFunctionNoDep4   func(ctx context.Context, args TestFunctionNoDep4) (bool, error)                           // casesTL2.testFunctionNoDep4
-	TestFunctionNoDep5   func(ctx context.Context, args TestFunctionNoDep5) (TestObject, error)                     // casesTL2.testFunctionNoDep5
-	TestFunctionNoDep6   func(ctx context.Context, args TestFunctionNoDep6) (TestArrayFixedBool, error)             // casesTL2.testFunctionNoDep6
-	TestFunctionNoDep7   func(ctx context.Context, args TestFunctionNoDep7) (TestFunctionNoDep7__Result, error)     // casesTL2.testFunctionNoDep7
-	TestFunctionWithDep1 func(ctx context.Context, args TestFunctionWithDep1) ([]int32, error)                      // casesTL2.testFunctionWithDep1
+	// tlgen:tl1name:""
+	TestFunctionNoDep1 func(ctx context.Context, args TestFunctionNoDep1) (int32, error) // casesTL2.testFunctionNoDep1
+	// tlgen:tl1name:""
+	TestFunctionNoDep2 func(ctx context.Context, args TestFunctionNoDep2) (TestFunctionNoDep2__Result, error) // casesTL2.testFunctionNoDep2
+	// tlgen:tl1name:""
+	TestFunctionNoDep3 func(ctx context.Context, args TestFunctionNoDep3) ([]int32, error) // casesTL2.testFunctionNoDep3
+	// tlgen:tl1name:""
+	TestFunctionNoDep4 func(ctx context.Context, args TestFunctionNoDep4) (bool, error) // casesTL2.testFunctionNoDep4
+	// tlgen:tl1name:""
+	TestFunctionNoDep5 func(ctx context.Context, args TestFunctionNoDep5) (TestObject, error) // casesTL2.testFunctionNoDep5
+	// tlgen:tl1name:""
+	TestFunctionNoDep6 func(ctx context.Context, args TestFunctionNoDep6) (TestArrayFixedBool, error) // casesTL2.testFunctionNoDep6
+	// tlgen:tl1name:""
+	TestFunctionNoDep7 func(ctx context.Context, args TestFunctionNoDep7) (TestFunctionNoDep7__Result, error) // casesTL2.testFunctionNoDep7
+	// tlgen:tl1name:""
+	TestFunctionWithDep1 func(ctx context.Context, args TestFunctionWithDep1) ([]int32, error) // casesTL2.testFunctionWithDep1
+	// tlgen:tl1name:""
 	TestFunctionWithDep2 func(ctx context.Context, args TestFunctionWithDep2) (TestFunctionWithDep2__Result, error) // casesTL2.testFunctionWithDep2
 
 }

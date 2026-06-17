@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesMyCycle2 struct {
+	// tlgen:tl1mask:"0"
 	FieldsMask uint32
 	A          CasesMyCycle3 // Optional, use SetA
 	tl2mask0   byte

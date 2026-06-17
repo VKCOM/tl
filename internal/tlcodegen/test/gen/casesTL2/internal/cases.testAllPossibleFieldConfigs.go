@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestAllPossibleFieldConfigs struct {
+	// tlgen:tl1mask:"0,1,2,3"
 	Local  uint32
 	Locals uint32
 	// no fieldmask, no nat dependencies in type

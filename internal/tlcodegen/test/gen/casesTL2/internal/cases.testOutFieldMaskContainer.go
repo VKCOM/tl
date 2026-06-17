@@ -14,6 +14,7 @@ import (
 var _ = basictl.NatWrite
 
 type CasesTestOutFieldMaskContainer struct {
+	// tlgen:tl1mask:"0,3"
 	F     uint32
 	Fs    uint32
 	Inner CasesTestOutFieldMask

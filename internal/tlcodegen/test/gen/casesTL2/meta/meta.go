@@ -95,23 +95,23 @@ func init() {
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "casesTL2.testFixedParam", HaTL2: true})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep1", Tag: 0x1b8b9feb, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep1", Tag: 0x1b8b9feb, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep2", Tag: 0x0a2c0bf9, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep2", Tag: 0x0a2c0bf9, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep3", Tag: 0xf020849b, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep3", Tag: 0xf020849b, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep4", Tag: 0x5a933a50, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep4", Tag: 0x5a933a50, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep5", Tag: 0x2b47b925, HaTL2: true, ResultTypeContainsUnionTypes: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep5", Tag: 0x2b47b925, HaTL2: true, Annotations: 0x8, ResultTypeContainsUnionTypes: true})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep6", Tag: 0x9a316c2e, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep6", Tag: 0x9a316c2e, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep7", Tag: 0x08824518, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionNoDep7", Tag: 0x08824518, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionWithDep1", Tag: 0xb6c63b07, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionWithDep1", Tag: 0xb6c63b07, HaTL2: true, Annotations: 0x8})
 	metainternal.FillFunction(
-		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionWithDep2", Tag: 0x9d44a2fd, HaTL2: true})
+		&metainternal.TLItemImpl{Name: "casesTL2.testFunctionWithDep2", Tag: 0x9d44a2fd, HaTL2: true, Annotations: 0x8})
 	metainternal.FillObject(
 		&metainternal.TLItemImpl{Name: "casesTL2.testObject", HaTL2: true})
 	metainternal.FillObject(

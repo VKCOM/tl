@@ -13,6 +13,7 @@ import (
 
 var _ = basictl.NatWrite
 
+// tlgen:tl1name:""
 type CasesTL2TestFunctionNoDep1 struct {
 	X int32
 }
