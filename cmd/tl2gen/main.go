@@ -21,6 +21,7 @@ import (
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/puregen/gencanonical"
 	"github.com/VKCOM/tl/internal/puregen/gengo"
+	"github.com/VKCOM/tl/internal/puregen/geninfo"
 	"github.com/VKCOM/tl/internal/puregen/genphp"
 	"github.com/VKCOM/tl/internal/puregen/genrust"
 	"github.com/VKCOM/tl/internal/puregen/gentljsonhtml"
@@ -40,6 +41,7 @@ var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) e
 	"tljson.html":  gentljsonhtml.Generate,
 	"tlo":          gentlo.Generate,
 	"rust":         genrust.Generate,
+	"info":         geninfo.Generate,
 }
 
 func languagesString() string {
