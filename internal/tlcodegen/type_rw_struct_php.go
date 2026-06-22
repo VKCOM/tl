@@ -488,7 +488,7 @@ class %[1]s_fetcher implements TL\RpcFunctionFetcher {
     if ($result instanceof %[1]s_result) {
 %[5]s
     } else {
-      throw new \Exception("can\'t store: %[1]s_result expected");
+      throw new \Exception('can\'t store: %[1]s_result expected');
     }
   }
 }
@@ -661,7 +661,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 						phpFunctionArgumentsFormat(storeArgNames),
 						ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
 						ifString(trw.wr.gen.options.AddSwitcher,
-							fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
+							fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode('%[1]s') == 0) {
       return null;
     }
 `,
@@ -685,11 +685,11 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					fmt.Sprintf(`
 %[6]s
   public function typedStore(%[8]s) {
-    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
+    if (TL\tl_switcher::tl_get_namespace_methods_mode('%[10]s') == 1) {
       %[9]sprint('%[1]s::typedStore()<br/>');
       $this->write_boxed(%[8]s);
       return new %[1]s_fetcher(%[4]s);
-    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
+    } else if (TL\tl_switcher::tl_get_namespace_methods_mode('%[10]s') == 2) {
       %[9]sprint('%[1]s::typedStore() in tl2<br/>');
       store_int(0x%08[11]x); 
       $this->write_tl2(%[8]s);
@@ -703,11 +703,11 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 
 %[5]s
   public function typedFetch(%[7]s) {
-    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 1) {
+    if (TL\tl_switcher::tl_get_namespace_methods_mode('%[10]s') == 1) {
       %[9]sprint('%[1]s::typedFetch()<br/>');
       $this->read(%[7]s);
       return new %[1]s_fetcher(%[4]s);
-    } else if (TL\tl_switcher::tl_get_namespace_methods_mode("%[10]s") == 2) {
+    } else if (TL\tl_switcher::tl_get_namespace_methods_mode('%[10]s') == 2) {
       %[9]sprint('%[1]s::typedFetch() in tl2<br/>');
       $this->read_tl2(%[7]s);
       $f = new %[1]s_fetcher(%[4]s);
@@ -789,7 +789,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					phpFunctionArgumentsFormat(storeArgNames),
 					ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
 					ifString(trw.wr.gen.options.AddSwitcher,
-						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") == 0) {
+						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode('%[1]s') == 0) {
       return null;
     }
 `,
@@ -1011,7 +1011,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			cc.If("$index != 0", func() {
 				cc.AddLines(
 					fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize),
-					fmt.Sprintf(`throw new \Exception("unknown index = " . $index . "for %s");`, trw.PhpClassName(false, true)),
+					fmt.Sprintf(`throw new \Exception('unknown index = ' . $index . 'for %s');`, trw.PhpClassName(false, true)),
 				)
 			})
 		})
@@ -1058,7 +1058,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
 			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func() {
-				cc.AddLines(`throw new \Exception("read more bytes than passed in struct definition");`)
+				cc.AddLines(`throw new \Exception('read more bytes than passed in struct definition');`)
 			})
 		})
 	}

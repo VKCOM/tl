@@ -5,11 +5,3 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 package genphp
-
-import (
-	"github.com/VKCOM/tl/internal/puregen"
-)
-
-func GenerateTL2(opt *puregen.Options) bool {
-	return opt.Kernel.TL2WhiteList != ""
-}

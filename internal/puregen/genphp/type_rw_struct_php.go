@@ -319,10 +319,10 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 						cc.AddLines(readResultTL1()...)
 					}
 				}, func() {
-					// tl2 case
+					// TL2 case
 					cc.AddLines(cc.TLFetchUint32To("$marker"))
 					cc.If(cc.NotEqual("$marker", "TL\\tl2_support::Marker"), func() {
-						cc.AddLines("throw new \\Exception('can\\'t fetch tl2 marker');")
+						cc.AddLines("throw new \\Exception('can\\'t fetch TL2 marker');")
 					})
 					cc.AddLines("$used_bytes = 0;")
 					cc.AddLines("$obj_size = TL\\tl2_support::fetch_size();")
@@ -481,7 +481,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 								cc.IfElse(fmt.Sprintf("$result instanceof %[1]s_result", className), func() {
 									cc.AddLines(writeLines...)
 								}, func() {
-									cc.AddLinef(`throw new \Exception("can\'t store: %[1]s_result expected");`, className)
+									cc.AddLinef(`throw new \Exception('can\'t store: %[1]s_result expected');`, className)
 								})
 							}
 						},
@@ -605,7 +605,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					if trw.wr.phpInfo.RequireFunctionBodies {
 						if trw.wr.gen.options.PHP.AddSwitcher {
 							cc.Comments("get mode from switcher")
-							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode(\"%[2]s\");", tlMode, namespace))
+							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode('%[2]s');", tlMode, namespace))
 						} else {
 							cc.Comments("default mode")
 							cc.AddLines(fmt.Sprintf("%[1]s = 1;", tlMode))
@@ -667,62 +667,52 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			func() {
 				if trw.wr.gen.options.PHP.AddFetchers {
 					if trw.wr.phpInfo.RequireFunctionBodies {
+						cc.AddLines(cc.Assign(marker, "fetch_lookup_int() & 0xFFFFFFFF"))
+						cc.If(cc.Equal(marker, "0x30324c54"), func() { // tl_support::TL2Marker is not generated if TL2 is off
+							if hasTL2 && !hasFetcher {
+								cc.AddLines("fetch_int();")
+								cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
+								cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
+									cc.AddLines(fmt.Sprintf(`throw new \Exception('unexpected TL tag after TL2 marker: ' . %[1]s);`, marker))
+								})
+								cc.AddLines("$this->read_tl2();")
+								if hasTL2 {
+									cc.AddLines("$use_tl2 = 1;")
+								}
+								cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+							} else {
+								cc.AddLines(`throw new \Exception('TL2 request to TL1-only function');`)
+							}
+						})
+						if trw.PhpDisableTL1Code() {
+							cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
+							return
+						}
 						if trw.wr.gen.options.PHP.AddSwitcher {
 							cc.Comments("get mode from switcher")
-							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode(\"%[2]s\");", tlMode, namespace))
+							cc.AddLines(fmt.Sprintf("%[1]s = TL\\tl_switcher::tl_get_namespace_methods_mode('%[2]s');", tlMode, namespace))
 						} else {
 							cc.Comments("default mode")
 							cc.AddLines(fmt.Sprintf("%[1]s = 0;", tlMode))
 						}
-						if trw.pureType.OriginTL2() {
-							cc.If(cc.Equal(tlMode, "0"), func() {
-								cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
-							})
-						}
-						cc.Comment("check usage of new tl")
 						cc.If(cc.NotEqual(tlMode, "0"), func() {
 							cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-							// tl1
-							cc.If(cc.Equal(marker, cc.Magic(trw.wr.TLTag())), func() {
-								cc.Comment("tl1 case")
-								if trw.PhpDisableTL1Code() {
-									cc.ThrowDisabledTL1(trw.PhpClassName(false, true))
-								} else {
-									cc.Comments("read body")
-									cc.AddLines("$this->read();")
-									if hasFetcher {
-										cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
-										cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
-											cc.AddLines("rpc_clean();")
-											cc.AddLines("return null;")
-										})
-									}
-									if hasTL2 {
-										cc.AddLines("$use_tl2 = 0;")
-									}
-									cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
-								}
+							cc.If(cc.NotEqual(marker, cc.Magic(trw.wr.TLTag())), func() {
+								cc.AddLines(fmt.Sprintf(`throw new \Exception('unexpected TL tag: ' . %[1]s);`, marker))
 							})
-							// has tl2
-							if hasTL2 && !hasFetcher {
-								// tl2
-								cc.If(cc.Equal(marker, "TL\\tl2_support::Marker"), func() {
-									cc.AddLines(cc.Assign(marker, "fetch_int() & 0xFFFFFFFF"))
-									cc.If(cc.NotEqual(marker, fmt.Sprintf("0x%08[1]x", trw.wr.TLTag())), func() {
-										cc.AddLines(fmt.Sprintf(`throw new \Exception("expected tl tag: " . 0x%08[1]x);`, trw.wr.TLTag()))
-									})
-									cc.Comments("read body")
-									cc.AddLines("$this->read_tl2();")
-									if hasTL2 {
-										cc.AddLines("$use_tl2 = 1;")
-									}
-									cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
+							cc.AddLines("$this->read();")
+							if hasFetcher {
+								cc.AddLines(cc.Assign(innerFetcher, "$this->query->typedFetch()"))
+								cc.If(cc.StrongEqual(innerFetcher, "null"), func() {
+									cc.AddLines("rpc_clean();")
+									cc.AddLines("return null;")
 								})
 							}
-							// unknown request
-							cc.AddLines(fmt.Sprintf(`throw new \Exception("unexpected tl tag: " . %[1]s);`, marker))
+							if hasTL2 {
+								cc.AddLines("$use_tl2 = 0;")
+							}
+							cc.AddLines(fmt.Sprintf("return new %[1]s(%[2]s);", fetcherClass, fetcherArgsCombined))
 						})
-						cc.Comments("else fallback")
 					}
 				}
 				cc.AddLines("return null;")
@@ -912,7 +902,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			cc.If("$index != 0", func() {
 				cc.AddLines(
 					fmt.Sprintf("TL\\tl2_support::skip_bytes(%[1]s);", currentSize),
-					fmt.Sprintf(`throw new \Exception("unknown index = " . $index . "for %s");`, trw.PhpClassName(false, true)),
+					fmt.Sprintf(`throw new \Exception('unknown index = ' . $index . 'for %s');`, trw.PhpClassName(false, true)),
 				)
 			})
 		})
@@ -966,7 +956,7 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 			)
 			cc.AddLines(subtractSize(localUsedBytes))
 			cc.If(fmt.Sprintf("%[1]s < 0", currentSize), func() {
-				cc.AddLines(`throw new \Exception("read more bytes than passed in struct definition");`)
+				cc.AddLines(`throw new \Exception('read more bytes than passed in struct definition');`)
 			})
 		})
 	}
@@ -1977,7 +1967,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 
 func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-		panic("generation tl2 for non builtin data providers is forbidden")
+		panic("generation TL2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{"// TODO"}
@@ -2086,7 +2076,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 
 func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-		panic("generation tl2 for non builtin data providers is forbidden")
+		panic("generation TL2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{"// TODO"}
@@ -2137,7 +2127,7 @@ func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, arg
 
 func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args []string, supportSuffix string, callLevel int, usedBytesPointer string, canOmit bool) []string {
 	if !trw.wr.gen.options.PHP.UseBuiltinDataProviders {
-		panic("generation tl2 for non builtin data providers is forbidden")
+		panic("generation TL2 for non builtin data providers is forbidden")
 	}
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{"// TODO"}
