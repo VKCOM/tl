@@ -233,7 +233,7 @@ func (gen *genphp) PhpAdditionalFiles() error {
 				return err
 			}
 		}
-		if GenerateTL2(gen.options) {
+		if gen.options.GenerateTL2() {
 			if gen.options.PHP.UseBuiltinDataProviders {
 				if err := gen.phpCreateTL2Support(); err != nil {
 					return err
