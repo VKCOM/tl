@@ -21,6 +21,7 @@ import (
 
 const sysRecvmmsg = 299
 const iovsSize = 100
+const maxDatagramReceiveQueueSize = 9900
 const bufferSize = 2000
 
 func (t *Transport) goReceive() {
@@ -44,6 +45,9 @@ func (t *Transport) goReceive() {
 	for {
 		if msgsReceived > 0 {
 			t.writeMu.Lock()
+			for t.datagramReceiveQueue.Len() >= maxDatagramReceiveQueueSize {
+				t.datagramReceiveQueueSizeCV.Wait()
+			}
 			buffersTaken := min(msgsReceived, len(t.receiveBuffers))
 			for i := 0; i < buffersTaken; i++ {
 				n := len(t.receiveBuffers) - 1
@@ -59,7 +63,6 @@ func (t *Transport) goReceive() {
 				// still not enough
 				needBuffers := msgsReceived - buffersTaken
 				for i := 0; i < needBuffers; i++ {
-					// TODO manage uncontrollable growth of receive buffers !!!!!!!
 					buffer := make([]byte, bufferSize)
 					localReceiveBuffers[buffersTaken+i] = buffer
 				}

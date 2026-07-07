@@ -177,8 +177,9 @@ func (hctx *HandlerContext) reset() {
 	}
 }
 
-func (hctx *HandlerContext) AccountResponseMem(respBodySizeEstimate int) error {
-	return hctx.commonConn.AccountResponseMem(hctx, respBodySizeEstimate)
+func (hctx *HandlerContext) AccountResponseMem(respBodySizeEstimate int) {
+	// users of hctx did stupid things on error, so we decided to hide error from them
+	_ = hctx.commonConn.AccountResponseMem(hctx, respBodySizeEstimate)
 }
 
 // StartLongpoll releases Request bytes (and UserData) for reuse, so must be called only after Request processing is complete
