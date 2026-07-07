@@ -460,9 +460,10 @@ type Transport struct {
 	sendBuffers       [][]byte
 	sendCV            *sync.Cond
 
-	datagramReceiveQueue algo.CircularSlice[Datagram]
-	receiveBuffers       [][]byte
-	receiveCV            *sync.Cond
+	datagramReceiveQueue       algo.CircularSlice[Datagram]
+	receiveBuffers             [][]byte
+	receiveCV                  *sync.Cond
+	datagramReceiveQueueSizeCV *sync.Cond
 
 	resendCV     chan struct{} // signaled from goWrite when resendTimers has new min value and from Transport::Close()
 	resendTimers TimersPriorityQueue
@@ -682,6 +683,7 @@ func NewTransport(
 	t.writeCV = sync.NewCond(&t.writeMu)
 	t.sendCV = sync.NewCond(&t.writeMu)
 	t.receiveCV = sync.NewCond(&t.writeMu)
+	t.datagramReceiveQueueSizeCV = sync.NewCond(&t.writeMu)
 	t.resendCV = make(chan struct{}, 1)
 	t.ackCV = sync.NewCond(&t.writeMu)
 	t.resendRequestCV = make(chan struct{}, 1)
@@ -777,6 +779,9 @@ func (t *Transport) Close() (err error) {
 	t.writeCV.Signal()
 	t.ackCV.Signal()
 	t.regenerateCV.Signal()
+	t.receiveCV.Signal()
+	t.datagramReceiveQueueSizeCV.Signal()
+	t.sendCV.Signal()
 
 	select {
 	case t.resendCV <- struct{}{}:
@@ -962,6 +967,7 @@ func (t *Transport) goRead() {
 		}
 		t.datagramReceiveQueue.Swap(&datagramReceiveQueueLocal)
 		t.writeMu.Unlock()
+		t.datagramReceiveQueueSizeCV.Signal()
 
 		/*
 			TODO allow ListenUDP on ":9999"
