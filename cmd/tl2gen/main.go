@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/VKCOM/tl/internal/pure"
+	"github.com/VKCOM/tl/internal/pure/compat"
 	"github.com/VKCOM/tl/internal/puregen"
 	"github.com/VKCOM/tl/internal/puregen/gencanonical"
 	"github.com/VKCOM/tl/internal/puregen/gengo"
@@ -36,6 +37,7 @@ var languages = map[string]func(kernel *pure.Kernel, options *puregen.Options) e
 	// other options
 	"canonical":    gencanonical.Generate,
 	"lint":         func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Compile() }, // nothing more than lint
+	"compat":       compat.Run,
 	"tl2migration": func(kernel *pure.Kernel, options *puregen.Options) error { return kernel.Migration() },
 	"tljson.html":  gentljsonhtml.Generate,
 	"tlo":          gentlo.Generate,
@@ -84,6 +86,8 @@ func main() {
 		}
 		if opt.Language == "lint" {
 			fmt.Println("TL Linter Failed") // do not check Verbose
+		} else if opt.Language == "compat" {
+			fmt.Println("TL Backward Compatibility Check Failed") // do not check Verbose
 		} else {
 			fmt.Println("TL Generation Failed") // do not check Verbose
 		}
@@ -92,6 +96,8 @@ func main() {
 	}
 	if opt.Language == "lint" {
 		fmt.Println("TL Linter Success") // do not check Verbose
+	} else if opt.Language == "compat" {
+		fmt.Println("TL Backward Compatibility Check Success") // do not check Verbose
 	} else {
 		fmt.Println("TL Generation Success") // do not check Verbose
 	}

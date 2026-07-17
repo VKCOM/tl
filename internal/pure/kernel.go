@@ -239,6 +239,18 @@ func (k *Kernel) AddFileTL1(file string) error {
 	return nil
 }
 
+// AddTL1FromString parses TL1 schema directly from a string, using the same lexer options
+// as AddFileTL1. fileName is used only for error messages. Useful for tests and tools that
+// already have schema content in memory (e.g. backward-compatibility checks).
+func (k *Kernel) AddTL1FromString(fileName, data string) error {
+	tl, err := tlast.ParseTLFile(data, fileName, tlast.LexerOptions{AllowDirty: true})
+	if err != nil {
+		return err // Do not add excess info to already long parse error
+	}
+	k.filesTL1 = append(k.filesTL1, tl)
+	return nil
+}
+
 func (k *Kernel) AddFileTL2(file string) error {
 	data, err := os.ReadFile(file)
 	if err != nil {
