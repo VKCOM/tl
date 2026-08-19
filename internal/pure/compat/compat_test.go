@@ -56,7 +56,7 @@ valueInt value:int = Value;
 valueStr value:string = Value;
 `
 	cur := `
-valueInt value:int = Value;
+valueStr value:string = Value;
 `
 	requireIncompatible(t, prev, cur)
 }
@@ -67,8 +67,37 @@ valueInt value:int = Value;
 valueStr value:string = Value;
 `
 	cur := `
+// valueInt value:int = Value;
+valueStr value:string = Value;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+// TestUnionTrailingConstructorsRemoved: removing a trailing run of constructors renumbers
+// nothing and is allowed.
+func TestUnionTrailingConstructorsRemoved(t *testing.T) {
+	prev := `
 valueInt value:int = Value;
-// valueStr value:string = Value;
+valueStr value:string = Value;
+valueLong value:long = Value;
+`
+	cur := `
+valueInt value:int = Value;
+`
+	requireCompatible(t, prev, cur)
+}
+
+// TestUnionMiddleConstructorRemoved: removing a constructor with survivors after it renumbers
+// them and is rejected.
+func TestUnionMiddleConstructorRemoved(t *testing.T) {
+	prev := `
+valueInt value:int = Value;
+valueStr value:string = Value;
+valueLong value:long = Value;
+`
+	cur := `
+valueInt value:int = Value;
+valueLong value:long = Value;
 `
 	requireIncompatible(t, prev, cur)
 }
@@ -86,6 +115,8 @@ valueLong value:long = Value;
 	requireCompatible(t, prev, cur)
 }
 
+// TestTypeRemoved: removing a whole type is allowed; if a surviving field referenced it,
+// field-type-changed fires instead.
 func TestTypeRemoved(t *testing.T) {
 	prev := `
 foo x:int = Foo;
@@ -94,9 +125,11 @@ bar y:int = Bar;
 	cur := `
 bar y:int = Bar;
 `
-	requireIncompatible(t, prev, cur)
+	requireCompatible(t, prev, cur)
 }
 
+// TestFunctionRemoved: removing an RPC function is allowed -- deletion is safe when it does not
+// renumber or re-layout anything that survives.
 func TestFunctionRemoved(t *testing.T) {
 	prev := `
 ---functions---
@@ -107,7 +140,7 @@ func TestFunctionRemoved(t *testing.T) {
 ---functions---
 @any getValue key:string = Value;
 `
-	requireIncompatible(t, prev, cur)
+	requireCompatible(t, prev, cur)
 }
 
 func TestFunctionAdded(t *testing.T) {
@@ -314,11 +347,11 @@ func TestFunctionAppendWithoutMask(t *testing.T) {
 // (in the previous schema, where the linter points) waives the removal.
 func TestConstructorRemovalWaivedBlanket(t *testing.T) {
 	prev := `
-valueInt value:int = Value;
-valueStr value:string = Value; // tlgen:nolint
+valueInt value:int = Value; // tlgen:nolint
+valueStr value:string = Value;
 `
 	cur := `
-valueInt value:int = Value;
+valueStr value:string = Value;
 `
 	requireCompatible(t, prev, cur)
 }
@@ -326,11 +359,11 @@ valueInt value:int = Value;
 // TestConstructorRemovalWaivedIgnoreCompat: the compat-scoped tag waives the removal too.
 func TestConstructorRemovalWaivedIgnoreCompat(t *testing.T) {
 	prev := `
-valueInt value:int = Value;
-valueStr value:string = Value; // tlgen:nolint:ignore-compatibility
+valueInt value:int = Value; // tlgen:nolint:ignore-compatibility
+valueStr value:string = Value;
 `
 	cur := `
-valueInt value:int = Value;
+valueStr value:string = Value;
 `
 	requireCompatible(t, prev, cur)
 }
@@ -361,11 +394,11 @@ point x:int y:long = Point;
 // TestWaivedChangeEmitsWarning: a waived change is reported as a warning, not swallowed silently.
 func TestWaivedChangeEmitsWarning(t *testing.T) {
 	prev := `
-valueInt value:int = Value;
-valueStr value:string = Value; // tlgen:nolint:ignore-compatibility
+valueInt value:int = Value; // tlgen:nolint:ignore-compatibility
+valueStr value:string = Value;
 `
 	cur := `
-valueInt value:int = Value;
+valueStr value:string = Value;
 `
 	var buf bytes.Buffer
 	if err := CheckBackwardCompatibility(buildKernel(t, prev), buildKernel(t, cur), &buf); err != nil {

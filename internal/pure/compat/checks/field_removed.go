@@ -13,8 +13,8 @@ import "github.com/VKCOM/tl/internal/tlast"
 // and breaks existing readers.
 //
 // Only the field count is checked here: reordering or retyping surviving fields is a separate
-// scenario. Removing a whole combinator is handled by constructor-removed / function-removed, so
-// this scenario looks only at combinators present in both versions.
+// scenario. Removing a whole combinator is handled by constructor-removed (or allowed outright,
+// for functions), so this scenario looks only at combinators present in both versions.
 //
 // Adding new fields is not reported here (it is constrained by new-field-requires-mask).
 func fieldRemoved(prev, cur *Schema, r *Reporter) *tlast.ParseError {

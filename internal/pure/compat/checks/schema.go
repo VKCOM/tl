@@ -79,8 +79,8 @@ type CombinatorPair struct {
 // their constructor name. The result follows prev's declaration order, so errors are reported
 // deterministically.
 //
-// Combinators that were removed in cur are intentionally skipped: reporting their disappearance
-// is the job of the constructor-removed and function-removed scenarios, not of field-level ones.
+// Combinators that were removed in cur are intentionally skipped: reporting the removal of a
+// union constructor is the job of the constructor-removed scenario, not of field-level ones.
 //
 // The result is cached per cur schema (see Schema.matched); set Schema.Force to bypass the cache.
 func (prev *Schema) MatchedCombinators(cur *Schema) []CombinatorPair {

@@ -129,9 +129,8 @@ exposed as a `checks.Check{Name, Func}` from `All()`.
 
 | Name | Rejects |
 |------|---------|
-| `constructor-removed` | removing a union constructor or a whole type |
+| `constructor-removed` | removing a union constructor that precedes surviving ones (they would be renumbered); removing a trailing run of constructors or a whole type is allowed |
 | `union-order-changed` | reordering the constructors of a union (they are numbered by position) |
-| `function-removed` | removing an RPC function |
 | `field-removed` | dropping a field from a surviving combinator |
 | `template-arguments-removed` | dropping a template argument |
 | `field-type-changed` | changing the type (or args, or bare/boxed) of an existing field |
@@ -140,6 +139,10 @@ exposed as a `checks.Check{Name, Func}` from `All()`.
 | `new-field-requires-mask` | appending a field to an existing combinator without a field mask (functions may lead the appended fields with a bare `#`) |
 
 Brand-new types and functions are unconstrained — they may declare plain, unmasked fields freely.
+
+Removing an RPC function or a whole type is likewise unconstrained: a deletion is safe when it
+does not renumber or re-layout anything that survives. If a surviving field referenced the
+removed type, `field-type-changed` fires instead.
 
 Intentionally **not** implemented yet: a field's mask reference cannot be repointed, a function's
 result type cannot change, and the nat-usage rules (a new field's bit must be unused; an appended
