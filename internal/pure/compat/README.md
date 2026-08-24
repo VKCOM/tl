@@ -132,6 +132,7 @@ exposed as a `checks.Check{Name, Func}` from `All()`.
 | `constructor-removed` | removing a union constructor that precedes surviving ones (they would be renumbered); removing a trailing run of constructors or a whole type is allowed |
 | `union-order-changed` | reordering the constructors of a union (they are numbered by position) |
 | `field-removed` | dropping a field from a surviving combinator |
+| `field-order-changed` | inserting, moving or renaming a field of a surviving combinator (fields are positional on the wire; new fields must be appended at the end) |
 | `template-arguments-removed` | dropping a template argument |
 | `field-type-changed` | changing the type (or args, or bare/boxed) of an existing field |
 | `field-bit-changed` | moving an existing field to a different field-mask bit |

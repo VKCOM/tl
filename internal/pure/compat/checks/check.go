@@ -36,6 +36,7 @@ func All() []Check {
 		{Name: "constructor-removed", Func: constructorRemoved},
 		{Name: "union-order-changed", Func: unionOrderChanged},
 		{Name: "field-removed", Func: fieldRemoved},
+		{Name: "field-order-changed", Func: fieldOrderChanged},
 		{Name: "template-arguments-removed", Func: templateArgumentsRemoved},
 		{Name: "field-type-changed", Func: fieldTypeChanged},
 		{Name: "field-bit-changed", Func: fieldBitChanged},

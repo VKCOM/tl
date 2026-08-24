@@ -195,6 +195,75 @@ valueStr value:string = Value;
 	requireCompatible(t, prev, cur)
 }
 
+// TestFieldInsertedAtBeginning: inserting a field before the existing ones shifts their wire
+// positions and is rejected by field-order-changed (previously this surfaced as a confusing
+// "type of the first field changed" error from the positional field-type-changed check).
+func TestFieldInsertedAtBeginning(t *testing.T) {
+	prev := `
+point x:int y:int = Point;
+`
+	cur := `
+point z:int x:int y:int = Point;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+func TestFieldInsertedInMiddle(t *testing.T) {
+	prev := `
+abc a:int b:int c:int = Abc;
+`
+	cur := `
+abc a:int x:int b:int c:int = Abc;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+// TestFieldReordered: swapping two fields of the same type keeps the type sequence intact, so
+// only the name-based field-order-changed scenario catches it.
+func TestFieldReordered(t *testing.T) {
+	prev := `
+point x:int y:int = Point;
+`
+	cur := `
+point y:int x:int = Point;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+// TestFieldRemovedFromMiddle: removing a field from the middle is reported by field-removed,
+// pointing at the field that is actually gone.
+func TestFieldRemovedFromMiddle(t *testing.T) {
+	prev := `
+abc a:int b:int c:int = Abc;
+`
+	cur := `
+abc a:int c:int = Abc;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+// TestFieldRenamed: a rename is indistinguishable from removing a field and adding another in its
+// place, so it is rejected as well (it can be waived with a comment tag).
+func TestFieldRenamed(t *testing.T) {
+	prev := `
+point x:int y:int = Point;
+`
+	cur := `
+point x:int z:int = Point;
+`
+	requireIncompatible(t, prev, cur)
+}
+
+func TestFieldRenamedWaived(t *testing.T) {
+	prev := `
+point x:int y:int = Point;
+`
+	cur := `
+point x:int z:int = Point; // tlgen:nolint:ignore-compatibility
+`
+	requireCompatible(t, prev, cur)
+}
+
 func TestConstructorFieldRemoved(t *testing.T) {
 	prev := `
 point x:int y:int = Point;
