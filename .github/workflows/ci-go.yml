@@ -33,6 +33,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           install-go: false
+          # Pin to the same staticcheck as the Makefile check target (update both together).
+          # The action runs `go install staticcheck@${version}`, so the Go module version with
+          # the v prefix is required ("0.7.0" without the v fails to install). Unpinned means
+          # @latest: new staticcheck releases add checks that break CI on unchanged code.
+          version: "v0.7.0" # staticcheck 2026.1
 
       - name: Run php tests
         if: matrix.os == 'ubuntu-latest'
