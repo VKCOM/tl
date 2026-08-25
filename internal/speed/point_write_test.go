@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"capnproto.org/go/capnp/v3"
+	"google.golang.org/protobuf/proto"
 
 	flatbuffers "github.com/google/flatbuffers/go"
 )
@@ -17,6 +18,24 @@ func BenchmarkPointWriteTL(b *testing.B) {
 	for i := 0; i < finish; i++ {
 		for _, v := range values {
 			buf = v.writeTL(buf)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteTLGen(b *testing.B) {
+	values, buf, _ := prepareTLPointsBuffer()
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for _, v := range values {
+			buf = v.WriteTL1(buf)
 		}
 		if len(buf) > bufferSize/2 {
 			total += int64(len(buf))
@@ -71,6 +90,25 @@ func BenchmarkPointWriteTL2Dumb(b *testing.B) {
 	for i := 0; i < finish; i++ {
 		for _, v := range values {
 			buf = v.writeTL2Dumb(buf)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteTL2Gen(b *testing.B) {
+	values, buf, ctx := prepareTLPointsBuffer()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for _, v := range values {
+			buf = v.WriteTL2(buf, &ctx)
 		}
 		if len(buf) > bufferSize/2 {
 			total += int64(len(buf))
@@ -143,6 +181,50 @@ func BenchmarkPointWriteProtobuf(b *testing.B) {
 	for i := 0; i < finish; i++ {
 		for _, v := range values {
 			buf = protobufAppendPoint(buf, &v, writeExcessField)
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteProtobufGen(b *testing.B) {
+	values, buf := prepareProtoPointsBuffer()
+	opts := proto.MarshalOptions{}
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for vIndex := range values {
+			buf, _ = opts.MarshalAppend(buf, &values[vIndex])
+		}
+		if len(buf) > bufferSize/2 {
+			total += int64(len(buf))
+			buf = buf[:0]
+		}
+	}
+	printSizes(b, total+int64(len(buf)))
+}
+
+func BenchmarkPointWriteProtobufFastGen(b *testing.B) {
+	values, buf := prepareProtoFastPointsBuffer()
+	b.ReportAllocs()
+	b.ResetTimer()
+	var total int64
+	finish := b.N / len(values)
+	for i := 0; i < finish; i++ {
+		for vIndex := range values {
+			s := values[vIndex].Size()
+			pointer := len(buf)
+			buf = append(buf, make([]byte, s)...)
+
+			_, err := values[vIndex].MarshalToSizedBuffer(buf[pointer:])
+			if err != nil {
+				b.Fatal(err)
+			}
 		}
 		if len(buf) > bufferSize/2 {
 			total += int64(len(buf))

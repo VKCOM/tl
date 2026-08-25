@@ -8,6 +8,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/dchest/siphash v1.2.3
 	github.com/dgryski/go-maglev v0.0.0-20200611225407-8961b9b1b8e6
+	github.com/golang/protobuf v1.5.0
 	github.com/google/btree v1.1.3
 	github.com/google/flatbuffers v24.12.23+incompatible
 	github.com/google/go-cmp v0.7.0
